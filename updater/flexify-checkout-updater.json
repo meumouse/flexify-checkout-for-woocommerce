@@ -3,7 +3,7 @@
 	"slug" : "flexify-checkout-for-woocommerce",
 	"author" : "<a href='https://meumouse.com'>MeuMouse.com</a>",
 	"author_profile" : "https://profiles.wordpress.org/meumouse",
-	"version" : "1.2.0",
+	"version" : "1.2.5",
 	"download_url" : "https://github.com/meumouse/flexify-checkout-for-woocommerce/raw/main/dist/flexify-checkout-for-woocommerce.zip",
 	"requires" : "5.6",
 	"tested" : "6.3.1",
@@ -17,7 +17,7 @@
 		"changelog" : "<h4>v1.1.2 released on May 4th, 2023</h4><ul><li>Fixed: PHP 8 warnings and errors</li><li>Improvement: Site cloning will copy current source content folder over to new /content/:id:/</li><li>Improvement: Refresh WP Freighter configs on plugin update</li></ul><h4>v1.1.1 released on March 18th, 2023</h4><ul><li>Fixed: PHP 8 issues</li></ul><h4>v1.1 released on December 29th, 2022</h4><ul><li>Feature: Free for everyone. Removed EDD integration. Automatic updates integrated with Github release.</li><li>Improvement: Add settings link to plugin page.</li></ul><h4>v1.0.2 released on August 21, 2021</h4><ul><li>Fixed: Bad logic where configurations weren’t always regenerated after sites changed.</li><li>Fixed: Various PHP warnings.</li></ul><h4>v1.0.1 released on September 18, 2020</h4><ul><li>Feature: Will automatically install default theme when creating new sites if needed.</li><li>Improvement: Shows overlay loader while new sites are installing.</li><li>Improvement: Added fields for domain or label on the new site dialog.</li><li>Improvement: Compatibility for alternative wp-config.php location.</li><li>Improvement: Force HTTPS in urls.</li><li>Fixed: Inconsistent response of sites array.</li></ul><h4>v1.0.0 released on September 9, 2020</h4><ul><li>Initial release of WP Freighter. Ability to add or remove stacked sites with database prefix <code>stacked_#_</code>.</li><li>Feature: Clone existing site to new database prefix</li><li>Feature: Add new empty site to new database prefix</li><li>Feature: Domain mapping off or on</li><li>Feature: Files shared or dedicated</li></ul>"
 	},
 	"banners" : {
-		"low" : "https://wpfreighter.com/images/wp-freighter-banner-772x250.webp",
-		"high" : "https://wpfreighter.com/images/wp-freighter-banner-1544x500.webp"
+		"low" : "",
+		"high" : ""
 	}
 }
