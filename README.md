@@ -30,6 +30,9 @@ Você pode instalar um plugin WordPress de duas maneiras: via o painel de admini
 
 ### Registro de alterações (Changelogs):
 
+Versão 1.6.5 (09/11/2023)
+* Melhoria em compatibilidade com tema Shoptimizer
+
 Versão 1.6.2 (06/11/2023)
 * Correção de bugs
 
