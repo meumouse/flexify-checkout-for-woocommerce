@@ -1,8 +1,12 @@
-# Flexify Checkout para WooCommerce
+# Flexify Checkout para WooCommerce®
 
 Extensão que otimiza a finalização de compra em multi etapas para lojas WooCommerce.
  
 Eleve a experiência de compra na sua loja virtual com o Flexify Checkout para WooCommerce – simplificando o processo e aumentando a satisfação dos seus clientes a cada passo!
+
+#### Propriedade intelectual:
+O software Flexify Checkout para WooCommerce® é uma propriedade registrada da MEUMOUSE.COM® – SOLUÇÕES DIGITAIS LTDA, em conformidade com o §2°, art. 2° da Lei 9.609, de 19 de Fevereiro de 1998.
+É expressamente proibido a distribuição ou cópia ilegal deste software, sujeita a penalidades conforme as leis de direitos autorais vigentes.
 
 ### Instalação:
 
