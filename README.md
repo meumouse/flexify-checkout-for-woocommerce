@@ -34,6 +34,13 @@ Você pode instalar um plugin WordPress de duas maneiras: via o painel de admini
 
 ### Registro de alterações (Changelogs):
 
+Versão 1.7.0 (20/11/2023)
+
+* Correção de bugs
+* Otimizações
+* Gancho adicionado: "flexify_checkout_before_coupon_form"
+* Gancho adicionado: "flexify_checkout_after_coupon_form"
+
 Versão 1.6.5 (09/11/2023)
 * Melhoria em compatibilidade com tema Shoptimizer
 
