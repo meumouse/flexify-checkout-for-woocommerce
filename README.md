@@ -34,6 +34,12 @@ Você pode instalar um plugin WordPress de duas maneiras: via o painel de admini
 
 ### Registro de alterações (Changelogs):
 
+Versão 1.8.5 (30/11/2023)
+
+* Recurso removido: Informar usuário existente
+* Correção de bugs
+* Otimizações
+
 Versão 1.8.0 (27/11/2023)
 
 * Compatibilidade com tema EpicJungle
