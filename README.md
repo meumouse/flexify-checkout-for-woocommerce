@@ -34,6 +34,10 @@ Você pode instalar um plugin WordPress de duas maneiras: via o painel de admini
 
 ### Registro de alterações (Changelogs):
 
+Versão 1.8.7 (30/11/2023)
+
+* Correção de bugs
+
 Versão 1.8.5 (30/11/2023)
 
 * Recurso removido: Informar usuário existente
