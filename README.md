@@ -34,6 +34,9 @@ Você pode instalar um plugin WordPress de duas maneiras: via o painel de admini
 
 ### Registro de alterações (Changelogs):
 
+Versão 1.9.2 (08/12/2023)
+* Recurso adicionado: Ativar página de agradecimento do Flexify Checkout
+
 Versão 1.9.0 (05/12/2023)
 
 * Correção de bugs
