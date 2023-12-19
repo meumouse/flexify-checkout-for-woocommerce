@@ -34,6 +34,13 @@ Você pode instalar um plugin WordPress de duas maneiras: via o painel de admini
 
 ### Registro de alterações (Changelogs):
 
+Versão 2.0.0 (19/12/2023)
+* Recurso alterado: Gancho "flexify_thankyou_before_order_status" para "flexify_checkout_thankyou_before_order_status"
+* Recurso alterado: Gancho "flexify_thankyou_after_order_status" para "flexify_checkout_thankyou_after_order_status"
+* Recurso alterado: Gancho "flexify_thankyou_after_content" para "flexify_checkout_thankyou_after_content"
+* Correção de bugs
+* Otimizações
+
 Versão 1.9.2 (08/12/2023)
 * Recurso adicionado: Ativar página de agradecimento do Flexify Checkout
 
