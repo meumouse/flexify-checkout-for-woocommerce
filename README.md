@@ -34,6 +34,9 @@ Você pode instalar um plugin WordPress de duas maneiras: via o painel de admini
 
 ### Registro de alterações (Changelogs):
 
+Versão 2.1.5 (19/01/2024)
+* Correção de bugs
+
 Versão 2.1.0 (16/01/2024)
 * Compatibilidade com gateway Pagar.me módulo para Woocommerce
 
