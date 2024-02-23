@@ -34,6 +34,13 @@ Você pode instalar um plugin WordPress de duas maneiras: via o painel de admini
 
 ### Registro de alterações (Changelogs):
 
+Versão 2.3.0 (23/02/2024)
+* Correção de bugs
+* Otimizações
+* Versão do PHP requerida de 7.2 para 7.4
+* Recurso adicionado: Recebimento de pagamentos com Pix via Banco Inter
+* Recurso adicionado: Recebimento de pagamentos com boleto bancário via Banco Inter
+
 Versão 2.2.0 (23/01/2024)
 * Correção de bugs
 * Otimizações
