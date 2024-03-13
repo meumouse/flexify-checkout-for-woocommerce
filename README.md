@@ -34,6 +34,10 @@ Você pode instalar um plugin WordPress de duas maneiras: via o painel de admini
 
 ### Registro de alterações (Changelogs):
 
+Versão 2.6.0 (13/03/2024)
+* Compatibilidade com plugin WooCommerce Sequential Order Numbers Pro (SkyVerge)
+* Correção de bugs
+
 Versão 2.5.0 (12/03/2024)
 * Correção de bugs
 
