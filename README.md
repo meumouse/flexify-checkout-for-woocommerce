@@ -34,6 +34,18 @@ Você pode instalar um plugin WordPress de duas maneiras: via o painel de admini
 
 ### Registro de alterações (Changelogs):
 
+Versão 3.0.0 (25/03/2024)
+* Correção de bugs
+* Otimizações
+* Recurso adicionado: Cabeçalho personalizado
+* Recurso adicionado: Rodapé personalizado
+* Recurso adicionado: Gerenciamento de campos e etapas da finalização de compras
+* Recurso adicionado: Ocultar campos do mercado brasileiro se país não for Brasil
+* Recurso adicionado: Selecionar país do usuário automaticamente através do seu IP
+* Opção removida: Ativar campo de complemento
+* Opção removida: Ativar campo de Empresa
+* Recurso atualizado: (Telefone internacional) - Atualizar bandeira do telefone internacional ao mudar de país
+
 Versão 2.6.0 (13/03/2024)
 * Compatibilidade com plugin WooCommerce Sequential Order Numbers Pro (SkyVerge)
 * Correção de bugs
