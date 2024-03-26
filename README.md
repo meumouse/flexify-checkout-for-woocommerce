@@ -34,6 +34,11 @@ Você pode instalar um plugin WordPress de duas maneiras: via o painel de admini
 
 ### Registro de alterações (Changelogs):
 
+Versão 3.1.0 (26/03/2024)
+* Correção de bugs
+* Otimizações
+* Melhorias em compatibilidade com plugin Woo Subscriptions
+
 Versão 3.0.0 (25/03/2024)
 * Correção de bugs
 * Otimizações
