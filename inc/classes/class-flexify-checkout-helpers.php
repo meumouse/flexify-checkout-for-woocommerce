@@ -7,13 +7,13 @@ defined( 'ABSPATH' ) || exit;
  * Useful helper functions
  *
  * @since 1.0.0
- * @version 1.0.0
+ * @version 3.1.0
  * @package MeuMouse.com
  */
 class Flexify_Checkout_Helpers {
 
 	/**
-	 * Get Details Fields.
+	 * Get details fields for first step checkout
 	 *
 	 * @since 1.0.0
 	 * @param object $checkout
@@ -31,19 +31,39 @@ class Flexify_Checkout_Helpers {
 	 * Get billing fields used at checkout
 	 *
 	 * @since 1.0.0
-	 * @version 3.0.0
+	 * @version 3.1.0
 	 * @return array
 	 */
 	public static function get_allowed_details_fields() {
-		$get_field_options = get_option('flexify_checkout_step_fields', array());
-		$get_field_options = maybe_unserialize( $get_field_options );
 		$fields = array();
 
-		foreach ( $get_field_options as $key => $value ) {
-			if ( isset( $value['step'] ) && $value['step'] === '1' ) {
-				$fields[] = $key;
+		if ( Flexify_Checkout_Init::license_valid() ) {
+			$get_field_options = get_option('flexify_checkout_step_fields', array());
+			$get_field_options = maybe_unserialize( $get_field_options );
+	
+			foreach ( $get_field_options as $key => $value ) {
+				if ( isset( $value['step'] ) && $value['step'] === '1' ) {
+					$fields[] = $key;
+				}
 			}
+		} else {
+			$fields = array( 
+				'billing_first_name',
+				'billing_last_name',
+				'billing_company',
+				'billing_phone',
+				'billing_cellphone',
+				'billing_email',
+				'billing_persontype',
+				'billing_cpf',
+				'billing_rg',
+				'billing_cnpj',
+				'billing_ie',
+				'billing_birthdate',
+				'billing_sex'
+			);
 		}
+		
 		
 		return apply_filters( 'flexify_checkout_details_fields', $fields );
 	}

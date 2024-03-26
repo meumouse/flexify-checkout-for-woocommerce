@@ -865,7 +865,7 @@ jQuery(document).ready( function($) {
 /**
  * Add shipping cost row to the order review table for mobile view.
  */
-flexifyCart.addShippingRowToOrderSummary = function (data) {
+flexifyCart.addShippingRowToOrderSummary = function(data) {
   // Add row if it doesn't exits.
   if (!jQuery('.flexify-shop-table-shipping-price').length) {
     jQuery('.shop_table tfoot .cart-subtotal').first().after('<tr class="flexify-shop-table-shipping-price"></tr>');
@@ -1941,6 +1941,9 @@ jQuery(document).ready( function($) {
   $('.flexify-button[data-step-next]').on('click', function(e) {
     e.preventDefault();
 
+    $('#billing_country, #shipping_country').trigger('change');
+    $('#billing_state_field, #shipping_state_field').removeClass('woocommerce-invalid');
+
     var first_name = $('#billing_first_name').val();
     var last_name = $('#billing_last_name').val();
     var phone = $('#billing_phone').val();
@@ -2177,9 +2180,10 @@ flexifyHelper.getFieldValue = function (field) {
  * 
  * A simple native AJAX function.
  * 
- * @param {object} data        Data.
- * @param {function} onSuccess Success Function.
- * @param {function} onError   Error Function.
+ * @since 1.0.0
+ * @param {object} data | Data.
+ * @param {function} onSuccess | Success Function.
+ * @param {function} onError | Error Function.
  */
 flexifyHelper.ajaxRequest = async function (data, onSuccess, onError) {
   await new Promise((resolve, reject) => {
@@ -2445,9 +2449,15 @@ var flexifyIntlPhone = {
    * Close dropdown when clicked outside.
    */
   handleClickOutside: function() {
-    document.addEventListener('click', function (e) {
-      if (intlTelInputGlobals && !e.target.closest('.iti__selected-flag')) {
-        intlTelInputGlobals.instances[0]._closeDropdown();
+    document.addEventListener('click', function(e) {
+      var instances = intlTelInputGlobals.instances;
+
+      if (instances && instances.length > 0) {
+        var instance = instances[0];
+
+        if (instances && !e.target.closest('.iti__selected-flag')) {
+          instance._closeDropdown();
+        }
       }
     });
   },

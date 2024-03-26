@@ -1078,14 +1078,17 @@ form.woocommerce-checkout
   width: 100%;
 }
 
-.form-row.form-row-first, .form-row.form-row-last {
+.form-row.form-row-first,
+.form-row.row-first,
+.form-row.form-row-last {
   clear: left;
   float: left;
   margin-top: 0;
   margin-bottom: 32px;
 }
 
-.form-row.form-row-last {
+.form-row.form-row-last,
+.form-row.row-last {
   clear: right;
   float: right;
 }
@@ -1117,7 +1120,9 @@ form.woocommerce-checkout
 
 @media screen and (min-width: 770px) {
   .form-row.form-row-first,
-  .form-row.form-row-last {
+  .form-row.form-row-last,
+  .form-row.row-first,
+  .form-row.row-last {
     margin-right: 0;
     width: 49%;
   }
@@ -2215,21 +2220,27 @@ button#place_order--processing:after {
     font-size: 16px;
     font-weight: 400;
   }
+
   .flexify-checkout__content-right #order_review tfoot .recurring-totals,
-  .flexify-step #order_review tfoot .recurring-totals {
-    border-top: 1px solid #e5e5e5;
+  .flexify-step #order_review tfoot .recurring-totals,
+  .flexify-checkout__content-right #order_review tfoot .cart-subtotal.recurring-total,
+  .flexify-step #order_review tfoot .cart-subtotal.recurring-total {
+    display: none;
   }
+
   .flexify-checkout__content-right #order_review tfoot .recurring-totals th,
   .flexify-step #order_review tfoot .recurring-totals th {
     padding-top: 20px !important;
     padding-bottom: 20px !important;
     font-weight: 500;
   }
+
   .flexify-checkout__content-right #order_review tfoot .recurring-total *,
   .flexify-step #order_review tfoot .recurring-total * {
     font-size: 14px;
     font-weight: 400;
   }
+
   .flexify-checkout__content-right #order_review tfoot .recurring-total .amount,
   .flexify-checkout__content-right #order_review tfoot .recurring-total .amount *,
   .flexify-checkout__content-right #order_review tfoot .recurring-total td strong,
@@ -2251,6 +2262,7 @@ button#place_order--processing:after {
     font-size: 1.075rem;
     font-weight: 500;
   }
+
   .flexify-checkout__content-right #order_review tfoot .recurring-total td,
   .flexify-checkout__content-right #order_review tfoot .recurring-total th,
   .flexify-step #order_review tfoot .recurring-total td,
@@ -2259,6 +2271,7 @@ button#place_order--processing:after {
     padding-top: 20px !important;
     padding-bottom: 20px !important;
   }
+
   .flexify-checkout__content-right
     #order_review
     tfoot
@@ -2267,6 +2280,7 @@ button#place_order--processing:after {
   .flexify-step #order_review tfoot .recurring-total .first-payment-date {
     margin: 4px 0 0;
   }
+
   .flexify-checkout__content-right #order_review thead td,
   .flexify-step #order_review thead td {
     background-color: transparent;
@@ -2276,6 +2290,7 @@ button#place_order--processing:after {
     text-align: left;
     text-align: right;
   }
+
   .flexify-checkout__content-right #order_review thead tr.order-total td,
   .flexify-checkout__content-right #order_review thead tr.order-total th,
   .flexify-step #order_review thead tr.order-total td,
@@ -2283,6 +2298,7 @@ button#place_order--processing:after {
     font-weight: bolder;
     border-top: 1px solid #16110e;
   }
+
   .flexify-checkout__content-right #order_review thead li,
   .flexify-checkout__content-right #order_review thead ul,
   .flexify-step #order_review thead li,
@@ -2293,6 +2309,7 @@ button#place_order--processing:after {
     padding: 0;
     margin: 0;
   }
+
   .flexify-checkout__content-right #order_review thead li label,
   .flexify-checkout__content-right #order_review thead ul label,
   .flexify-step #order_review thead li label,
@@ -2300,6 +2317,7 @@ button#place_order--processing:after {
     padding: 0;
     margin: 0;
   }
+
   .flexify-checkout__content-right #order_review thead li label,
   .flexify-checkout__content-right #order_review thead li label .amount *,
   .flexify-checkout__content-right #order_review thead ul label,
@@ -2310,18 +2328,22 @@ button#place_order--processing:after {
   .flexify-step #order_review thead ul label .amount * {
     font-size: 16px;
   }
+
   .flexify-checkout__content-right #order_review thead li,
   .flexify-step #order_review thead li {
     margin: 0 0 5px;
   }
+
   .flexify-checkout__content-right #order_review thead li:last-child,
   .flexify-step #order_review thead li:last-child {
     margin-bottom: 0;
   }
+
   .flexify-checkout__content-right td[data-title="Shipping"],
   .flexify-step td[data-title="Shipping"] {
     width: 50%;
   }
+
   dl.variation {
     float: left;
     margin: 8px 0 0;
@@ -2329,6 +2351,7 @@ button#place_order--processing:after {
     color: #16110e;
     line-height: 1.5;
   }
+
   dl.variation dt {
     clear: left;
     display: list-item;
@@ -2337,36 +2360,43 @@ button#place_order--processing:after {
     margin: 0 4px 0 0;
     line-height: 1.5;
   }
+
   dl.variation dd {
     float: left;
     margin: 0;
     line-height: 1.5;
   }
+
   dl.variation dd p {
     display: inline;
     line-height: 1.5;
     margin: 0;
   }
+
   ul.variation {
     float: left;
     margin-left: 0;
     margin-top: 0;
     padding: 0;
   }
+
   ul.variation,
   ul.variation li {
     list-style-type: none;
   }
+
   ul.variation span,
   ul.variation span p {
     display: inline;
   }
+
   .payment_method_stripe .form-row-first {
     width: 47.0588235294%;
     float: left;
     margin-right: 5.8823529412%;
     clear: both;
   }
+
   @media screen and (max-width: 550px) {
     .payment_method_stripe .form-row-first {
       width: 100%;

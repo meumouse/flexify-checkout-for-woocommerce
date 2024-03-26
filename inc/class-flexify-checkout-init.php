@@ -7,7 +7,7 @@ defined( 'ABSPATH' ) || exit;
  * Class for init plugin
  * 
  * @since 1.0.0
- * @version 3.0.0
+ * @version 3.1.0
  * @package MeuMouse.com
  */
 class Flexify_Checkout_Init {
@@ -450,11 +450,11 @@ class Flexify_Checkout_Init {
    * Set default options checkout fields
    * 
    * @since 3.0.0
+   * @version 3.1.0
    * @return void
    */
   public function set_checkout_fields_steps_options() {
-    if ( self::license_valid() ) {
-      $get_fields = self::get_wc_native_checkout_fields();
+    $get_fields = self::get_wc_native_checkout_fields();
       $get_field_options = get_option('flexify_checkout_step_fields', array());
       $get_field_options = maybe_unserialize( $get_field_options );
 
@@ -481,7 +481,6 @@ class Flexify_Checkout_Init {
             $get_field_options = array_merge( $get_field_options, $wcbcf_fields );
             update_option('flexify_checkout_step_fields', maybe_serialize( $get_field_options ));
           }
-      }
     }
   }
 

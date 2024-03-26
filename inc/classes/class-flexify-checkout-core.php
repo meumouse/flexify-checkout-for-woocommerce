@@ -30,7 +30,7 @@ class Flexify_Checkout_Core {
 		add_action( 'body_class', array( __CLASS__, 'update_body_class' ) );
 
 		// Set priorities.
-		add_filter( 'woocommerce_checkout_fields', array( __CLASS__, 'custom_override_checkout_fields' ), 100 );
+		add_filter( 'woocommerce_checkout_fields', array( __CLASS__, 'custom_override_checkout_fields' ), 9999 );
 
 		add_filter( 'woocommerce_billing_fields', array( __CLASS__, 'custom_override_billing_field_priorities' ), 100 );
 		add_filter( 'woocommerce_shipping_fields', array( __CLASS__, 'custom_override_shipping_field_priorities' ), 100 );
@@ -52,9 +52,6 @@ class Flexify_Checkout_Core {
 		// set customer data on checkout session
 		add_action( 'wp_ajax_get_checkout_session_data', array( $this, 'get_checkout_session_data_callback' ) );
 		add_action( 'wp_ajax_nopriv_get_checkout_session_data', array( $this, 'get_checkout_session_data_callback' ) );
-
-		// log checkout sessions
-		add_action( 'woocommerce_session_set_flexify_checkout', array(__CLASS__, 'log_flexify_checkout_session' ) );
 
 		// On save.
 		add_action( 'woocommerce_checkout_create_order', array( __CLASS__, 'prepend_street_number_to_address_1' ), 10, 2 );
@@ -288,7 +285,7 @@ class Flexify_Checkout_Core {
 	 * Override checkout fields
 	 *
 	 * @since 1.0.0
-	 * @version 3.0.0
+	 * @version 3.1.0
 	 * @param array $fields | Checkout fields
 	 * @return array
 	 */
@@ -408,6 +405,30 @@ class Flexify_Checkout_Core {
 					unset( $fields['billing'][$index] );
 				}
 			}
+		} else {
+			if ( isset( $fields['billing']['billing_address_1'] ) ) {
+				$fields['billing']['billing_address_1']['class'][] = 'row-first';
+			}
+
+			if ( isset( $fields['billing']['billing_number'] ) ) {
+				$fields['billing']['billing_number']['class'][] = 'row-last';
+			}
+
+			if ( isset( $fields['billing']['billing_address_2'] ) ) {
+				$fields['billing']['billing_address_2']['class'][] = 'row-first';
+			}
+
+			if ( isset( $fields['billing']['billing_neighborhood'] ) ) {
+				$fields['billing']['billing_neighborhood']['class'][] = 'row-last';
+			}
+
+			if ( isset( $fields['billing']['billing_city'] ) ) {
+				$fields['billing']['billing_city']['class'][] = 'row-first';
+			}
+
+			if ( isset( $fields['billing']['billing_state'] ) ) {
+				$fields['billing']['billing_state']['class'][] = 'row-last';
+			}
 		}
 		
 		return $fields;
@@ -454,11 +475,36 @@ class Flexify_Checkout_Core {
 	 * @return array
 	 */
 	public static function custom_override_billing_field_priorities( $fields ) {
-		$step_fields = get_option('flexify_checkout_step_fields', array());
-		$step_fields = maybe_unserialize( $step_fields );
-
-		foreach ( $step_fields as $index => $value ) {
-			self::set_field_priority( $fields, $index, $value['priority'] );
+		if ( Flexify_Checkout_Init::license_valid() ) {
+			$step_fields = get_option('flexify_checkout_step_fields', array());
+			$step_fields = maybe_unserialize( $step_fields );
+	
+			foreach ( $step_fields as $index => $value ) {
+				self::set_field_priority( $fields, $index, $value['priority'] );
+			}
+		} else {
+			self::set_field_priority( $fields, 'billing_email', 5 );
+			self::set_field_priority( $fields, 'billing_first_name', 10 );
+			self::set_field_priority( $fields, 'billing_last_name', 20 );
+			self::set_field_priority( $fields, 'billing_phone', 40 );
+			self::set_field_priority( $fields, 'billing_cellphone', 45 );
+			self::set_field_priority( $fields, 'billing_persontype', 50 );
+			self::set_field_priority( $fields, 'billing_cpf', 55 );
+			self::set_field_priority( $fields, 'billing_rg', 60 );
+			self::set_field_priority( $fields, 'billing_cnpj', 65 );
+			self::set_field_priority( $fields, 'billing_ie', 70 );
+			self::set_field_priority( $fields, 'billing_company', 75 );
+			self::set_field_priority( $fields, 'billing_birthdate', 76 );
+			self::set_field_priority( $fields, 'billing_sex', 77 );
+			self::set_field_priority( $fields, 'billing_gender', 78 );
+			self::set_field_priority( $fields, 'billing_country', 80 );
+			self::set_field_priority( $fields, 'billing_postcode', 90 );
+			self::set_field_priority( $fields, 'billing_address_1', 100 );
+			self::set_field_priority( $fields, 'billing_number', 110 );
+			self::set_field_priority( $fields, 'billing_neighborhood', 115 );
+			self::set_field_priority( $fields, 'billing_address_2', 120 );
+			self::set_field_priority( $fields, 'billing_city', 130 );
+			self::set_field_priority( $fields, 'billing_state', 140 );
 		}
 
 		return $fields;
@@ -507,20 +553,31 @@ class Flexify_Checkout_Core {
 
 
 	/**
-	 * Override default fields.
+	 * Override default fields
 	 *
 	 * @since 1.0.0
-	 * @param array $fields
+	 * @version 3.1.0
+	 * @param array $fields | Checkout fields
 	 * @return array
 	 */
 	public static function custom_override_default_fields( $fields ) {
-		$fields_to_remove_placeholder = array( 'street_number', 'address_1', 'address_2', 'state', 'country', 'postcode', 'first_name', 'last_name' );
+		$fields_to_remove_placeholder = array(
+			'street_number',
+			'address_1',
+			'address_2',
+			'state',
+			'country',
+			'postcode',
+			'first_name',
+			'last_name',
+		);
+
 		$fields['address_2']['label'] = __( 'Apartamento, suíte, unidade etc.', 'flexify-checkout-for-woocommerce' );
 
 		// Otherwise remove the placeholders.
-		foreach ( $fields_to_remove_placeholder as $field_name ) {
-			if ( isset( $fields[ $field_name ] ) ) {
-				$fields[ $field_name ]['placeholder'] = '';
+		foreach ( $fields_to_remove_placeholder as $index ) {
+			if ( isset( $fields[ $index ] ) ) {
+				$fields[ $index ]['placeholder'] = '';
 			}
 		}
 
@@ -1155,36 +1212,11 @@ class Flexify_Checkout_Core {
 		$response = array(
 			'status' => 'success',
 			'data' => $flexify_checkout_session,
-			'message' => 'Dados atualizados com sucesso.'
 		);
-
-		// create session logs
-		do_action( 'woocommerce_session_set_flexify_checkout', $flexify_checkout_session );
 	
 		wp_send_json_success( $response );
 
 		wp_die();
-	}
-
-
-	/**
-	 * Create checkout session logs
-	 * 
-	 * @since 1.8.5
-	 * @param array $session_data
-	 * @return void
-	 */
-	public static function log_flexify_checkout_session( $session_data ) {
-		$logger = wc_get_logger();
-	
-		if ( $logger ) {
-			$logger_context = array(
-				'source' => 'flexify_checkout_session',
-				'session_data' => $session_data,
-			);
-			
-			$logger->info( __( 'Dados da sessão atualizados', 'flexify-checkout-for-woocommerce' ), $session_data, $logger_context );
-		}
 	}
 
 

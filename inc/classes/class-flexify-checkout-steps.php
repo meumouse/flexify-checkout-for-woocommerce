@@ -780,6 +780,7 @@ class Flexify_Checkout_Steps {
 			<?php do_action( 'flexify_checkout_after_coupon_form' );
 		}
 	}
+	
 
 	/**
 	 * Print Back button.
@@ -839,7 +840,7 @@ class Flexify_Checkout_Steps {
 		}
 	
 		// Do not show shipping if address is empty.
-		$formatted_destination = WC()->countries->get_formatted_address($packages[0]['destination'], ', ');
+		$formatted_destination = WC()->countries->get_formatted_address( $packages[0]['destination'], ', ' );
 
 		if ( empty( $formatted_destination ) ) {
 			return;
@@ -866,35 +867,28 @@ class Flexify_Checkout_Steps {
 
 		$session_data = WC()->session->get('flexify_checkout');
 		$billing_first_name = isset( $session_data['first_name'] ) ? $session_data['first_name'] : '';
-		$billing_last_name = isset($session_data['last_name'] ) ? $session_data['last_name'] : '';
+		$billing_last_name = isset( $session_data['last_name'] ) ? $session_data['last_name'] : '';
 		$billing_phone = isset( $session_data['phone'] ) ? $session_data['phone'] : '';
 		$billing_email = isset( $session_data['email'] ) ? $session_data['email'] : '';
-		$customer_info = '';
 		$customer_address = '';
 		$customer_name = sprintf( '%s %s', esc_html( $billing_first_name ), esc_html( $billing_last_name ), );
 		$customer_phone = sprintf( '%s', esc_html( $billing_phone ) );
 		$customer_email = sprintf( '%s', esc_html( $billing_email ) );
-	
-		$packages = $woocommerce->cart->get_shipping_packages();
-		$formatted_address = '';
-		$billing_number = isset( $session_data['billing_number'] ) ? $session_data['billing_number'] : '';
-		$billing_neighborhood = isset( $session_data['billing_neighborhood'] ) ? $session_data['billing_neighborhood'] : '';
-	
-		if ( $packages && isset( $packages[0] ) ) {
-			$billing_address = $packages[0]['destination']['address'];
-			$city = $packages[0]['destination']['city'];
-			$state = $packages[0]['destination']['state'];
-			$postcode = $packages[0]['destination']['postcode'];
-		}
+		$billing_address = isset( $session_data['billing_address_1'] ) ? $session_data['billing_address_1'] . ',' : '';
+		$billing_number = isset( $session_data['billing_number'] ) ? $session_data['billing_number'] . ',' : '';
+		$billing_neighborhood = isset( $session_data['billing_neighborhood'] ) ? $session_data['billing_neighborhood'] . ',' : '';
+		$city = isset( $session_data['billing_city'] ) ? $session_data['billing_city'] . ' - ' : '';
+		$state = isset( $session_data['billing_state'] ) ? $session_data['billing_state'] : '';
+		$postcode = isset( $session_data['billing_postcode'] ) ? $session_data['billing_postcode'] : '';
 
 		$customer_address = sprintf(
 			'%s %s %s %s %s (%s: %s)',
-			esc_html( $billing_address. ',' ),
-			esc_html( $billing_number . ',' ),
-			esc_html( $billing_neighborhood . ',' ),
-			esc_html( $city . ' - ' ),
+			esc_html( $billing_address ),
+			esc_html( $billing_number ),
+			esc_html( $billing_neighborhood ),
+			esc_html( $city ),
 			esc_html( $state ),
-			__('CEP', 'flexify-checkout-for-woocommerce'), esc_html($postcode)
+			__('CEP', 'flexify-checkout-for-woocommerce'), esc_html( $postcode )
 		);
 	
 		ob_start();

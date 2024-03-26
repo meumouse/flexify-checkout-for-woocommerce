@@ -175,7 +175,7 @@ if ( !class_exists( 'Flexify_Checkout_Api' ) ) {
 		}
 
 
-		private function encrypt( $plainText, $password = '') {
+		private function encrypt( $plainText, $password = '' ) {
 			if ( empty( $password ) ) {
 				$password = $this->key;
 			}

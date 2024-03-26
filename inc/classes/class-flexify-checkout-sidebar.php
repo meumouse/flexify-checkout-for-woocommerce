@@ -28,14 +28,12 @@ class Flexify_Checkout_Sidebar {
 	 * @return void
 	 */
 	public static function sidebar_actions() {
-		$settings = get_option( 'flexify_checkout_settings' );
-
 		if ( ! self::is_sidebar_enabled() ) {
 			return;
 		}
 
 		// Remove the cart buttons if option is enabled
-		if ( isset( $settings['enable_skip_cart_page'] ) && $settings['enable_skip_cart_page'] == 'yes' ) {
+		if ( Flexify_Checkout_Init::get_setting('enable_skip_cart_page') === 'yes' ) {
 			remove_action( 'woocommerce_widget_shopping_cart_buttons', 'woocommerce_widget_shopping_cart_button_view_cart', 10 );
 		}
 
@@ -55,7 +53,7 @@ class Flexify_Checkout_Sidebar {
 		add_filter( 'woocommerce_cart_item_class', array( __CLASS__, 'cart_item_class' ), 10, 3 );
 
 		// Add and remove product cart controls
-		if ( isset( $settings['enable_add_remove_products'] ) && $settings['enable_add_remove_products'] == 'yes' ) {
+		if ( Flexify_Checkout_Init::get_setting('enable_add_remove_products') === 'yes' ) {
 			add_filter( 'woocommerce_checkout_cart_item_quantity', array( __CLASS__, 'cart_quantity_control' ), 100, 3 );
 			add_filter( 'woocommerce_cart_item_subtotal', array( __CLASS__, 'cart_remove_link' ), 100, 3 );
 		}
@@ -121,9 +119,7 @@ class Flexify_Checkout_Sidebar {
 	 * @return void
 	 */
 	public static function redirect_template_to_checkout() {
-		$settings = get_option( 'flexify_checkout_settings' );
-
-		if ( ! self::is_sidebar_enabled() || isset( $settings['enable_skip_cart_page'] ) && $settings['enable_skip_cart_page'] == 'no' ) {
+		if ( ! self::is_sidebar_enabled() || Flexify_Checkout_Init::get_setting('enable_skip_cart_page') === 'no' ) {
 			return;
 		}
 
@@ -139,6 +135,7 @@ class Flexify_Checkout_Sidebar {
 		}
 
 		$cancel_order = filter_input( INPUT_GET, 'cancel_order' );
+		
 		if ( ! empty( $cancel_order ) ) {
 			return;
 		}
@@ -149,11 +146,13 @@ class Flexify_Checkout_Sidebar {
 		 * @since 2.1.0
 		 */
 		do_action( 'woocommerce_check_cart_items' );
+
 		if ( wc_notice_count( 'error' ) > 0 ) {
 			return;
 		}
 
 		wp_safe_redirect( wc_get_checkout_url() );
+
 		exit;
 	}
 
@@ -195,12 +194,10 @@ class Flexify_Checkout_Sidebar {
 			return $name;
 		}
 
-		$settings = get_option( 'flexify_checkout_settings' );
-
 		// Filter to modify the cart item thumbnail
 		$thumbnail = apply_filters( 'woocommerce_cart_item_thumbnail', $cart_item['data']->get_image(), $cart_item, $cart_item_key );
 
-		if ( isset( $settings['enable_link_image_products'] ) && $settings['enable_link_image_products'] == 'yes' ) {
+		if ( Flexify_Checkout_Init::get_setting('enable_link_image_products') === 'yes' ) {
 			$thumbnail = sprintf( "<a href='%s'>%s</a>", $cart_item['data']->get_permalink(), $thumbnail );
 		}
 
@@ -234,15 +231,16 @@ class Flexify_Checkout_Sidebar {
 	 * Cart quantity control
 	 *
 	 * @since 1.0.0
+	 * @version 3.1.0
 	 * @param string $output
-	 * @param array  $cart_item
+	 * @param array $cart_item
 	 * @param string $cart_item_key
 	 * @return string
 	 */
 	public static function cart_quantity_control( $output, $cart_item, $cart_item_key ) {
-		$_product = wc_get_product( $cart_item['product_id'] );
+		$product = wc_get_product( $cart_item['product_id'] );
 
-		if ( ! is_object( $_product ) ) {
+		if ( ! is_object( $product ) ) {
 			return $output;
 		}
 
@@ -250,11 +248,11 @@ class Flexify_Checkout_Sidebar {
 			array(
 				'input_name' => "cart[{$cart_item_key}][qty]",
 				'input_value' => $cart_item['quantity'],
-				'max_value' => $_product->get_max_purchase_quantity(),
+				'max_value' => $product->get_max_purchase_quantity(),
 				'min_value' => '0',
-				'product_name' => $_product->get_name(),
+				'product_name' => $product->get_name(),
 			),
-			$_product,
+			$product,
 			false
 		);
 
@@ -275,7 +273,7 @@ class Flexify_Checkout_Sidebar {
 			return $output;
 		}
 
-		$_product = wc_get_product( $cart_item['product_id'] );
+		$product = wc_get_product( $cart_item['product_id'] );
 
 		/**
 		 * Filter remove from cart link HTML
@@ -291,7 +289,7 @@ class Flexify_Checkout_Sidebar {
 				esc_html__( 'Remover este item', 'flexify-checkout-for-woocommerce' ),
 				esc_html__( 'Remover este item', 'flexify-checkout-for-woocommerce' ),
 				esc_attr( $cart_item['product_id'] ),
-				esc_attr( $_product->get_sku() )
+				esc_attr( $product->get_sku() )
 			),
 			$cart_item_key
 		);
@@ -307,7 +305,7 @@ class Flexify_Checkout_Sidebar {
 	 * @return void
 	 */
 	public static function handle_cart_qty_update( $post_data ) {
-		$data   = array();
+		$data = array();
 		$status = true;
 		parse_str( $post_data, $data );
 
@@ -351,16 +349,17 @@ class Flexify_Checkout_Sidebar {
 	/**
 	 * Update product item quantity.
 	 *
-	 * @param string $cart_item_key Cart Item key.
-	 * @param int    $quantity      Quantity.
-	 *
+	 * @since 1.0.0
+	 * @version 3.1.0
+	 * @param string $cart_item_key | Cart Item key
+	 * @param int $quantity | Product quantity
 	 * @return true|array Returns `true` if update is successful, `Array` if there is an error.
 	 */
 	public static function update_product_quantity( $cart_item_key, $quantity ) {
 		global $woocommerce;
 
 		$updated = array();
-		$cart    = WC()->cart->get_cart();
+		$cart = WC()->cart->get_cart();
 		$product = isset( $cart[ $cart_item_key ] ) ? $cart[ $cart_item_key ]['data'] : false;
 
 		$current_session_order_id = isset( WC()->session->order_awaiting_payment ) ? absint( WC()->session->order_awaiting_payment ) : 0;
@@ -372,7 +371,7 @@ class Flexify_Checkout_Sidebar {
 		// is_sold_individually.
 		if ( $product->is_sold_individually() && $quantity > 1 ) {
 			/* Translators: %s Product title. */
-			$msg     = sprintf( esc_html__( 'Você só pode ter 1%s no seu carrinho.', 'flexify-checkout-for-woocommerce' ), $product->get_name() );
+			$msg = sprintf( esc_html__( 'Você só pode comprar 1 %s por pedido.', 'flexify-checkout-for-woocommerce' ), $product->get_name() );
 			$updated = array(
 				'error' => $msg,
 			);
