@@ -34,6 +34,22 @@ Você pode instalar um plugin WordPress de duas maneiras: via o painel de admini
 
 ### Registro de alterações (Changelogs):
 
+Versão 3.2.0 (02/04/2024)
+* Correção de bugs
+* Otimizações
+* Compatibilidade com Clube M
+* Recurso adicionado: Link da imagem de cabeçalho
+* Recurso alterado: Alteração da API de serviço do preenchimento de endereço
+* Recurso adicionado: Data de expiração da aplicação (Módulo adicional banco Inter para Flexify Checkout para WooCommerce)
+* Recurso modificado: Opção "Definir país padrão" adicionada no campo País do gerenciamento de campos e etapas
+* Recurso adicionado: Gancho "flexify_checkout_before_fields_step_1"
+* Recurso adicionado: Gancho "flexify_checkout_after_fields_step_1"
+* Recurso adicionado: Gancho "flexify_checkout_after_account_form_step_1"
+* Recurso adicionado: Gancho "flexify_checkout_before_fields_step_2"
+* Recurso adicionado: Gancho "flexify_checkout_after_fields_step_2"
+* Recurso adicionado: Gancho "flexify_checkout_before_shipping_methods_step_2"
+* Recurso adicionado: Gancho "flexify_checkout_after_shipping_methods_step_2"
+
 Versão 3.1.0 (26/03/2024)
 * Correção de bugs
 * Otimizações
