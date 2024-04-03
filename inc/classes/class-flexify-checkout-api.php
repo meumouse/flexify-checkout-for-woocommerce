@@ -1,20 +1,23 @@
 <?php
 
 // Exit if accessed directly.
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
     
 /**
  * Class handler API calls
  * 
  * @since 1.0.0
- * @version 3.0.0
+ * @version 3.2.0
  */
 if ( !class_exists( 'Flexify_Checkout_Api' ) ) {
 	class Flexify_Checkout_Api {
 
-    	public $key = '49D52DA9137137C0';
-    	private $product_id = '3';
-    	private $product_base = 'flexify-checkout-for-woocommerce';
+    	public $fcw_key = '49D52DA9137137C0';
+    	private $fcw_product_id = '3';
+    	private $fcw_product_base = 'flexify-checkout-for-woocommerce';
+        private $product_key;
+        private $product_id;
+        private $product_base;
         private $server_host = 'https://api.meumouse.com/wp-json/license/';
     	private $isEncryptUpdate = true;
     	private $pluginFile;
@@ -32,6 +35,19 @@ if ( !class_exists( 'Flexify_Checkout_Api' ) ) {
          * @return void
          */
 		public function __construct( $plugin_base_file = '') {
+            $license_key = get_option('flexify_checkout_license_key');
+
+            // check if license is for Clube M
+            if ( strpos( $license_key, 'CM-' ) === 0 ) {
+                $this->product_base = 'clube-m';
+                $this->product_id = '7';
+                $this->product_key = 'B729F2659393EE27';
+            } else {
+                $this->product_base = $this->fcw_product_base;
+                $this->product_id = $this->fcw_product_id;
+                $this->product_key = $this->fcw_key;
+            }
+
 			$this->pluginFile = $plugin_base_file;
             $dir = dirname( $plugin_base_file );
             $dir = str_replace('\\','/', $dir );
@@ -41,12 +57,8 @@ if ( !class_exists( 'Flexify_Checkout_Api' ) ) {
             }
 		}
 
-		public function setEmailAddress( $email_address ) {
-            $this->email_address = $email_address;
-        }
-
-		function initActionHandler(){
-			$handler = hash("crc32b", $this->product_id . $this->key . $this->getDomain() ) . "_handle";
+		function initActionHandler() {
+			$handler = hash("crc32b", $this->product_id . $this->product_key . self::get_domain() ) . "_handle";
 
 			if ( isset( $_GET['action'] ) && $_GET['action'] == $handler){
 				$this->handleServerRequest();
@@ -55,7 +67,7 @@ if ( !class_exists( 'Flexify_Checkout_Api' ) ) {
 			}
 		}
 
-		function handleServerRequest(){
+		function handleServerRequest() {
 			$type = isset( $_GET['type'] ) ? strtolower( $_GET['type'] ) : "";
 
 			switch( $type ) {
@@ -113,7 +125,7 @@ if ( !class_exists( 'Flexify_Checkout_Api' ) ) {
 		/**
          * @param callable $func
          */
-        static function addOnDelete( $func){
+        static function addOnDelete( $func ) {
             self::$_onDeleteLicense[] = $func;
         }
 
@@ -177,7 +189,7 @@ if ( !class_exists( 'Flexify_Checkout_Api' ) ) {
 
 		private function encrypt( $plainText, $password = '' ) {
 			if ( empty( $password ) ) {
-				$password = $this->key;
+				$password = $this->product_key;
 			}
 
 			$plainText = wp_rand( 10, 99 ) . $plainText . wp_rand( 10, 99 );
@@ -191,7 +203,7 @@ if ( !class_exists( 'Flexify_Checkout_Api' ) ) {
 
 		private function decrypt( $encrypted, $password = '' ) {
             if ( empty( $password ) ) {
-                $password = $this->key;
+                $password = $this->product_key;
             }
 
             $logger = wc_get_logger();
@@ -234,15 +246,16 @@ if ( !class_exists( 'Flexify_Checkout_Api' ) ) {
          * Get domain of activation
          * 
          * @since 1.0.0
+         * @version 3.2.0
          * @return string
          */
-		private function getDomain() {
+		public static function get_domain() {
 		    if ( function_exists( "site_url" ) ) {
                 return site_url();
             }
 
 			if ( defined( "WPINC" ) && function_exists( "get_bloginfo" ) ) {
-				return get_bloginfo( 'url' );
+				return get_bloginfo('url');
 			} else {
 				$base_url = ( ( isset( $_SERVER['HTTPS'] ) && $_SERVER['HTTPS'] == "on" ) ? "https" : "http" );
 				$base_url .= "://" . $_SERVER['HTTP_HOST'];
@@ -278,7 +291,7 @@ if ( !class_exists( 'Flexify_Checkout_Api' ) ) {
 
                 $logger->info('(Flexify Checkout para WooCommerce) Response: ' . print_r( $response, true ), array('source' => $plugin_log_file));
         
-                if ( ! empty( $this->key ) ) {
+                if ( ! empty( $this->product_key ) ) {
                     // Try to decrypt
                     $decrypted_response = $this->decrypt( $response );
         
@@ -345,7 +358,7 @@ if ( !class_exists( 'Flexify_Checkout_Api' ) ) {
                 $finalData = wp_json_encode( $data );
                 $url = rtrim( $this->server_host, '/' ) . "/" . ltrim( $relative_url, '/' );
         
-                if ( !empty( $this->key ) ) {
+                if ( !empty( $this->product_key ) ) {
                     $finalData = $this->encrypt( $finalData );
                 }
         
@@ -474,7 +487,7 @@ if ( !class_exists( 'Flexify_Checkout_Api' ) ) {
 			$req = new stdClass();
 			$req->license_key = $purchase_key;
 			$req->email = ! empty( $admin_email ) ? $admin_email : $this->getEmail();
-			$req->domain = $this->getDomain();
+			$req->domain = self::get_domain();
 			$req->app_version = $app_version;
 			$req->product_id = $this->product_id;
 			$req->product_base = $this->product_base;
@@ -483,12 +496,12 @@ if ( !class_exists( 'Flexify_Checkout_Api' ) ) {
 		}
 
 		private function getKeyName() {
-            return hash( 'crc32b', $this->getDomain() . $this->pluginFile . $this->product_id . $this->product_base . $this->key . "LIC" );
+            return hash( 'crc32b', self::get_domain() . $this->pluginFile . $this->product_id . $this->product_base . $this->product_key . "LIC" );
         }
 
         private function SaveWPResponse( $response ) {
             $key = $this->getKeyName();
-            $data = $this->encrypt( maybe_serialize( $response ), $this->getDomain() );
+            $data = $this->encrypt( maybe_serialize( $response ), self::get_domain() );
             update_option( $key, $data ) || add_option( $key, $data );
         }
 
@@ -500,7 +513,7 @@ if ( !class_exists( 'Flexify_Checkout_Api' ) ) {
                 return NULL;
             }
 
-            return maybe_unserialize( $this->decrypt( $response, $this->getDomain() ) );
+            return maybe_unserialize( $this->decrypt( $response, self::get_domain() ) );
         }
 
         public function removeOldWPResponse() {

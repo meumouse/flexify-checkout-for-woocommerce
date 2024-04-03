@@ -1,7 +1,7 @@
 <?php
 
 // Exit if accessed directly.
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
 /**
  * Useful helper functions
@@ -36,8 +36,8 @@ class Flexify_Checkout_Helpers {
 	 */
 	public static function get_allowed_details_fields() {
 		$fields = array();
-
-		if ( Flexify_Checkout_Init::license_valid() ) {
+		
+		if ( Flexify_Checkout_Init::get_setting('enable_manage_fields') === 'yes' && Flexify_Checkout_Init::license_valid() ) {
 			$get_field_options = get_option('flexify_checkout_step_fields', array());
 			$get_field_options = maybe_unserialize( $get_field_options );
 	
@@ -60,7 +60,7 @@ class Flexify_Checkout_Helpers {
 				'billing_cnpj',
 				'billing_ie',
 				'billing_birthdate',
-				'billing_sex'
+				'billing_sex',
 			);
 		}
 		
@@ -385,5 +385,26 @@ class Flexify_Checkout_Helpers {
 	 */
 	public static function get_order_pay_btn_text( $order ) {
 		return esc_html__( 'Pagar pelo pedido', 'flexify-checkout-for-woocommerce' ) . ' - ' . wc_price( $order->get_total() );
+	}
+
+
+	/**
+	 * Get new select fields for init Select2 on frontend
+	 * 
+	 * @since 3.2.0
+	 * @return array
+	 */
+	public static function get_new_select_fields() {
+		$fields = get_option('flexify_checkout_step_fields', array());
+		$fields = maybe_unserialize( $fields );
+		$selects = array();
+
+		foreach ( $fields as $index => $value ) {
+			if ( isset( $value['source'] ) && $value['source'] === 'added' && isset( $value['type'] ) && $value['type'] === 'select' ) {
+				$selects[] = $index;
+			}
+		}
+
+		return $selects;
 	}
 }

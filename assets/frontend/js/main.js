@@ -35,7 +35,7 @@ flexifyAddressSearch.init = function() {
  * Watch select2 events.
  */
 flexifyAddressSearch.watchSelect2 = function() {
-  jQuery('select.country_select').on('select2:open', function (e) {
+  jQuery('select.country_select').on('select2:open', function(e) {
     let $select2_above = jQuery('.select2-dropdown--above');
 
     if ($select2_above.length <= 0) {
@@ -656,7 +656,7 @@ jQuery(document).ready( function($) {
 
     if (cnpjValue && !isCNPJValid(cnpjValue)) {
       $parent.removeClass('woocommerce-validated').addClass('woocommerce-invalid woocommerce-invalid-cnpj woocommerce-invalid-required-field');
-      $parent.find('.error').text(flexify_checkout_vars.i18n.CNPJ.invalid);
+      $parent.find('.error').text(flexify_checkout_vars.i18n.cnpj.invalid);
       cnpj_valid = false;
     } else {
       $parent.removeClass('woocommerce-invalid woocommerce-invalid-cnpj woocommerce-invalid-required-field');
@@ -727,11 +727,26 @@ jQuery(document).ready( function($) {
 
 
 /**
- * Hide Show Order Summary.
+ * Init Select2 for new select fields
  * 
- * Toggle for the checkout summary on mobile view.
+ * @since 3.2.0
  */
-flexifyCart.orderSummaryToggle = function (first) {
+jQuery(document).ready( function($) {
+  var get_selects = flexify_checkout_vars.get_new_select_fields;
+
+  $(get_selects).each( function() {
+    $('#' + this).select2();
+  });
+});
+
+
+/**
+ * Hide Show Order Summary.
+ * Toggle for the checkout summary on mobile view.
+ * 
+ * @since 1.0.0
+ */
+flexifyCart.orderSummaryToggle = function(first) {
   if (!_helper__WEBPACK_IMPORTED_MODULE_0__["default"].isMobile()) {
     return;
   }
@@ -1882,11 +1897,11 @@ flexifyForm.init = function() {
     flexifyForm.addRemoveFocusClass();
 
     // Add is-active class.
-    jQuery(document).on('change focus keydown', '.form-row input, .form-row select', function() {
+    jQuery(document).on('change focus keydown', '.form-row input, .form-row select, .form-row textarea', function() {
       jQuery(this).closest('.form-row').addClass('is-active');
     });
     
-    jQuery(document).on('blur', '.form-row input', function() {
+    jQuery(document).on('blur', '.form-row input, .form-row select, .form-row textarea', function() {
       var $row = jQuery(this).closest('.form-row');
 
       if (flexifyForm.hasPermanentPlaceholder($row) || jQuery(this).val()) {

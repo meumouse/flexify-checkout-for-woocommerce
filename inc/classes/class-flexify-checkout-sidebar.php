@@ -1,7 +1,7 @@
 <?php
 
 // Exit if accessed directly.
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
 /**
  * Sidebar related functions
@@ -60,26 +60,41 @@ class Flexify_Checkout_Sidebar {
 
 		add_action( 'woocommerce_checkout_update_order_review', array( __CLASS__, 'handle_cart_qty_update' ) );
 
-		add_filter( 'woocommerce_order_button_html', function( $html ) {
-			if ( ! Flexify_Checkout_Helpers::is_modern_theme() ) {
-				return $html;
-			}
-
-			ob_start();
-			?>
-			<footer class="flexify-footer">
-				<?php
-				Flexify_Checkout_Steps::back_button( 'payment' );
-				echo wp_kses_post( $html ); ?>
-			</footer>
-			<?php
-
-			return ob_get_clean();
-		} );
+		add_filter( 'woocommerce_order_button_html', array( __CLASS__, 'place_order_button' ) );
 	}
 
+
 	/**
-	 * Add ghost row to order review for spacing.
+	 * Replace place order button
+	 * 
+	 * @since 3.2.0
+	 * @param string $html 
+	 * @return string
+	 */
+	public static function place_order_button( $html ) {
+		if ( ! Flexify_Checkout_Helpers::is_modern_theme() ) {
+			return $html;
+		}
+
+		ob_start();
+
+		?>
+		<footer class="flexify-footer">
+			<?php
+			Flexify_Checkout_Steps::back_button( 'payment' );
+			echo wp_kses_post( $html ); ?>
+		</footer>
+		<?php
+
+		return ob_get_clean();
+	}
+
+
+	/**
+	 * Add ghost row to order review for spacing
+	 * 
+	 * @since 1.0.0
+	 * @return void
 	 */
 	public static function review_order_add_ghost_row() {
 		if ( ! Flexify_Checkout_Helpers::is_modern_theme() ) {
@@ -90,7 +105,10 @@ class Flexify_Checkout_Sidebar {
 	}
 
 	/**
-	 * Remove checkout shipping fields as we add them ourselves.
+	 * Remove checkout shipping fields as we add them ourselves
+	 * 
+	 * @since 1.0.0
+	 * @return void
 	 */
 	public static function remove_checkout_shipping() {
 		remove_action( 'woocommerce_checkout_shipping', array( WC_Checkout::instance(), 'checkout_form_shipping' ) );
@@ -99,6 +117,7 @@ class Flexify_Checkout_Sidebar {
 	/**
 	 * Is Sidebar Enabled.
 	 *
+	 * @since 1.0.0
 	 * @return boolean
 	 */
 	public static function is_sidebar_enabled() {
@@ -116,6 +135,7 @@ class Flexify_Checkout_Sidebar {
 	/**
 	 * Redirect Template to Checkout.
 	 *
+	 * @since 1.0.0
 	 * @return void
 	 */
 	public static function redirect_template_to_checkout() {

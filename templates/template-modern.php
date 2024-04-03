@@ -35,7 +35,7 @@ do_action( 'flexify_checkout_before_layout' ); ?>
      *
      * @since 1.0.0
      */
-    do_action( 'flexify_checkout_after_content' ); ?>
+    do_action('flexify_checkout_after_content'); ?>
 
     <div class="flexify-checkout__spinner"><img src="<?php echo bloginfo( 'wpurl' ); ?>/wp-includes/images/spinner-2x.gif"/></div>
 </div>
@@ -46,7 +46,7 @@ do_action( 'flexify_checkout_before_layout' ); ?>
  *
  * @since 1.0.0
  */
-do_action( 'flexify_checkout_after_layout' );
+do_action('flexify_checkout_after_layout');
 
 wp_footer(); ?>
 

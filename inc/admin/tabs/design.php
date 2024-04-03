@@ -1,7 +1,7 @@
 <?php
 
 // Exit if accessed directly.
-defined( 'ABSPATH' ) || exit; ?>
+defined('ABSPATH') || exit; ?>
 
 <div id="design" class="nav-content">
    <table class="form-table">
@@ -77,6 +77,15 @@ defined( 'ABSPATH' ) || exit; ?>
       </tr>
       <tr class="header-styles-option-logo">
          <th>
+            <?php echo esc_html__( 'Link da imagem de cabeçalho', 'flexify-checkout-for-woocommerce' ) ?>
+            <span class="flexify-checkout-description"><?php echo esc_html__( 'Informe o link da imagem do cabeçalho.', 'flexify-checkout-for-woocommerce' ) ?></span>
+         </th>
+         <td>
+            <input type="text" name="logo_header_link" class="form-control input-control-wd-20" value="<?php echo esc_attr( self::get_setting('logo_header_link') ) ?>"/>
+         </td>
+      </tr>
+      <tr class="header-styles-option-logo">
+         <th>
             <?php echo esc_html__( 'Largura da imagem de cabeçalho', 'flexify-checkout-for-woocommerce' ) ?>
          </th>
          <td>
@@ -108,7 +117,7 @@ defined( 'ABSPATH' ) || exit; ?>
             <span class="flexify-checkout-description"><?php echo esc_html__( 'Adicione seu cabeçalho personalizado informando o shortcode.', 'flexify-checkout-for-woocommerce' ) ?></span>
          </th>
          <td>
-            <input type="text" name="shortcode_header" class="form-control input-control-wd-20" placeholder="<?php echo esc_html__( '[shortcode id="100"]', 'flexify-checkout-for-woocommerce' ) ?>" value="<?php echo esc_attr( self::get_setting('shortcode_header') && self::license_valid() ) ?>"/>
+            <input type="text" name="shortcode_header" class="form-control input-control-wd-20" placeholder="<?php echo esc_html__( '[shortcode id="100"]', 'flexify-checkout-for-woocommerce' ) ?>" value="<?php echo esc_attr( self::get_setting('shortcode_header') ) ?>"/>
          </td>
       </tr>
       <tr>
@@ -117,7 +126,7 @@ defined( 'ABSPATH' ) || exit; ?>
             <span class="flexify-checkout-description"><?php echo esc_html__( 'Adicione seu rodapé personalizado informando o shortcode.', 'flexify-checkout-for-woocommerce' ) ?></span>
          </th>
          <td>
-            <input type="text" name="shortcode_footer" class="form-control input-control-wd-20" placeholder="<?php echo esc_html__( '[shortcode id="101"]', 'flexify-checkout-for-woocommerce' ) ?>" value="<?php echo esc_attr( self::get_setting('shortcode_footer') && self::license_valid() ) ?>"/>
+            <input type="text" name="shortcode_footer" class="form-control input-control-wd-20" placeholder="<?php echo esc_html__( '[shortcode id="101"]', 'flexify-checkout-for-woocommerce' ) ?>" value="<?php echo esc_attr( self::get_setting('shortcode_footer') ) ?>"/>
          </td>
       </tr>
       

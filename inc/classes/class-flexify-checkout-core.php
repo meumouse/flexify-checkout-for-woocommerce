@@ -1,12 +1,13 @@
 <?php
 
 // Exit if accessed directly.
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
 /**
- * Checkout core functions
+ * Checkout core actions
  *
  * @since 1.0.0
+ * @version 3.2.0
  * @package MeuMouse.com
  */
 class Flexify_Checkout_Core {
@@ -101,6 +102,14 @@ class Flexify_Checkout_Core {
 
 		// disable inter bank gateways if deactivated
 		add_filter( 'woocommerce_available_payment_gateways', array( $this, 'disable_inter_bank_gateways' ) );
+
+		// incompatibility with plugin Cielo API - Loja5
+		remove_filter( 'woocommerce_order_button_html', 'loja5_woo_cielo_webservice_custom_order_button_html' );
+
+		// set default country on checkout
+		if ( Flexify_Checkout_Init::license_valid() ) {
+			add_filter( 'default_checkout_billing_country', array( $this, 'get_default_checkout_country' ) );
+		}
 	}
 
 
@@ -361,12 +370,12 @@ class Flexify_Checkout_Core {
 		}
 
 		// check fields conditions
-		if ( Flexify_Checkout_Init::license_valid() ) {
+		if ( Flexify_Checkout_Init::get_setting('enable_manage_fields') === 'yes' && Flexify_Checkout_Init::license_valid() ) {
 			foreach ( $get_field_options as $index => $value ) {
 				// change array key for valid class
 				$field_class = array(
-					'left' => 'form-row-first',
-					'right' => 'form-row-last',
+					'left' => 'row-first',
+					'right' => 'row-last',
 					'full' => 'form-row-wide',
 				);
 
@@ -398,6 +407,111 @@ class Flexify_Checkout_Core {
 				// required field
 				if ( isset( $value['required'] ) && $index !== 'billing_country' ) {
 					$fields['billing'][$index]['required'] = $required_filter[$value['required']];
+				}
+
+				// add new field type text
+				if ( isset( $value['source'] ) && $value['source'] === 'added' && isset( $value['type'] ) && $value['type'] === 'text' ) {
+					$fields['billing'][$index] = array(
+						'type' => 'text',
+						'label' => $value['label'],
+						'class' => array( $value['classes'] ),
+						'clear' => true,
+						'required' => $required_filter[$value['required']],
+						'priority' => $value['priority'],
+					);
+				}
+
+				// add new field type textarea
+				if ( isset( $value['source'] ) && $value['source'] === 'added' && isset( $value['type'] ) && $value['type'] === 'textarea' ) {
+					$fields['billing'][$index] = array(
+						'type' => 'textarea',
+						'label' => $value['label'],
+						'class' => array( $value['classes'] ),
+						'clear' => true,
+						'required' => $required_filter[$value['required']],
+						'priority' => $value['priority'],
+					);
+				}
+
+				// add new field type number
+				if ( isset( $value['source'] ) && $value['source'] === 'added' && isset( $value['type'] ) && $value['type'] === 'number' ) {
+					$fields['billing'][$index] = array(
+						'type' => 'number',
+						'label' => $value['label'],
+						'class' => array( $value['classes'] ),
+						'clear' => true,
+						'required' => $required_filter[$value['required']],
+						'priority' => $value['priority'],
+					);
+				}
+
+				// add new field type email
+			/*	if ( isset( $value['source'] ) && $value['source'] === 'added' && isset( $value['type'] ) && $value['type'] === 'email' ) {
+					$fields['billing'][$index] = array(
+						'type' => 'email',
+						'label' => $value['label'],
+						'class' => array( $value['classes'] ),
+						'clear' => true,
+						'required' => $required_filter[$value['required']],
+						'priority' => $value['priority'],
+					);
+				}*/
+
+				// add new field type password
+				if ( isset( $value['source'] ) && $value['source'] === 'added' && isset( $value['type'] ) && $value['type'] === 'password' ) {
+					$fields['billing'][$index] = array(
+						'type' => 'password',
+						'label' => $value['label'],
+						'class' => array( $value['classes'] ),
+						'clear' => true,
+						'required' => $required_filter[$value['required']],
+						'priority' => $value['priority'],
+					);
+				}
+
+				// add new field type tel
+				if ( isset( $value['source'] ) && $value['source'] === 'added' && isset( $value['type'] ) && $value['type'] === 'phone' ) {
+					$fields['billing'][$index] = array(
+						'type' => 'tel',
+						'label' => $value['label'],
+						'class' => array( $value['classes'] ),
+						'clear' => true,
+						'validate' => array('phone'),
+						'required' => $required_filter[$value['required']],
+						'priority' => $value['priority'],
+					);
+				}
+
+				// add new field type url
+				if ( isset( $value['source'] ) && $value['source'] === 'added' && isset( $value['type'] ) && $value['type'] === 'url' ) {
+					$fields['billing'][$index] = array(
+						'type' => 'url',
+						'label' => $value['label'],
+						'class' => array( $value['classes'] ),
+						'clear' => true,
+						'required' => $required_filter[$value['required']],
+						'priority' => $value['priority'],
+					);
+				}
+
+				// add new field type select
+				if ( isset( $value['source'] ) && $value['source'] === 'added' && isset( $value['type'] ) && $value['type'] === 'select' ) {
+					$index_option = array();
+					
+					// get select options
+					foreach ( $value['options'] as $option ) {
+						$index_option[ $option['value'] ] = $option['text'];
+					}
+
+					$fields['billing'][$index] = array(
+						'type' => 'select',
+						'options' => $index_option,
+						'label' => $value['label'],
+						'class' => array( $value['classes'] ),
+						'clear' => true,
+						'required' => $required_filter[$value['required']],
+						'priority' => $value['priority'],
+					);
 				}
 
 				// remove fields thats disabled
@@ -475,12 +589,14 @@ class Flexify_Checkout_Core {
 	 * @return array
 	 */
 	public static function custom_override_billing_field_priorities( $fields ) {
-		if ( Flexify_Checkout_Init::license_valid() ) {
+		if ( Flexify_Checkout_Init::get_setting('enable_manage_fields') === 'yes' && Flexify_Checkout_Init::license_valid() ) {
 			$step_fields = get_option('flexify_checkout_step_fields', array());
 			$step_fields = maybe_unserialize( $step_fields );
 	
 			foreach ( $step_fields as $index => $value ) {
-				self::set_field_priority( $fields, $index, $value['priority'] );
+				$priority = isset( $value['priority'] ) ? $value['priority'] : '';
+
+				self::set_field_priority( $fields, $index, $priority );
 			}
 		} else {
 			self::set_field_priority( $fields, 'billing_email', 5 );
@@ -793,14 +909,15 @@ class Flexify_Checkout_Core {
 
 
 	/**
-	 * Render Inline Errors
+	 * Render inline errors for validate fields
 	 *
-	 * @param string $field Field.
-	 * @param string $key Key.
-	 * @param array $args Arguments.
-	 * @param string $value Value.
-	 * @param string $country Country.
-	 *
+	 * @since 1.0.0
+	 * @version 3.2.0
+	 * @param string $field | Checkout field
+	 * @param string $key | Field name and ID
+	 * @param array $args | Array of field parameters (type, country, label, description, placeholder, maxlenght, required, autocomplete, id, class, label_class, input_class, return, options, custom_attributes, validate, default, autofocus)
+	 * @param string $value | Field value by default
+	 * @param string $country Country
 	 * @return string
 	 */
 	public static function render_inline_errors( $field = '', $key = '', $args = array(), $value = '', $country = '' ) {
@@ -868,11 +985,11 @@ class Flexify_Checkout_Core {
 				$message = sprintf( __( '%s não é um endereço de e-mail válido.', 'flexify-checkout-for-woocommerce' ), esc_html( $args['label'] ) );
 			}
 
-		/*	if ( 'tel' === $args['type'] && ! Extra_Checkout_Fields_For_Brazil_Formatting::is_cpf( $value ) ) {
+		/*	if ( 'billing_cpf' === $args['id'] && ! self::validate_cpf( $value ) ) {
 				$message = sprintf( __( 'O %s informado não é válido.', 'flexify-checkout-for-woocommerce' ), esc_html( $args['label'] ) );
 			}
 
-			if ( 'tel' === $args['type'] && ! Extra_Checkout_Fields_For_Brazil_Formatting::is_cnpj( $value ) ) {
+			if ( 'billing_cnpj' === $args['id'] && ! self::validate_cnpj( $value ) ) {
 				$message = sprintf( __( 'O %s informado não é válido.', 'flexify-checkout-for-woocommerce' ), esc_html( $args['label'] ) );
 			}*/
 
@@ -889,19 +1006,18 @@ class Flexify_Checkout_Core {
 			}
 		}
 
+
 		/**
 		 * Filters the Inline Error Message.
 		 *
+		 * @since 1.0.0
 		 * @param string $message Message.
 		 * @param string $field Field.
 		 * @param string $key Key.
 		 * @param array $args Arguments.
 		 * @param string $value Value.
 		 * @param string $country Country.
-		 *
 		 * @return string
-		 *
-		 * @since 1.0.0
 		 */
 		$message = apply_filters( 'flexify_custom_inline_message', $message, $field, $key, $args, $value, $country );
 
@@ -1040,6 +1156,25 @@ class Flexify_Checkout_Core {
 		}
 
 		return $classes;
+	}
+
+
+	/**
+	 * Get array index of checkout fields
+	 * 
+	 * @since 3.2.0
+	 * @return array
+	 */
+	public static function get_array_index_checkout_fields() {
+		$fields = get_option('flexify_checkout_step_fields', array());
+		$fields = maybe_unserialize( $fields );
+		$array_index = array();
+
+		foreach ( $fields as $index => $value ) {
+			$array_index[] = $index;
+		}
+
+		return $array_index;
 	}
 
 	
@@ -1365,6 +1500,82 @@ class Flexify_Checkout_Core {
 		}
 
 		return $available_gateways;
+	}
+
+
+	/**
+	 * Set default country on WooCommerce checkout
+	 * 
+	 * @since 3.2.0
+	 * @return string
+	 */
+	public function get_default_checkout_country() {
+		$fields = get_option('flexify_checkout_step_fields', array());
+		$fields = maybe_unserialize( $fields );
+		$country = isset( $fields['billing_country']['country'] ) ? $fields['billing_country']['country'] : '';
+
+		return $country;
+	}
+
+
+	/**
+	 * Checks if the CPF is valid
+	 *
+	 * @since 3.2.0
+	 * @param string $cpf | CPF to validate
+	 * @return bool
+	 */
+	public static function validate_cpf( $cpf ) {
+		$cpf = preg_replace( '/[^0-9]/', '', $cpf );
+
+		if ( 11 !== strlen( $cpf ) || preg_match( '/^([0-9])\1+$/', $cpf ) ) {
+			return false;
+		}
+
+		$digit = substr( $cpf, 0, 9 );
+
+		for ( $j = 10; $j <= 11; $j++ ) {
+			$sum = 0;
+
+			for ( $i = 0; $i < $j - 1; $i++ ) {
+				$sum += ( $j - $i ) * intval( $digit[ $i ] );
+			}
+
+			$summod11 = $sum % 11;
+			$digit[ $j - 1 ] = $summod11 < 2 ? 0 : 11 - $summod11;
+		}
+
+		return intval( $digit[9] ) === intval( $cpf[9] ) && intval( $digit[10] ) === intval( $cpf[10] );
+	}
+
+
+	/**
+	 * Checks if the CNPJ is valid
+	 *
+	 * @since 3.2.0
+	 * @param string $cnpj | CNPJ to validate
+	 * @return bool
+	 */
+	public static function validate_cnpj( $cnpj ) {
+		$cnpj = sprintf( '%014s', preg_replace( '{\D}', '', $cnpj ) );
+
+		if ( 14 !== strlen( $cnpj ) || 0 === intval( substr( $cnpj, -4 ) ) ) {
+			return false;
+		}
+
+		for ( $t = 11; $t < 13; ) {
+			for ( $d = 0, $p = 2, $c = $t; $c >= 0; $c--, ( $p < 9 ) ? $p++ : $p = 2 ) {
+				$d += $cnpj[ $c ] * $p;
+			}
+
+			$d = ( ( 10 * $d ) % 11 ) % 10;
+
+			if ( intval( $cnpj[ ++$t ] ) !== $d ) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 }
 

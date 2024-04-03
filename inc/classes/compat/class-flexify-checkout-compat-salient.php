@@ -7,7 +7,7 @@
  * @package Flexify_Checkout
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
+if ( ! defined('ABSPATH') ) {
 	exit; // Exit if accessed directly.
 }
 

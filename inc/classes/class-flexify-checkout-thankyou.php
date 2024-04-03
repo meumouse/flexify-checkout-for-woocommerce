@@ -1,7 +1,7 @@
 <?php
 
 // Exit if accessed directly.
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
 /**
  * Functions related to the Thank you page
@@ -479,6 +479,7 @@ class Flexify_Checkout_Thankyou {
 				<?php
 				if ( ! empty( $contact_page ) ) {
 					$contact_page_url = get_permalink( $contact_page );
+					
 					echo '<span class="flexift-ty-footer-contact-container">';
 						echo '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="M12 2C6.486 2 2 6.486 2 12v4.143C2 17.167 2.897 18 4 18h1a1 1 0 0 0 1-1v-5.143a1 1 0 0 0-1-1h-.908C4.648 6.987 7.978 4 12 4s7.352 2.987 7.908 6.857H19a1 1 0 0 0-1 1V18c0 1.103-.897 2-2 2h-2v-1h-4v3h6c2.206 0 4-1.794 4-4 1.103 0 2-.833 2-1.857V12c0-5.514-4.486-10-10-10z"></path></svg>';
 						echo sprintf( '<span class="flexify-ty-footer__contact-span">%s <a href="%s">%s</a></span>', esc_html__( 'Precisa de ajuda?', 'flexify-checkout-for-woocommerce' ), esc_url( $contact_page_url ), esc_html__( 'Entrar em contato', 'flexify-checkout-for-woocommerce' ) );
@@ -513,8 +514,7 @@ class Flexify_Checkout_Thankyou {
 		<div class="flexify-ty-downloads">
 			<div class="flexify-ty-box">
 				<?php
-				wc_get_template(
-					'order/order-downloads.php',
+				wc_get_template( 'order/order-downloads.php',
 					array(
 						'downloads' => $downloads,
 						'show_title' => true,

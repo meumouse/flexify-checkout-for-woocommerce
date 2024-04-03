@@ -1,7 +1,7 @@
 <?php
 
 // Exit if accessed directly.
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
 if ( class_exists( 'Flexify_Checkout_Compat_EpicJungle' ) ) {
 	return;

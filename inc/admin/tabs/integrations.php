@@ -1,7 +1,7 @@
 <?php
 
 // Exit if accessed directly.
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
 $inter_module_active = is_plugin_active( 'module-inter-bank-for-flexify-checkout/module-inter-bank-for-flexify-checkout.php' ); ?>
 
@@ -194,8 +194,9 @@ $inter_module_active = is_plugin_active( 'module-inter-bank-for-flexify-checkout
                   </th>
                   <td>
                      <button id="inter_bank_credencials_settings" class="btn btn-outline-primary"><?php echo esc_html__( 'Configurar credenciais', 'flexify-checkout-for-woocommerce' ) ?></button>
+                     
                      <div id="inter_bank_credendials_container">
-                        <div class="popup-content">
+                        <div class="popup-content popup-lg">
                            <div class="popup-header">
                               <h5 class="popup-title"><?php echo esc_html__( 'Informe suas credenciais para integração', 'flexify-checkout-for-woocommerce' ); ?></h5>
                               <button id="inter_bank_credendials_close" class="btn-close fs-lg" aria-label="Fechar"></button>
@@ -233,12 +234,21 @@ $inter_module_active = is_plugin_active( 'module-inter-bank-for-flexify-checkout
                                  </tr>
                                  <tr>
                                     <th>
+                                       <?php echo esc_html( 'Data de expiração da aplicação', 'flexify-checkout-for-woocommerce' ); ?>
+                                       <span class="flexify-checkout-description"><?php echo esc_html__( 'Informe a data de quando irá expirar as credenciais da aplicação, assim poderemos te avisar 7 dias antes das credenciais serem revogadas.', 'flexify-checkout-for-woocommerce' ) ?></span>
+                                    </th>
+                                    <td>
+                                       <input type="text" class="form-control input-control-wd-10 dateselect" name="inter_bank_expire_date" value="<?php echo self::get_setting( 'inter_bank_expire_date' ) ?>"/>
+                                    </td>
+                                 </tr>
+                                 <tr>
+                                    <th>
                                        <?php echo esc_html( 'Envie sua chave e certificado', 'flexify-checkout-for-woocommerce' ); ?>
                                        <span class="flexify-checkout-description"><?php echo esc_html__( 'Envie sua chave e certificado que você recebeu do banco Inter ao criar a aplicação.', 'flexify-checkout-for-woocommerce' ) ?></span>
                                     </th>
                                  </tr>
                               </table>
-                              <div class="drop-file-inter-bank">
+                              <div class="drop-file-inter-bank mb-2">
                                  <?php
                                  $crt_file = get_option('flexify_checkout_inter_bank_crt_file');
                                  $key_file = get_option('flexify_checkout_inter_bank_key_file');

@@ -1,7 +1,7 @@
 <?php
 
 // Exit if accessed directly.
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
 /**
  * Class for Handle AJAX events
@@ -19,10 +19,10 @@ class Flexify_Checkout_Ajax {
 	 * @return void
 	 */
 	public function __construct() {
-		add_action( 'wp_ajax_flexify_check_for_inline_errors', array( __CLASS__, 'check_for_inline_errors' ) );
-		add_action( 'wp_ajax_nopriv_flexify_check_for_inline_errors', array( __CLASS__, 'check_for_inline_errors' ) );
 		add_action( 'wp_ajax_flexify_check_for_inline_error', array( __CLASS__, 'check_for_inline_error' ) );
 		add_action( 'wp_ajax_nopriv_flexify_check_for_inline_error', array( __CLASS__, 'check_for_inline_error' ) );
+		add_action( 'wp_ajax_flexify_check_for_inline_errors', array( __CLASS__, 'check_for_inline_errors' ) );
+		add_action( 'wp_ajax_nopriv_flexify_check_for_inline_errors', array( __CLASS__, 'check_for_inline_errors' ) );
 		add_action( 'wp_ajax_flexify_login', array( __CLASS__, 'login' ) );
 		add_action( 'wp_ajax_nopriv_flexify_login', array( __CLASS__, 'login' ) );
 	}
@@ -39,11 +39,9 @@ class Flexify_Checkout_Ajax {
 		$messages = array();
 
 		foreach ( $fields as $field ) {
-			if ( ! is_array( $field ) ) {
-				continue;
-			}
+			
 
-			$messages[ $field['key'] ] = Flexify_Checkout_Core::render_inline_errors( '', $field['key'], $field['args'], $field['value'], $field['country'] );
+			$messages[ $field['key'] ] = Flexify_Checkout_Core::render_inline_errors( '', $field['id'], $field['key'], $field['args'], $field['value'], $field['country'] );
 		}
 
 		$messages['fragments'] = array(

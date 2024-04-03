@@ -1,7 +1,7 @@
 <?php
 
 // Exit if accessed directly.
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
 ?>
 
@@ -109,6 +109,67 @@ defined( 'ABSPATH' ) || exit;
                   <input type="checkbox" class="toggle-switch <?php echo ( ! self::license_valid() ) ? 'pro-version' : ''; ?>" id="enable_fill_address" name="enable_fill_address" value="yes" <?php checked( self::get_setting('enable_fill_address') === 'yes' && self::license_valid() ); ?> />
                </div>
             </td>
+            <td class="require-auto-fill-address">
+            <button id="auto_fill_address_api_trigger" class="btn btn-outline-primary ms-2"><?php echo esc_html__( 'Configurar API', 'flexify-checkout-for-woocommerce' ) ?></button>
+
+            <div class="auto-fill-address-api-container">
+               <div class="popup-content">
+                  <div class="popup-header">
+                     <h5 class="popup-title"><?php echo esc_html__('Configurar API de preenchimento de endereço', 'flexify-checkout-for-woocommerce') ?></h5>
+                     <button class="auto-fill-address-api-close btn-close fs-lg" aria-label="<?php esc_html( 'Fechar', 'flexify-checkout-for-woocommerce' ); ?>"></button>
+                  </div>
+                  <div class="popup-body">
+                     <table class="form-table">
+                        <tr>
+                           <th class="w-50">
+                              <?php echo esc_html__( 'Serviço de API para busca de endereço', 'flexify-checkout-for-woocommerce' ) ?>
+                              <span class="flexify-checkout-description"><?php echo esc_html__( 'Informe o endereço da API para obter o endereço do usuário através do seu CEP em formato JSON. Use a variável {postcode} para informar o CEP.', 'flexify-checkout-for-woocommerce' ) ?></span>
+                           </th>
+                           <td class="w-50">
+                              <input type="text" class="form-control" id="get_address_api_service" name="get_address_api_service" value="<?php echo self::get_setting( 'get_address_api_service') ?>"/>
+                           </td>
+                        </tr>
+                        <tr>
+                           <th class="w-50">
+                              <?php echo esc_html__( 'Propriedade de obtenção de endereço', 'flexify-checkout-for-woocommerce' ) ?>
+                              <span class="flexify-checkout-description"><?php echo esc_html__( 'Informe a propriedade para obter o endereço que é retornado pelo serviço da API.', 'flexify-checkout-for-woocommerce' ) ?></span>
+                           </th>
+                           <td class="w-50">
+                              <input type="text" class="form-control" id="api_auto_fill_address_param" name="api_auto_fill_address_param" value="<?php echo self::get_setting( 'api_auto_fill_address_param') ?>"/>
+                           </td>
+                        </tr>
+                        <tr>
+                           <th class="w-50">
+                              <?php echo esc_html__( 'Propriedade de obtenção do bairro', 'flexify-checkout-for-woocommerce' ) ?>
+                              <span class="flexify-checkout-description"><?php echo esc_html__( 'Informe a propriedade para obter o bairro que é retornado pelo serviço da API.', 'flexify-checkout-for-woocommerce' ) ?></span>
+                           </th>
+                           <td class="w-50">
+                              <input type="text" class="form-control" id="api_auto_fill_address_neightborhood_param" name="api_auto_fill_address_neightborhood_param" value="<?php echo self::get_setting( 'api_auto_fill_address_neightborhood_param') ?>"/>
+                           </td>
+                        </tr>
+                        <tr>
+                           <th class="w-50">
+                              <?php echo esc_html__( 'Propriedade de obtenção de cidade', 'flexify-checkout-for-woocommerce' ) ?>
+                              <span class="flexify-checkout-description"><?php echo esc_html__( 'Informe a propriedade para obter a cidade que é retornado pelo serviço da API.', 'flexify-checkout-for-woocommerce' ) ?></span>
+                           </th>
+                           <td class="w-50">
+                              <input type="text" class="form-control" id="api_auto_fill_address_city_param" name="api_auto_fill_address_city_param" value="<?php echo self::get_setting( 'api_auto_fill_address_city_param') ?>"/>
+                           </td>
+                        </tr>
+                        <tr>
+                           <th class="w-50">
+                              <?php echo esc_html__( 'Propriedade de obtenção de estado', 'flexify-checkout-for-woocommerce' ) ?>
+                              <span class="flexify-checkout-description"><?php echo esc_html__( 'Informe a propriedade para obter o estado que é retornado pelo serviço da API.', 'flexify-checkout-for-woocommerce' ) ?></span>
+                           </th>
+                           <td class="w-50">
+                              <input type="text" class="form-control" id="api_auto_fill_address_state_param" name="api_auto_fill_address_state_param" value="<?php echo self::get_setting( 'api_auto_fill_address_state_param') ?>"/>
+                           </td>
+                        </tr>
+                     </table>
+                  </div>
+               </div>
+            </div>
+         </td>
          </tr>
          <?php
       }
@@ -156,7 +217,7 @@ defined( 'ABSPATH' ) || exit;
                         </tr>
                         <tr>
                            <th class="w-50">
-                              <?php echo esc_html__( 'Propriedade de retorno de obtenção do IP', 'flexify-checkout-for-woocommerce' ) ?>
+                              <?php echo esc_html__( 'Propriedade de obtenção do IP', 'flexify-checkout-for-woocommerce' ) ?>
                               <span class="flexify-checkout-description"><?php echo esc_html__( 'Informe a propriedade para obter o IP que é retornado pelo serviço da API.', 'flexify-checkout-for-woocommerce' ) ?></span>
                            </th>
                            <td class="w-50">
@@ -174,7 +235,7 @@ defined( 'ABSPATH' ) || exit;
                         </tr>
                         <tr>
                            <th class="w-50">
-                              <?php echo esc_html__( 'Propriedade de retorno de obtenção do código do país', 'flexify-checkout-for-woocommerce' ) ?>
+                              <?php echo esc_html__( 'Propriedade de obtenção do código do país', 'flexify-checkout-for-woocommerce' ) ?>
                               <span class="flexify-checkout-description"><?php echo esc_html__( 'Informe a propriedade para obter o código do país que é retornado pelo serviço da API.', 'flexify-checkout-for-woocommerce' ) ?></span>
                            </th>
                            <td class="w-50">

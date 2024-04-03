@@ -1,13 +1,13 @@
 <?php
 
 // Exit if accessed directly.
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
 /**
  * Handle de steps
  *
  * @since 1.0.0
- * @version 1.7.0
+ * @version 3.2.0
  * @package MeuMouse.com
  */
 class Flexify_Checkout_Steps {
@@ -19,7 +19,7 @@ class Flexify_Checkout_Steps {
 	 */
 	public static function render_header( $show_breadcrumps = true ) {
 		/**
-		 * Before Header
+		 * Hook before header
 		 *
 		 * @since 1.0.0
 		 */
@@ -29,11 +29,11 @@ class Flexify_Checkout_Steps {
 			<div class="header__inner">
 				<?php
 				/**
-				 * Allows you to override the hyperlink on the header logo.
+				 * Allows you to override the hyperlink on the header logo
 				 *
 				 * @since 1.0.0
 				 */
-				$back_url = apply_filters( 'flexify_checkout_logo_href', esc_url( get_permalink( wc_get_page_id( 'shop' ) ) ) ); ?>
+				$back_url = apply_filters( 'flexify_checkout_logo_href', esc_url( Flexify_Checkout_Init::get_setting('logo_header_link') ) ); ?>
 
 				<a class="header__link" href="<?php echo esc_url( $back_url ); ?>">
 					<?php
@@ -261,9 +261,11 @@ class Flexify_Checkout_Steps {
 
 	
 	/**
-	 * Get Default Billing Address.
+	 * Get the billing address when page has not been defined
 	 *
-	 * Get the billing address when page has not been defined.
+	 * @since 1.0.0
+	 * @version 3.2.0
+	 * @return void
 	 */
 	public static function render_default_customer_details() {
 		$checkout = WC()->checkout;
@@ -276,11 +278,17 @@ class Flexify_Checkout_Steps {
 
 		// @todo: this will be a title block.
 
-		$has_login_btn_class = ( ! is_user_logged_in() && 'no' !== get_option( 'woocommerce_enable_checkout_login_reminder' ) ) ? 'flexify-heading--has-login-btn' : '';
-		?>
+		$has_login_btn_class = ( ! is_user_logged_in() && 'no' !== get_option( 'woocommerce_enable_checkout_login_reminder' ) ) ? 'flexify-heading--has-login-btn' : ''; ?>
 
 		<h2 class="flexify-heading flexify-heading--customer-details  <?php echo esc_attr( $has_login_btn_class ); ?>"><?php echo esc_html__( 'Informações do cliente', 'flexify-checkout-for-woocommerce' ); ?></h2>
 		<?php
+
+		/**
+		 * Hook before fields on step 1
+		 * 
+		 * @since 3.2.0
+		 */
+		do_action('flexify_checkout_before_fields_step_1');
 
 		if ( 'classic' !== $theme ) {
 			// @todo this needs turning into a dynamic block when Gutenberg integration is built.
@@ -292,8 +300,22 @@ class Flexify_Checkout_Steps {
 			woocommerce_form_field( $key, $field, $checkout->get_value( $key ) );
 		};
 
+		/**
+		 * Hook after fields on step 1
+		 * 
+		 * @since 3.2.0
+		 */
+		do_action('flexify_checkout_after_fields_step_1');
+
 		// @todo this needs turning into a dynamic block when Gutenberg integration is built.
 		self::render_account_form( $checkout );
+
+		/**
+		 * Hook after account form on step 1
+		 * 
+		 * @since 3.2.0
+		 */
+		do_action('flexify_checkout_after_account_form_step_1');
 	}
 
 
@@ -345,10 +367,24 @@ class Flexify_Checkout_Steps {
 					<?php } ?>
 					<?php
 
+					/**
+					 * Hook before fields on step 2
+					 * 
+					 * @since 3.2.0
+					 */
+					do_action('flexify_checkout_before_fields_step_2');
+
 					// @todo dynamic block needed for each type of Woo field, plus additional custom fields.
 					foreach ( Flexify_Checkout_Helpers::get_billing_fields( $checkout ) as $key => $field ) {
 						woocommerce_form_field( $key, $field, $checkout->get_value( $key ) );
 					};
+
+					/**
+					 * Hook after fields on step 2
+					 * 
+					 * @since 3.2.0
+					 */
+					do_action('flexify_checkout_after_fields_step_2');
 
 					?>
 					<div class="clear"></div>
@@ -401,11 +437,26 @@ class Flexify_Checkout_Steps {
 			<?php endif; ?>
 		</div>
 
+		<?php
+		/**
+		 * Hook before shipping methods on step 2
+		 * 
+		 * @since 3.2.0
+		 */
+		do_action('flexify_checkout_before_shipping_methods_step_2'); ?>
+
 		<table class="flexify-checkout__shipping-table">
 			<tbody></tbody>
 		</table>
 
 		<?php
+
+		/**
+		 * Hook after shipping methods on step 2
+		 * 
+		 * @since 3.2.0
+		 */
+		do_action('flexify_checkout_after_shipping_methods_step_2');
 
 		/**
 		 * Enable order notes field
@@ -454,10 +505,13 @@ class Flexify_Checkout_Steps {
 		}
 	}
 
+
 	/**
-	 * Get Payment Details.
-	 *
 	 * Get the payment details when page has not been defined.
+	 *
+	 * @since 1.0.0
+	 * @version 3.2.0
+	 * @return void
 	 */
 	public static function render_payment_details() {
 		$is_modern_theme = Flexify_Checkout_Helpers::is_modern_theme();
@@ -515,8 +569,12 @@ class Flexify_Checkout_Steps {
 		do_action( 'woocommerce_checkout_after_order_review' );
 	}
 
+
 	/**
-	 * Render Login Button.
+	 * Render Login Button
+	 * 
+	 * @since 1.0.0
+	 * @return void
 	 */
 	public static function render_login_button() {
 		if ( is_user_logged_in() || 'no' === get_option( 'woocommerce_enable_checkout_login_reminder' ) ) {
@@ -676,6 +734,7 @@ class Flexify_Checkout_Steps {
 		<?php
 	}
 
+
 	/**
 	 * Render Address Search.
 	 */
@@ -783,7 +842,7 @@ class Flexify_Checkout_Steps {
 	
 
 	/**
-	 * Print Back button.
+	 * Print back button
 	 *
 	 * @since 1.0.0
 	 * @param array $step_slug

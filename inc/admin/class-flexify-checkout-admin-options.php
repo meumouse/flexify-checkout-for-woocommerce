@@ -1,7 +1,7 @@
 <?php
 
 // Exit if accessed directly.
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
 class Flexify_Checkout_Admin_Options extends Flexify_Checkout_Init {
 
@@ -28,6 +28,12 @@ class Flexify_Checkout_Admin_Options extends Flexify_Checkout_Init {
 
     // install Inter bank module in AJAX
     add_action( 'wp_ajax_install_inter_bank_module', array( $this, 'install_inter_bank_module_callback' ) );
+
+    // remove checkout fields on click delete button
+    add_action( 'wp_ajax_remove_checkout_fields', array( $this, 'remove_checkout_fields_callback' ) );
+
+    // processing new field
+    add_action( 'wp_ajax_add_new_field_to_checkout', array( $this, 'add_new_field_to_checkout_callback' ) );
   }
 
   /**
@@ -94,6 +100,7 @@ class Flexify_Checkout_Admin_Options extends Flexify_Checkout_Init {
         $options['enable_thankyou_page_template'] = isset( $form_data['enable_thankyou_page_template'] ) ? 'yes' : 'no';
         $options['inter_bank_debug_mode'] = isset( $form_data['inter_bank_debug_mode'] ) ? 'yes' : 'no';
         $options['enable_unset_wcbcf_fields_not_brazil'] = isset( $form_data['enable_unset_wcbcf_fields_not_brazil'] ) && self::license_valid() ? 'yes' : 'no';
+        $options['enable_manage_fields'] = isset( $form_data['enable_manage_fields'] ) && self::license_valid() ? 'yes' : 'no';
 
         // check if form data exists "checkout_step" name and is array
         if ( isset( $form_data['checkout_step'] ) && is_array( $form_data['checkout_step'] ) ) {
@@ -172,6 +179,90 @@ class Flexify_Checkout_Admin_Options extends Flexify_Checkout_Init {
 
 
   /**
+   * Remove checkout fields
+   * 
+   * @since 3.2.0
+   * @return void
+   */
+  public function remove_checkout_fields_callback() {
+    if ( isset( $_POST['field_to_remove'] ) ) {
+      $field_to_remove = sanitize_text_field( $_POST['field_to_remove'] );
+ 
+      // Get the current fields options
+      $get_fields = get_option('flexify_checkout_step_fields', array());
+      $get_fields = maybe_unserialize( $get_fields );
+ 
+      // Remove the field with the specified index
+      if ( isset( $get_fields[$field_to_remove] ) ) {
+        unset( $get_fields[$field_to_remove] );
+ 
+        // Update the fields options
+        update_option('flexify_checkout_step_fields', maybe_serialize( $get_fields ));
+      }
+ 
+      $response = array(
+        'status' => 'success',
+        'field' => $field_to_remove,
+      );
+
+      echo wp_json_encode( $response ); // Send JSON response
+    }
+ 
+    wp_die();
+  }
+
+
+  /**
+   * Processing form on add new field to checkout
+   * 
+   * @since 3.2.0
+   * @return void
+   */
+  public function add_new_field_to_checkout_callback() {
+    if ( isset( $_POST['get_field_id'] ) ) {
+      $field_id = sanitize_text_field( $_POST['get_field_id'] );
+
+      // Get the current fields options
+      $get_fields = get_option('flexify_checkout_step_fields', array());
+      $get_fields = maybe_unserialize( $get_fields );
+
+      if ( ! isset( $get_fields[$field_id] ) ) {
+        $new_field = array(
+          $field_id => array(
+            'id' => $field_id,
+            'type' => sanitize_text_field( $_POST['get_field_type'] ),
+            'label' => sanitize_text_field( $_POST['get_field_label'] ),
+            'position' => sanitize_text_field( $_POST['get_field_position'] ),
+            'classes' => sanitize_text_field( $_POST['get_field_classes'] ),
+            'label_classes' => sanitize_text_field( $_POST['get_field_label_classes'] ),
+            'required' => sanitize_text_field( $_POST['get_field_required'] ),
+            'priority' => sanitize_text_field( $_POST['get_field_priority'] ),
+            'source' => sanitize_text_field( $_POST['get_field_source'] ),
+            'enabled' => 'yes',
+            'step' => sanitize_text_field( $_POST['get_field_step'] ),
+            'options' => isset( $_POST['get_field_options_for_select'] ) ? $_POST['get_field_options_for_select'] : null,
+          )
+        );
+
+        // merge new field with existing fields
+        $new_field = array_merge( $get_fields, $new_field );
+
+        // Update the fields options
+        update_option('flexify_checkout_step_fields', maybe_serialize( $new_field ));
+      }
+
+      $response = array(
+        'status' => 'success',
+      );
+
+      echo wp_send_json( $response ); // Send JSON response
+    }
+
+    wp_die();
+  }
+
+
+  /**
    * Processing files uploaded for Inter Bank module
    * 
    * @since 2.3.0
@@ -184,14 +275,14 @@ class Flexify_Checkout_Admin_Options extends Flexify_Checkout_Init {
         $upload_path = $uploads_dir['basedir'] . '/flexify_checkout_integrations/';
 
         // Checks if the file was sent
-        if (!empty($_FILES["file"])) {
+        if ( !empty( $_FILES["file"] ) ) {
             $file = $_FILES["file"];
             $type = $_POST["type"];
 
             // Checks if it is a .crt or .key file
-            if (($type === "dropzone-crt" && pathinfo($file["name"], PATHINFO_EXTENSION) === "crt") || ($type === "dropzone-key" && pathinfo($file["name"], PATHINFO_EXTENSION) === "key")) {
+            if ( ( $type === "dropzone-crt" && pathinfo( $file["name"], PATHINFO_EXTENSION ) === "crt") || ( $type === "dropzone-key" && pathinfo( $file["name"], PATHINFO_EXTENSION ) === "key" ) ) {
                 $file_tmp_name = $file["tmp_name"];
-                $new_file_name = generate_hash(20) . ($type === "dropzone-crt" ? ".crt" : ".key");
+                $new_file_name = generate_hash(20) . ( $type === "dropzone-crt" ? ".crt" : ".key" );
 
                 move_uploaded_file( $file_tmp_name, $upload_path . $new_file_name );
 
@@ -266,10 +357,11 @@ class Flexify_Checkout_Admin_Options extends Flexify_Checkout_Init {
     }
 
     if ( isset( $_POST['active_inter_bank_module'] ) ) {
-      require_once ABSPATH . 'wp-admin/includes/plugin.php';
+      if ( !function_exists( 'activate_plugin' ) ) {
+        include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+      }
 
       $plugin_path = 'module-inter-bank-for-flexify-checkout/module-inter-bank-for-flexify-checkout.php';
-
       $activate = activate_plugin( $plugin_path );
 
       if ( false === $activate ) {

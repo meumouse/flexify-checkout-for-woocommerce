@@ -1,7 +1,7 @@
 <?php
 
 // Exit if accessed directly.
-defined( 'ABSPATH' ) || exit; ?>
+defined('ABSPATH') || exit; ?>
 
 <div id="fields" class="nav-content">
     <table class="form-table">
@@ -82,7 +82,7 @@ defined( 'ABSPATH' ) || exit; ?>
         <tr class="container-separator"></tr>
 
         <tr class="w-100">
-            <th class="w-100">
+            <th>
                 <?php echo esc_html__( 'Gerencie os campos e etapas da finalização de compras', 'flexify-checkout-for-woocommerce' );
                 
                 if ( ! self::license_valid() ) {
@@ -96,6 +96,11 @@ defined( 'ABSPATH' ) || exit; ?>
                 ?>
                 <span class="flexify-checkout-description"><?php echo esc_html__( 'Arraste e solte o campo para reordenar ou mudar o campo de etapa.', 'flexify-checkout-for-woocommerce' ) ?></span>
             </th>
+            <td>
+                <div class="form-check form-switch <?php echo ( ! self::license_valid() ) ? 'require-pro' : ''; ?>">
+                <input type="checkbox" class="toggle-switch <?php echo ( ! self::license_valid() ) ? 'pro-version' : ''; ?>" id="enable_manage_fields" name="enable_manage_fields" value="yes" <?php checked( self::get_setting('enable_manage_fields') === 'yes' && self::license_valid() ); ?> />
+                </div>
+            </td>
         </tr>
         <tr class="step-checkout-fields-container align-items-start mt-4">
             <?php
@@ -113,19 +118,32 @@ defined( 'ABSPATH' ) || exit; ?>
                         $current_field_step_label = isset( $fields[$index]['label'] ) ? $fields[$index]['label'] : '';
                         $current_field_step_classes = isset( $fields[$index]['classes'] ) ? $fields[$index]['classes'] : '';
                         $current_field_step_label_classes = isset( $fields[$index]['label_classes'] ) ? $fields[$index]['label_classes'] : '';
+                        $current_field_step_country = isset( $fields[$index]['country'] ) ? $fields[$index]['country'] : 'none';
                         
                         // skip field if is different of step 1
-                        if ( $value['step'] !== '1' ) {
+                        if ( isset( $value['step'] ) && $value['step'] !== '1' ) {
                             continue;
                         }
                         ?>
 
-                        <div id="<?php echo esc_attr( $index ); ?>" class="field-item <?php echo isset( $value['enabled'] ) && $value['enabled'] !== 'yes' ? 'inactive' : ''; echo ( ! self::license_valid() ) ? 'require-pro' : ''; ?>">
-                            <input type="hidden" class="change-priority" name="checkout_step[<?php echo $index; ?>][priority]" value="<?php echo esc_html( $value['priority'] ) ?>">
-                            <input type="hidden" class="change-step" name="checkout_step[<?php echo $index; ?>][step]" value="<?php echo esc_attr( $value['step'] ) ?>">
+                        <div id="<?php echo esc_attr( $index ); ?>" class="field-item d-flex align-items-center justify-content-between <?php echo isset( $value['enabled'] ) && $value['enabled'] !== 'yes' && $index !== 'billing_country' ? 'inactive' : ''; echo ( ! self::license_valid() ) ? 'require-pro' : ''; ?>">
+                            <input type="hidden" class="change-priority" name="checkout_step[<?php echo $index; ?>][priority]" value="<?php echo isset( $value['priority'] ) ? esc_attr( $value['priority'] ) : ''; ?>">
+                            <input type="hidden" class="change-step" name="checkout_step[<?php echo $index; ?>][step]" value="<?php echo isset( $value['step'] ) ? esc_attr( $value['step'] ) : ''; ?>">
 
                             <span class="field-name"><?php echo esc_html( $value['label'] ) ?></span>
-                            <button class="btn btn-sm btn-outline-primary ms-auto rounded-3 <?php echo ( ! self::license_valid() ) ? 'require-pro' : 'flexify-checkout-step-trigger'; ?>" data-trigger="<?php echo esc_html( $index ) ?>"><?php echo esc_html__( 'Editar campo', 'flexify-checkout-for-woocommerce' ) ?></button>
+
+                            <div class="d-flex justify-content-end">
+                                <button class="btn btn-sm btn-outline-primary ms-auto rounded-3 <?php echo ( ! self::license_valid() ) ? 'require-pro' : 'flexify-checkout-step-trigger'; ?>" data-trigger="<?php echo esc_html( $index ) ?>"><?php echo esc_html__( 'Editar', 'flexify-checkout-for-woocommerce' ) ?></button>
+                                <?php
+                                    if ( isset( $value['source'] ) && $value['source'] !== 'native' ) {
+                                        ?>
+                                        <button class="btn btn-outline-danger btn-icon ms-3 rounded-3 exclude-field" data-exclude="<?php echo esc_html( $index ) ?>">
+                                            <svg class="icon icon-danger" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15 2H9c-1.103 0-2 .897-2 2v2H3v2h2v12c0 1.103.897 2 2 2h10c1.103 0 2-.897 2-2V8h2V6h-4V4c0-1.103-.897-2-2-2zM9 4h6v2H9V4zm8 16H7V8h10v12z"></path></svg>
+                                        </button>
+                                        <?php
+                                    }
+                                ?>
+                            </div>
 
                             <div class="flexify-checkout-step-container">
                                 <div class="popup-content">
@@ -136,7 +154,7 @@ defined( 'ABSPATH' ) || exit; ?>
                                     <div class="popup-body">
                                         <table class="form-table">
                                             <?php
-                                                if ( isset( $value['source'] ) && $value['source'] === 'native' && $index !== 'billing_country' || isset( $value['source'] ) && $value['source'] === 'plugin' && $index !== 'billing_country' ) {
+                                                if ( $index !== 'billing_country' ) {
                                                     ?>
                                                     <tr>
                                                         <th class="w-50">
@@ -145,7 +163,7 @@ defined( 'ABSPATH' ) || exit; ?>
                                                         </th>
                                                         <td class="w-50">
                                                             <div class="form-check form-switch">
-                                                                <input type="checkbox" class="toggle-switch toggle-active-tab" name="checkout_step[<?php echo $index; ?>][enabled]" value="yes" <?php checked( $fields[$index]['enabled'] === 'yes' ); ?> />
+                                                                <input type="checkbox" class="toggle-switch toggle-active-field" name="checkout_step[<?php echo $index; ?>][enabled]" value="yes" <?php checked( $fields[$index]['enabled'] === 'yes' ); ?> />
                                                             </div>
                                                         </td>
                                                     </tr>
@@ -156,12 +174,12 @@ defined( 'ABSPATH' ) || exit; ?>
                                                         </th>
                                                         <td class="w-50">
                                                             <div class="form-check form-switch">
-                                                                <input type="checkbox" class="toggle-switch toggle-active-tab" name="checkout_step[<?php echo $index; ?>][required]" value="yes" <?php checked( $fields[$index]['required'] === 'yes' ); ?> />
+                                                                <input type="checkbox" class="toggle-switch toggle-active-field" name="checkout_step[<?php echo $index; ?>][required]" value="yes" <?php checked( $fields[$index]['required'] === 'yes' ); ?> />
                                                             </div>
                                                         </td>
                                                     </tr>
                                                 <?php
-                                                } elseif ( $index === 'billing_country' ) {
+                                                } else {
                                                     ?>
                                                     <tr>
                                                         <th class="w-50">
@@ -170,8 +188,27 @@ defined( 'ABSPATH' ) || exit; ?>
                                                         </th>
                                                         <td class="w-50">
                                                             <div class="form-check form-switch">
-                                                                <input type="checkbox" class="toggle-switch toggle-active-tab" name="checkout_step[<?php echo $index; ?>][enabled]" value="yes" disabled <?php checked( true ); ?> />
+                                                                <input type="checkbox" class="toggle-switch toggle-active-field" name="checkout_step[<?php echo $index; ?>][enabled]" value="yes" disabled <?php checked( true ); ?> />
                                                             </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="w-50">
+                                                            <?php echo esc_html__( 'Definir país padrão', 'flexify-checkout-for-woocommerce' ) ?>
+                                                            <span class="flexify-checkout-description"><?php echo esc_html__('Define a posição deste campo na finalização de compras.', 'flexify-checkout-for-woocommerce' ) ?></span>
+                                                        </th>
+                                                        <td class="w-50">
+                                                            <select class="form-select" name="checkout_step[<?php echo $index; ?>][country]">
+                                                                <?php
+                                                                include_once FLEXIFY_CHECKOUT_PATH . 'inc/admin/tabs/parts/iso3166.php';
+
+                                                                foreach ( $country_codes as $index => $value ) {
+                                                                    ?>
+                                                                    <option value="<?php echo esc_attr( $index ) ?>" <?php echo $current_field_step_country === esc_attr( $index ) ? "selected=selected" : ""; ?>><?php echo $value ?></option>
+                                                                    <?php
+                                                                }
+                                                                ?>
+                                                            </select>
                                                         </td>
                                                     </tr>
                                                     <?php
@@ -189,7 +226,7 @@ defined( 'ABSPATH' ) || exit; ?>
                                             <tr>
                                                 <th class="w-50">
                                                     <?php echo esc_html__( 'Posição do campo', 'flexify-checkout-for-woocommerce' ) ?>
-                                                    <span class="flexify-checkout-description"><?php echo esc_html__('Define o endpoint que será usado como link permanente para esta guia.', 'flexify-checkout-for-woocommerce' ) ?></span>
+                                                    <span class="flexify-checkout-description"><?php echo esc_html__('Define a posição deste campo na finalização de compras.', 'flexify-checkout-for-woocommerce' ) ?></span>
                                                 </th>
                                                 <td class="w-50">
                                                     <select class="form-select" name="checkout_step[<?php echo $index; ?>][position]">
@@ -201,7 +238,7 @@ defined( 'ABSPATH' ) || exit; ?>
                                             </tr>
                                             <tr>
                                                 <th class="w-50">
-                                                    <?php echo esc_html__( 'Classe CSS personalizada do campo', 'flexify-checkout-for-woocommerce' ) ?>
+                                                    <?php echo esc_html__( 'Classe CSS personalizada do campo (Opcional)', 'flexify-checkout-for-woocommerce' ) ?>
                                                     <span class="flexify-checkout-description"><?php echo esc_html__('Informe a(s) classe(s) CSS personalizadas para este campo. (Opcional)', 'flexify-checkout-for-woocommerce' ) ?></span>
                                                 </th>
                                                 <td class="w-50">
@@ -210,7 +247,7 @@ defined( 'ABSPATH' ) || exit; ?>
                                             </tr>
                                             <tr>
                                                 <th class="w-50">
-                                                    <?php echo esc_html__( 'Classe CSS personalizada do título', 'flexify-checkout-for-woocommerce' ) ?>
+                                                    <?php echo esc_html__( 'Classe CSS personalizada do título (Opcional)', 'flexify-checkout-for-woocommerce' ) ?>
                                                     <span class="flexify-checkout-description"><?php echo esc_html__('Informe a(s) classe(s) CSS personalizadas para o título (label) deste campo. (Opcional)', 'flexify-checkout-for-woocommerce' ) ?></span>
                                                 </th>
                                                 <td class="w-50">
@@ -238,19 +275,32 @@ defined( 'ABSPATH' ) || exit; ?>
                         $current_field_step_label = isset( $fields[$index]['label'] ) ? $fields[$index]['label'] : '';
                         $current_field_step_classes = isset( $fields[$index]['classes'] ) ? $fields[$index]['classes'] : '';
                         $current_field_step_label_classes = isset( $fields[$index]['label_classes'] ) ? $fields[$index]['label_classes'] : '';
-                        
+                        $current_field_step_country = isset( $fields[$index]['country'] ) ? $fields[$index]['country'] : 'none';
+
                         // skip field if is different of step 2
-                        if ( $value['step'] !== '2' ) {
+                        if ( isset( $value['step'] ) && $value['step'] !== '2' ) {
                             continue;
                         }
                         ?>
 
-                        <div id="<?php echo esc_attr( $index ); ?>" class="field-item <?php echo isset( $value['enabled'] ) && $value['enabled'] !== 'yes' ? 'inactive' : ''; echo ( ! self::license_valid() ) ? 'require-pro' : ''; ?>">
-                            <input type="hidden" class="change-priority" name="checkout_step[<?php echo $index; ?>][priority]" value="<?php echo esc_attr( $value['priority'] ) ?>">
-                            <input type="hidden" class="change-step" name="checkout_step[<?php echo $index; ?>][step]" value="<?php echo esc_attr( $value['step'] ) ?>">
-                        
+                        <div id="<?php echo esc_attr( $index ); ?>" class="field-item <?php echo isset( $value['enabled'] ) && $value['enabled'] !== 'yes' && $index !== 'billing_country' ? 'inactive' : ''; echo ( ! self::license_valid() ) ? 'require-pro' : ''; ?>">
+                        <input type="hidden" class="change-priority" name="checkout_step[<?php echo $index; ?>][priority]" value="<?php echo isset( $value['priority'] ) ? esc_attr( $value['priority'] ) : ''; ?>">
+                            <input type="hidden" class="change-step" name="checkout_step[<?php echo $index; ?>][step]" value="<?php echo isset( $value['step'] ) ? esc_attr( $value['step'] ) : ''; ?>">
+
                             <span class="field-name"><?php echo esc_html( $value['label'] ) ?></span>
-                            <button class="btn btn-sm btn-outline-primary ms-auto rounded-3 <?php echo ( ! self::license_valid() ) ? 'require-pro' : 'flexify-checkout-step-trigger'; ?>" data-trigger="<?php echo esc_html( $index ) ?>"><?php echo esc_html__( 'Editar campo', 'flexify-checkout-for-woocommerce' ) ?></button>
+                            
+                            <div class="d-flex justify-content-end">
+                                <button class="btn btn-sm btn-outline-primary ms-auto rounded-3 <?php echo ( ! self::license_valid() ) ? 'require-pro' : 'flexify-checkout-step-trigger'; ?>" data-trigger="<?php echo esc_html( $index ) ?>"><?php echo esc_html__( 'Editar', 'flexify-checkout-for-woocommerce' ) ?></button>
+                                <?php
+                                    if ( isset( $value['source'] ) && $value['source'] !== 'native' ) {
+                                        ?>
+                                        <button class="btn btn-outline-danger btn-icon ms-3 rounded-3 exclude-field" data-exclude="<?php echo esc_html( $index ) ?>">
+                                            <svg class="icon icon-danger" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15 2H9c-1.103 0-2 .897-2 2v2H3v2h2v12c0 1.103.897 2 2 2h10c1.103 0 2-.897 2-2V8h2V6h-4V4c0-1.103-.897-2-2-2zM9 4h6v2H9V4zm8 16H7V8h10v12z"></path></svg>
+                                        </button>
+                                        <?php
+                                    }
+                                ?>
+                            </div>
 
                             <div class="flexify-checkout-step-container">
                                 <div class="popup-content">
@@ -261,7 +311,7 @@ defined( 'ABSPATH' ) || exit; ?>
                                     <div class="popup-body">
                                         <table class="form-table">
                                             <?php
-                                                if ( isset( $value['source'] ) && $value['source'] === 'native' && $index !== 'billing_country' || isset( $value['source'] ) && $value['source'] === 'plugin' && ! $index !== 'billing_country' ) {
+                                                if ( $index !== 'billing_country' ) {
                                                     ?>
                                                     <tr>
                                                         <th class="w-50">
@@ -270,7 +320,7 @@ defined( 'ABSPATH' ) || exit; ?>
                                                         </th>
                                                         <td class="w-50">
                                                             <div class="form-check form-switch">
-                                                                <input type="checkbox" class="toggle-switch toggle-active-tab" name="checkout_step[<?php echo $index; ?>][enabled]" value="yes" <?php checked( $fields[$index]['enabled'] === 'yes' ); ?> />
+                                                                <input type="checkbox" class="toggle-switch toggle-active-field" name="checkout_step[<?php echo $index; ?>][enabled]" value="yes" <?php checked( $fields[$index]['enabled'] === 'yes' ); ?> />
                                                             </div>
                                                         </td>
                                                     </tr>
@@ -281,12 +331,12 @@ defined( 'ABSPATH' ) || exit; ?>
                                                         </th>
                                                         <td class="w-50">
                                                             <div class="form-check form-switch">
-                                                                <input type="checkbox" class="toggle-switch toggle-active-tab" name="checkout_step[<?php echo $index; ?>][required]" value="yes" <?php checked( $fields[$index]['required'] === 'yes' ); ?> />
+                                                                <input type="checkbox" class="toggle-switch toggle-active-field" name="checkout_step[<?php echo $index; ?>][required]" value="yes" <?php checked( $fields[$index]['required'] === 'yes' ); ?> />
                                                             </div>
                                                         </td>
                                                     </tr>
                                                     <?php
-                                                } elseif ( $index === 'billing_country' ) {
+                                                } else{
                                                     ?>
                                                     <tr>
                                                         <th class="w-50">
@@ -295,8 +345,27 @@ defined( 'ABSPATH' ) || exit; ?>
                                                         </th>
                                                         <td class="w-50">
                                                             <div class="form-check form-switch">
-                                                                <input type="checkbox" class="toggle-switch toggle-active-tab" name="checkout_step[<?php echo $index; ?>][enabled]" value="yes" disabled <?php checked( true ); ?> />
+                                                                <input type="checkbox" class="toggle-switch toggle-active-field" name="checkout_step[<?php echo $index; ?>][enabled]" value="yes" disabled <?php checked( true ); ?> />
                                                             </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="w-50">
+                                                            <?php echo esc_html__( 'Definir país padrão', 'flexify-checkout-for-woocommerce' ) ?>
+                                                            <span class="flexify-checkout-description"><?php echo esc_html__('Define a posição deste campo na finalização de compras.', 'flexify-checkout-for-woocommerce' ) ?></span>
+                                                        </th>
+                                                        <td class="w-50">
+                                                            <select class="form-select" name="checkout_step[<?php echo $index; ?>][country]">
+                                                                <?php
+                                                                include_once FLEXIFY_CHECKOUT_PATH . 'inc/admin/tabs/parts/iso3166.php';
+
+                                                                foreach ( $country_codes as $index => $value ) {
+                                                                    ?>
+                                                                    <option value="<?php echo esc_attr( $index ) ?>" <?php echo $current_field_step_country === esc_attr( $index ) ? "selected=selected" : ""; ?>><?php echo $value ?></option>
+                                                                    <?php
+                                                                }
+                                                                ?>
+                                                            </select>
                                                         </td>
                                                     </tr>
                                                     <?php
@@ -354,54 +423,14 @@ defined( 'ABSPATH' ) || exit; ?>
                 </div>
             </td>
         </tr>
-        <tr class="mt-4">
+        <tr class="mt-4 step-checkout-fields-container">
             <td>
-            <button id="add_new_checkout_fields_trigger" class="btn btn-primary d-flex align-items-center" disabled>
+                <button id="add_new_checkout_fields_trigger" class="btn btn-primary d-flex align-items-center">
                     <svg class="icon icon-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 11h-6V5h-2v6H5v2h6v6h2v-6h6z"></path></svg>
                     <?php echo esc_html__('Adicionar novos campos', 'flexify-checkout-for-woocommerce' ) ?>
                 </button>
 
-                <div class="add-new-checkout-fields-container">
-                    <div class="popup-content">
-                        <div class="popup-header">
-                            <h5 class="popup-title"><?php echo esc_html__('Adicionar novo campo para finalização de compras', 'flexify-checkout-for-woocommerce') ?></h5>
-                            <button class="add-new-checkout-fields-close btn-close fs-lg" aria-label="<?php esc_html( 'Fechar', 'flexify-checkout-for-woocommerce' ); ?>"></button>
-                        </div>
-                        <div class="popup-body">
-                            <table class="form-table">
-                                <tr>
-                                    <th class="w-50">
-                                        <?php echo esc_html__( 'Nome e ID do campo', 'flexify-checkout-for-woocommerce' ) ?>
-                                        <span class="flexify-checkout-description"><?php echo esc_html__( 'Informe o nome que será usado no campo em letras maiusculas, usando underline no lugar dos espaços e após o prefixo "billing_".', 'flexify-checkout-for-woocommerce' ) ?></span>
-                                    </th>
-                                    <td class="w-50">
-                                        <div class="input-group">
-                                            <span class="w-fit input-group-text fs-lg"><?php echo esc_html__( 'billing_', 'flexify-checkout-for-woocommerce' ) ?></span>
-                                            <input type="text" class="form-control" id="checkout_field_name" name="checkout_field_name" value=""/>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th class="w-50">
-                                        <?php echo esc_html__( 'Tipo do campo', 'flexify-checkout-for-woocommerce' ) ?>
-                                        <span class="flexify-checkout-description"><?php echo esc_html__( 'Selecione o tipo do campo que será incluído na finalização de compras.', 'flexify-checkout-for-woocommerce' ) ?></span>
-                                    </th>
-                                    <td class="w-50">
-                                        <select name="checkout_field_type" class="form-select">
-                                            <option value="text"><?php echo esc_html__( 'Texto', 'flexify-checkout-for-woocommerce' ) ?></option>
-                                        </select>
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </td>
-            <td>
-                <span class="bg-translucent-warning text-warning py-2 px-3 rounded-2 d-flex align-items-center">
-                    <svg class="icon icon-warning me-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8z"></path><path d="M11 11h2v6h-2zm0-4h2v2h-2z"></path></svg>
-                    <?php echo esc_html__('Este recurso será implementado em breve.', 'flexify-checkout-for-woocommerce' ) ?>
-                </span>
+                <?php include_once FLEXIFY_CHECKOUT_PATH . 'inc/admin/tabs/parts/new-fields.php'; ?>
             </td>
         </tr>
     </table>

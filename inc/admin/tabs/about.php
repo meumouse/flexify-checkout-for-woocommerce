@@ -1,7 +1,7 @@
 <?php
 
 // Exit if accessed directly.
-defined( 'ABSPATH' ) || exit; ?>
+defined('ABSPATH') || exit; ?>
 
 <div id="about" class="nav-content">
   <table class="form-table">
@@ -127,7 +127,10 @@ defined( 'ABSPATH' ) || exit; ?>
 				<span><?php esc_html_e( 'Versão do Flexify Checkout para WooCommerce:', 'flexify-checkout-for-woocommerce' ); ?></span>
 				<span class="ms-2">
 					<span class="badge bg-translucent-success">
-						<?php echo esc_html( FLEXIFY_CHECKOUT_VERSION ); ?>
+						<?php
+						$license_status = ( self::license_valid() ) ? __( 'Pro', 'flexify-checkout-for-woocommerce' ) : '';
+
+						echo sprintf( esc_html( FLEXIFY_CHECKOUT_VERSION . ' %s' ), $license_status ); ?>
 					</span>
 				</span>
 			</div>

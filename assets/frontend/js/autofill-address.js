@@ -1,62 +1,80 @@
 /**
- * Fill address on enter postcode
+ * Auto fill address on enter postcode
  * 
  * @since 1.0.0
+ * @version 3.2.0
  * @package MeuMouse.com
  */
-jQuery(( function(n) {
+jQuery(function($) {
     ({
         init: function() {
-            var i = this;
-            
-            n(document.body).find("#billing_postcode").val() && !n(document.body).find("#billing_address_1").val() && this.autofill("billing"), n(document.body).find("#shipping_postcode").val() && !n(document.body).find("#shipping_address_1").val() && this.autofill("shipping"), n(document.body).find("#billing_postcode").on("keyup", (function(n) {
-                return i.autofill("billing")
-            })), n(document.body).find("#shipping_postcode").on("keyup", ( function(n) {
-                return i.autofill("shipping")
-            }))
+            var self = this;
+
+            // Check if billing postcode is already filled
+            if ( $("#billing_postcode").val() && !$("#billing_address_1").val() ) {
+                self.autofill("billing");
+            }
+
+            // Check if shipping postcode is already filled
+            if ( $("#shipping_postcode").val() && !$("#shipping_address_1").val() ) {
+                self.autofill("shipping");
+            }
+
+            // Listen for keyup event on billing postcode field
+            $("#billing_postcode").on("keyup", function() {
+                self.autofill("billing");
+            });
+
+            // Listen for keyup event on shipping postcode field
+            $("#shipping_postcode").on("keyup", function() {
+                self.autofill("shipping");
+            });
         },
         block: function() {
-            n("form.checkout").block({
+            $("form.checkout").block({
                 message: null,
                 overlayCSS: {
                     background: "#fff",
                     opacity: .6
                 }
-            })
+            });
         },
         unblock: function() {
-            n("form.checkout").unblock()
+            $("form.checkout").unblock();
         },
-        autofill: function(i, o) {
-            var l = this;
-            o = o || !1;
-            var t = n("#" + i + "_country").val();
+        autofill: function(type) {
+            var self = this;
+            var postcodeField = $("#" + type + "_postcode");
+            var postcode = postcodeField.val().replace(/\D/g, "");
 
-            if (!n("#" + i + "_country").length || "BR" === t) {
-                var e = n("#" + i + "_postcode"),
-                    c = e.val().replace(/\D/g, "");
-                c && 8 === c.length && (e.blur(), this.block(), n.ajax({
-                    type: "GET",
-                    url: "https://brasilapi.com.br/api/cep/v1/".concat(c),
-                    dataType: "json",
-                    contentType: "application/json",
-                    success: function(n) {
-                        if (n.state && (l.fillFields(i, n), o)) {
-                            var t = "billing" === i ? "shipping" : "billing";
-                            l.fillFields(t, n)
+            if ( postcode && postcode.length === 8 ) {
+                postcodeField.blur();
+                this.block();
+
+                $.ajax({
+                    type: 'GET',
+                    url: fcw_auto_fill_address_api_params.api_service.replace("{postcode}", postcode),
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    success: function(response) {
+                        if (response) {
+                            self.fill_fields(type, response);
                         }
                     },
-                    error: function(n) {
-                        console.log(n)
+                    error: function(error) {
+                        console.log(error);
                     },
                     complete: function() {
-                        l.unblock()
+                        self.unblock();
                     }
-                }))
+                });
             }
         },
-        fillFields: function(i, o) {
-            n("#" + i + "_address_1").val(o.street).change(), n("#" + i + "_neighborhood").length ? n("#" + i + "_neighborhood").val(o.neighborhood).change() : n("#" + i + "_address_2").val(o.neighborhood).change(), n("#" + i + "_city").val(o.city).change(), n("#" + i + "_state").val(o.state).trigger("change").change()
+        fill_fields: function(type, data) {
+            $("#" + type + "_address_1").val(data[fcw_auto_fill_address_api_params.address_param]).change();
+            $("#" + type + "_neighborhood").val(data[fcw_auto_fill_address_api_params.neightborhood_param]).change();
+            $("#" + type + "_city").val(data[fcw_auto_fill_address_api_params.city_param]).change();
+            $("#" + type + "_state").val(data[fcw_auto_fill_address_api_params.state_param]).trigger("change").change();
         }
-    }).init()
-}));
+    }).init();
+});

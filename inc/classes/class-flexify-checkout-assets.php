@@ -1,7 +1,7 @@
 <?php
 
 // Exit if accessed directly.
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
 /**
  * Register/enqueue frontend and backend scripts
@@ -102,6 +102,17 @@ class Flexify_Checkout_Assets {
 		// autofill address to enter postcode (just valid for Brazil)
 		if ( Flexify_Checkout_Init::get_setting('enable_fill_address') === 'yes' && Flexify_Checkout_Core::is_checkout() && Flexify_Checkout_Init::license_valid() ) {
 			wp_enqueue_script( 'flexify-checkout-autofill-address-js', FLEXIFY_CHECKOUT_ASSETS . 'frontend/js/autofill-address.js', array('jquery'), FLEXIFY_CHECKOUT_VERSION, false );
+
+			// send params from JS
+			$auto_fill_address_api_params = array(
+				'api_service' => Flexify_Checkout_Init::get_setting('get_address_api_service'),
+				'address_param' => Flexify_Checkout_Init::get_setting('api_auto_fill_address_param'),
+				'neightborhood_param' => Flexify_Checkout_Init::get_setting('api_auto_fill_address_neightborhood_param'),
+				'city_param' => Flexify_Checkout_Init::get_setting('api_auto_fill_address_city_param'),
+				'state_param' => Flexify_Checkout_Init::get_setting('api_auto_fill_address_state_param'),
+			);
+			
+			wp_localize_script( 'flexify-checkout-autofill-address-js', 'fcw_auto_fill_address_api_params', $auto_fill_address_api_params );
 		}
 
 		// autofill field on enter CNPJ (just valid for Brazil)
@@ -160,7 +171,7 @@ class Flexify_Checkout_Assets {
 					'cpf' => array(
 						'invalid' => __( 'Por favor, insira um CPF válido.', 'flexify-checkout-for-woocommerce' ),
 					),
-					'CNPJ' => array(
+					'cnpj' => array(
 						'invalid' => __( 'Por favor, insira um CNPJ válido.', 'flexify-checkout-for-woocommerce' ),
 					),
 				),
@@ -168,6 +179,7 @@ class Flexify_Checkout_Assets {
 				'shop_page' => Flexify_Checkout_Helpers::get_shop_page_url(),
 				'base_country' => WC()->countries->get_base_country(),
 				'intl_util_path' => plugins_url( 'assets/vendor/intl-tel-input/js/utils.js', FLEXIFY_CHECKOUT_FILE ),
+				'get_new_select_fields' => Flexify_Checkout_Helpers::get_new_select_fields(),
 			)
 		);
 
@@ -201,6 +213,7 @@ class Flexify_Checkout_Assets {
 	 * Enqueue admin scripts in page settings only
 	 * 
 	 * @since 1.0.0
+	 * @version 3.2.0
 	 * @return void
 	 */
 	public function flexify_checkout_admin_scripts() {
@@ -208,15 +221,39 @@ class Flexify_Checkout_Assets {
 
 		if ( false !== strpos( $url, 'admin.php?page=flexify-checkout-for-woocommerce' ) ) {
 			wp_enqueue_media();
-			wp_enqueue_script( 'flexify-checkout-admin-scripts', FLEXIFY_CHECKOUT_URL . 'assets/admin/js/flexify-checkout-admin-scripts.js', array('jquery', 'media-upload'), FLEXIFY_CHECKOUT_VERSION );
-			wp_enqueue_style( 'flexify-checkout-admin-styles', FLEXIFY_CHECKOUT_URL . 'assets/admin/css/flexify-checkout-admin-styles.css', array(), FLEXIFY_CHECKOUT_VERSION );
+			wp_enqueue_script( 'flexify-checkout-admin-scripts', FLEXIFY_CHECKOUT_ASSETS . 'admin/js/flexify-checkout-admin-scripts.js', array('jquery', 'media-upload'), FLEXIFY_CHECKOUT_VERSION );
+			wp_enqueue_style( 'flexify-checkout-admin-styles', FLEXIFY_CHECKOUT_ASSETS . 'admin/css/flexify-checkout-admin-styles.css', array(), FLEXIFY_CHECKOUT_VERSION );
+			wp_enqueue_script( 'bootstrap-datepicker-lib', 'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js', array('jquery'), '1.9.0' );
+			wp_enqueue_script( 'bootstrap-datepicker-translate-pt-br', FLEXIFY_CHECKOUT_ASSETS . 'admin/js/bootstrap-datepicker.pt-BR.min.js', array('jquery'), FLEXIFY_CHECKOUT_VERSION );
 		
 			wp_localize_script( 'flexify-checkout-admin-scripts', 'flexify_checkout_params', array(
 				'ajax_url' => admin_url( 'admin-ajax.php' ),
-				'set_logo_modal_title' => esc_html( 'Escolher Imagem de cabeçalho', 'flexify-checkout-for-woocommerce' ),
-				'use_this_image_title' => esc_html( 'Usar esta imagem', 'flexify-checkout-for-woocommerce' ),
-				'upload_success' => esc_html( 'Arquivo enviado com sucesso', 'flexify-checkout-for-woocommerce' ),
-				'invalid_file' => esc_html( 'O arquivo enviado não é permitido.', 'flexify-checkout-for-woocommerce' ),
+				'api_endpoint' => 'https://api.meumouse.com/wp-json/license/',
+                'api_key' => 'AD320786-A840D179-6789E14F-D844351E',
+                'license' => get_option('flexify_checkout_license_key'),
+                'domain' => Flexify_Checkout_Api::get_domain(),
+				'set_logo_modal_title' => esc_html__( 'Escolher Imagem de cabeçalho', 'flexify-checkout-for-woocommerce' ),
+				'use_this_image_title' => esc_html__( 'Usar esta imagem', 'flexify-checkout-for-woocommerce' ),
+				'upload_success' => esc_html__( 'Arquivo enviado com sucesso', 'flexify-checkout-for-woocommerce' ),
+				'invalid_file' => esc_html__( 'O arquivo enviado não é permitido.', 'flexify-checkout-for-woocommerce' ),
+				'get_array_checkout_fields' => Flexify_Checkout_Core::get_array_index_checkout_fields(),
+				'edit_popup_trigger_btn' => esc_html__( 'Editar', 'flexify-checkout-for-woocommerce' ),
+				'edit_popup_title' => esc_html__( 'Configurar campo', 'flexify-checkout-for-woocommerce' ),
+				'edit_popup_active_field_title' => esc_html__( 'Ativar/Desativar este campo', 'flexify-checkout-for-woocommerce' ),
+				'edit_popup_active_field_description' => esc_html__('Este é um campo nativo do WooCommerce e não pode ser removido, apenas desativado.', 'flexify-checkout-for-woocommerce' ),
+				'edit_popup_required_title' => esc_html__( 'Obrigatoriedade do campo', 'flexify-checkout-for-woocommerce' ),
+				'edit_popup_required_description' => esc_html__('Ao desativar, este campo se tornará não obrigatório.', 'flexify-checkout-for-woocommerce' ),
+				'edit_popup_label_title' => esc_html__( 'Nome do campo', 'flexify-checkout-for-woocommerce' ),
+				'edit_popup_label_description' => esc_html__('Define o título que será exibido para este campo.', 'flexify-checkout-for-woocommerce' ),
+				'edit_popup_position_title' => esc_html__( 'Posição do campo', 'flexify-checkout-for-woocommerce' ),
+				'edit_popup_position_description' => esc_html__('Define a posição deste campo na finalização de compras.', 'flexify-checkout-for-woocommerce' ),
+				'edit_popup_position_left_option' => esc_html__( 'Esquerda', 'flexify-checkout-for-woocommerce' ),
+				'edit_popup_position_right_option' => esc_html__( 'Direita', 'flexify-checkout-for-woocommerce' ),
+				'edit_popup_position_full_option' => esc_html__( 'Largura completa', 'flexify-checkout-for-woocommerce' ),
+				'edit_popup_classes_title' => esc_html__( 'Classe CSS personalizada do campo (Opcional)', 'flexify-checkout-for-woocommerce' ),
+				'edit_popup_classes_description' => esc_html__('Informe a(s) classe(s) CSS personalizadas para este campo. (Opcional)', 'flexify-checkout-for-woocommerce' ),
+				'edit_popup_label_classes_title' => esc_html__( 'Classe CSS personalizada do título (Opcional)', 'flexify-checkout-for-woocommerce' ),
+				'edit_popup_label_classes_description' => esc_html__('Informe a(s) classe(s) CSS personalizadas para o título (label) deste campo. (Opcional)', 'flexify-checkout-for-woocommerce' ),
 			));
 		}
 	}

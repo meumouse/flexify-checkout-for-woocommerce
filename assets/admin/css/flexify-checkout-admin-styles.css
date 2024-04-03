@@ -158,12 +158,21 @@ table.insert-license tr {
 }
 
 .btn-icon {
-    width: 2.75rem;
-    height: 2.75rem;
+    min-width: 2.75rem;
+    max-width: 2.75rem;
+    min-height: 2.75rem;
+    max-height: 2.75rem;
     display: flex !important;
     justify-content: center;
     align-items: center;
     padding: 0 !important;
+}
+
+.btn-icon-lg {
+    min-width: 3.2rem !important;
+    max-width: 3.2rem !important;
+    min-height: 3.2rem !important;
+    max-height: 3.2rem !important;
 }
 
 .btn-close {
@@ -323,8 +332,16 @@ table.insert-license tr {
     fill: #fff !important;
 }
 
+.icon-dark {
+    fill: #434a57 !important;
+}
+
 .icon-warning {
     fill: #ffba08 !important;
+}
+
+.icon-danger {
+    fill: #ef4444 !important;
 }
 
 .text-success {
@@ -396,8 +413,8 @@ table.insert-license tr {
 }
 
 .input-group:not(.has-validation)>:not(:last-child):not(.dropdown-toggle):not(.dropdown-menu):not(.form-floating), .input-group:not(.has-validation)>.dropdown-toggle:nth-last-child(n+3), .input-group:not(.has-validation)>.form-floating:not(:last-child)>.form-control, .input-group:not(.has-validation)>.form-floating:not(:last-child)>.form-select {
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
 }
 
 .input-group>:not(:first-child):not(.dropdown-menu):not(.valid-tooltip):not(.valid-feedback):not(.invalid-tooltip):not(.invalid-feedback) {
@@ -411,7 +428,7 @@ table.insert-license tr {
 }
 
 .input-group > .input-group-button {
-    border-radius: 0.5rem;
+    border-radius: 0.375rem;
 }
 
 .form-control {
@@ -427,12 +444,8 @@ table.insert-license tr {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
-    border-radius: 0.5rem;
+    border-radius: 0.375rem !important;
     transition: border-color .15s ease-in-out;
-}
-
-input.form-control {
-    border-radius: 0.5rem;
 }
 
 ::placeholder {
@@ -538,6 +551,10 @@ textarea.form-control {
 
 .align-items-start {
     align-items: flex-start !important;
+}
+
+.justify-content-end {
+    justify-content: flex-end !important;
 }
 
 .d-grid {
@@ -796,10 +813,16 @@ a.btn-primary, a.btn-primary:hover, a.btn-primary:focus {
     border-color: rgba(239, 68, 68, 0.35);
 }
 
-.btn-outline-danger:hover, .btn-outline-danger:focus {
+.btn-outline-danger:hover,
+.btn-outline-danger:focus {
     color: #fff;
     background-color: #ef4444;
     border-color: #ef4444;
+}
+
+.btn-outline-danger:hover > .icon,
+.btn-outline-danger:focus > .icon {
+    fill: #fff !important
 }
 
 .btn-outline-primary {
@@ -1131,7 +1154,8 @@ a.btn-primary, a.btn-primary:hover, a.btn-primary:focus {
 .flexify-checkout-step-container,
 .require-pro-container,
 .set-api-service-container,
-.add-new-checkout-fields-container {
+.add-new-checkout-fields-container,
+.auto-fill-address-api-container {
     position: fixed;
     top: 0;
     left: 0;
@@ -1155,7 +1179,8 @@ a.btn-primary, a.btn-primary:hover, a.btn-primary:focus {
 .flexify-checkout-step-container.show,
 .require-pro-container.show,
 .set-api-service-container.show,
-.add-new-checkout-fields-container.show {
+.add-new-checkout-fields-container.show,
+.auto-fill-address-api-container.show {
     opacity: 1;
     visibility: visible;
     transform: none;
@@ -1182,7 +1207,8 @@ a.btn-primary, a.btn-primary:hover, a.btn-primary:focus {
 .flexify-checkout-step-container.show .popup-content,
 .require-pro-container.show .popup-content,
 .set-api-service-container.show .popup-content,
-.add-new-checkout-fields-container.show .popup-content {
+.add-new-checkout-fields-container.show .popup-content,
+.auto-fill-address-api-container.show .popup-content {
     transform: none;
 }
 
@@ -1246,7 +1272,8 @@ a.btn-primary, a.btn-primary:hover, a.btn-primary:focus {
     #inter_bank_slip_container.show,
     #require_inter_bank_module_container.show,
     .flexify-checkout-step-container.show,
-    .add-new-checkout-fields-container.show {
+    .add-new-checkout-fields-container.show,
+    .auto-fill-address-api-container.show {
         position: fixed;
     }
 }
@@ -1434,8 +1461,10 @@ label.custom-file-label:hover {
 }
 
 .btn.reset-color {
-    height: 3.35rem;
-    width: 3.35rem;
+    min-height: 3.35rem !important;
+    max-height: 3.35rem !important;
+    min-width: 3.35rem !important;
+    max-width: 3.35rem !important;
     margin-left: -2px !important;
     border-radius: 0.5rem;
 }
@@ -1451,6 +1480,10 @@ label.custom-file-label:hover {
     border: 1px solid rgba(0, 0, 0, 0.085);
     border-radius: 0.5rem;
     transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.field-name {
+    line-height: 2;
 }
 
 .field-item.inactive {
@@ -1566,8 +1599,14 @@ label.custom-file-label:hover {
     border-radius: 0.5rem;
 }
 
-.popup-sm {
-    width: 600px !important;
+@media screen and (min-width: 992px) {
+    .popup-sm {
+        width: 600px !important;
+    }
+    
+    .popup-lg {
+        width: 900px !important;
+    }
 }
 
 .field-item.require-pro {
@@ -1610,4 +1649,218 @@ label.custom-file-label:hover {
 .px-3 {
     padding-right: 1rem !important;
     padding-left: 1rem !important;
+}
+
+/*Bootstrap Calendar*/
+.datepicker {
+    border-radius: 0.5rem;
+    padding: 0.25rem;
+}
+
+.datepicker table tr {
+    padding: 0;
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+}
+
+.datepicker-days table tr td {
+    width: 14.28%;
+    text-align: center;
+}
+
+.datepicker-days table thead, .datepicker-days table tbody, .datepicker-days table tfoot {
+    padding: 10px;
+    display: list-item;
+}
+
+.datepicker-days table thead, .datepicker-months table thead, .datepicker-years table thead, .datepicker-decades table thead, .datepicker-centuries table thead {
+    background: #008aff;
+    color: #ffffff;
+    border-radius: 0;
+}
+
+.datepicker-days table thead tr:nth-child(2n+0) td, .datepicker-days table thead tr:nth-child(2n+0) th {
+    border-radius: 3px;
+}
+
+.datepicker-days table thead tr:nth-child(3n+0) {
+    text-transform: uppercase;
+    font-weight: 300 !important;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.table-condensed > tbody > tr > td, .table-condensed > tbody > tr > th, .table-condensed > tfoot > tr > td, .table-condensed > tfoot > tr > th, .table-condensed > thead > tr > td, .table-condensed > thead > tr > th {
+    padding: 12px;
+}
+
+.datepicker-months table thead td, .datepicker-months table thead th, .datepicker-years table thead td, .datepicker-years table thead th, .datepicker-decades table thead td, .datepicker-decades table thead th, .datepicker-centuries table thead td, .datepicker-centuries table thead th {
+    border-radius: 0;
+}
+
+.datepicker td, .datepicker th {
+    border-radius: 50%;
+    padding: 0 12px;
+}
+
+.datepicker-days table thead, .datepicker-months table thead, .datepicker-years table thead, .datepicker-decades table thead, .datepicker-centuries table thead {
+    background: #008aff;
+    color: #ffffff;
+    border-radius: 0.5rem;
+}
+
+.datepicker table tr td.active:hover, .datepicker table tr td.active.disabled, .datepicker table tr td.active.disabled:hover {
+    background-image: none;
+}
+
+.datepicker table tr td.day {
+    width: 20px !important;
+}
+
+.datepicker table tr td.day:hover {
+    cursor: pointer;
+    color: #008aff; 
+}
+
+.datepicker table tr td.new.day, .datepicker table tr td.old.day {
+    color: #ADB5BD;
+}
+
+.datepicker table tr td.new.day:hover, .datepicker table tr td.old.day:hover {
+    color: #3c434a;  
+}
+
+.datepicker table tr td.today.day {
+    border: 2px solid #008aff;
+}
+
+.datepicker table tr td.active.day {
+    background-color: #008aff;
+    color: #fff;
+}
+
+.datepicker table tr td.today.active.day {
+    border: none;
+}
+
+.datepicker .prev, .datepicker .next {
+    color: rgba(255, 255, 255, 0.5);
+    transition: 0.3s;
+    width: 37px;
+}
+
+.datepicker .prev:hover, .datepicker .next:hover {
+    background: transparent;
+    color: rgba(255, 255, 255, 0.99);
+    font-size: 21px;
+    cursor: pointer;
+}
+
+.datepicker .datepicker-switch {
+    font-size: 24px;
+    font-weight: 400;
+    transition: 0.3s;
+}
+
+.datepicker .datepicker-switch:hover {
+    color: rgba(255, 255, 255, 0.7);
+    background: transparent;
+}
+
+.datepicker table tr td span {
+    border-radius: 2px;
+    margin: 3%;
+    width: 27%;
+}
+
+.datepicker table tr td span.active, .datepicker table tr td span.active:hover, .datepicker table tr td span.active.disabled, .datepicker table tr td span.active.disabled:hover {
+  background-color: #008aff;
+  background-image: none;
+}
+
+.dropdown-menu {
+    border: 1px solid rgba(0,0,0,.1);
+    box-shadow: 0 6px 12px rgba(0,0,0,.175);
+    z-index: 99999999 !important;
+    position: absolute;
+    background-color: #fff;
+}
+
+.datepicker-dropdown.datepicker-orient-top:before {
+    border-top: 7px solid rgba(0,0,0,.1);
+}
+
+.datepicker ::marker {
+    display: none;
+    color: transparent;
+}
+
+/*End Bootstrap Calendar*/
+
+tr.invalid-option input,
+input.invalid-option {
+    border-color: #ef4444 !important;
+}
+
+.form-check {
+    display: block;
+    min-height: 1.5rem;
+    padding-left: 1.625rem;
+    margin-bottom: 0.325rem;
+    display: flex;
+    align-items: center;
+}
+
+.form-check-input:checked[type=checkbox] {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='m6 10 3 3 6-6'/%3e%3c/svg%3e") !important;
+}
+
+.form-check-input:checked {
+    background-color: #008aff !important;
+    border-color: #008aff !important;
+}
+
+.form-check-input[type=checkbox] {
+    border-radius: 0.375rem;
+}
+
+.form-check .form-check-input {
+    float: left;
+    margin-left: -1.625rem;
+    margin-bottom: -0.25rem;
+    margin-right: 0.5rem;
+}
+
+.form-check-input {
+    flex-shrink: 0;
+    width: 1.225rem !important;
+    height: 1.225rem !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none;
+    appearance: none !important;
+    background-color: transparent !important;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='m6 10 3 3 6-6'/%3e%3c/svg%3e") !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    background-size: contain !important;
+    border: 1px solid #b4bbc3 !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.form-check-label {
+    color: #576071;
+}
+
+label {
+    font-size: calc(1rem * 0.875);
+}
+
+input[type=checkbox]:checked::before {
+    display: none;
+}
+
+.form-check.form-switch {
+    padding-left: 0;
 }

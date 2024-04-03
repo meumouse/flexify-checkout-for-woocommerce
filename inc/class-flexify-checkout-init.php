@@ -1,13 +1,13 @@
 <?php
 
 // Exit if accessed directly.
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
 /**
  * Class for init plugin
  * 
  * @since 1.0.0
- * @version 3.1.0
+ * @version 3.2.0
  * @package MeuMouse.com
  */
 class Flexify_Checkout_Init {
@@ -22,6 +22,7 @@ class Flexify_Checkout_Init {
    * Construct function
    * 
    * @since 1.0.0
+   * @version 3.2.0
    * @return void
    */
   public function __construct() {
@@ -33,6 +34,15 @@ class Flexify_Checkout_Init {
 
     // connect with license api
     add_action( 'admin_init', array( $this, 'flexify_checkout_connect_api' ) );
+
+    // check if inter bank module is active and exists expire date
+    if ( class_exists('Module_Inter_Bank') && ! empty( Flexify_Checkout_Init::get_setting('inter_bank_expire_date') ) ) {
+      // Hook for schedule remind inter bank credentials
+      add_action( 'wp_loaded', array( $this, 'schedule_remind_inter_bank_credentials' ) );
+
+      // Hook for send email remind
+      add_action( 'remind_expire_inter_bank_credentials_event', array( $this, 'remind_expire_inter_bank_credentials' ) );
+    }
   }
 
 
@@ -40,6 +50,7 @@ class Flexify_Checkout_Init {
    * Set default options
    * 
    * @since 1.0.0
+   * @version 3.2.0
    * @return array
    */
   public function set_default_data_options() {
@@ -95,6 +106,14 @@ class Flexify_Checkout_Init {
       'get_country_from_ip_service' => 'https://freeipapi.com/api/json/',
       'api_country_code_param' => 'api_ip_param',
       'enable_unset_wcbcf_fields_not_brazil' => 'no',
+      'enable_manage_fields' => 'yes',
+      'get_address_api_service' => 'https://viacep.com.br/ws/{postcode}/json/',
+      'api_auto_fill_address_param' => 'logradouro',
+      'api_auto_fill_address_neightborhood_param' => 'bairro',
+      'api_auto_fill_address_city_param' => 'localidade',
+      'api_auto_fill_address_state_param' => 'uf',
+      'logo_header_link' => get_permalink( wc_get_page_id('shop') ),
+      'inter_bank_expire_date' => '',
     );
 
     return $options;
@@ -418,7 +437,7 @@ class Flexify_Checkout_Init {
       ),
       'billing_number' => array(
         'id' => 'billing_number',
-        'type' => 'select',
+        'type' => 'number',
         'label' => esc_html__( 'Número da residência', 'flexify-checkout-for-woocommerce' ),
         'position' => 'right',
         'classes' => '',
@@ -511,7 +530,6 @@ class Flexify_Checkout_Init {
       }
 
       if ( ! self::license_valid() ) {
-        update_option( 'flexify_checkout_license_key', '' );
         update_option( 'flexify_checkout_license_status', 'invalid' );
       }
 
@@ -579,6 +597,8 @@ class Flexify_Checkout_Init {
         
         return false;
     } else {
+        update_option( 'flexify_checkout_license_key', '' );
+
         return false;
     }
   }
@@ -627,6 +647,43 @@ class Flexify_Checkout_Init {
         return date( $date_format, strtotime( $object_query->expire_date ) );
       }
     }
+  }
+
+
+  /**
+   * Create e-mail for remind admin to change Inter bank credentials
+   * 
+   * @since 3.2.0
+   * @return void
+   */
+  public function remind_expire_inter_bank_credentials() {
+    $to = get_option('admin_email');
+    $subject = 'IMPORTANTE: As credenciais da sua aplicação do banco Inter irão expirar em breve!';
+    $message = 'Este é um aviso para te lembrar que as credenciais de integração com o Módulo adicional banco Inter para Flexify Checkout para WooCommerce irão expirar em 7 dias. Não esqueça de fazer a atualização das credenciais para não desativar a forma de pagamento em sua loja.';
+    $headers = array('Content-Type: text/html; charset=UTF-8');
+
+    wp_mail( $to, $subject, $message, $headers );
+  }
+
+
+  /**
+   * Schedule email for remind admin to change Inter bank credentials
+   * 
+   * @since 3.2.0
+   * @return void
+   */
+  public function schedule_remind_inter_bank_credentials() {
+    $expire_date = Flexify_Checkout_Init::get_setting('inter_bank_expire_date');
+
+    // Convert date to Y-m-d format
+    $expire_date_formated = DateTime::createFromFormat('d/m/Y', $expire_date)->format('Y-m-d');
+
+    // Subtract 7 days from the expiration date
+    $send_date_email = date( 'Y-m-d', strtotime( '-7 days', strtotime( $expire_date_formated ) ) );
+
+    // Schedule email sending
+    $timestamp_send_email = strtotime( $send_date_email . ' 08:00:00' );
+    wp_schedule_single_event( $timestamp_send_email, 'remind_expire_inter_bank_credentials_event' );
   }
 }
 

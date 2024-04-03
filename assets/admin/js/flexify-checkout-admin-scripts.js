@@ -57,17 +57,17 @@
 	 */
 	jQuery( function($) {
 		$('.button-loading').on('click', function() {
-			let $btn = $(this);
-			let expireDate = $btn.text();
-			let btnWidth = $btn.width();
-			let btnHeight = $btn.height();
+			let btn = $(this);
+			let btn_text = btn.text();
+			let btn_width = btn.width();
+			let btn_height = btn.height();
 
 			// keep original width and height
-			$btn.width(btnWidth);
-			$btn.height(btnHeight);
+			btn.width(btn_width);
+			btn.height(btn_height);
 
 			// Add spinner inside button
-			$btn.html('<span class="spinner-border spinner-border-sm"></span>');
+			btn.html('<span class="spinner-border spinner-border-sm"></span>');
 		});
 
 		// Prevent keypress enter
@@ -87,10 +87,16 @@
 	jQuery( function($) {
 		let settingsForm = $('form[name="flexify-checkout"]');
 		let originalValues = settingsForm.serialize();
-		var notificationDelay;
-	
+		var notification_delay;
+
+		// send options to backend on change html
 		settingsForm.on('change', function() {
-			if (settingsForm.serialize() != originalValues) {
+			// hide notice if already visible
+			$('.updated-option-success').fadeOut('fast', function() {
+				$(this).removeClass('active').css('display', '');
+			});
+
+			if (settingsForm.serialize() !== originalValues) {
 				ajax_save_options(); // send option serialized on change
 			}
 		});
@@ -106,17 +112,20 @@
 				success: function(response) {
 					try {
 						var responseData = JSON.parse(response); // Parse the JSON response
-						console.log(responseData.options);
+					//	console.log(responseData.options);
 
 						if (responseData.status === 'success') {
 							originalValues = settingsForm.serialize();
+
+							// display notice
 							$('.updated-option-success').addClass('active');
 							
-							if (notificationDelay) {
-								clearTimeout(notificationDelay);
+							if (notification_delay) {
+								clearTimeout(notification_delay);
 							}
 				
-							notificationDelay = setTimeout( function() {
+							//hide notice on timeout
+							notification_delay = setTimeout( function() {
 								$('.updated-option-success').fadeOut('fast', function() {
 									$(this).removeClass('active').css('display', '');
 								});
@@ -172,7 +181,6 @@
 		/**
 		 * Show or hide Bank slip popup settings
 		 * 
-		 * 
 		 * @since 2.3.0
 		 */
 		toggleContainerVisibility('#enable_inter_bank_ticket_api', '.inter-bank-slip');
@@ -183,12 +191,31 @@
 		/**
 		 * Show or hide IP API settings
 		 * 
-		 * 
 		 * @since 3.0.0
 		 */
 		toggleContainerVisibility('#enable_set_country_from_ip', '.require-set-country-from-ip');
 		$('#enable_set_country_from_ip').click( function() {
 			toggleContainerVisibility('#enable_set_country_from_ip', '.require-set-country-from-ip');
+		});
+
+		/**
+		 * Show or hide auto fill address API settings
+		 * 
+		 * @since 3.2.0
+		 */
+		toggleContainerVisibility('#enable_fill_address', '.require-auto-fill-address');
+		$('#enable_fill_address').click( function() {
+			toggleContainerVisibility('#enable_fill_address', '.require-auto-fill-address');
+		});
+
+		/**
+		 * Show or hide manage fields
+		 * 
+		 * @since 3.2.0
+		 */
+		toggleContainerVisibility('#enable_manage_fields', '.step-checkout-fields-container');
+		$('#enable_manage_fields').click( function() {
+			toggleContainerVisibility('#enable_manage_fields', '.step-checkout-fields-container');
 		});
 	});
 
@@ -345,6 +372,7 @@
 		display_popup( $('.require-pro'), $('.require-pro-container'), $('.require-pro-close') );
 		display_popup( $('#set_ip_api_service_trigger'), $('.set-api-service-container'), $('.set-api-service-close') );
 		display_popup( $('#add_new_checkout_fields_trigger'), $('.add-new-checkout-fields-container'), $('.add-new-checkout-fields-close') );
+		display_popup( $('#auto_fill_address_api_trigger'), $('.auto-fill-address-api-container'), $('.auto-fill-address-api-close') );
 	});
 
 	
@@ -513,9 +541,10 @@
 
 
 	/**
-	 * Sortable checkout fields for reorder position on steps
+	 * Reorder and add new checkout fields
 	 * 
 	 * @since 3.0.0
+	 * @version 3.2.0
 	 */
 	jQuery(document).ready( function($) {
 		var step_1 = $('#contact_step').sortable({
@@ -600,7 +629,7 @@
 		});
 
 		// deactive field on click toggle switch
-		$(document).on('click', '.toggle-active-tab', function(e) {
+		$(document).on('click', '.toggle-active-field', function(e) {
 			let checked = $(e.target).prop('checked');
 			let target = $('.field-item.active');
 
@@ -612,6 +641,376 @@
 			$(step_1).sortable( 'option', 'disabled', true );
 			$(step_2).sortable( 'option', 'disabled', true );
 		}
+
+		// exclude field action
+		$(document).on('click', '.exclude-field', function(e) {
+			e.preventDefault();
+
+			var index = $(this).data('exclude');
+			var btn = $(this);
+			var btn_width = btn.width();
+			var btn_height = btn.height();
+			var notification_delay;
+
+			// keep original width and height
+			btn.width(btn_width);
+			btn.height(btn_height);
+
+			// Add spinner inside button
+			btn.html('<span class="spinner-border spinner-border-sm"></span>');
+
+			$.ajax({
+				url: flexify_checkout_params.ajax_url,
+				type: 'POST',
+				data: {
+					action: 'remove_checkout_fields',
+					field_to_remove: index,
+				},
+				success: function(response) {
+					try {
+						var responseData = JSON.parse(response);
+	
+						if (responseData && responseData.status === 'success') {
+							// Fade out the field with animation
+							$('#' + responseData.field).fadeOut( 500, function() {
+								$(this).remove();
+							});
+
+							$('.updated-option-success').addClass('active');
+	
+							if (notification_delay) {
+								clearTimeout(notification_delay);
+							}
+					
+							notification_delay = setTimeout( function() {
+								$('.updated-option-success').fadeOut('fast', function() {
+									$(this).removeClass('active').css('display', '');
+								});
+							}, 3000);
+						} else {
+							console.error('Invalid JSON response or missing "status" field:', response);
+						}
+					} catch (error) {
+						console.error('Error parsing JSON:', error);
+					}
+				},
+				error: function(xhr, textStatus, errorThrown) {
+					console.error('AJAX request failed:', textStatus, errorThrown);
+				}
+			});
+		});
+
+		// on digit id name for new option select
+		$(document).on('keyup', '#checkout_field_name', function() {
+			var concact_field = "billing_".concat( $(this).val() );
+
+			if ( check_availability_field(concact_field) === false ) {
+				$('#check_field_availability').removeClass('d-none');
+				$('#set_field_id').addClass('invalid-option');
+				$('#checkout_field_name_concat').val('');
+			} else {
+				$('#check_field_availability').addClass('d-none');
+				$('#set_field_id').removeClass('invalid-option');
+				$('#checkout_field_name_concat').val(concact_field);
+			}
+		});
+
+		/**
+		 * Check availability for target field
+		 * 
+		 * @since 3.2.0
+		 * @param {string} field | ID and name field
+		 * @return bool
+		 */
+		function check_availability_field(field) {
+			var get_current_fields = flexify_checkout_params.get_array_checkout_fields;
+
+			// check if field is equal index of current fields
+			if ( get_current_fields.indexOf(field) !== -1 ) {
+				return false;
+			} else {
+				return true;
+			}
+		}
+
+		// display visibility for container options
+		$(document).on('change', '#checkout_field_type', function() {
+			var selected_option = $(this).val();
+
+			if ( selected_option === 'select' ) {
+				$('.require-add-new-field-select').removeClass('d-none');
+			} else if ( selected_option === 'multicheckbox' ) {
+				$('.require-add-new-field-multicheckbox').removeClass('d-none');
+			} else {
+				$('.require-add-new-field-select').addClass('d-none');
+				$('.require-add-new-field-multicheckbox').addClass('d-none');
+			}
+		});
+
+		// add new select option
+		$(document).on('click', '#add_new_options_to_select', function(e) {
+			e.preventDefault();
+
+			let value = $('#add_new_field_select_option_value');
+			let title = $('#add_new_field_select_option_title');
+			let new_option = `<div class="d-flex align-items-center mb-2 option-container" data-option="${value.val()}">
+				<div class="input-group me-2">
+					<span class="input-group-text">${value.val()}</span>
+					<span class="input-group-text input-control-wd-7.7">${title.val()}</span>
+				</div>
+				<button class="btn btn-outline-danger btn-icon rounded-3 exclude-option-select" data-exclude="${value.val()}">
+					<svg class="icon icon-danger" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15 2H9c-1.103 0-2 .897-2 2v2H3v2h2v12c0 1.103.897 2 2 2h10c1.103 0 2-.897 2-2V8h2V6h-4V4c0-1.103-.897-2-2-2zM9 4h6v2H9V4zm8 16H7V8h10v12z"></path></svg>
+				</button>
+			</div>`;
+
+			$('#preview_options_container').append(new_option);
+			$('#preview_select_new_field').append(new Option(title.val(), value.val()));
+			$(value).val('');
+			$(title).val('');
+		});
+
+		// exclude select option action
+		$(document).on('click', '.exclude-option-select', function(e) {
+			e.preventDefault();
+
+			let exclude_option = $(this).data('exclude');
+
+			$(this).closest('.option-container').remove();
+			$('#preview_select_new_field > option[value="'+ exclude_option +'"]').remove();
+		});
+
+		// add new multicheckbox
+		$(document).on('click', '#add_new_options_to_multicheckbox', function(e) {
+			e.preventDefault();
+
+			let id = $('#add_new_field_multicheckbox_option_id');
+			let title = $('#add_new_field_multicheckbox_option_title');
+			let new_option = `<div class="form-check mb-2 multicheckbox-container">
+				<input class="form-check-input" type="checkbox" id="${id.val()}">
+				<label class="form-check-label" for="${id.val()}">${title.val()}</label>
+				<button class="btn btn-outline-danger btn-icon rounded-3 ms-3 exclude-option-multicheckbox" data-exclude="${id.val()}">
+					<svg class="icon icon-danger" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15 2H9c-1.103 0-2 .897-2 2v2H3v2h2v12c0 1.103.897 2 2 2h10c1.103 0 2-.897 2-2V8h2V6h-4V4c0-1.103-.897-2-2-2zM9 4h6v2H9V4zm8 16H7V8h10v12z"></path></svg>
+				</button>
+			</div>`;
+
+			$('#preview_multicheckbox_container').append(new_option);
+			$(id).val('');
+			$(title).val('');
+		});
+
+		// exclude checkbox option
+		$(document).on('click', '.exclude-option-multicheckbox', function(e) {
+			e.preventDefault();
+
+			$(this).closest('.multicheckbox-container').remove();
+		});
+
+		// change switch value
+		$(document).on('change', '#required_field', function() {
+			if ( $(this).is(':checked') ) {
+				$(this).val('yes');
+			} else {
+				$(this).val('no');
+			}
+		});
+
+		// processing form new field settings
+		$(document).on('click', '#fcw_add_new_field', function(e) {
+			e.preventDefault();
+
+			var btn = $(this);
+			var btn_width = btn.width();
+			var btn_text = btn.text();
+			var btn_height = btn.height();
+			var notification_delay;
+			var priority = flexify_checkout_params.get_array_checkout_fields.length + 1;
+			// keep original width and height
+			btn.width(btn_width);
+			btn.height(btn_height);
+
+			// Add spinner inside button
+			btn.html('<span class="spinner-border spinner-border-sm"></span>');
+
+			var id = $('#checkout_field_name_concat').val();
+			var type = $('#checkout_field_type option:selected').val();
+			var label = $('#checkout_field_title').val();
+			var required = $('#required_field').val();
+			var position = $('#field_position option:selected').val();
+			var classes = $('#field_classes').val();
+			var label_classes = $('#field_label_classes').val();
+			var step = $('#field_step option:selected').val();
+			var source = $('#field_source').val();
+			var select_options = [];
+			let selected_option = $('#checkout_field_type option:selected').val();
+
+			if ( selected_option === 'select' ) {
+				$('#preview_select_new_field option').each( function() {
+					let option_value = $(this).val();
+					let option_text = $(this).text();
+	
+					select_options.push({
+						value: option_value,
+						text: option_text,
+					});
+				});
+			}
+		
+			var new_field_container = `<div id="${id}" class="field-item d-flex align-items-center justify-content-between">
+				<input type="hidden" class="change-priority" name="checkout_step[${id}][priority]" value="${priority}">
+				<input type="hidden" class="change-step" name="checkout_step[${id}][step]" value="${step}">
+
+				<span class="field-name">${label}</span>
+
+				<div class="d-flex justify-content-end">
+					<button class="flexify-checkout-step-trigger btn btn-sm btn-outline-primary ms-auto rounded-3" data-trigger="${id}">${flexify_checkout_params.edit_popup_trigger_btn}</button>
+					<button class="btn btn-outline-danger btn-icon ms-3 rounded-3 exclude-field" data-exclude="${id}">
+						<svg class="icon icon-danger" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15 2H9c-1.103 0-2 .897-2 2v2H3v2h2v12c0 1.103.897 2 2 2h10c1.103 0 2-.897 2-2V8h2V6h-4V4c0-1.103-.897-2-2-2zM9 4h6v2H9V4zm8 16H7V8h10v12z"></path></svg>
+					</button>
+				</div>
+
+				<div class="flexify-checkout-step-container">
+					<div class="popup-content">
+						<div class="popup-header">
+							<h5 class="popup-title">${flexify_checkout_params.edit_popup_title}${` ` + label}</h5>
+							<button class="flexify-checkout-step-close-popup btn-close fs-lg"></button>
+						</div>
+						<div class="popup-body">
+							<table class="form-table">
+								<tr>
+									<th class="w-50">
+										${flexify_checkout_params.edit_popup_active_field_title}
+										<span class="flexify-checkout-description">${flexify_checkout_params.edit_popup_active_field_description}</span>
+									</th>
+									<td class="w-50">
+										<div class="form-check form-switch">
+											<input type="checkbox" class="toggle-switch toggle-active-field" name="checkout_step[${id}][enabled]" value="${required}" ${required} === 'yes' ? checked="checked" : ''/>
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<th class="w-50">
+										${flexify_checkout_params.edit_popup_required_title}
+										<span class="flexify-checkout-description">${flexify_checkout_params.edit_popup_required_description}</span>
+									</th>
+									<td class="w-50">
+										<div class="form-check form-switch">
+											<input type="checkbox" class="toggle-switch toggle-active-field" name="checkout_step[${id}][required]" value="${required}" ${required} === 'yes' ? checked="checked": '' />
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<th class="w-50">
+										${flexify_checkout_params.edit_popup_label_title}
+										<span class="flexify-checkout-description">${flexify_checkout_params.edit_popup_label_description}</span>
+									</th>
+									<td class="w-50">
+										<input type="text" class="get-name-field form-control" name="checkout_step[${id}][label]" value="${label}"/>
+									</td>
+								</tr>
+								<tr>
+									<th class="w-50">
+										${flexify_checkout_params.edit_popup_position_title}
+										<span class="flexify-checkout-description">${flexify_checkout_params.edit_popup_position_description}</span>
+									</th>
+									<td class="w-50">
+										<select class="form-select" name="checkout_step[${id}][position]">
+											<option value="left" ${position === 'left' ? 'selected=selected': ''}>${flexify_checkout_params.edit_popup_position_left_option}</option>
+											<option value="right" ${position === 'right' ? 'selected=selected': ''}>${flexify_checkout_params.edit_popup_position_right_option}</option>
+											<option value="full" ${position === 'full' ? 'selected=selected': ''}>${flexify_checkout_params.edit_popup_position_full_option}</option>
+										</select>
+									</td>
+								</tr>
+								<tr>
+									<th class="w-50">
+										${flexify_checkout_params.edit_popup_classes_title}
+										<span class="flexify-checkout-description">${flexify_checkout_params.edit_popup_classes_description}</span>
+									</th>
+									<td class="w-50">
+										<input type="text" class="form-control" name="checkout_step[${id}][classes]" value="${classes}"/>
+									</td>
+								</tr>
+								<tr>
+									<th class="w-50">
+										${flexify_checkout_params.edit_popup_label_classes_title}
+										<span class="flexify-checkout-description">${flexify_checkout_params.edit_popup_label_classes_description}</span>
+									</th>
+									<td class="w-50">
+										<input type="text" class="form-control" name="checkout_step[${id}][label_classes]" value="${label_classes}"/>
+									</td>
+								</tr>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>`;
+
+			$.ajax({
+				url: flexify_checkout_params.ajax_url,
+				type: 'POST',
+				data: {
+					action: 'add_new_field_to_checkout',
+					get_field_id: id,
+					get_field_type: type,
+					get_field_label: label,
+					get_field_required: required,
+					get_field_position: position,
+					get_field_classes: classes,
+					get_field_label_classes: label_classes,
+					get_field_step: step,
+					get_field_source: source,
+					get_field_priority: priority,
+					get_field_options_for_select: select_options,
+				},
+				success: function(response) {
+					try {
+						if (response.status === 'success') {
+							$('#fcw_add_new_field').text(btn_text);
+							$('.updated-option-success').addClass('active');
+	
+							if (notification_delay) {
+								clearTimeout(notification_delay);
+							}
+					
+							// hide notice on timeout
+							notification_delay = setTimeout( function() {
+								$('.updated-option-success').fadeOut('fast', function() {
+									$(this).removeClass('active').css('display', '');
+								});
+							}, 3000);
+
+							// add new field to container
+							if ( step === '1' ) {
+								$('#contact_step').append(new_field_container);
+							} else if ( step === '2' ) {
+								$('#shipping_step').append(new_field_container);
+							}
+
+							// close popup
+							$('.add-new-checkout-fields-container').removeClass('show');
+
+							// set default values
+							$('#checkout_field_name').val('');
+							$('#checkout_field_name_concat').val('');
+							$('#checkout_field_type').val('text').attr('selected','selected');
+							$('#checkout_field_title').val('');
+							$('#required_field').val('no');
+							$('#field_position').val('left').attr('selected','selected');
+							$('#field_classes').val('');
+							$('#field_label_classes').val('');
+							$('#field_step').val('1').attr('selected','selected');
+							$('#field_source').val('');
+						} else {
+							console.error('Invalid JSON response or missing "status" field:', response);
+						}
+					} catch (error) {
+						console.error('Error parsing JSON:', error);
+					}
+				},
+				error: function(xhr, textStatus, errorThrown) {
+					console.error('AJAX request failed:', textStatus, errorThrown);
+				}
+			});
+		});
 	});
 
 
@@ -627,6 +1026,108 @@
 			$('.require-pro-container').removeClass('show');
 			$('.flexify-checkout-wrapper a.nav-tab[href="#about"]').click();
 		});
+	});
+
+
+	/**
+	 * Include Bootstrap date picker
+	 * 
+	 * @since 3.2.0
+	 */
+	jQuery( function($) {
+		/**
+		 * Initialize Bootstrap datepicker
+		 */
+		function initDatepicker() {
+			$('.dateselect').datepicker({
+				format: "dd/mm/yyyy",
+				todayHighlight: true,
+				language: "pt-BR",
+			});
+		}
+		
+		// Call function to initialize datepicker on existing elements
+		initDatepicker();
+		
+		$(document).on('focus', '.dateselect', function() {
+			if ( !$(this).data('datepicker') ) {
+				$(this).datepicker({
+					format: "dd/mm/yyyy",
+					todayHighlight: true,
+					language: "pt-BR",
+				});
+			}
+		});
+	});
+
+
+	/**
+	 * Deactive license process
+	 * 
+	 * @since 4.0.0
+	 */
+	jQuery(document).ready( function($) {
+		$('#flexify_checkout_deactive_license').click( function(e) {
+		//	e.preventDefault();
+
+			var btn = $(this);
+			var btn_text = btn.text();
+			var btn_width = btn.width();
+			var btn_height = btn.height();
+			var form = new FormData();
+
+			btn.width(btn_width);
+			btn.height(btn_height);
+			btn.html('<span class="spinner-border spinner-border-sm"></span>');
+
+			form.append('api_key', flexify_checkout_params.api_key);
+			form.append('license_code', flexify_checkout_params.license);
+			form.append('domain', flexify_checkout_params.domain);
+	
+			var settings = {
+				"url": flexify_checkout_params.api_endpoint + 'license/remove_domain',
+				"method": "POST",
+				"timeout": 0,
+				"processData": false,
+				"mimeType": "multipart/form-data",
+				"contentType": false,
+				"data": form,
+			};
+	
+			$.ajax(settings)
+				.done( function(response) {
+					console.log(response);
+					
+					if ( response.status === true && response.msg === "Domain successfully removed" ) {
+						reset_license_form();
+					}
+				})
+				.fail( function(jqXHR, textStatus, errorThrown) {
+					console.error("Erro ao remover o domínio:", errorThrown);
+				//	$(this).html(btn_text);
+				});
+		});
+
+		function reset_license_form() {
+			$.ajax({
+				url: flexify_checkout_params.ajax_url,
+				type: 'POST',
+				data: {
+					action: 'deactive_license_process',
+				},
+				success: function(response) {
+					if ( response.status === 'success' ) {
+					//	$(btn).html(btn_text);
+						window.location.reload();
+						console.log('Dominio removido', response);
+					}
+				},
+				error: function(xhr, status, error) {
+					console.error("Erro ao excluir opção no servidor:", error);
+				//	$(btn).html(btn_text);
+				}
+			});
+		}
 	});
 
 })(jQuery);
