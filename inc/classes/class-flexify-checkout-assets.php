@@ -7,7 +7,7 @@ defined('ABSPATH') || exit;
  * Register/enqueue frontend and backend scripts
  *
  * @since 1.0.0
- * @version 3.0.0
+ * @version 3.3.0
  */
 class Flexify_Checkout_Assets {
 
@@ -118,21 +118,6 @@ class Flexify_Checkout_Assets {
 		// autofill field on enter CNPJ (just valid for Brazil)
 		if ( Flexify_Checkout_Init::get_setting('enable_autofill_company_info') === 'yes' && Flexify_Checkout_Core::is_checkout() && Flexify_Checkout_Init::license_valid() ) {
 			wp_enqueue_script( 'flexify-checkout-autofill-cnpj-js', FLEXIFY_CHECKOUT_ASSETS . 'frontend/js/autofill-cnpj.js', array('jquery'), FLEXIFY_CHECKOUT_VERSION, false );
-		}
-
-		// set country from user ip
-		if ( Flexify_Checkout_Init::get_setting('enable_set_country_from_ip') === 'yes' && Flexify_Checkout_Core::is_checkout() && Flexify_Checkout_Init::license_valid() ) {
-			wp_enqueue_script( 'flexify-checkout-country-from-ip', FLEXIFY_CHECKOUT_ASSETS . 'frontend/js/get-country-from-ip.js', array('jquery'), FLEXIFY_CHECKOUT_VERSION );
-			
-			// send params from JS
-			$ip_api_params = array(
-				'get_ip' => Flexify_Checkout_Init::get_setting('get_user_ip_service'),
-				'ip_param' => Flexify_Checkout_Init::get_setting('api_ip_param'),
-				'get_country' => Flexify_Checkout_Init::get_setting('get_country_from_ip_service'),
-				'country_param' => Flexify_Checkout_Init::get_setting('api_country_code_param'),
-			);
-			
-			wp_localize_script( 'flexify-checkout-country-from-ip', 'fcw_ip_api_params', $ip_api_params );
 		}
 
 		if ( Flexify_Checkout_Init::get_setting('enable_unset_wcbcf_fields_not_brazil') === 'yes' && Flexify_Checkout_Core::is_checkout() && Flexify_Checkout_Init::license_valid() ) {

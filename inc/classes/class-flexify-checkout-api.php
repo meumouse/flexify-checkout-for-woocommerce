@@ -3,13 +3,14 @@
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
     
-/**
- * Class handler API calls
- * 
- * @since 1.0.0
- * @version 3.2.0
- */
-if ( !class_exists( 'Flexify_Checkout_Api' ) ) {
+if ( ! class_exists( 'Flexify_Checkout_Api' ) ) {
+
+    /**
+     * Connect to license authentication server
+     * 
+     * @since 1.0.0
+     * @version 3.3.0
+     */
 	class Flexify_Checkout_Api {
 
     	public $fcw_key = '49D52DA9137137C0';
@@ -58,7 +59,7 @@ if ( !class_exists( 'Flexify_Checkout_Api' ) ) {
 		}
 
 		function initActionHandler() {
-			$handler = hash("crc32b", $this->product_id . $this->product_key . self::get_domain() ) . "_handle";
+			$handler = hash( 'crc32b', $this->product_id . $this->product_key . self::get_domain() ) . "_handle";
 
 			if ( isset( $_GET['action'] ) && $_GET['action'] == $handler){
 				$this->handleServerRequest();
@@ -157,7 +158,7 @@ if ( !class_exists( 'Flexify_Checkout_Api' ) ) {
 
                 if ( strtolower( trim( $responseObj->support_end ) ) == "no support" ) {
                     $isShowButton = true;
-                } elseif ( !in_array( $support_str, ["unlimited"] ) ) {
+                } elseif ( ! in_array( $support_str, ["unlimited"] ) ) {
                     if ( strtotime( 'ADD 30 DAYS', strtotime( $responseObj->support_end ) ) < time() ) {
                         $isShowButton = true;
                     }
@@ -172,7 +173,7 @@ if ( !class_exists( 'Flexify_Checkout_Api' ) ) {
                 $isShowButton = false;
                 $expire_str = strtolower( trim( $responseObj->expire_date ) );
 
-                if ( !in_array( $expire_str, ["unlimited", "no expiry"] ) ) {
+                if ( ! in_array( $expire_str, array( "unlimited", "no expiry" ) ) ) {
                     if ( strtotime( 'ADD 30 DAYS', strtotime( $responseObj->expire_date ) ) < time() ) {
                         $isShowButton = true;
                     }
@@ -279,10 +280,15 @@ if ( !class_exists( 'Flexify_Checkout_Api' ) ) {
          * JSON decoding error and unknown responses.
          *
          * @since 1.0.0
+         * @version 3.3.0
          * @param string $response Raw API response.
          * @return stdClass|mixed Object decoded from the JSON response or error object, if applicable.
          */
 		private function process_response( $response ) {
+            if ( get_option('flexify_checkout_alternative_license') === 'active' ) {
+                return;
+            }
+
             if ( ! empty( $response ) ) {
                 $resbk = $response;
                 $decrypted_response = $response;
@@ -299,6 +305,8 @@ if ( !class_exists( 'Flexify_Checkout_Api' ) ) {
                     $logger->info('(Flexify Checkout para WooCommerce) Decrypted response: ' . print_r( $decrypted_response, true ), array('source' => $plugin_log_file));
         
                     if ( empty( $decrypted_response ) ) {
+                        update_option( 'flexify_checkout_alternative_license_activation', 'yes' );
+
                         // Handle decryption failure
                         $decryption_error = new stdClass();
                         $decryption_error->status = false;
@@ -349,7 +357,7 @@ if ( !class_exists( 'Flexify_Checkout_Api' ) ) {
         private function _request( $relative_url, $data, &$error = '' ) {
             $transient_name = 'flexify_checkout_api_request_cache';
             $cached_response = get_transient( $transient_name );
-        
+
             if ( false === $cached_response ) {
                 $response = new stdClass();
                 $response->status = false;
@@ -483,7 +491,7 @@ if ( !class_exists( 'Flexify_Checkout_Api' ) ) {
             return $this->process_response( $cached_response );
         }
 
-		private function getParam( $purchase_key, $app_version, $admin_email = '' ) {
+		private function get_response_param( $purchase_key, $app_version, $admin_email = '' ) {
 			$req = new stdClass();
 			$req->license_key = $purchase_key;
 			$req->email = ! empty( $admin_email ) ? $admin_email : $this->getEmail();
@@ -566,7 +574,7 @@ if ( !class_exists( 'Flexify_Checkout_Api' ) ) {
 
 			if ( !empty( $oldRespons->is_valid ) ) {
 				if ( ! empty( $oldRespons->license_key ) ) {
-					$param = $this->getParam( $oldRespons->license_key, $this->version );
+					$param = $this->get_response_param( $oldRespons->license_key, $this->version );
 					$response = $this->_request( 'product/deactive/' . $this->product_id, $param, $message );
                     update_option('flexify_checkout_license_response_object', $response);
 
@@ -613,6 +621,10 @@ if ( !class_exists( 'Flexify_Checkout_Api' ) ) {
          * @return string
          */
 		final function _CheckWPPlugin( $purchase_key, &$error = "", &$responseObj = null ) {
+            if ( get_option('flexify_checkout_alternative_license') === 'active' ) {
+                return;
+            }
+
             if ( empty( $purchase_key ) ) {
                 $this->removeOldWPResponse();
                 $error = "";
@@ -646,7 +658,7 @@ if ( !class_exists( 'Flexify_Checkout_Api' ) ) {
                 }
             }
         
-            $param = $this->getParam( $purchase_key, $this->version );
+            $param = $this->get_response_param( $purchase_key, $this->version );
             $response = $this->_request( 'product/active/' . $this->product_id, $param, $error );
 
             if ( empty( $response->is_request_error ) ) {
@@ -672,7 +684,7 @@ if ( !class_exists( 'Flexify_Checkout_Api' ) ) {
                                 $responseObj->license_title = $licenseObj->license_title;
                                 $responseObj->license_key = $purchase_key;
                                 $responseObj->msg = $response->msg;
-                                $responseObj->renew_link = !empty($licenseObj->renew_link) ? $licenseObj->renew_link : "";
+                                $responseObj->renew_link = ! empty( $licenseObj->renew_link ) ? $licenseObj->renew_link : "";
                                 $responseObj->expire_renew_link = self::getRenewLink( $responseObj, "l" );
                                 $responseObj->support_renew_link = self::getRenewLink( $responseObj, "s" );
                                 $this->SaveWPResponse( $responseObj );

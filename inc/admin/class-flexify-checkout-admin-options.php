@@ -9,7 +9,8 @@ class Flexify_Checkout_Admin_Options extends Flexify_Checkout_Init {
    * Flexify_Checkout_Admin constructor.
    *
    * @since 1.0.0
-   * @access public
+   * @version 3.3.0
+   * @package MeuMouse.com
    */
   public function __construct() {
     parent::__construct();
@@ -34,6 +35,9 @@ class Flexify_Checkout_Admin_Options extends Flexify_Checkout_Init {
 
     // processing new field
     add_action( 'wp_ajax_add_new_field_to_checkout', array( $this, 'add_new_field_to_checkout_callback' ) );
+
+    // get AJAX call from upload files from alternative activation license
+    add_action( 'wp_ajax_alternative_activation_license', array( $this, 'alternative_activation_license_callback' ) );
   }
 
   /**
@@ -59,7 +63,7 @@ class Flexify_Checkout_Admin_Options extends Flexify_Checkout_Init {
    * Plugin general setting page and save options
    * 
    * @since 1.0.0
-   * @access public
+   * @return void
    */
   public function flexify_checkout_settings_page() {
     include_once FLEXIFY_CHECKOUT_PATH . 'inc/admin/settings.php';
@@ -70,6 +74,7 @@ class Flexify_Checkout_Admin_Options extends Flexify_Checkout_Init {
    * Save options in AJAX
    * 
    * @since 1.0.0
+   * @version 3.3.0
    * @return void
    * @package MeuMouse.com
    */
@@ -81,7 +86,6 @@ class Flexify_Checkout_Admin_Options extends Flexify_Checkout_Init {
         $options = get_option( 'flexify_checkout_settings' );
         $options['enable_flexify_checkout'] = isset( $form_data['enable_flexify_checkout'] ) ? 'yes' : 'no';
         $options['enable_autofill_company_info'] = isset( $form_data['enable_autofill_company_info'] ) && self::license_valid() ? 'yes' : 'no';
-        $options['enable_set_country_from_ip'] = isset( $form_data['enable_set_country_from_ip'] ) && self::license_valid() ? 'yes' : 'no';
         $options['enable_back_to_shop_button'] = isset( $form_data['enable_back_to_shop_button'] ) ? 'yes' : 'no';
         $options['enable_skip_cart_page'] = isset( $form_data['enable_skip_cart_page'] ) ? 'yes' : 'no';
         $options['enable_terms_is_checked_default'] = isset( $form_data['enable_terms_is_checked_default'] ) && self::license_valid() ? 'yes' : 'no';
@@ -101,6 +105,7 @@ class Flexify_Checkout_Admin_Options extends Flexify_Checkout_Init {
         $options['inter_bank_debug_mode'] = isset( $form_data['inter_bank_debug_mode'] ) ? 'yes' : 'no';
         $options['enable_unset_wcbcf_fields_not_brazil'] = isset( $form_data['enable_unset_wcbcf_fields_not_brazil'] ) && self::license_valid() ? 'yes' : 'no';
         $options['enable_manage_fields'] = isset( $form_data['enable_manage_fields'] ) && self::license_valid() ? 'yes' : 'no';
+        $options['enable_display_local_pickup_kangu'] = isset( $form_data['enable_display_local_pickup_kangu'] ) ? 'yes' : 'no';
 
         // check if form data exists "checkout_step" name and is array
         if ( isset( $form_data['checkout_step'] ) && is_array( $form_data['checkout_step'] ) ) {
@@ -414,6 +419,96 @@ class Flexify_Checkout_Admin_Options extends Flexify_Checkout_Init {
             wp_send_json( $response );
         }
     }
+  }
+
+
+  /**
+   * Handle alternative activation license file .key
+   * 
+   * @since 3.3.0
+   * @return void
+   */
+  public function alternative_activation_license_callback() {
+    if ( ! isset( $_POST['action'] ) || $_POST['action'] !== 'alternative_activation_license' ) {
+        $response = array(
+          'status' => 'error',
+          'message' => 'Erro ao carregar o arquivo. A ação não foi acionada corretamente.',
+        );
+
+        wp_send_json( $response );
+    }
+
+    // Verifica se o arquivo foi enviado
+    if ( empty( $_FILES['file'] ) ) {
+        $response = array(
+          'status' => 'error',
+          'message' => 'Erro ao carregar o arquivo. O arquivo não foi enviado.',
+        );
+
+        wp_send_json( $response );
+    }
+
+    $file = $_FILES['file'];
+
+    // Verifica se é um arquivo .key
+    if ( pathinfo( $file['name'], PATHINFO_EXTENSION ) !== 'key' ) {
+        $response = array(
+          'status' => 'invalid_file',
+          'message' => 'Arquivo inválido. O arquivo deve ser um .crt ou .key.',
+        );
+        
+        wp_send_json( $response );
+    }
+
+    // Lê o conteúdo do arquivo
+    $file_content = file_get_contents( $file['tmp_name'] );
+
+    $decrypt_keys = array(
+        '49D52DA9137137C0', // original product key
+        'B729F2659393EE27', // Clube M
+    );
+
+    $decrypted_data = $this->decrypt_with_multiple_keys( $file_content, $decrypt_keys );
+
+    if ( $decrypted_data !== null ) {
+        update_option( 'flexify_checkout_alternative_license_decrypted', $decrypted_data );
+        
+        $response = array(
+          'status' => 'success',
+          'message' => 'Licença enviada e decriptografada com sucesso.',
+        );
+    } else {
+        $response = array(
+          'status' => 'error',
+          'message' => 'Não foi possível descriptografar o arquivo de licença.',
+        );
+    }
+
+    wp_send_json( $response );
+
+    wp_die();
+  }
+
+
+  /**
+   * Try to decrypt with multiple keys
+   * 
+   * @since 3.3.0
+   * @param string $encrypted_data | Encrypted data
+   * @param array $possible_keys | Array list with decryp keys
+   * @return mixed Decrypted string or null
+   */
+  public function decrypt_with_multiple_keys( $encrypted_data, $possible_keys ) {
+    foreach ( $possible_keys as $key ) {
+      $decrypted_data = openssl_decrypt( $encrypted_data, 'AES-256-CBC', $key, 0, substr( $key, 0, 16 ) );
+
+      // Checks whether decryption was successful
+      if ( $decrypted_data !== false ) {
+        return $decrypted_data;
+      }
+    }
+    
+    return null;
   }
 }
 

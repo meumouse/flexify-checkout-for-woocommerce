@@ -1893,18 +1893,13 @@ button#place_order--processing:after {
     display: none;
   }
 
-  .flexify-checkout__content-right
-    #order_review
-    .woocommerce-shipping-totals.shipping,
+  .flexify-checkout__content-right #order_review .woocommerce-shipping-totals.shipping,
   .flexify-step #order_review .woocommerce-shipping-totals.shipping {
     text-align: left;
     width: 100%;
   }
 
-  .flexify-checkout__content-right
-    #order_review
-    .woocommerce-shipping-totals.shipping
-    th,
+  .flexify-checkout__content-right #order_review .woocommerce-shipping-totals.shipping th,
   .flexify-step #order_review .woocommerce-shipping-totals.shipping th {
     padding-left: 32px;
     position: relative;
@@ -1913,10 +1908,7 @@ button#place_order--processing:after {
     line-height: 1.5;
   }
 
-  .flexify-checkout__content-right
-    #order_review
-    .woocommerce-shipping-totals.shipping
-    th:before,
+  .flexify-checkout__content-right #order_review .woocommerce-shipping-totals.shipping th:before,
   .flexify-step #order_review .woocommerce-shipping-totals.shipping th:before {
     content: "";
     background-color: #16110e;
@@ -2413,10 +2405,7 @@ button#place_order--processing:after {
   }
 
   @media screen and (max-width: 550px) {
-    .flexify-checkout__content-right
-      #order_review
-      .woocommerce-shipping-totals.shipping
-      th:first-child {
+    .flexify-checkout__content-right #order_review .woocommerce-shipping-totals.shipping th:first-child {
       width: 30%;
     }
 
@@ -2902,6 +2891,7 @@ button#place_order--processing:after {
     background-color: #fff;
     border-radius: 0.5rem;
     border: 1px solid #e5e5e5;
+    transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
   }
   
   #shipping_method li label:hover {
@@ -3043,7 +3033,7 @@ button#place_order--processing:after {
   }
 
   .woocommerce-shipping-totals.shipping {
-    display: flex;
+    display: flex !important;
     flex-direction: column;
   }
 

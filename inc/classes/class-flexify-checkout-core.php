@@ -7,7 +7,7 @@ defined('ABSPATH') || exit;
  * Checkout core actions
  *
  * @since 1.0.0
- * @version 3.2.0
+ * @version 3.3.0
  * @package MeuMouse.com
  */
 class Flexify_Checkout_Core {
@@ -102,9 +102,6 @@ class Flexify_Checkout_Core {
 
 		// disable inter bank gateways if deactivated
 		add_filter( 'woocommerce_available_payment_gateways', array( $this, 'disable_inter_bank_gateways' ) );
-
-		// incompatibility with plugin Cielo API - Loja5
-		remove_filter( 'woocommerce_order_button_html', 'loja5_woo_cielo_webservice_custom_order_button_html' );
 
 		// set default country on checkout
 		if ( Flexify_Checkout_Init::license_valid() ) {
@@ -1143,7 +1140,7 @@ class Flexify_Checkout_Core {
 	 * Add additional classes to the body tag on checkout page.
 	 *
 	 * @since 1.0.0
-	 * @param array $classes Classes
+	 * @param array $classes | Body classes
 	 * @return array
 	 */
 	public static function update_body_class( $classes ) {
@@ -1255,12 +1252,10 @@ class Flexify_Checkout_Core {
 			return $template;
 		}
 
-		// Get the Flexify theme.
+		// Get the Flexify theme
 		$theme = self::get_theme();
-
 		$plugin_path = FLEXIFY_CHECKOUT_PATH . 'woocommerce/' . $theme . '/'; // Flexify theme folder.
 		$plugin_path_common = FLEXIFY_CHECKOUT_PATH . 'woocommerce/common/';
-
 		$flexify_template = '';
 
 		// Search the Flexify theme and common folders for the template.
@@ -1579,6 +1574,6 @@ class Flexify_Checkout_Core {
 	}
 }
 
-if ( Flexify_Checkout_Init::get_setting('enable_flexify_checkout') ) {
+if ( Flexify_Checkout_Init::get_setting('enable_flexify_checkout') === 'yes' ) {
 	new Flexify_Checkout_Core();
 }

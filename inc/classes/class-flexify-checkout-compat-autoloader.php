@@ -11,7 +11,7 @@ if ( class_exists( 'Flexify_Checkout_Compat_Autoloader' ) ) {
  * Class to automatically load classes for compatibility checker
  *
  * @since 1.0.0
- * @version 2.1.0
+ * @version 3.3.0
  * @package MeuMouse.com
  */
 class Flexify_Checkout_Compat_Autoloader {
@@ -59,6 +59,7 @@ class Flexify_Checkout_Compat_Autoloader {
 	 * Classes should reside within /inc and follow the format of
 	 * ~ class-the-name.php or {{class-prefix}}The_Name ~ class-the-name.php
 	 *
+	 * @since 1.0.0
 	 * @param string $class_name
 	 */
 	private static function autoload( $class_name ) {
@@ -98,6 +99,7 @@ class Flexify_Checkout_Compat_Autoloader {
 	public static function instance_compat_classes() {
 		Flexify_Checkout_Compat_Astra::run();
 		Flexify_Checkout_Compat_Avada::run();
+		Flexify_Checkout_Compat_Cielo_Loja5::run();
 		Flexify_Checkout_Compat_EpicJungle::run();
 		Flexify_Checkout_Compat_Flatsome::run();
 		Flexify_Checkout_Compat_Breakdance::run();
@@ -123,6 +125,7 @@ class Flexify_Checkout_Compat_Autoloader {
 		Flexify_Checkout_Compat_Auros::run();
 		Flexify_Checkout_Compat_Fastcart::run();
 		Flexify_Checkout_Compat_Kadence::run();
+		Flexify_Checkout_Compat_Kangu::run();
 		Flexify_Checkout_Compat_Blocksy::run();
 		Flexify_Checkout_Compat_WooCommerce_Subscriptions::run();
 		Flexify_Checkout_Compat_Force_Sells::run();

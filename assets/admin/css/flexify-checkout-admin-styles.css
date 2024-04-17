@@ -418,7 +418,7 @@ table.insert-license tr {
 }
 
 .input-group>:not(:first-child):not(.dropdown-menu):not(.valid-tooltip):not(.valid-feedback):not(.invalid-tooltip):not(.invalid-feedback) {
-    margin-left: -1px;
+    margin-left: -1px !important;
     border-top-left-radius: 0 !important;
     border-bottom-left-radius: 0 !important;
 }
@@ -1169,7 +1169,6 @@ a.btn-primary, a.btn-primary:hover, a.btn-primary:focus {
     align-items: center;
     z-index: 9999;
     transition: opacity 0.3s ease, visibility 0s linear 0.3s;
-    
 }
 
 #inter_bank_credendials_container.show,
@@ -1291,7 +1290,8 @@ label.custom-file-label:hover {
     color: #008aff;
 }
 
-.dropzone {
+.dropzone,
+.dropzone-license {
     border: 2px dashed #d2d5e1;
     border-radius: 0.5rem;
     padding: 1rem;
@@ -1305,21 +1305,25 @@ label.custom-file-label:hover {
     transition: color .2s ease-in-out, border-color .2s ease-in-out, background-color .2s ease-in-out;
 }
 
-.dropzone.file-active {
+.dropzone.file-active,
+.dropzone-license.file-active {
     border-color: #008aff;
     background-color: rgba(0, 138, 255, 0.15);
     color: #008aff; 
 }
 
-.dropzone.file-active .drag-text {
+.dropzone.file-active .drag-text,
+.dropzone-license.file-active .drag-text {
     color: #008aff;
 }
 
-.dropzone.file-active .drag-text svg {
+.dropzone.file-active .drag-text svg,
+.dropzone-license.file-active .drag-text svg {
     fill: #008aff
 }
 
-.dropzone.drag-over {
+.dropzone.drag-over,
+.dropzone-license.drag-over {
     border-color: #008aff;
 }
   
@@ -1345,13 +1349,15 @@ label.custom-file-label:hover {
     color: #008aff;
 }
 
-.dropzone.file-uploaded {
+.dropzone.file-uploaded,
+.dropzone-license.file-uploaded {
     border-color: #22c55e;
     background-color: rgba(34, 197, 94, 0.15);
     color: #22c55e;
 }
 
-.dropzone.file-uploaded .file-item {
+.dropzone.file-uploaded .file-item,
+.dropzone-license.file-uploaded .file-item {
     color: #22c55e;
 }
 
@@ -1449,14 +1455,14 @@ label.custom-file-label:hover {
 }
 
 .btn-outline-secondary {
-    color: #434a57;
+    color: #434a57 !important;
     background-color: transparent;
-    border-color: #d7dde2;
+    border-color: #d7dde2 !important;
 }
 
 .btn-outline-secondary:hover {
-    color: #121519;
-    background-color: #edf1f5;
+    color: #121519 !important;
+    background-color: #edf1f5 !important;
     border-color: #d7dde2;
 }
 
@@ -1863,4 +1869,13 @@ input[type=checkbox]:checked::before {
 
 .form-check.form-switch {
     padding-left: 0;
+}
+
+#license_key_zone {
+    height: 10rem;
+    width: 25rem;
+}
+
+.reset-color.tooltip {
+    opacity: 1 !important;
 }

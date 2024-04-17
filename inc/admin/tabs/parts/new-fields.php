@@ -32,13 +32,10 @@
                             <option value="text"><?php echo esc_html__( 'Texto', 'flexify-checkout-for-woocommerce' ) ?></option>
                             <option value="textarea"><?php echo esc_html__( 'Área de texto', 'flexify-checkout-for-woocommerce' ) ?></option>
                             <option value="number"><?php echo esc_html__( 'Número', 'flexify-checkout-for-woocommerce' ) ?></option>
-                        <!--    <option value="email"><?php// echo esc_html__( 'E-mail', 'flexify-checkout-for-woocommerce' ) ?></option> -->
                             <option value="password"><?php echo esc_html__( 'Senha', 'flexify-checkout-for-woocommerce' ) ?></option>
                             <option value="phone"><?php echo esc_html__( 'Telefone', 'flexify-checkout-for-woocommerce' ) ?></option>
                             <option value="url"><?php echo esc_html__( 'URL', 'flexify-checkout-for-woocommerce' ) ?></option>
                             <option value="select"><?php echo esc_html__( 'Seletor', 'flexify-checkout-for-woocommerce' ) ?></option>
-                        <!--    <option value="multicheckbox"><?php// echo esc_html__( 'Caixa de múltipla seleção', 'flexify-checkout-for-woocommerce' ) ?></option>
-                            <option value="radio"><?php// echo esc_html__( 'Rádio', 'flexify-checkout-for-woocommerce' ) ?></option> -->
                         </select>
                     </td>
                 </tr>

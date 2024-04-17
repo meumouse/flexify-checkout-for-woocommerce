@@ -7,7 +7,7 @@ defined('ABSPATH') || exit;
  * Class for init plugin
  * 
  * @since 1.0.0
- * @version 3.2.0
+ * @version 3.3.0
  * @package MeuMouse.com
  */
 class Flexify_Checkout_Init {
@@ -15,8 +15,10 @@ class Flexify_Checkout_Init {
   public $responseObj;
   public $licenseMessage;
   public $showMessage = false;
-  public $activateLicense = false;
-  public $deactivateLicense = false;
+  public $active_license = false;
+  public $deactive_license = false;
+  public $site_not_allowed = false;
+  public $product_not_allowed = false;
   
   /**
    * Construct function
@@ -35,6 +37,9 @@ class Flexify_Checkout_Init {
     // connect with license api
     add_action( 'admin_init', array( $this, 'flexify_checkout_connect_api' ) );
 
+    // alternative activation process
+    add_action( 'admin_init', array( $this, 'alternative_activation_process' ) );
+
     // check if inter bank module is active and exists expire date
     if ( class_exists('Module_Inter_Bank') && ! empty( Flexify_Checkout_Init::get_setting('inter_bank_expire_date') ) ) {
       // Hook for schedule remind inter bank credentials
@@ -50,7 +55,7 @@ class Flexify_Checkout_Init {
    * Set default options
    * 
    * @since 1.0.0
-   * @version 3.2.0
+   * @version 3.3.0
    * @return array
    */
   public function set_default_data_options() {
@@ -100,13 +105,8 @@ class Flexify_Checkout_Init {
       'inter_bank_client_id' => '',
       'inter_bank_client_secret' => '',
       'inter_bank_debug_mode' => 'no',
-      'enable_set_country_from_ip' => 'yes',
-      'get_user_ip_service' => 'https://api.ipify.org?format=json',
-      'api_ip_param' => 'ip',
-      'get_country_from_ip_service' => 'https://freeipapi.com/api/json/',
-      'api_country_code_param' => 'api_ip_param',
       'enable_unset_wcbcf_fields_not_brazil' => 'no',
-      'enable_manage_fields' => 'yes',
+      'enable_manage_fields' => 'no',
       'get_address_api_service' => 'https://viacep.com.br/ws/{postcode}/json/',
       'api_auto_fill_address_param' => 'logradouro',
       'api_auto_fill_address_neightborhood_param' => 'bairro',
@@ -114,6 +114,16 @@ class Flexify_Checkout_Init {
       'api_auto_fill_address_state_param' => 'uf',
       'logo_header_link' => get_permalink( wc_get_page_id('shop') ),
       'inter_bank_expire_date' => '',
+      'enable_field_masks' => 'yes',
+      'enable_display_local_pickup_kangu' => 'no',
+      'text_header_step_1' => 'Informações do cliente',
+      'text_header_step_2' => 'Endereço de entrega',
+      'text_header_step_3' => 'Formas de pagamento',
+      'text_header_sidebar_right' => 'Carrinho',
+      'text_check_step_1' => 'Contato',
+      'text_check_step_2' => 'Entrega',
+      'text_check_step_3' => 'Pagamento',
+      'text_previous_step_button' => 'Voltar',
     );
 
     return $options;
@@ -128,23 +138,23 @@ class Flexify_Checkout_Init {
    * @return void
    */
   public function flexify_checkout_set_default_options() {
-      $get_options = $this->set_default_data_options();
-      $default_options = get_option('flexify_checkout_settings', array());
+    $get_options = $this->set_default_data_options();
+    $default_options = get_option('flexify_checkout_settings', array());
 
-      if ( empty( $default_options ) ) {
-          $options = $get_options;
-          update_option('flexify_checkout_settings', $options);
-      } else {
-          $options = $default_options;
-  
-          foreach ( $get_options as $key => $value ) {
-              if ( !isset( $options[$key] ) ) {
-                  $options[$key] = $value;
-              }
-          }
-  
-          update_option('flexify_checkout_settings', $options);
-      }
+    if ( empty( $default_options ) ) {
+        $options = $get_options;
+        update_option('flexify_checkout_settings', $options);
+    } else {
+        $options = $default_options;
+
+        foreach ( $get_options as $key => $value ) {
+            if ( !isset( $options[$key] ) ) {
+                $options[$key] = $value;
+            }
+        }
+
+        update_option('flexify_checkout_settings', $options);
+    }
   }    
 
 
@@ -508,7 +518,7 @@ class Flexify_Checkout_Init {
    * Connect on API server for verify license
    * 
    * @since 1.0.0
-   * @version 3.0.0
+   * @version 3.3.0
    * @return void
    */
   public function flexify_checkout_connect_api() {
@@ -523,10 +533,9 @@ class Flexify_Checkout_Init {
         delete_transient('flexify_checkout_api_request_cache');
         delete_transient('flexify_checkout_api_response_cache');
 
-        update_option( 'flexify_checkout_license_key', $_POST );
-        $license_key = !empty( $_POST['flexify_checkout_license_key'] ) ? $_POST['flexify_checkout_license_key'] : '';
+        $license_key = ! empty( $_POST['flexify_checkout_license_key'] ) ? $_POST['flexify_checkout_license_key'] : '';
         update_option( 'flexify_checkout_license_key', $license_key ) || add_option('flexify_checkout_license_key', $license_key );
-        update_option( '_site_transient_update_plugins', '' );
+        update_option( 'flexify_checkout_temp_license_key', $license_key ) || add_option('flexify_checkout_temp_license_key', $license_key );
       }
 
       if ( ! self::license_valid() ) {
@@ -537,12 +546,14 @@ class Flexify_Checkout_Init {
       if ( Flexify_Checkout_Api::CheckWPPlugin( $license_key, $this->licenseMessage, $this->responseObj, FLEXIFY_CHECKOUT_FILE ) ) {
           if ( $this->responseObj && $this->responseObj->is_valid ) {
             update_option( 'flexify_checkout_license_status', 'valid' );
+            delete_option('flexify_checkout_temp_license_key');
+            delete_option('flexify_checkout_alternative_license');
           } else {
             update_option( 'flexify_checkout_license_status', 'invalid' );
           }
 
           if ( isset( $_POST['flexify_checkout_active_license'] ) && self::license_valid() ) {
-            $this->activateLicense = true;
+            $this->active_license = true;
           }
       } else {
           if ( !empty( $license_key ) && !empty( $this->licenseMessage ) ) {
@@ -559,8 +570,12 @@ class Flexify_Checkout_Init {
           delete_transient('flexify_checkout_api_request_cache');
           delete_transient('flexify_checkout_api_response_cache');
           delete_option('flexify_checkout_license_response_object');
+          delete_option('flexify_checkout_alternative_license_decrypted');
+          delete_option('flexify_checkout_alternative_license_activation');
+          delete_option('flexify_checkout_temp_license_key');
+          delete_option('flexify_checkout_alternative_license');
 
-          $this->deactivateLicense = true;
+          $this->deactive_license = true;
         }
       }
 
@@ -570,6 +585,56 @@ class Flexify_Checkout_Init {
         delete_transient('flexify_checkout_api_response_cache');
         delete_option('flexify_checkout_license_response_object');
       }
+    }
+  }
+
+
+  /**
+   * Generate alternative activation object from decrypted license
+   * 
+   * @since 3.3.0
+   * @return void
+   */
+  public function alternative_activation_process() {
+    $decrypted_license_data = get_option('flexify_checkout_alternative_license_decrypted');
+    $license_data_array = json_decode( stripslashes( $decrypted_license_data ) );
+    $this_domain = Flexify_Checkout_Api::get_domain();
+    $allowed_products = array( '3', '7', );
+
+    if ( $license_data_array === null ) {
+      return;
+    }
+
+    if ( $this_domain !== $license_data_array->site_domain ) {
+      $this->site_not_allowed = true;
+
+      return;
+    }
+
+    if ( ! in_array( $license_data_array->selected_product, $allowed_products ) ) {
+      $this->product_not_allowed = true;
+
+      return;
+    }
+
+    $license_object = $license_data_array->license_object;
+
+    if ( $this_domain === $license_data_array->site_domain ) {
+      $obj = new stdClass();
+      $obj->license_key = $license_data_array->license_code;
+      $obj->email = $license_data_array->user_email;
+      $obj->domain = $this_domain;
+      $obj->app_version = FLEXIFY_CHECKOUT_VERSION;
+      $obj->product_id = $license_data_array->selected_product;
+      $obj->product_base = $license_data_array->product_base;
+      $obj->is_valid = $license_object->is_valid;
+      $obj->license_title = $license_object->license_title;
+      $obj->expire_date = $license_object->expire_date;
+
+      update_option( 'flexify_checkout_alternative_license', 'active' );
+      update_option( 'flexify_checkout_license_response_object', $obj );
+      update_option( 'flexify_checkout_license_key', $obj->license_key );
+      delete_option('flexify_checkout_alternative_license_decrypted');
     }
   }
 

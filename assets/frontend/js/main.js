@@ -452,6 +452,19 @@ flexifyCart.removeControls = function() {
   });
 };
 
+
+/**
+ * Update checkout on change payment method
+ * 
+ * @since 3.3.0
+ */
+jQuery(document).ready( function($) {
+	$(document.body).on('change', 'input[name="payment_method"]', function() {
+		$('body').trigger('update_checkout');
+	});
+});
+
+
 /**
  * Add quantity control.
  */
@@ -536,7 +549,7 @@ flexifyCart.moveShippingRow = function() {
   var is_modern = document.querySelectorAll('.flexify-checkout--modern').length;
 
   // No need to run this code for classic theme
-  if (!is_modern) {
+  if ( ! is_modern ) {
     return;
   }
 
@@ -550,7 +563,7 @@ flexifyCart.moveShippingRow = function() {
   // Pick the shipping row from content-right/sidebar.
   var $shipping_row = jQuery('.flexify-checkout__content-right tr.woocommerce-shipping-totals.shipping');
 
-  if ( !$shipping_row.length ) {
+  if ( ! $shipping_row.length ) {
     return;
   }
 
