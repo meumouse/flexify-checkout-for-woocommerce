@@ -34,6 +34,17 @@ Você pode instalar um plugin WordPress de duas maneiras: via o painel de admini
 
 ### Registro de alterações (Changelogs):
 
+Versão 3.3.0 (16/04/2024)
+* Correção de bugs
+* Otimizações
+* Recurso adicionado: Ativação alternativa de licenças
+* Recurso adicionado: Personalização de textos do checkout
+* Compatibilidade com Kangu
+* Recurso removido: Selecionar país do usuário automaticamente através do seu IP
+* Arquivo modelo de traduções atualizado
+* Arquivo de tradução idioma en_US (Inglês americano) adicionado
+* Arquivo de tradução idioma es_ES (Espanhol) adicionado
+
 Versão 3.2.0 (02/04/2024)
 * Correção de bugs
 * Otimizações
