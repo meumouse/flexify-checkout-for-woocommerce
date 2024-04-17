@@ -6,11 +6,11 @@
  * Plugin URI: 				https://meumouse.com/plugins/flexify-checkout-para-woocommerce/
  * Author: 					MeuMouse.com
  * Author URI: 				https://meumouse.com/
- * Version: 				3.2.0
+ * Version: 				3.3.0
  * WC requires at least: 	6.0.0
  * WC tested up to: 		8.7.0
  * Requires PHP: 			7.4
- * Tested up to:      		6.4.3
+ * Tested up to:      		6.5.2
  * Text Domain: 			flexify-checkout-for-woocommerce
  * Domain Path: 			/languages
  * License: 				GPL2
@@ -38,7 +38,7 @@ class Flexify_Checkout {
 	 * @since 1.0.0
 	 * @var string
 	 */
-	public static $version = '3.2.0';
+	public static $version = '3.3.0';
 
 	/**
 	 * Plugin initiated
@@ -90,6 +90,12 @@ class Flexify_Checkout {
 	 * @return void
 	 */
 	public function flexify_checkout_load_checker() {
+		// Display notice if PHP version is bottom 7.4
+		if ( version_compare( phpversion(), '7.4', '<' ) ) {
+			add_action( 'admin_notices', array( $this, 'flexify_checkout_php_version_notice' ) );
+			return;
+		}
+		
 		if ( !function_exists( 'is_plugin_active' ) ) {
 			include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 		}
@@ -103,16 +109,18 @@ class Flexify_Checkout {
 			$this->setup_compat_autoloader();
 			$this->setup_includes();
 			$this->initiated = true;
+
+			$url = $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
+
+			// remove Pro badge if plugin is licensed
+			if ( get_option('flexify_checkout_license_status') !== 'valid' && false !== strpos( $url, 'wp-admin/plugins.php' ) ) {
+				add_filter( 'plugin_action_links_' . FLEXIFY_CHECKOUT_BASENAME, array( $this, 'get_pro_woo_custom_installments_link' ), 10, 4 );
+				add_action( 'admin_head', array( $this, 'badge_pro_woo_custom_installments' ) );
+			}
 		} else {
 			add_action( 'admin_notices', array( $this, 'flexify_checkout_wc_version_notice' ) );
 			deactivate_plugins( 'flexify-checkout-for-woocommerce/flexify-checkout-for-woocommerce.php' );
 			add_action( 'admin_notices', array( $this, 'flexify_checkout_wc_deactivate_notice' ) );
-		}
-
-		// Display notice if PHP version is bottom 7.4
-		if ( version_compare( phpversion(), '7.4', '<' ) ) {
-			add_action( 'admin_notices', array( $this, 'flexify_checkout_php_version_notice' ) );
-			return;
 		}
 	}
 
@@ -293,8 +301,8 @@ class Flexify_Checkout {
 	 */
 	public function flexify_checkout_wc_version_notice() {
 		echo '<div class="notice is-dismissible error">
-				<p>' . __( '<strong>Flexify Checkout para WooCommerce</strong> requer a versão do WooCommerce 6.0 ou maior. Faça a atualização do plugin WooCommerce.', 'flexify-checkout-for-woocommerce' ) . '</p>
-			</div>';
+			<p>' . __( '<strong>Flexify Checkout para WooCommerce</strong> requer a versão do WooCommerce 6.0 ou maior. Faça a atualização do plugin WooCommerce.', 'flexify-checkout-for-woocommerce' ) . '</p>
+		</div>';
 	}
 
 
@@ -305,13 +313,13 @@ class Flexify_Checkout {
 	 * @return void
 	 */
 	public function flexify_checkout_wc_deactivate_notice() {
-		if ( !current_user_can('install_plugins') ) {
+		if ( ! current_user_can('install_plugins') ) {
 			return;
 		}
 
 		echo '<div class="notice is-dismissible error">
-				<p>' . __( '<strong>Flexify Checkout para WooCommerce</strong> requer que <strong>WooCommerce</strong> esteja instalado e ativado.', 'flexify-checkout-for-woocommerce' ) . '</p>
-			</div>';
+			<p>' . __( '<strong>Flexify Checkout para WooCommerce</strong> requer que <strong>WooCommerce</strong> esteja instalado e ativado.', 'flexify-checkout-for-woocommerce' ) . '</p>
+		</div>';
 	}
 
 
@@ -323,8 +331,8 @@ class Flexify_Checkout {
 	 */
 	public function flexify_checkout_php_version_notice() {
 		echo '<div class="notice is-dismissible error">
-				<p>' . __( '<strong>Flexify Checkout para WooCommerce</strong> requer a versão do PHP 7.4 ou maior. Contate o suporte da sua hospedagem para realizar a atualização.', 'flexify-checkout-for-woocommerce' ) . '</p>
-			</div>';
+			<p>' . __( '<strong>Flexify Checkout para WooCommerce</strong> requer a versão do PHP 7.4 ou maior. Contate o suporte da sua hospedagem para realizar a atualização.', 'flexify-checkout-for-woocommerce' ) . '</p>
+		</div>';
 	}
 
 
@@ -364,6 +372,51 @@ class Flexify_Checkout {
 		}
 	 
 		return $plugin_meta;
+	}
+
+
+	/**
+	 * Plugin action links Pro version
+	 * 
+	 * @since 3.3.0
+	 * @return array
+	 */
+	public static function get_pro_woo_custom_installments_link( $action_links ) {
+		$plugins_links = array(
+			'<a id="get-pro-flexify-checkout" target="_blank" href="https://meumouse.com/plugins/flexify-checkout-para-woocommerce/?utm_source=wordpress&utm_medium=plugins-list&utm_campaign=flexify-checkout">' . __( 'Seja PRO', 'flexify-checkout-for-woocommerce' ) . '</a>'
+		);
+	
+		return array_merge( $plugins_links, $action_links );
+	}
+
+
+	/**
+	 * Display badge in CSS for get pro in plugins page
+	 * 
+	 * @since 3.3.0
+	 * @return void
+	 */
+	public function badge_pro_woo_custom_installments() {
+		echo '<style>
+			#get-pro-flexify-checkout {
+				display: inline-block;
+				padding: 0.35em 0.6em;
+				font-size: 0.8125em;
+				font-weight: 600;
+				line-height: 1;
+				color: #fff;
+				text-align: center;
+				white-space: nowrap;
+				vertical-align: baseline;
+				border-radius: 0.25rem;
+				background-color: #008aff;
+				transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;
+			}
+
+			#get-pro-flexify-checkout:hover {
+				background-color: #0078ed;
+			}
+		</style>';
 	}
 
 
