@@ -34,6 +34,22 @@ Você pode instalar um plugin WordPress de duas maneiras: via o painel de admini
 
 ### Registro de alterações (Changelogs):
 
+Versão 3.5.0 (13/06/2024)
+* Correção de bugs:
+  -- Recuperar opções Pro ao reativar licença
+  -- Atualizar informação do campo da finalização de compras nos cookies do navegador
+  -- Correção na validação de campos
+* Otimizações
+* Recurso adicionado: Adicionar uma nova fonte à biblioteca
+* Recurso modificado: Permitir desativar campo de país
+* Recurso adicionado: Redefinir configurações
+* Recurso adicionado: Adicionar máscaras para campos
+* Recurso adicionado: Ativar/desativar verificação de força da senha do usuário
+* Recurso adicionado: Adição dos dados dos produtos e data e hora de entrada na sessão "flexify_checkout_items_cart"
+* Recurso adicionado: Ativar/desativar sugestão de preenchimento do e-mail
+* Recurso modificado: Novo modelo de avisos
+* Recurso adicionado: Mostrar resumo do pedido aberto por padrão
+
 Versão 3.3.0 (16/04/2024)
 * Correção de bugs
 * Otimizações
