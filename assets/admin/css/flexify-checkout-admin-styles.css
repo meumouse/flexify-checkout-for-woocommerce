@@ -193,6 +193,11 @@ table.insert-license tr {
     padding: 0 !important;
 }
 
+.btn-sm.btn-icon,
+.btn-group-sm > .btn.btn-icon {
+    padding: 0 !important;
+}
+
 .btn-icon-lg {
     min-width: 3.2rem !important;
     max-width: 3.2rem !important;
