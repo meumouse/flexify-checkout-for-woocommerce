@@ -35,7 +35,7 @@ class Flexify_Checkout_Compat_Shoptimizer {
 	 * Shoptimizer compatibility.
 	 */
 	public static function compat_shoptimizer() {
-		if ( ! function_exists( 'shoptimizer_get_option' ) || ! Flexify_Checkout_Core::is_checkout() ) {
+		if ( ! function_exists( 'shoptimizer_get_option' ) || ! is_flexify_checkout() ) {
 			return;
 		}
 

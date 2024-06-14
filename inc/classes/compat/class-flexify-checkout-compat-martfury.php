@@ -34,7 +34,7 @@ class Flexify_Checkout_Compat_Martfury {
 	 * Martfury theme compatibility.
 	 */
 	public static function compat_martfury() {
-		if ( ! function_exists( 'martfury_quick_view_modal' ) || ! Flexify_Checkout_Core::is_checkout() ) {
+		if ( ! function_exists( 'martfury_quick_view_modal' ) || ! is_flexify_checkout() ) {
 			return;
 		}
 

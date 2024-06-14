@@ -34,7 +34,7 @@ class Flexify_Checkout_Compat_Flatsome {
 	 * Disable flatsome customisations.
 	 */
 	public static function compat_flatsome() {
-		if ( ! defined( 'UXTHEMES_ACCOUNT_URL' ) || ! Flexify_Checkout_Core::is_checkout() ) {
+		if ( ! defined( 'UXTHEMES_ACCOUNT_URL' ) || ! is_flexify_checkout() ) {
 			return;
 		}
 

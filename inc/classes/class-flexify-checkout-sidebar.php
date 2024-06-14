@@ -7,7 +7,7 @@ defined('ABSPATH') || exit;
  * Sidebar related functions
  *
  * @since 1.0.0
- * @version 1.0.0
+ * @version 3.5.0
  * @package MeuMouse.com
  */
 class Flexify_Checkout_Sidebar {
@@ -25,6 +25,8 @@ class Flexify_Checkout_Sidebar {
 	/**
 	 * Sidebar Actions.
 	 *
+	 * @since 1.0.0
+	 * @version 3.5.0
 	 * @return void
 	 */
 	public static function sidebar_actions() {
@@ -46,7 +48,7 @@ class Flexify_Checkout_Sidebar {
 
 		// Change the coupon form position.
 		remove_action( 'woocommerce_before_checkout_form', 'woocommerce_checkout_coupon_form', 10 );
-		add_action( 'woocommerce_review_order_after_cart_contents', array( __CLASS__, 'checkout_add_coupon_form' ), 9 );
+		add_action( 'woocommerce_review_order_before_subtotal', array( __CLASS__, 'checkout_add_coupon_form' ), 9 );
 
 		// Add image to checkout.
 		add_filter( 'woocommerce_cart_item_name', array( __CLASS__, 'add_image_to_cart' ), 10, 3 );
@@ -188,9 +190,11 @@ class Flexify_Checkout_Sidebar {
 		}
 
 		?>
-			<tr class="coupon-form"><td colspan="2">
-				<?php Flexify_Checkout_Steps::render_coupon_form(); ?>
-			</td></tr>
+			<tr class="coupon-form">
+				<td colspan="2">
+					<?php Flexify_Checkout_Steps::render_coupon_form(); ?>
+				</td>
+			</tr>
 		<?php
 	}
 

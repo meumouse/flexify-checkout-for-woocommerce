@@ -7,14 +7,10 @@ defined('ABSPATH') || exit;
  * Functions related to the Thank you page
  *
  * @since 1.0.0
- * @version 1.0.0
+ * @version 3.5.0
+ * @package MeuMouse.com
  */
 class Flexify_Checkout_Thankyou {
-
-	public function __construct() {
-
-	}
-
 
 	/**
 	 * Left column of the Thank you page.
@@ -30,7 +26,6 @@ class Flexify_Checkout_Thankyou {
 		}
 
 	//	self::render_status( $order );
-	//	self::render_map( $order );
 		self::render_customer_details( $order );
 		self::downloads( $order );
 		self::contact_us( $order );
@@ -79,54 +74,6 @@ class Flexify_Checkout_Thankyou {
 		do_action( 'flexify_checkout_thankyou_after_order_status', $order );
 	}
 
-	/**
-	 * Render Map on Thank you page.
-	 *
-	 * @since 1.0.0
-	 * @param WC_Order $order Order.
-	 * @return bool
-	 */
-	public static function render_map( $order ) {
-		$address = $order->get_address( 'shipping' );
-		$settings = Flexify_Checkout_Core_Settings::$settings;
-
-		if ( empty( $settings['integrations_integrations_google_api_key'] ) || '0' === $settings['thankyou_thankyou_show_map'] ) {
-			return false;
-		}
-
-		if ( ! self::need_to_show_map( $order ) ) {
-			return false;
-		}
-
-		$formatted_address = sprintf( '%s, %s, %s, %s, %s ', $address['address_1'], $address['address_2'], $address['city'], $address['state'], $address['country'] );
-		$map_src = sprintf( 'https://www.google.com/maps/embed/v1/place?key=%s&q=%s', $settings['integrations_integrations_google_api_key'], rawurlencode( $formatted_address ) );
-
-		/**
-		 * Flexify thank you page map iFrame src URL.
-		 *
-		 * @since 2.1.0.
-		 */
-		$map_src = apply_filters( 'flexify_thankyou_map_url', $map_src );
-
-		/**
-		 * Thank you page: Before Map.
-		 *
-		 * @since 1.0.0
-		 */
-		do_action( 'flexify_thankyou_before_map', $order ); ?>
-
-		<div class="flexify-ty-map">
-			<div class="flexify-ty-map__map" id="flexify-ty-map-canvas" data-address="<?php echo esc_attr( $formatted_address ); ?>"></div>
-		</div>
-		<?php
-
-		/**
-		 * Thank you page: After Map
-		 *
-		 * @since 1.0.0
-		 */
-		do_action( 'flexify_thankyou_after_map', $order );
-	}
 
 	/**
 	 * Content box.
@@ -202,10 +149,11 @@ class Flexify_Checkout_Thankyou {
 	}
 
 	/**
-	 * Customer details box.
+	 * Customer details box
 	 *
-	 * @param WC_Order $order Order.
-	 *
+	 * @since 1.0.0
+	 * @version 3.5.0
+	 * @param object $order | Object WC_Order
 	 * @return void
 	 */
 	public static function render_customer_details( $order ) {
@@ -223,29 +171,32 @@ class Flexify_Checkout_Thankyou {
 			<div class="flexify-review-customer__row flexify-review-customer__row--contact">
 				<div class='flexify-review-customer__label'><label><?php esc_html_e( 'Contato', 'flexify-checkout-for-woocommerce' ); ?></label></div>
 				<div class='flexify-review-customer__content'>
+					<p class="woocommerce-customer-details--customer"><?php echo sprintf( esc_html( '%s %s' ), $order->get_billing_first_name(), $order->get_billing_last_name() ); ?></p>
 					<p class="woocommerce-customer-details--email"><?php echo esc_html( $order->get_billing_email() ); ?></p>
 					<p class="woocommerce-customer-details--phone"><?php echo esc_html( $order->get_billing_phone() ); ?></p>
 				</div>
 			</div>
 
-			<div class="flexify-review-customer__row flexify-review-customer__row--address">
-				<div class='flexify-review-customer__label'>
-					<label>
-						<?php
-						if ( $show_shipping ) {
-							esc_html_e( 'Cobrança', 'flexify-checkout-for-woocommerce' );
-						} else {
-							esc_html_e( 'Entrega', 'flexify-checkout-for-woocommerce' );
-						}
-						?>
-					</label>
+			<?php if ( Flexify_Checkout_Init::get_setting('enable_optimize_for_digital_products') === 'no' ) : ?>
+				<div class="flexify-review-customer__row flexify-review-customer__row--address">
+					<div class='flexify-review-customer__label'>
+						<label>
+							<?php
+							if ( $show_shipping ) {
+								esc_html_e( 'Cobrança', 'flexify-checkout-for-woocommerce' );
+							} else {
+								esc_html_e( 'Entrega', 'flexify-checkout-for-woocommerce' );
+							}
+							?>
+						</label>
+					</div>
+					<div class='flexify-review-customer__content'>
+						<address>
+							<?php echo wp_kses_post( $order->get_formatted_billing_address() ); ?>
+						<address>
+					</div>
 				</div>
-				<div class='flexify-review-customer__content'>
-					<address>
-						<?php echo wp_kses_post( $order->get_formatted_billing_address() ); ?>
-					<address>
-				</div>
-			</div>
+			<?php endif; ?>
 
 			<?php
 			if ( $show_shipping ) {
@@ -292,11 +243,12 @@ class Flexify_Checkout_Thankyou {
 		do_action( 'flexify_thankyou_after_customer_details', $order );
 	}
 
+
 	/**
 	 * Render Product details.
 	 *
-	 * @param WC_Order $order Order.
-	 *
+	 * @since 1.0.0
+	 * @param object $order | Object WC_Order
 	 * @return void
 	 */
 	public static function render_product_details( $order ) {
@@ -488,7 +440,7 @@ class Flexify_Checkout_Thankyou {
 				?>
 			</span>
 			<span class="flexify-ty-footer__continue-shipping">
-				<a class="flexify-button flexify-button--ty" href="<?php echo esc_attr( $shop_url ); ?>" ><?php esc_html_e( 'Ver mais produtos', 'flexify-checkout-for-woocommerce' ); ?></a>
+				<a class="flexify-button flexify-button--ty" href="<?php echo esc_url( $shop_url ); ?>" ><?php esc_html_e( 'Ver mais produtos', 'flexify-checkout-for-woocommerce' ); ?></a>
 			</span>
 		</div>
 		<?php

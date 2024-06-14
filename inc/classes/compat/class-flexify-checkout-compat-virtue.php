@@ -35,7 +35,7 @@ class Flexify_Checkout_Compat_Virtue {
 	 * Disable theme wrapper as we don't need theme's header and footer on checkout page.
 	 */
 	public static function compat_virtue() {
-		if ( ! class_exists( 'Kadence_Wrapping' ) || ! Flexify_Checkout_Core::is_checkout() ) {
+		if ( ! class_exists( 'Kadence_Wrapping' ) || ! is_flexify_checkout() ) {
 			return;
 		}
 

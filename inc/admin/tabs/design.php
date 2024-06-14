@@ -193,6 +193,7 @@ defined('ABSPATH') || exit; ?>
             </div>
          </td>
       </tr>
+
       <tr>
          <th>
             <?php echo esc_html__( 'Fontes do Google', 'flexify-checkout-for-woocommerce' ) ?>
@@ -200,20 +201,57 @@ defined('ABSPATH') || exit; ?>
          </th>
          <td>
             <select id="set_font_family" class="form-select" name="set_font_family">
-               <option value="Inter" <?php echo ( self::get_setting('set_font_family') == 'Inter' ) ? "selected=selected" : ""; ?>><?php echo esc_html__( 'Inter (Padrão)', 'flexify-checkout-for-woocommerce' ) ?></option>
-               <option value="Poppins" <?php echo ( self::get_setting('set_font_family') == 'Poppins' ) ? "selected=selected" : ""; ?>><?php echo esc_html__( 'Poppins', 'flexify-checkout-for-woocommerce' ) ?></option>
-               <option value="Montserrat" <?php echo ( self::get_setting('set_font_family') == 'Montserrat' ) ? "selected=selected" : ""; ?>><?php echo esc_html__( 'Montserrat', 'flexify-checkout-for-woocommerce' ) ?></option>
-               <option value="Open sans" <?php echo ( self::get_setting('set_font_family') == 'Open sans' ) ? "selected=selected" : ""; ?>><?php echo esc_html__( 'Open Sans', 'flexify-checkout-for-woocommerce' ) ?></option>
-               <option value="Rubik" <?php echo ( self::get_setting('set_font_family') == 'Rubik' ) ? "selected=selected" : ""; ?>><?php echo esc_html__( 'Rubik', 'flexify-checkout-for-woocommerce' ) ?></option>
-               <option value="Roboto" <?php echo ( self::get_setting('set_font_family') == 'Roboto' ) ? "selected=selected" : ""; ?>><?php echo esc_html__( 'Roboto', 'flexify-checkout-for-woocommerce' ) ?></option>
-               <option value="Lato" <?php echo ( self::get_setting('set_font_family') == 'Lato' ) ? "selected=selected" : ""; ?>><?php echo esc_html__( 'Lato', 'flexify-checkout-for-woocommerce' ) ?></option>
-               <option value="Raleway" <?php echo ( self::get_setting('set_font_family') == 'Raleway' ) ? "selected=selected" : ""; ?>><?php echo esc_html__( 'Raleway', 'flexify-checkout-for-woocommerce' ) ?></option>
-               <option value="Nunito" <?php echo ( self::get_setting('set_font_family') == 'Nunito' ) ? "selected=selected" : ""; ?>><?php echo esc_html__( 'Nunito', 'flexify-checkout-for-woocommerce' ) ?></option>
-               <option value="Quicksand" <?php echo ( self::get_setting('set_font_family') == 'Quicksand' ) ? "selected=selected" : ""; ?>><?php echo esc_html__( 'Quicksand', 'flexify-checkout-for-woocommerce' ) ?></option>
-               <option value="Urbanist" <?php echo ( self::get_setting('set_font_family') == 'Urbanist' ) ? "selected=selected" : ""; ?>><?php echo esc_html__( 'Urbanist', 'flexify-checkout-for-woocommerce' ) ?></option>
+               <?php $options = get_option('flexify_checkout_settings', array());
+
+               foreach ( $options['font_family'] as $font => $value ) : ?>
+                  <option value="<?php echo esc_attr( $font ) ?>" <?php echo ( self::get_setting('set_font_family') === $font ) ? "selected=selected" : ""; ?>><?php echo esc_html( $value['font_name'] ) ?></option>
+               <?php endforeach; ?>
             </select>
          </td>
+         <td>
+            <button id="set_new_font_family_trigger" class="btn btn-outline-primary ms-2"><?php echo esc_html__( 'Adicionar nova fonte', 'flexify-checkout-for-woocommerce' ) ?></button>
+
+            <div id="set_new_font_family_container">
+               <div class="popup-content">
+                  <div class="popup-header">
+                     <h5 class="popup-title"><?php echo esc_html__('Adicione uma nova fonte à biblioteca', 'flexify-checkout-for-woocommerce') ?></h5>
+                     <button id="close_new_font_family" class="btn-close" aria-label="<?php esc_html( 'Fechar', 'flexify-checkout-for-woocommerce' ); ?>"></button>
+                  </div>
+                  <div class="popup-body">
+                     <table class="form-table">
+                        <tr>
+                           <th class="w-50">
+                              <?php echo esc_html__( 'Nome da fonte', 'flexify-checkout-for-woocommerce' ) ?>
+                              <span class="flexify-checkout-description"><?php echo esc_html__( 'Informe o nome da fonte do Google que deseja adicionar à biblioteca de opções.', 'flexify-checkout-for-woocommerce' ) ?></span>
+                           </th>
+                           <td class="w-50">
+                              <input type="text" class="form-control " id="set_new_font_family_name" name="set_new_font_family_name" value=""/>
+                           </td>
+                        </tr>
+                        <tr>
+                           <th class="w-50">
+                              <?php echo esc_html__( 'URL da fonte', 'flexify-checkout-for-woocommerce' ) ?>
+                              <span class="flexify-checkout-description"><?php echo esc_html__( 'Informe o link da fonte para ser usado no formato @import na folha de estilos da finalização de compras.', 'flexify-checkout-for-woocommerce' ) ?></span>
+                           </th>
+                           <td class="w-50">
+                              <input type="text" class="form-control" id="set_new_font_family_url" name="set_new_font_family_url" value=""/>
+                           </td>
+                        </tr>
+                        <tr>
+                           <td class="w-100 d-flex justify-content-end">
+                              <button id="add_new_font_to_lib" class="btn btn-primary d-flex align-items-center justify-content-center mt-2" disabled>
+                                 <svg class="me-2" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: #fff;"><path d="M19 15v-3h-2v3h-3v2h3v3h2v-3h3v-2h-.937zM4 7h11v2H4zm0 4h11v2H4zm0 4h8v2H4z"></path></svg>
+                                 <?php echo esc_html__('Adicionar fonte', 'flexify-checkout-for-woocommerce') ?>
+                              </button>
+                           </td>
+                        </tr>
+                     </table>
+                  </div>
+               </div>
+            </div>
+         </td>
       </tr>
+
       <tr>
          <th>
             <?php echo esc_html__( 'Tamanho do h2', 'flexify-checkout-for-woocommerce' ) ?>

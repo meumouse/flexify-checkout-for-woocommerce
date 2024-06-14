@@ -34,7 +34,7 @@ class Flexify_Checkout_Compat_Astra {
 	 * Disable astra checkout customisations.
 	 */
 	public static function compat_astra() {
-		if ( ! class_exists( 'Astra_Woocommerce' ) || ! Flexify_Checkout_Core::is_checkout() ) {
+		if ( ! class_exists( 'Astra_Woocommerce' ) || ! is_flexify_checkout() ) {
 			return;
 		}
 

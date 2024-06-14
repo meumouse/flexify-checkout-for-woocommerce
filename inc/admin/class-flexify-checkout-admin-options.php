@@ -9,7 +9,7 @@ class Flexify_Checkout_Admin_Options extends Flexify_Checkout_Init {
    * Flexify_Checkout_Admin constructor.
    *
    * @since 1.0.0
-   * @version 3.3.0
+   * @version 3.5.0
    * @package MeuMouse.com
    */
   public function __construct() {
@@ -24,9 +24,6 @@ class Flexify_Checkout_Admin_Options extends Flexify_Checkout_Init {
     // get AJAX call from upload files from Inter bank module
     add_action( 'wp_ajax_upload_file', array( $this, 'upload_files_callback' ) );
 
-    // Inter bank module actions
-    add_action( 'admin_init', array( $this, 'inter_bank_module_actions' ) );
-
     // install Inter bank module in AJAX
     add_action( 'wp_ajax_install_inter_bank_module', array( $this, 'install_inter_bank_module_callback' ) );
 
@@ -38,7 +35,35 @@ class Flexify_Checkout_Admin_Options extends Flexify_Checkout_Init {
 
     // get AJAX call from upload files from alternative activation license
     add_action( 'wp_ajax_alternative_activation_license', array( $this, 'alternative_activation_license_callback' ) );
+
+    // get AJAX call from add new font
+    add_action( 'wp_ajax_add_new_font_action', array( $this, 'add_new_font_action_callback' ) );
+
+    // get AJAX call for query products search
+    add_action( 'wp_ajax_get_woo_products_ajax', array( $this, 'get_woo_products_callback' ) );
+
+    // get AJAX call for query products categories
+    add_action( 'wp_ajax_get_woo_categories_ajax', array( $this, 'get_woo_categories_callback' ) );
+    
+    // get AJAX call for query products categories
+    add_action( 'wp_ajax_get_woo_attributes_ajax', array( $this, 'get_woo_attributes_callback' ) );
+
+    // get AJAX call for query WP users
+    add_action( 'wp_ajax_search_users_ajax', array( $this, 'search_users_ajax_callback' ) );
+
+    // get AJAX call from add new condition
+    add_action( 'wp_ajax_add_new_checkout_condition', array( $this, 'add_new_checkout_condition_callback' ) );
+
+    // get AJAX call from exclude condition item
+    add_action( 'wp_ajax_exclude_condition_item', array( $this, 'exclude_condition_item_callback' ) );
+
+    // get AJAX call from add new email provider
+    add_action( 'wp_ajax_add_new_email_provider', array( $this, 'add_new_email_provider_callback' ) );
+
+    // get AJAX call from remove email provider item
+    add_action( 'wp_ajax_remove_email_provider', array( $this, 'remove_email_provider_callback' ) );
   }
+  
 
   /**
    * Function for create submenu in WooCommerce
@@ -74,16 +99,15 @@ class Flexify_Checkout_Admin_Options extends Flexify_Checkout_Init {
    * Save options in AJAX
    * 
    * @since 1.0.0
-   * @version 3.3.0
+   * @version 3.5.0
    * @return void
-   * @package MeuMouse.com
    */
   public function flexify_checkout_ajax_save_options_callback() {
     if ( isset( $_POST['form_data'] ) ) {
         // Convert serialized data into an array
         parse_str( $_POST['form_data'], $form_data );
 
-        $options = get_option( 'flexify_checkout_settings' );
+        $options = get_option('flexify_checkout_settings');
         $options['enable_flexify_checkout'] = isset( $form_data['enable_flexify_checkout'] ) ? 'yes' : 'no';
         $options['enable_autofill_company_info'] = isset( $form_data['enable_autofill_company_info'] ) && self::license_valid() ? 'yes' : 'no';
         $options['enable_back_to_shop_button'] = isset( $form_data['enable_back_to_shop_button'] ) ? 'yes' : 'no';
@@ -104,8 +128,12 @@ class Flexify_Checkout_Admin_Options extends Flexify_Checkout_Init {
         $options['enable_thankyou_page_template'] = isset( $form_data['enable_thankyou_page_template'] ) ? 'yes' : 'no';
         $options['inter_bank_debug_mode'] = isset( $form_data['inter_bank_debug_mode'] ) ? 'yes' : 'no';
         $options['enable_unset_wcbcf_fields_not_brazil'] = isset( $form_data['enable_unset_wcbcf_fields_not_brazil'] ) && self::license_valid() ? 'yes' : 'no';
-        $options['enable_manage_fields'] = isset( $form_data['enable_manage_fields'] ) && self::license_valid() ? 'yes' : 'no';
+        $options['enable_manage_fields'] = isset( $form_data['enable_manage_fields'] ) ? 'yes' : 'no';
         $options['enable_display_local_pickup_kangu'] = isset( $form_data['enable_display_local_pickup_kangu'] ) ? 'yes' : 'no';
+        $options['enable_field_masks'] = isset( $form_data['enable_field_masks'] ) ? 'yes' : 'no';
+        $options['check_password_strenght'] = isset( $form_data['check_password_strenght'] ) ? 'yes' : 'no';
+        $options['email_providers_suggestion'] = isset( $form_data['email_providers_suggestion'] ) ? 'yes' : 'no';
+        $options['display_opened_order_review_mobile'] = isset( $form_data['display_opened_order_review_mobile'] ) ? 'yes' : 'no';
 
         // check if form data exists "checkout_step" name and is array
         if ( isset( $form_data['checkout_step'] ) && is_array( $form_data['checkout_step'] ) ) {
@@ -155,6 +183,11 @@ class Flexify_Checkout_Admin_Options extends Flexify_Checkout_Init {
                 $fields[$index]['position'] = $value['position'];
               }
 
+              // update field mask on change
+              if ( isset( $value['input_mask'] ) ) {
+                $fields[$index]['input_mask'] = $value['input_mask'];
+              }
+
               // Merge updated data with existing tab data
               $fields[$index] = array_merge( $fields[$index], $value );
           }
@@ -176,10 +209,8 @@ class Flexify_Checkout_Admin_Options extends Flexify_Checkout_Init {
           'options' => $updated_options,
         );
 
-        echo wp_json_encode( $response ); // Send JSON response
+        wp_send_json( $response ); // Send JSON response
     }
-
-    wp_die();
   }
 
 
@@ -210,10 +241,8 @@ class Flexify_Checkout_Admin_Options extends Flexify_Checkout_Init {
         'field' => $field_to_remove,
       );
 
-      echo wp_json_encode( $response ); // Send JSON response
+      wp_send_json( $response ); // send response
     }
- 
-    wp_die();
   }
 
 
@@ -235,17 +264,18 @@ class Flexify_Checkout_Admin_Options extends Flexify_Checkout_Init {
         $new_field = array(
           $field_id => array(
             'id' => $field_id,
-            'type' => sanitize_text_field( $_POST['get_field_type'] ),
-            'label' => sanitize_text_field( $_POST['get_field_label'] ),
-            'position' => sanitize_text_field( $_POST['get_field_position'] ),
-            'classes' => sanitize_text_field( $_POST['get_field_classes'] ),
-            'label_classes' => sanitize_text_field( $_POST['get_field_label_classes'] ),
-            'required' => sanitize_text_field( $_POST['get_field_required'] ),
-            'priority' => sanitize_text_field( $_POST['get_field_priority'] ),
-            'source' => sanitize_text_field( $_POST['get_field_source'] ),
+            'type' => isset( $_POST['get_field_type'] ) ? sanitize_text_field( $_POST['get_field_type'] ) : '',
+            'label' => isset( $_POST['get_field_label'] ) ? sanitize_text_field( $_POST['get_field_label'] ) : '',
+            'position' => isset( $_POST['get_field_position'] ) ? sanitize_text_field( $_POST['get_field_position'] ) : '',
+            'classes' => isset( $_POST['get_field_classes'] ) ? sanitize_text_field( $_POST['get_field_classes'] ) : '',
+            'label_classes' => isset( $_POST['get_field_label_classes'] ) ? sanitize_text_field( $_POST['get_field_label_classes'] ) : '',
+            'required' => isset( $_POST['get_field_required'] ) ? sanitize_text_field( $_POST['get_field_required'] ) : '',
+            'priority' => isset( $_POST['get_field_priority'] ) ? sanitize_text_field( $_POST['get_field_priority'] ) : '',
+            'source' => isset( $_POST['get_field_source'] ) ? sanitize_text_field( $_POST['get_field_source'] ) : '',
             'enabled' => 'yes',
-            'step' => sanitize_text_field( $_POST['get_field_step'] ),
+            'step' => isset( $_POST['get_field_step'] ) ? sanitize_text_field( $_POST['get_field_step'] ) : '',
             'options' => isset( $_POST['get_field_options_for_select'] ) ? $_POST['get_field_options_for_select'] : null,
+            'input_mask' => isset( $_POST['input_mask'] ) ? sanitize_text_field( $_POST['input_mask'] ) : '',
           )
         );
 
@@ -260,10 +290,8 @@ class Flexify_Checkout_Admin_Options extends Flexify_Checkout_Init {
         'status' => 'success',
       );
 
-      echo wp_send_json( $response ); // Send JSON response
+      wp_send_json( $response ); // send response
     }
-
-    wp_die();
   }
 
 
@@ -298,7 +326,7 @@ class Flexify_Checkout_Admin_Options extends Flexify_Checkout_Init {
                     'message' => 'Arquivo carregado com sucesso.',
                 );
           
-                wp_send_json( $response ); // Send JSON response
+                wp_send_json( $response ); // send response
             } else {
                 $response = array(
                     'status' => 'invalid_file',
@@ -327,63 +355,6 @@ class Flexify_Checkout_Admin_Options extends Flexify_Checkout_Init {
 
 
   /**
-   * Process for remove inter bank files
-   * 
-   * @since 2.3.0
-   * @return void
-   */
-  public function inter_bank_module_actions() {
-    if ( isset( $_POST['exclude_inter_bank_crt_key_files'] ) ) {
-        $uploads_dir = wp_upload_dir();
-        $upload_path = $uploads_dir['basedir'] . '/flexify_checkout_integrations/';
-        $crt_file = get_option('flexify_checkout_inter_bank_crt_file');
-        $key_file = get_option('flexify_checkout_inter_bank_key_file');
-
-        // exclude crt file
-        if ( !empty( $crt_file ) ) {
-            $file_path = $upload_path . $crt_file;
-
-            if ( file_exists( $file_path ) ) {
-              wp_delete_file( $file_path );
-            }
-        }
-
-        // exclude key file
-        if ( !empty( $key_file ) ) {
-            $file_path = $upload_path . $key_file;
-
-            if ( file_exists( $file_path ) ) {
-              wp_delete_file( $file_path );
-            }
-        }
-
-        delete_option('flexify_checkout_inter_bank_crt_file');
-        delete_option('flexify_checkout_inter_bank_key_file');
-    }
-
-    if ( isset( $_POST['active_inter_bank_module'] ) ) {
-      if ( !function_exists( 'activate_plugin' ) ) {
-        include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
-      }
-
-      $plugin_path = 'module-inter-bank-for-flexify-checkout/module-inter-bank-for-flexify-checkout.php';
-      $activate = activate_plugin( $plugin_path );
-
-      if ( false === $activate ) {
-          $error_message = get_plugin_activation_error( $plugin_path );
-          echo '<div class="notice notice-error">
-          <p>'. sprintf( esc_html( 'Erro ao ativar o plugin:', 'flexify-checkout-for-woocommerce' ), $error_message ) .'</p>
-          </div>';
-      } else {
-        echo '<div class="notice notice-success">
-        <p>'. esc_html( 'O módulo adicional foi ativo com sucesso!', 'flexify-checkout-for-woocommerce' ) .'</p>
-        </div>';
-      }
-    }
-  }
-
-
-  /**
    * Install Inter Bank module
    * 
    * @since 2.3.0
@@ -402,7 +373,7 @@ class Flexify_Checkout_Admin_Options extends Flexify_Checkout_Init {
           $installed = install_plugin( $plugin_zip );
         }
          
-        if ( !is_wp_error( $installed ) && $installed ) {
+        if ( ! is_wp_error( $installed ) && $installed ) {
             $activate = activate_plugin( $plugin_slug );
             $response = array(
               'status' => 'success',
@@ -468,7 +439,7 @@ class Flexify_Checkout_Admin_Options extends Flexify_Checkout_Init {
         'B729F2659393EE27', // Clube M
     );
 
-    $decrypted_data = $this->decrypt_with_multiple_keys( $file_content, $decrypt_keys );
+    $decrypted_data = decrypt_license_file( $file_content, $decrypt_keys );
 
     if ( $decrypted_data !== null ) {
         update_option( 'flexify_checkout_alternative_license_decrypted', $decrypted_data );
@@ -485,30 +456,438 @@ class Flexify_Checkout_Admin_Options extends Flexify_Checkout_Init {
     }
 
     wp_send_json( $response );
-
-    wp_die();
   }
 
 
   /**
-   * Try to decrypt with multiple keys
+   * Add new font to library on AJAX callback
    * 
-   * @since 3.3.0
-   * @param string $encrypted_data | Encrypted data
-   * @param array $possible_keys | Array list with decryp keys
-   * @return mixed Decrypted string or null
+   * @since 3.5.0
+   * @return void
    */
-  public function decrypt_with_multiple_keys( $encrypted_data, $possible_keys ) {
-    foreach ( $possible_keys as $key ) {
-      $decrypted_data = openssl_decrypt( $encrypted_data, 'AES-256-CBC', $key, 0, substr( $key, 0, 16 ) );
+  public function add_new_font_action_callback() {
+    if ( isset( $_POST['new_font_id'] ) ) {
+      $font_id = strtolower( $_POST['new_font_id'] );
 
-      // Checks whether decryption was successful
-      if ( $decrypted_data !== false ) {
-        return $decrypted_data;
+      $new_font = array(
+        $font_id => array(
+          'font_name' => $_POST['new_font_name'],
+          'font_url' => $_POST['new_font_url'],
+        ),
+      );
+
+      // get settings array
+      $options = get_option('flexify_checkout_settings', array());
+
+      // add new theme to array settings
+      if ( ! isset( $options['font_family'][$font_id] ) ) {
+        $options['font_family'][$font_id] = $new_font[$font_id];
+      }
+
+      // save the updated options
+      $new_font_added = update_option( 'flexify_checkout_settings', $options );
+
+      // check if new theme added with successful
+      if ( $new_font_added ) {
+        $response = array(
+          'status' => 'success',
+          'reload' => true,
+        );
+      } else {
+        $response = array(
+          'status' => 'error',
+          'font_exists' => true,
+          'reload' => false,
+        );
+      }
+
+      // send response to frontend
+      wp_send_json( $response );
+    }
+  }
+
+
+  /**
+   * Get WooCommerce products in AJAX
+   * 
+   * @since 3.5.0
+   * @return void
+   */
+  public function get_woo_products_callback() {
+    if ( isset( $_POST['search_query'] ) ) {
+      $search_query = sanitize_text_field( $_POST['search_query'] );
+    
+      $args = array(
+          'post_type' => 'product',
+          'status' => 'publish',
+          'posts_per_page' => -1, // Return all results
+          's' => $search_query,
+      );
+      
+      $products = new WP_Query( $args );
+      
+      if ( $products->have_posts() ) {
+          while ( $products->have_posts() ) {
+            $products->the_post();
+
+            echo '<li class="list-group-item" data-product-id="'. get_the_ID() .'">' . get_the_title() . '</li>';
+          }
+      } else {
+          echo esc_html__( 'Nenhuma produto encontrado.', 'flexify-checkout-for-woocommerce' );
+      }
+      
+      wp_die(); // end ajax call
+    }
+  }
+
+
+  /**
+   * Get WooCommerce product categories in AJAX
+   * 
+   * @since 3.5.0
+   * @return void
+   */
+  public function get_woo_categories_callback() {
+    if ( isset( $_POST['search_query'] ) ) {
+      $search_query = sanitize_text_field( $_POST['search_query'] );
+    
+      $args = array(
+          'taxonomy' => 'product_cat',
+          'hide_empty' => false,
+          'name__like' => $search_query,
+      );
+      
+      $categories = get_terms( $args );
+      
+      if ( ! empty( $categories ) ) {
+          foreach ( $categories as $category ) {
+              echo '<li class="list-group-item" data-category-id="'. $category->term_id .'">'. $category->name .'</li>';
+          }
+      } else {
+          echo esc_html__( 'Nenhuma categoria encontrada.', 'flexify-checkout-for-woocommerce' );
+      }
+      
+      wp_die(); // end ajax call
+    }
+  }
+
+  
+  /**
+   * Get product attributes in AJAX
+   * 
+   * @since 3.5.0
+   * @return void
+   */
+  public function get_woo_attributes_callback() {
+    if ( isset( $_POST['search_query'] ) ) {
+      $search_query = sanitize_text_field( $_POST['search_query'] );
+
+      // get all registered attribute taxonomies
+      $attribute_taxonomies = wc_get_attribute_taxonomies();
+
+      if ( ! empty( $attribute_taxonomies ) ) {
+          foreach ( $attribute_taxonomies as $attribute_taxonomy ) {
+              // Use the taxonomy name instead of the 'attribute_name'
+              $taxonomy_name = 'pa_' . $attribute_taxonomy->attribute_name;
+
+              // Verify that the taxonomy name contains the search term
+              if ( strpos( $taxonomy_name, $search_query ) !== false ) {
+                  $args = array(
+                      'taxonomy' => $taxonomy_name,
+                      'hide_empty' => false,
+                  );
+
+                  $attributes = get_terms( $args );
+
+                  if ( ! empty( $attributes ) ) {
+                      foreach ( $attributes as $attribute ) {
+                          echo '<li class="list-group-item" data-attribute-id="' . $attribute->term_id . '">' . $attribute->name . '</li>';
+                      }
+                  } else {
+                    echo esc_html__( 'Nenhum atributo encontrado.', 'flexify-checkout-for-woocommerce' );
+                  }
+              }
+          }
+      }
+
+      wp_die(); // end ajax call
+    }
+  }
+
+
+  /**
+   * Search WP users in AJAX
+   * 
+   * @since 3.5.0
+   * @return void
+   */
+  public function search_users_ajax_callback() {
+    if ( isset( $_POST['search_query'] ) ) {
+      $search_query = sanitize_text_field( $_POST['search_query'] );
+
+      // Run a query to search for users based on the search term
+      $args = array(
+          'search' => '*' . $search_query . '*',
+          'search_columns' => array(
+            'user_login',
+            'user_email',
+            'user_nicename',
+            'display_name',
+          ),
+          'number' => -1, // Return all results
+      );
+
+      $users = get_users( $args );
+
+      if ( ! empty( $users ) ) {
+          foreach ( $users as $user ) {
+            echo '<li class="list-group-item" data-user-id="' . $user->ID . '">' . $user->display_name . '</li>';
+          }
+      } else {
+          echo esc_html__( 'Nenhum usuário encontrado.', 'flexify-checkout-for-woocommerce' );
+      }
+
+      wp_die(); // end ajax call
+    }
+  }
+
+
+  /**
+   * Add new condition AJAX callback
+   * 
+   * @since 3.5.0
+   * @return void
+   */
+  public function add_new_checkout_condition_callback() {
+    if ( isset( $_POST['type_rule'] ) && $_POST['type_rule'] !== 'none' ) {
+      $form_condition = array(
+        'type_rule' => isset( $_POST['type_rule'] ) ? sanitize_text_field( $_POST['type_rule'] ) : null,
+        'component' => isset( $_POST['component'] ) ? sanitize_text_field( $_POST['component'] ) : null,
+        'component_field' => isset( $_POST['component_field'] ) ? sanitize_text_field( $_POST['component_field'] ) : null,
+        'verification_condition' => isset( $_POST['verification_condition'] ) ? sanitize_text_field( $_POST['verification_condition'] ) : null,
+        'verification_condition_field' => isset( $_POST['verification_condition_field'] ) ? sanitize_text_field( $_POST['verification_condition_field'] ) : null,
+        'condition' => isset( $_POST['condition'] ) ? sanitize_text_field( $_POST['condition'] ) : null,
+        'condition_value' => isset( $_POST['condition_value'] ) ? sanitize_text_field( $_POST['condition_value'] ) : null,
+        'payment_method' => isset( $_POST['payment_method'] ) ? sanitize_text_field( $_POST['payment_method'] ) : null,
+        'shipping_method' => isset( $_POST['shipping_method'] ) ? sanitize_text_field( $_POST['shipping_method'] ) : null,
+        'filter_user' => isset( $_POST['filter_user'] ) ? sanitize_text_field( $_POST['filter_user'] ) : null,
+        'specific_user' => isset( $_POST['filter_user'] ) ? $_POST['filter_user'] : null,
+        'specific_role' => isset( $_POST['specific_role'] ) ? sanitize_text_field( $_POST['specific_role'] ) : null,
+        'specific_products' => isset( $_POST['specific_products'] ) ? $_POST['specific_products'] : null,
+        'specific_categories' => isset( $_POST['specific_categories'] ) ? $_POST['specific_categories'] : null,
+        'specific_attributes' => isset( $_POST['specific_attributes'] ) ? $_POST['specific_attributes'] : null,
+        'product_filter' => isset( $_POST['product_filter'] ) ? sanitize_text_field( $_POST['product_filter'] ) : null,
+      );
+
+      // remove null values
+      $form_condition = array_filter( $form_condition, function( $value ) {
+        return ! is_null( $value );
+      });
+
+      // get current conditions
+      $current_conditions = get_option('flexify_checkout_conditions', array());
+
+      $empty_conditions = false;
+
+      // check if conditions is empty
+      if ( empty( $current_conditions ) ) {
+        $empty_conditions = true;
+      }
+
+      // merge new condition with existing
+      $current_conditions[] = $form_condition;
+
+      // Update conditions
+      $update_conditions = update_option( 'flexify_checkout_conditions', $current_conditions );
+
+      // check if successfully updated
+      if ( $update_conditions ) {
+        $get_fields = Flexify_Checkout_Helpers::get_all_checkout_fields();
+        $condition_type = array(
+          'show' => esc_html__( 'Mostrar', 'flexify-checkout-for-woocommerce' ),
+          'hide' => esc_html__( 'Ocultar', 'flexify-checkout-for-woocommerce' ),
+        );
+
+        $component_type_label = '';
+
+        if ( $form_condition['component'] === 'field' ) {
+            $field_id = $form_condition['component_field'];
+            $component_type_label = sprintf( esc_html__( 'Campo %s', 'flexify-checkout-for-woocommerce' ), $get_fields['billing'][$field_id]['label'] );
+        } elseif ( $form_condition['component'] === 'shipping' ) {
+            $shipping_id = $form_condition['shipping_method'];
+            $component_type_label = sprintf( esc_html__( 'Forma de entrega %s', 'flexify-checkout-for-woocommerce' ), WC()->shipping->get_shipping_methods()[$shipping_id]->method_title );
+        } elseif ( $form_condition['component'] === 'payment' ) {
+            $payment_id = $form_condition['payment_method'];
+            $component_type_label = sprintf( esc_html__( 'Forma de pagamento %s', 'flexify-checkout-for-woocommerce' ), WC()->payment_gateways->payment_gateways()[$payment_id]->method_title );
+        }
+
+        $component_verification_label = '';
+
+        if ( $form_condition['verification_condition'] === 'field' ) {
+            $field_id = $form_condition['verification_condition_field'];
+            $component_verification_label = sprintf( esc_html__( 'Campo %s', 'flexify-checkout-for-woocommerce' ), $get_fields['billing'][$field_id]['label'] );
+        } elseif ( $form_condition['verification_condition'] === 'qtd_cart_total' ) {
+            $component_verification_label = esc_html__( 'Quantidade total do carrinho', 'flexify-checkout-for-woocommerce' );
+        } elseif ( $form_condition['verification_condition'] === 'cart_total_value' ) {
+            $component_verification_label = esc_html__( 'Valor total do carrinho', 'flexify-checkout-for-woocommerce' );
+        }
+
+        $condition = array(
+          'is' => esc_html__( 'É', 'flexify-checkout-for-woocommerce' ),
+          'is_not' => esc_html__( 'Não é', 'flexify-checkout-for-woocommerce' ),
+          'empty' => esc_html__( 'Vazio', 'flexify-checkout-for-woocommerce' ),
+          'not_empty' => esc_html__( 'Não está vazio', 'flexify-checkout-for-woocommerce' ),
+          'contains' => esc_html__( 'Contém', 'flexify-checkout-for-woocommerce' ),
+          'not_contain' => esc_html__( 'Não contém', 'flexify-checkout-for-woocommerce' ),
+          'start_with' => esc_html__( 'Começa com', 'flexify-checkout-for-woocommerce' ),
+          'finish_with' => esc_html__( 'Termina com', 'flexify-checkout-for-woocommerce' ),
+          'bigger_then' => esc_html__( 'Maior que', 'flexify-checkout-for-woocommerce' ),
+          'less_than' => esc_html__( 'Menor que', 'flexify-checkout-for-woocommerce' ),
+        );
+        
+        $condition_value = isset( $form_condition['condition_value'] ) ? $form_condition['condition_value'] : '';
+
+        $response = array(
+          'status' => 'success',
+          'toast_header_success' => esc_html( 'Nova condição adicionada', 'flexify-checkout-for-woocommerce' ),
+          'toast_body_success' => esc_html( 'Condição criada com sucesso!', 'flexify-checkout-for-woocommerce' ),
+          'condition_line_1' => sprintf( esc_html__( 'Condição: %s %s', 'flexify-checkout-for-woocommerce' ), $condition_type[$form_condition['type_rule']], $component_type_label ),
+          'condition_line_2' => sprintf( esc_html__( 'Se: %s %s %s', 'flexify-checkout-for-woocommerce' ), $component_verification_label, mb_strtolower( $condition[$form_condition['condition']] ), $condition_value ),
+        );
+
+        if ( $empty_conditions ) {
+          $response[] = array(
+            'empty_conditions' => 'yes',
+          );
+        }
+      } else {
+        $response = array(
+          'status' => 'error',
+          'error_message' => esc_html__( 'Ops! Não foi possível criar uma nova condição.', 'flexify-checkout-for-woocommerce' ),
+        );
+      }
+
+      // send response
+      wp_send_json( $response );
+    }
+  }
+
+
+  /**
+   * Exclude condition item AJAX callback
+   * 
+   * @since 3.5.0
+   * @return void
+   */
+  public function exclude_condition_item_callback() {
+    if ( isset( $_POST['condition_index'] ) ) {
+      $exclude_item = sanitize_text_field( $_POST['condition_index'] );
+      $get_conditions = get_option('flexify_checkout_conditions', array());
+
+      if ( isset( $get_conditions[$exclude_item] ) ) {
+        unset( $get_conditions[$exclude_item] );
+
+        $update_conditions = update_option('flexify_checkout_conditions', $get_conditions);
+
+        if ( $update_conditions ) {
+          $response = array(
+            'status' => 'success',
+            'toast_header_success' => esc_html( 'Excluído com sucesso', 'flexify-checkout-for-woocommerce' ),
+            'toast_body_success' => esc_html( 'Condição excluída com sucesso!', 'flexify-checkout-for-woocommerce' ),
+          );
+  
+          if ( empty( $get_conditions ) ) {
+            $response[] = array(
+              'empty_conditions' => 'yes',
+              'empty_conditions_message' => esc_html( 'Ainda não existem condições.', 'flexify-checkout-for-woocommerce' ),
+            );
+          }
+        } else {
+          $response = array(
+            'status' => 'error',
+            'toast_header_error' => esc_html( 'Erro ao excluir', 'flexify-checkout-for-woocommerce' ),
+            'toast_body_error' => esc_html( 'Ops! Não foi possível excluir a condição.', 'flexify-checkout-for-woocommerce' ),
+          );
+        }
+  
+        // send response
+        wp_send_json( $response );
       }
     }
-    
-    return null;
+  }
+
+
+  /**
+   * Add new email provider for suggestion on checkout
+   * 
+   * @since 3.5.0
+   * @return void
+   */
+  public function add_new_email_provider_callback() {
+    if ( isset( $_POST['new_provider'] ) ) {
+      $new_provider = sanitize_text_field( $_POST['new_provider'] );
+      $get_options = get_option('flexify_checkout_settings', array());
+      $providers = $get_options['set_email_providers'];
+      $providers[] = $new_provider;
+      $get_options['set_email_providers'] = $providers;
+      $update_providers = update_option( 'flexify_checkout_settings', $get_options );
+
+      if ( $update_providers ) {
+        $response = array(
+          'status' => 'success',
+          'new_provider' => $new_provider,
+          'toast_header_success' => esc_html( 'Provedor de e-mail adicionado', 'flexify-checkout-for-woocommerce' ),
+          'toast_body_success' => esc_html( 'Novo provedor de e-mail adicionado com sucesso!', 'flexify-checkout-for-woocommerce' ),
+        );
+      } else {
+        $response = array(
+          'status' => 'error',
+          'toast_header_error' => esc_html( 'Erro ao adicionar', 'flexify-checkout-for-woocommerce' ),
+          'toast_body_error' => esc_html( 'Ops! Não foi possível adicionar o novo provedor.', 'flexify-checkout-for-woocommerce' ),
+        );
+      }
+
+      wp_send_json( $response );
+    }
+  }
+
+
+  /**
+   * Exclude email provider item
+   * 
+   * @since 3.5.0
+   * @return void
+   */
+  public function remove_email_provider_callback() {
+    if ( isset( $_POST['exclude_provider'] ) ) {
+      $exclude_provider = sanitize_text_field( $_POST['exclude_provider'] );
+      $get_options = get_option('flexify_checkout_settings', array());
+      $providers = $get_options['set_email_providers'];
+      $search_provider = array_search( $exclude_provider, $providers );
+
+      if ( $search_provider !== false ) {
+        unset( $providers[$search_provider] );
+
+        $get_options['set_email_providers'] = $providers;
+        $update_providers = update_option( 'flexify_checkout_settings', $providers );
+
+        if ( $update_providers ) {
+          $response = array(
+            'status' => 'success',
+            'toast_header_success' => esc_html( 'Provedor de e-mail removido', 'flexify-checkout-for-woocommerce' ),
+            'toast_body_success' => esc_html( 'Provedor de e-mail removido com sucesso!', 'flexify-checkout-for-woocommerce' ),
+          );
+        } else {
+          $response = array(
+            'status' => 'error',
+            'toast_header_error' => esc_html( 'Erro ao remover', 'flexify-checkout-for-woocommerce' ),
+            'toast_body_error' => esc_html( 'Ops! Não foi possível remover o provedor de e-mail.', 'flexify-checkout-for-woocommerce' ),
+          );
+        }
+
+        wp_send_json( $response );
+      }
+    }
   }
 }
 

@@ -38,7 +38,7 @@ class Flexify_Checkout_Compat_Avada {
 	 * Hook just after scripts are enqueued, but before they're output in the footer.
 	 */
 	public static function dequeue_scripts() {
-		if ( ! Flexify_Checkout_Core::is_checkout() ) {
+		if ( ! is_flexify_checkout() ) {
 			return;
 		}
 
@@ -81,7 +81,7 @@ class Flexify_Checkout_Compat_Avada {
 	 * Disable Avada CSS.
 	 */
 	public static function compat_avada_disable_css() {
-		if ( ( ! Flexify_Checkout_Core::is_checkout() && ! Flexify_Checkout_Core::is_thankyou_page() ) || ! class_exists( 'Fusion_Dynamic_CSS' ) ) {
+		if ( ( ! is_flexify_checkout() && ! Flexify_Checkout_Core::is_thankyou_page() ) || ! class_exists( 'Fusion_Dynamic_CSS' ) ) {
 			return;
 		}
 

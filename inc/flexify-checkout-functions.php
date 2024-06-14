@@ -38,7 +38,7 @@ function is_plugin_installed( $plugin_slug ) {
 
     $all_plugins = get_plugins();
     
-    if ( !empty( $all_plugins[$plugin_slug] ) ) {
+    if ( ! empty( $all_plugins[$plugin_slug] ) ) {
         return true;
     } else {
         return false;
@@ -50,7 +50,7 @@ function is_plugin_installed( $plugin_slug ) {
  * Install plugin
  * 
  * @since 2.3.0
- * @param string | URL of plugin
+ * @param string $plugin_zip | URL of plugin
  * @return object
  */
 function install_plugin( $plugin_zip ) {
@@ -118,4 +118,130 @@ function remove_filters_with_method_name( $hook_name = '', $method_name = '', $p
     }
 
     return false;
+}
+
+
+/**
+ * Try to decrypt with multiple keys
+ * 
+ * @since 3.3.0
+ * @version 3.5.0
+ * @param string $encrypted_data | Encrypted data
+ * @param array $possible_keys | Array list with decryp keys
+ * @return mixed Decrypted string or null
+ */
+function decrypt_license_file( $encrypted_data, $possible_keys ) {
+    foreach ( $possible_keys as $key ) {
+        $decrypted_data = openssl_decrypt( $encrypted_data, 'AES-256-CBC', $key, 0, substr( $key, 0, 16 ) );
+
+        // Checks whether decryption was successful
+        if ( $decrypted_data !== false ) {
+            return $decrypted_data;
+        }
+    }
+
+    return null;
+}
+
+
+/**
+ * Check if is admin links URL
+ * 
+ * @since 3.5.0
+ * @return bool
+ */
+function is_flexify_checkout_admin_settings() {
+    $current_url = ( ( isset( $_SERVER['HTTPS'] ) && $_SERVER['HTTPS'] == 'on' ) ? 'https' : 'http' );
+    $current_url .= '://'. $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+    $get_admin_links_url = admin_url('admin.php?page=flexify-checkout-for-woocommerce');
+
+    // check if current url is admin page settings
+    if ( $current_url === $get_admin_links_url ) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+
+/**
+ * Check if is checkout must run on `wp` hook at the earliest.
+ *
+ * @since 1.0.0
+ * @version 3.5.0
+ * @param bool $force_early Force early check by getting the post ID from the URL.
+ * @return bool
+ */
+function is_flexify_checkout( $force_early = false ) {
+    if ( $force_early ) {
+        $request_uri = ! empty( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
+        $page_id = url_to_postid( home_url( $request_uri ) );
+
+        return wc_get_page_id('checkout') === $page_id;
+    }
+
+    if ( is_wc_endpoint_url( 'order-received' ) || is_wc_endpoint_url( 'order-pay' ) ) {
+        return false;
+    }
+
+    if ( is_checkout() ) {
+        return true;
+    }
+
+    $wc_ajax = filter_input( INPUT_GET, 'wc-ajax', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+
+    if ( 'update_order_review' === $wc_ajax ) {
+        return true;
+    }
+
+    $queried_object = get_queried_object();
+
+    if ( is_wp_error( $queried_object ) || empty( $queried_object ) || ! isset( $queried_object->ID ) ) {
+        return false;
+    }
+
+    $checkout_page_id = wc_get_page_id('checkout');
+
+    return $checkout_page_id === $queried_object->ID && $queried_object->is_main_query();
+}
+
+
+/**
+ * Check if is Flexify Checkout template
+ *
+ * @since 1.0.0
+ * @version 3.5.0
+ * @return bool
+ */
+function is_flexify_template() {
+    return apply_filters( 'flexify_is_flexify_template', is_flexify_checkout() || Flexify_Checkout_Core::is_thankyou_page() || is_wc_endpoint_url('order-pay') );
+}
+
+
+/**
+ * Check if the cart only contains virtual products
+ *
+ * @since 1.0.0
+ * @version 3.5.0
+ * @return bool
+ */
+function flexify_checkout_only_virtual() {
+    $only_virtual = true;
+
+    foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
+        // Check if there are non-virtual products.
+        if ( ! $cart_item['data']->is_virtual() ) {
+            $only_virtual = false;
+
+            break;
+        }
+    }
+
+    return $only_virtual;
+}
+
+add_action('woocommerce_checkout_update_order_review', 'custom_update_shipping_methods', 10, 1);
+
+function custom_update_shipping_methods($post_data) {
+    WC()->cart->calculate_shipping();
 }

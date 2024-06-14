@@ -37,7 +37,7 @@ class Flexify_Checkout_Compat_Breakdance {
 			return;
 		}
 
-		if ( ! Flexify_Checkout_Core::is_flexify_template() ) {
+		if ( ! is_flexify_template() ) {
 			return;
 		}
 

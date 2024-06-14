@@ -49,10 +49,83 @@ defined('ABSPATH') || exit; ?>
             </div>
          </td>
       </tr>
+      <tr>
+         <th>
+            <?php echo esc_html__( 'Ativar verificação de força da senha do usuário', 'flexify-checkout-for-woocommerce' ) ?>
+            <span class="flexify-checkout-description"><?php echo esc_html__( 'Ative esta opção para forçar a verificação da força de senha na criação da conta do usuário, na finalização de compras.', 'flexify-checkout-for-woocommerce' ) ?></span>
+         </th>
+         <td>
+            <div class="form-check form-switch">
+               <input type="checkbox" class="toggle-switch" id="check_password_strenght" name="check_password_strenght" value="yes" <?php checked( self::get_setting('check_password_strenght') === 'yes' ); ?> />
+            </div>
+         </td>
+      </tr>
+      <tr>
+         <th>
+            <?php echo esc_html__( 'Ativar sugestão de preenchimento do e-mail', 'flexify-checkout-for-woocommerce' ) ?>
+            <span class="flexify-checkout-description"><?php echo esc_html__( 'Ative esta opção para exibir a sugestão do provedor de e-mail, na finalização de compras.', 'flexify-checkout-for-woocommerce' ) ?></span>
+         </th>
+         <td>
+            <div class="form-check form-switch">
+               <input type="checkbox" class="toggle-switch" id="email_providers_suggestion" name="email_providers_suggestion" value="yes" <?php checked( self::get_setting('email_providers_suggestion') === 'yes' ); ?> />
+            </div>
+         </td>
+         <td class="require-email-suggestions-enabled">
+            <button id="set_email_providers_trigger" class="btn btn-outline-primary ms-2"><?php echo esc_html__( 'Configurar provedores', 'flexify-checkout-for-woocommerce' ) ?></button>
 
-      <?php
-      if ( class_exists('Kangu_Shipping_Method') ) {
-         ?>
+            <div id="set_email_providers_container">
+               <div class="popup-content">
+                  <div class="popup-header">
+                     <h5 class="popup-title"><?php echo esc_html__('Configurar sugestão de e-mails', 'flexify-checkout-for-woocommerce') ?></h5>
+                     <button id="close_set_email_providers" class="btn-close fs-lg" aria-label="<?php esc_html( 'Fechar', 'flexify-checkout-for-woocommerce' ); ?>"></button>
+                  </div>
+                  <div class="popup-body">
+                     <table class="form-table">
+                        <tr class="mb-4">
+                           <th class="w-50">
+                              <?php echo esc_html__( 'Nome e extensão do novo provedor', 'flexify-checkout-for-woocommerce' ) ?>
+                              <span class="flexify-checkout-description"><?php echo esc_html__( 'Informe o nome do novo provedor incluindo a extensão, por exemplo, meumouse.com', 'flexify-checkout-for-woocommerce' ) ?></span>
+                           </th>
+                           <td class="w-50">
+                              <div class="input-group">
+                                 <input type="text" class="form-control" id="get_new_email_provider" value="" placeholder="<?php echo esc_html__( 'meumouse.com', 'flexify-checkout-for-woocommerce' ) ?>"/>
+                                 <button id="add_new_email_provider" class="btn btn-outline-primary" disabled><?php echo esc_html__( 'Adicionar', 'flexify-checkout-for-woocommerce' ) ?></button>
+                              </div>
+                           </td>
+                        </tr>
+                        <tr>
+                           <td class="w-50">
+                              <ul id="flexify_checkout_email_providers" class="list-group">
+                                 <?php foreach ( self::get_setting('set_email_providers') as $provider ) : ?>
+                                    <li class="list-group-item d-flex align-items-center justify-content-between" data-provider="<?php echo esc_attr( $provider ) ?>">
+                                       <span><?php echo esc_html( $provider ) ?></span>
+                                       <button class="exclude-provider btn btn-icon btn-sm btn-outline-danger rounded-3 ms-3">
+                                          <svg class="icon icon-sm icon-danger" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15 2H9c-1.103 0-2 .897-2 2v2H3v2h2v12c0 1.103.897 2 2 2h10c1.103 0 2-.897 2-2V8h2V6h-4V4c0-1.103-.897-2-2-2zM9 4h6v2H9V4zm8 16H7V8h10v12z"></path></svg>
+                                       </button>
+                                    </li>
+                                 <?php endforeach; ?>
+                              </ul>
+                           </td>
+                        </tr>
+                     </table>
+                  </div>
+               </div>
+            </div>
+         </td>
+      </tr>
+      <tr>
+         <th>
+            <?php echo esc_html__( 'Mostrar resumo do pedido aberto por padrão', 'flexify-checkout-for-woocommerce' ) ?>
+            <span class="flexify-checkout-description"><?php echo esc_html__( 'Ative esta opção para mostrar o resumo do pedido aberto por padrão em celulares.', 'flexify-checkout-for-woocommerce' ) ?></span>
+         </th>
+         <td>
+            <div class="form-check form-switch">
+               <input type="checkbox" class="toggle-switch" id="display_opened_order_review_mobile" name="display_opened_order_review_mobile" value="yes" <?php checked( self::get_setting('display_opened_order_review_mobile') === 'yes' ); ?> />
+            </div>
+         </td>
+      </tr>
+
+      <?php if ( class_exists('Kangu_Shipping_Method') ) : ?>
          <tr>
             <th>
                <?php echo esc_html__( 'Mostrar endereço da loja física para retirada da encomenda Kangu', 'flexify-checkout-for-woocommerce' ) ?>
@@ -64,9 +137,7 @@ defined('ABSPATH') || exit; ?>
                </div>
             </td>
          </tr>
-         <?php
-      }
-      ?>
+      <?php endif; ?>
 
       <tr class="container-separator"></tr>
 
@@ -74,7 +145,7 @@ defined('ABSPATH') || exit; ?>
       // Brazilian Market on WooCommerce settings
       $wcbcf_active = class_exists('Extra_Checkout_Fields_For_Brazil');
       $wcbcf_settings = get_option('wcbcf_settings');
-      $person_type = intval( $wcbcf_settings['person_type'] );
+      $person_type = isset( $wcbcf_settings['person_type'] ) ? intval( $wcbcf_settings['person_type'] ) : null;
 
       // check if option contains CNPJ
       if ( $wcbcf_active && $person_type == 1 || $wcbcf_active && $person_type == 3 || WC()->countries->get_base_country() === 'BR' ) {
@@ -126,66 +197,66 @@ defined('ABSPATH') || exit; ?>
                </div>
             </td>
             <td class="require-auto-fill-address">
-            <button id="auto_fill_address_api_trigger" class="btn btn-outline-primary ms-2"><?php echo esc_html__( 'Configurar API', 'flexify-checkout-for-woocommerce' ) ?></button>
+               <button id="auto_fill_address_api_trigger" class="btn btn-outline-primary ms-2"><?php echo esc_html__( 'Configurar API', 'flexify-checkout-for-woocommerce' ) ?></button>
 
-            <div class="auto-fill-address-api-container">
-               <div class="popup-content">
-                  <div class="popup-header">
-                     <h5 class="popup-title"><?php echo esc_html__('Configurar API de preenchimento de endereço', 'flexify-checkout-for-woocommerce') ?></h5>
-                     <button class="auto-fill-address-api-close btn-close fs-lg" aria-label="<?php esc_html( 'Fechar', 'flexify-checkout-for-woocommerce' ); ?>"></button>
-                  </div>
-                  <div class="popup-body">
-                     <table class="form-table">
-                        <tr>
-                           <th class="w-50">
-                              <?php echo esc_html__( 'Serviço de API para busca de endereço', 'flexify-checkout-for-woocommerce' ) ?>
-                              <span class="flexify-checkout-description"><?php echo esc_html__( 'Informe o endereço da API para obter o endereço do usuário através do seu CEP em formato JSON. Use a variável {postcode} para informar o CEP.', 'flexify-checkout-for-woocommerce' ) ?></span>
-                           </th>
-                           <td class="w-50">
-                              <input type="text" class="form-control" id="get_address_api_service" name="get_address_api_service" value="<?php echo self::get_setting( 'get_address_api_service') ?>"/>
-                           </td>
-                        </tr>
-                        <tr>
-                           <th class="w-50">
-                              <?php echo esc_html__( 'Propriedade de obtenção de endereço', 'flexify-checkout-for-woocommerce' ) ?>
-                              <span class="flexify-checkout-description"><?php echo esc_html__( 'Informe a propriedade para obter o endereço que é retornado pelo serviço da API.', 'flexify-checkout-for-woocommerce' ) ?></span>
-                           </th>
-                           <td class="w-50">
-                              <input type="text" class="form-control" id="api_auto_fill_address_param" name="api_auto_fill_address_param" value="<?php echo self::get_setting( 'api_auto_fill_address_param') ?>"/>
-                           </td>
-                        </tr>
-                        <tr>
-                           <th class="w-50">
-                              <?php echo esc_html__( 'Propriedade de obtenção do bairro', 'flexify-checkout-for-woocommerce' ) ?>
-                              <span class="flexify-checkout-description"><?php echo esc_html__( 'Informe a propriedade para obter o bairro que é retornado pelo serviço da API.', 'flexify-checkout-for-woocommerce' ) ?></span>
-                           </th>
-                           <td class="w-50">
-                              <input type="text" class="form-control" id="api_auto_fill_address_neightborhood_param" name="api_auto_fill_address_neightborhood_param" value="<?php echo self::get_setting( 'api_auto_fill_address_neightborhood_param') ?>"/>
-                           </td>
-                        </tr>
-                        <tr>
-                           <th class="w-50">
-                              <?php echo esc_html__( 'Propriedade de obtenção de cidade', 'flexify-checkout-for-woocommerce' ) ?>
-                              <span class="flexify-checkout-description"><?php echo esc_html__( 'Informe a propriedade para obter a cidade que é retornado pelo serviço da API.', 'flexify-checkout-for-woocommerce' ) ?></span>
-                           </th>
-                           <td class="w-50">
-                              <input type="text" class="form-control" id="api_auto_fill_address_city_param" name="api_auto_fill_address_city_param" value="<?php echo self::get_setting( 'api_auto_fill_address_city_param') ?>"/>
-                           </td>
-                        </tr>
-                        <tr>
-                           <th class="w-50">
-                              <?php echo esc_html__( 'Propriedade de obtenção de estado', 'flexify-checkout-for-woocommerce' ) ?>
-                              <span class="flexify-checkout-description"><?php echo esc_html__( 'Informe a propriedade para obter o estado que é retornado pelo serviço da API.', 'flexify-checkout-for-woocommerce' ) ?></span>
-                           </th>
-                           <td class="w-50">
-                              <input type="text" class="form-control" id="api_auto_fill_address_state_param" name="api_auto_fill_address_state_param" value="<?php echo self::get_setting( 'api_auto_fill_address_state_param') ?>"/>
-                           </td>
-                        </tr>
-                     </table>
+               <div class="auto-fill-address-api-container">
+                  <div class="popup-content">
+                     <div class="popup-header">
+                        <h5 class="popup-title"><?php echo esc_html__('Configurar API de preenchimento de endereço', 'flexify-checkout-for-woocommerce') ?></h5>
+                        <button class="auto-fill-address-api-close btn-close fs-lg" aria-label="<?php esc_html( 'Fechar', 'flexify-checkout-for-woocommerce' ); ?>"></button>
+                     </div>
+                     <div class="popup-body">
+                        <table class="form-table">
+                           <tr>
+                              <th class="w-50">
+                                 <?php echo esc_html__( 'Serviço de API para busca de endereço', 'flexify-checkout-for-woocommerce' ) ?>
+                                 <span class="flexify-checkout-description"><?php echo esc_html__( 'Informe o endereço da API para obter o endereço do usuário através do seu CEP em formato JSON. Use a variável {postcode} para informar o CEP.', 'flexify-checkout-for-woocommerce' ) ?></span>
+                              </th>
+                              <td class="w-50">
+                                 <input type="text" class="form-control" id="get_address_api_service" name="get_address_api_service" value="<?php echo self::get_setting( 'get_address_api_service') ?>"/>
+                              </td>
+                           </tr>
+                           <tr>
+                              <th class="w-50">
+                                 <?php echo esc_html__( 'Propriedade de obtenção de endereço', 'flexify-checkout-for-woocommerce' ) ?>
+                                 <span class="flexify-checkout-description"><?php echo esc_html__( 'Informe a propriedade para obter o endereço que é retornado pelo serviço da API.', 'flexify-checkout-for-woocommerce' ) ?></span>
+                              </th>
+                              <td class="w-50">
+                                 <input type="text" class="form-control" id="api_auto_fill_address_param" name="api_auto_fill_address_param" value="<?php echo self::get_setting( 'api_auto_fill_address_param') ?>"/>
+                              </td>
+                           </tr>
+                           <tr>
+                              <th class="w-50">
+                                 <?php echo esc_html__( 'Propriedade de obtenção do bairro', 'flexify-checkout-for-woocommerce' ) ?>
+                                 <span class="flexify-checkout-description"><?php echo esc_html__( 'Informe a propriedade para obter o bairro que é retornado pelo serviço da API.', 'flexify-checkout-for-woocommerce' ) ?></span>
+                              </th>
+                              <td class="w-50">
+                                 <input type="text" class="form-control" id="api_auto_fill_address_neightborhood_param" name="api_auto_fill_address_neightborhood_param" value="<?php echo self::get_setting( 'api_auto_fill_address_neightborhood_param') ?>"/>
+                              </td>
+                           </tr>
+                           <tr>
+                              <th class="w-50">
+                                 <?php echo esc_html__( 'Propriedade de obtenção de cidade', 'flexify-checkout-for-woocommerce' ) ?>
+                                 <span class="flexify-checkout-description"><?php echo esc_html__( 'Informe a propriedade para obter a cidade que é retornado pelo serviço da API.', 'flexify-checkout-for-woocommerce' ) ?></span>
+                              </th>
+                              <td class="w-50">
+                                 <input type="text" class="form-control" id="api_auto_fill_address_city_param" name="api_auto_fill_address_city_param" value="<?php echo self::get_setting( 'api_auto_fill_address_city_param') ?>"/>
+                              </td>
+                           </tr>
+                           <tr>
+                              <th class="w-50">
+                                 <?php echo esc_html__( 'Propriedade de obtenção de estado', 'flexify-checkout-for-woocommerce' ) ?>
+                                 <span class="flexify-checkout-description"><?php echo esc_html__( 'Informe a propriedade para obter o estado que é retornado pelo serviço da API.', 'flexify-checkout-for-woocommerce' ) ?></span>
+                              </th>
+                              <td class="w-50">
+                                 <input type="text" class="form-control" id="api_auto_fill_address_state_param" name="api_auto_fill_address_state_param" value="<?php echo self::get_setting( 'api_auto_fill_address_state_param') ?>"/>
+                              </td>
+                           </tr>
+                        </table>
+                     </div>
                   </div>
                </div>
-            </div>
-         </td>
+            </td>
          </tr>
          <?php
       }

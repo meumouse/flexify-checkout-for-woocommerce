@@ -7,7 +7,7 @@ defined('ABSPATH') || exit;
  * Checkout core actions
  *
  * @since 1.0.0
- * @version 3.3.0
+ * @version 3.5.0
  * @package MeuMouse.com
  */
 class Flexify_Checkout_Core {
@@ -31,7 +31,12 @@ class Flexify_Checkout_Core {
 		add_action( 'body_class', array( __CLASS__, 'update_body_class' ) );
 
 		// Set priorities.
-		add_filter( 'woocommerce_checkout_fields', array( __CLASS__, 'custom_override_checkout_fields' ), 9999 );
+		add_filter( 'woocommerce_checkout_fields', array( __CLASS__, 'custom_override_checkout_fields' ), 100 );
+
+		// enable checkout fields manager
+		if ( Flexify_Checkout_Init::get_setting('enable_manage_fields') === 'yes' && Flexify_Checkout_Init::license_valid() ) {
+			add_filter( 'woocommerce_checkout_fields', array( __CLASS__, 'flexify_checkout_fields_manager' ), 150 );
+		}
 
 		add_filter( 'woocommerce_billing_fields', array( __CLASS__, 'custom_override_billing_field_priorities' ), 100 );
 		add_filter( 'woocommerce_shipping_fields', array( __CLASS__, 'custom_override_shipping_field_priorities' ), 100 );
@@ -53,6 +58,14 @@ class Flexify_Checkout_Core {
 		// set customer data on checkout session
 		add_action( 'wp_ajax_get_checkout_session_data', array( $this, 'get_checkout_session_data_callback' ) );
 		add_action( 'wp_ajax_nopriv_get_checkout_session_data', array( $this, 'get_checkout_session_data_callback' ) );
+
+		// set cart items data on checkout session
+		add_action( 'wp_ajax_get_product_cart_session_data', array( $this, 'get_product_cart_session_data_callback' ) );
+		add_action( 'wp_ajax_nopriv_get_product_cart_session_data', array( $this, 'get_product_cart_session_data_callback' ) );
+
+		// set entry time on checkout session
+		add_action( 'wp_ajax_set_checkout_entry_time', array( $this, 'set_checkout_entry_time_callback' ) );
+		add_action( 'wp_ajax_nopriv_set_checkout_entry_time', array( $this, 'set_checkout_entry_time_callback' ) );
 
 		// On save.
 		add_action( 'woocommerce_checkout_create_order', array( __CLASS__, 'prepend_street_number_to_address_1' ), 10, 2 );
@@ -104,9 +117,17 @@ class Flexify_Checkout_Core {
 		add_filter( 'woocommerce_available_payment_gateways', array( $this, 'disable_inter_bank_gateways' ) );
 
 		// set default country on checkout
-		if ( Flexify_Checkout_Init::license_valid() ) {
+		if ( Flexify_Checkout_Init::get_setting('enable_manage_fields') === 'yes' && Flexify_Checkout_Init::license_valid() ) {
 			add_filter( 'default_checkout_billing_country', array( $this, 'get_default_checkout_country' ) );
 		}
+
+		// remove password strenght
+		if ( Flexify_Checkout_Init::get_setting('check_password_strenght') !== 'yes' ) {
+			add_action( 'wp_enqueue_scripts', array( $this, 'flexify_checkout_disable_password_strenght' ), 99999 );
+		}
+
+		// replace original checkout notices
+		add_filter( 'wc_get_template', array( $this, 'flexify_checkout_notices' ), 10, 5 );
 	}
 
 
@@ -119,7 +140,7 @@ class Flexify_Checkout_Core {
 	 * @return void
 	 */
 	public static function wp() {
-		if ( ! self::is_checkout() ) {
+		if ( ! is_flexify_checkout() ) {
 			return;
 		}
 
@@ -132,12 +153,11 @@ class Flexify_Checkout_Core {
 	 * Maybe optimize for digital products
 	 *
 	 * @since 1.0.0
-	 * @return void
+	 * @return bool
 	 */
 	public static function maybe_optimize_for_digital() {
 		if ( Flexify_Checkout_Init::get_setting('enable_optimize_for_digital_products') === 'yes' && Flexify_Checkout_Init::license_valid() ) {
 			add_filter( 'flexify_custom_steps', array( __CLASS__, 'disable_address_step' ) );
-			add_filter( 'flexify_checkout_details_fields', array( __CLASS__, 'move_address_fields_to_step_1' ) );
 		}
 	}
 
@@ -155,12 +175,12 @@ class Flexify_Checkout_Core {
 	/**
 	 * Include Template.
 	 *
-	 * @param string $template Template Path.
-	 *
+	 * @since 1.0.0
+	 * @param string $template | Template Path
 	 * @return string
 	 */
 	public static function include_template( $template ) {
-		if ( ! self::is_flexify_template() ) {
+		if ( ! is_flexify_template() ) {
 			return $template;
 		}
 
@@ -179,59 +199,6 @@ class Flexify_Checkout_Core {
 
 
 	/**
-	 * Is Desktop.
-	 *
-	 * Check to see if this we are in desktop mode.
-	 *
-	 * @return boolean
-	 */
-	public static function is_desktop() {
-		return ! wp_is_mobile();
-	}
-
-
-	/**
-	 * Must run on `wp` hook at the earliest.
-	 *
-	 * @since 1.0.0
-	 * @param bool $force_early Force early check by getting the post ID from the URL.
-	 * @return bool
-	 */
-	public static function is_checkout( $force_early = false ) {
-		if ( $force_early ) {
-			$request_uri = ! empty( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
-			$page_id = url_to_postid( home_url( $request_uri ) );
-
-			return wc_get_page_id( 'checkout' ) === $page_id;
-		}
-
-		if ( is_wc_endpoint_url( 'order-received' ) || is_wc_endpoint_url( 'order-pay' ) ) {
-			return false;
-		}
-
-		if ( is_checkout() ) {
-			return true;
-		}
-
-		$wc_ajax = filter_input( INPUT_GET, 'wc-ajax', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
-
-		if ( 'update_order_review' === $wc_ajax ) {
-			return true;
-		}
-
-		$queried_object = get_queried_object();
-
-		if ( is_wp_error( $queried_object ) || empty( $queried_object ) || ! isset( $queried_object->ID ) ) {
-			return false;
-		}
-
-		$checkout_page_id = wc_get_page_id( 'checkout' );
-
-		return $checkout_page_id === $queried_object->ID && $queried_object->is_main_query();
-	}
-
-
-	/**
 	 * Check if current page is a Thank you page.
 	 *
 	 * @since 1.0.0
@@ -245,7 +212,7 @@ class Flexify_Checkout_Core {
 			return false;
 		}
 
-		if ( ! is_wc_endpoint_url( 'order-received' ) ) {
+		if ( ! is_wc_endpoint_url('order-received') ) {
 			return false;
 		}
 
@@ -257,11 +224,12 @@ class Flexify_Checkout_Core {
 	 * Disable the address step
 	 *
 	 * @since 1.0.0
+	 * @version 3.5.0
 	 * @param array $steps | Checkout Fields
 	 * @return array
 	 */
 	public static function disable_address_step( $steps ) {
-		if ( ! self::is_virtual_only_cart() ) {
+		if ( ! flexify_checkout_only_virtual() ) {
 			return $steps;
 		}
 
@@ -270,28 +238,12 @@ class Flexify_Checkout_Core {
 		return array_values( $steps );
 	}
 
-
-	/**
-	 * Move address fields to step 1
-	 *
-	 * @since 1.0.0
-	 * @param array $details_fields Fields
-	 * @return array
-	 */
-	public static function move_address_fields_to_step_1( $details_fields ) {
-		if ( ! self::is_virtual_only_cart() ) {
-			return $details_fields;
-		}
-
-		return array_merge( $details_fields, array( 'billing_country' ) );
-	}
-
 	
 	/**
 	 * Override checkout fields
 	 *
 	 * @since 1.0.0
-	 * @version 3.1.0
+	 * @version 3.5.0
 	 * @param array $fields | Checkout fields
 	 * @return array
 	 */
@@ -340,183 +292,8 @@ class Flexify_Checkout_Core {
 			$fields['billing']['billing_phone']['class'][] = 'flexify-intl-phone';
 		}
 
-		// get checkout fields from reorder controller
-		$get_field_options = get_option('flexify_checkout_step_fields', array());
-		$get_field_options = maybe_unserialize( $get_field_options );
-
-		// remove shipping fields if optimize for digital products option is active
-		if ( Flexify_Checkout_Init::get_setting('enable_optimize_for_digital_products') === 'yes' && Flexify_Checkout_Init::license_valid() ) {
-			if ( self::is_virtual_only_cart() ) {
-				foreach ( $get_field_options as $index => $value ) {
-					if ( isset( $value['step'] ) && $value['step'] === '2' ) {
-						unset( $fields['billing'][$index] );
-					}
-				}
-
-				unset( $fields['order']['order_comments'] );
-
-				// Remove the last class from the postcode field.
-				if ( isset( $fields['billing']['billing_postcode'] ) && isset( $fields['billing']['billing_postcode']['class'] ) ) {
-					$search = array_search( 'form-row-last', $fields['billing']['billing_postcode']['class'] ); // get the key of the value to be removed
-
-					if ( false !== $search ) {
-						unset( $fields['billing']['billing_postcode']['class'][ $search ] ); // remove the item from the array using its key
-					}
-				}
-			}
-		}
-
 		// check fields conditions
-		if ( Flexify_Checkout_Init::get_setting('enable_manage_fields') === 'yes' && Flexify_Checkout_Init::license_valid() ) {
-			foreach ( $get_field_options as $index => $value ) {
-				// change array key for valid class
-				$field_class = array(
-					'left' => 'row-first',
-					'right' => 'row-last',
-					'full' => 'form-row-wide',
-				);
-
-				// field position
-				if ( isset( $value['position'] ) ) {
-					$fields['billing'][$index]['class'][] = $field_class[$value['position']];
-				}
-
-				// field custom class
-				if ( isset( $value['classes'] ) ) {
-					$fields['billing'][$index]['class'][] = $value['classes'];
-				}
-
-				// field custom label class
-				if ( isset( $value['label_classes'] ) ) {
-					$fields['billing'][$index]['label_class'] = $value['label_classes'];
-				}
-
-				// field label
-				if ( isset( $value['label'] ) ) {
-					$fields['billing'][$index]['label'] = $value['label'];
-				}
-
-				$required_filter = array(
-					'yes' => true,
-					'no' => false,
-				);
-
-				// required field
-				if ( isset( $value['required'] ) && $index !== 'billing_country' ) {
-					$fields['billing'][$index]['required'] = $required_filter[$value['required']];
-				}
-
-				// add new field type text
-				if ( isset( $value['source'] ) && $value['source'] === 'added' && isset( $value['type'] ) && $value['type'] === 'text' ) {
-					$fields['billing'][$index] = array(
-						'type' => 'text',
-						'label' => $value['label'],
-						'class' => array( $value['classes'] ),
-						'clear' => true,
-						'required' => $required_filter[$value['required']],
-						'priority' => $value['priority'],
-					);
-				}
-
-				// add new field type textarea
-				if ( isset( $value['source'] ) && $value['source'] === 'added' && isset( $value['type'] ) && $value['type'] === 'textarea' ) {
-					$fields['billing'][$index] = array(
-						'type' => 'textarea',
-						'label' => $value['label'],
-						'class' => array( $value['classes'] ),
-						'clear' => true,
-						'required' => $required_filter[$value['required']],
-						'priority' => $value['priority'],
-					);
-				}
-
-				// add new field type number
-				if ( isset( $value['source'] ) && $value['source'] === 'added' && isset( $value['type'] ) && $value['type'] === 'number' ) {
-					$fields['billing'][$index] = array(
-						'type' => 'number',
-						'label' => $value['label'],
-						'class' => array( $value['classes'] ),
-						'clear' => true,
-						'required' => $required_filter[$value['required']],
-						'priority' => $value['priority'],
-					);
-				}
-
-				// add new field type email
-			/*	if ( isset( $value['source'] ) && $value['source'] === 'added' && isset( $value['type'] ) && $value['type'] === 'email' ) {
-					$fields['billing'][$index] = array(
-						'type' => 'email',
-						'label' => $value['label'],
-						'class' => array( $value['classes'] ),
-						'clear' => true,
-						'required' => $required_filter[$value['required']],
-						'priority' => $value['priority'],
-					);
-				}*/
-
-				// add new field type password
-				if ( isset( $value['source'] ) && $value['source'] === 'added' && isset( $value['type'] ) && $value['type'] === 'password' ) {
-					$fields['billing'][$index] = array(
-						'type' => 'password',
-						'label' => $value['label'],
-						'class' => array( $value['classes'] ),
-						'clear' => true,
-						'required' => $required_filter[$value['required']],
-						'priority' => $value['priority'],
-					);
-				}
-
-				// add new field type tel
-				if ( isset( $value['source'] ) && $value['source'] === 'added' && isset( $value['type'] ) && $value['type'] === 'phone' ) {
-					$fields['billing'][$index] = array(
-						'type' => 'tel',
-						'label' => $value['label'],
-						'class' => array( $value['classes'] ),
-						'clear' => true,
-						'validate' => array('phone'),
-						'required' => $required_filter[$value['required']],
-						'priority' => $value['priority'],
-					);
-				}
-
-				// add new field type url
-				if ( isset( $value['source'] ) && $value['source'] === 'added' && isset( $value['type'] ) && $value['type'] === 'url' ) {
-					$fields['billing'][$index] = array(
-						'type' => 'url',
-						'label' => $value['label'],
-						'class' => array( $value['classes'] ),
-						'clear' => true,
-						'required' => $required_filter[$value['required']],
-						'priority' => $value['priority'],
-					);
-				}
-
-				// add new field type select
-				if ( isset( $value['source'] ) && $value['source'] === 'added' && isset( $value['type'] ) && $value['type'] === 'select' ) {
-					$index_option = array();
-					
-					// get select options
-					foreach ( $value['options'] as $option ) {
-						$index_option[ $option['value'] ] = $option['text'];
-					}
-
-					$fields['billing'][$index] = array(
-						'type' => 'select',
-						'options' => $index_option,
-						'label' => $value['label'],
-						'class' => array( $value['classes'] ),
-						'clear' => true,
-						'required' => $required_filter[$value['required']],
-						'priority' => $value['priority'],
-					);
-				}
-
-				// remove fields thats disabled
-				if ( isset( $value['enabled'] ) && $value['enabled'] === 'no' && $index !== 'billing_country' ) {
-					unset( $fields['billing'][$index] );
-				}
-			}
-		} else {
+		if ( Flexify_Checkout_Init::get_setting('enable_manage_fields') !== 'yes' ) {
 			if ( isset( $fields['billing']['billing_address_1'] ) ) {
 				$fields['billing']['billing_address_1']['class'][] = 'row-first';
 			}
@@ -541,35 +318,198 @@ class Flexify_Checkout_Core {
 				$fields['billing']['billing_state']['class'][] = 'row-last';
 			}
 		}
+
+		// remove shipping fields if optimize for digital products option is active
+		if ( Flexify_Checkout_Init::get_setting('enable_optimize_for_digital_products') === 'yes' && Flexify_Checkout_Init::license_valid() ) {
+			if ( flexify_checkout_only_virtual() ) {
+				$get_field_options = maybe_unserialize( get_option('flexify_checkout_step_fields', array()) );
+				
+				foreach ( $get_field_options as $index => $value ) {
+					if ( isset( $value['step'] ) && $value['step'] === '2' ) {
+						$fields['billing'][$index]['required'] = false;
+						unset( $fields['billing'][$index] );
+					}
+				}
+
+				unset( $fields['order']['order_comments'] );
+
+				// Remove the last class from the postcode field.
+				if ( isset( $fields['billing']['billing_postcode'] ) && isset( $fields['billing']['billing_postcode']['class'] ) ) {
+					$search = array_search( 'form-row-last', $fields['billing']['billing_postcode']['class'] ); // get the key of the value to be removed
+
+					if ( false !== $search ) {
+						unset( $fields['billing']['billing_postcode']['class'][ $search ] ); // remove the item from the array using its key
+					}
+				}
+			}
+		}
 		
 		return $fields;
 	}
 
 
 	/**
-	 * Check if the cart only contains virtual products
-	 *
-	 * @since 1.0.0
-	 * @return bool
+	 * Add new fields, reorder positions, and manage fields from WooCommerce checkout
+	 * 
+	 * @since 3.0.0
+	 * @version 3.5.0
+	 * @param array $fields | Checkout fields
+	 * @return array
 	 */
-	public static function is_virtual_only_cart() {
-		static $only_virtual = null;
+	public static function flexify_checkout_fields_manager( $fields ) {
+		// get checkout fields from checkout controller
+		$get_field_options = maybe_unserialize( get_option('flexify_checkout_step_fields', array()) );
 
-		if ( null !== $only_virtual ) {
-			return $only_virtual;
-		}
+		// iterate for each step field
+		foreach ( $get_field_options as $index => $value ) {
+			// change array key for valid class
+			$field_class = array(
+				'left' => 'row-first',
+				'right' => 'row-last',
+				'full' => 'form-row-wide',
+			);
 
-		$only_virtual = true;
+			// field position
+			if ( isset( $value['position'] ) ) {
+				$fields['billing'][$index]['class'][] = $field_class[$value['position']];
+			}
 
-		foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
-			// Check if there are non-virtual products.
-			if ( ! $cart_item['data']->is_virtual() ) {
-				$only_virtual = false;
-				break;
+			// field custom class
+			if ( isset( $value['classes'] ) ) {
+				$fields['billing'][$index]['class'][] = $value['classes'];
+			}
+
+			// field input masks
+			if ( isset( $value['input_mask'] ) ) {
+				$fields['billing'][$index]['class'][] = 'has-mask';
+			}
+
+			// field custom label class
+			if ( isset( $value['label_classes'] ) ) {
+				$fields['billing'][$index]['label_class'] = $value['label_classes'];
+			}
+
+			// field label
+			if ( isset( $value['label'] ) ) {
+				$fields['billing'][$index]['label'] = $value['label'];
+			}
+
+			// add field priority
+			if ( isset( $value['priority'] ) ) {
+				$fields['billing'][$index]['priority'] = $value['priority'];
+			}
+
+			$required_filter = array(
+				'yes' => true,
+				'no' => false,
+			);
+
+			// required field
+			if ( isset( $value['required'] ) ) {
+				$fields['billing'][$index]['required'] = $required_filter[$value['required']];
+				$fields['billing'][$index]['class'][] = 'required';
+			}
+
+			// add new field type text
+			if ( isset( $value['source'] ) && $value['source'] === 'added' && isset( $value['type'] ) && $value['type'] === 'text' ) {
+				$fields['billing'][$index] = array(
+					'type' => 'text',
+					'label' => $value['label'],
+					'class' => array( $value['classes'] ),
+					'clear' => true,
+					'required' => $required_filter[$value['required']],
+					'priority' => $value['priority'],
+				);
+			}
+
+			// add new field type textarea
+			if ( isset( $value['source'] ) && $value['source'] === 'added' && isset( $value['type'] ) && $value['type'] === 'textarea' ) {
+				$fields['billing'][$index] = array(
+					'type' => 'textarea',
+					'label' => $value['label'],
+					'class' => array( $value['classes'] ),
+					'clear' => true,
+					'required' => $required_filter[$value['required']],
+					'priority' => $value['priority'],
+				);
+			}
+
+			// add new field type number
+			if ( isset( $value['source'] ) && $value['source'] === 'added' && isset( $value['type'] ) && $value['type'] === 'number' ) {
+				$fields['billing'][$index] = array(
+					'type' => 'number',
+					'label' => $value['label'],
+					'class' => array( $value['classes'] ),
+					'clear' => true,
+					'required' => $required_filter[$value['required']],
+					'priority' => $value['priority'],
+				);
+			}
+
+			// add new field type password
+			if ( isset( $value['source'] ) && $value['source'] === 'added' && isset( $value['type'] ) && $value['type'] === 'password' ) {
+				$fields['billing'][$index] = array(
+					'type' => 'password',
+					'label' => $value['label'],
+					'class' => array( $value['classes'] ),
+					'clear' => true,
+					'required' => $required_filter[$value['required']],
+					'priority' => $value['priority'],
+				);
+			}
+
+			// add new field type tel
+			if ( isset( $value['source'] ) && $value['source'] === 'added' && isset( $value['type'] ) && $value['type'] === 'phone' ) {
+				$fields['billing'][$index] = array(
+					'type' => 'tel',
+					'label' => $value['label'],
+					'class' => array( $value['classes'] ),
+					'clear' => true,
+					'validate' => array('phone'),
+					'required' => $required_filter[$value['required']],
+					'priority' => $value['priority'],
+				);
+			}
+
+			// add new field type url
+			if ( isset( $value['source'] ) && $value['source'] === 'added' && isset( $value['type'] ) && $value['type'] === 'url' ) {
+				$fields['billing'][$index] = array(
+					'type' => 'url',
+					'label' => $value['label'],
+					'class' => array( $value['classes'] ),
+					'clear' => true,
+					'required' => $required_filter[$value['required']],
+					'priority' => $value['priority'],
+				);
+			}
+
+			// add new field type select
+			if ( isset( $value['source'] ) && $value['source'] === 'added' && isset( $value['type'] ) && $value['type'] === 'select' ) {
+				$index_option = array();
+				
+				// get select options
+				foreach ( $value['options'] as $option ) {
+					$index_option[ $option['value'] ] = $option['text'];
+				}
+
+				$fields['billing'][$index] = array(
+					'type' => 'select',
+					'options' => $index_option,
+					'label' => $value['label'],
+					'class' => array( $value['classes'] ),
+					'clear' => true,
+					'required' => $required_filter[$value['required']],
+					'priority' => $value['priority'],
+				);
+			}
+
+			// remove fields thats disabled
+			if ( isset( $value['enabled'] ) && $value['enabled'] === 'no' ) {
+				unset( $fields['billing'][$index] );
 			}
 		}
 
-		return $only_virtual;
+		return $fields;
 	}
 
 
@@ -832,8 +772,6 @@ class Flexify_Checkout_Core {
 		if ( $data ) {
 			wp_send_json_success( $data );
 		}
-	
-		wp_die();
 	}
 
 
@@ -854,7 +792,7 @@ class Flexify_Checkout_Core {
 	 * Prepend street number to billing and shipping address_1 field when order is created.
 	 *
 	 * @param WC_Order $order Order.
-	 * @param array    $data  Posted Data.
+	 * @param array $data | Posted Data.
 	 *
 	 * @return void
 	 */
@@ -909,7 +847,7 @@ class Flexify_Checkout_Core {
 	 * Render inline errors for validate fields
 	 *
 	 * @since 1.0.0
-	 * @version 3.2.0
+	 * @version 3.5.0
 	 * @param string $field | Checkout field
 	 * @param string $key | Field name and ID
 	 * @param array $args | Array of field parameters (type, country, label, description, placeholder, maxlenght, required, autocomplete, id, class, label_class, input_class, return, options, custom_attributes, validate, default, autofocus)
@@ -920,7 +858,7 @@ class Flexify_Checkout_Core {
 	public static function render_inline_errors( $field = '', $key = '', $args = array(), $value = '', $country = '' ) {
 		$called_inline = false;
 
-		if ( defined( 'DOING_AJAX' ) && DOING_AJAX && ! empty( $key ) ) {
+		if ( defined('DOING_AJAX') && DOING_AJAX && ! empty( $key ) ) {
 			$called_inline = true;
 		}
 
@@ -937,7 +875,7 @@ class Flexify_Checkout_Core {
 		$global_message = false;
 		$custom = false;
 
-		if ( (bool) $args['required'] ) {
+		if ( (bool) $args['required'] || $args['class'] === 'required-field' ) {
 			$message = sprintf( __( '%s é um campo obrigatório.', 'flexify-checkout-for-woocommerce' ), esc_html( $args['label'] ) );
 			/**
 			 * Filters the required field error message.
@@ -959,7 +897,7 @@ class Flexify_Checkout_Core {
 				$custom  = true;
 			}
 
-			if ( 'postcode' === $args['type'] && ! WC_Validation::is_postcode( $value, $country ) ) {
+			if ( 'billing_postcode' === $key && ! WC_Validation::is_postcode( $value, $country ) ) {
 				switch ( $country ) {
 					case 'IE':
 						/* translators: %1$s: field name, %2$s finder.eircode.ie URL */
@@ -968,7 +906,7 @@ class Flexify_Checkout_Core {
 						break;
 					default:
 						/* translators: %s: field name */
-						$message = sprintf( __( '%s não é um CEP válido.', 'flexify-checkout-for-woocommerce' ), esc_html( $args['label'] ) );
+						$message = sprintf( __( '%s não é um código postal válido.', 'flexify-checkout-for-woocommerce' ), esc_html( $args['label'] ) );
 						$custom  = true;
 						break;
 				}
@@ -982,13 +920,15 @@ class Flexify_Checkout_Core {
 				$message = sprintf( __( '%s não é um endereço de e-mail válido.', 'flexify-checkout-for-woocommerce' ), esc_html( $args['label'] ) );
 			}
 
-		/*	if ( 'billing_cpf' === $args['id'] && ! self::validate_cpf( $value ) ) {
+			if ( 'billing_cpf' === $key && ! Flexify_Checkout_Helpers::validate_cpf( $value ) ) {
 				$message = sprintf( __( 'O %s informado não é válido.', 'flexify-checkout-for-woocommerce' ), esc_html( $args['label'] ) );
+				$custom  = true;
 			}
 
-			if ( 'billing_cnpj' === $args['id'] && ! self::validate_cnpj( $value ) ) {
+			if ( 'billing_cnpj' === $key && ! Flexify_Checkout_Helpers::validate_cnpj( $value ) ) {
 				$message = sprintf( __( 'O %s informado não é válido.', 'flexify-checkout-for-woocommerce' ), esc_html( $args['label'] ) );
-			}*/
+				$custom  = true;
+			}
 
 			if ( 'email' === $args['type'] && ! is_user_logged_in() && email_exists( $value ) ) {
 				/**
@@ -1035,7 +975,7 @@ class Flexify_Checkout_Core {
 		// If we are doing AJAX, just return the message.
 		$action = filter_input( INPUT_POST, 'action' );
 
-		if ( defined( 'DOING_AJAX' ) && DOING_AJAX && in_array( $action, array( 'flexify_check_for_inline_error', 'flexify_check_for_inline_errors' ), true ) ) {
+		if ( defined('DOING_AJAX') && DOING_AJAX && in_array( $action, array( 'flexify_check_for_inline_error', 'flexify_check_for_inline_errors' ), true ) ) {
 			$response = array(
 				'message' => $message,
 				'isCustom' => $custom,
@@ -1053,27 +993,13 @@ class Flexify_Checkout_Core {
 			exit;
 		}
 
-		$target_fields = array(
-			'billing_first_name',
-			'billing_last_name',
-			'billing_phone',
-			'billing_phone_full_number',
-			'billing_email',
-			'billing_company',
-			'billing_gender',
-			'billing_cpf',
-			'billing_rg',
-			'billing_birthdate',
-			'billing_cnpj',
-			'billing_ie',
-			'billing_country',
-			'billing_postcode',
-			'billing_address_1',
-			'billing_number',
-			'billing_neighborhood',
-			'billing_city',
-			'billing_state',
-		);
+		// get step fields
+		$fields = maybe_unserialize( get_option('flexify_checkout_step_fields', array()) );
+		$target_fields = array();
+
+		foreach ( $fields as $index => $value ) {
+			$target_fields[] = $index;
+		}
 
 		$data_attributes = '<p ';
 		$data_attributes .= sprintf( 'data-type="%s"', esc_attr( $args['type'] ) ) . ' ';
@@ -1110,7 +1036,8 @@ class Flexify_Checkout_Core {
 	 * Update order review fragments
 	 *
 	 * @since 1.0.0
-	 * @param array $fragments
+	 * @version 3.5.0
+	 * @param array $fragments | Checkout fragments
 	 * @return array
 	 */
 	public static function update_order_review_framents( $fragments ) {
@@ -1118,12 +1045,15 @@ class Flexify_Checkout_Core {
 
 		// Heading with cart item count.
 		ob_start();
-		wc_get_template( 'checkout/cart-heading.php' );
+
+		wc_get_template('checkout/cart-heading.php');
 		$fragments['.flexify-heading--order-review'] = ob_get_clean();
 
 		$new_fragments = array(
 			'total' => WC()->cart->get_total(),
 			'shipping_row' => Flexify_Checkout_Steps::get_shipping_row(),
+			'shipping_options' => self::get_shipping_options_fragment(),
+        	'payment_options' => self::get_payment_options_fragment(),
 		);
 
 		if ( isset( $fragments['flexify'] ) ) {
@@ -1133,6 +1063,68 @@ class Flexify_Checkout_Core {
 		}
 
 		return $fragments;
+	}
+
+
+	/**
+	 * Get all shipping options for add on checkout fragments
+	 *
+	 * @since 3.5.0
+	 * @return string
+	 */
+	public static function get_shipping_options_fragment() {
+		if ( empty( WC() ) || empty( WC()->shipping() ) || empty( WC()->cart ) ) {
+			return '';
+		}
+
+		$packages = WC()->shipping()->get_packages();
+		$shipping_methods = $packages[0]['rates'];
+		
+		ob_start();
+
+		echo '<ul class="woocommerce-shipping-methods">';
+
+		foreach ( $shipping_methods as $method ) {
+			echo sprintf( '<li><input type="radio" name="shipping_method[0]" value="%s" class="shipping_method" /><label>%s</label></li>', esc_attr( $method->id ), esc_html( $method->label . ' - ' . wc_price( $method->cost ) ) );
+		}
+
+		echo '</ul>';
+
+		return ob_get_clean();
+	}
+
+
+	/**
+	 * Get all payment options for add on checkout fragments
+	 *
+	 * @since 3.5.0
+	 * @return string
+	 */
+	public static function get_payment_options_fragment() {
+		if ( empty( WC() ) || empty( WC()->payment_gateways() ) ) {
+			return '';
+		}
+
+		$available_gateways = WC()->payment_gateways()->get_available_payment_gateways();
+		ob_start();
+
+		echo '<ul class="wc_payment_methods payment_methods methods">';
+
+		foreach ( $available_gateways as $gateway ) {
+			echo sprintf('<li class="wc_payment_method payment_method_%s"><input id="payment_method_%s" type="radio" class="input-radio" name="payment_method" value="%s" %s data-order_button_text="%s" /><label for="payment_method_%s">%s</label></li>',
+				esc_attr( $gateway->id ),
+				esc_attr( $gateway->id ),
+				esc_attr( $gateway->id ),
+				checked( $gateway->chosen, true, false ),
+				esc_attr( $gateway->order_button_text ),
+				esc_attr( $gateway->id ),
+				esc_html( $gateway->get_title() )
+			);
+		}
+
+		echo '</ul>';
+
+		return ob_get_clean();
 	}
 
 
@@ -1179,13 +1171,14 @@ class Flexify_Checkout_Core {
 	 * Locate templates.
 	 *
 	 * @since 1.0.0
+	 * @version 3.5.0
 	 * @param string $template Template.
 	 * @param string $template_name Template Name.
 	 * @param string $template_path Template Path.
 	 * @return mixed|string
 	 */
 	public static function woocommerce_locate_template( $template, $template_name, $template_path ) {
-		if ( ! self::is_flexify_template() ) {
+		if ( ! is_flexify_template() ) {
 			return $template;
 		}
 
@@ -1209,7 +1202,7 @@ class Flexify_Checkout_Core {
 		$reset_templates_src = apply_filters(
 			'flexify_match_checkout_template_sources',
 			array(
-				'woocommerce/checkout', // Catches any file in the woocommerce/checkout override folder.
+				'woocommerce/', // Catches any file in the woocommerce/ override folder.
 				'global/quantity-input.php',
 				'templates/checkout/',
 				'common/checkout/',
@@ -1283,70 +1276,33 @@ class Flexify_Checkout_Core {
 
 
 	/**
-	 * Save customer data in WooCommerce 'flexify_checkout' session
+	 * Save billing fields data in custom session
 	 * 
 	 * @since 1.8.5
-	 * @version 1.8.5
+	 * @version 3.5.0
 	 * @return void
 	 */
 	public function get_checkout_session_data_callback() {
-		$first_name = isset( $_POST['billing_first_name'] ) ? sanitize_text_field( $_POST['billing_first_name'] ) : '';
-		$last_name = isset( $_POST['billing_last_name'] ) ? sanitize_text_field( $_POST['billing_last_name'] ) : '';
-		$phone = isset( $_POST['billing_phone'] ) ? sanitize_text_field( $_POST['billing_phone'] ) : '';
-		$international_phone = isset( $_POST['billing_phone_full_number'] ) ? sanitize_text_field( $_POST['billing_phone_full_number'] ) : '';
-		$email = isset( $_POST['billing_email'] ) ? sanitize_text_field( $_POST['billing_email'] ) : '';
-		$company = isset( $_POST['billing_company'] ) ? sanitize_text_field( $_POST['billing_company'] ) : '';
-		$billing_gender = isset( $_POST['billing_gender'] ) ? sanitize_text_field( $_POST['billing_gender'] ) : '';
-		$billing_persontype = isset( $_POST['billing_persontype'] ) ? sanitize_text_field( $_POST['billing_persontype'] ) : '';
-		$billing_cpf = isset( $_POST['billing_cpf'] ) ? sanitize_text_field( $_POST['billing_cpf'] ) : '';
-		$billing_rg = isset( $_POST['billing_rg'] ) ? sanitize_text_field( $_POST['billing_rg'] ) : '';
-		$billing_birthdate = isset( $_POST['billing_birthdate'] ) ? sanitize_text_field( $_POST['billing_birthdate'] ) : '';
-		$billing_cnpj = isset( $_POST['billing_cnpj'] ) ? sanitize_text_field( $_POST['billing_cnpj'] ) : '';
-		$billing_ie = isset( $_POST['billing_ie'] ) ? sanitize_text_field( $_POST['billing_ie'] ) : '';
-		$billing_country = isset( $_POST['billing_country'] ) ? sanitize_text_field( $_POST['billing_country'] ) : '';
-		$billing_postcode = isset( $_POST['billing_postcode'] ) ? sanitize_text_field( $_POST['billing_postcode'] ) : '';
-		$billing_address_1 = isset( $_POST['billing_address_1'] ) ? sanitize_text_field( $_POST['billing_address_1'] ) : '';
-		$billing_number = isset( $_POST['billing_number'] ) ? sanitize_text_field( $_POST['billing_number'] ) : '';
-		$billing_neighborhood = isset( $_POST['billing_neighborhood'] ) ? sanitize_text_field( $_POST['billing_neighborhood'] ) : '';
-		$billing_address_2 = isset( $_POST['billing_address_2'] ) ? sanitize_text_field( $_POST['billing_address_2'] ) : '';
-		$billing_city = isset( $_POST['billing_city'] ) ? sanitize_text_field( $_POST['billing_city'] ) : '';
-		$billing_state = isset( $_POST['billing_state'] ) ? sanitize_text_field( $_POST['billing_state'] ) : '';
-
-		$flexify_checkout_session = array(
-			'first_name' => $first_name,
-			'last_name' => $last_name,
-			'phone' => $phone,
-			'international_phone' => $international_phone,
-			'email' => $email,
-			'company' => $company,
-			'billing_gender' => $billing_gender,
-			'billing_persontype' => $billing_persontype,
-			'billing_cpf' => $billing_cpf,
-			'billing_rg' => $billing_rg,
-			'billing_birthdate' => $billing_birthdate,
-			'billing_cnpj' => $billing_cnpj,
-			'billing_ie' => $billing_ie,
-			'billing_country' => $billing_country,
-			'billing_postcode' => $billing_postcode,
-			'billing_address_1' => $billing_address_1,
-			'billing_number' => $billing_number,
-			'billing_neighborhood' => $billing_neighborhood,
-			'billing_address_2' => $billing_address_2,
-			'billing_city' => $billing_city,
-			'billing_state' => $billing_state,
-		);
-
-		// set flexify session with data recovered
-		WC()->session->set( 'flexify_checkout', $flexify_checkout_session );
-
+		// get field to request
+		$fields_data = isset( $_POST['fields_data'] ) ? json_decode( stripslashes( $_POST['fields_data'] ), true ) : [];
+		$flexify_checkout_session = array();
+	  
+		foreach ( $fields_data as $field ) {
+			// add field and value on array if exists and not empty
+			if ( isset( $field['field_id'] ) && isset( $field['value'] ) && ! empty( $field['value'] ) ) {
+				$flexify_checkout_session[$field['field_id']] = sanitize_text_field( $field['value'] );
+			}
+		}
+	  
+		// Changed session name of "flexify_checkout" for "flexify_checkout_customer_fields" on updated 3.5.0
+		WC()->session->set( 'flexify_checkout_customer_fields', $flexify_checkout_session );
+	  
 		$response = array(
-			'status' => 'success',
-			'data' => $flexify_checkout_session,
+		  'status' => 'success',
+		  'data' => $flexify_checkout_session,
 		);
-	
-		wp_send_json_success( $response );
-
-		wp_die();
+	  
+		wp_send_json( $response );
 	}
 
 
@@ -1354,7 +1310,7 @@ class Flexify_Checkout_Core {
 	 * Override empty cart fragment
 	 *
 	 * @since 1.0.0
-	 * @param array $fragments
+	 * @param array $fragments | Checkout fragments
 	 * @return array
 	 */
 	public static function override_empty_cart_fragment( $fragments ) {
@@ -1449,21 +1405,6 @@ class Flexify_Checkout_Core {
 		}
 	}
 
-	
-	/**
-	 * Helper: Is Flexify template.
-	 *
-	 * @return bool
-	 */
-	public static function is_flexify_template() {
-		/**
-		 * Is flexify template.
-		 *
-		 * @since 1.0.0
-		 */
-		return apply_filters( 'flexify_is_flexify_template', self::is_checkout() || self::is_thankyou_page() || is_wc_endpoint_url( 'order-pay' ) );
-	}
-
 
 	/**
 	 * Express checkout buttons wrap
@@ -1514,63 +1455,180 @@ class Flexify_Checkout_Core {
 
 
 	/**
-	 * Checks if the CPF is valid
-	 *
-	 * @since 3.2.0
-	 * @param string $cpf | CPF to validate
-	 * @return bool
+	 * Get fields with input mask
+	 * 
+	 * @since 3.5.0
+	 * @return array
 	 */
-	public static function validate_cpf( $cpf ) {
-		$cpf = preg_replace( '/[^0-9]/', '', $cpf );
+	public static function get_fields_with_mask() {
+		$fields = get_option('flexify_checkout_step_fields', array());
+		$fields = maybe_unserialize( $fields );
+		$input_masks = array();
 
-		if ( 11 !== strlen( $cpf ) || preg_match( '/^([0-9])\1+$/', $cpf ) ) {
-			return false;
-		}
-
-		$digit = substr( $cpf, 0, 9 );
-
-		for ( $j = 10; $j <= 11; $j++ ) {
-			$sum = 0;
-
-			for ( $i = 0; $i < $j - 1; $i++ ) {
-				$sum += ( $j - $i ) * intval( $digit[ $i ] );
+		foreach ( $fields as $key => $value ) {
+			if ( ! empty( $value['input_mask'] ) ) {
+				$input_masks[$key] = $value['input_mask'];
 			}
-
-			$summod11 = $sum % 11;
-			$digit[ $j - 1 ] = $summod11 < 2 ? 0 : 11 - $summod11;
 		}
 
-		return intval( $digit[9] ) === intval( $cpf[9] ) && intval( $digit[10] ) === intval( $cpf[10] );
+		return $input_masks;
 	}
 
 
 	/**
-	 * Checks if the CNPJ is valid
-	 *
-	 * @since 3.2.0
-	 * @param string $cnpj | CNPJ to validate
-	 * @return bool
+	 * Remove password strenght
+	 * 
+	 * @since 3.5.0
+	 * @return void
 	 */
-	public static function validate_cnpj( $cnpj ) {
-		$cnpj = sprintf( '%014s', preg_replace( '{\D}', '', $cnpj ) );
+	public function flexify_checkout_disable_password_strenght() {
+		wp_dequeue_script('wc-password-strength-meter');
+		wp_deregister_script('wc-password-strength-meter');
+	}
 
-		if ( 14 !== strlen( $cnpj ) || 0 === intval( substr( $cnpj, -4 ) ) ) {
-			return false;
+
+	/**
+	 * Get product cart data from checkout session in AJAX callback
+	 * 
+	 * @since 3.5.0
+	 * @return void
+	 */
+	public function get_product_cart_session_data_callback() {
+		$cart_items = WC()->cart->get_cart();
+		$items = array();
+	
+		foreach ( $cart_items as $cart_item_key => $cart_item ) {
+			$product = $cart_item['data'];
+			$product_id = $product->get_id();
+			$quantity = $cart_item['quantity'];
+			
+			if ( $product->is_type('variable') ) {
+				$variation_id = $cart_item['variation_id'];
+				$variation_data = wc_get_product( $variation_id )->get_variation_attributes();
+				$items[] = array(
+					'product_name' => $product->get_title(),
+					'product_id' => $product_id,
+					'variation_id' => $variation_id,
+					'quantity' => $quantity,
+					'variation_data' => $variation_data,
+				);
+			} else {
+				$items[] = array(
+					'product_name' => $product->get_title(),
+					'product_id' => $product_id,
+					'quantity' => $quantity,
+				);
+			}
+		}
+	
+		// Get selected shipping method
+		$chosen_shipping_methods = WC()->session->get('chosen_shipping_methods');
+		$shipping_method = ! empty( $chosen_shipping_methods ) ? $chosen_shipping_methods[0] : 'none';
+		$shipping_method_label = 'Nenhuma forma de entrega selecionada';
+
+		if ( ! empty( $chosen_shipping_methods ) ) {
+			$shipping_methods = WC()->shipping()->get_shipping_methods();
+
+			if ( isset( $shipping_methods[$shipping_method] ) ) {
+				$shipping_method_label = $shipping_methods[$shipping_method]->get_title();
+			}
+		}
+	
+		// Get selected payment method
+		$payment_method = WC()->session->get('chosen_payment_method');
+		$payment_method_label = 'Nenhuma forma de pagamento selecionada';
+
+		if ( $payment_method ) {
+			$available_gateways = WC()->payment_gateways()->get_available_payment_gateways();
+
+			if ( isset( $available_gateways[$payment_method] ) ) {
+				$payment_method_label = $available_gateways[$payment_method]->get_title();
+			}
+		}
+	
+		$session_data = array(
+			'items' => $items,
+			'shipping_method' => array(
+				'id' => $shipping_method,
+				'label' => $shipping_method_label
+			),
+			'payment_method' => array(
+				'id' => $payment_method,
+				'label' => $payment_method_label
+			),
+			'checkout_entry_time' => WC()->session->get('checkout_entry_time'),
+		);
+	
+		WC()->session->set( 'flexify_checkout_items_cart', $session_data );
+	
+		$response = array(
+			'status' => 'success',
+			'data' => $session_data,
+		);
+	
+		wp_send_json( $response );
+	}
+	
+
+	/**
+	 * Set entry time on checkout session in AJAX callback
+	 * 
+	 * @since 3.5.0
+	 * @return void
+	 */
+	public function set_checkout_entry_time_callback() {
+		if ( isset( $_POST['entry_time'] ) && $_POST['entry_time'] === 'yes' ) {
+			$current_time = current_time('mysql');
+			$entry_time_formatted = date_i18n( get_option('date_format') . ' ' . get_option('time_format'), strtotime( $current_time ) );
+
+			WC()->session->set('checkout_entry_time', $entry_time_formatted);
+
+			$response = array(
+				'status' => 'success',
+				'data' => $entry_time_formatted,
+			);
+		} else {
+			$response = array(
+				'status' => 'error',
+			);
 		}
 
-		for ( $t = 11; $t < 13; ) {
-			for ( $d = 0, $p = 2, $c = $t; $c >= 0; $c--, ( $p < 9 ) ? $p++ : $p = 2 ) {
-				$d += $cnpj[ $c ] * $p;
-			}
+		wp_send_json( $response );
+	}
 
-			$d = ( ( 10 * $d ) % 11 ) % 10;
-
-			if ( intval( $cnpj[ ++$t ] ) !== $d ) {
-				return false;
-			}
+	
+	/**
+	 * Replace checkout notices
+	 * 
+	 * @since 3.5.0
+	 * @param string $template | Default template file path
+	 * @param string $template_name | Template file slug
+	 * @param array $args | Template arguments
+	 * @param string $template_path | Template file name
+	 * @param string $default_path Default path
+	 * @return string The new Template file path
+	 */
+	public function flexify_checkout_notices( $template, $template_name, $args, $template_path, $default_path ) {
+		if ( ! is_flexify_template() ) {
+			return $template;
+		}
+		
+		// replace error notice
+		if ( $template_name === 'notices/error.php' ) {
+			$template = FLEXIFY_CHECKOUT_TPL_PATH . 'notices/error.php';
 		}
 
-		return true;
+		// replace info notice
+		if ( $template_name === 'notices/notice.php' ) {
+			$template = FLEXIFY_CHECKOUT_TPL_PATH . 'notices/notice.php';
+		}
+
+		// replace success notice
+		if ( $template_name === 'notices/success.php' ) {
+			$template = FLEXIFY_CHECKOUT_TPL_PATH . 'notices/success.php';
+		}
+
+		return $template;
 	}
 }
 

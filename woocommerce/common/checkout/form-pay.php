@@ -72,7 +72,7 @@ defined('ABSPATH') || exit;
 									<?php
 									if ( Flexify_Checkout_Helpers::is_modern_theme() ) {
 										?>
-										<a class='flexify-step__back' href="<?php echo esc_url( wc_get_account_endpoint_url( 'orders' ) ); ?>"><?php esc_html_e( 'Voltar para a conta', 'flexify-checkout-for-woocommerce' ); ?></a>
+										<a class='flexify-step__back' href="<?php echo esc_url( wc_get_account_endpoint_url('orders') ); ?>"><?php esc_html_e( 'Voltar para a conta', 'flexify-checkout-for-woocommerce' ); ?></a>
 										<?php
 									}
 									?>

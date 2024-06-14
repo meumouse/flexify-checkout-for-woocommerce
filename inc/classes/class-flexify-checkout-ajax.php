@@ -7,7 +7,7 @@ defined('ABSPATH') || exit;
  * Class for Handle AJAX events
  *
  * @since 1.0.0
- * @version 1.8.5
+ * @version 3.5.0
  * @package MeuMouse.com
  */
 class Flexify_Checkout_Ajax {
@@ -32,16 +32,16 @@ class Flexify_Checkout_Ajax {
 	 * Check for inline errors
 	 * 
 	 * @since 1.0.0
+	 * @version 3.5.0
 	 * @return void
 	 */
 	public static function check_for_inline_errors() {
+		// filter and sanitize array fields from frontend
 		$fields = filter_input( INPUT_POST, 'fields', FILTER_SANITIZE_STRING, FILTER_REQUIRE_ARRAY );
 		$messages = array();
 
 		foreach ( $fields as $field ) {
-			
-
-			$messages[ $field['key'] ] = Flexify_Checkout_Core::render_inline_errors( '', $field['id'], $field['key'], $field['args'], $field['value'], $field['country'] );
+			$messages[$field['key']] = Flexify_Checkout_Core::render_inline_errors( $field['id'], $field['key'], $field['args'], $field['value'], $field['country'] );
 		}
 
 		$messages['fragments'] = array(
@@ -72,7 +72,7 @@ class Flexify_Checkout_Ajax {
 	 * @throws Exception On login error.
 	 */
 	public static function login() {
-		check_admin_referer( 'woocommerce-login' );
+		check_admin_referer('woocommerce-login');
 
 		try {
 			$username = filter_input( INPUT_POST, 'username' );

@@ -7,7 +7,7 @@ defined('ABSPATH') || exit;
  * Useful helper functions
  *
  * @since 1.0.0
- * @version 3.1.0
+ * @version 3.5.0
  * @package MeuMouse.com
  */
 class Flexify_Checkout_Helpers {
@@ -26,7 +26,7 @@ class Flexify_Checkout_Helpers {
 		return array_intersect_key( $all_fields, array_flip( $allowed ) );
 	}
 
-
+	
 	/**
 	 * Get billing fields used at checkout
 	 *
@@ -63,7 +63,6 @@ class Flexify_Checkout_Helpers {
 				'billing_sex',
 			);
 		}
-		
 		
 		return apply_filters( 'flexify_checkout_details_fields', $fields );
 	}
@@ -177,7 +176,7 @@ class Flexify_Checkout_Helpers {
 	public static function get_logo_image() {
 		$logo_image = Flexify_Checkout_Init::get_setting('search_image_header_checkout');
 
-		if ( !empty( $logo_image ) ) {
+		if ( ! empty( $logo_image ) ) {
 			return $logo_image;
 		}
 	}
@@ -223,7 +222,7 @@ class Flexify_Checkout_Helpers {
 	 * Convert hex to rgba.
 	 *
 	 * @param string $color Colour.
-	 * @param bool   $opacity Opacity.
+	 * @param bool $opacity Opacity.
 	 *
 	 * @return string
 	 */
@@ -406,5 +405,100 @@ class Flexify_Checkout_Helpers {
 		}
 
 		return $selects;
+	}
+
+
+	/**
+	 * Checks if the CPF is valid
+	 *
+	 * @since 3.2.0
+	 * @version 3.5.0
+	 * @param string $cpf | CPF to validate
+	 * @return bool
+	 */
+	public static function validate_cpf( $cpf ) {
+		$cpf = preg_replace( '/[^0-9]/', '', $cpf );
+
+		if ( 11 !== strlen( $cpf ) || preg_match( '/^([0-9])\1+$/', $cpf ) ) {
+			return false;
+		}
+
+		$digit = substr( $cpf, 0, 9 );
+
+		for ( $j = 10; $j <= 11; $j++ ) {
+			$sum = 0;
+
+			for ( $i = 0; $i < $j - 1; $i++ ) {
+				$sum += ( $j - $i ) * intval( $digit[ $i ] );
+			}
+
+			$summod11 = $sum % 11;
+			$digit[ $j - 1 ] = $summod11 < 2 ? 0 : 11 - $summod11;
+		}
+
+		return intval( $digit[9] ) === intval( $cpf[9] ) && intval( $digit[10] ) === intval( $cpf[10] );
+	}
+
+
+	/**
+	 * Checks if the CNPJ is valid
+	 *
+	 * @since 3.2.0
+	 * @version 3.5.0
+	 * @param string $cnpj | CNPJ to validate
+	 * @return bool
+	 */
+	public static function validate_cnpj( $cnpj ) {
+		$cnpj = sprintf( '%014s', preg_replace( '{\D}', '', $cnpj ) );
+
+		if ( 14 !== strlen( $cnpj ) || 0 === intval( substr( $cnpj, -4 ) ) ) {
+			return false;
+		}
+
+		for ( $t = 11; $t < 13; ) {
+			for ( $d = 0, $p = 2, $c = $t; $c >= 0; $c--, ( $p < 9 ) ? $p++ : $p = 2 ) {
+				$d += $cnpj[ $c ] * $p;
+			}
+
+			$d = ( ( 10 * $d ) % 11 ) % 10;
+
+			if ( intval( $cnpj[ ++$t ] ) !== $d ) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+
+	/**
+	 * Get all checkout fields available
+	 * 
+	 * @since 3.5.0
+	 * @return array
+	 */
+	public static function get_all_checkout_fields() {
+		WC()->session = new WC_Session_Handler;
+		WC()->customer = new WC_Customer;
+
+		return WC()->checkout->get_checkout_fields();
+	}
+
+
+	/**
+	 * Export array fields id
+	 * 
+	 * @since 3.5.0
+	 * @return array
+	 */
+	public static function export_all_checkout_fields() {
+		$get_fields = WC()->checkout->get_checkout_fields();
+		$fields = array();
+
+		foreach ( $get_fields['billing'] as $field_id => $value ) {
+			$fields[$field_id] = $value;
+		}
+		
+		return apply_filters( 'flexify_checkout_export_checkout_fields_id', $fields );
 	}
 }

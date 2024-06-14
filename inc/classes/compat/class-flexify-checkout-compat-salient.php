@@ -34,7 +34,7 @@ class Flexify_Checkout_Compat_Salient {
 	 * Disable Salient checkout customisations.
 	 */
 	public static function compat_salient() {
-		if ( ! function_exists( 'nectar_get_theme_version' ) || ! Flexify_Checkout_Core::is_checkout() ) {
+		if ( ! function_exists( 'nectar_get_theme_version' ) || ! is_flexify_checkout() ) {
 			return;
 		}
 

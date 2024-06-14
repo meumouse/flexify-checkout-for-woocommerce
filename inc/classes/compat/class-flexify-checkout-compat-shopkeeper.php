@@ -34,7 +34,7 @@ class Flexify_Checkout_Compat_Shopkeeper {
 	 * Disable shopkeeper customisations.
 	 */
 	public static function compat_shopkeeper() {
-		if ( ! function_exists( 'shopkeeper_setup' ) || ! Flexify_Checkout_Core::is_checkout() ) {
+		if ( ! function_exists( 'shopkeeper_setup' ) || ! is_flexify_checkout() ) {
 			return;
 		}
 

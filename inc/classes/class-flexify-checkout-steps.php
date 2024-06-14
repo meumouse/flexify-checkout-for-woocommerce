@@ -7,7 +7,7 @@ defined('ABSPATH') || exit;
  * Handle de steps
  *
  * @since 1.0.0
- * @version 3.3.0
+ * @version 3.5.0
  * @package MeuMouse.com
  */
 class Flexify_Checkout_Steps {
@@ -36,21 +36,15 @@ class Flexify_Checkout_Steps {
 				$back_url = apply_filters( 'flexify_checkout_logo_href', esc_url( Flexify_Checkout_Init::get_setting('logo_header_link') ) ); ?>
 
 				<a class="header__link" href="<?php echo esc_url( $back_url ); ?>">
-					<?php
-					if ( Flexify_Checkout_Init::get_setting('checkout_header_type') === 'text' ) {
-						?>
+					<?php if ( Flexify_Checkout_Init::get_setting('checkout_header_type') === 'text' ) : ?>
 						<h1 class="header__title"><?php echo esc_html( Flexify_Checkout_Helpers::get_header_text() ); ?></h1>
-						<?php 
-					} else {
+					<?php else :
 						$width = Flexify_Checkout_Helpers::get_logo_width(); 
 
-						if ( Flexify_Checkout_Helpers::get_logo_image() !== NULL ) {
-							?>
-								<img class="header__image" src="<?php echo esc_url( Flexify_Checkout_Helpers::get_logo_image() ); ?>"
-									<?php echo ! empty( $width ) ? 'style="width:' . esc_attr( $width ) . Flexify_Checkout_Init::get_setting('unit_header_width_image_checkout') .'"' : ''; ?> />
-							<?php
-						}
-					} ?>
+						if ( Flexify_Checkout_Helpers::get_logo_image() !== NULL ) : ?>
+							<img class="header__image" src="<?php echo esc_url( Flexify_Checkout_Helpers::get_logo_image() ); ?>"<?php echo ! empty( $width ) ? 'style="width:' . esc_attr( $width ) . Flexify_Checkout_Init::get_setting('unit_header_width_image_checkout') .'"' : ''; ?> />
+						<?php endif;
+					endif; ?>
 				</a>
 			</div>
 			<?php
@@ -193,6 +187,7 @@ class Flexify_Checkout_Steps {
 					 */
 					do_action( 'woocommerce_checkout_after_customer_details' );
 				}
+				
 				if ( count( $steps ) - 1 !== $key ) {
 					if ( 'classic' === $theme ) {
 						?>
@@ -656,12 +651,17 @@ class Flexify_Checkout_Steps {
 						}
 						?>
 					</p>
-					<?php foreach ( $checkout->get_checkout_fields( 'account' ) as $key => $field ) : ?>
+					<?php foreach ( $checkout->get_checkout_fields('account') as $key => $field ) : ?>
 						<?php woocommerce_form_field( $key, $field, $checkout->get_value( $key ) ); ?>
-					<?php endforeach; ?>
-					<div class="password-meter">
-						<div class="password-strength-meter"></div>
-					</div>
+					<?php endforeach;
+
+					// check password strenght
+					if ( Flexify_Checkout_Init::get_setting('check_password_strenght') === 'yes' ) : ?>
+						<div class="password-meter">
+							<div class="password-strength-meter"></div>
+						</div>
+					<?php endif; ?>
+
 					<div class="clear"></div>
 				</div>
 
@@ -683,31 +683,47 @@ class Flexify_Checkout_Steps {
 	 * Render customer details review section
 	 *
 	 * @since 1.0.0
-	 * @param string $customer_name
-	 * @param string $customer_phone
-	 * @param string $customer_email
-	 * @param string $customer_address
+	 * @version 3.5.0
+	 * @param string $customer_name | Get customer full name
+	 * @param string $customer_phone | Get customer phone number
+	 * @param string $customer_email | Get customer email
+	 * @param string $customer_address | Get customer address
 	 * @return void
 	 */
 	public static function render_customer_review( $customer_name = '', $customer_phone = '', $customer_email = '', $customer_address = '' ) {
 		?>
 		<div class="flexify-review-customer flexify-review-customer--checkout">
-			<?php if ( $customer_name || $customer_phone || $customer_email ) { ?>
+			<?php if ( $customer_name || $customer_phone || $customer_email ) : ?>
 				<div class="flexify-review-customer__row flexify-review-customer__row--contact">
 					<div class="flexify-review-customer__label flexify-review-customer__label">
 						<label><?php esc_html_e( 'Contato', 'flexify-checkout-for-woocommerce' ); ?></label>
 					</div>
 					<div class="flexify-review-customer__content">
+						<?php if ( ! empty( $customer_name ) ) : ?>
 						<p class="woocommerce-customer-details--name"><?php echo esc_html( $customer_name ); ?></p>
+						<?php endif; ?>
+
+						<?php if ( ! empty( $customer_phone ) ) : ?>
 						<p class="woocommerce-customer-details--phone"><?php echo esc_html( $customer_phone ); ?></p>
-						<p class="woocommerce-customer-details--email"><?php echo esc_html( $customer_email ); ?></p>
+						<?php endif; ?>
+
+						<?php if ( ! empty( $customer_email ) ) : ?>
+							<p class="woocommerce-customer-details--email"><?php echo esc_html( $customer_email ); ?></p>
+						<?php endif; ?>
 					</div>
 					<div class="flexify-review-customer__buttons">
-						<a href="#customer-info|billing_first_name_field" data-stepper-goto='1'><?php esc_html_e( 'Editar', 'flexify-checkout-for-woocommerce' ); ?></a>
+						<a href="#customer-info|billing_first_name_field" data-stepper-goto="1"><?php esc_html_e( 'Editar', 'flexify-checkout-for-woocommerce' ); ?></a>
 					</div>
 				</div>
-			<?php } ?>
-			<?php if ( $customer_address ) { ?>
+			<?php endif; ?>
+
+			<?php $has_shipping = true;
+
+			if ( Flexify_Checkout_Init::get_setting('enable_optimize_for_digital_products') === 'yes' && flexify_checkout_only_virtual() ) {
+				$has_shipping = false;
+			}
+
+			if ( $customer_address && $has_shipping ) : ?>
 				<div class="flexify-review-customer__row flexify-review-customer__row--address">
 					<div class="flexify-review-customer__label">
 						<label><?php esc_html_e( 'Entrega', 'flexify-checkout-for-woocommerce' ); ?></label>
@@ -716,27 +732,26 @@ class Flexify_Checkout_Steps {
 						<p><?php echo esc_html( $customer_address ); ?></p>
 					</div>
 					<div class="flexify-review-customer__buttons">
-						<a href="#address|billing_country" data-stepper-goto='2'><?php esc_html_e( 'Editar', 'flexify-checkout-for-woocommerce' ); ?></a>
+						<a href="#address|billing_country" data-stepper-goto="2"><?php esc_html_e( 'Editar', 'flexify-checkout-for-woocommerce' ); ?></a>
 					</div>
 				</div>
-				<?php
-			}
-			?>
+			<?php endif; ?>
 		</div>
 		<?php
 	}
 
 
 	/**
-	 * Render Address Search.
+	 * Render address search
+	 * 
+	 * @since 1.0.0
+	 * @return void
 	 */
 	public static function render_address_search() {
 		$is_modern_theme = Flexify_Checkout_Helpers::is_modern_theme();
-		$is_pre_populated = Flexify_Checkout_Helpers::has_prepopulated_fields( 'billing' );
+		$is_pre_populated = Flexify_Checkout_Helpers::has_prepopulated_fields('billing');
 
-		// @todo billing form wrapper block, with option for address search. Fields can only be inserted into wrapper, so show hide works correctly.
-		if ( ( $is_modern_theme && Flexify_Checkout_Helpers::use_autocomplete() ) || ( Flexify_Checkout_Helpers::use_autocomplete() && ! $is_pre_populated ) ) {
-			?>
+		if ( ( $is_modern_theme && Flexify_Checkout_Helpers::use_autocomplete() ) || ( Flexify_Checkout_Helpers::use_autocomplete() && ! $is_pre_populated ) ) : ?>
 			<div class="billing-address-search<?php echo $is_pre_populated ? ' billing-address-search--pre-populated' : ''; ?>">
 				<p class="flexify-address-search__hint">
 					<?php esc_html_e( 'Comece a digitar seu endereço para pesquisar.', 'flexify-checkout-for-woocommerce' ); ?>
@@ -764,8 +779,7 @@ class Flexify_Checkout_Steps {
 					</button>
 				</p>
 			</div>
-			<?php
-		}
+		<?php endif;
 	}
 
 	/**
@@ -871,20 +885,26 @@ class Flexify_Checkout_Steps {
 
 
 	/**
-	 * Get shipping price row for mobile view
+	 * Get selected shipping method
 	 * 
 	 * @since 1.0.0
+	 * @version 3.5.0
 	 * @return string
 	 */
 	public static function get_shipping_row() {
-		if ( empty( WC() ) || empty( WC()->shipping() ) || empty( WC()->session ) || empty( WC()->session->chosen_shipping_methods[0] ) ) {
+		if ( empty( WC() )
+			|| empty( WC()->shipping() )
+			|| empty( WC()->session )
+			|| empty( WC()->session->chosen_shipping_methods[0] )
+			|| flexify_checkout_only_virtual() ) {
 			return '';
 		}
 	
 		$packages = WC()->shipping()->get_packages();
 		$chosen_shipping_method = WC()->session->chosen_shipping_methods[0];
+		$selected_shipping_method = $packages[0]['rates'][$chosen_shipping_method];
 	
-		if ( empty( $packages ) || empty( $packages[0]['rates'][$chosen_shipping_method] ) ) {
+		if ( empty( $packages ) || empty( $selected_shipping_method ) ) {
 			return '';
 		}
 	
@@ -895,30 +915,27 @@ class Flexify_Checkout_Steps {
 			return;
 		}
 	
-		$shipping_rate = $packages[0]['rates'][$chosen_shipping_method];
-	
-		if ( empty( $shipping_rate->label ) || empty( $shipping_rate->cost ) ) {
+		if ( empty( $selected_shipping_method->label ) || empty( $selected_shipping_method->cost ) ) {
 			return '';
 		}
 	
-		return sprintf('<th>%s</th><td>%s</td>', esc_html( $shipping_rate->label ), wc_price( $shipping_rate->cost ) );
+		return sprintf('<th>%s</th><td>%s</td>', esc_html( $selected_shipping_method->label ), wc_price( $selected_shipping_method->cost ) );
 	}
 
 
 	/**
-	 * Get review customer frament
+	 * Get review customer fragment
 	 *
 	 * @since 1.0.0
+	 * @version 3.5.0
 	 * @return string|false
 	 */
 	public static function get_review_customer_fragment() {
-		global $woocommerce;
-
-		$session_data = WC()->session->get('flexify_checkout');
-		$billing_first_name = isset( $session_data['first_name'] ) ? $session_data['first_name'] : '';
-		$billing_last_name = isset( $session_data['last_name'] ) ? $session_data['last_name'] : '';
-		$billing_phone = isset( $session_data['phone'] ) ? $session_data['phone'] : '';
-		$billing_email = isset( $session_data['email'] ) ? $session_data['email'] : '';
+		$session_data = WC()->session->get('flexify_checkout_customer_fields');
+		$billing_first_name = isset( $session_data['billing_first_name'] ) ? $session_data['billing_first_name'] : '';
+		$billing_last_name = isset( $session_data['billing_last_name'] ) ? $session_data['billing_last_name'] : '';
+		$billing_phone = isset( $session_data['billing_phone'] ) ? $session_data['billing_phone'] : '';
+		$billing_email = isset( $session_data['billing_email'] ) ? $session_data['billing_email'] : '';
 		$customer_address = '';
 		$customer_name = sprintf( '%s %s', esc_html( $billing_first_name ), esc_html( $billing_last_name ), );
 		$customer_phone = sprintf( '%s', esc_html( $billing_phone ) );

@@ -34,7 +34,7 @@ class Flexify_Checkout_Compat_Divi {
 	 * Disable Divi checkout customisations.
 	 */
 	public static function compat_divi() {
-		if ( ! function_exists( 'et_divi_print_stylesheet' ) || ! Flexify_Checkout_Core::is_checkout() ) {
+		if ( ! function_exists( 'et_divi_print_stylesheet' ) || ! is_flexify_checkout() ) {
 			return;
 		}
 

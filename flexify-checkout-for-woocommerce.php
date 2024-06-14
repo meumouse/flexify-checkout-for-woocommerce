@@ -6,9 +6,9 @@
  * Plugin URI: 				https://meumouse.com/plugins/flexify-checkout-para-woocommerce/
  * Author: 					MeuMouse.com
  * Author URI: 				https://meumouse.com/
- * Version: 				3.3.0
+ * Version: 				3.5.0
  * WC requires at least: 	6.0.0
- * WC tested up to: 		8.7.0
+ * WC tested up to: 		8.9.1
  * Requires PHP: 			7.4
  * Tested up to:      		6.5.2
  * Text Domain: 			flexify-checkout-for-woocommerce
@@ -38,7 +38,7 @@ class Flexify_Checkout {
 	 * @since 1.0.0
 	 * @var string
 	 */
-	public static $version = '3.3.0';
+	public static $version = '3.5.0';
 
 	/**
 	 * Plugin initiated
@@ -201,6 +201,13 @@ class Flexify_Checkout {
 	 */
 	private function setup_includes() {
 		/**
+		 * Plugin functions
+		 * 
+		 * @since 2.3.0
+		 */
+		include_once FLEXIFY_CHECKOUT_INC_PATH . 'flexify-checkout-functions.php';
+
+		/**
 		 * Class init plugin
 		 * 
 		 * @since 1.0.0
@@ -271,18 +278,18 @@ class Flexify_Checkout {
 		include_once FLEXIFY_CHECKOUT_INC_PATH . 'classes/class-flexify-checkout-thankyou.php';
 
 		/**
+		 * Load checkout conditions
+		 * 
+		 * @since 3.5.0
+		 */
+		include_once FLEXIFY_CHECKOUT_INC_PATH . 'classes/class-flexify-checkout-conditions.php';
+
+		/**
 		 * Load API settings
 		 * 
 		 * @since 1.0.0
 		 */
 		include_once FLEXIFY_CHECKOUT_INC_PATH . 'classes/class-flexify-checkout-api.php';
-
-		/**
-		 * Plugin functions
-		 * 
-		 * @since 2.3.0
-		 */
-		include_once FLEXIFY_CHECKOUT_INC_PATH . 'flexify-checkout-functions.php';
 
 		/**
 		 * Update checker

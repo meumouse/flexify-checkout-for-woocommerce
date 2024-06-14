@@ -16,6 +16,15 @@ defined('ABSPATH') || exit; ?>
         </tr>
         <tr>
             <th>
+                <?php echo esc_html__( 'Título das formas de entrega', 'flexify-checkout-for-woocommerce' ) ?>
+                <span class="flexify-checkout-description"><?php echo esc_html__( 'Deixe em branco para não exibir.', 'flexify-checkout-for-woocommerce' ) ?></span>
+            </th>
+            <td>
+               <input type="text" class="form-control input-control-wd-20" id="text_shipping_methods_label" name="text_shipping_methods_label" value="<?php echo self::get_setting('text_shipping_methods_label') ?>"/>
+            </td>
+        </tr>
+        <tr>
+            <th>
                 <?php echo esc_html__( 'Texto informativo dos campos da etapa de entrega', 'flexify-checkout-for-woocommerce' ) ?>
                 <span class="flexify-checkout-description"><?php echo esc_html__( 'Deixe em branco para não exibir.', 'flexify-checkout-for-woocommerce' ) ?></span>
             </th>

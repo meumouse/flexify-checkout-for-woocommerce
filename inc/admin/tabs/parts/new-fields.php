@@ -35,7 +35,7 @@
                             <option value="password"><?php echo esc_html__( 'Senha', 'flexify-checkout-for-woocommerce' ) ?></option>
                             <option value="phone"><?php echo esc_html__( 'Telefone', 'flexify-checkout-for-woocommerce' ) ?></option>
                             <option value="url"><?php echo esc_html__( 'URL', 'flexify-checkout-for-woocommerce' ) ?></option>
-                            <option value="select"><?php echo esc_html__( 'Seletor', 'flexify-checkout-for-woocommerce' ) ?></option>
+                            <option value="select"><?php echo esc_html__( 'Seletor/Lista suspensa', 'flexify-checkout-for-woocommerce' ) ?></option>
                         </select>
                     </td>
                 </tr>
@@ -63,9 +63,11 @@
                         </div>
                     </td>
                 </tr>
+
                 <tr class="container-separator require-add-new-field-select d-none"></tr>
 
                 <tr class="container-separator require-add-new-field-multicheckbox d-none"></tr>
+
                 <tr class="require-add-new-field-multicheckbox d-none">
                     <td class="w-100 d-flex flex-collumn align-items-start">
                         <div id="preview_multicheckbox_container" class="my-3"></div>
@@ -138,6 +140,15 @@
                     </th>
                     <td class="w-50">
                         <input type="text" class="form-control" id="field_label_classes" value=""/>
+                    </td>
+                </tr>
+                <tr class="require-input-mask">
+                    <th class="w-50">
+                        <?php echo esc_html__( 'Máscara do campo (Opcional)', 'flexify-checkout-for-woocommerce' ) ?>
+                        <span class="flexify-checkout-description"><?php echo esc_html__('Adicione uma máscara de preenchimento para este campo, seguindo o padrão informado pela documentação. (Opcional)', 'flexify-checkout-for-woocommerce' ) ?></span>
+                    </th>
+                    <td class="w-50">
+                        <input type="text" class="form-control" id="field_input_mask" value=""/>
                     </td>
                 </tr>
                 <tr>

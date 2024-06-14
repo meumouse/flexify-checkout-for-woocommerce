@@ -30,7 +30,7 @@ class Flexify_Checkout_Compat_Woodmart {
 	 * @since 1.0.0
 	 */
 	public static function compat_woodmart() {
-		if ( ! Flexify_Checkout_Core::is_checkout() ) {
+		if ( ! is_flexify_checkout() ) {
 			return;
 		}
 
@@ -52,7 +52,7 @@ class Flexify_Checkout_Compat_Woodmart {
 	 * @return void
 	 */
 	public static function render_social_login() {
-		if ( ! Flexify_Checkout_Core::is_checkout() || ! function_exists( 'woodmart_get_opt' ) ) {
+		if ( ! is_flexify_checkout() || ! function_exists( 'woodmart_get_opt' ) ) {
 			return;
 		}
 

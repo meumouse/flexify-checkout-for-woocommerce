@@ -34,7 +34,7 @@ $mobile_show_summary = apply_filters( 'flexify_checkout_mobile_order_summary_ope
 do_action( 'woocommerce_before_checkout_form', $checkout );
 
 // If checkout registration is disabled and not logged in, the user cannot checkout.
-if ( ! $checkout->is_registration_enabled() && $checkout->is_registration_required() && ! is_user_logged_in() ) {
+if ( ! $checkout->is_registration_enabled() && $checkout->is_registration_required() && ! is_user_logged_in() ) :
 	/**
 	 * Message to indicate logging in is required for checkout.
 	 *
@@ -46,8 +46,7 @@ if ( ! $checkout->is_registration_enabled() && $checkout->is_registration_requir
 	<div class="woocommerce-error"><?php echo wp_kses_post( $message ); ?></div>
 	<?php
 	return;
-}
-?>
+endif; ?>
 
 <button type="button" class="flexify-checkout__sidebar-header">
 	<div class="flexify-checkout__sidebar-header-inner">
@@ -85,7 +84,7 @@ if ( ! $checkout->is_registration_enabled() && $checkout->is_registration_requir
 			 */
 			do_action( 'flexify_checkout_content_left_end', $checkout ); ?>
 		</div>
-		<?php if ( Flexify_Checkout_Sidebar::is_sidebar_enabled() ) { ?>
+		<?php if ( Flexify_Checkout_Sidebar::is_sidebar_enabled() ) : ?>
 			<div class="flexify-checkout__content-right">
 				<?php
 				/**
@@ -96,7 +95,7 @@ if ( ! $checkout->is_registration_enabled() && $checkout->is_registration_requir
 				do_action( 'flexify_checkout_content_right_start', $checkout ); ?>
 
 				<section class="flexify-checkout__order-review">
-					<?php wc_get_template( 'checkout/cart-heading.php' ); ?>
+					<?php wc_get_template('checkout/cart-heading.php'); ?>
 
 					<div id="order_review" class="woocommerce-checkout-review-order">
 						<?php
@@ -117,7 +116,7 @@ if ( ! $checkout->is_registration_enabled() && $checkout->is_registration_requir
 				 */
 				do_action( 'flexify_checkout_content_right_end', $checkout ); ?>
 			</div>
-		<?php } ?>
+		<?php endif; ?>
 	</div>
 </form>
 
