@@ -16,8 +16,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _form__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./form */ "./source/frontend/js/form.js");
 /* harmony import */ var _ui__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./ui */ "./source/frontend/js/ui.js");
 
-
-
 var flexifyAddressSearch = {},
   flexifyAddressAutocomplete,
   flexifyAddressAutocompleteShipping;
@@ -26,7 +24,7 @@ var flexifyAddressSearch = {},
  * Run.
  */
 flexifyAddressSearch.init = function() {
-  this.initSearch();
+  this.init_search();
   this.watchSelect2();
   jQuery(document.body).trigger('country_to_state_changed');
 };
@@ -54,8 +52,8 @@ flexifyAddressSearch.watchSelect2 = function() {
 /**
  * Initialise the Address Search.
  */
-flexifyAddressSearch.initSearch = function() {
-  flexifyAddressSearch.handleManualButtonClick();
+flexifyAddressSearch.init_search = function() {
+  flexifyAddressSearch.handle_manual_button_click();
 
   if ('undefined' === typeof google) {
     flexifyAddressSearch.hideLookup();
@@ -65,7 +63,7 @@ flexifyAddressSearch.initSearch = function() {
   var billingAddressSearch = document.getElementById('billing_address_search');
   var shippingAddressSearch = document.getElementById('shipping_address_search');
 
-  if (!billingAddressSearch && !shippingAddressSearch) {
+  if ( ! billingAddressSearch && ! shippingAddressSearch ) {
     return;
   }
 
@@ -90,9 +88,11 @@ flexifyAddressSearch.initSearch = function() {
     // fields in the form.
     flexifyAddressAutocomplete.addListener('place_changed', function() {
       var place = flexifyAddressAutocomplete.getPlace();
-      flexifyAddressSearch.fillInAddress(place, 'billing');
+
+      flexifyAddressSearch.fill_in_address(place, 'billing');
     });
-    billingAddressSearch.addEventListener('focus', flexifyAddressSearch.preventAutocomplete);
+
+    billingAddressSearch.addEventListener('focus', flexifyAddressSearch.prevent_autocomplete);
   }
 
   if (shippingAddressSearch) {
@@ -101,9 +101,10 @@ flexifyAddressSearch.initSearch = function() {
     // When the user selects an address from the dropdown, populate the address
     // fields in the form.
     flexifyAddressAutocompleteShipping.addListener('place_changed', function() {
-      flexifyAddressSearch.fillInAddress(flexifyAddressAutocompleteShipping.getPlace(), 'shipping');
+      flexifyAddressSearch.fill_in_address(flexifyAddressAutocompleteShipping.getPlace(), 'shipping');
     });
-    shippingAddressSearch.addEventListener('focus', flexifyAddressSearch.preventAutocomplete);
+
+    shippingAddressSearch.addEventListener('focus', flexifyAddressSearch.prevent_autocomplete);
   }
 };
 
@@ -112,14 +113,14 @@ flexifyAddressSearch.initSearch = function() {
  *
  * @param {object} e Event.
  */
-flexifyAddressSearch.preventAutocomplete = function (e) {
+flexifyAddressSearch.prevent_autocomplete = function(e) {
   // e.target.setAttribute( 'autocomplete', 'new-password' );
 };
 
 /**
  * Fill in the Billing Address Fields.
  */
-flexifyAddressSearch.fillInAddress = function (place, type) {
+flexifyAddressSearch.fill_in_address = function(place, type) {
   var formFieldsValue = {},
     component_form = {
       // types : [ field html id, short or long name ]
@@ -135,7 +136,7 @@ flexifyAddressSearch.fillInAddress = function (place, type) {
     },
     streetNumber = '',
     country_code = '';
-  console.log(place);
+
   var isModern = document.querySelectorAll('.flexify-checkout--modern').length;
 
   for (var field in place.address_components) {
@@ -171,6 +172,7 @@ flexifyAddressSearch.fillInAddress = function (place, type) {
 
   // Support for Brazilian Market on WooCommerce.
   formFieldsValue[`${type}_number`] = formFieldsValue[`${type}_street_number`];
+
   if (!formFieldsValue[`${type}_city`] && formFieldsValue.administrative_area_level_2 && formFieldsValue.administrative_area_level_2 !== formFieldsValue[`${type}_country`]) {
     formFieldsValue[`${type}_city`] = formFieldsValue.administrative_area_level_2;
   }
@@ -182,6 +184,7 @@ flexifyAddressSearch.fillInAddress = function (place, type) {
   // For Italy states we want to use administrative_area_level_2 instead of administrative_area_level_1.
   if ("Italy" === formFieldsValue[`${type}_country`]) {
     var state = flexifyAddressSearch.getAddressComponent(place.address_components, 'administrative_area_level_2', 'short_name');
+
     if (state) {
       formFieldsValue[`${type}_state`] = state;
     }
@@ -269,6 +272,7 @@ flexifyAddressSearch.fillInAddress = function (place, type) {
 
   Array.from(billingFields).forEach( function (field) {
     field.style.display = 'block';
+
     Array.from(field.querySelectorAll('input, select')).forEach( function (input) {
       if (input.value) {
         input.parentElement.classList.add('is-dirty');
@@ -307,86 +311,96 @@ flexifyAddressSearch.fillInAddress = function (place, type) {
 
 /**
  * Handle Manual Address clicks.
+ * 
+ * @since 1.0.0
+ * @version 3.5.0
  */
-flexifyAddressSearch.handleManualButtonClick = function() {
-  var showManualBillingFieldsButtons = document.querySelectorAll('.flexify-address-button--billing-manual');
-  var showManualShippingFieldsButtons = document.querySelectorAll('.flexify-address-button--shipping-manual');
-  var openBillingSearchFieldButtons = document.querySelectorAll('.flexify-address-button--billing-lookup');
-  var openShippingSearchFieldButtons = document.querySelectorAll('.flexify-address-button--shipping-lookup');
-  var isModern = document.querySelectorAll('.flexify-checkout--modern').length;
+flexifyAddressSearch.handle_manual_button_click = function() {
+  var showManualBillingFieldsButtons = jQuery('.flexify-address-button--billing-manual');
+  var showManualShippingFieldsButtons = jQuery('.flexify-address-button--shipping-manual');
+  var openBillingSearchFieldButtons = jQuery('.flexify-address-button--billing-lookup');
+  var openShippingSearchFieldButtons = jQuery('.flexify-address-button--shipping-lookup');
+  var isModern = jQuery('.flexify-checkout--modern').length;
 
-  Array.from(showManualBillingFieldsButtons).forEach( function (button) {
-    button.addEventListener('click', function (e) {
-      e.preventDefault();
-      var panel = e.target.closest('.billing-address-search').parentElement.querySelector('.billing-address-search + .woocommerce-billing-fields');
-      
-      if ('block' !== panel.style.display) {
-        _ui__WEBPACK_IMPORTED_MODULE_2__["default"].slideDown(panel);
-        if (isModern) {
-          _ui__WEBPACK_IMPORTED_MODULE_2__["default"].slideUp(button.closest('.billing-address-search'));
-        }
-      } else {
-        _ui__WEBPACK_IMPORTED_MODULE_2__["default"].slideUp(panel);
-      }
+  showManualBillingFieldsButtons.each( function() {
+    jQuery(this).on('click', function(e) {
+          e.preventDefault();
 
-      // Woo trigger select2 reload.
-      jQuery(document.body).trigger('country_to_state_changed');
-      return false;
-    });
+          var panel = jQuery(this).closest('.billing-address-search').parent().find('.billing-address-search + .woocommerce-billing-fields');
+
+          if (panel.css('display') !== 'block') {
+              _ui__WEBPACK_IMPORTED_MODULE_2__["default"].slideDown(panel);
+
+              if (isModern) {
+                  _ui__WEBPACK_IMPORTED_MODULE_2__["default"].slideUp( $jQuery(this).closest('.billing-address-search') );
+              }
+          } else {
+              _ui__WEBPACK_IMPORTED_MODULE_2__["default"].slideUp(panel);
+          }
+
+          // Woo trigger select2 reload.
+          jQuery(document.body).trigger('country_to_state_changed');
+
+          return false;
+      });
   });
 
-  Array.from(openBillingSearchFieldButtons).forEach( function (button) {
-    button.addEventListener('click', function (e) {
-      e.preventDefault();
-      _ui__WEBPACK_IMPORTED_MODULE_2__["default"].slideUp(button.closest('.woocommerce-billing-fields'));
-      _ui__WEBPACK_IMPORTED_MODULE_2__["default"].slideDown(button.closest('.woocommerce-billing-fields__wrapper').querySelector('.billing-address-search'));
+  openBillingSearchFieldButtons.each( function() {
+    jQuery(this).on('click', function(e) {
+          e.preventDefault();
 
-      // Woo trigger select2 reload.
-      jQuery(document.body).trigger('country_to_state_changed');
-      return false;
-    });
+          _ui__WEBPACK_IMPORTED_MODULE_2__["default"].slideUp( jQuery(this).closest('.woocommerce-billing-fields') );
+          _ui__WEBPACK_IMPORTED_MODULE_2__["default"].slideDown( jQuery(this).closest('.woocommerce-billing-fields__wrapper').find('.billing-address-search') );
+
+          // Woo trigger select2 reload.
+          jQuery(document.body).trigger('country_to_state_changed');
+
+          return false;
+      });
   });
 
-  Array.from(showManualShippingFieldsButtons).forEach( function (button) {
-    button.addEventListener('click', function (e) {
-      e.preventDefault();
-      var panel = e.target.closest('.shipping-address-search').parentElement.querySelector('.shipping-address-search + .woocommerce-shipping-fields');
-      
-      if ('block' !== panel.style.display) {
-        _ui__WEBPACK_IMPORTED_MODULE_2__["default"].slideDown(panel);
-        if (isModern) {
-          _ui__WEBPACK_IMPORTED_MODULE_2__["default"].slideUp(button.closest('.shipping-address-search'));
-        }
-      } else {
-        _ui__WEBPACK_IMPORTED_MODULE_2__["default"].slideUp(panel);
-      }
+  showManualShippingFieldsButtons.each( function() {
+      jQuery(this).on('click', function(e) {
+          e.preventDefault();
+          var panel = jQuery(this).closest('.shipping-address-search').parent().find('.shipping-address-search + .woocommerce-shipping-fields');
 
-      // Woo trigger select2 reload.
-      jQuery(document.body).trigger('country_to_state_changed');
-      return false;
-    });
+          if (panel.css('display') !== 'block') {
+              _ui__WEBPACK_IMPORTED_MODULE_2__["default"].slideDown(panel);
+              if (isModern) {
+                  _ui__WEBPACK_IMPORTED_MODULE_2__["default"].slideUp(jQuery(this).closest('.shipping-address-search'));
+              }
+          } else {
+              _ui__WEBPACK_IMPORTED_MODULE_2__["default"].slideUp(panel);
+          }
+
+          // Woo trigger select2 reload.
+          jQuery(document.body).trigger('country_to_state_changed');
+          return false;
+      });
   });
 
-  Array.from(openShippingSearchFieldButtons).forEach( function (button) {
-    button.addEventListener('click', function (e) {
-      e.preventDefault();
-      _ui__WEBPACK_IMPORTED_MODULE_2__["default"].slideUp(button.closest('.woocommerce-shipping-fields'));
-      _ui__WEBPACK_IMPORTED_MODULE_2__["default"].slideDown(button.closest('.woocommerce-shipping-fields__wrapper').querySelector('.shipping-address-search'));
+  openShippingSearchFieldButtons.each(function() {
+      jQuery(this).on('click', function(e) {
+          e.preventDefault();
 
-      // Woo trigger select2 reload.
-      jQuery(document.body).trigger('country_to_state_changed');
-      return false;
-    });
+          _ui__WEBPACK_IMPORTED_MODULE_2__["default"].slideUp(jQuery(this).closest('.woocommerce-shipping-fields'));
+          _ui__WEBPACK_IMPORTED_MODULE_2__["default"].slideDown(jQuery(this).closest('.woocommerce-shipping-fields__wrapper').find('.shipping-address-search'));
+
+          // Woo trigger select2 reload.
+          jQuery(document.body).trigger('country_to_state_changed');
+
+          return false;
+      });
   });
 };
 
-flexifyAddressSearch.getAddressComponent = function (components, component, name) {
+flexifyAddressSearch.getAddressComponent = function(components, component, name) {
   if (!name) {
     name = 'long_name';
   }
 
-  for (var loop_component of components) {
-    if (loop_component.types.includes(component)) {
+  for ( var loop_component of components ) {
+    if ( loop_component.types.includes(component) ) {
       return loop_component[name];
     }
   }
@@ -424,10 +438,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _validation__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./validation */ "./source/frontend/js/validation.js");
 
 var flexifyCart = {};
+
 flexifyCart.init = function() {
-  flexifyCart.removeControls();
-  flexifyCart.quantityControls();
-  flexifyCart.moveShippingRow();
+  flexifyCart.remove_controls();
+  flexifyCart.quantity_controls();
+  flexifyCart.move_shipping_row();
 };
 
 flexifyCart.runOnce = function() {
@@ -439,14 +454,20 @@ flexifyCart.runOnce = function() {
   }
 
   jQuery(window).on('resize', flexifyCart.orderSummaryResize);
+
+  // Adds check to open order summary automatically
+  if (flexify_checkout_vars.opened_default_order_summary === 'yes') {
+    flexifyCart.autoToggleOrderSummary();
+  }
 };
 
 /**
  * Remove button.
  */
-flexifyCart.removeControls = function() {
-  jQuery(document).on('click', '.flexify-checkout__remove-link a.remove', function (e) {
+flexifyCart.remove_controls = function() {
+  jQuery(document).on('click', '.flexify-checkout__remove-link a.remove', function(e) {
     e.preventDefault();
+
     jQuery(this).closest('.cart_item').find('input').val(0);
     jQuery('body').trigger('update_checkout');
   });
@@ -458,23 +479,57 @@ flexifyCart.removeControls = function() {
  * 
  * @since 3.3.0
  */
-jQuery(document).ready( function($) {
-	$(document.body).on('change', 'input[name="payment_method"]', function() {
-		$('body').trigger('update_checkout');
+jQuery(document).ready( function() {
+	jQuery(document.body).on('change', 'input[name="payment_method"]', function() {
+		jQuery('body').trigger('update_checkout');
 	});
 });
 
 
 /**
- * Add quantity control.
+ * Remove checkout notices on click button
+ * 
+ * @since 3.5.0
  */
-flexifyCart.quantityControls = function() {
-  var quantityControls = document.querySelectorAll('.quantity input[type="number"]');
-  Array.from(quantityControls).forEach( function (control) {
+jQuery(document).ready( function($) {
+  $(document).on('click', '.close-notice', function(e) {
+    e.preventDefault();
+
+    let btn = $(this);
+    var notice_wrap = btn.closest('.flexify-checkout-notice');
+    
+    if ( notice_wrap.length >= 1 ) {
+      notice_wrap.addClass('removing-notice').fadeOut('fast');
+
+      setTimeout( function() {
+        $('.flexify-checkout-notice.removing-notice').remove();
+      }, 500);
+    } else {
+      btn.parent('li').parent('ul.woocommerce-error').addClass('removing-notice').fadeOut('fast');
+      
+      setTimeout( function() {
+        $('.woocommerce-error.removing-notice').remove();
+      }, 500);
+    }
+  });
+});
+
+
+/**
+ * Add quantity controls
+ * 
+ * @since 1.0.0
+ */
+flexifyCart.quantity_controls = function() {
+  var quantity_controls = document.querySelectorAll('.quantity input[type="number"]');
+
+  Array.from(quantity_controls).forEach( function (control) {
     var controlWrapper = control.closest('.quantity');
+
     if (0 < jQuery(controlWrapper).find('.quantity__button').length) {
       return;
     }
+
     var buttonMinus = document.createElement('button');
     buttonMinus.setAttribute('type', 'button');
     buttonMinus.classList.add('quantity__button');
@@ -485,6 +540,7 @@ flexifyCart.quantityControls = function() {
       control.value = parseInt(control.value) - 1;
       control.dispatchEvent(new Event('change'));
     });
+
     var buttonPlus = document.createElement('button');
     buttonPlus.setAttribute('type', 'button');
     buttonPlus.classList.add('quantity__button');
@@ -495,7 +551,8 @@ flexifyCart.quantityControls = function() {
       control.value = parseInt(control.value) + 1;
       control.dispatchEvent(new Event('change'));
     });
-    control.addEventListener('change', async function (e) {
+    
+    control.addEventListener('change', async function(e) {
       e.preventDefault();
 
       // PHP side will be able to handle the quantity update.
@@ -503,9 +560,11 @@ flexifyCart.quantityControls = function() {
       return false;
     });
   });
+
   jQuery('.quantity input[type="number"]').on('focusin', function() {
     jQuery(this).closest('.quantity').addClass('quantity--on-focus');
   });
+
   jQuery('.quantity input[type="number"]').on('focusout', function() {
     jQuery(this).closest('.quantity').removeClass('quantity--on-focus');
   });
@@ -515,13 +574,17 @@ flexifyCart.quantityControls = function() {
  * Updates the Cart Count.
  * 
  * Updates the cart count that is shown on the modern theme.
+ * @since 1.0.0
  */
 flexifyCart.updateCartCount = function() {
   var total = 0;
+
   jQuery('.quantity input.qty').each( function() {
-    total += parseInt(jQuery(this).val(), 10);
+    total += parseInt( jQuery(this).val(), 10 );
   });
+
   var cart_count = jQuery('.order_review_heading__count');
+
   if (cart_count.length) {
     cart_count.html(total);
   }
@@ -543,9 +606,10 @@ flexifyCart.update_total = function() {
  * Move the shipping row to the top of the order table or
  * to address tab on mobile.
  * 
+ * @since 1.0.0
  * @returns void
  */
-flexifyCart.moveShippingRow = function() {
+flexifyCart.move_shipping_row = function() {
   var is_modern = document.querySelectorAll('.flexify-checkout--modern').length;
 
   // No need to run this code for classic theme
@@ -553,37 +617,18 @@ flexifyCart.moveShippingRow = function() {
     return;
   }
 
-  if (jQuery('.woocommerce-checkout-review-order-table .woocommerce-shipping-totals').length) {
+  if ( jQuery('.woocommerce-checkout-review-order-table .woocommerce-shipping-totals').length ) {
     jQuery('.flexify-checkout__shipping-table tbody').html('');
   }
-  
-  const is_mobile = _helper__WEBPACK_IMPORTED_MODULE_0__["default"].isMobile();
-  const has_sidebar = jQuery('.flexify-checkout--has-sidebar').length;
 
   // Pick the shipping row from content-right/sidebar.
-  var $shipping_row = jQuery('.flexify-checkout__content-right tr.woocommerce-shipping-totals.shipping');
+  var shipping_row = jQuery('.flexify-checkout__content-right tr.woocommerce-shipping-totals.shipping');
 
-  if ( ! $shipping_row.length ) {
+  if ( ! shipping_row.length ) {
     return;
   }
 
-  if ( !is_mobile && has_sidebar ) {
-    // Site admin can place a table.flexify-shipping-container--desktop anywhere on the page to change the location of shipping method for *desktop*.
-    if (jQuery('.flexify-shipping-container--desktop').length) {
-      jQuery('.flexify-shipping-container--desktop').empty().prepend($shipping_row);
-    } else {
-      // Else Place shipping row on the sidebar.
-      jQuery('.flexify-checkout__content-left .flexify-checkout__shipping-table>tbody').html($shipping_row);
-    }
-  } else {
-    // Site admin can place a table.flexify-shipping-container--mobile anywhere on the page to change the location of shipping method for *mobile*.
-    if (jQuery('.flexify-shipping-container--mobile').length) {
-      jQuery('.flexify-shipping-container--mobile').empty().prepend($shipping_row);
-    } else {
-      // Place Shipping row on step 2.
-      jQuery('.flexify-step--address .flexify-checkout__shipping-table>tbody').html($shipping_row);
-    }
-  }
+  jQuery('.flexify-step--address .flexify-checkout__shipping-table > tbody').html(shipping_row);
 };
 
 jQuery(document.body).on('update_checkout', function() {
@@ -596,6 +641,13 @@ jQuery(document.body).on('update_checkout', function() {
   });
 });
 
+
+/**
+ * Update fragments on updated_checkout event
+ * 
+ * @since 1.0.0
+ * @version 3.5.0
+ */
 jQuery(document.body).on('updated_checkout', function(e, data) {
   jQuery('.flexify-checkout__shipping-table').unblock();
 
@@ -604,7 +656,7 @@ jQuery(document.body).on('updated_checkout', function(e, data) {
   }
 
   if (data?.fragments?.flexify?.global_error) {
-    _validation__WEBPACK_IMPORTED_MODULE_3__["default"].displayGlobalNotice(data.fragments.flexify.global_error);
+    _validation__WEBPACK_IMPORTED_MODULE_3__["default"].display_global_notices(data.fragments.flexify.global_error);
   }
 
   if (data?.fragments?.flexify?.empty_cart) {
@@ -619,139 +671,17 @@ jQuery(document.body).on('updated_checkout', function(e, data) {
 
 
 /**
- * Make only the field selected in the person type mandatory
- * 
- * @since 1.0.0
- */
-jQuery(document).ready( function($) {
-  var cpf_valid = true;
-  var cnpj_valid = true;
-
-  function check_persontype() {
-    var selected_persontype = $('#billing_persontype').val();
-    
-    if (selected_persontype === '1') {
-      $('#billing_company, #billing_cnpj, #billing_ie').removeAttr('required');
-      $('#billing_cpf_field, #billing_rg_field').addClass('validate-required');
-      $('#billing_cnpj_field, #billing_ie_field').removeClass('validate-required');
-    } else if (selected_persontype === '2') {
-      $('#billing_cpf, #billing_rg').removeAttr('required');
-      $('#billing_cnpj_field, #billing_ie_field').addClass('validate-required');
-      $('#billing_cpf_field, #billing_rg_field').removeClass('validate-required');
-    }
-  }
-
-  $(document).ready(check_persontype);
-  $('#billing_persontype').change(check_persontype);
-  
-  // Validar CPF
-  jQuery('#billing_cpf').on('blur', function() {
-    var cpfValue = jQuery(this).val().trim();
-    var $parent = jQuery(this).closest('.form-row');
-
-    if (cpfValue && !isCPFValid(cpfValue)) {
-      $parent.removeClass('woocommerce-validated').addClass('woocommerce-invalid woocommerce-invalid-cpf woocommerce-invalid-required-field');
-      $parent.find('.error').text(flexify_checkout_vars.i18n.cpf.invalid);
-      cpf_valid = false;
-    } else {
-      $parent.removeClass('woocommerce-invalid woocommerce-invalid-cpf woocommerce-invalid-required-field');
-      cpf_valid = true;
-    }
-    
-    // Verificar se CPF ou CNPJ são válidos e atualizar o estado do botão
-    updateNextButtonState();
-  });
-
-  // Validar CNPJ
-  jQuery('#billing_cnpj').on('blur', function() {
-    var cnpjValue = jQuery(this).val().trim();
-    var $parent = jQuery(this).closest('.form-row');
-
-    if (cnpjValue && !isCNPJValid(cnpjValue)) {
-      $parent.removeClass('woocommerce-validated').addClass('woocommerce-invalid woocommerce-invalid-cnpj woocommerce-invalid-required-field');
-      $parent.find('.error').text(flexify_checkout_vars.i18n.cnpj.invalid);
-      cnpj_valid = false;
-    } else {
-      $parent.removeClass('woocommerce-invalid woocommerce-invalid-cnpj woocommerce-invalid-required-field');
-      cnpj_valid = true;
-    }
-    
-    // Verificar se CPF ou CNPJ são válidos e atualizar o estado do botão
-    updateNextButtonState();
-  });
-
-  // validate CPF field
-  function isCPFValid(cpf) {
-    cpf = cpf.replace(/[^0-9]/g, '');
-  
-    if (cpf.length !== 11 || /^([0-9])\1+$/.test(cpf)) {
-      return false;
-    }
-  
-    let digit = cpf.substring(0, 9);
-  
-    for (let j = 10; j <= 11; j++) {
-      let sum = 0;
-  
-      for (let i = 0; i < j - 1; i++) {
-        sum += (j - i) * parseInt(digit[i]);
-      }
-  
-      let summod11 = sum % 11;
-      digit = digit.substring(0, j - 1) + (summod11 < 2 ? '0' : (11 - summod11).toString());
-    }
-  
-    return parseInt(digit[9]) === parseInt(cpf[9]) && parseInt(digit[10]) === parseInt(cpf[10]);
-  }
-
-  // validade CNPJ field
-  function isCNPJValid(cnpj) {
-    cnpj = cnpj.replace(/\D/g, '');
-
-    if ( cnpj.length !== 14 || parseInt(cnpj.substr(-4)) === 0 ) {
-      return false;
-    }
-
-    for ( let t = 11; t < 13; t++ ) {
-      let d = 0;
-
-      for (let p = 2, c = t; c >= 0; c--, (p < 9) ? p++ : p = 2) {
-        d += parseInt(cnpj[c]) * p;
-      }
-
-      d = ((10 * d) % 11) % 10;
-
-      if ( parseInt( cnpj[t + 1] ) !== d ) {
-        return false;
-      }
-    }
-
-    return true;
-  }
-
-  function updateNextButtonState() {
-    if (cpf_valid && cnpj_valid) {
-      $('button[data-step-next]').removeAttr('disabled');
-    } else {
-      $('button[data-step-next]').attr('disabled', 'disabled');
-    }
-  }
-});
-
-
-/**
  * Init Select2 for new select fields
  * 
  * @since 3.2.0
  */
 jQuery(document).ready( function($) {
-  var get_selects = flexify_checkout_vars.get_new_select_fields;
+  var get_selects = flexify_checkout_vars.get_new_select_fields || [];
 
-  $(get_selects).each( function() {
-    $('#' + this).select2();
+  jQuery(get_selects).each( function() {
+    jQuery('#' + this).select2();
   });
 });
-
 
 /**
  * Hide Show Order Summary.
@@ -760,7 +690,7 @@ jQuery(document).ready( function($) {
  * @since 1.0.0
  */
 flexifyCart.orderSummaryToggle = function(first) {
-  if (!_helper__WEBPACK_IMPORTED_MODULE_0__["default"].isMobile()) {
+  if ( ! _helper__WEBPACK_IMPORTED_MODULE_0__["default"].isMobile() ) {
     return;
   }
   
@@ -801,6 +731,19 @@ flexifyCart.orderSummaryToggle = function(first) {
   }
 };
 
+/**
+ * Display order summay default is active
+ * 
+ * @since 3.5.0
+ */
+flexifyCart.autoToggleOrderSummary = function() {
+  var header = document.querySelector('.flexify-checkout__sidebar-header');
+  
+  if (header) {
+    header.click();
+  }
+};
+
 flexifyCart.orderSummaryResize = function() {
   var $linkHide = jQuery('.flexify-checkout__sidebar-header-link--hide');
   var $linkShow = jQuery('.flexify-checkout__sidebar-header-link--show');
@@ -815,20 +758,20 @@ flexifyCart.orderSummaryResize = function() {
     $sideBar.show();
     return;
   }
-};
 
-flexifyCart.block = function() {
-  jQuery('.woocommerce-checkout-payment, .woocommerce-checkout-review-order-table').block({
-    message: null,
-    overlayCSS: {
-      background: '#fff',
-      opacity: 0.6
-    }
-  });
-};
-
-flexifyCart.unblock = function() {
-  jQuery('.woocommerce-checkout-payment, .woocommerce-checkout-review-order-table').unblock();
+  flexifyCart.block = function() {
+    jQuery('.woocommerce-checkout-payment, .woocommerce-checkout-review-order-table').block({
+      message: null,
+      overlayCSS: {
+        background: '#fff',
+        opacity: 0.6,
+      }
+    });
+  };
+  
+  flexifyCart.unblock = function() {
+    jQuery('.woocommerce-checkout-payment, .woocommerce-checkout-review-order-table').unblock();
+  };
 };
 
 /**
@@ -837,13 +780,13 @@ flexifyCart.unblock = function() {
  * @since 3.0.0
  */
 jQuery( function($) {
-  $('#billing_country').change( function() {
-    let country_code_lc = $(this).val().toLowerCase();
-    let country_item = $('.iti__country-list').find('[data-country-code="' + country_code_lc + '"]');
+  jQuery('#billing_country').change( function() {
+    let country_code_lc = jQuery(this).val().toLowerCase();
+    let country_item = jQuery('.iti__country-list').find('[data-country-code="' + country_code_lc + '"]');
     let country_code = country_item.attr('data-country-code');
 
-    $('.flexify-intl-phone input[type=tel], .flexify-intl-phone input[type=text]').each( function() {
-        $(this).intlTelInput('setCountry', country_code);
+    jQuery('.flexify-intl-phone input[type=tel], .flexify-intl-phone input[type=text]').each( function() {
+        jQuery(this).intlTelInput('setCountry', country_code);
     });
   });
 });
@@ -852,19 +795,24 @@ jQuery( function($) {
  * Add password strenght meter
  * 
  * @since 2.0.0
+ * @version 3.5.0
  */
 jQuery(document).ready( function($) {
-  $('#account_password').on('keyup', function() {
-    let password = $(this).val();
-    let passwordStrengthElement = $('.woocommerce-password-strength');
-    let meterBar = $('.create-account').find('.password-strength-meter');
-    let next_step_button = $('.flexify-button');
+  if ( flexify_checkout_vars.check_password_strenght !== 'yes' ) {
+    return;
+  }
+
+  jQuery('#account_password').on('keyup', function() {
+    let password = jQuery(this).val();
+    let passwordStrengthElement = jQuery('.woocommerce-password-strength');
+    let meterBar = jQuery('.create-account').find('.password-strength-meter');
+    let next_step_button = jQuery('.flexify-button');
 
     // reset classes
     meterBar.removeClass('short bad good strong');
 
     if (password !== '') {
-      $('.password-meter').addClass('active');
+      jQuery('.password-meter').addClass('active');
 
       // Check if the class is present before accessing its properties
       if (passwordStrengthElement.length > 0) {
@@ -885,24 +833,30 @@ jQuery(document).ready( function($) {
         }
       }
     } else {
-      $('.password-meter').removeClass('active');
+      jQuery('.password-meter').removeClass('active');
     }
   });
 });
 
+
 /**
- * Add shipping cost row to the order review table for mobile view.
+ * Add shipping cost row to the order review table for mobile view
+ * 
+ * @since 1.0.0
+ * @version 3.5.0
  */
 flexifyCart.addShippingRowToOrderSummary = function(data) {
   // Add row if it doesn't exits.
-  if (!jQuery('.flexify-shop-table-shipping-price').length) {
+  if ( ! jQuery('.flexify-shop-table-shipping-price').length ) {
     jQuery('.shop_table tfoot .cart-subtotal').first().after('<tr class="flexify-shop-table-shipping-price"></tr>');
   }
 
+  var shipping_method = data?.fragments?.flexify?.shipping_row;
+
   // Add shipping cost data received from the fragment.
-  if (data?.fragments?.flexify?.shipping_row) {
+  if ( shipping_method ) {
     // jshint ignore:line
-    jQuery('.flexify-shop-table-shipping-price').html(data.fragments.flexify.shipping_row);
+    jQuery('.flexify-shop-table-shipping-price').html(shipping_method);
   }
 };
 
@@ -910,7 +864,7 @@ let on_resize;
 
 jQuery(window).on('resize', function() {
   clearTimeout(on_resize);
-  on_resize = setTimeout(flexifyCart.moveShippingRow, 250);
+  on_resize = setTimeout(flexifyCart.move_shipping_row, 250);
 });
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (flexifyCart);
 
@@ -988,12 +942,12 @@ var CheckoutButton = {
    * @param {event} e
    * @param {data} data
    */
-  on_updated_checkout: function (e, data) {
-    if (!data || !data.fragments || !data.fragments.flexify) {
+  on_updated_checkout: function(e, data) {
+    if ( ! data || ! data.fragments || ! data.fragments.flexify ) {
       return;
     }
 
-    if (data.fragments.flexify.total) {
+    if ( data.fragments.flexify.total ) {
       CheckoutButton.cache.button_html = `${flexify_checkout_vars.i18n.pay} ${data.fragments.flexify.total}`;
       jQuery('#place_order').html(CheckoutButton.cache.button_html);
     }
@@ -1005,7 +959,7 @@ var CheckoutButton = {
    * @returns 
    */
   on_payment_method_selected: function() {
-    if (!CheckoutButton.cache.button_html || 'paypal' === jQuery("[name='payment_method']:checked").val()) {
+    if ( ! CheckoutButton.cache.button_html || 'paypal' === jQuery("[name='payment_method']:checked").val() ) {
       return;
     }
     
@@ -1381,7 +1335,7 @@ flexifyCompatibility.ie11PasswordStrength = function() {
        * Initialize strength meter actions.
        */
       init: function() {
-        Array.from(document.querySelectorAll('form.checkout #account_password')).forEach( function (password) {
+        Array.from(document.querySelectorAll('form.checkout #account_password')).forEach( function(password) {
           password.addEventListener('keyup', wc_password_strength_meter.strengthMeter);
         });
       },
@@ -1403,6 +1357,7 @@ flexifyCompatibility.ie11PasswordStrength = function() {
         if (wc_password_strength_meter_params.stop_checkout) {
           stop_checkout = true;
         }
+
         if (fieldValue.length > 0 && strength < wc_password_strength_meter_params.min_password_strength && -1 !== strength && stop_checkout) {
           submit.attr('disabled', 'disabled').addClass('disabled');
         } else {
@@ -1415,8 +1370,9 @@ flexifyCompatibility.ie11PasswordStrength = function() {
        * @param {Object} wrapper
        * @param {Object} field
        */
-      includeMeter: function (wrapper, field) {
+      includeMeter: function(wrapper, field) {
         var meter = wrapper.find('.woocommerce-password-strength');
+
         if ('' === field.val()) {
           meter.hide();
           jQuery(document.body).trigger('wc-password-strength-hide');
@@ -1432,10 +1388,9 @@ flexifyCompatibility.ie11PasswordStrength = function() {
        * Check password strength.
        *
        * @param {Object} field
-       *
        * @return {Int}
        */
-      checkPasswordStrength: function (wrapper, field) {
+      checkPasswordStrength: function(wrapper, field) {
         var meter = wrapper.find('.woocommerce-password-strength'),
           hint = wrapper.find('.woocommerce-password-hint'),
           hint_html = '<small class="woocommerce-password-hint">' + wc_password_strength_meter_params.i18n_password_hint + '</small>',
@@ -1483,7 +1438,10 @@ flexifyCompatibility.ie11PasswordStrength = function() {
       }
     };
 
-    wc_password_strength_meter.init();
+    // check if strong password should be required
+    if ( flexify_checkout_vars.check_password_strenght === 'yes' ) {
+      wc_password_strength_meter.init();
+    }
   }
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (flexifyCompatibility);
@@ -1522,14 +1480,18 @@ flexifyComponents.init = function() {
 flexifyComponents.accountToggle = function() {
   jQuery(document).ready( function() {
     jQuery('.woocommerce-account-fields input#createaccount').unbind();
-    Array.from(document.querySelectorAll('.woocommerce-account-fields input#createaccount')).forEach( function (checkbox) {
-      checkbox.addEventListener('change', function (e) {
+
+    Array.from(document.querySelectorAll('.woocommerce-account-fields input#createaccount')).forEach( function(checkbox) {
+      checkbox.addEventListener('change', function(e) {
         e.preventDefault();
         e.stopPropagation();
+
         var accountFields = e.target.closest('.woocommerce-account-fields').querySelector('div.create-account');
+
         if (!accountFields) {
           return false;
         }
+
         if (e.target.checked) {
           _ui__WEBPACK_IMPORTED_MODULE_0__["default"].slideDown(accountFields);
           accountFields.setAttribute('aria-hidden', 'false');
@@ -1544,7 +1506,9 @@ flexifyComponents.accountToggle = function() {
             field.closest('.form-row').classList.remove('woocommerce-invalid');
           });
         }, 1);
+
         jQuery(document.body).trigger('country_to_state_changed');
+
         return false;
       });
     });
@@ -1555,10 +1519,12 @@ flexifyComponents.accountToggle = function() {
  * Enable the Shipping Toggle.
  */
 flexifyComponents.shippingToggle = function() {
-  Array.from(document.querySelectorAll('#ship-to-different-address input')).forEach( function (checkbox) {
-    checkbox.addEventListener('change', function (e) {
+  Array.from(document.querySelectorAll('#ship-to-different-address input')).forEach( function(checkbox) {
+    checkbox.addEventListener('change', function(e) {
       e.preventDefault();
+
       var shippingAddressFields = e.target.closest('.woocommerce-shipping-fields__wrapper').querySelector('.shipping_address');
+
       if (e.target.checked) {
         _ui__WEBPACK_IMPORTED_MODULE_0__["default"].slideDown(shippingAddressFields);
         shippingAddressFields.setAttribute('aria-hidden', 'false');
@@ -1566,7 +1532,9 @@ flexifyComponents.shippingToggle = function() {
         _ui__WEBPACK_IMPORTED_MODULE_0__["default"].slideUp(shippingAddressFields);
         shippingAddressFields.setAttribute('aria-hidden', 'true');
       }
+
       jQuery(document.body).trigger('country_to_state_changed');
+
       return false;
     });
   });
@@ -1662,25 +1630,33 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _ui__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./ui */ "./source/frontend/js/ui.js");
 
 var flexifyCoupon = {};
+
 flexifyCoupon.init = function() {
   this.onButtonClick();
   this.onFormSubmit();
   this.onChange();
+
   var sideBar = document.querySelector('.flexify-checkout--has-sidebar');
 
-  ( function ($, document) {
-    $(document).ready( function() {
+  ( function($, document) {
+    jQuery(document).ready( function() {
       if (sideBar) {
-        $(document.body).on('wc_fragments_refreshed', function() {
+        jQuery(document.body).on('wc_fragments_refreshed', function() {
           flexifyCoupon.onButtonClick();
         });
-        $(document.body).on('updated_checkout', function() {
+
+        jQuery(document.body).on('updated_checkout', function() {
           flexifyCoupon.onButtonClick();
         });
-        $(document).on('keydown', '#coupon_code', function (e) {
-          if (e.key === 'Enter' || e.keyCode === 13) {
-            jQuery("[name=apply_coupon]").trigger('click');
-            e.preventDefault();
+
+        jQuery(document).on('keydown', '#coupon_code', function(e) {
+          if ( jQuery(this).val() !== '' ) {
+            jQuery("[name=apply_coupon]").prop('disabled', false).removeClass('flexify-coupon-button--disabled');
+
+            if (e.key === 'Enter' || e.keyCode === 13) {
+              jQuery("[name=apply_coupon]").trigger('click');
+              e.preventDefault();
+            }
           }
         });
 
@@ -1703,6 +1679,7 @@ flexifyCoupon.onButtonClick = function() {
     button.setAttribute('type', 'button');
     button.addEventListener('click', function (e) {
       e.preventDefault();
+
       var form = e.target.closest('.woocommerce-form-coupon__wrapper').querySelector('.woocommerce-form-coupon');
 
       if ('none' === form.style.display) {
@@ -1717,40 +1694,49 @@ flexifyCoupon.onButtonClick = function() {
 };
 
 flexifyCoupon.onFormSubmit = function() {
-  jQuery(document).on('click', 'button[name=apply_coupon]', async function (e) {
+  jQuery(document).on('click', 'button[name=apply_coupon]', async function(e) {
     e.preventDefault();
+
     var $form = jQuery(this).closest('.woocommerce-form-coupon__wrapper');
     var $row = $form.find('.form-row');
 
     jQuery('.woocommerce-form-coupon__wrapper').find('.error, .success').remove();
+
     var data = {
       action: 'apply_coupon',
       coupon_code: $form.find('input[name="coupon_code"]').val(),
-      security: wc_checkout_params.apply_coupon_nonce
+      security: wc_checkout_params.apply_coupon_nonce,
     };
+
     _stepper__WEBPACK_IMPORTED_MODULE_1__["default"].loadSpinner();
     let onError = function (err) {};
-    await _helper__WEBPACK_IMPORTED_MODULE_0__["default"].ajaxRequestWoo(data, function (response) {
+
+    await _helper__WEBPACK_IMPORTED_MODULE_0__["default"].ajaxRequestWoo(data, function(response) {
       var message = response.replace(/(<([^>]+)>)/gi, '');
+
       if (response.includes('woocommerce-error')) {
         $row.addClass('woocommerce-invalid');
         $row.eq(0).append(`<div class='error' aria-hidden='false' aria-live='polite'>${message}</div>`);
       } else {
         jQuery(document.body).trigger('update_checkout', {
-          update_shipping_method: false
+          update_shipping_method: false,
         });
+
         jQuery(document.body).one('updated_checkout', function() {
           jQuery('.woocommerce-form-coupon__inner .form-row-first').append(`<div class="success" aria-hidden="false" aria-live="polite">${message}</div>`);
         });
       }
     }, onError);
     _stepper__WEBPACK_IMPORTED_MODULE_1__["default"].removeSpinner();
+
     return false;
   });
 };
+
 flexifyCoupon.onChange = function() {
   jQuery(document).on('keyup', '#coupon_code', function() {
     var $btn = jQuery(this).closest('.checkout_coupon').find('.flexify-coupon-button');
+    
     if (jQuery(this).val().trim()) {
       $btn.removeClass('flexify-coupon-button--disabled');
     } else {
@@ -1758,13 +1744,16 @@ flexifyCoupon.onChange = function() {
     }
   });
 };
-flexifyCoupon.removeCoupon = function (e) {
+
+flexifyCoupon.removeCoupon = function(e) {
   // Remove WooCommerce's event listener.
   jQuery(document.body).off('click', '.woocommerce-remove-coupon');
-  jQuery(document.body).on('click', '.woocommerce-remove-coupon', function (e) {
+
+  jQuery(document.body).on('click', '.woocommerce-remove-coupon', function(e) {
     e.preventDefault();
 
     var container = jQuery(this).parents('.woocommerce-checkout-review-order'), coupon = jQuery(this).data('coupon');
+
     container.addClass('processing').block({
       message: null,
       overlayCSS: {
@@ -1775,23 +1764,25 @@ flexifyCoupon.removeCoupon = function (e) {
 
     var data = {
       security: wc_checkout_params.remove_coupon_nonce,
-      coupon: coupon
+      coupon: coupon,
     };
 
     jQuery.ajax({
       type: 'POST',
       url: wc_checkout_params.wc_ajax_url.toString().replace('%%endpoint%%', 'remove_coupon'),
       data: data,
-      success: function (code) {
+      success: function(code) {
         jQuery('.woocommerce-error, .woocommerce-message').remove();
         jQuery('.woocommerce-form-coupon__wrapper').find('.error, .success').remove();
         container.removeClass('processing').unblock();
         
         if (code) {
           jQuery(document.body).trigger('removed_coupon_in_checkout', [data.coupon]);
+
           jQuery(document.body).trigger('update_checkout', {
-            update_shipping_method: false
+            update_shipping_method: false,
           });
+
           jQuery(document.body).one('updated_checkout', function() {
             jQuery('.woocommerce-form-coupon__inner .form-row-first').append(`<div class="success" aria-hidden="false" aria-live="polite">${flexify_checkout_vars.i18n.coupon_success}</div>`);
           });
@@ -1800,7 +1791,7 @@ flexifyCoupon.removeCoupon = function (e) {
           jQuery('form.checkout_coupon').find('input[name="coupon_code"]').val('');
         }
       },
-      error: function (jqXHR) {
+      error: function(jqXHR) {
         if (wc_checkout_params.debug_mode) {
           /* jshint devel: true */
           console.log(jqXHR.responseText);
@@ -1872,6 +1863,7 @@ var flexifyExpressCheckout = {
       if (!jQuery('#wc-stripe-payment-request-button div').length) {
         jQuery('#wc-stripe-payment-request-button').hide();
       }
+      
       jQuery(".flexify-expresss-checkout__btn--stripe").removeClass("flexify-skeleton");
 
       // if stripe is the only element in the express checkout and its empty then hide wrap.
@@ -1906,7 +1898,7 @@ flexifyForm.init = function() {
       return;
     }
 
-    flexifyForm.prepareFields();
+    flexifyForm.prepare_fields();
     flexifyForm.addRemoveFocusClass();
 
     // Add is-active class.
@@ -1925,7 +1917,7 @@ flexifyForm.init = function() {
     });
 
     jQuery(document.body).on('country_to_state_changed', function() {
-      flexifyForm.prepareFields();
+      flexifyForm.prepare_fields();
     });
   });
 };
@@ -1933,7 +1925,7 @@ flexifyForm.init = function() {
 /**
  * Prepare fields on the pageload i.e. add is-active class for the input which are not empty.
  */
-flexifyForm.prepareFields = function() {
+flexifyForm.prepare_fields = function() {
   jQuery('.form-row input, .form-row select').each( function() {
     flexifyForm.prepareField( jQuery(this) );
   });
@@ -1953,7 +1945,7 @@ flexifyForm.prepareField = function($input) {
     return;
   }
 
-  if ($input.val() || $row.find('select').length > 0) {
+  if ( $input.val() || $row.find('select').length > 0 ) {
     $row.addClass('is-active');
   } else {
     $row.removeClass('is-active');
@@ -1961,96 +1953,175 @@ flexifyForm.prepareField = function($input) {
 };
 
 /**
- * Get checkout data and save to 'customer' session
+ * Update customer data to "flexify_checkout_customer_fields" session
  * 
  * @since 1.8.5
+ * @version 3.5.0
  */
 jQuery(document).ready( function($) {
+  var all_checkout_fields = flexify_checkout_vars.get_all_checkout_fields || [];
+
+  /**
+   * Get each field value and update session flexify_checkout_customer_fields
+   */
+  function update_customer_fields_session() {
+    var fields_data = [];
+    var session_form_data = new FormData();
+    session_form_data.append('action', 'get_checkout_session_data');
+
+    $(all_checkout_fields).each( function(index, fields) {
+      if (fields) {
+        $.each(fields, function(field_id, field_properties) {
+          let input_value = $('#' + field_id).val();
+
+          if (input_value !== undefined) {
+            fields_data.push({ field_id: field_id, value: input_value });
+          }
+        });
+      }
+    });
+
+    // check if has update value on field
+    session_form_data.append('fields_data', JSON.stringify(fields_data));
+
+    $.ajax({
+      url: wc_checkout_params.ajax_url,
+      type: 'POST',
+      processData: false,
+      contentType: false,
+      data: session_form_data,
+      success: function(response) {
+        update_customer_info(response);
+      },
+      error: function(xhr, status, error) {
+        console.error(error);
+      }
+    });
+  }
+
+  // Initial update to capture current values
+  update_customer_fields_session();
+
+  // update session data on change input values
+  $(all_checkout_fields).each( function(index, fields) {
+    var billing_fields = fields.billing;
+
+    if (billing_fields) {
+      $.each(billing_fields, function(field_id, field_properties) {
+        $('#' + field_id).on('change input', function() {
+          update_customer_fields_session();
+        });
+      });
+    }
+  });
+
+  // update session data on proceed step
   $('.flexify-button[data-step-next]').on('click', function(e) {
     e.preventDefault();
 
-    $('#billing_country, #shipping_country').trigger('change');
-    $('#billing_state_field, #shipping_state_field').removeClass('woocommerce-invalid');
-
-    var first_name = $('#billing_first_name').val();
-    var last_name = $('#billing_last_name').val();
-    var phone = $('#billing_phone').val();
-    var international_phone = $('#billing_phone_full_number').val();
-    var email = $('#billing_email').val();
-    var company = $('#billing_company').val();
-    var billing_gender = $('#billing_gender').val();
-    var billing_persontype = $('#billing_persontype').val();
-    var billing_cpf = $('#billing_cpf').val();
-    var billing_rg = $('#billing_rg').val();
-    var billing_birthdate = $('#billing_birthdate').val();
-    var billing_cnpj = $('#billing_cnpj').val();
-    var billing_ie = $('#billing_ie').val();
-    var billing_country = $('#billing_country').val();
-    var billing_postcode = $('#billing_postcode').val();
-    var billing_address_1 = $('#billing_address_1').val();
-    var billing_number = $('#billing_number').val();
-    var billing_neighborhood = $('#billing_neighborhood').val();
-    var billing_address_2 = $('#billing_address_2').val();
-    var billing_city = $('#billing_city').val();
-    var billing_state = $('#billing_state').val();
-
-    var data = {
-        action: 'get_checkout_session_data',
-        billing_first_name: first_name,
-        billing_last_name: last_name,
-        billing_phone: phone,
-        billing_phone_full_number: international_phone,
-        billing_email: email,
-        billing_company: company,
-        billing_gender: billing_gender,
-        billing_persontype: billing_persontype,
-        billing_cpf: billing_cpf,
-        billing_rg: billing_rg,
-        billing_birthdate: billing_birthdate,
-        billing_cnpj: billing_cnpj,
-        billing_ie: billing_ie,
-        billing_country: billing_country,
-        billing_postcode: billing_postcode,
-        billing_address_1: billing_address_1,
-        billing_number: billing_number,
-        billing_neighborhood: billing_neighborhood,
-        billing_address_2: billing_address_2,
-        billing_city: billing_city,
-        billing_state: billing_state,
-    };
-
-    $.ajax({
-        url: wc_checkout_params.ajax_url,
-        type: 'POST',
-        data: data,
-        success: function(response) {
-            updateCustomerInfo(response.data);
-            $('body').trigger('update_checkout');
-        },
-        error: function(xhr, status, error) {
-            console.error('Erro ao inserir dados na sessão do cliente:', error);
-        }
-    });
+    update_customer_fields_session();
   });
 
-  function updateCustomerInfo(response) {
-    $('.woocommerce-customer-details--name').text(response.data.first_name + ' ' + response.data.last_name);
-    $('.woocommerce-customer-details--phone').text(response.data.phone);
-    $('.woocommerce-customer-details--email').text(response.data.email);
+  /**
+   * Update customer info
+   * 
+   * @since 2.0.0
+   * @version 3.5.0
+   * @param {array} response | Response from checkout session data
+   */
+  function update_customer_info(response) {
+    if (response) {
+      jQuery('.woocommerce-customer-details--name').text(response.data.billing_first_name + ' ' + response.data.billing_last_name);
+      jQuery('.woocommerce-customer-details--phone').text(response.data.billing_phone);
+      jQuery('.woocommerce-customer-details--email').text(response.data.billing_email);
+    }
   }
 });
+
+/**
+ * Send cart products to "flexify_checkout" session
+ * 
+ * @since 3.5.0
+ */
+jQuery(document).ready( function($) {
+  jQuery(document.body).on('updated_checkout', function() {
+      $.ajax({
+          url: wc_checkout_params.ajax_url,
+          type: 'POST',
+          data: {
+              action: 'get_product_cart_session_data',
+          },
+          success: function(response) {
+            //  console.log('Sessão flexify_checkout atualizada com sucesso.', response);
+          },
+          error: function(error) {
+              console.log('Erro ao atualizar a sessão flexify_checkout.', error);
+          }
+      });
+  });
+});
+
+/**
+ * Get entry time on checkout session
+ * 
+ * @since 3.5.0
+ */
+jQuery(document).ready( function($) {
+  $.ajax({
+      url: wc_checkout_params.ajax_url,
+      type: 'POST',
+      data: {
+          action: 'set_checkout_entry_time',
+          entry_time: 'yes',
+      },
+      success: function(response) {
+      },
+      error: function(error) {
+          console.log('Erro ao registrar a data e hora de entrada no checkout.', error);
+      }
+  });
+});
+
+/**
+ * Add class on selected shipping method
+ * 
+ * @since 3.5.0
+ */
+jQuery(document).ready( function($) {
+  // Function to update the selected shipping method
+  function update_selected_shipping_method() {
+      // Remove the class from all shipping method items
+      $('.shipping-method-item').removeClass('selected-method');
+      
+      // Find the selected shipping method input and add the class to its parent li
+      $('input[name="shipping_method[0]"]:checked').closest('.shipping-method-item').addClass('selected-method');
+  }
+
+  // Initial check on page load
+  update_selected_shipping_method();
+
+  // Check again when the shipping method input changes
+  $(document).on('change', 'input[name="shipping_method[0]"]', function() {
+    update_selected_shipping_method();
+  });
+
+  // Reapply the class after checkout fragments are updated
+  $(document.body).on('updated_checkout', function() {
+    update_selected_shipping_method();
+  });
+});
+
 
 /**
  * Does this field have permanent placeholder?
  * 
  * @param {jQuery} $row Row object.
- * 
  * @returns bool
  */
-flexifyForm.hasPermanentPlaceholder = function ($row) {
+flexifyForm.hasPermanentPlaceholder = function($row) {
   var $label = $row.find('label');
 
-  if (!$label.length) {
+  if ( ! $label.length ) {
     return false;
   }
   
@@ -2100,7 +2171,7 @@ var GeocodeMap = {
    */
   init: function() {
     jQuery(document).ready( function() {
-      if (!jQuery('#flexify-ty-map-canvas').length || !google) {
+      if ( ! jQuery('#flexify-ty-map-canvas').length || ! google ) {
         return;
       }
       GeocodeMap.geocode();
@@ -2175,7 +2246,7 @@ var flexifyHelper = {};
  * @param {string} prefix Key.
  * @returns 
  */
-flexifyHelper.serializeData = function (obj, prefix) {
+flexifyHelper.serializeData = function(obj, prefix) {
   var str = [];
 
   for (var p in obj) {
@@ -2197,7 +2268,7 @@ flexifyHelper.serializeData = function (obj, prefix) {
  * @param {object} field Field.
  * @returns 
  */
-flexifyHelper.getFieldValue = function (field) {
+flexifyHelper.getFieldValue = function(field) {
   var value = field.value; // @todo account for other field types here.
 
   return value;
@@ -2206,14 +2277,14 @@ flexifyHelper.getFieldValue = function (field) {
 /**
  * Do AJAX.
  * 
- * A simple native AJAX function.
+ * A simple AJAX function using jQuery.
  * 
  * @since 1.0.0
  * @param {object} data | Data.
  * @param {function} onSuccess | Success Function.
  * @param {function} onError | Error Function.
  */
-flexifyHelper.ajaxRequest = async function (data, onSuccess, onError) {
+flexifyHelper.ajaxRequest = async function(data, onSuccess, onError) {
   await new Promise((resolve, reject) => {
     var request = new XMLHttpRequest();
 
@@ -2250,7 +2321,15 @@ flexifyHelper.ajaxRequest = async function (data, onSuccess, onError) {
   });
 };
 
-flexifyHelper.ajaxRequestWoo = async function (data, onSuccess, onError) {
+/**
+ * Send AJAX request to WooCommerce endpoint
+ * 
+ * @since 1.0.0
+ * @param {object} data | Data
+ * @param {function} onSuccess | Success function
+ * @param {function} onError | Error function
+ */
+flexifyHelper.ajaxRequestWoo = async function(data, onSuccess, onError) {
   await new Promise((resolve, reject) => {
     var request = new XMLHttpRequest();
     var url = wc_checkout_params.wc_ajax_url.toString().replace('%%endpoint%%', data.action);
@@ -2544,33 +2623,29 @@ __webpack_require__.r(__webpack_exports__);
  */
 const flexifyLocalStorage = {
   init: function() {
-    flexifyLocalStorage.load_data();
-    flexifyLocalStorage.watch_data_change();
+    this.load_data();
+    this.watch_data_change();
   },
-  /**
-   * Watch data change and save in localStorage as JSON.
-   */
+  
   watch_data_change: function() {
     const inputs = document.querySelectorAll('form.checkout input, form.checkout textarea, form.checkout select');
 
-    Array.from(inputs).forEach(input => {
-      input.addEventListener('change', e => {
+    inputs.forEach(input => {
+      input.addEventListener('change', () => {
         const form = input.closest('form');
 
         if (!form) {
           return;
         }
 
-        const form_data = flexifyLocalStorage.formSerialize(form);
+        const form_data = this.formSerialize(form);
         const json = JSON.stringify(form_data);
 
         localStorage.setItem('flexify_checkout_form_data', json);
       });
     });
   },
-  /**
-   * Load data from localStorage and populate fields.
-   */
+  
   load_data: function() {
     const json = localStorage.getItem('flexify_checkout_form_data');
     const form = document.querySelector('form.checkout');
@@ -2582,40 +2657,49 @@ const flexifyLocalStorage = {
     const single_checkbox = ['order_notes_switch', 'show_shipping'];
     const data = JSON.parse(json);
 
-    if ('object' !== typeof data) {
+    if (typeof data !== 'object') {
       return;
     }
 
     data.forEach(fieldData => {
       const field = form.querySelector('[name="' + window.CSS.escape(fieldData.name) + '"]');
 
-      if (!field) {
+      if ( ! field ) {
         return;
       }
 
-      if (flexify_checkout_vars.localstorage_fields.includes(fieldData.name) && fieldData.value && '' == field.value) {
+      if (flexify_checkout_vars.localstorage_fields.includes(fieldData.name) && fieldData.value && !field.value) {
         field.value = fieldData.value;
         field.dispatchEvent(new Event('change'));
       }
 
-      if (single_checkbox.includes(fieldData.name) && 'on' === fieldData.value) {
-        field.setAttribute('checked', true);
+      if (single_checkbox.includes(fieldData.name) && fieldData.value === 'on') {
+        field.checked = true;
         field.dispatchEvent(new Event('change'));
       }
     });
   },
-  formSerialize: function (formElement) {
+  
+  formSerialize: function(formElement) {
     const values = [];
     const inputs = formElement.elements;
+
     for (let i = 0; i < inputs.length; i++) {
-      values.push({
-        name: inputs[i].name,
-        value: inputs[i].value
-      });
+      if (inputs[i].name) {
+        values.push({
+          name: inputs[i].name,
+          value: inputs[i].type === 'checkbox' ? inputs[i].checked ? 'on' : '' : inputs[i].value,
+        });
+      }
     }
+
     return values;
   }
 };
+
+document.addEventListener('DOMContentLoaded', () => {
+  flexifyLocalStorage.init();
+});
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (flexifyLocalStorage);
 
 /***/ }),
@@ -2734,6 +2818,7 @@ var flexifyLoginForm = {
    */
   onSubmit: function (e) {
     e.preventDefault();
+
     var data = {
       action: 'flexify_login',
       username: flexifyLoginForm.els.$form.find('#username').val(),
@@ -2763,7 +2848,7 @@ var flexifyLoginForm = {
    * @param {string} msg  The message to display.
    * @param {string} type 'error' or 'success'.
    */
-  showGlobalNotice: function (msg, type) {
+  showGlobalNotice: function(msg, type) {
     if (!type) {
       type = 'error';
     }
@@ -2867,10 +2952,10 @@ flexifyStepper.handeStepOnPageLoad = function() {
  * @since 1.9.0
  */
 jQuery(document).ready( function($) {
-  $('.toggle-password-visibility .toggle').on('click', function() {
-    var inputLoginPass = $('.flexify-login-password');
-    var showPasswordIcon = $('.toggle-password-visibility .show-password');
-    var hidePasswordIcon = $('.toggle-password-visibility .hide-password');
+  jQuery('.toggle-password-visibility .toggle').on('click', function() {
+    var inputLoginPass = jQuery('.flexify-login-password');
+    var showPasswordIcon = jQuery('.toggle-password-visibility .show-password');
+    var hidePasswordIcon = jQuery('.toggle-password-visibility .hide-password');
 
     if (inputLoginPass.attr('type') === 'password') {
       inputLoginPass.attr('type', 'text');
@@ -2891,72 +2976,73 @@ jQuery(document).ready( function($) {
  * We use AJAX to get the correct message and then trigger Woo validation.
  */
 flexifyStepper.onNextClick = function() {
-  var steps = document.querySelectorAll('[data-step-next]');
+  var steps = jQuery('[data-step-next]');
 
-  Array.from(steps).forEach( function (step) {
-    step.addEventListener('click', async function (e) {
-      e.preventDefault();
-      flexifyStepper.loadSpinner(_helper__WEBPACK_IMPORTED_MODULE_1__["default"].isModernCheckout());
-      _validation__WEBPACK_IMPORTED_MODULE_0__["default"].clearErrorMessages();
+  steps.each( function() {
+    jQuery(this).on('click', async function(e) {
+          e.preventDefault();
 
-      var fields = flexifyStepper.getFields(step.closest('[data-step]'));
-      var errorFields = await _validation__WEBPACK_IMPORTED_MODULE_0__["default"].checkFieldsForErrors(fields);
+          flexifyStepper.loadSpinner(_helper__WEBPACK_IMPORTED_MODULE_1__["default"].isModernCheckout());
+          _validation__WEBPACK_IMPORTED_MODULE_0__["default"].clearErrorMessages();
 
-      if (errorFields) {
-        return false;
-      }
+          var fields = flexifyStepper.getFields( jQuery(this).closest('[data-step]') );
+          var errorFields = await _validation__WEBPACK_IMPORTED_MODULE_0__["default"].checkFieldsForErrors(fields);
 
-      var nextStepNumber = step.attributes['data-step-show'].value;
-      var nextStep = document.querySelector('[data-step="' + nextStepNumber + '"]'); // ES5 Support.
+          if (errorFields) {
+            return false;
+          }
 
-      if (!nextStep) {
-        return false;
-      }
+          var nextStepNumber = jQuery(this).data('step-show');
+          var nextStep = jQuery('[data-step="' + nextStepNumber + '"]');
 
-      // Only change the hash. Panels will be toggled by hashchange vent listener.
-      window.location.hash = '#' + flexifyStepper.steps_hash[nextStepNumber];
+          if ( ! nextStep.length ) {
+              return false;
+          }
 
-      // Woo trigger select2 reload.
-      jQuery(document.body).trigger('country_to_state_changed');
+          // Only change the hash. Panels will be toggled by hashchange event listener.
+          window.location.hash = '#' + flexifyStepper.steps_hash[nextStepNumber];
 
-      return false;
-    });
+          // Woo trigger select2 reload.
+          jQuery(document.body).trigger('country_to_state_changed');
+
+          return false;
+      });
   });
 };
 
 flexifyStepper.onStepperClick = function() {
-  var steppers = document.querySelectorAll('[data-stepper]');
+  var steppers = jQuery('[data-stepper]');
 
-  Array.from(steppers).forEach( function (stepper) {
-    stepper.addEventListener('click', async function (e) {
-      e.preventDefault();
-      _validation__WEBPACK_IMPORTED_MODULE_0__["default"].clearErrorMessages();
-      var hasErrors = false;
-      var stepNumber = stepper.attributes['data-stepper'].value;
-      var isActive = stepper.closest('[data-stepper-li]').classList.contains('selected');
+  steppers.each( function() {
+      jQuery(this).on('click', async function(e) {
+        e.preventDefault();
 
-      if (isActive) {
+        _validation__WEBPACK_IMPORTED_MODULE_0__["default"].clearErrorMessages();
+        var step_number = jQuery(this).data('stepper');
+        var isActive = jQuery(this).closest('[data-stepper-li]').hasClass('selected');
+
+        if (isActive) {
+            return false;
+        }
+
+        // Check current step fields.
+        if (step_number > 1) {
+            var fields = flexifyStepper.getFields( jQuery('[data-step="' + (step_number - 1) + '"]') );
+            var hasErrors = await _validation__WEBPACK_IMPORTED_MODULE_0__["default"].checkFieldsForErrors(fields);
+            console.log(hasErrors);
+        }
+
+        if (hasErrors) {
+            return false;
+        }
+
+        // Only change the hash. Panels will be toggled by hashchange event listener.
+        window.location.hash = '#' + flexifyStepper.steps_hash[step_number];
+
+        // Woo trigger select2 reload.
+        jQuery(document.body).trigger('country_to_state_changed');
+
         return false;
-      }
-
-      // Check current step fields.
-      if (stepNumber > 1) {
-        // var fields = flexifyStepper.getFields( document.querySelector( `[data-step="${ stepNumber - 1}"]` ) ); 
-        var fields = flexifyStepper.getFields(document.querySelector('[data-step="' + (stepNumber - 1) + '"]')); // ES5 Support.
-        hasErrors = await _validation__WEBPACK_IMPORTED_MODULE_0__["default"].checkFieldsForErrors(fields);
-      }
-
-      if (hasErrors) {
-        return false;
-      }
-
-      // Only change the hash. Panels will be toggled by hashchange event listener.
-      window.location.hash = '#' + flexifyStepper.steps_hash[stepNumber];
-
-      // Woo trigger select2 reload.
-      jQuery(document.body).trigger('country_to_state_changed');
-
-      return false;
     });
   });
 };
@@ -2964,34 +3050,48 @@ flexifyStepper.onStepperClick = function() {
 /**
  * Disable Next Steppers.
  * 
- * @param {int} stepNumber The Step Number.
+ * @since 1.0.0
+ * @version 3.5.0
+ * @param {int} step_number | The Step Number.
  */
-flexifyStepper.disableNextSteppers = function (stepNumber) {
-  Array.from(document.querySelectorAll('[data-stepper-li]')).forEach( function (stepper) {
-    if (stepNumber === stepper.attributes['data-stepper-li'].value) {
-      stepper.classList.remove('complete');
-    }
-    if (stepNumber >= stepper.attributes['data-stepper-li'].value) {
-      return;
-    }
-    stepper.classList.add('disabled');
-    stepper.classList.remove('complete');
-    stepper.querySelector('[data-stepper]').setAttribute('disabled', 'disabled');
-    stepper.querySelector('[data-stepper]').setAttribute('aria-disabled', 'true');
+flexifyStepper.disableNextSteppers = function(step_number) {
+  jQuery('[data-stepper-li]').each( function() {
+      var stepper = jQuery(this);
+      var stepper_value = stepper.data('stepper-li');
+
+      if (step_number === stepper_value) {
+          stepper.removeClass('complete');
+      }
+
+      if ( step_number >= stepper_value ) {
+          return;
+      }
+
+      stepper.addClass('disabled').removeClass('complete');
+      stepper.find('[data-stepper]').attr({
+          'disabled': 'disabled',
+          'aria-disabled': 'true'
+      });
   });
 };
 
 /**
  * Complete Previous Steps.
  * 
- * @param {int} stepNumber The Step Number.
+ * @since 1.0.0
+ * @version 3.5.0
+ * @param {int} step_number | The Step Number.
  */
-flexifyStepper.completePreviousSteppers = function (stepNumber) {
-  Array.from(document.querySelectorAll('[data-stepper-li]')).forEach( function (stepper) {
-    if (stepper.attributes['data-stepper-li'].value >= stepNumber) {
-      return;
-    }
-    stepper.classList.add('complete');
+flexifyStepper.complete_previous_steppers = function(step_number) {
+  jQuery('[data-stepper-li]').each(function() {
+      var stepper = jQuery(this);
+      var stepper_value = stepper.data('stepper-li');
+
+      if (stepper_value >= step_number) {
+          return;
+      }
+
+      stepper.addClass('complete');
   });
 };
 
@@ -3001,26 +3101,21 @@ flexifyStepper.completePreviousSteppers = function (stepNumber) {
  * @param {int} currentStepNumber The current step number.
  * @param {int} nextStepNumber The next step number.
  */
-flexifyStepper.switchStepper = function (currentStepNumber, nextStepNumber) {
+flexifyStepper.switchStepper = function(currentStepNumber, nextStepNumber) {
   // Steppers.
-  // var currentStepper = document.querySelector( `[data-stepper-li="${currentStepNumber}"]` );
-  var currentStepper = document.querySelector('[data-stepper-li="' + currentStepNumber + '"]'); // ES5 Support
-  // var nextStepper = document.querySelector( `[data-stepper-li="${nextStepNumber}"]` );
-  var nextStepper = document.querySelector('[data-stepper-li="' + nextStepNumber + '"]'); // ES5 Support.
+  var $currentStepper = jQuery('[data-stepper-li="' + currentStepNumber + '"]');
+  var $nextStepper = jQuery('[data-stepper-li="' + nextStepNumber + '"]');
 
   // Handle Steppers.
-  currentStepper.classList.remove('error');
-  currentStepper.classList.remove('disabled');
-  currentStepper.querySelector('button').removeAttribute('disabled');
-  currentStepper.querySelector('button').removeAttribute('aria-disabled');
-  currentStepper.classList.remove('selected');
-  nextStepper.classList.remove('error');
-  nextStepper.classList.remove('disabled');
-  nextStepper.querySelector('button').removeAttribute('disabled');
-  nextStepper.querySelector('button').removeAttribute('aria-disabled');
-  nextStepper.classList.add('selected');
-  flexifyStepper.completePreviousSteppers(nextStepNumber);
+  $currentStepper.removeClass('error disabled selected');
+  $currentStepper.find('button').removeAttr('disabled aria-disabled');
+  
+  $nextStepper.removeClass('error disabled').addClass('selected');
+  $nextStepper.find('button').removeAttr('disabled aria-disabled');
+  
+  flexifyStepper.complete_previous_steppers(nextStepNumber);
 };
+
 
 /**
  * Switch Panels
@@ -3028,14 +3123,14 @@ flexifyStepper.switchStepper = function (currentStepNumber, nextStepNumber) {
  * @param {int} currentStepNumber The current step number.
  * @param {int} nextStepNumber The next step number.
  */
-flexifyStepper.switchPanels = function (currentStepNumber, nextStepNumber) {
-  var currentStep = document.querySelector('[data-step="' + currentStepNumber + '"]');
-  var nextStep = document.querySelector('[data-step="' + nextStepNumber + '"]');
-  currentStep.style.display = 'none';
-  currentStep.setAttribute('aria-hidden', 'true');
-  nextStep.style.display = '';
-  nextStep.setAttribute('aria-hidden', 'false');
-  window.scrollTo(0, 0);
+flexifyStepper.switchPanels = function(currentStepNumber, nextStepNumber) {
+  var $currentStep = jQuery('[data-step="' + currentStepNumber + '"]');
+  var $nextStep = jQuery('[data-step="' + nextStepNumber + '"]');
+
+  $currentStep.css('display', 'none').attr('aria-hidden', 'true');
+  $nextStep.css('display', '').attr('aria-hidden', 'false');
+  
+  jQuery(window).scrollTop(0);
 };
 
 /**
@@ -3046,35 +3141,50 @@ flexifyStepper.switchPanels = function (currentStepNumber, nextStepNumber) {
  * @param {element} parent Parent Element.
  */
 flexifyStepper.getFields = function (parent) {
-  var allFields = parent.querySelectorAll('input, select, textarea');
-  var accountFields = parent.querySelectorAll('.create-account input, .create-account select, .create-account textarea');
-  var shippingFields = parent.querySelectorAll('.woocommerce-shipping-fields input, .woocommerce-shipping-fields select, .woocommerce-shipping-fields textarea');
-  var additionalFields = parent.querySelectorAll('.woocommerce-additional-fields input, .woocommerce-additional-fields select, .woocommerce-additional-fields textarea');
+  var $parent = jQuery(parent);
+  var $allFields = $parent.find('input, select, textarea');
+  var $accountFields = $parent.find('.create-account input, .create-account select, .create-account textarea');
+  var $shippingFields = $parent.find('.woocommerce-shipping-fields input, .woocommerce-shipping-fields select, .woocommerce-shipping-fields textarea');
+  var $additionalFields = $parent.find('.woocommerce-additional-fields input, .woocommerce-additional-fields select, .woocommerce-additional-fields textarea');
   var fields = [];
 
-  Array.from(allFields).forEach( function (field) {
-    if (!parent.querySelectorAll('input[name=createaccount]:checked').length && !parent.querySelectorAll('.create-account[style="display:block;"]').length && Array.from(accountFields).includes(field)) {
-      return;
-    }
-    if (!parent.querySelectorAll('input[name=ship_to_different_address]:checked').length && Array.from(shippingFields).includes(field)) {
-      return;
-    }
-    if (!parent.querySelectorAll('input[name=show_additional_fields]:checked').length && Array.from(additionalFields).includes(field)) {
-      return;
-    }
+  $allFields.each( function() {
+      var $field = jQuery(this);
 
-    // Dont validate this fields.
-    if ('billing_phone_full_number' === field.name) {
-      return;
-    }
+      if (
+          !$parent.find('input[name=createaccount]:checked').length && 
+          !$parent.find('.create-account').filter(function() { return jQuery(this).css('display') === 'block'; }).length && 
+          $accountFields.is($field)
+      ) {
+          return;
+      }
 
-    fields.push(field);
+      if (
+          !$parent.find('input[name=ship_to_different_address]:checked').length && 
+          $shippingFields.is($field)
+      ) {
+          return;
+      }
+
+      if (
+          !$parent.find('input[name=show_additional_fields]:checked').length && 
+          $additionalFields.is($field)
+      ) {
+          return;
+      }
+
+      // Don't validate this field.
+      if ('billing_phone_full_number' === $field.attr('name')) {
+          return;
+      }
+
+      fields.push(this);
   });
 
   return fields;
 };
 
-flexifyStepper.onHashChange = async function (e) {
+flexifyStepper.onHashChange = async function(e) {
   if (!window.location.hash) {
     return;
   }
@@ -3101,7 +3211,7 @@ flexifyStepper.onHashChange = async function (e) {
   var nextStepNumber = nextStepper.attributes['data-stepper'].value;
   var stepper = document.querySelector('.flexify-stepper__step.selected .flexify-stepper__button');
   var currentStepNumber = stepper.attributes['data-stepper'].value;
-  var stepNumber = stepper.attributes['data-stepper'].value;
+  var step_number = stepper.attributes['data-stepper'].value;
   var isActive = nextStepNumber === currentStepNumber;
 
   if (goingForward) {
@@ -3114,8 +3224,8 @@ flexifyStepper.onHashChange = async function (e) {
     return false;
   }
 
-  flexifyStepper.switchPanels(stepNumber, nextStepNumber);
-  flexifyStepper.switchStepper(stepNumber, nextStepNumber);
+  flexifyStepper.switchPanels(step_number, nextStepNumber);
+  flexifyStepper.switchStepper(step_number, nextStepNumber);
   flexifyStepper.scrollToElement(scroll_element);
 
   // Woo trigger select2 reload.
@@ -3140,7 +3250,7 @@ flexifyStepper.loadSpinner = function(buttonSpinner) {
   if (buttonSpinner) {
     jQuery('[data-step-next]').addClass('flexify-button--processing');
   } else {
-    document.querySelector('.flexify-checkout__spinner').style.display = 'block';
+    document.querySelector('.flexify-checkout__spinner').style.display = 'flex';
   }
 };
 
@@ -3160,7 +3270,7 @@ flexifyStepper.scrollToElement = function(scroll_element) {
   }
 };
 
-flexifyStepper.updateCustomFragments = function(fragments) {
+flexifyStepper.update_custom_fragments = function(fragments) {
   for (var selector in fragments) {
     if (jQuery(selector).length) {
       jQuery(selector).replaceWith(fragments[selector]);
@@ -3289,11 +3399,11 @@ var flexifyValidation = {};
  */
 flexifyValidation.init = function() {
   this.onChange();
-  jQuery(document.body).on('checkout_error', flexifyValidation.onCheckoutError);
+  jQuery(document.body).on('checkout_error', flexifyValidation.display_global_errors);
 
   jQuery( function() {
     // Offer to login if a user a user already exits with the matching email.
-    if (jQuery('#billing_email').val() && flexifyValidation.isValidEmail(jQuery('#billing_email').val())) {
+    if ( jQuery('#billing_email').val() && flexifyValidation.isValidEmail( jQuery('#billing_email').val() ) ) {
       flexifyValidation.checkFieldForErrors(document.getElementById('billing_email'));
     }
   });
@@ -3309,9 +3419,11 @@ flexifyValidation.onChange = function() {
   var fields = document.querySelectorAll('input, select, textarea');
 
   Array.from(fields).forEach( function(field) {
-    field.addEventListener('change', async function (e) {
+    field.addEventListener('change', async function(e) {
       e.preventDefault();
+
       await flexifyValidation.checkFieldForErrors(field);
+
       return false;
     });
   });
@@ -3320,37 +3432,41 @@ flexifyValidation.onChange = function() {
 /**
  * Check Field for Errors.
  *
+ * @since 1.0.0
+ * @version 3.5.0
  * @param {array} fields Fields.
  * @returns bool
  */
-flexifyValidation.checkFieldForErrors = async function (field) {
+flexifyValidation.checkFieldForErrors = async function(field) {
   var row = field.closest('.form-row');
 
-  if (!row) {
+  if ( ! row ) {
     return false;
   }
 
-  if (!row.attributes['data-label'] || !row.attributes['data-type']) {
+  if ( ! row.attributes['data-label'] || ! row.attributes['data-type'] ) {
     return false;
   }
 
   var value = _helper__WEBPACK_IMPORTED_MODULE_0__["default"].getFieldValue(field);
   var type = row.attributes['data-type'].value;
+  var get_country_element = document.getElementById('billing_country');
+
   var data = {
     action: 'flexify_check_for_inline_error',
     args: {
       label: row.attributes['data-label'].value,
       required: row.classList.contains('required'),
-      type: type
+      type: type,
     },
-    country: document.getElementById('billing_country').value,
+    country: get_country_element ? get_country_element.value : '',
     key: field.attributes.name.value,
     value: value,
   };
 
   // Its too slow to trigger every field, so check the more advanced fields with ajax.
-  if ('country' === type || 'postcode' === type || 'phone' === type || 'email' === type) {
-    await _helper__WEBPACK_IMPORTED_MODULE_0__["default"].ajaxRequest(data, function (response) {
+  if ('country' === type || 'postcode' === type || 'phone' === type || 'email' === type || 'text' === type ) {
+    await _helper__WEBPACK_IMPORTED_MODULE_0__["default"].ajaxRequest(data, function(response) {
       var value = JSON.parse(response).data;
       var $row = jQuery(field).closest('.form-row');
 
@@ -3406,41 +3522,45 @@ flexifyValidation.checkFieldForErrors = async function (field) {
 };
 
 /**
- * Check Fields for Errors.
+ * Check fields for errors
  *
- * @param {array} fields Fields.
+ * @since 1.0.0
+ * @version 3.5.0
+ * @param {array} fields | Checkout fields
  * @returns bool
  */
-flexifyValidation.checkFieldsForErrors = async function(fields) {
+flexifyValidation.checkFieldsForErrors = async function(fields, hasErrors = false ) {
   var inputs = {};
   var errorFields = [];
 
   // Return true is google address auto-complete field is present and empty.
   for (var field of fields) {
-    if ('billing_address_search' === field.id) {
+    if ( 'billing_address_search' === field.id ) {
       if ('' === field.value.trim() && 'none' === jQuery('.woocommerce-billing-fields').css('display')) {
         field.closest('.form-row').classList.add('woocommerce-invalid');
         jQuery(field).trigger('validate');
         field.closest('.form-row').classList.add('woocommerce-invalid');
         _stepper__WEBPACK_IMPORTED_MODULE_1__["default"].removeSpinner();
+
         return true;
       }
     }
   }
   _stepper__WEBPACK_IMPORTED_MODULE_1__["default"].loadSpinner(true);
   // Get all the data so we can do an inline validation.
-  Array.from(fields).forEach( function (field) {
+  Array.from(fields).forEach( function(field) {
     var row = field.closest('.form-row');
 
-    if (!row) {
+    if ( ! row ) {
       return;
     }
 
-    if (!row.attributes['data-label'] || !row.attributes['data-type']) {
+    if ( ! row.attributes['data-label'] || ! row.attributes['data-type'] ) {
       return;
     }
 
     var value = _helper__WEBPACK_IMPORTED_MODULE_0__["default"].getFieldValue(field);
+    var billingCountryElement = document.getElementById('billing_country');
 
     inputs[field.attributes.name.value] = {
       args: {
@@ -3448,34 +3568,38 @@ flexifyValidation.checkFieldsForErrors = async function(fields) {
         required: row.classList.contains('required'),
         type: row.attributes['data-type'].value
       },
-      country: document.getElementById('billing_country').value,
+      country: billingCountryElement ? billingCountryElement.value : '',
       key: field.attributes.name.value,
-      value: value
+      value: value,
     };
   });
+
   var data = {
     action: 'flexify_check_for_inline_errors',
     fields: inputs,
-    'email': jQuery('#billing_email').val()
+    'email': jQuery('#billing_email').val(),
   };
-  await _helper__WEBPACK_IMPORTED_MODULE_0__["default"].ajaxRequest(data, function (response) {
+
+  await _helper__WEBPACK_IMPORTED_MODULE_0__["default"].ajaxRequest(data, function(response) {
     var messages = JSON.parse(response).data;
 
     // Update the inline validation messages for each field.
-    Object.entries(messages).forEach( function (object) {
+    Object.entries(messages).forEach( function(object) {
       var key = object[0];
       var value = object[1];
       var field = document.querySelector('[name="' + key + '"]');
       
-      if (!field) {
+      if ( ! field ) {
         return;
       }
 
       // If this field is hidden by Conditinal Field of Checkout Fields Manager plugin
       // then skip validation for this field.
-      if (flexifyValidation.isHiddenConditionalField(field)) {
+      // if field has class "temp-hidden" then skip validate field because has custom condition
+      if ( flexifyValidation.isHiddenConditionalField(field) || field.closest('.form-row').classList.contains('temp-hidden') ) {
         return;
       }
+
       field.closest('.form-row').querySelector('.error').innerHTML = value.message;
       field.closest('.form-row').classList.remove('woocommerce-invalid');
 
@@ -3489,31 +3613,35 @@ flexifyValidation.checkFieldsForErrors = async function(fields) {
       if (value.isCustom) {
         field.closest('.form-row').classList.add('woocommerce-invalid');
       }
+
       if (field.closest('.form-row').classList.contains('woocommerce-invalid')) {
         errorFields.push(jQuery(field).attr('id'));
       }
     });
-    _stepper__WEBPACK_IMPORTED_MODULE_1__["default"].updateCustomFragments(messages.fragments);
+
+    _stepper__WEBPACK_IMPORTED_MODULE_1__["default"].update_custom_fragments(messages.fragments);
   });
+
   flexifyValidation.clearErrorMessages('data-flexify-error');
 
   // Check password strength if set.
   var passwords = fields[0].closest('[data-step]').querySelectorAll('#account_password');
+
   Array.from(passwords).forEach( function (password) {
-    if (password.closest('.woocommerce-account-fields').querySelector('#createaccount') && !password.closest('.woocommerce-account-fields').querySelector('#createaccount').checked) {
+    if ( password.closest('.woocommerce-account-fields').querySelector('#createaccount') && ! password.closest('.woocommerce-account-fields').querySelector('#createaccount').checked ) {
       return;
     }
 
-    if (!password.value) {
+    if ( ! password.value ) {
       return;
     }
 
-    if (!password.closest('.form-row').querySelectorAll('.woocommerce-password-strength.good, .woocommerce-password-strength.strong').length) {
+    if ( ! password.closest('.form-row').querySelectorAll('.woocommerce-password-strength.good, .woocommerce-password-strength.strong').length ) {
       hasErrors = true;
     }
   });
 
-  if (errorFields.length) {
+  if ( errorFields.length ) {
     var step = fields[0].closest('[data-step]').attributes['data-step'].value;
     // document.querySelector( `[data-stepper-li="${step}"]`).classList.add( 'error' );
     document.querySelector('[data-stepper-li="' + step + '"]').classList.add('error'); // ES5 Support.
@@ -3525,6 +3653,7 @@ flexifyValidation.checkFieldsForErrors = async function(fields) {
 
   flexifyValidation.accessibleErrors();
   _stepper__WEBPACK_IMPORTED_MODULE_1__["default"].removeSpinner();
+
   return errorFields.length ? errorFields : false;
 };
 
@@ -3533,9 +3662,11 @@ flexifyValidation.checkFieldsForErrors = async function(fields) {
  */
 flexifyValidation.scrollToError = function() {
   var error = document.querySelectorAll('.woocommerce-invalid')[0];
-  if (!error) {
+
+  if ( ! error ) {
     return;
   }
+
   error.scrollIntoView({
     behavior: 'smooth'
   });
@@ -3579,58 +3710,69 @@ flexifyValidation.accessibleErrors = function() {
  * 
  * Render a global validation notice. Useful when an inline message is not possible.
  * 
+ * @since 1.0.0
+ * @version 3.5.0
  * @param {string} message Message.
  * @param {string} type Type.
  * @param {string} format Format.
  */
-flexifyValidation.displayGlobalNotice = function (message, type, format, data) {
+flexifyValidation.display_global_notices = function(message, type, format, data) {
   // ES5 Support.
   if (!type) {
-    type = 'error';
+      type = 'error';
   }
+  
   if (!format) {
-    format = 'list';
+      format = 'list';
   }
-  var noticeArea = document.querySelectorAll('.woocommerce-notices-wrapper');
+
+  var noticeArea = document.querySelector('.woocommerce-notices-wrapper');
+
   if (!noticeArea) {
-    return;
+      return;
   }
-  noticeArea = noticeArea[noticeArea.length - 1];
-  flexifyValidation.clearErrorMessages('data-flexify-error');
+
+  // Do not clear previous error messages
+  // var existingNotices = noticeArea.querySelectorAll('.woocommerce-error, .woocommerce-NoticeGroup-checkout');
+  // existingNotices.forEach(function (notice) {
+  //     notice.remove();
+  // });
+
   var noticeContainer = document.createElement('div');
   var noticeType = 'woocommerce-error';
 
-  if ('error' !== type) {
-    noticeType = 'woocommerce-message';
+  if (type !== 'error') {
+      noticeType = 'woocommerce-message';
   }
 
-  if ('info' === type) {
-    noticeType = 'woocommerce-info';
+  if (type === 'info') {
+      noticeType = 'woocommerce-info';
   }
 
   if (typeof data === 'object' && !Array.isArray(data) && data !== null) {
-    Object.entries(data).forEach( function (object) {
-      var key = object[0];
-      var value = object[1];
-      noticeContainer.setAttribute(key, value);
-    });
+      Object.entries(data).forEach(function (object) {
+          var key = object[0];
+          var value = object[1];
+          noticeContainer.setAttribute(key, value);
+      });
   }
 
-  if ('list' === format) {
-    noticeContainer.classList.add('woocommerce-NoticeGroup');
-    noticeContainer.classList.add('woocommerce-NoticeGroup-checkout');
-    var noticeContainerList = document.createElement('ul');
-    noticeContainerList.setAttribute('role', 'alert');
-    noticeContainerList.classList.add(noticeType);
-    var noticeListItem = document.createElement('li');
-    noticeListItem.innerHTML = message;
-    noticeContainerList.append(noticeListItem);
-    noticeContainer.append(noticeContainerList);
+  if (format === 'list') {
+      noticeContainer.classList.add('woocommerce-NoticeGroup');
+      noticeContainer.classList.add('woocommerce-NoticeGroup-checkout');
+      var noticeContainerList = document.createElement('ul');
+      noticeContainerList.setAttribute('role', 'alert');
+      noticeContainerList.classList.add(noticeType);
+      var noticeListItem = document.createElement('li');
+      noticeListItem.innerHTML = message;
+      noticeContainerList.append(noticeListItem);
+      noticeContainer.append(noticeContainerList);
   } else {
-    noticeContainer.setAttribute('role', 'alert');
-    noticeContainer.classList.add(noticeType);
-    noticeContainer.innerHTML = message;
+      noticeContainer.setAttribute('role', 'alert');
+      noticeContainer.classList.add(noticeType);
+      noticeContainer.innerHTML = message;
   }
+
   noticeArea.append(noticeContainer);
 };
 
@@ -3650,6 +3792,7 @@ flexifyValidation.clearErrorMessages = function (group) {
       jQuery(this).remove();
     }
   });
+
   jQuery('.woocommerce-NoticeGroup').remove();
 };
 
@@ -3664,7 +3807,7 @@ flexifyValidation.validateSearchForm = function() {
     var addressSection = addressSearch.closest('.woocommerce-billing-fields__wrapper').querySelector('.woocommerce-billing-fields');
     var style = window.getComputedStyle(addressSection);
     if (style.display === 'none') {
-      // flexifyValidation.displayGlobalNotice( flexify_checkout_vars.i18n.errorAddressSearch ); // Do global notice.
+      // flexifyValidation.display_global_notices( flexify_checkout_vars.i18n.errorAddressSearch ); // Do global notice.
 
       // Remove previous notices.
       Array.from(addressSearch.closest('.form-row').querySelectorAll('.error')).forEach( function (error) {
@@ -3687,27 +3830,37 @@ flexifyValidation.validateSearchForm = function() {
 /**
  * Display global errors on 'checkout_error' event.
  * 
- * @param {object} e Event.
- * @param {string} data Error message in HTML format.
+ * @since 1.0.0
+ * @version 3.5.0
+ * @param {object} e | Event
+ * @param {string} data | Error message in HTML format.
  */
-flexifyValidation.onCheckoutError = function (e, data) {
+flexifyValidation.display_global_errors = function(e, data) {
   /**
    * In modern checkout layout, we use CSS to hide the default error messages because that breaks the layout.
    * So we need to display our own.
    */
   if (_helper__WEBPACK_IMPORTED_MODULE_0__["default"].isModernCheckout() && data) {
-    flexifyValidation.displayGlobalNotice(jQuery(data).html(), 'error');
+      // Split multiple error messages if necessary
+      let messages = data.split('</div>');
+      messages.forEach( function(message) {
+          if (message.trim()) {
+              message += '</div>';
+              flexifyValidation.display_global_notices(jQuery(message).html(), 'error');
+          }
+      });
   }
 };
 
 /**
- * Is valid email?
+ * Check if is valid email
  * 
  * @param {string} email Email.
  * @returns bool
  */
-flexifyValidation.isValidEmail = function (email) {
+flexifyValidation.isValidEmail = function(email) {
   var pattern = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+
   return email.match(pattern);
 };
 
@@ -3719,6 +3872,7 @@ flexifyValidation.isValidEmail = function (email) {
  */
 flexifyValidation.isHiddenConditionalField = function (field) {
   var $row = jQuery(field).closest('.form-row');
+
   return $row.is(":hidden") && $row.hasClass("wooccm-conditional-child");
 };
 
@@ -3730,9 +3884,10 @@ flexifyValidation.isHiddenConditionalField = function (field) {
  * @returns 
  */
 flexifyValidation.maybeShowShippingForm = function (errorFields) {
-  if (!jQuery("#ship-to-different-address-checkbox").is(":checked") || !errorFields) {
+  if ( ! jQuery("#ship-to-different-address-checkbox").is(":checked") || ! errorFields ) {
     return;
   }
+
   var showManualAddressFields = false;
 
   // If at least one of the fields is a shipping field.
@@ -3802,7 +3957,7 @@ var mfp, // As we have only one instance of MagnificPopup object, we define it l
 	MagnificPopup = function(){},
 	_isJQ = !!(window.jQuery),
 	_prevStatus,
-	_window = $(window),
+	_window = jQuery(window),
 	_document,
 	_prevContentType,
 	_wrapClasses,
@@ -3818,17 +3973,21 @@ var _mfpOn = function(name, f) {
 	_getEl = function(className, appendTo, html, raw) {
 		var el = document.createElement('div');
 		el.className = 'mfp-'+className;
+
 		if(html) {
 			el.innerHTML = html;
 		}
+
 		if(!raw) {
-			el = $(el);
+			el = jQuery(el);
+
 			if(appendTo) {
 				el.appendTo(appendTo);
 			}
 		} else if(appendTo) {
 			appendTo.appendChild(el);
 		}
+    
 		return el;
 	},
 	_mfpTrigger = function(e, data) {
@@ -3844,7 +4003,7 @@ var _mfpOn = function(name, f) {
 	},
 	_getCloseBtn = function(type) {
 		if(type !== _currPopupType || !mfp.currTemplate.closeBtn) {
-			mfp.currTemplate.closeBtn = $( mfp.st.closeMarkup.replace('%title%', mfp.st.tClose ) );
+			mfp.currTemplate.closeBtn = jQuery( mfp.st.closeMarkup.replace('%title%', mfp.st.tClose ) );
 			_currPopupType = type;
 		}
 		return mfp.currTemplate.closeBtn;
@@ -3899,7 +4058,7 @@ MagnificPopup.prototype = {
 		// We disable fixed positioned lightbox on devices that don't handle it nicely.
 		// If you know a better way of detecting this - let me know.
 		mfp.probablyMobile = (mfp.isAndroid || mfp.isIOS || /(Opera Mini)|Kindle|webOS|BlackBerry|(Opera Mobi)|(Windows Phone)|IEMobile/i.test(navigator.userAgent) );
-		_document = $(document);
+		_document = jQuery(document);
 
 		mfp.popupsCache = {};
 	},
@@ -4084,7 +4243,7 @@ MagnificPopup.prototype = {
 				windowStyles.overflow = 'hidden';
 			} else {
 				// ie7 double-scroll bug
-				$('body, html').css('overflow', 'hidden');
+				jQuery('body, html').css('overflow', 'hidden');
 			}
 		}
 		
@@ -4104,10 +4263,10 @@ MagnificPopup.prototype = {
 		_mfpTrigger('BuildControls');
 
 		// remove scrollbar, add margin e.t.c
-		$('html').css(windowStyles);
+		jQuery('html').css(windowStyles);
 		
 		// add everything to DOM
-		mfp.bgOverlay.add(mfp.wrap).prependTo( mfp.st.prependTo || $(document.body) );
+		mfp.bgOverlay.add(mfp.wrap).prependTo( mfp.st.prependTo || jQuery(document.body) );
 
 		// Save last focused element
 		mfp._lastFocusedEl = document.activeElement;
@@ -4175,11 +4334,11 @@ MagnificPopup.prototype = {
 		if(mfp.fixedContentPos) {
 			var windowStyles = {marginRight: ''};
 			if(mfp.isIE7) {
-				$('body, html').css('overflow', '');
+				jQuery('body, html').css('overflow', '');
 			} else {
 				windowStyles.overflow = '';
 			}
-			$('html').css(windowStyles);
+			jQuery('html').css(windowStyles);
 		}
 		
 		_document.off('keyup' + EVENT_NS + ' focusin' + EVENT_NS);
@@ -4199,7 +4358,7 @@ MagnificPopup.prototype = {
 
 
 		if(mfp.st.autoFocusLast && mfp._lastFocusedEl) {
-			$(mfp._lastFocusedEl).focus(); // put tab focus back
+			jQuery(mfp._lastFocusedEl).focus(); // put tab focus back
 		}
 		mfp.currItem = null;	
 		mfp.content = null;
@@ -4260,7 +4419,7 @@ MagnificPopup.prototype = {
 			_mfpTrigger('FirstMarkupParse', markup);
 
 			if(markup) {
-				mfp.currTemplate[type] = $(markup);
+				mfp.currTemplate[type] = jQuery(markup);
 			} else {
 				// if there is no markup found we just define that template is parsed
 				mfp.currTemplate[type] = true;
@@ -4322,7 +4481,7 @@ MagnificPopup.prototype = {
 			type;
 
 		if(item.tagName) {
-			item = { el: $(item) };
+			item = { el: jQuery(item) };
 		} else {
 			type = item.type;
 			item = { data: item, src: item.src };
@@ -4415,7 +4574,7 @@ MagnificPopup.prototype = {
 			}
 		}
 
-		options.el = $(e.mfpEl);
+		options.el = jQuery(e.mfpEl);
 		if(options.delegate) {
 			options.items = el.find(options.delegate);
 		}
@@ -4466,7 +4625,7 @@ MagnificPopup.prototype = {
 	// "target" is an element that was clicked
 	_checkIfClose: function(target) {
 
-		if($(target).hasClass(PREVENT_CLOSE_CLASS)) {
+		if(jQuery(target).hasClass(PREVENT_CLOSE_CLASS)) {
 			return;
 		}
 
@@ -4478,7 +4637,7 @@ MagnificPopup.prototype = {
 		} else {
 
 			// We close the popup if click is on close button or on preloader. Or if there is no content.
-			if(!mfp.content || $(target).hasClass('mfp-close') || (mfp.preloader && target === mfp.preloader[0]) ) {
+			if(!mfp.content || jQuery(target).hasClass('mfp-close') || (mfp.preloader && target === mfp.preloader[0]) ) {
 				return true;
 			}
 
@@ -4542,7 +4701,7 @@ MagnificPopup.prototype = {
 						if(el.is('img')) {
 							el.attr('src', value);
 						} else {
-							el.replaceWith( $('<img>').attr('src', value).attr('class', el.attr('class')) );
+							el.replaceWith( jQuery('<img>').attr('src', value).attr('class', el.attr('class')) );
 						}
 					} else {
 						el.attr(arr[1], value);
@@ -4663,7 +4822,7 @@ $.magnificPopup = {
 $.fn.magnificPopup = function(options) {
 	_checkInstance();
 
-	var jqEl = $(this);
+	var jqEl = jQuery(this);
 
 	// We call some API method of first param is a string
 	if (typeof options === "string" ) {
@@ -4746,7 +4905,7 @@ $.magnificPopup.registerModule(INLINE_NS, {
 
 			if(item.src) {
 				var inlineSt = mfp.st.inline,
-					el = $(item.src);
+					el = jQuery(item.src);
 
 				if(el.length) {
 
@@ -4765,7 +4924,7 @@ $.magnificPopup.registerModule(INLINE_NS, {
 					mfp.updateStatus('ready');
 				} else {
 					mfp.updateStatus('error', inlineSt.tNotFound);
-					el = $('<div>');
+					el = jQuery('<div>');
 				}
 
 				item.inlineElement = el;
@@ -4786,7 +4945,7 @@ var AJAX_NS = 'ajax',
 	_ajaxCur,
 	_removeAjaxCursor = function() {
 		if(_ajaxCur) {
-			$(document.body).removeClass(_ajaxCur);
+			jQuery(document.body).removeClass(_ajaxCur);
 		}
 	},
 	_destroyAjaxRequest = function() {
@@ -4815,7 +4974,7 @@ $.magnificPopup.registerModule(AJAX_NS, {
 		getAjax: function(item) {
 
 			if(_ajaxCur) {
-				$(document.body).addClass(_ajaxCur);
+				jQuery(document.body).addClass(_ajaxCur);
 			}
 
 			mfp.updateStatus('loading');
@@ -4830,7 +4989,7 @@ $.magnificPopup.registerModule(AJAX_NS, {
 
 					_mfpTrigger('ParseAjax', temp);
 
-					mfp.appendContent( $(temp.data), AJAX_NS );
+					mfp.appendContent( jQuery(temp.data), AJAX_NS );
 
 					item.finished = true;
 
@@ -4910,13 +5069,13 @@ $.magnificPopup.registerModule('image', {
 
 			_mfpOn(OPEN_EVENT+ns, function() {
 				if(mfp.currItem.type === 'image' && imgSt.cursor) {
-					$(document.body).addClass(imgSt.cursor);
+					jQuery(document.body).addClass(imgSt.cursor);
 				}
 			});
 
 			_mfpOn(CLOSE_EVENT+ns, function() {
 				if(imgSt.cursor) {
-					$(document.body).removeClass(imgSt.cursor);
+					jQuery(document.body).removeClass(imgSt.cursor);
 				}
 				_window.off('resize' + EVENT_NS);
 			});
@@ -5057,7 +5216,7 @@ $.magnificPopup.registerModule('image', {
 				if(item.el && item.el.find('img').length) {
 					img.alt = item.el.find('img').attr('alt');
 				}
-				item.img = $(img).on('load.mfploader', onLoadComplete).on('error.mfploader', onLoadError);
+				item.img = jQuery(img).on('load.mfploader', onLoadComplete).on('error.mfploader', onLoadError);
 				img.src = item.src;
 
 				// without clone() "error" event is not firing when IMG is replaced by new IMG
@@ -5267,7 +5426,7 @@ $.magnificPopup.registerModule('zoom', {
 			var offset = el.offset();
 			var paddingTop = parseInt(el.css('padding-top'),10);
 			var paddingBottom = parseInt(el.css('padding-bottom'),10);
-			offset.top -= ( $(window).scrollTop() - paddingTop );
+			offset.top -= ( jQuery(window).scrollTop() - paddingTop );
 
 
 			/*
@@ -5482,8 +5641,8 @@ $.magnificPopup.registerModule('gallery', {
 			_mfpOn('BuildControls' + ns, function() {
 				if(mfp.items.length > 1 && gSt.arrows && !mfp.arrowLeft) {
 					var markup = gSt.arrowMarkup,
-						arrowLeft = mfp.arrowLeft = $( markup.replace(/%title%/gi, gSt.tPrev).replace(/%dir%/gi, 'left') ).addClass(PREVENT_CLOSE_CLASS),
-						arrowRight = mfp.arrowRight = $( markup.replace(/%title%/gi, gSt.tNext).replace(/%dir%/gi, 'right') ).addClass(PREVENT_CLOSE_CLASS);
+						arrowLeft = mfp.arrowLeft = jQuery( markup.replace(/%title%/gi, gSt.tPrev).replace(/%dir%/gi, 'left') ).addClass(PREVENT_CLOSE_CLASS),
+						arrowRight = mfp.arrowRight = jQuery( markup.replace(/%title%/gi, gSt.tNext).replace(/%dir%/gi, 'right') ).addClass(PREVENT_CLOSE_CLASS);
 
 					arrowLeft.click( function() {
 						mfp.prev();
@@ -5556,7 +5715,7 @@ $.magnificPopup.registerModule('gallery', {
 			_mfpTrigger('LazyLoad', item);
 
 			if(item.type === 'image') {
-				item.img = $('<img class="mfp-img" />').on('load.mfploader', function() {
+				item.img = jQuery('<img class="mfp-img" />').on('load.mfploader', function() {
 					item.hasSize = true;
 				}).on('error.mfploader', function() {
 					item.hasSize = true;
@@ -5720,12 +5879,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _loginForm__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./loginForm */ "./source/frontend/js/loginForm.js");
 /* harmony import */ var _expressCheckout__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./expressCheckout */ "./source/frontend/js/expressCheckout.js");
 
-document.addEventListener('DOMContentLoaded', function (event) {
+document.addEventListener('DOMContentLoaded', function(event) {
   ( function() {
     if (typeof Event !== 'function') {
       window.Event = CustomEvent;
     }
   })();
+
   _helper__WEBPACK_IMPORTED_MODULE_0__["default"].removeDomElements();
   _validation__WEBPACK_IMPORTED_MODULE_1__["default"].init();
   _stepper__WEBPACK_IMPORTED_MODULE_2__["default"].init();
@@ -5745,25 +5905,28 @@ document.addEventListener('DOMContentLoaded', function (event) {
   _loginForm__WEBPACK_IMPORTED_MODULE_15__["default"].init();
   _expressCheckout__WEBPACK_IMPORTED_MODULE_16__["default"].init();
 });
+
 ( function ($, document) {
-  $(document).ready( function() {
-    $(document.body).on('wc_fragments_refreshed', function() {
+  jQuery(document).ready( function() {
+    jQuery(document.body).on('wc_fragments_refreshed', function() {
       _helper__WEBPACK_IMPORTED_MODULE_0__["default"].removeDomElements();
       _cart__WEBPACK_IMPORTED_MODULE_8__["default"].init();
       _cart__WEBPACK_IMPORTED_MODULE_8__["default"].update_total();
     });
-    $(document.body).on('updated_checkout', function() {
+
+    jQuery(document.body).on('updated_checkout', function() {
       _helper__WEBPACK_IMPORTED_MODULE_0__["default"].removeDomElements();
       _cart__WEBPACK_IMPORTED_MODULE_8__["default"].init();
       _cart__WEBPACK_IMPORTED_MODULE_8__["default"].update_total();
     });
-    $(document.body).on('change', 'input.shipping_method', function() {
+
+    jQuery(document.body).on('change', 'input.shipping_method', function() {
       _cart__WEBPACK_IMPORTED_MODULE_8__["default"].update_total();
     });
 
     // Handle the condition where back button is pressed and document.ready event is not triggered.
-    $(window).on('pageshow', function() {
-      _form__WEBPACK_IMPORTED_MODULE_9__["default"].prepareFields();
+    jQuery(window).on('pageshow', function() {
+      _form__WEBPACK_IMPORTED_MODULE_9__["default"].prepare_fields();
     });
 
     // When auto-saved address is pasted from the keyboard in iOS, it doesnt trigger update_checkout.
