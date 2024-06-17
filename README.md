@@ -34,11 +34,16 @@ Você pode instalar um plugin WordPress de duas maneiras: via o painel de admini
 
 ### Registro de alterações (Changelogs):
 
+Versão 3.5.1 (17/06/2024)
+
+* Correção de bugs:
+ ** Erro Trying to access array offset on value of type null na função get_shipping_options_fragment()
+
 Versão 3.5.0 (13/06/2024)
 * Correção de bugs:
-  -- Recuperar opções Pro ao reativar licença
-  -- Atualizar informação do campo da finalização de compras nos cookies do navegador
-  -- Correção na validação de campos
+ ** Recuperar opções Pro ao reativar licença
+ ** Atualizar informação do campo da finalização de compras nos cookies do navegador
+ ** Correção na validação de campos
 * Otimizações
 * Recurso adicionado: Adicionar uma nova fonte à biblioteca
 * Recurso modificado: Permitir desativar campo de país
