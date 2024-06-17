@@ -38,7 +38,7 @@ class Flexify_Checkout {
 	 * @since 1.0.0
 	 * @var string
 	 */
-	public static $version = '3.5.0';
+	public static $version = '3.5.1';
 
 	/**
 	 * Plugin initiated
