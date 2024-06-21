@@ -6,7 +6,7 @@
  * Plugin URI: 				https://meumouse.com/plugins/flexify-checkout-para-woocommerce/
  * Author: 					MeuMouse.com
  * Author URI: 				https://meumouse.com/
- * Version: 				3.5.1
+ * Version: 				3.5.2
  * WC requires at least: 	6.0.0
  * WC tested up to: 		8.9.1
  * Requires PHP: 			7.4
@@ -38,7 +38,7 @@ class Flexify_Checkout {
 	 * @since 1.0.0
 	 * @var string
 	 */
-	public static $version = '3.5.1';
+	public static $version = '3.5.2';
 
 	/**
 	 * Plugin initiated
@@ -66,6 +66,7 @@ class Flexify_Checkout {
 	 * Define constants
 	 * 
 	 * @since 1.0.0
+	 * @version 3.0.0
 	 * @return void
 	 */
 	private function define_constants() {
@@ -114,8 +115,8 @@ class Flexify_Checkout {
 
 			// remove Pro badge if plugin is licensed
 			if ( get_option('flexify_checkout_license_status') !== 'valid' && false !== strpos( $url, 'wp-admin/plugins.php' ) ) {
-				add_filter( 'plugin_action_links_' . FLEXIFY_CHECKOUT_BASENAME, array( $this, 'get_pro_woo_custom_installments_link' ), 10, 4 );
-				add_action( 'admin_head', array( $this, 'badge_pro_woo_custom_installments' ) );
+				add_filter( 'plugin_action_links_' . FLEXIFY_CHECKOUT_BASENAME, array( $this, 'get_pro_flexify_checkout_link' ), 10, 4 );
+				add_action( 'admin_head', array( $this, 'badge_pro_flexify_checkout' ) );
 			}
 		} else {
 			add_action( 'admin_notices', array( $this, 'flexify_checkout_wc_version_notice' ) );
@@ -388,7 +389,7 @@ class Flexify_Checkout {
 	 * @since 3.3.0
 	 * @return array
 	 */
-	public static function get_pro_woo_custom_installments_link( $action_links ) {
+	public static function get_pro_flexify_checkout_link( $action_links ) {
 		$plugins_links = array(
 			'<a id="get-pro-flexify-checkout" target="_blank" href="https://meumouse.com/plugins/flexify-checkout-para-woocommerce/?utm_source=wordpress&utm_medium=plugins-list&utm_campaign=flexify-checkout">' . __( 'Seja PRO', 'flexify-checkout-for-woocommerce' ) . '</a>'
 		);
@@ -403,7 +404,7 @@ class Flexify_Checkout {
 	 * @since 3.3.0
 	 * @return void
 	 */
-	public function badge_pro_woo_custom_installments() {
+	public function badge_pro_flexify_checkout() {
 		echo '<style>
 			#get-pro-flexify-checkout {
 				display: inline-block;

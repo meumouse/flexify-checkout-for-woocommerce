@@ -222,11 +222,16 @@ function is_flexify_template() {
  * Check if the cart only contains virtual products
  *
  * @since 1.0.0
- * @version 3.5.0
+ * @version 3.5.2
  * @return bool
  */
 function flexify_checkout_only_virtual() {
     $only_virtual = true;
+
+    // Check if WooCommerce is initialized and the cart is available
+    if ( ! function_exists('WC') || ! WC()->cart ) {
+        return $only_virtual;
+    }
 
     foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
         // Check if there are non-virtual products.

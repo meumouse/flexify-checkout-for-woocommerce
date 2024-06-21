@@ -470,12 +470,9 @@ class Flexify_Checkout_Steps {
 				</h3>
 				<div class="woocommerce-additional-fields" style="display:none;" aria-hidden="true">
 					<div class="woocommerce-additional-fields__field-wrapper">
-						<?php
-						// @todo dynamic block needed for each type of Woo field, plus additional custom fields.
-						foreach ( $checkout->checkout_fields['order'] as $key => $field ) {
+						<?php foreach ( $checkout->checkout_fields['order'] as $key => $field ) {
 							woocommerce_form_field( $key, $field, $checkout->get_value( $key ) );
-						};
-						?>
+						} ?>
 					</div>
 				</div>
 				<?php
@@ -888,15 +885,11 @@ class Flexify_Checkout_Steps {
 	 * Get selected shipping method
 	 * 
 	 * @since 1.0.0
-	 * @version 3.5.0
+	 * @version 3.5.1
 	 * @return string
 	 */
 	public static function get_shipping_row() {
-		if ( empty( WC() )
-			|| empty( WC()->shipping() )
-			|| empty( WC()->session )
-			|| empty( WC()->session->chosen_shipping_methods[0] )
-			|| flexify_checkout_only_virtual() ) {
+		if ( empty( WC() ) || empty( WC()->shipping() ) || empty( WC()->session ) || empty( WC()->session->chosen_shipping_methods[0] ) || flexify_checkout_only_virtual() ) {
 			return '';
 		}
 	
@@ -912,7 +905,7 @@ class Flexify_Checkout_Steps {
 		$formatted_destination = WC()->countries->get_formatted_address( $packages[0]['destination'], ', ' );
 
 		if ( empty( $formatted_destination ) ) {
-			return;
+			return '';
 		}
 	
 		if ( empty( $selected_shipping_method->label ) || empty( $selected_shipping_method->cost ) ) {
@@ -920,6 +913,71 @@ class Flexify_Checkout_Steps {
 		}
 	
 		return sprintf('<th>%s</th><td>%s</td>', esc_html( $selected_shipping_method->label ), wc_price( $selected_shipping_method->cost ) );
+	}
+
+
+	/**
+	 * Get all shipping options for add on checkout fragments
+	 *
+	 * @since 3.5.0
+	 * @version 3.5.1
+	 * @return string
+	 */
+	public static function get_shipping_options_fragment() {
+		$packages = WC()->shipping()->get_packages();
+
+		if ( empty( WC() ) || empty( WC()->shipping() ) || empty( WC()->cart ) || empty( $packages ) || empty( $packages[0]['rates'] ) || flexify_checkout_only_virtual() ) {
+			return '';
+		}
+
+		$shipping_methods = $packages[0]['rates'];
+		
+		ob_start();
+
+		echo '<ul class="woocommerce-shipping-methods">';
+
+		foreach ( $shipping_methods as $method ) {
+			echo sprintf( '<li><input type="radio" name="shipping_method[0]" value="%s" class="shipping_method" /><label>%s</label></li>', esc_attr( $method->id ), esc_html( $method->label . ' - ' . wc_price( $method->cost ) ) );
+		}
+
+		echo '</ul>';
+
+		return ob_get_clean();
+	}
+
+
+	/**
+	 * Get all payment options for add on checkout fragments
+	 *
+	 * @since 3.5.0
+	 * @version 3.5.1
+	 * @return string
+	 */
+	public static function get_payment_options_fragment() {
+		if ( empty( WC() ) || empty( WC()->payment_gateways() ) ) {
+			return '';
+		}
+
+		$available_gateways = WC()->payment_gateways()->get_available_payment_gateways();
+		ob_start();
+
+		echo '<ul class="wc_payment_methods payment_methods methods">';
+
+		foreach ( $available_gateways as $gateway ) {
+			echo sprintf('<li class="wc_payment_method payment_method_%s"><input id="payment_method_%s" type="radio" class="input-radio" name="payment_method" value="%s" %s data-order_button_text="%s" /><label for="payment_method_%s">%s</label></li>',
+				esc_attr( $gateway->id ),
+				esc_attr( $gateway->id ),
+				esc_attr( $gateway->id ),
+				checked( $gateway->chosen, true, false ),
+				esc_attr( $gateway->order_button_text ),
+				esc_attr( $gateway->id ),
+				esc_html( $gateway->get_title() )
+			);
+		}
+
+		echo '</ul>';
+
+		return ob_get_clean();
 	}
 
 

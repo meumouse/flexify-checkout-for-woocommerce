@@ -78,12 +78,11 @@ class Flexify_Checkout_Sidebar {
 			return $html;
 		}
 
-		ob_start();
+		ob_start(); ?>
 
-		?>
 		<footer class="flexify-footer">
 			<?php
-			Flexify_Checkout_Steps::back_button( 'payment' );
+			Flexify_Checkout_Steps::back_button('payment');
 			echo wp_kses_post( $html ); ?>
 		</footer>
 		<?php
@@ -178,6 +177,7 @@ class Flexify_Checkout_Sidebar {
 		exit;
 	}
 
+	
 	/**
 	 * Add coupon form inside order summary section
 	 * 

@@ -847,7 +847,7 @@ class Flexify_Checkout_Core {
 	 * Render inline errors for validate fields
 	 *
 	 * @since 1.0.0
-	 * @version 3.5.0
+	 * @version 3.5.2
 	 * @param string $field | Checkout field
 	 * @param string $key | Field name and ID
 	 * @param array $args | Array of field parameters (type, country, label, description, placeholder, maxlenght, required, autocomplete, id, class, label_class, input_class, return, options, custom_attributes, validate, default, autofocus)
@@ -877,6 +877,7 @@ class Flexify_Checkout_Core {
 
 		if ( (bool) $args['required'] || $args['class'] === 'required-field' ) {
 			$message = sprintf( __( '%s é um campo obrigatório.', 'flexify-checkout-for-woocommerce' ), esc_html( $args['label'] ) );
+
 			/**
 			 * Filters the required field error message.
 			 *
@@ -889,8 +890,8 @@ class Flexify_Checkout_Core {
 			$message = apply_filters( 'flexify_required_field_error_msg', $message, $key, $args );
 		}
 
+		// is required field
 		if ( (bool) $args['required'] && $value ) {
-
 			if ( 'country' === $args['type'] && property_exists( WC()->countries, 'country_exists' ) && WC()->countries && ! WC()->countries->country_exists( $value ) ) {
 				/* translators: ISO 3166-1 alpha-2 country code */
 				$message = sprintf( __( "'%s' não é um código de país válido.", 'flexify-checkout-for-woocommerce' ), esc_html( $args['label'] ) );
@@ -912,21 +913,25 @@ class Flexify_Checkout_Core {
 				}
 			}
 
-			if ( 'phone' === $args['type'] && ! WC_Validation::is_phone( $value ) ) {
+			if ( 'phone' === $args['type'] && ! WC_Validation::is_phone( $value ) || strpos( $key, 'billing_phone') !== false && ! WC_Validation::is_phone( $value ) ) {
 				$message = sprintf( __( '%s não é um número de telefone válido.', 'flexify-checkout-for-woocommerce' ), esc_html( $args['label'] ) );
+				$custom  = true;
 			}
 
-			if ( 'email' === $args['type'] && ! is_email( $value ) ) {
-				$message = sprintf( __( '%s não é um endereço de e-mail válido.', 'flexify-checkout-for-woocommerce' ), esc_html( $args['label'] ) );
-			}
-
-			if ( 'billing_cpf' === $key && ! Flexify_Checkout_Helpers::validate_cpf( $value ) ) {
+			// add compatibility with multiple cpf fields
+			if ( strpos( $key, 'billing_cpf') !== false && ! Flexify_Checkout_Helpers::validate_cpf( $value ) || 'validate-cpf-field' === $args['class'] && ! Flexify_Checkout_Helpers::validate_cpf( $value ) ) {
 				$message = sprintf( __( 'O %s informado não é válido.', 'flexify-checkout-for-woocommerce' ), esc_html( $args['label'] ) );
 				$custom  = true;
 			}
 
-			if ( 'billing_cnpj' === $key && ! Flexify_Checkout_Helpers::validate_cnpj( $value ) ) {
+			// add compatibility with multiple cnpj fields
+			if ( strpos( $key, 'billing_cnpj' ) !== false && ! Flexify_Checkout_Helpers::validate_cnpj( $value ) || 'validate-cnpj-field' === $args['class'] && ! Flexify_Checkout_Helpers::validate_cnpj( $value ) ) {
 				$message = sprintf( __( 'O %s informado não é válido.', 'flexify-checkout-for-woocommerce' ), esc_html( $args['label'] ) );
+				$custom  = true;
+			}
+
+			if ( 'email' === $args['type'] && ! is_email( $value ) || 'validate-email-field' === $args['class'] && ! is_email( $value ) ) {
+				$message = sprintf( __( '%s não é um endereço de e-mail válido.', 'flexify-checkout-for-woocommerce' ), esc_html( $args['label'] ) );
 				$custom  = true;
 			}
 
@@ -1001,6 +1006,9 @@ class Flexify_Checkout_Core {
 			$target_fields[] = $index;
 		}
 
+		// filter for add check errors on custom conditions
+		$target_fields = apply_filters( 'flexify_checkout_target_fields_for_check_errors', $target_fields );
+
 		$data_attributes = '<p ';
 		$data_attributes .= sprintf( 'data-type="%s"', esc_attr( $args['type'] ) ) . ' ';
 		$data_attributes .= sprintf( 'data-label="%s"', esc_attr( $args['label'] ) ) . ' ';
@@ -1052,8 +1060,8 @@ class Flexify_Checkout_Core {
 		$new_fragments = array(
 			'total' => WC()->cart->get_total(),
 			'shipping_row' => Flexify_Checkout_Steps::get_shipping_row(),
-			'shipping_options' => self::get_shipping_options_fragment(),
-        	'payment_options' => self::get_payment_options_fragment(),
+			'shipping_options' => Flexify_Checkout_Steps::get_shipping_options_fragment(),
+        	'payment_options' => Flexify_Checkout_Steps::get_payment_options_fragment(),
 		);
 
 		if ( isset( $fragments['flexify'] ) ) {
@@ -1063,68 +1071,6 @@ class Flexify_Checkout_Core {
 		}
 
 		return $fragments;
-	}
-
-
-	/**
-	 * Get all shipping options for add on checkout fragments
-	 *
-	 * @since 3.5.0
-	 * @return string
-	 */
-	public static function get_shipping_options_fragment() {
-		if ( empty( WC() ) || empty( WC()->shipping() ) || empty( WC()->cart ) ) {
-			return '';
-		}
-
-		$packages = WC()->shipping()->get_packages();
-		$shipping_methods = $packages[0]['rates'];
-		
-		ob_start();
-
-		echo '<ul class="woocommerce-shipping-methods">';
-
-		foreach ( $shipping_methods as $method ) {
-			echo sprintf( '<li><input type="radio" name="shipping_method[0]" value="%s" class="shipping_method" /><label>%s</label></li>', esc_attr( $method->id ), esc_html( $method->label . ' - ' . wc_price( $method->cost ) ) );
-		}
-
-		echo '</ul>';
-
-		return ob_get_clean();
-	}
-
-
-	/**
-	 * Get all payment options for add on checkout fragments
-	 *
-	 * @since 3.5.0
-	 * @return string
-	 */
-	public static function get_payment_options_fragment() {
-		if ( empty( WC() ) || empty( WC()->payment_gateways() ) ) {
-			return '';
-		}
-
-		$available_gateways = WC()->payment_gateways()->get_available_payment_gateways();
-		ob_start();
-
-		echo '<ul class="wc_payment_methods payment_methods methods">';
-
-		foreach ( $available_gateways as $gateway ) {
-			echo sprintf('<li class="wc_payment_method payment_method_%s"><input id="payment_method_%s" type="radio" class="input-radio" name="payment_method" value="%s" %s data-order_button_text="%s" /><label for="payment_method_%s">%s</label></li>',
-				esc_attr( $gateway->id ),
-				esc_attr( $gateway->id ),
-				esc_attr( $gateway->id ),
-				checked( $gateway->chosen, true, false ),
-				esc_attr( $gateway->order_button_text ),
-				esc_attr( $gateway->id ),
-				esc_html( $gateway->get_title() )
-			);
-		}
-
-		echo '</ul>';
-
-		return ob_get_clean();
 	}
 
 

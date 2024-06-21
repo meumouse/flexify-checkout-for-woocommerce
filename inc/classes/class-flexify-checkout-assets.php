@@ -7,7 +7,7 @@ defined('ABSPATH') || exit;
  * Register/enqueue frontend and backend scripts
  *
  * @since 1.0.0
- * @version 3.5.0
+ * @version 3.5.2
  */
 class Flexify_Checkout_Assets {
 
@@ -347,7 +347,7 @@ class Flexify_Checkout_Assets {
 	 * Get dynamic styles
 	 *
 	 * @since 1.0.0
-	 * @version 3.5.0
+	 * @version 3.5.2
 	 * @param array $settings | Get plugin settings
 	 * @return string
 	 */
@@ -488,12 +488,12 @@ class Flexify_Checkout_Assets {
 					color: <?php echo esc_attr( $settings['set_primary_color'] ); ?>;
 				}
 
-				.shipping-method-item.selected-method > label,
-				.flexify-checkout__shipping-table tbody li:hover {
+				.shipping-method-item.selected-method,
+				.shipping-method-item:hover {
 					border-color: <?php echo esc_attr( $settings['set_primary_color'] ); ?> !important;
 				}
 
-				#shipping_method li input[type="radio"]:checked + label:before {
+				.shipping-method-item.selected-method:before {
 					background-color: <?php echo esc_attr( $settings['set_primary_color'] ); ?> !important;
 				}
 

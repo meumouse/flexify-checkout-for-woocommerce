@@ -29,7 +29,7 @@ if ( ! wc_coupons_enabled() ) { // @codingStandardsIgnoreLine.
 			<input type="text" name="coupon_code" class="input-text" id="coupon_code" value="" />
 		</p>
 		<p class="form-row form-row-last">
-			<button type="submit" class="button flexify-coupon-button flexify-coupon-button--disabled" name="apply_coupon" disabled value="<?php esc_attr_e( 'Aplicar cupom', 'woocommerce' ); ?>"><?php esc_html_e( 'Aplicar', 'flexify-checkout-for-woocommerce' ); ?></button>
+			<button type="submit" class="button flexify-coupon-button flexify-coupon-button--disabled" name="apply_coupon" value="<?php esc_attr_e( 'Aplicar cupom', 'woocommerce' ); ?>"><?php esc_html_e( 'Aplicar', 'flexify-checkout-for-woocommerce' ); ?></button>
 		</p>
 		<div class="clear"></div>
 	</div>
