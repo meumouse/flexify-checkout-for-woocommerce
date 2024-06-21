@@ -1650,13 +1650,9 @@ flexifyCoupon.init = function() {
         });
 
         jQuery(document).on('keydown', '#coupon_code', function(e) {
-          if ( jQuery(this).val() !== '' ) {
-            jQuery("[name=apply_coupon]").prop('disabled', false).removeClass('flexify-coupon-button--disabled');
-
-            if (e.key === 'Enter' || e.keyCode === 13) {
-              jQuery("[name=apply_coupon]").trigger('click');
-              e.preventDefault();
-            }
+          if (e.key === 'Enter' || e.keyCode === 13) {
+            jQuery("[name=apply_coupon]").trigger('click');
+            e.preventDefault();
           }
         });
 
@@ -2086,19 +2082,31 @@ jQuery(document).ready( function($) {
  * Add class on selected shipping method
  * 
  * @since 3.5.0
+ * @version 3.5.2
  */
 jQuery(document).ready( function($) {
   // Function to update the selected shipping method
   function update_selected_shipping_method() {
-      // Remove the class from all shipping method items
-      $('.shipping-method-item').removeClass('selected-method');
-      
-      // Find the selected shipping method input and add the class to its parent li
-      $('input[name="shipping_method[0]"]:checked').closest('.shipping-method-item').addClass('selected-method');
+    // Remove the class from all shipping method items
+    $('.shipping-method-item').removeClass('selected-method');
+
+    // Find the selected shipping method input and add the class to its parent li
+    $('input[name="shipping_method[0]"]:checked').closest('.shipping-method-item').addClass('selected-method');
   }
 
   // Initial check on page load
   update_selected_shipping_method();
+
+  // Event listener for clicks on .shipping-method-item
+  $(document).on('click', '.shipping-method-item', function(event) {
+    // Prevent default action if the click target is the input or label to avoid double triggering
+    if ($(event.target).is('input') || $(event.target).is('label')) {
+      return;
+    }
+
+    // Find the input radio inside the clicked .shipping-method-item and click it
+    $(this).find('input[type="radio"]').prop('checked', true).trigger('change');
+  });
 
   // Check again when the shipping method input changes
   $(document).on('change', 'input[name="shipping_method[0]"]', function() {
@@ -2109,6 +2117,7 @@ jQuery(document).ready( function($) {
   $(document.body).on('updated_checkout', function() {
     update_selected_shipping_method();
   });
+
 });
 
 
@@ -3582,6 +3591,8 @@ flexifyValidation.checkFieldsForErrors = async function(fields, hasErrors = fals
 
   await _helper__WEBPACK_IMPORTED_MODULE_0__["default"].ajaxRequest(data, function(response) {
     var messages = JSON.parse(response).data;
+
+    console.log(messages);
 
     // Update the inline validation messages for each field.
     Object.entries(messages).forEach( function(object) {
