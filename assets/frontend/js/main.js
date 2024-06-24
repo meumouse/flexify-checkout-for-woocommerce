@@ -646,13 +646,17 @@ jQuery(document.body).on('update_checkout', function() {
  * Update fragments on updated_checkout event
  * 
  * @since 1.0.0
- * @version 3.5.0
+ * @version 3.6.0
  */
 jQuery(document.body).on('updated_checkout', function(e, data) {
   jQuery('.flexify-checkout__shipping-table').unblock();
 
   if (_helper__WEBPACK_IMPORTED_MODULE_0__["default"].isModernCheckout()) {
     flexifyCart.addShippingRowToOrderSummary(data);
+  }
+
+  if (data?.fragments) {
+    _stepper__WEBPACK_IMPORTED_MODULE_2__["default"].update_custom_fragments(data.fragments);
   }
 
   if (data?.fragments?.flexify?.global_error) {
@@ -897,6 +901,7 @@ var CheckoutButton = {
 
     if (wp.hooks.applyFilters('flexify_checkout_checkout_button_animation', true)) {
       CheckoutButton.prepare_button_dom();
+      
       jQuery(document).on('click', '#place_order', CheckoutButton.on_button_click);
 
       if ( jQuery('#place_order').hasClass('flexify-checkout-btn-loading') ) {
@@ -924,11 +929,20 @@ var CheckoutButton = {
 		</span>`);
   },
   /**
-   * On button click.
+   * On button click
+   * 
+   * @since 1.0.0
+   * @version 3.6.0
    */
-  on_button_click: function() {
+  on_button_click: function(e) {
+    // Prevent the default behavior of the button
+    e.preventDefault();
+
     CheckoutButton.prepare_button_dom();
     jQuery('#place_order').addClass('flexify-checkout-btn-loading');
+
+    // Simulate the form submission event
+    jQuery('#place_order').closest('form').submit();
   },
   /**
    * On WooCommerce error.
@@ -943,11 +957,11 @@ var CheckoutButton = {
    * @param {data} data
    */
   on_updated_checkout: function(e, data) {
-    if ( ! data || ! data.fragments || ! data.fragments.flexify ) {
+    if (!data || !data.fragments || !data.fragments.flexify) {
       return;
     }
 
-    if ( data.fragments.flexify.total ) {
+    if (data.fragments.flexify.total) {
       CheckoutButton.cache.button_html = `${flexify_checkout_vars.i18n.pay} ${data.fragments.flexify.total}`;
       jQuery('#place_order').html(CheckoutButton.cache.button_html);
     }
@@ -959,10 +973,10 @@ var CheckoutButton = {
    * @returns 
    */
   on_payment_method_selected: function() {
-    if ( ! CheckoutButton.cache.button_html || 'paypal' === jQuery("[name='payment_method']:checked").val() ) {
+    if (!CheckoutButton.cache.button_html || 'paypal' === jQuery("[name='payment_method']:checked").val()) {
       return;
     }
-    
+
     jQuery('#place_order').html(CheckoutButton.cache.button_html);
   }
 };
@@ -1952,7 +1966,7 @@ flexifyForm.prepareField = function($input) {
  * Update customer data to "flexify_checkout_customer_fields" session
  * 
  * @since 1.8.5
- * @version 3.5.0
+ * @version 3.6.0
  */
 jQuery(document).ready( function($) {
   var all_checkout_fields = flexify_checkout_vars.get_all_checkout_fields || [];
@@ -1961,77 +1975,82 @@ jQuery(document).ready( function($) {
    * Get each field value and update session flexify_checkout_customer_fields
    */
   function update_customer_fields_session() {
-    var fields_data = [];
-    var session_form_data = new FormData();
-    session_form_data.append('action', 'get_checkout_session_data');
+      var fields_data = [];
+      var session_form_data = new FormData();
+      session_form_data.append('action', 'get_checkout_session_data');
 
-    $(all_checkout_fields).each( function(index, fields) {
-      if (fields) {
-        $.each(fields, function(field_id, field_properties) {
-          let input_value = $('#' + field_id).val();
+      $(all_checkout_fields).each( function(index, fields) {
+          if (fields) {
+              $.each(fields, function(field_id, field_properties) {
+                  let input_value = $('#' + field_id).val();
 
-          if (input_value !== undefined) {
-            fields_data.push({ field_id: field_id, value: input_value });
+                  if (input_value !== undefined) {
+                      fields_data.push({ field_id: field_id, value: input_value });
+                  }
+              });
           }
-        });
-      }
-    });
+      });
 
-    // check if has update value on field
-    session_form_data.append('fields_data', JSON.stringify(fields_data));
+      // Check if has update value on field
+      session_form_data.append('fields_data', JSON.stringify(fields_data));
 
-    $.ajax({
-      url: wc_checkout_params.ajax_url,
-      type: 'POST',
-      processData: false,
-      contentType: false,
-      data: session_form_data,
-      success: function(response) {
-        update_customer_info(response);
-      },
-      error: function(xhr, status, error) {
-        console.error(error);
-      }
-    });
+      $.ajax({
+          url: wc_checkout_params.ajax_url,
+          type: 'POST',
+          processData: false,
+          contentType: false,
+          data: session_form_data,
+          success: function(response) {
+            //  console.log('Dados da sessão atualizados com sucesso.', response);
+           //   update_customer_info(response);
+          },
+          error: function(xhr, status, error) {
+              console.error(error);
+          }
+      });
   }
+
+  /**
+   * Debounce function to limit the rate of function execution
+   * 
+   * @since 3.6.0
+   * @param {function} func | Function for setTimeOut
+   * @param {int} wait | Time in seconds
+   * @returns 
+   */
+  function debounce(func, wait) {
+      let timeout;
+      return function() {
+          const context = this, args = arguments;
+          clearTimeout(timeout);
+          timeout = setTimeout(() => func.apply(context, args), wait);
+      };
+  }
+
+  // Create a debounced version of the update function
+  var debouncedUpdateCustomerFieldsSession = debounce(update_customer_fields_session, 500);
 
   // Initial update to capture current values
   update_customer_fields_session();
 
-  // update session data on change input values
+  // Update session data on change input values
   $(all_checkout_fields).each( function(index, fields) {
-    var billing_fields = fields.billing;
+      var billing_fields = fields.billing;
 
-    if (billing_fields) {
-      $.each(billing_fields, function(field_id, field_properties) {
-        $('#' + field_id).on('change input', function() {
-          update_customer_fields_session();
-        });
-      });
-    }
+      if (billing_fields) {
+          $.each(billing_fields, function(field_id, field_properties) {
+              $('#' + field_id).on('change input', function() {
+                  debouncedUpdateCustomerFieldsSession();
+              });
+          });
+      }
   });
 
-  // update session data on proceed step
+  // Update session data on proceed step
   $('.flexify-button[data-step-next]').on('click', function(e) {
-    e.preventDefault();
-
-    update_customer_fields_session();
+      e.preventDefault();
+      update_customer_fields_session();
   });
-
-  /**
-   * Update customer info
-   * 
-   * @since 2.0.0
-   * @version 3.5.0
-   * @param {array} response | Response from checkout session data
-   */
-  function update_customer_info(response) {
-    if (response) {
-      jQuery('.woocommerce-customer-details--name').text(response.data.billing_first_name + ' ' + response.data.billing_last_name);
-      jQuery('.woocommerce-customer-details--phone').text(response.data.billing_phone);
-      jQuery('.woocommerce-customer-details--email').text(response.data.billing_email);
-    }
-  }
 });
 
 /**
@@ -3279,10 +3298,17 @@ flexifyStepper.scrollToElement = function(scroll_element) {
   }
 };
 
+/**
+ * Get fragments on updated checkout and replace HTML
+ * 
+ * @since 1.0.0
+ * @version 3.6.0
+ * @param {string} fragments | Fragment HTML
+ */
 flexifyStepper.update_custom_fragments = function(fragments) {
   for (var selector in fragments) {
     if (jQuery(selector).length) {
-      jQuery(selector).replaceWith(fragments[selector]);
+      jQuery(selector).replaceWith( fragments[selector] );
     }
   }
 };
@@ -3556,6 +3582,7 @@ flexifyValidation.checkFieldsForErrors = async function(fields, hasErrors = fals
     }
   }
   _stepper__WEBPACK_IMPORTED_MODULE_1__["default"].loadSpinner(true);
+  
   // Get all the data so we can do an inline validation.
   Array.from(fields).forEach( function(field) {
     var row = field.closest('.form-row');
@@ -3591,8 +3618,6 @@ flexifyValidation.checkFieldsForErrors = async function(fields, hasErrors = fals
 
   await _helper__WEBPACK_IMPORTED_MODULE_0__["default"].ajaxRequest(data, function(response) {
     var messages = JSON.parse(response).data;
-
-    console.log(messages);
 
     // Update the inline validation messages for each field.
     Object.entries(messages).forEach( function(object) {

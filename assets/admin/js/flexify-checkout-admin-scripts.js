@@ -81,24 +81,30 @@
 
 
 	/**
-	 * Save options in AJAX
+	 * Send options to backend in AJAX
 	 * 
 	 * @since 1.0.0
+	 * @version 3.6.0
 	 */
-	jQuery(document).ready( function($) {
+	jQuery(document).ready(function($) {
 		let settings_form = $('form[name="flexify-checkout"]');
-		let originalValues = settings_form.serialize();
+		let original_values = settings_form.serialize();
 		var notification_delay;
-
+		var debounce_timeout;
+	
 		// send options to backend on change html
 		settings_form.on('change', function() {
 			// hide notice if already visible
 			$('.updated-option-success').fadeOut('fast', function() {
 				$(this).removeClass('active').css('display', '');
 			});
-
-			if (settings_form.serialize() !== originalValues) {
-				ajax_save_options(); // send option serialized on change
+	
+			if (settings_form.serialize() !== original_values) {
+				if (debounce_timeout) {
+					clearTimeout(debounce_timeout);
+				}
+				
+				debounce_timeout = setTimeout(ajax_save_options, 500); // debounce delay of 500ms
 			}
 		});
 	
@@ -112,20 +118,20 @@
 				},
 				success: function(response) {
 					try {
-					//	console.log(response.options);
-
+						// console.log(response.options);
+	
 						if (response.status === 'success') {
-							originalValues = settings_form.serialize();
-
+							original_values = settings_form.serialize();
+	
 							// display notice
 							$('.updated-option-success').addClass('active');
-							
+	
 							if (notification_delay) {
 								clearTimeout(notification_delay);
 							}
-				
+	
 							//hide notice on timeout
-							notification_delay = setTimeout( function() {
+							notification_delay = setTimeout(function() {
 								$('.updated-option-success').fadeOut('fast', function() {
 									$(this).removeClass('active').css('display', '');
 								});
@@ -135,12 +141,12 @@
 						console.log(error);
 					}
 				},
-				error: function (jqXHR, textStatus, errorThrown) {
+				error: function(jqXHR, textStatus, errorThrown) {
 					console.error("AJAX request failed:", textStatus, errorThrown);
 				}
 			});
 		}
-	});
+	});	
 
 
 	/**

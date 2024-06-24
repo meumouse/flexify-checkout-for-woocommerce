@@ -1827,3 +1827,7 @@ select {
     overflow-y: auto;
     padding: 2rem;
 }
+
+code {
+    text-wrap: nowrap;
+}
