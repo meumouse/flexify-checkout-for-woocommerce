@@ -34,6 +34,14 @@ Você pode instalar um plugin WordPress de duas maneiras: via o painel de admini
 
 ### Registro de alterações (Changelogs):
 
+Versão 3.6.0 (24/06/2024)
+* Correção de bugs
+  ** Remover condições ao redefinir opções para padrão
+* Otimizações
+* Recurso adicionado: Texto do resumo de informações de contato
+* Recurso adicionado: Texto do resumo de informações de entrega
+* Recurso modificado: Permitir adicionar e remover produtos (Permitir alterar quantidade de produtos - Permitir remover produtos do carrinho)
+
 Versão 3.5.2 (20/06/2024)
 * Correção de bugs
   ** Impossibilidade de clicar no botão de adicionar cupom
