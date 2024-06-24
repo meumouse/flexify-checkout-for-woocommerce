@@ -117,7 +117,8 @@ class Flexify_Checkout_Admin_Options extends Flexify_Checkout_Init {
         $options['enable_optimize_for_digital_products'] = isset( $form_data['enable_optimize_for_digital_products'] ) && self::license_valid() ? 'yes' : 'no';
         $options['enable_link_image_products'] = isset( $form_data['enable_link_image_products'] ) ? 'yes' : 'no';
         $options['enable_fill_address'] = isset( $form_data['enable_fill_address'] ) && self::license_valid() ? 'yes' : 'no';
-        $options['enable_add_remove_products'] = isset( $form_data['enable_add_remove_products'] ) && self::license_valid() ? 'yes' : 'no';
+        $options['enable_change_product_quantity'] = isset( $form_data['enable_change_product_quantity'] ) && self::license_valid() ? 'yes' : 'no';
+        $options['enable_remove_product_cart'] = isset( $form_data['enable_remove_product_cart'] ) && self::license_valid() ? 'yes' : 'no';
         $options['enable_ddi_phone_field'] = isset( $form_data['enable_ddi_phone_field'] ) && self::license_valid() ? 'yes' : 'no';
         $options['enable_hide_coupon_code_field'] = isset( $form_data['enable_hide_coupon_code_field'] ) ? 'yes' : 'no';
         $options['enable_auto_apply_coupon_code'] = isset( $form_data['enable_auto_apply_coupon_code'] ) && self::license_valid() ? 'yes' : 'no';
@@ -702,7 +703,7 @@ class Flexify_Checkout_Admin_Options extends Flexify_Checkout_Init {
 
       // check if successfully updated
       if ( $update_conditions ) {
-        $get_fields = Flexify_Checkout_Helpers::get_all_checkout_fields();
+        $get_fields = Flexify_Checkout_Helpers::get_checkout_fields_on_admin();
         $condition_type = array(
           'show' => esc_html__( 'Mostrar', 'flexify-checkout-for-woocommerce' ),
           'hide' => esc_html__( 'Ocultar', 'flexify-checkout-for-woocommerce' ),

@@ -7,7 +7,7 @@ defined('ABSPATH') || exit;
  * Class for Handle AJAX events
  *
  * @since 1.0.0
- * @version 3.5.0
+ * @version 3.6.0
  * @package MeuMouse.com
  */
 class Flexify_Checkout_Ajax {
@@ -16,14 +16,26 @@ class Flexify_Checkout_Ajax {
 	 * Construct function
 	 * 
 	 * @since 1.0.0
+	 * @version 3.6.0
 	 * @return void
 	 */
 	public function __construct() {
+		// get AJAX call on check inline errors
 		add_action( 'wp_ajax_flexify_check_for_inline_error', array( __CLASS__, 'check_for_inline_error' ) );
+
+		// get AJAX call on check inline errors for not logged users
 		add_action( 'wp_ajax_nopriv_flexify_check_for_inline_error', array( __CLASS__, 'check_for_inline_error' ) );
+
+		// get AJAX call on check error on proceed step
 		add_action( 'wp_ajax_flexify_check_for_inline_errors', array( __CLASS__, 'check_for_inline_errors' ) );
+
+		// get AJAX call on check error on proceed step for not logged users
 		add_action( 'wp_ajax_nopriv_flexify_check_for_inline_errors', array( __CLASS__, 'check_for_inline_errors' ) );
+
+		// get AJAX call on login event
 		add_action( 'wp_ajax_flexify_login', array( __CLASS__, 'login' ) );
+
+		// get AJAX call on login event for not logged users
 		add_action( 'wp_ajax_nopriv_flexify_login', array( __CLASS__, 'login' ) );
 	}
 
@@ -32,7 +44,7 @@ class Flexify_Checkout_Ajax {
 	 * Check for inline errors
 	 * 
 	 * @since 1.0.0
-	 * @version 3.5.0
+	 * @version 3.6.0
 	 * @return void
 	 */
 	public static function check_for_inline_errors() {
@@ -45,7 +57,8 @@ class Flexify_Checkout_Ajax {
 		}
 
 		$messages['fragments'] = array(
-			'.flexify-review-customer' => Flexify_Checkout_Steps::get_review_customer_fragment(),
+			'.flexify-review-customer' => Flexify_Checkout_Steps::render_customer_review(),
+			'.flexify-checkout-review-shipping-method' => Flexify_Checkout_Helpers::get_shipping_method(),
 		);
 
 		wp_send_json_success( $messages );

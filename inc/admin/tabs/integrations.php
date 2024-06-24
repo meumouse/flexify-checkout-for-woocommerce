@@ -3,23 +3,29 @@
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
 
-$inter_module_active = is_plugin_active( 'module-inter-bank-for-flexify-checkout/module-inter-bank-for-flexify-checkout.php' ); ?>
+$inter_module_active = is_plugin_active('module-inter-bank-for-flexify-checkout/module-inter-bank-for-flexify-checkout.php'); ?>
 
 <div id="integrations" class="nav-content">
-  <table class="form-table">
+      <table class="form-table">
+         <?php
+         /**
+          * Hook for display custom fields options
+          * 
+          * @since 3.6.0
+          */
+         do_action('flexify_checkout_before_integrations_options'); ?>
+
          <tr>
             <th>
                <?php echo esc_html__( 'Ativar recebimento de pagamentos com Pix via Banco Inter', 'flexify-checkout-for-woocommerce' );
                
-               if ( ! self::license_valid() ) {
-                  ?>
+               if ( ! self::license_valid() ) : ?>
                   <span class="badge pro bg-primary rounded-pill ms-2">
                      <svg class="icon-pro" viewBox="0 0 24.00 24.00" xmlns="http://www.w3.org/2000/svg"><g stroke-width="0"></g><g stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC" stroke-width="0.336"></g><g><path fill-rule="evenodd" clip-rule="evenodd" d="M12.0001 3C12.3334 3 12.6449 3.16613 12.8306 3.443L16.6106 9.07917L21.2523 3.85213C21.5515 3.51525 22.039 3.42002 22.4429 3.61953C22.8469 3.81904 23.0675 4.26404 22.9818 4.70634L20.2956 18.5706C20.0223 19.9812 18.7872 21 17.3504 21H6.64977C5.21293 21 3.97784 19.9812 3.70454 18.5706L1.01833 4.70634C0.932635 4.26404 1.15329 3.81904 1.55723 3.61953C1.96117 3.42002 2.44865 3.51525 2.74781 3.85213L7.38953 9.07917L11.1696 3.443C11.3553 3.16613 11.6667 3 12.0001 3ZM12.0001 5.79533L8.33059 11.2667C8.1582 11.5237 7.8765 11.6865 7.56772 11.7074C7.25893 11.7283 6.95785 11.6051 6.75234 11.3737L3.67615 7.90958L5.66802 18.1902C5.75913 18.6604 6.17082 19 6.64977 19H17.3504C17.8293 19 18.241 18.6604 18.3321 18.1902L20.324 7.90958L17.2478 11.3737C17.0423 11.6051 16.7412 11.7283 16.4324 11.7074C16.1236 11.6865 15.842 11.5237 15.6696 11.2667L12.0001 5.79533Z"></path> </g></svg>
                      <?php echo esc_html__( 'Pro', 'flexify-checkout-for-woocommerce' ) ?>
                   </span>
-                  <?php
-               }
-               ?>
+               <?php endif; ?>
+
                <span class="flexify-checkout-description"><?php echo esc_html__( 'Ative esta opção para configurar recibimentos via Pix com aprovação automática gratuitamente (Disponível apenas no Brasil).', 'flexify-checkout-for-woocommerce' ) ?></span>
             </th>
             <td class="d-flex align-items-center">
@@ -98,25 +104,23 @@ $inter_module_active = is_plugin_active( 'module-inter-bank-for-flexify-checkout
             <th>
                <?php echo esc_html__( 'Ativar recebimento de pagamentos com boleto bancário via Banco Inter', 'flexify-checkout-for-woocommerce' );
                
-               if ( ! self::license_valid() ) {
-                  ?>
+               if ( ! self::license_valid() ) : ?>
                   <span class="badge pro bg-primary rounded-pill ms-2">
                      <svg class="icon-pro" viewBox="0 0 24.00 24.00" xmlns="http://www.w3.org/2000/svg"><g stroke-width="0"></g><g stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC" stroke-width="0.336"></g><g><path fill-rule="evenodd" clip-rule="evenodd" d="M12.0001 3C12.3334 3 12.6449 3.16613 12.8306 3.443L16.6106 9.07917L21.2523 3.85213C21.5515 3.51525 22.039 3.42002 22.4429 3.61953C22.8469 3.81904 23.0675 4.26404 22.9818 4.70634L20.2956 18.5706C20.0223 19.9812 18.7872 21 17.3504 21H6.64977C5.21293 21 3.97784 19.9812 3.70454 18.5706L1.01833 4.70634C0.932635 4.26404 1.15329 3.81904 1.55723 3.61953C1.96117 3.42002 2.44865 3.51525 2.74781 3.85213L7.38953 9.07917L11.1696 3.443C11.3553 3.16613 11.6667 3 12.0001 3ZM12.0001 5.79533L8.33059 11.2667C8.1582 11.5237 7.8765 11.6865 7.56772 11.7074C7.25893 11.7283 6.95785 11.6051 6.75234 11.3737L3.67615 7.90958L5.66802 18.1902C5.75913 18.6604 6.17082 19 6.64977 19H17.3504C17.8293 19 18.241 18.6604 18.3321 18.1902L20.324 7.90958L17.2478 11.3737C17.0423 11.6051 16.7412 11.7283 16.4324 11.7074C16.1236 11.6865 15.842 11.5237 15.6696 11.2667L12.0001 5.79533Z"></path> </g></svg>
                      <?php echo esc_html__( 'Pro', 'flexify-checkout-for-woocommerce' ) ?>
                   </span>
-                  <?php
-               }
-               ?>
+               <?php endif; ?>
+               
                <span class="flexify-checkout-description"><?php echo esc_html__( 'Ative esta opção para configurar recibimentos via boleto bancário com aprovação automática gratuitamente.', 'flexify-checkout-for-woocommerce' ) ?></span>
             </th>
             <td class="d-flex align-items-center">
                <div class="form-check form-switch <?php echo ( ! self::license_valid() ) ? 'require-pro' : ''; ?>">
                   <input type="checkbox" class="toggle-switch <?php echo ( ! self::license_valid() ) ? 'pro-version' : ''; ?>" id="<?php echo ! class_exists('Module_Inter_Bank') ? 'require_inter_bank_module_trigger_2' : 'enable_inter_bank_ticket_api'; ?>" name="enable_inter_bank_ticket_api" value="yes" <?php checked( self::get_setting( 'enable_inter_bank_ticket_api') === 'yes' && class_exists('Module_Inter_Bank') && self::license_valid() ); ?>/>
                </div>
-               <?php
-               if ( $inter_module_active ) {
-                  ?>
+
+               <?php if ( $inter_module_active ) : ?>
                   <button id="inter_bank_slip_settings" class="btn btn-outline-primary ms-3 inter-bank-slip input-control-wd-12"><?php echo esc_html__( 'Configurar Boleto', 'flexify-checkout-for-woocommerce' ) ?></button>
+                  
                   <div id="inter_bank_slip_container">
                      <div class="popup-content">
                         <div class="popup-header">
@@ -174,16 +178,12 @@ $inter_module_active = is_plugin_active( 'module-inter-bank-for-flexify-checkout
                         </div>
                      </div>
                   </div>
-               <?php
-               }
-               ?>
+               <?php endif; ?>
             </td>
          </tr>
 
 
-      <?php
-      if ( $inter_module_active ) {
-         ?>
+      <?php if ( $inter_module_active ) : ?>
          <tr>
             <th>
                <?php echo esc_html__( 'Configurar integração com banco Inter', 'flexify-checkout-for-woocommerce' ) ?>
@@ -250,34 +250,35 @@ $inter_module_active = is_plugin_active( 'module-inter-bank-for-flexify-checkout
                            $crt_file = get_option('flexify_checkout_inter_bank_crt_file');
                            $key_file = get_option('flexify_checkout_inter_bank_key_file');
 
-                           if ( empty( $crt_file ) ) {
-                              ?>
+                           if ( empty( $crt_file ) ) : ?>
                               <div class="dropzone me-2" id="dropzone-crt">
                                  <div class="drag-text">
                                     <svg class="drag-and-drop-file-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M19.937 8.68c-.011-.032-.02-.063-.033-.094a.997.997 0 0 0-.196-.293l-6-6a.997.997 0 0 0-.293-.196c-.03-.014-.062-.022-.094-.033a.991.991 0 0 0-.259-.051C13.04 2.011 13.021 2 13 2H6c-1.103 0-2 .897-2 2v16c0 1.103.897 2 2 2h12c1.103 0 2-.897 2-2V9c0-.021-.011-.04-.013-.062a.99.99 0 0 0-.05-.258zM16.586 8H14V5.414L16.586 8zM6 20V4h6v5a1 1 0 0 0 1 1h5l.002 10H6z"></path></svg>
                                     <?php echo esc_html( 'Arraste e solte o arquivo .crt aqui', 'flexify-checkout-for-woocommerce' ); ?>
                                  </div>
+
                                  <div class="file-list"></div>
+
                                  <form enctype="multipart/form-data" action="upload.php" class="form-inter-bank-files" method="POST">
                                     <div class="drag-and-drop-file">
-                                          <div class="custom-file">
-                                             <input type="file" class="custom-file-input" id="upload-file-crt" name="crt_file" hidden>
-                                             <label class="custom-file-label mb-4" for="upload-file-crt"><?php echo esc_html( 'Ou clique para procurar seu arquivo', 'flexify-checkout-for-woocommerce' ); ?></label>
-                                          </div>
+                                       <div class="custom-file">
+                                          <input type="file" class="custom-file-input" id="upload-file-crt" name="crt_file" hidden>
+                                          <label class="custom-file-label mb-4" for="upload-file-crt"><?php echo esc_html( 'Ou clique para procurar seu arquivo', 'flexify-checkout-for-woocommerce' ); ?></label>
+                                       </div>
                                     </div>
                                  </form>
                               </div>
-                              <?php
-                           }
+                           <?php endif;
 
-                           if ( empty( $key_file ) ) {
-                              ?>
+                           if ( empty( $key_file ) ) : ?>
                               <div class="dropzone ms-2" id="dropzone-key">
                                  <div class="drag-text">
-                                 <svg class="drag-and-drop-file-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M19.937 8.68c-.011-.032-.02-.063-.033-.094a.997.997 0 0 0-.196-.293l-6-6a.997.997 0 0 0-.293-.196c-.03-.014-.062-.022-.094-.033a.991.991 0 0 0-.259-.051C13.04 2.011 13.021 2 13 2H6c-1.103 0-2 .897-2 2v16c0 1.103.897 2 2 2h12c1.103 0 2-.897 2-2V9c0-.021-.011-.04-.013-.062a.99.99 0 0 0-.05-.258zM16.586 8H14V5.414L16.586 8zM6 20V4h6v5a1 1 0 0 0 1 1h5l.002 10H6z"></path></svg>
-                                 <?php echo esc_html( 'Arraste e solte o arquivo .key aqui', 'flexify-checkout-for-woocommerce' ); ?>
+                                    <svg class="drag-and-drop-file-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M19.937 8.68c-.011-.032-.02-.063-.033-.094a.997.997 0 0 0-.196-.293l-6-6a.997.997 0 0 0-.293-.196c-.03-.014-.062-.022-.094-.033a.991.991 0 0 0-.259-.051C13.04 2.011 13.021 2 13 2H6c-1.103 0-2 .897-2 2v16c0 1.103.897 2 2 2h12c1.103 0 2-.897 2-2V9c0-.021-.011-.04-.013-.062a.99.99 0 0 0-.05-.258zM16.586 8H14V5.414L16.586 8zM6 20V4h6v5a1 1 0 0 0 1 1h5l.002 10H6z"></path></svg>
+                                    <?php echo esc_html( 'Arraste e solte o arquivo .key aqui', 'flexify-checkout-for-woocommerce' ); ?>
                                  </div>
+
                                  <div class="file-list"></div>
+
                                  <form enctype="multipart/form-data" action="upload.php" class="form-inter-bank-files" method="POST">
                                     <div class="drag-and-drop-file">
                                           <div class="custom-file">
@@ -287,13 +288,9 @@ $inter_module_active = is_plugin_active( 'module-inter-bank-for-flexify-checkout
                                     </div>
                                  </form>
                               </div>
-                              <?php
-                           }
-                           ?>
+                           <?php endif; ?>
                         </div>
-                        <?php
-                        if ( ! empty( $key_file ) && ! empty( $crt_file ) ) {
-                           ?>
+                        <?php if ( ! empty( $key_file ) && ! empty( $crt_file ) ) : ?>
                            <div class="file-uploaded-info my-3">
                               <div class="d-flex flex-collumn align-items-start me-3">
                                  <span class="fs-lg"><?php echo esc_html( 'Sua chave e certificado já foram enviados.', 'flexify-checkout-for-woocommerce' ); ?></span>
@@ -304,9 +301,7 @@ $inter_module_active = is_plugin_active( 'module-inter-bank-for-flexify-checkout
                               </button>
                            </div>
 
-                           <?php
-                           if ( get_option('flexify_checkout_inter_bank_webhook') === 'enabled' ) {
-                              ?>
+                           <?php if ( get_option('flexify_checkout_inter_bank_webhook') === 'enabled' ) : ?>
                               <div class="webhook-state my-3 d-flex align-items-center">
                                  <div class="ping me-3">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: #fff"><path d="m10 15.586-3.293-3.293-1.414 1.414L10 18.414l9.707-9.707-1.414-1.414z"></path></svg>
@@ -316,18 +311,14 @@ $inter_module_active = is_plugin_active( 'module-inter-bank-for-flexify-checkout
                                     <span class="text-muted"><?php echo esc_html( 'Aprovação automática de pedidos ativada.', 'flexify-checkout-for-woocommerce' ); ?></span>
                                  </div>
                               </div>
-                              <?php
-                           }
-                        }
-                        ?>
+                           <?php endif;
+                        endif; ?>
                      </div>
                   </div>
                </div>
             </td>
          </tr>
-         <?php
-      }
-      ?>
+      <?php endif; ?>
   </table>
 </div>
 

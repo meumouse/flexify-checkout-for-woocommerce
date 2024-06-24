@@ -6,11 +6,11 @@
  * Plugin URI: 				https://meumouse.com/plugins/flexify-checkout-para-woocommerce/
  * Author: 					MeuMouse.com
  * Author URI: 				https://meumouse.com/
- * Version: 				3.5.2
+ * Version: 				3.6.0
  * WC requires at least: 	6.0.0
- * WC tested up to: 		8.9.1
+ * WC tested up to: 		9.0.2
  * Requires PHP: 			7.4
- * Tested up to:      		6.5.2
+ * Tested up to:      		6.5.5
  * Text Domain: 			flexify-checkout-for-woocommerce
  * Domain Path: 			/languages
  * License: 				GPL2
@@ -38,7 +38,7 @@ class Flexify_Checkout {
 	 * @since 1.0.0
 	 * @var string
 	 */
-	public static $version = '3.5.2';
+	public static $version = '3.6.0';
 
 	/**
 	 * Plugin initiated

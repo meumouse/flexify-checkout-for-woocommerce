@@ -6,8 +6,15 @@ defined('ABSPATH') || exit; ?>
 <div id="conditions" class="nav-content">
    <table class="form-table">
         <?php
+        /**
+         * Hook for display custom conditions options
+        * 
+        * @since 3.6.0
+        */
+        do_action('flexify_checkout_before_conditions_options');
+
         $get_conditions = get_option('flexify_checkout_conditions', array());
-        $get_fields = Flexify_Checkout_Helpers::get_all_checkout_fields();
+        $get_fields = Flexify_Checkout_Helpers::get_checkout_fields_on_admin();
         
         if ( empty( $get_conditions ) ) : ?>
             <tr>
@@ -340,5 +347,14 @@ defined('ABSPATH') || exit; ?>
                 </div>
             </td>
         </tr>
+
+        <?php
+        /**
+         * Hook for display custom conditions options
+        * 
+        * @since 3.6.0
+        */
+        do_action('flexify_checkout_after_general_options'); ?>
+
     </table>
 </div>

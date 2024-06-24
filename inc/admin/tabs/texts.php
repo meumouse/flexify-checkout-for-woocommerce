@@ -5,6 +5,14 @@ defined('ABSPATH') || exit; ?>
 
 <div id="texts" class="nav-content">
     <table class="form-table">
+        <?php
+        /**
+         * Hook for display custom text option
+         * 
+         * @since 3.6.0
+         */
+        do_action('flexify_checkout_before_texts_options'); ?>
+
         <tr>
             <th>
                 <?php echo esc_html__( 'Texto informativo dos campos da etapa de contato', 'flexify-checkout-for-woocommerce' ) ?>
@@ -86,5 +94,49 @@ defined('ABSPATH') || exit; ?>
                <input type="text" class="form-control input-control-wd-20" id="text_previous_step_button" name="text_previous_step_button" value="<?php echo self::get_setting('text_previous_step_button') ?>"/>
             </td>
         </tr>
+        
+        <tr class="container-separator"></tr>
+
+        <tr>
+            <th>
+                <?php echo esc_html__( 'Texto do resumo de informações de contato', 'flexify-checkout-for-woocommerce' ) ?>
+                <span class="flexify-checkout-description mb-3"><?php echo esc_html__( 'Utilize as variáveis abaixo para recuperar as informações de campos, use <br> para quebrar uma linha. Ou deixe em branco para não exibir.', 'flexify-checkout-for-woocommerce' ) ?></span>
+
+                <?php foreach ( Flexify_Checkout_Helpers::get_placeholder_input_values() as $field_id => $value ) : ?>
+                    <div class="d-flex mb-1">
+                        <span class="flexify-checkout-description"><code><?php echo esc_html( $value['placeholder_html'] ) ?></code>
+                        </span><span class="flexify-checkout-description ms-2"><?php echo esc_html( $value['description'] ) ?></span>
+                    </div>
+                <?php endforeach; ?>
+            </th>
+            <td>
+               <input type="text" class="form-control input-control-wd-20" id="text_contact_customer_review" name="text_contact_customer_review" value="<?php echo self::get_setting('text_contact_customer_review') ?>"/>
+            </td>
+        </tr>
+        <tr>
+            <th>
+                <?php echo esc_html__( 'Texto do resumo de informações de entrega', 'flexify-checkout-for-woocommerce' ) ?>
+                <span class="flexify-checkout-description mb-3"><?php echo esc_html__( 'Utilize as variáveis abaixo para recuperar as informações de campos, use <br> para quebrar uma linha. Ou deixe em branco para não exibir.', 'flexify-checkout-for-woocommerce' ) ?></span>
+
+                <?php foreach ( Flexify_Checkout_Helpers::get_placeholder_input_values() as $field_id => $value ) : ?>
+                    <div class="d-flex mb-1">
+                        <span class="flexify-checkout-description"><code><?php echo esc_html( $value['placeholder_html'] ) ?></code>
+                        </span><span class="flexify-checkout-description ms-2"><?php echo esc_html( $value['description'] ) ?></span>
+                    </div>
+                <?php endforeach; ?>
+            </th>
+            <td>
+               <input type="text" class="form-control input-control-wd-20" id="text_shipping_customer_review" name="text_shipping_customer_review" value="<?php echo self::get_setting('text_shipping_customer_review') ?>"/>
+            </td>
+        </tr>
+        
+        <?php
+        /**
+         * Hook for display custom text option
+         * 
+         * @since 3.6.0
+         */
+        do_action('flexify_checkout_after_texts_options'); ?>
+
     </table>
 </div>

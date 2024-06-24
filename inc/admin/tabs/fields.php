@@ -5,6 +5,14 @@ defined('ABSPATH') || exit; ?>
 
 <div id="fields" class="nav-content">
     <table class="form-table">
+        <?php
+        /**
+         * Hook for display custom fields options
+         * 
+         * @since 3.6.0
+         */
+        do_action('flexify_checkout_before_fields_options'); ?>
+
         <tr>
             <th>
                 <?php echo esc_html__( 'Mostrar campo de observações adicionais', 'flexify-checkout-for-woocommerce' ) ?>
@@ -68,6 +76,7 @@ defined('ABSPATH') || exit; ?>
                             <?php echo esc_html__( 'Pro', 'flexify-checkout-for-woocommerce' ) ?>
                         </span>
                     <?php endif; ?>
+
                     <span class="flexify-checkout-description"><?php echo esc_html__( 'Ative esta opção para ocultar os campos inseridos pelo plugin Brazilian Market on WooCommerce quando o país selecionado não for Brasil.', 'flexify-checkout-for-woocommerce' ) ?></span>
                 </th>
                 <td>
@@ -239,7 +248,12 @@ defined('ABSPATH') || exit; ?>
                 </div>
             </td>
             <td class="step-container">
+                <?php if ( self::get_setting('enable_optimize_for_digital_products') === 'yes' ) : ?>
+                    <span class="badge bg-translucent-primary rounded-pill fs-sm mb-3"><?php echo esc_html__( 'Disponível apenas em produtos físicos', 'flexify-checkout-for-woocommerce' ) ?></span>
+                <?php endif; ?>
+
                 <span class="step-title"><?php echo esc_html__( 'Etapa 2 (Entrega)', 'flexify-checkout-for-woocommerce' ) ?></span>
+
                 <div id="shipping_step" data-step="2">
                     <?php foreach ( $fields as $index => $value ) :
                         $current_field_step_position = isset( $fields[$index]['position'] ) ? $fields[$index]['position'] : 'full';
@@ -396,5 +410,14 @@ defined('ABSPATH') || exit; ?>
                 <?php include_once FLEXIFY_CHECKOUT_INC_PATH . 'admin/tabs/parts/new-fields.php'; ?>
             </td>
         </tr>
+
+        <?php
+        /**
+         * Hook for display custom fields options
+         * 
+         * @since 3.6.0
+         */
+        do_action('flexify_checkout_after_fields_options'); ?>
+
     </table>
 </div>

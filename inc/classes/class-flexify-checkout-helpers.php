@@ -7,7 +7,7 @@ defined('ABSPATH') || exit;
  * Useful helper functions
  *
  * @since 1.0.0
- * @version 3.5.0
+ * @version 3.6.0
  * @package MeuMouse.com
  */
 class Flexify_Checkout_Helpers {
@@ -475,9 +475,10 @@ class Flexify_Checkout_Helpers {
 	 * Get all checkout fields available
 	 * 
 	 * @since 3.5.0
+	 * @version 3.6.0
 	 * @return array
 	 */
-	public static function get_all_checkout_fields() {
+	public static function get_checkout_fields_on_admin() {
 		WC()->session = new WC_Session_Handler;
 		WC()->customer = new WC_Customer;
 
@@ -500,5 +501,57 @@ class Flexify_Checkout_Helpers {
 		}
 		
 		return apply_filters( 'flexify_checkout_export_checkout_fields_id', $fields );
+	}
+
+
+	/**
+	 * Get checkout input values and parcial name for customer review fragments
+	 * 
+	 * @since 3.6.0
+	 * @return array
+	 */
+	public static function get_placeholder_input_values() {
+		$fields = array();
+
+		foreach ( self::get_checkout_fields_on_admin()['billing'] as $field_id => $value ) {
+			$placeholder_id = ( strpos( $field_id, 'billing_' ) === 0 ) ? substr( $field_id, 8 ) : $field_id;
+
+			$fields[$field_id] = array(
+				'placeholder_id' => $placeholder_id,
+				'placeholder_html' => sprintf( esc_html( '{{ %s }}', 'flexify-checkout-for-woocommerce' ), $placeholder_id ),
+				'description' => sprintf( esc_html( 'Para recuperar o valor de %s', 'flexify-checkout-for-woocommerce' ), $value['label'] ),
+			);
+		}
+
+		return apply_filters( 'flexify_checkout_customer_review_fields_placeholder', $fields );
+	}
+
+
+	/**
+	 * Get selected shipping method
+	 * 
+	 * @since 3.6.0
+	 * @return string
+	 */
+	public static function get_shipping_method() {
+		$current_shipping_method = WC()->session->get('chosen_shipping_methods');
+		$shipping_method_label = __('Nenhuma forma de entrega selecionada', 'flexify-checkout-for-woocommerce');
+
+		if ( ! empty( $current_shipping_method ) ) {
+			$packages = WC()->shipping()->get_packages();
+
+			if ( ! empty( $packages ) && is_array( $packages ) ) {
+				$package = $packages[0];
+				$available_methods = $package['rates'];
+				
+				foreach ( $available_methods as $key => $method ) {
+					if ( $current_shipping_method[0] === $method->id ) {
+						$shipping_method_label = $method->label;
+					}
+				}
+			}
+		}
+
+		return $shipping_method_label;
 	}
 }

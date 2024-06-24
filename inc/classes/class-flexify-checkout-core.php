@@ -7,7 +7,7 @@ defined('ABSPATH') || exit;
  * Checkout core actions
  *
  * @since 1.0.0
- * @version 3.5.0
+ * @version 3.6.0
  * @package MeuMouse.com
  */
 class Flexify_Checkout_Core {
@@ -16,6 +16,7 @@ class Flexify_Checkout_Core {
 	 * Construct function
 	 * 
 	 * @since 1.0.0
+	 * @version 3.6.0
 	 * @return void
 	 */
 	public function __construct() {
@@ -1044,12 +1045,13 @@ class Flexify_Checkout_Core {
 	 * Update order review fragments
 	 *
 	 * @since 1.0.0
-	 * @version 3.5.0
+	 * @version 3.6.0
 	 * @param array $fragments | Checkout fragments
 	 * @return array
 	 */
 	public static function update_order_review_framents( $fragments ) {
-		$fragments['.flexify-review-customer'] = Flexify_Checkout_Steps::get_review_customer_fragment();
+		$fragments['.flexify-review-customer'] = Flexify_Checkout_Steps::render_customer_review();
+		$fragments['.flexify-checkout-review-shipping-method'] = Flexify_Checkout_Helpers::get_shipping_method();
 
 		// Heading with cart item count.
 		ob_start();

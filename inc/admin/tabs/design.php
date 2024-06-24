@@ -5,6 +5,14 @@ defined('ABSPATH') || exit; ?>
 
 <div id="design" class="nav-content">
    <table class="form-table">
+      <?php
+      /**
+       * Hook for display custom design options
+       * 
+       * @since 3.6.0
+       */
+      do_action('flexify_checkout_before_design_options'); ?>
+
       <tr>
          <th>
             <?php echo esc_html__( 'Selecione um tema', 'flexify-checkout-for-woocommerce' ) ?>
@@ -268,5 +276,14 @@ defined('ABSPATH') || exit; ?>
             </div>
          </td>
       </tr>
+
+      <?php
+      /**
+       * Hook for display custom design options
+       * 
+       * @since 3.6.0
+       */
+      do_action('flexify_checkout_after_design_options'); ?>
+
    </table>
 </div>

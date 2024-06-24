@@ -7,7 +7,7 @@ defined('ABSPATH') || exit;
  * Class for init plugin
  * 
  * @since 1.0.0
- * @version 3.5.0
+ * @version 3.6.0
  * @package MeuMouse.com
  */
 class Flexify_Checkout_Init {
@@ -25,7 +25,7 @@ class Flexify_Checkout_Init {
    * Construct function
    * 
    * @since 1.0.0
-   * @version 3.5.0
+   * @version 3.6.0
    * @return void
    */
   public function __construct() {
@@ -62,7 +62,7 @@ class Flexify_Checkout_Init {
    * Set default options
    * 
    * @since 1.0.0
-   * @version 3.5.0
+   * @version 3.6.0
    * @return array
    */
   public function set_default_data_options() {
@@ -77,7 +77,8 @@ class Flexify_Checkout_Init {
       'enable_optimize_for_digital_products' => 'no',
       'enable_link_image_products' => 'no',
       'enable_fill_address' => 'yes',
-      'enable_add_remove_products' => 'yes',
+      'enable_change_product_quantity' => 'yes',
+      'enable_remove_product_cart' => 'yes',
       'enable_ddi_phone_field' => 'no',
       'enable_hide_coupon_code_field' => 'no',
       'enable_auto_apply_coupon_code' => 'no',
@@ -190,6 +191,8 @@ class Flexify_Checkout_Init {
         'icloud.com',
       ),
       'display_opened_order_review_mobile' => 'no',
+      'text_contact_customer_review' => '{{ first_name }} {{ last_name }} <br> {{ phone }} <br> {{ email }}',
+      'text_shipping_customer_review' => '{{ address_1 }}, {{ number }}, {{ city }} - {{ state }} (CEP: {{ postcode }})',
     );
 
     return apply_filters( 'flexify_checkout_set_default_options', $options );
@@ -597,12 +600,14 @@ class Flexify_Checkout_Init {
    * Reset settings to default
    * 
    * @since 3.5.0
+   * @version 3.6.0
    * @return void
    */
   public function reset_plugin_settings() {
     if ( isset( $_POST['confirm_reset_settings'] ) ) {
       delete_option('flexify_checkout_settings');
       delete_option('flexify_checkout_step_fields');
+      delete_option('flexify_checkout_conditions');
     }
   }
 

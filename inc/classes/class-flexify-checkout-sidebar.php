@@ -7,7 +7,7 @@ defined('ABSPATH') || exit;
  * Sidebar related functions
  *
  * @since 1.0.0
- * @version 3.5.0
+ * @version 3.6.0
  * @package MeuMouse.com
  */
 class Flexify_Checkout_Sidebar {
@@ -26,7 +26,7 @@ class Flexify_Checkout_Sidebar {
 	 * Sidebar Actions.
 	 *
 	 * @since 1.0.0
-	 * @version 3.5.0
+	 * @version 3.6.0
 	 * @return void
 	 */
 	public static function sidebar_actions() {
@@ -54,9 +54,13 @@ class Flexify_Checkout_Sidebar {
 		add_filter( 'woocommerce_cart_item_name', array( __CLASS__, 'add_image_to_cart' ), 10, 3 );
 		add_filter( 'woocommerce_cart_item_class', array( __CLASS__, 'cart_item_class' ), 10, 3 );
 
-		// Add and remove product cart controls
-		if ( Flexify_Checkout_Init::get_setting('enable_add_remove_products') === 'yes' ) {
+		// Change product quantity
+		if ( Flexify_Checkout_Init::get_setting('enable_change_product_quantity') === 'yes' ) {
 			add_filter( 'woocommerce_checkout_cart_item_quantity', array( __CLASS__, 'cart_quantity_control' ), 100, 3 );
+		}
+
+		// remove product button
+		if ( Flexify_Checkout_Init::get_setting('enable_remove_product_cart') === 'yes' ) {
 			add_filter( 'woocommerce_cart_item_subtotal', array( __CLASS__, 'cart_remove_link' ), 100, 3 );
 		}
 
