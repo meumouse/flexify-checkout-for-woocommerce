@@ -74,7 +74,7 @@ jQuery(document).ready( function() {
             jQuery("#" + type + "_address_1").val(data[fcw_auto_fill_address_api_params.address_param]).change();
             jQuery("#" + type + "_neighborhood").val(data[fcw_auto_fill_address_api_params.neightborhood_param]).change();
             jQuery("#" + type + "_city").val(data[fcw_auto_fill_address_api_params.city_param]).change();
-            jQuery("#" + type + "_state").val(data[fcw_auto_fill_address_api_params.state_param]).trigger("change").change();
+            jQuery("#" + type + "_state").val(data[fcw_auto_fill_address_api_params.state_param]).change();
         }
     }).init();
 });

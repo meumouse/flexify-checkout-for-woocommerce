@@ -759,14 +759,6 @@ body.woocommerce-checkout {
   width: 100%;
 }
 
-@media screen and (min-width: 992px) {
-
-  .flexify-checkout.flexify-checkout--modern,
-  .woocommerce {
-    height: 100vh;
-  }
-}
-
 .flexify-customer-heading--has-login-btn {
   margin: 32px 0 10px;
   line-height: 1;
@@ -1532,7 +1524,7 @@ body .form-row.form-row--focus:before {
   overflow: hidden;
 }
 
-@media (max-width: 992px) {
+@media screen and (max-width: 992px) {
   .password-meter {
     width: 100%;
   }
@@ -1746,7 +1738,6 @@ button#place_order--processing:after {
 }
 
 @media screen and (max-width: 1024px) {
-
   .flexify-checkout__content-right #order_review_heading,
   .flexify-step #order_review_heading {
     margin-bottom: 0;
@@ -2140,7 +2131,6 @@ button#place_order--processing:after {
 }
 
 @media screen and (max-width: 550px) {
-
   .flexify-checkout__content-right #order_review tfoot .order-total *,
   .flexify-step #order_review tfoot .order-total * {
     font-size: 18px;
@@ -2741,7 +2731,7 @@ input[type="radio"]:hover+label:before {
   width: 95%;
 }
 
-@media (max-width: 992px) {
+@media screen and (max-width: 992px) {
   #payment .payment_methods li label {
     width: 90%;
   }
@@ -3369,7 +3359,7 @@ body .pac-container .pac-item .pac-icon.pac-icon-marker {
   clear: both;
 }
 
-@media (max-width: 992px) {
+@media screen and (max-width: 992px) {
   .flexify-footer {
     flex-wrap: wrap;
     align-items: center;
@@ -3727,7 +3717,7 @@ body .pac-container .pac-item .pac-icon.pac-icon-marker {
   justify-content: flex-start;
 }
 
-@media (max-width: 992px) {
+@media screen and (max-width: 992px) {
   .flexift-ty-footer-contact-container {
     justify-content: flex-end;
   }
@@ -4692,7 +4682,7 @@ ul.product_list_widget,
   display: none;
 }
 
-@media (min-width: 992px) {
+@media screen and (min-width: 992px) {
   .woocommerce-order-received .flexify-common-wrap__content-right {
     height: fit-content;
   }
@@ -5001,4 +4991,9 @@ li.flexify-stepper__step.complete .icon--checkmark__circle {
 
 label.has-condition.required-field > .optional {
   display: none;
+}
+
+.flexify-step--2 .flexify-review-customer__row--address,
+.flexify-step--2 .flexify-review-customer__row--shipping-method {
+  display: none !important;
 }

@@ -476,14 +476,14 @@
 		var step_1 = $('#contact_step').sortable({
 			connectWith: '#shipping_step',
 			update: function(event, ui) {
-				updateFieldProperties(event, ui, '1');
+				update_fields_priority(event, ui, '1');
 			},
 		});
 	
 		var step_2 = $('#shipping_step').sortable({
 			connectWith: '#contact_step',
 			update: function(event, ui) {
-				updateFieldProperties(event, ui, '2');
+				update_fields_priority(event, ui, '2');
 			},
 		});
 
@@ -494,7 +494,7 @@
 		sort_fields_by_priority('shipping_step');
 	
 		// Função para atualizar propriedades do campo
-		function updateFieldProperties(event, ui, step) {
+		function update_fields_priority(event, ui, step) {
 			var container = ui.item.closest('.step-container');
 	
 			// Atualiza a prioridade do campo

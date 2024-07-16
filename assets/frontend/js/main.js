@@ -469,7 +469,7 @@ flexifyCart.remove_controls = function() {
     e.preventDefault();
 
     jQuery(this).closest('.cart_item').find('input').val(0);
-    jQuery('body').trigger('update_checkout');
+    jQuery(document.body).trigger('update_checkout');
   });
 };
 
@@ -481,7 +481,7 @@ flexifyCart.remove_controls = function() {
  */
 jQuery(document).ready( function() {
 	jQuery(document.body).on('change', 'input[name="payment_method"]', function() {
-		jQuery('body').trigger('update_checkout');
+		jQuery(document.body).trigger('update_checkout');
 	});
 });
 
@@ -646,17 +646,17 @@ jQuery(document.body).on('update_checkout', function() {
  * Update fragments on updated_checkout event
  * 
  * @since 1.0.0
- * @version 3.6.0
+ * @version 3.6.5
  */
 jQuery(document.body).on('updated_checkout', function(e, data) {
   jQuery('.flexify-checkout__shipping-table').unblock();
 
-  if (_helper__WEBPACK_IMPORTED_MODULE_0__["default"].isModernCheckout()) {
-    flexifyCart.addShippingRowToOrderSummary(data);
-  }
-
   if (data?.fragments) {
     _stepper__WEBPACK_IMPORTED_MODULE_2__["default"].update_custom_fragments(data.fragments);
+  }
+
+  if (_helper__WEBPACK_IMPORTED_MODULE_0__["default"].isModernCheckout()) {
+    flexifyCart.add_shipping_row_on_order_summary(data);
   }
 
   if (data?.fragments?.flexify?.global_error) {
@@ -844,23 +844,41 @@ jQuery(document).ready( function($) {
 
 
 /**
+ * Change customer review data on update
+ * 
+ * @since 3.6.5
+ */
+jQuery(document).ready(function() {
+  var fields = document.querySelectorAll('input, select, textarea');
+  
+  fields.forEach(function(field) {
+    jQuery(field).on('change input keyup', function() {
+      var update_element_text = field.id.replace('billing_', '');
+      var get_element_to_update = jQuery('.flexify-review-customer__content').find('.customer-details-info.' + update_element_text);
+      
+      get_element_to_update.html(jQuery(field).val());
+    });
+  });
+});
+
+
+/**
  * Add shipping cost row to the order review table for mobile view
  * 
  * @since 1.0.0
- * @version 3.5.0
+ * @version 3.6.5
  */
-flexifyCart.addShippingRowToOrderSummary = function(data) {
-  // Add row if it doesn't exits.
-  if ( ! jQuery('.flexify-shop-table-shipping-price').length ) {
-    jQuery('.shop_table tfoot .cart-subtotal').first().after('<tr class="flexify-shop-table-shipping-price"></tr>');
+flexifyCart.add_shipping_row_on_order_summary = function(data) {
+  // Add row if it doesn't exits
+  if ( jQuery('#flexify-checkout-summary-shipping-row').length === 0 ) {
+    jQuery('#order_review > table > tfoot tr.cart-subtotal').after('<tr id="flexify-checkout-summary-shipping-row"></tr>');
   }
 
   var shipping_method = data?.fragments?.flexify?.shipping_row;
 
-  // Add shipping cost data received from the fragment.
-  if ( shipping_method ) {
-    // jshint ignore:line
-    jQuery('.flexify-shop-table-shipping-price').html(shipping_method);
+  // Add shipping cost data received from the fragment
+  if ( shipping_method && shipping_method.length > 0 ) {
+    jQuery('#flexify-checkout-summary-shipping-row').html(shipping_method);
   }
 };
 
@@ -2001,7 +2019,7 @@ jQuery(document).ready( function($) {
           contentType: false,
           data: session_form_data,
           success: function(response) {
-            //  console.log('Dados da sessão atualizados com sucesso.', response);
+          //  console.log('Dados da sessão atualizados com sucesso.', response);
            //   update_customer_info(response);
           },
           error: function(xhr, status, error) {
@@ -2296,7 +2314,7 @@ flexifyHelper.serializeData = function(obj, prefix) {
  * @param {object} field Field.
  * @returns 
  */
-flexifyHelper.getFieldValue = function(field) {
+flexifyHelper.get_field_value = function(field) {
   var value = field.value; // @todo account for other field types here.
 
   return value;
@@ -3302,7 +3320,7 @@ flexifyStepper.scrollToElement = function(scroll_element) {
  * Get fragments on updated checkout and replace HTML
  * 
  * @since 1.0.0
- * @version 3.6.0
+ * @version 3.6.5
  * @param {string} fragments | Fragment HTML
  */
 flexifyStepper.update_custom_fragments = function(fragments) {
@@ -3449,12 +3467,15 @@ flexifyValidation.init = function() {
  * 
  * By default Woo does not provide inline validation messages. 
  * We use AJAX to get the correct message and then trigger Woo validation.
+ * 
+ * @since 1.0.0
+ * @version 3.6.5
  */
 flexifyValidation.onChange = function() {
   var fields = document.querySelectorAll('input, select, textarea');
 
   Array.from(fields).forEach( function(field) {
-    field.addEventListener('change', async function(e) {
+    field.addEventListener('change input', async function(e) {
       e.preventDefault();
 
       await flexifyValidation.checkFieldForErrors(field);
@@ -3483,7 +3504,7 @@ flexifyValidation.checkFieldForErrors = async function(field) {
     return false;
   }
 
-  var value = _helper__WEBPACK_IMPORTED_MODULE_0__["default"].getFieldValue(field);
+  var value = _helper__WEBPACK_IMPORTED_MODULE_0__["default"].get_field_value(field);
   var type = row.attributes['data-type'].value;
   var get_country_element = document.getElementById('billing_country');
 
@@ -3504,6 +3525,9 @@ flexifyValidation.checkFieldForErrors = async function(field) {
     await _helper__WEBPACK_IMPORTED_MODULE_0__["default"].ajaxRequest(data, function(response) {
       var value = JSON.parse(response).data;
       var $row = jQuery(field).closest('.form-row');
+      var update_element_text = value.input_id.replace('billing_', '');
+
+      jQuery('.flexify-review-customer__content').find('.customer-details-info.' + update_element_text).text(value.input_value);
 
       // Update the inline validation messages for the field.
       field.closest('.form-row').querySelector('.error').innerHTML = value.message;
@@ -3595,7 +3619,7 @@ flexifyValidation.checkFieldsForErrors = async function(fields, hasErrors = fals
       return;
     }
 
-    var value = _helper__WEBPACK_IMPORTED_MODULE_0__["default"].getFieldValue(field);
+    var value = _helper__WEBPACK_IMPORTED_MODULE_0__["default"].get_field_value(field);
     var billingCountryElement = document.getElementById('billing_country');
 
     inputs[field.attributes.name.value] = {
@@ -3628,6 +3652,10 @@ flexifyValidation.checkFieldsForErrors = async function(fields, hasErrors = fals
       if ( ! field ) {
         return;
       }
+
+      var update_element_text = value.input_id.replace('billing_', '');
+
+      jQuery('.flexify-review-customer__content').find('.customer-details-info.' + update_element_text).text(value.input_value);
 
       // If this field is hidden by Conditinal Field of Checkout Fields Manager plugin
       // then skip validation for this field.
