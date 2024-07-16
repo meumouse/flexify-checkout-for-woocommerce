@@ -34,6 +34,17 @@ Você pode instalar um plugin WordPress de duas maneiras: via o painel de admini
 
 ### Registro de alterações (Changelogs):
 
+Versão 3.7.0 (16/07/2024)
+
+* Correção de bugs
+  ** Texto do resumo de informações de contato e entrega
+* Otimizações
+* Recurso modificado: Arquivo de tradução pt-BR atualizado
+* Recurso modificado: Arquivo de tradução en-US atualizado
+* Recurso modificado: Arquivo de tradução es-ES atualizado
+* Recurso adicionado: Adição de novos campos nos detalhes de pedidos, e-mails e painel de cliente.
+* Recurso adicionado: Gancho "flexify_checkout_before_heading_shipping_title"
+
 Versão 3.6.0 (24/06/2024)
 * Correção de bugs
   ** Remover condições ao redefinir opções para padrão
