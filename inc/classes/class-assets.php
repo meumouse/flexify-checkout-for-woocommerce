@@ -6,6 +6,7 @@ use MeuMouse\Flexify_Checkout\License\License;
 use MeuMouse\Flexify_Checkout\Helpers\Helpers;
 use MeuMouse\Flexify_Checkout\Steps\Steps;
 use MeuMouse\Flexify_Checkout\Core\Core;
+use MeuMouse\Flexify_Checkout\Conditions\Conditions;
 
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
@@ -14,7 +15,7 @@ defined('ABSPATH') || exit;
  * Register/enqueue frontend and backend scripts
  *
  * @since 1.0.0
- * @version 3.7.0
+ * @version 3.7.1
  * @package MeuMouse.com
  */
 class Assets {
