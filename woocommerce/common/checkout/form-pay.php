@@ -1,4 +1,9 @@
 <?php
+
+use MeuMouse\Flexify_Checkout\Helpers\Helpers;
+use MeuMouse\Flexify_Checkout\Steps\Steps;
+use MeuMouse\Flexify_Checkout\Thankyou\Thankyou;
+
 /**
  * Pay for order form
  *
@@ -12,31 +17,27 @@
  *
  * @see https://docs.woocommerce.com/document/template-structure/
  * @package WooCommerce\Templates
- * @version 1.0.0
+ * @since 1.0.0
+ * @version 3.7.0
  */
 
-defined('ABSPATH') || exit;
-
-?>
+// Exit if accessed directly.
+defined('ABSPATH') || exit; ?>
 
 <form id="order_review" method="post" class='flexify-order-pay'>
 	<div class="flexify-common-wrap">
 		<div class="flexify-order-pay-header flexify-order-pay-header--mobile">
-			<?php
-			if ( Flexify_Checkout_Helpers::is_modern_theme() ) {
-				Flexify_Checkout_Steps::render_header( false );
-			}
-			?>
+			<?php if ( Helpers::is_modern_theme() ) :
+				Steps::render_header( false );
+			endif; ?>
 		</div>
 		<div class="flexify-common-wrap__wrapper">
 			<div class="flexify-common-wrap__content-left">
 				<div class="flexify-step">
 					<div class="flexify-order-pay-header flexify-order-pay-header--desktop">
-						<?php
-						if ( Flexify_Checkout_Helpers::is_modern_theme() ) {
-							Flexify_Checkout_Steps::render_header( false );
-						}
-						?>
+						<?php if ( Helpers::is_modern_theme() ) :
+							Steps::render_header( false );
+						endif; ?>
 					</div>
 					<h2 class="flexify-heading flexify-heading--order-pay"><?php esc_html_e( 'Pagar pelo pedido', 'flexify-checkout-for-woocommerce' ); ?></h2>
 					<div id="order_review">
@@ -65,18 +66,13 @@ defined('ABSPATH') || exit;
 								 *
 								 * @since 1.0.0
 								 */
-								do_action( 'woocommerce_pay_order_before_submit' );
-								?>
+								do_action('woocommerce_pay_order_before_submit'); ?>
 
 								<footer class="flexify-footer flexify-footer--order-pay">
-									<?php
-									if ( Flexify_Checkout_Helpers::is_modern_theme() ) {
-										?>
+									<?php if ( Helpers::is_modern_theme() ) : ?>
 										<a class='flexify-step__back' href="<?php echo esc_url( wc_get_account_endpoint_url('orders') ); ?>"><?php esc_html_e( 'Voltar para a conta', 'flexify-checkout-for-woocommerce' ); ?></a>
-										<?php
-									}
-									?>
-									<?php echo '<button type="submit" class="button alt" id="place_order" data-text="' . esc_attr( Flexify_Checkout_Helpers::get_order_pay_btn_text( $order ) ) . '" value="' . esc_html__( 'Pagar pelo pedido' ) . '" data-value="' . esc_attr( $order_button_text ) . '">' . wp_kses_post( $order_button_text ) . '</button>'; ?>
+									<?php endif;
+									echo '<button type="submit" class="button alt" id="place_order" data-text="' . esc_attr( Helpers::get_order_pay_btn_text( $order ) ) . '" value="' . esc_html__( 'Pagar pelo pedido' ) . '" data-value="' . esc_attr( $order_button_text ) . '">' . wp_kses_post( $order_button_text ) . '</button>'; ?>
 								</footer>
 
 								<?php
@@ -86,9 +82,8 @@ defined('ABSPATH') || exit;
 								 * @since 1.0.0
 								 */
 								do_action( 'woocommerce_pay_order_after_submit' );
-								?>
 
-								<?php wp_nonce_field( 'woocommerce-pay', 'woocommerce-pay-nonce' ); ?>
+								wp_nonce_field( 'woocommerce-pay', 'woocommerce-pay-nonce' ); ?>
 							</div>
 						</div>
 					</div>
@@ -96,7 +91,7 @@ defined('ABSPATH') || exit;
 			</div>
 			<div class="flexify-common-wrap__content-right">
 				<section class="flexify-order-pay-order-review">
-					<?php Flexify_Checkout_Thankyou::render_product_details( $order ); ?>
+					<?php Thankyou::render_product_details( $order ); ?>
 				</section>
 			</div>
 		</div>

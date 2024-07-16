@@ -1,5 +1,8 @@
 <?php
 
+use MeuMouse\Flexify_Checkout\Init\Init;
+use MeuMouse\Flexify_Checkout\License\License;
+
 // Exit if accessed directly.
 defined('ABSPATH') || exit; ?>
 
@@ -20,7 +23,7 @@ defined('ABSPATH') || exit; ?>
             </th>
             <td>
                 <div class="form-check form-switch">
-                    <input type="checkbox" class="toggle-switch" id="enable_aditional_notes" name="enable_aditional_notes" value="yes" <?php checked( self::get_setting('enable_aditional_notes') === 'yes' ); ?> />
+                    <input type="checkbox" class="toggle-switch" id="enable_aditional_notes" name="enable_aditional_notes" value="yes" <?php checked( Init::get_setting('enable_aditional_notes') === 'yes' ); ?> />
                 </div>
             </td>
         </tr>
@@ -31,7 +34,7 @@ defined('ABSPATH') || exit; ?>
             </th>
             <td>
                 <div class="form-check form-switch">
-                    <input type="checkbox" class="toggle-switch" id="enable_hide_coupon_code_field" name="enable_hide_coupon_code_field" value="yes" <?php checked( self::get_setting('enable_hide_coupon_code_field') === 'yes' ); ?> />
+                    <input type="checkbox" class="toggle-switch" id="enable_hide_coupon_code_field" name="enable_hide_coupon_code_field" value="yes" <?php checked( Init::get_setting('enable_hide_coupon_code_field') === 'yes' ); ?> />
                 </div>
             </td>
         </tr>
@@ -42,7 +45,7 @@ defined('ABSPATH') || exit; ?>
             </th>
             <td>
                 <div class="form-check form-switch">
-                    <input type="checkbox" class="toggle-switch" id="enable_field_masks" name="enable_field_masks" value="yes" <?php checked( self::get_setting('enable_field_masks') === 'yes' ); ?> />
+                    <input type="checkbox" class="toggle-switch" id="enable_field_masks" name="enable_field_masks" value="yes" <?php checked( Init::get_setting('enable_field_masks') === 'yes' ); ?> />
                 </div>
             </td>
         </tr>
@@ -50,7 +53,7 @@ defined('ABSPATH') || exit; ?>
             <th>
                 <?php echo esc_html__( 'Otimizar para produtos digitais', 'flexify-checkout-for-woocommerce' );
                 
-                if ( ! self::license_valid() ) : ?>
+                if ( ! License::is_valid() ) : ?>
                     <span class="badge pro bg-primary rounded-pill ms-2">
                         <svg class="icon-pro" viewBox="0 0 24.00 24.00" xmlns="http://www.w3.org/2000/svg"><g stroke-width="0"></g><g stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC" stroke-width="0.336"></g><g><path fill-rule="evenodd" clip-rule="evenodd" d="M12.0001 3C12.3334 3 12.6449 3.16613 12.8306 3.443L16.6106 9.07917L21.2523 3.85213C21.5515 3.51525 22.039 3.42002 22.4429 3.61953C22.8469 3.81904 23.0675 4.26404 22.9818 4.70634L20.2956 18.5706C20.0223 19.9812 18.7872 21 17.3504 21H6.64977C5.21293 21 3.97784 19.9812 3.70454 18.5706L1.01833 4.70634C0.932635 4.26404 1.15329 3.81904 1.55723 3.61953C1.96117 3.42002 2.44865 3.51525 2.74781 3.85213L7.38953 9.07917L11.1696 3.443C11.3553 3.16613 11.6667 3 12.0001 3ZM12.0001 5.79533L8.33059 11.2667C8.1582 11.5237 7.8765 11.6865 7.56772 11.7074C7.25893 11.7283 6.95785 11.6051 6.75234 11.3737L3.67615 7.90958L5.66802 18.1902C5.75913 18.6604 6.17082 19 6.64977 19H17.3504C17.8293 19 18.241 18.6604 18.3321 18.1902L20.324 7.90958L17.2478 11.3737C17.0423 11.6051 16.7412 11.7283 16.4324 11.7074C16.1236 11.6865 15.842 11.5237 15.6696 11.2667L12.0001 5.79533Z"></path> </g></svg>
                         <?php echo esc_html__( 'Pro', 'flexify-checkout-for-woocommerce' ) ?>
@@ -59,8 +62,8 @@ defined('ABSPATH') || exit; ?>
                 <span class="flexify-checkout-description"><?php echo esc_html__( 'Ative esta opção para remover a etapa de entrega em produtos digitais.', 'flexify-checkout-for-woocommerce' ) ?></span>
             </th>
             <td>
-                <div class="form-check form-switch <?php echo ( ! self::license_valid() ) ? 'require-pro' : ''; ?>">
-                    <input type="checkbox" class="toggle-switch <?php echo ( ! self::license_valid() ) ? 'pro-version' : ''; ?>" id="enable_optimize_for_digital_products" name="enable_optimize_for_digital_products" value="yes" <?php checked( self::get_setting('enable_optimize_for_digital_products') === 'yes' && self::license_valid() ); ?> />
+                <div class="form-check form-switch <?php echo ( ! License::is_valid() ) ? 'require-pro' : ''; ?>">
+                    <input type="checkbox" class="toggle-switch <?php echo ( ! License::is_valid() ) ? 'pro-version' : ''; ?>" id="enable_optimize_for_digital_products" name="enable_optimize_for_digital_products" value="yes" <?php checked( Init::get_setting('enable_optimize_for_digital_products') === 'yes' && License::is_valid() ); ?> />
                 </div>
             </td>
         </tr>
@@ -70,7 +73,7 @@ defined('ABSPATH') || exit; ?>
                 <th>
                     <?php echo esc_html__( 'Ocultar campos do mercado brasileiro se país não for Brasil', 'flexify-checkout-for-woocommerce' );
                     
-                    if ( ! self::license_valid() ) : ?>
+                    if ( ! License::is_valid() ) : ?>
                         <span class="badge pro bg-primary rounded-pill ms-2">
                             <svg class="icon-pro" viewBox="0 0 24.00 24.00" xmlns="http://www.w3.org/2000/svg"><g stroke-width="0"></g><g stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC" stroke-width="0.336"></g><g><path fill-rule="evenodd" clip-rule="evenodd" d="M12.0001 3C12.3334 3 12.6449 3.16613 12.8306 3.443L16.6106 9.07917L21.2523 3.85213C21.5515 3.51525 22.039 3.42002 22.4429 3.61953C22.8469 3.81904 23.0675 4.26404 22.9818 4.70634L20.2956 18.5706C20.0223 19.9812 18.7872 21 17.3504 21H6.64977C5.21293 21 3.97784 19.9812 3.70454 18.5706L1.01833 4.70634C0.932635 4.26404 1.15329 3.81904 1.55723 3.61953C1.96117 3.42002 2.44865 3.51525 2.74781 3.85213L7.38953 9.07917L11.1696 3.443C11.3553 3.16613 11.6667 3 12.0001 3ZM12.0001 5.79533L8.33059 11.2667C8.1582 11.5237 7.8765 11.6865 7.56772 11.7074C7.25893 11.7283 6.95785 11.6051 6.75234 11.3737L3.67615 7.90958L5.66802 18.1902C5.75913 18.6604 6.17082 19 6.64977 19H17.3504C17.8293 19 18.241 18.6604 18.3321 18.1902L20.324 7.90958L17.2478 11.3737C17.0423 11.6051 16.7412 11.7283 16.4324 11.7074C16.1236 11.6865 15.842 11.5237 15.6696 11.2667L12.0001 5.79533Z"></path> </g></svg>
                             <?php echo esc_html__( 'Pro', 'flexify-checkout-for-woocommerce' ) ?>
@@ -80,8 +83,8 @@ defined('ABSPATH') || exit; ?>
                     <span class="flexify-checkout-description"><?php echo esc_html__( 'Ative esta opção para ocultar os campos inseridos pelo plugin Brazilian Market on WooCommerce quando o país selecionado não for Brasil.', 'flexify-checkout-for-woocommerce' ) ?></span>
                 </th>
                 <td>
-                    <div class="form-check form-switch <?php echo ( ! self::license_valid() ) ? 'require-pro' : ''; ?>">
-                        <input type="checkbox" class="toggle-switch <?php echo ( ! self::license_valid() ) ? 'pro-version' : ''; ?>" id="enable_unset_wcbcf_fields_not_brazil" name="enable_unset_wcbcf_fields_not_brazil" value="yes" <?php checked( self::get_setting('enable_unset_wcbcf_fields_not_brazil') === 'yes' && self::license_valid() ); ?> />
+                    <div class="form-check form-switch <?php echo ( ! License::is_valid() ) ? 'require-pro' : ''; ?>">
+                        <input type="checkbox" class="toggle-switch <?php echo ( ! License::is_valid() ) ? 'pro-version' : ''; ?>" id="enable_unset_wcbcf_fields_not_brazil" name="enable_unset_wcbcf_fields_not_brazil" value="yes" <?php checked( Init::get_setting('enable_unset_wcbcf_fields_not_brazil') === 'yes' && License::is_valid() ); ?> />
                     </div>
                 </td>
             </tr>
@@ -96,7 +99,7 @@ defined('ABSPATH') || exit; ?>
             </th>
             <td>
                 <div class="form-check form-switch">
-                    <input type="checkbox" class="toggle-switch" id="enable_manage_fields" name="enable_manage_fields" value="yes" <?php checked( self::get_setting('enable_manage_fields') === 'yes' && self::license_valid() ); ?> />
+                    <input type="checkbox" class="toggle-switch" id="enable_manage_fields" name="enable_manage_fields" value="yes" <?php checked( Init::get_setting('enable_manage_fields') === 'yes' && License::is_valid() ); ?> />
                 </div>
             </td>
         </tr>
@@ -119,14 +122,14 @@ defined('ABSPATH') || exit; ?>
                             continue;
                         endif; ?>
 
-                        <div id="<?php echo esc_attr( $index ); ?>" class="field-item d-flex align-items-center justify-content-between <?php echo ( ! self::license_valid() ) ? 'require-pro' : ''; echo $fields[$index]['enabled'] === 'no' ? 'inactive' : ''; ?>">
+                        <div id="<?php echo esc_attr( $index ); ?>" class="field-item d-flex align-items-center justify-content-between <?php echo ( ! License::is_valid() ) ? 'require-pro' : ''; echo $fields[$index]['enabled'] === 'no' ? 'inactive' : ''; ?>">
                             <input type="hidden" class="change-priority" name="checkout_step[<?php echo $index; ?>][priority]" value="<?php echo isset( $value['priority'] ) ? esc_attr( $value['priority'] ) : ''; ?>">
                             <input type="hidden" class="change-step" name="checkout_step[<?php echo $index; ?>][step]" value="<?php echo isset( $value['step'] ) ? esc_attr( $value['step'] ) : ''; ?>">
 
                             <span class="field-name"><?php echo esc_html( $value['label'] ) ?></span>
 
                             <div class="d-flex justify-content-end">
-                                <button class="btn btn-sm btn-outline-primary ms-auto rounded-3 <?php echo ( ! self::license_valid() ) ? 'require-pro' : 'flexify-checkout-step-trigger'; ?>" data-trigger="<?php echo esc_html( $index ) ?>"><?php echo esc_html__( 'Editar', 'flexify-checkout-for-woocommerce' ) ?></button>
+                                <button class="btn btn-sm btn-outline-primary ms-auto rounded-3 <?php echo ( ! License::is_valid() ) ? 'require-pro' : 'flexify-checkout-step-trigger'; ?>" data-trigger="<?php echo esc_html( $index ) ?>"><?php echo esc_html__( 'Editar', 'flexify-checkout-for-woocommerce' ) ?></button>
                                 <?php if ( isset( $value['source'] ) && $value['source'] !== 'native' ) : ?>
                                     <button class="btn btn-outline-danger btn-icon ms-3 rounded-3 exclude-field" data-exclude="<?php echo esc_html( $index ) ?>">
                                         <svg class="icon icon-danger" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15 2H9c-1.103 0-2 .897-2 2v2H3v2h2v12c0 1.103.897 2 2 2h10c1.103 0 2-.897 2-2V8h2V6h-4V4c0-1.103-.897-2-2-2zM9 4h6v2H9V4zm8 16H7V8h10v12z"></path></svg>
@@ -248,7 +251,7 @@ defined('ABSPATH') || exit; ?>
                 </div>
             </td>
             <td class="step-container">
-                <?php if ( self::get_setting('enable_optimize_for_digital_products') === 'yes' ) : ?>
+                <?php if ( Init::get_setting('enable_optimize_for_digital_products') === 'yes' ) : ?>
                     <span class="badge bg-translucent-primary rounded-pill fs-sm mb-3"><?php echo esc_html__( 'Disponível apenas em produtos físicos', 'flexify-checkout-for-woocommerce' ) ?></span>
                 <?php endif; ?>
 
@@ -268,14 +271,14 @@ defined('ABSPATH') || exit; ?>
                             continue;
                         endif; ?>
 
-                        <div id="<?php echo esc_attr( $index ); ?>" class="field-item <?php echo ( ! self::license_valid() ) ? 'require-pro' : ''; echo $fields[$index]['enabled'] === 'no' ? 'inactive' : ''; ?>">
+                        <div id="<?php echo esc_attr( $index ); ?>" class="field-item <?php echo ( ! License::is_valid() ) ? 'require-pro' : ''; echo $fields[$index]['enabled'] === 'no' ? 'inactive' : ''; ?>">
                             <input type="hidden" class="change-priority" name="checkout_step[<?php echo $index; ?>][priority]" value="<?php echo isset( $value['priority'] ) ? esc_attr( $value['priority'] ) : ''; ?>">
                             <input type="hidden" class="change-step" name="checkout_step[<?php echo $index; ?>][step]" value="<?php echo isset( $value['step'] ) ? esc_attr( $value['step'] ) : ''; ?>">
 
                             <span class="field-name"><?php echo esc_html( $value['label'] ) ?></span>
                             
                             <div class="d-flex justify-content-end">
-                                <button class="btn btn-sm btn-outline-primary ms-auto rounded-3 <?php echo ( ! self::license_valid() ) ? 'require-pro' : 'flexify-checkout-step-trigger'; ?>" data-trigger="<?php echo esc_html( $index ) ?>"><?php echo esc_html__( 'Editar', 'flexify-checkout-for-woocommerce' ) ?></button>
+                                <button class="btn btn-sm btn-outline-primary ms-auto rounded-3 <?php echo ( ! License::is_valid() ) ? 'require-pro' : 'flexify-checkout-step-trigger'; ?>" data-trigger="<?php echo esc_html( $index ) ?>"><?php echo esc_html__( 'Editar', 'flexify-checkout-for-woocommerce' ) ?></button>
                                 <?php if ( isset( $value['source'] ) && $value['source'] !== 'native' ) : ?>
                                     <button class="btn btn-outline-danger btn-icon ms-3 rounded-3 exclude-field" data-exclude="<?php echo esc_html( $index ) ?>">
                                         <svg class="icon icon-danger" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15 2H9c-1.103 0-2 .897-2 2v2H3v2h2v12c0 1.103.897 2 2 2h10c1.103 0 2-.897 2-2V8h2V6h-4V4c0-1.103-.897-2-2-2zM9 4h6v2H9V4zm8 16H7V8h10v12z"></path></svg>

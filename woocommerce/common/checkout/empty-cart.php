@@ -1,11 +1,17 @@
 <?php
+
+use MeuMouse\Flexify_Checkout\Helpers\Helpers;
+
 /**
- * Template for empty cart.
+ * Template for empty cart
  *
- * @package Flexify_Checkout
+ * @since 1.0.0
+ * @version 3.7.0
+ * @package MeuMouse.com
  */
 
-?>
+// Exit if accessed directly.
+defined('ABSPATH') || exit; ?>
 
 <div class="flexify-empty-cart">
 	<div class="flexify-empty-cart__wrap">
@@ -16,8 +22,7 @@
 			<p><?php esc_html_e( 'Seu carrinho está vazio, visite nossa loja para comprar algum produto.', 'flexify-checkout-for-woocommerce' ); ?></p>
 		</div>
 		<div class="flexify-empty-cart__button">
-			<a class="flexify-button flexify-button--reverse flexify-button--emptycart" href="<?php echo esc_url( Flexify_Checkout_Helpers::get_shop_page_url() ); ?>"><?php esc_html_e( 'Retornar à loja', 'flexify-checkout-for-woocommerce' ); ?></a>
+			<a class="flexify-button flexify-button--reverse flexify-button--emptycart" href="<?php echo esc_url( Helpers::get_shop_page_url() ); ?>"><?php esc_html_e( 'Retornar à loja', 'flexify-checkout-for-woocommerce' ); ?></a>
 		</div>
 	</div>
 </div>
-

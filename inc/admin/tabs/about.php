@@ -1,5 +1,8 @@
 <?php
 
+use MeuMouse\Flexify_Checkout\Init\Init;
+use MeuMouse\Flexify_Checkout\License\License;
+
 // Exit if accessed directly.
 defined('ABSPATH') || exit; ?>
 
@@ -8,49 +11,41 @@ defined('ABSPATH') || exit; ?>
 	<tr>
 		<td class="d-grid">
 			<h3 class="mb-4"><?php esc_html_e( 'Informações sobre a licença:', 'flexify-checkout-for-woocommerce' ); ?></h3>
+
 			<span class="mb-2"><?php echo esc_html__( 'Status da licença:', 'flexify-checkout-for-woocommerce' ) ?>
-				<?php if ( self::license_valid() ) : ?>
-					<span class="badge bg-translucent-success rounded-pill"><?php _e(  'Válida', 'flexify-checkout-for-woocommerce' );?></span>
+				<?php if ( License::is_valid() ) : ?>
+					<span class="badge bg-translucent-success rounded-pill"><?php _e( 'Válida', 'flexify-checkout-for-woocommerce' );?></span>
 				<?php elseif ( empty( get_option('flexify_checkout_license_key') ) ) : ?>
 					<span class="fs-sm"><?php _e(  'Nenhuma licença informada', 'flexify-checkout-for-woocommerce' );?></span>
 				<?php else : ?>
-				<span class="badge bg-translucent-danger rounded-pill"><?php _e(  'Inválida', 'flexify-checkout-for-woocommerce' );?></span>
+					<span class="badge bg-translucent-danger rounded-pill"><?php _e( 'Inválida', 'flexify-checkout-for-woocommerce' );?></span>
 				<?php endif; ?>
 			</span>
 
 			<span class="mb-2"><?php echo esc_html__( 'Recursos:', 'flexify-checkout-for-woocommerce' ) ?>
-				<?php if ( self::license_valid() ) : ?>
+				<?php if ( License::is_valid() ) : ?>
 					<span class="badge bg-translucent-primary rounded-pill"><?php _e(  'Pro', 'flexify-checkout-for-woocommerce' );?></span>
 				<?php else : ?>
 					<span class="badge bg-translucent-warning rounded-pill"><?php _e(  'Básicos', 'flexify-checkout-for-woocommerce' );?></span>
 				<?php endif; ?>
 			</span>
 
-			<?php
-
-			if ( self::license_valid() ) {
-				?>
-				<span class="mb-2"><?php echo sprintf( esc_html__( 'Tipo da licença: %s', 'flexify-checkout-for-woocommerce' ), self::license_title() ) ?></span>
-				<span class="mb-2"><?php echo sprintf( esc_html__( 'Licença expira em: %s', 'flexify-checkout-for-woocommerce' ), self::license_expire() ) ?></span>
+			<?php if ( License::is_valid() ) : ?>
+				<span class="mb-2"><?php echo sprintf( esc_html__( 'Tipo da licença: %s', 'flexify-checkout-for-woocommerce' ), License::license_title() ) ?></span>
+				<span class="mb-2"><?php echo sprintf( esc_html__( 'Licença expira em: %s', 'flexify-checkout-for-woocommerce' ), License::license_expire() ) ?></span>
 				
 				<span class="mb-2"><?php echo esc_html__( 'Sua chave de licença:', 'flexify-checkout-for-woocommerce' ) ?>
-					<?php 
-					if ( ! empty( get_option('flexify_checkout_license_key') ) ) {
+					<?php if ( ! empty( get_option('flexify_checkout_license_key') ) ) :
 						echo esc_attr( substr( get_option('flexify_checkout_license_key'), 0, 9 ) . "XXXXXXXX-XXXXXXXX" . substr( get_option('flexify_checkout_license_key'), -9 ) );
-					} else {
+					else :
 						echo __(  'Não disponível', 'flexify-checkout-for-woocommerce' );
-					}
-					?>
+					endif; ?>
 				</span>
-				<?php
-			}
-
-			?>
+			<?php endif; ?>
 		</td>
 	</tr>
-	<?php
-	if ( self::license_valid() ) {
-		?>
+
+	<?php if ( License::is_valid() ) : ?>
 		<tr>
 			<td>
 				<button id="flexify_checkout_deactive_license" name="flexify_checkout_deactive_license" class="btn btn-sm btn-primary button-loading" type="submit">
@@ -58,15 +53,13 @@ defined('ABSPATH') || exit; ?>
 				</button>
 			</td>
 		</tr>
-		<?php
-	} else {
-		if ( get_option('flexify_checkout_alternative_license_activation') === 'yes' ) {
-			?>
+	<?php else :
+		if ( get_option('flexify_checkout_alternative_license_activation') === 'yes' ) : ?>
 			<tr>
 				<td>
 					<span class="h4 d-block"><?php esc_attr_e( 'Notamos que teve problemas de conexão ao tentar ativar sua licença', 'flexify-checkout-for-woocommerce' ); ?></span>
 					<span class="d-block text-muted"><?php esc_attr_e( 'Você pode fazer upload do arquivo .key da licença para fazer sua ativação manual.', 'flexify-checkout-for-woocommerce' ); ?></span>
-					<a class="fancy-link mt-2 mb-3" href="https://meumouse.com/minha-conta/licenses/?domain=<?php echo urlencode( Flexify_Checkout_Api::get_domain() ); ?>&license_key=<?php echo urlencode( get_option('flexify_checkout_temp_license_key') ); ?>&app_version=<?php echo urlencode( FLEXIFY_CHECKOUT_VERSION ); ?>&product_id=3&settings_page=<?php echo urlencode( Flexify_Checkout_Api::get_domain() . '/wp-admin/admin.php?page=flexify-checkout-for-woocommerce' ); ?>" target="_blank"><?php echo esc_html__( 'Clique aqui para gerar seu arquivo de licença', 'flexify-checkout-for-woocommerce' ) ?></a>
+					<a class="fancy-link mt-2 mb-3" href="https://meumouse.com/minha-conta/licenses/?domain=<?php echo urlencode( License::get_domain() ); ?>&license_key=<?php echo urlencode( get_option('flexify_checkout_temp_license_key') ); ?>&app_version=<?php echo urlencode( FLEXIFY_CHECKOUT_VERSION ); ?>&product_id=3&settings_page=<?php echo urlencode( License::get_domain() . '/wp-admin/admin.php?page=flexify-checkout-for-woocommerce' ); ?>" target="_blank"><?php echo esc_html__( 'Clique aqui para gerar seu arquivo de licença', 'flexify-checkout-for-woocommerce' ) ?></a>
 
 					<div class="drop-file-license-key">
 						<div class="dropzone-license mt-4" id="license_key_zone">
@@ -87,9 +80,7 @@ defined('ABSPATH') || exit; ?>
 					</div>
 				</td>
 			</tr>
-			<?php
-		} else {
-			?>
+		<?php else : ?>
 			<tr>
 				<td class="d-grid">
 					<a class="btn btn-primary my-4 d-inline-flex w-fit" href="https://meumouse.com/plugins/flexify-checkout-para-woocommerce/?utm_source=wordpress&utm_medium=plugins-list&utm_campaign=flexify_checkout" target="_blank">
@@ -109,31 +100,34 @@ defined('ABSPATH') || exit; ?>
 					</div>
 				</td>
 			</tr>
-			<?php
-		}
-	}
-	?>
+		<?php endif;
+	endif; ?>
 	
 	<tr class="container-separator"></tr>
 	
 	<tr class="w-75 mt-5">
 		<td>
 			<h3 class="h2 mt-0"><?php esc_html_e( 'Status do sistema:', 'flexify-checkout-for-woocommerce' ); ?></h3>
+
 			<h4 class="mt-4"><?php esc_html_e( 'WordPress', 'flexify-checkout-for-woocommerce' ); ?></h4>
+
 			<div class="d-flex mb-2">
 				<span><?php esc_html_e( 'Versão do WordPress:', 'flexify-checkout-for-woocommerce' ); ?></span>
 				<span class="ms-2"><?php echo esc_html( get_bloginfo( 'version' ) ); ?></span>
 			</div>
+
 			<div class="d-flex mb-2">
 				<span><?php esc_html_e( 'WordPress Multisite:', 'flexify-checkout-for-woocommerce' ); ?></span>
 				<span class="ms-2"><?php echo is_multisite() ? esc_html__( 'Sim', 'flexify-checkout-for-woocommerce' ) : esc_html__( 'Não', 'flexify-checkout-for-woocommerce' ); ?></span>
 			</div>
+
 			<div class="d-flex mb-2">
 				<span><?php esc_html_e( 'Modo de depuração do WordPress:', 'flexify-checkout-for-woocommerce' ); ?></span>
 				<span class="ms-2"><?php echo defined( 'WP_DEBUG' ) && WP_DEBUG ? esc_html__( 'Ativo', 'flexify-checkout-for-woocommerce' ) : esc_html__( 'Desativado', 'flexify-checkout-for-woocommerce' ); ?></span>
 			</div>
 
 			<h4 class="mt-4"><?php esc_html_e( 'WooCommerce', 'flexify-checkout-for-woocommerce' ); ?></h4>
+
 			<div class="d-flex mb-2">
 				<span><?php esc_html_e( 'Versão do WooCommerce:', 'flexify-checkout-for-woocommerce' ); ?></span>
 				<span class="ms-2">
@@ -157,8 +151,7 @@ defined('ABSPATH') || exit; ?>
 				<span><?php esc_html_e( 'Versão do Flexify Checkout para WooCommerce:', 'flexify-checkout-for-woocommerce' ); ?></span>
 				<span class="ms-2">
 					<span class="badge bg-translucent-success">
-						<?php
-						$license_status = ( self::license_valid() ) ? __( 'Pro', 'flexify-checkout-for-woocommerce' ) : '';
+						<?php $license_status = ( License::is_valid() ) ? __( 'Pro', 'flexify-checkout-for-woocommerce' ) : '';
 
 						echo sprintf( esc_html( FLEXIFY_CHECKOUT_VERSION . ' %s' ), $license_status ); ?>
 					</span>
@@ -189,7 +182,7 @@ defined('ABSPATH') || exit; ?>
 				<span><?php esc_html_e( 'DOMDocument:', 'flexify-checkout-for-woocommerce' ); ?></span>
 				<span class="ms-2">
 					<span>
-						<?php if ( ! class_exists( 'DOMDocument' ) ) : ?>
+						<?php if ( ! class_exists('DOMDocument') ) : ?>
 							<span class="badge bg-translucent-danger">
 								<?php esc_html_e( 'Não', 'flexify-checkout-for-woocommerce' ); ?>
 							</span>
@@ -205,7 +198,7 @@ defined('ABSPATH') || exit; ?>
 				<span><?php esc_html_e( 'Extensão cURL:', 'flexify-checkout-for-woocommerce' ); ?></span>
 				<span class="ms-2">
 					<span>
-						<?php if ( !extension_loaded('curl') ) : ?>
+						<?php if ( ! extension_loaded('curl') ) : ?>
 							<span class="badge bg-translucent-danger">
 								<?php esc_html_e( 'Não', 'flexify-checkout-for-woocommerce' ); ?>
 							</span>
@@ -217,9 +210,8 @@ defined('ABSPATH') || exit; ?>
 					</span>
 				</span>
 			</div>
-			<?php
-			if ( self::get_setting( 'enable_inter_bank_pix_api') === 'yes' || self::get_setting( 'enable_inter_bank_ticket_api') === 'yes' ) {
-				?>
+
+			<?php if ( Init::get_setting( 'enable_inter_bank_pix_api') === 'yes' || Init::get_setting( 'enable_inter_bank_ticket_api') === 'yes' ) : ?>
 				<div class="d-flex mb-2">
 					<span><?php esc_html_e( 'Extensão GD:', 'flexify-checkout-for-woocommerce' ); ?></span>
 					<span class="ms-2">
@@ -236,9 +228,8 @@ defined('ABSPATH') || exit; ?>
 						</span>
 					</span>
 				</div>
-				<?php
-			}
-			?>
+			<?php endif; ?>
+
 			<div class="d-flex mb-2">
 				<span><?php esc_html_e( 'Extensão OpenSSL:', 'flexify-checkout-for-woocommerce' ); ?></span>
 				<span class="ms-2">
@@ -255,7 +246,8 @@ defined('ABSPATH') || exit; ?>
 					</span>
 				</span>
 			</div>
-			<?php if ( function_exists( 'ini_get' ) ) : ?>
+
+			<?php if ( function_exists('ini_get') ) : ?>
 				<div class="d-flex mb-2">
 					<span>
 						<?php $post_max_size = ini_get( 'post_max_size' ); ?>
@@ -397,7 +389,7 @@ defined('ABSPATH') || exit; ?>
 							<button id="fcw_close_reset" class="btn-close" aria-label="<?php esc_html( 'Fechar', 'flexify-checkout-for-woocommerce' ); ?>"></button>
 						</div>
 						<div class="popup-body">
-							<div class="d-flex flex-collumn align-items-center p-4">
+							<div class="d-flex flex-column align-items-center p-4">
 								<div class="btn-icon rounded-circle p-2 mb-3 bg-translucent-danger">
 									<svg class="icon icon-lg icon-danger" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M11.953 2C6.465 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.493 2 11.953 2zM12 20c-4.411 0-8-3.589-8-8s3.567-8 7.953-8C16.391 4 20 7.589 20 12s-3.589 8-8 8z"></path><path d="M11 7h2v7h-2zm0 8h2v2h-2z"></path></svg>
 								</div>
@@ -411,7 +403,7 @@ defined('ABSPATH') || exit; ?>
 							</div>
 						</div>
 					</div>
-					</div>
+				</div>
 			</td>
 		</tr>
 
@@ -421,7 +413,7 @@ defined('ABSPATH') || exit; ?>
 			<td class="d-flex">
 				<a class="btn btn-sm btn-outline-danger" target="_blank" href="https://meumouse.com/reportar-problemas/"><?php esc_html_e( 'Reportar problemas', 'flexify-checkout-for-woocommerce' ); ?></a>
 
-				<?php if ( self::license_valid() ) : ?>
+				<?php if ( License::is_valid() ) : ?>
 					<button class="btn btn-sm btn-outline-primary ms-2 button-loading" name="flexify_checkout_clear_activation_cache"><?php esc_html_e( 'Limpar cache de ativação', 'flexify-checkout-for-woocommerce' ); ?></button>
 				<?php endif; ?>
 			</td>

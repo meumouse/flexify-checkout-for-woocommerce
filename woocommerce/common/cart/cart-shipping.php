@@ -1,5 +1,7 @@
 <?php
 
+use MeuMouse\Flexify_Checkout\Init\Init;
+
 /**
  * Shipping Methods Display
  *
@@ -16,7 +18,7 @@
  * @see https://woocommerce.com/document/template-structure/
  * @package Flexify Checkout | MeuMouse.com
  * @since 3.5.0
- * @version 3.5.2
+ * @version 3.7.0
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -27,10 +29,10 @@ $show_shipping_calculator = ! empty( $show_shipping_calculator );
 $calculator_text = ''; ?>
 
 <tr class="woocommerce-shipping-totals shipping">
-    <?php if ( ! empty( Flexify_Checkout_Init::get_setting('text_shipping_methods_label') ) ) : ?>
+    <?php if ( ! empty( Init::get_setting('text_shipping_methods_label') ) ) : ?>
         <th class="shipping-methods-label">
             <svg class="shipping-methods-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M22 8a.76.76 0 0 0 0-.21v-.08a.77.77 0 0 0-.07-.16.35.35 0 0 0-.05-.08l-.1-.13-.08-.06-.12-.09-9-5a1 1 0 0 0-1 0l-9 5-.09.07-.11.08a.41.41 0 0 0-.07.11.39.39 0 0 0-.08.1.59.59 0 0 0-.06.14.3.3 0 0 0 0 .1A.76.76 0 0 0 2 8v8a1 1 0 0 0 .52.87l9 5a.75.75 0 0 0 .13.06h.1a1.06 1.06 0 0 0 .5 0h.1l.14-.06 9-5A1 1 0 0 0 22 16V8zm-10 3.87L5.06 8l2.76-1.52 6.83 3.9zm0-7.72L18.94 8 16.7 9.25 9.87 5.34zM4 9.7l7 3.92v5.68l-7-3.89zm9 9.6v-5.68l3-1.68V15l2-1v-3.18l2-1.11v5.7z"></path></svg>
-            <?php echo Flexify_Checkout_Init::get_setting('text_shipping_methods_label') ?>
+            <?php echo Init::get_setting('text_shipping_methods_label') ?>
         </th>
     <?php endif; ?>
 
@@ -55,19 +57,15 @@ $calculator_text = ''; ?>
 			</ul>
 			<?php if ( is_cart() ) : ?>
 				<p class="woocommerce-shipping-destination">
-					<?php
-
-					if ( $formatted_destination ) {
+					<?php if ( $formatted_destination ) :
 						// Translators: $s shipping destination.
 						printf( esc_html__( 'Shipping to %s.', 'woocommerce' ) . ' ', '<strong>' . esc_html( $formatted_destination ) . '</strong>' );
 						$calculator_text = esc_html__( 'Change address', 'woocommerce' );
-					} else {
+					else :
 						echo wp_kses_post( apply_filters( 'woocommerce_shipping_estimate_html', __( 'Shipping options will be updated during checkout.', 'woocommerce' ) ) );
-					}
-					?>
+					endif; ?>
 				</p>
-			<?php endif; ?>
-			<?php
+			<?php endif;
 		elseif ( ! $has_calculated_shipping || ! $formatted_destination ) :
 			if ( is_cart() && 'no' === get_option( 'woocommerce_enable_shipping_calc' ) ) {
 				echo wp_kses_post( apply_filters( 'woocommerce_shipping_not_enabled_on_cart_html', __( 'Shipping costs are calculated during checkout.', 'woocommerce' ) ) );
@@ -86,8 +84,7 @@ $calculator_text = ''; ?>
 				 * @param string $html HTML message.
 				 * @param string $formatted_destination The formatted shipping destination.
 				 */
-				apply_filters(
-					'woocommerce_cart_no_shipping_available_html',
+				apply_filters( 'woocommerce_cart_no_shipping_available_html',
 					// Translators: $s shipping destination.
 					sprintf( esc_html__( 'No shipping options were found for %s.', 'woocommerce' ) . ' ', '<strong>' . esc_html( $formatted_destination ) . '</strong>' ),
 					$formatted_destination
@@ -95,14 +92,14 @@ $calculator_text = ''; ?>
 			);
 
 			$calculator_text = esc_html__( 'Enter a different address', 'woocommerce' );
+		endif;
+
+		if ( $show_package_details ) {
+			echo '<p class="woocommerce-shipping-contents"><small>' . esc_html( $package_details ) . '</small></p>';
+		}
+
+		if ( $show_shipping_calculator ) :
+			woocommerce_shipping_calculator( $calculator_text );
 		endif; ?>
-
-		<?php if ( $show_package_details ) : ?>
-			<?php echo '<p class="woocommerce-shipping-contents"><small>' . esc_html( $package_details ) . '</small></p>'; ?>
-		<?php endif; ?>
-
-		<?php if ( $show_shipping_calculator ) : ?>
-			<?php woocommerce_shipping_calculator( $calculator_text ); ?>
-		<?php endif; ?>
 	</td>
 </tr>

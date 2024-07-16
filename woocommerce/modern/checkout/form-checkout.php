@@ -1,5 +1,8 @@
 <?php
 
+use MeuMouse\Flexify_Checkout\Sidebar\Sidebar;
+use MeuMouse\Flexify_Checkout\Steps\Steps;
+
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
 
@@ -15,8 +18,9 @@ defined('ABSPATH') || exit;
  * the readme will list any important changes.
  *
  * @see https://docs.woocommerce.com/document/template-structure/
+ * @since 1.0.0
+ * @version 3.7.0
  * @package MeuMouse.com
- * @version 1.0.0
  */
 
 /**
@@ -44,8 +48,7 @@ if ( ! $checkout->is_registration_enabled() && $checkout->is_registration_requir
 	$message = sprintf( '<a href="%s" class="button wc-forward">%s</a> %s', esc_url( get_permalink( get_option( 'woocommerce_myaccount_page_id' ) ) ), __( 'Entrar', 'flexify-checkout-for-woocommerce' ), $message ); ?>
 
 	<div class="woocommerce-error"><?php echo wp_kses_post( $message ); ?></div>
-	<?php
-	return;
+	<?php return;
 endif; ?>
 
 <button type="button" class="flexify-checkout__sidebar-header">
@@ -70,10 +73,10 @@ endif; ?>
 			 */
 			do_action( 'flexify_checkout_content_left_start', $checkout );
 
-			Flexify_Checkout_Steps::render_header(); ?>
+			Steps::render_header(); ?>
 
 			<div class="flexify-checkout__steps">
-				<?php Flexify_Checkout_Steps::render_steps(); ?>
+				<?php Steps::render_steps(); ?>
 			</div>
 
 			<?php
@@ -84,7 +87,7 @@ endif; ?>
 			 */
 			do_action( 'flexify_checkout_content_left_end', $checkout ); ?>
 		</div>
-		<?php if ( Flexify_Checkout_Sidebar::is_sidebar_enabled() ) : ?>
+		<?php if ( Sidebar::is_sidebar_enabled() ) : ?>
 			<div class="flexify-checkout__content-right">
 				<?php
 				/**

@@ -1,5 +1,8 @@
 <?php
 
+use MeuMouse\Flexify_Checkout\Init\Init;
+use MeuMouse\Flexify_Checkout\License\License;
+
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
 
@@ -19,7 +22,7 @@ $inter_module_active = is_plugin_active('module-inter-bank-for-flexify-checkout/
             <th>
                <?php echo esc_html__( 'Ativar recebimento de pagamentos com Pix via Banco Inter', 'flexify-checkout-for-woocommerce' );
                
-               if ( ! self::license_valid() ) : ?>
+               if ( ! License::is_valid() ) : ?>
                   <span class="badge pro bg-primary rounded-pill ms-2">
                      <svg class="icon-pro" viewBox="0 0 24.00 24.00" xmlns="http://www.w3.org/2000/svg"><g stroke-width="0"></g><g stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC" stroke-width="0.336"></g><g><path fill-rule="evenodd" clip-rule="evenodd" d="M12.0001 3C12.3334 3 12.6449 3.16613 12.8306 3.443L16.6106 9.07917L21.2523 3.85213C21.5515 3.51525 22.039 3.42002 22.4429 3.61953C22.8469 3.81904 23.0675 4.26404 22.9818 4.70634L20.2956 18.5706C20.0223 19.9812 18.7872 21 17.3504 21H6.64977C5.21293 21 3.97784 19.9812 3.70454 18.5706L1.01833 4.70634C0.932635 4.26404 1.15329 3.81904 1.55723 3.61953C1.96117 3.42002 2.44865 3.51525 2.74781 3.85213L7.38953 9.07917L11.1696 3.443C11.3553 3.16613 11.6667 3 12.0001 3ZM12.0001 5.79533L8.33059 11.2667C8.1582 11.5237 7.8765 11.6865 7.56772 11.7074C7.25893 11.7283 6.95785 11.6051 6.75234 11.3737L3.67615 7.90958L5.66802 18.1902C5.75913 18.6604 6.17082 19 6.64977 19H17.3504C17.8293 19 18.241 18.6604 18.3321 18.1902L20.324 7.90958L17.2478 11.3737C17.0423 11.6051 16.7412 11.7283 16.4324 11.7074C16.1236 11.6865 15.842 11.5237 15.6696 11.2667L12.0001 5.79533Z"></path> </g></svg>
                      <?php echo esc_html__( 'Pro', 'flexify-checkout-for-woocommerce' ) ?>
@@ -29,13 +32,11 @@ $inter_module_active = is_plugin_active('module-inter-bank-for-flexify-checkout/
                <span class="flexify-checkout-description"><?php echo esc_html__( 'Ative esta opção para configurar recibimentos via Pix com aprovação automática gratuitamente (Disponível apenas no Brasil).', 'flexify-checkout-for-woocommerce' ) ?></span>
             </th>
             <td class="d-flex align-items-center">
-               <div class="form-check form-switch <?php echo ( ! self::license_valid() ) ? 'require-pro' : ''; ?>">
-                  <input type="checkbox" class="toggle-switch <?php echo ( ! self::license_valid() ) ? 'pro-version' : ''; ?>" id="<?php echo ! class_exists('Module_Inter_Bank') ? 'require_inter_bank_module_trigger' : 'enable_inter_bank_pix_api'; ?>" name="enable_inter_bank_pix_api" value="yes" <?php checked( self::get_setting( 'enable_inter_bank_pix_api') === 'yes' && class_exists('Module_Inter_Bank') && self::license_valid() ); ?>/>
+               <div class="form-check form-switch <?php echo ( ! License::is_valid() ) ? 'require-pro' : ''; ?>">
+                  <input type="checkbox" class="toggle-switch <?php echo ( ! License::is_valid() ) ? 'pro-version' : ''; ?>" id="<?php echo ! class_exists('Module_Inter_Bank') ? 'require_inter_bank_module_trigger' : 'enable_inter_bank_pix_api'; ?>" name="enable_inter_bank_pix_api" value="yes" <?php checked( Init::get_setting( 'enable_inter_bank_pix_api') === 'yes' && class_exists('Module_Inter_Bank') && License::is_valid() ); ?>/>
                </div>
                
-               <?php
-               if ( $inter_module_active ) {
-                  ?>
+               <?php if ( $inter_module_active ) : ?>
                   <button id="inter_bank_pix_settings" class="btn btn-outline-primary ms-3 inter-bank-pix input-control-wd-12"><?php echo esc_html__( 'Configurar Pix', 'flexify-checkout-for-woocommerce' ) ?></button>
                      <div id="inter_bank_pix_container">
                         <div class="popup-content">
@@ -51,7 +52,7 @@ $inter_module_active = is_plugin_active('module-inter-bank-for-flexify-checkout/
                                        <span class="flexify-checkout-description"><?php echo esc_html__( 'Título que o usuário verá na finalização de compra (Disponível apenas no Brasil).', 'flexify-checkout-for-woocommerce' ) ?></span>
                                     </th>
                                     <td>
-                                       <input type="text" class="form-control input-control-wd-20" name="pix_gateway_title" value="<?php echo self::get_setting( 'pix_gateway_title' ) ?>"/>
+                                       <input type="text" class="form-control input-control-wd-20" name="pix_gateway_title" value="<?php echo Init::get_setting( 'pix_gateway_title' ) ?>"/>
                                     </td>
                                  </tr>
                                  <tr>
@@ -60,7 +61,7 @@ $inter_module_active = is_plugin_active('module-inter-bank-for-flexify-checkout/
                                        <span class="flexify-checkout-description"><?php echo esc_html__( 'Descrição da forma de pagamento que o usuário verá na finalização de compra.', 'flexify-checkout-for-woocommerce' ) ?></span>
                                     </th>
                                     <td>
-                                       <input type="text" class="form-control input-control-wd-20" name="pix_gateway_description" value="<?php echo self::get_setting( 'pix_gateway_description' ) ?>"/>
+                                       <input type="text" class="form-control input-control-wd-20" name="pix_gateway_description" value="<?php echo Init::get_setting( 'pix_gateway_description' ) ?>"/>
                                     </td>
                                  </tr>
                                  <tr>
@@ -69,7 +70,7 @@ $inter_module_active = is_plugin_active('module-inter-bank-for-flexify-checkout/
                                        <span class="flexify-checkout-description"><?php echo esc_html__( 'Texto exibido no e-mail junto do botão de copiar código Copia e Cola do Pix.', 'flexify-checkout-for-woocommerce' ) ?></span>
                                     </th>
                                     <td>
-                                       <input type="text" class="form-control input-control-wd-20" name="pix_gateway_email_instructions" value="<?php echo self::get_setting( 'pix_gateway_email_instructions' ) ?>"/>
+                                       <input type="text" class="form-control input-control-wd-20" name="pix_gateway_email_instructions" value="<?php echo Init::get_setting( 'pix_gateway_email_instructions' ) ?>"/>
                                     </td>
                                  </tr>
                                  <tr>
@@ -78,7 +79,7 @@ $inter_module_active = is_plugin_active('module-inter-bank-for-flexify-checkout/
                                        <span class="flexify-checkout-description"><?php echo esc_html__( 'Chave Pix associada ao banco Inter que receberá o pagamento. Para chaves do tipo celular ou CNPJ, utilize apenas números.', 'flexify-checkout-for-woocommerce' ) ?></span>
                                     </th>
                                     <td>
-                                       <input type="text" class="form-control input-control-wd-20" name="pix_gateway_receipt_key" value="<?php echo self::get_setting( 'pix_gateway_receipt_key' ) ?>"/>
+                                       <input type="text" class="form-control input-control-wd-20" name="pix_gateway_receipt_key" value="<?php echo Init::get_setting( 'pix_gateway_receipt_key' ) ?>"/>
                                     </td>
                                  </tr>
                                  <tr>
@@ -87,16 +88,14 @@ $inter_module_active = is_plugin_active('module-inter-bank-for-flexify-checkout/
                                        <span class="flexify-checkout-description"><?php echo esc_html__( 'Prazo máximo para pagamento do Pix em minutos.', 'flexify-checkout-for-woocommerce' ) ?></span>
                                     </th>
                                     <td>
-                                       <input type="number" class="form-control input-control-wd-5" name="pix_gateway_expires" value="<?php echo self::get_setting( 'pix_gateway_expires' ) ?>"/>
+                                       <input type="number" class="form-control input-control-wd-5" name="pix_gateway_expires" value="<?php echo Init::get_setting( 'pix_gateway_expires' ) ?>"/>
                                     </td>
                                  </tr>
                               </table>
                            </div>
                         </div>
                      </div>
-                  <?php
-               }
-               ?>
+               <?php endif; ?>
             </td>
          </tr>
 
@@ -104,7 +103,7 @@ $inter_module_active = is_plugin_active('module-inter-bank-for-flexify-checkout/
             <th>
                <?php echo esc_html__( 'Ativar recebimento de pagamentos com boleto bancário via Banco Inter', 'flexify-checkout-for-woocommerce' );
                
-               if ( ! self::license_valid() ) : ?>
+               if ( ! License::is_valid() ) : ?>
                   <span class="badge pro bg-primary rounded-pill ms-2">
                      <svg class="icon-pro" viewBox="0 0 24.00 24.00" xmlns="http://www.w3.org/2000/svg"><g stroke-width="0"></g><g stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC" stroke-width="0.336"></g><g><path fill-rule="evenodd" clip-rule="evenodd" d="M12.0001 3C12.3334 3 12.6449 3.16613 12.8306 3.443L16.6106 9.07917L21.2523 3.85213C21.5515 3.51525 22.039 3.42002 22.4429 3.61953C22.8469 3.81904 23.0675 4.26404 22.9818 4.70634L20.2956 18.5706C20.0223 19.9812 18.7872 21 17.3504 21H6.64977C5.21293 21 3.97784 19.9812 3.70454 18.5706L1.01833 4.70634C0.932635 4.26404 1.15329 3.81904 1.55723 3.61953C1.96117 3.42002 2.44865 3.51525 2.74781 3.85213L7.38953 9.07917L11.1696 3.443C11.3553 3.16613 11.6667 3 12.0001 3ZM12.0001 5.79533L8.33059 11.2667C8.1582 11.5237 7.8765 11.6865 7.56772 11.7074C7.25893 11.7283 6.95785 11.6051 6.75234 11.3737L3.67615 7.90958L5.66802 18.1902C5.75913 18.6604 6.17082 19 6.64977 19H17.3504C17.8293 19 18.241 18.6604 18.3321 18.1902L20.324 7.90958L17.2478 11.3737C17.0423 11.6051 16.7412 11.7283 16.4324 11.7074C16.1236 11.6865 15.842 11.5237 15.6696 11.2667L12.0001 5.79533Z"></path> </g></svg>
                      <?php echo esc_html__( 'Pro', 'flexify-checkout-for-woocommerce' ) ?>
@@ -114,8 +113,8 @@ $inter_module_active = is_plugin_active('module-inter-bank-for-flexify-checkout/
                <span class="flexify-checkout-description"><?php echo esc_html__( 'Ative esta opção para configurar recibimentos via boleto bancário com aprovação automática gratuitamente.', 'flexify-checkout-for-woocommerce' ) ?></span>
             </th>
             <td class="d-flex align-items-center">
-               <div class="form-check form-switch <?php echo ( ! self::license_valid() ) ? 'require-pro' : ''; ?>">
-                  <input type="checkbox" class="toggle-switch <?php echo ( ! self::license_valid() ) ? 'pro-version' : ''; ?>" id="<?php echo ! class_exists('Module_Inter_Bank') ? 'require_inter_bank_module_trigger_2' : 'enable_inter_bank_ticket_api'; ?>" name="enable_inter_bank_ticket_api" value="yes" <?php checked( self::get_setting( 'enable_inter_bank_ticket_api') === 'yes' && class_exists('Module_Inter_Bank') && self::license_valid() ); ?>/>
+               <div class="form-check form-switch <?php echo ( ! License::is_valid() ) ? 'require-pro' : ''; ?>">
+                  <input type="checkbox" class="toggle-switch <?php echo ( ! License::is_valid() ) ? 'pro-version' : ''; ?>" id="<?php echo ! class_exists('Module_Inter_Bank') ? 'require_inter_bank_module_trigger_2' : 'enable_inter_bank_ticket_api'; ?>" name="enable_inter_bank_ticket_api" value="yes" <?php checked( Init::get_setting( 'enable_inter_bank_ticket_api') === 'yes' && class_exists('Module_Inter_Bank') && License::is_valid() ); ?>/>
                </div>
 
                <?php if ( $inter_module_active ) : ?>
@@ -127,6 +126,7 @@ $inter_module_active = is_plugin_active('module-inter-bank-for-flexify-checkout/
                            <h5 class="popup-title"><?php echo esc_html__( 'Configure a forma de pagamento Boleto bancário', 'flexify-checkout-for-woocommerce' ); ?></h5>
                            <button id="inter_bank_slip_close" class=" btn-close fs-lg" aria-label="Fechar"></button>
                         </div>
+
                         <div class="popup-body">
                            <table class="form-table">
                               <tr>
@@ -135,43 +135,47 @@ $inter_module_active = is_plugin_active('module-inter-bank-for-flexify-checkout/
                                     <span class="flexify-checkout-description"><?php echo esc_html__( 'Título que o usuário verá na finalização de compra.', 'flexify-checkout-for-woocommerce' ) ?></span>
                                  </th>
                                  <td>
-                                    <input type="text" class="form-control input-control-wd-20" name="bank_slip_gateway_title" value="<?php echo self::get_setting( 'bank_slip_gateway_title' ) ?>"/>
+                                    <input type="text" class="form-control input-control-wd-20" name="bank_slip_gateway_title" value="<?php echo Init::get_setting( 'bank_slip_gateway_title' ) ?>"/>
                                  </td>
                               </tr>
+
                               <tr>
                                  <th>
                                     <?php echo esc_html( 'Descrição da forma de pagamento Boleto', 'flexify-checkout-for-woocommerce' ); ?>
                                     <span class="flexify-checkout-description"><?php echo esc_html__( 'Descrição da forma de pagamento que o usuário verá na finalização de compra.', 'flexify-checkout-for-woocommerce' ) ?></span>
                                  </th>
                                  <td>
-                                    <input type="text" class="form-control input-control-wd-20" name="bank_slip_gateway_description" value="<?php echo self::get_setting( 'bank_slip_gateway_description' ) ?>"/>
+                                    <input type="text" class="form-control input-control-wd-20" name="bank_slip_gateway_description" value="<?php echo Init::get_setting( 'bank_slip_gateway_description' ) ?>"/>
                                  </td>
                               </tr>
+
                               <tr>
                                  <th>
                                     <?php echo esc_html( 'Instruções por e-mail da forma de pagamento Boleto', 'flexify-checkout-for-woocommerce' ); ?>
                                     <span class="flexify-checkout-description"><?php echo esc_html__( 'Texto exibido no e-mail junto do botão de copiar código Copia e Cola do Pix.', 'flexify-checkout-for-woocommerce' ) ?></span>
                                  </th>
                                  <td>
-                                    <input type="text" class="form-control input-control-wd-20" name="bank_slip_gateway_email_instructions" value="<?php echo self::get_setting( 'bank_slip_gateway_email_instructions' ) ?>"/>
+                                    <input type="text" class="form-control input-control-wd-20" name="bank_slip_gateway_email_instructions" value="<?php echo Init::get_setting( 'bank_slip_gateway_email_instructions' ) ?>"/>
                                  </td>
                               </tr>
+
                               <tr>
                                  <th>
                                     <?php echo esc_html( 'Mensagem do rodapé', 'flexify-checkout-for-woocommerce' ); ?>
                                     <span class="flexify-checkout-description"><?php echo esc_html__( 'Mensagem do rodapé do boleto bancário. Use a variável {order_id} para inserir o número do pedido.', 'flexify-checkout-for-woocommerce' ) ?></span>
                                  </th>
                                  <td>
-                                    <input type="text" class="form-control input-control-wd-20" name="bank_slip_gateway_footer_message" value="<?php echo self::get_setting( 'bank_slip_gateway_footer_message' ) ?>"/>
+                                    <input type="text" class="form-control input-control-wd-20" name="bank_slip_gateway_footer_message" value="<?php echo Init::get_setting( 'bank_slip_gateway_footer_message' ) ?>"/>
                                  </td>
                               </tr>
+                              
                               <tr>
                                  <th>
                                     <?php echo esc_html( 'Validade do Pix', 'flexify-checkout-for-woocommerce' ); ?>
                                     <span class="flexify-checkout-description"><?php echo esc_html__( 'Prazo máximo para pagamento do Pix em minutos.', 'flexify-checkout-for-woocommerce' ) ?></span>
                                  </th>
                                  <td>
-                                    <input type="number" class="form-control input-control-wd-5" name="bank_slip_gateway_expires" value="<?php echo self::get_setting( 'bank_slip_gateway_expires' ) ?>"/>
+                                    <input type="number" class="form-control input-control-wd-5" name="bank_slip_gateway_expires" value="<?php echo Init::get_setting( 'bank_slip_gateway_expires' ) ?>"/>
                                  </td>
                               </tr>
                            </table>
@@ -181,7 +185,6 @@ $inter_module_active = is_plugin_active('module-inter-bank-for-flexify-checkout/
                <?php endif; ?>
             </td>
          </tr>
-
 
       <?php if ( $inter_module_active ) : ?>
          <tr>
@@ -207,37 +210,41 @@ $inter_module_active = is_plugin_active('module-inter-bank-for-flexify-checkout/
                               </th>
                               <td>
                                  <div class="form-check form-switch">
-                                    <input type="checkbox" class="toggle-switch" id="inter_bank_debug_mode" name="inter_bank_debug_mode" value="yes" <?php checked( self::get_setting( 'inter_bank_debug_mode') === 'yes' ); ?>/>
+                                    <input type="checkbox" class="toggle-switch" id="inter_bank_debug_mode" name="inter_bank_debug_mode" value="yes" <?php checked( Init::get_setting( 'inter_bank_debug_mode') === 'yes' ); ?>/>
                                  </div>
                               </td>
                            </tr>
+
                            <tr>
                               <th>
                                  <?php echo esc_html( 'ClientID', 'flexify-checkout-for-woocommerce' ); ?>
                                  <span class="flexify-checkout-description"><?php echo esc_html__( 'Chave aleatória ClientID da API do banco Inter.', 'flexify-checkout-for-woocommerce' ) ?></span>
                               </th>
                               <td>
-                                 <input type="text" class="form-control input-control-wd-20" name="inter_bank_client_id" value="<?php echo self::get_setting( 'inter_bank_client_id' ) ?>"/>
+                                 <input type="text" class="form-control input-control-wd-20" name="inter_bank_client_id" value="<?php echo Init::get_setting( 'inter_bank_client_id' ) ?>"/>
                               </td>
                            </tr>
+
                            <tr>
                               <th>
                                  <?php echo esc_html( 'ClientSecret', 'flexify-checkout-for-woocommerce' ); ?>
                                  <span class="flexify-checkout-description"><?php echo esc_html__( 'Chave aleatória ClientSecret da API do banco Inter.', 'flexify-checkout-for-woocommerce' ) ?></span>
                               </th>
                               <td>
-                                 <input type="text" class="form-control input-control-wd-20" name="inter_bank_client_secret" value="<?php echo self::get_setting( 'inter_bank_client_secret' ) ?>"/>
+                                 <input type="text" class="form-control input-control-wd-20" name="inter_bank_client_secret" value="<?php echo Init::get_setting( 'inter_bank_client_secret' ) ?>"/>
                               </td>
                            </tr>
+
                            <tr>
                               <th>
                                  <?php echo esc_html( 'Data de expiração da aplicação', 'flexify-checkout-for-woocommerce' ); ?>
                                  <span class="flexify-checkout-description"><?php echo esc_html__( 'Informe a data de quando irá expirar as credenciais da aplicação, assim poderemos te avisar 7 dias antes das credenciais serem revogadas.', 'flexify-checkout-for-woocommerce' ) ?></span>
                               </th>
                               <td>
-                                 <input type="text" class="form-control input-control-wd-10 dateselect" name="inter_bank_expire_date" value="<?php echo self::get_setting( 'inter_bank_expire_date' ) ?>"/>
+                                 <input type="text" class="form-control input-control-wd-10 dateselect" name="inter_bank_expire_date" value="<?php echo Init::get_setting( 'inter_bank_expire_date' ) ?>"/>
                               </td>
                            </tr>
+
                            <tr>
                               <th>
                                  <?php echo esc_html( 'Envie sua chave e certificado', 'flexify-checkout-for-woocommerce' ); ?>
@@ -245,6 +252,7 @@ $inter_module_active = is_plugin_active('module-inter-bank-for-flexify-checkout/
                               </th>
                            </tr>
                         </table>
+
                         <div class="drop-file-inter-bank mb-2">
                            <?php
                            $crt_file = get_option('flexify_checkout_inter_bank_crt_file');
@@ -290,6 +298,7 @@ $inter_module_active = is_plugin_active('module-inter-bank-for-flexify-checkout/
                               </div>
                            <?php endif; ?>
                         </div>
+                        
                         <?php if ( ! empty( $key_file ) && ! empty( $crt_file ) ) : ?>
                            <div class="file-uploaded-info my-3">
                               <div class="d-flex flex-collumn align-items-start me-3">

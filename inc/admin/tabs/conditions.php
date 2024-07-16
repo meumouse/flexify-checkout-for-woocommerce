@@ -1,5 +1,8 @@
 <?php
 
+use MeuMouse\Flexify_Checkout\Helpers\Helpers;
+use MeuMouse\Flexify_Checkout\License\License;
+
 // Exit if accessed directly.
 defined('ABSPATH') || exit; ?>
 
@@ -14,7 +17,7 @@ defined('ABSPATH') || exit; ?>
         do_action('flexify_checkout_before_conditions_options');
 
         $get_conditions = get_option('flexify_checkout_conditions', array());
-        $get_fields = Flexify_Checkout_Helpers::get_checkout_fields_on_admin();
+        $get_fields = Helpers::get_checkout_fields_on_admin();
         
         if ( empty( $get_conditions ) ) : ?>
             <tr>
@@ -99,7 +102,7 @@ defined('ABSPATH') || exit; ?>
 
         <tr>
             <td>
-                <button <?php echo ( self::license_valid() ) ? 'id="add_new_checkout_condition_trigger"' : ''; ?> class="btn btn-primary d-flex align-items-center <?php echo ( ! self::license_valid() ) ? 'require-pro' : ''; ?>">
+                <button <?php echo ( License::is_valid() ) ? 'id="add_new_checkout_condition_trigger"' : ''; ?> class="btn btn-primary d-flex align-items-center <?php echo ( ! License::is_valid() ) ? 'require-pro' : ''; ?>">
                     <svg class="icon icon-white me-2" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M19 11h-6V5h-2v6H5v2h6v6h2v-6h6z"></path></svg>
                     <?php echo esc_html__( 'Criar uma nova condição', 'flexify-checkout-for-woocommerce' ) ?>
                 </button>

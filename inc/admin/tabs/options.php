@@ -1,5 +1,8 @@
 <?php
 
+use MeuMouse\Flexify_Checkout\Init\Init;
+use MeuMouse\Flexify_Checkout\License\License;
+
 // Exit if accessed directly.
 defined('ABSPATH') || exit; ?>
 
@@ -16,11 +19,11 @@ defined('ABSPATH') || exit; ?>
       <tr>
          <th>
             <?php echo esc_html__( 'Ativar Flexify Checkout', 'flexify-checkout-for-woocommerce' ) ?>
-            <span class="flexify-checkout-description"><?php echo esc_html__( 'Ative esta opção para carregar o modelo de finalização de compra Flexify Checkout.', 'flexify-checkout-for-woocommerce' ) ?></span>
+            <span class="flexify-checkout-description"><?php echo esc_html__( 'Ative esta opção para que o Flexify Checkout possa ser instanciado.', 'flexify-checkout-for-woocommerce' ) ?></span>
          </th>
          <td>
             <div class="form-check form-switch">
-               <input type="checkbox" class="toggle-switch" id="enable_flexify_checkout" name="enable_flexify_checkout" value="yes" <?php checked( self::get_setting( 'enable_flexify_checkout') === 'yes' ); ?> />
+               <input type="checkbox" class="toggle-switch" id="enable_flexify_checkout" name="enable_flexify_checkout" value="yes" <?php checked( Init::get_setting( 'enable_flexify_checkout') === 'yes' ); ?> />
             </div>
          </td>
       </tr>
@@ -31,7 +34,7 @@ defined('ABSPATH') || exit; ?>
          </th>
          <td>
             <div class="form-check form-switch">
-               <input type="checkbox" class="toggle-switch" id="enable_back_to_shop_button" name="enable_back_to_shop_button" value="yes" <?php checked( self::get_setting('enable_back_to_shop_button') === 'yes' ); ?> />
+               <input type="checkbox" class="toggle-switch" id="enable_back_to_shop_button" name="enable_back_to_shop_button" value="yes" <?php checked( Init::get_setting('enable_back_to_shop_button') === 'yes' ); ?> />
             </div>
          </td>
       </tr>
@@ -42,7 +45,7 @@ defined('ABSPATH') || exit; ?>
          </th>
          <td>
             <div class="form-check form-switch">
-               <input type="checkbox" class="toggle-switch" id="enable_link_image_products" name="enable_link_image_products" value="yes" <?php checked( self::get_setting('enable_link_image_products') === 'yes' ); ?> />
+               <input type="checkbox" class="toggle-switch" id="enable_link_image_products" name="enable_link_image_products" value="yes" <?php checked( Init::get_setting('enable_link_image_products') === 'yes' ); ?> />
             </div>
          </td>
       </tr>
@@ -53,7 +56,7 @@ defined('ABSPATH') || exit; ?>
          </th>
          <td>
             <div class="form-check form-switch">
-               <input type="checkbox" class="toggle-switch" id="enable_skip_cart_page" name="enable_skip_cart_page" value="yes" <?php checked( self::get_setting('enable_skip_cart_page') === 'yes' ); ?> />
+               <input type="checkbox" class="toggle-switch" id="enable_skip_cart_page" name="enable_skip_cart_page" value="yes" <?php checked( Init::get_setting('enable_skip_cart_page') === 'yes' ); ?> />
             </div>
          </td>
       </tr>
@@ -64,7 +67,7 @@ defined('ABSPATH') || exit; ?>
          </th>
          <td>
             <div class="form-check form-switch">
-               <input type="checkbox" class="toggle-switch" id="check_password_strenght" name="check_password_strenght" value="yes" <?php checked( self::get_setting('check_password_strenght') === 'yes' ); ?> />
+               <input type="checkbox" class="toggle-switch" id="check_password_strenght" name="check_password_strenght" value="yes" <?php checked( Init::get_setting('check_password_strenght') === 'yes' ); ?> />
             </div>
          </td>
       </tr>
@@ -75,7 +78,7 @@ defined('ABSPATH') || exit; ?>
          </th>
          <td>
             <div class="form-check form-switch">
-               <input type="checkbox" class="toggle-switch" id="email_providers_suggestion" name="email_providers_suggestion" value="yes" <?php checked( self::get_setting('email_providers_suggestion') === 'yes' ); ?> />
+               <input type="checkbox" class="toggle-switch" id="email_providers_suggestion" name="email_providers_suggestion" value="yes" <?php checked( Init::get_setting('email_providers_suggestion') === 'yes' ); ?> />
             </div>
          </td>
          <td class="require-email-suggestions-enabled">
@@ -104,7 +107,7 @@ defined('ABSPATH') || exit; ?>
                         <tr>
                            <td class="w-50">
                               <ul id="flexify_checkout_email_providers" class="list-group">
-                                 <?php foreach ( self::get_setting('set_email_providers') as $provider ) : ?>
+                                 <?php foreach ( Init::get_setting('set_email_providers') as $provider ) : ?>
                                     <li class="list-group-item d-flex align-items-center justify-content-between" data-provider="<?php echo esc_attr( $provider ) ?>">
                                        <span><?php echo esc_html( $provider ) ?></span>
                                        <button class="exclude-provider btn btn-icon btn-sm btn-outline-danger rounded-3 ms-3">
@@ -128,7 +131,7 @@ defined('ABSPATH') || exit; ?>
          </th>
          <td>
             <div class="form-check form-switch">
-               <input type="checkbox" class="toggle-switch" id="display_opened_order_review_mobile" name="display_opened_order_review_mobile" value="yes" <?php checked( self::get_setting('display_opened_order_review_mobile') === 'yes' ); ?> />
+               <input type="checkbox" class="toggle-switch" id="display_opened_order_review_mobile" name="display_opened_order_review_mobile" value="yes" <?php checked( Init::get_setting('display_opened_order_review_mobile') === 'yes' ); ?> />
             </div>
          </td>
       </tr>
@@ -141,7 +144,7 @@ defined('ABSPATH') || exit; ?>
             </th>
             <td>
                <div class="form-check form-switch">
-                  <input type="checkbox" class="toggle-switch" id="enable_display_local_pickup_kangu" name="enable_display_local_pickup_kangu" value="yes" <?php checked( self::get_setting('enable_display_local_pickup_kangu') === 'yes' ); ?> />
+                  <input type="checkbox" class="toggle-switch" id="enable_display_local_pickup_kangu" name="enable_display_local_pickup_kangu" value="yes" <?php checked( Init::get_setting('enable_display_local_pickup_kangu') === 'yes' ); ?> />
                </div>
             </td>
          </tr>
@@ -156,13 +159,12 @@ defined('ABSPATH') || exit; ?>
       $person_type = isset( $wcbcf_settings['person_type'] ) ? intval( $wcbcf_settings['person_type'] ) : null;
 
       // check if option contains CNPJ
-      if ( $wcbcf_active && $person_type == 1 || $wcbcf_active && $person_type == 3 || WC()->countries->get_base_country() === 'BR' ) {
-         ?>
+      if ( $wcbcf_active && $person_type == 1 || $wcbcf_active && $person_type == 3 || WC()->countries->get_base_country() === 'BR' ) : ?>
          <tr>
             <th>
                <?php echo esc_html__( 'Preencher informações da empresa automaticamente', 'flexify-checkout-for-woocommerce' ); 
 
-               if ( ! self::license_valid() ) : ?>
+               if ( ! License::is_valid() ) : ?>
                   <span class="badge pro bg-primary rounded-pill ms-2">
                      <svg class="icon-pro" viewBox="0 0 24.00 24.00" xmlns="http://www.w3.org/2000/svg"><g stroke-width="0"></g><g stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC" stroke-width="0.336"></g><g><path fill-rule="evenodd" clip-rule="evenodd" d="M12.0001 3C12.3334 3 12.6449 3.16613 12.8306 3.443L16.6106 9.07917L21.2523 3.85213C21.5515 3.51525 22.039 3.42002 22.4429 3.61953C22.8469 3.81904 23.0675 4.26404 22.9818 4.70634L20.2956 18.5706C20.0223 19.9812 18.7872 21 17.3504 21H6.64977C5.21293 21 3.97784 19.9812 3.70454 18.5706L1.01833 4.70634C0.932635 4.26404 1.15329 3.81904 1.55723 3.61953C1.96117 3.42002 2.44865 3.51525 2.74781 3.85213L7.38953 9.07917L11.1696 3.443C11.3553 3.16613 11.6667 3 12.0001 3ZM12.0001 5.79533L8.33059 11.2667C8.1582 11.5237 7.8765 11.6865 7.56772 11.7074C7.25893 11.7283 6.95785 11.6051 6.75234 11.3737L3.67615 7.90958L5.66802 18.1902C5.75913 18.6604 6.17082 19 6.64977 19H17.3504C17.8293 19 18.241 18.6604 18.3321 18.1902L20.324 7.90958L17.2478 11.3737C17.0423 11.6051 16.7412 11.7283 16.4324 11.7074C16.1236 11.6865 15.842 11.5237 15.6696 11.2667L12.0001 5.79533Z"></path> </g></svg>
                      <?php echo esc_html__( 'Pro', 'flexify-checkout-for-woocommerce' ) ?>
@@ -171,21 +173,19 @@ defined('ABSPATH') || exit; ?>
                <span class="flexify-checkout-description"><?php echo esc_html__( 'Ative esta opção para preencher as informações da empresa automaticamente ao digitar o CNPJ (Disponível apenas no Brasil).', 'flexify-checkout-for-woocommerce' ) ?></span>
             </th>
             <td>
-               <div class="form-check form-switch <?php echo ( ! self::license_valid() ) ? 'require-pro' : ''; ?>">
-                  <input type="checkbox" class="toggle-switch <?php echo ( ! self::license_valid() ) ? 'pro-version' : ''; ?>" id="enable_autofill_company_info" name="enable_autofill_company_info" value="yes" <?php checked( self::get_setting('enable_autofill_company_info') === 'yes' && self::license_valid() ); ?> />
+               <div class="form-check form-switch <?php echo ( ! License::is_valid() ) ? 'require-pro' : ''; ?>">
+                  <input type="checkbox" class="toggle-switch <?php echo ( ! License::is_valid() ) ? 'pro-version' : ''; ?>" id="enable_autofill_company_info" name="enable_autofill_company_info" value="yes" <?php checked( Init::get_setting('enable_autofill_company_info') === 'yes' && License::is_valid() ); ?> />
                </div>
             </td>
          </tr>
-         <?php
-      }
+      <?php endif;
 
-      if ( WC()->countries->get_base_country() === 'BR' ) {
-         ?>
+      if ( WC()->countries->get_base_country() === 'BR' ) : ?>
          <tr>
             <th>
                <?php echo esc_html__( 'Preencher endereço automaticamente', 'flexify-checkout-for-woocommerce' );
                
-               if ( ! self::license_valid() ) : ?>
+               if ( ! License::is_valid() ) : ?>
                   <span class="badge pro bg-primary rounded-pill ms-2">
                      <svg class="icon-pro" viewBox="0 0 24.00 24.00" xmlns="http://www.w3.org/2000/svg"><g stroke-width="0"></g><g stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC" stroke-width="0.336"></g><g><path fill-rule="evenodd" clip-rule="evenodd" d="M12.0001 3C12.3334 3 12.6449 3.16613 12.8306 3.443L16.6106 9.07917L21.2523 3.85213C21.5515 3.51525 22.039 3.42002 22.4429 3.61953C22.8469 3.81904 23.0675 4.26404 22.9818 4.70634L20.2956 18.5706C20.0223 19.9812 18.7872 21 17.3504 21H6.64977C5.21293 21 3.97784 19.9812 3.70454 18.5706L1.01833 4.70634C0.932635 4.26404 1.15329 3.81904 1.55723 3.61953C1.96117 3.42002 2.44865 3.51525 2.74781 3.85213L7.38953 9.07917L11.1696 3.443C11.3553 3.16613 11.6667 3 12.0001 3ZM12.0001 5.79533L8.33059 11.2667C8.1582 11.5237 7.8765 11.6865 7.56772 11.7074C7.25893 11.7283 6.95785 11.6051 6.75234 11.3737L3.67615 7.90958L5.66802 18.1902C5.75913 18.6604 6.17082 19 6.64977 19H17.3504C17.8293 19 18.241 18.6604 18.3321 18.1902L20.324 7.90958L17.2478 11.3737C17.0423 11.6051 16.7412 11.7283 16.4324 11.7074C16.1236 11.6865 15.842 11.5237 15.6696 11.2667L12.0001 5.79533Z"></path> </g></svg>
                      <?php echo esc_html__( 'Pro', 'flexify-checkout-for-woocommerce' ) ?>
@@ -195,8 +195,8 @@ defined('ABSPATH') || exit; ?>
                <span class="flexify-checkout-description"><?php echo esc_html__( 'Ative esta opção para preencher os campos de entrega ao digitar o CEP (Recomendado), (Disponível apenas no Brasil).', 'flexify-checkout-for-woocommerce' ) ?></span>
             </th>
             <td>
-               <div class="form-check form-switch <?php echo ( ! self::license_valid() ) ? 'require-pro' : ''; ?>">
-                  <input type="checkbox" class="toggle-switch <?php echo ( ! self::license_valid() ) ? 'pro-version' : ''; ?>" id="enable_fill_address" name="enable_fill_address" value="yes" <?php checked( self::get_setting('enable_fill_address') === 'yes' && self::license_valid() ); ?> />
+               <div class="form-check form-switch <?php echo ( ! License::is_valid() ) ? 'require-pro' : ''; ?>">
+                  <input type="checkbox" class="toggle-switch <?php echo ( ! License::is_valid() ) ? 'pro-version' : ''; ?>" id="enable_fill_address" name="enable_fill_address" value="yes" <?php checked( Init::get_setting('enable_fill_address') === 'yes' && License::is_valid() ); ?> />
                </div>
             </td>
             <td class="require-auto-fill-address">
@@ -216,7 +216,7 @@ defined('ABSPATH') || exit; ?>
                                  <span class="flexify-checkout-description"><?php echo esc_html__( 'Informe o endereço da API para obter o endereço do usuário através do seu CEP em formato JSON. Use a variável {postcode} para informar o CEP.', 'flexify-checkout-for-woocommerce' ) ?></span>
                               </th>
                               <td class="w-50">
-                                 <input type="text" class="form-control" id="get_address_api_service" name="get_address_api_service" value="<?php echo self::get_setting( 'get_address_api_service') ?>"/>
+                                 <input type="text" class="form-control" id="get_address_api_service" name="get_address_api_service" value="<?php echo Init::get_setting( 'get_address_api_service') ?>"/>
                               </td>
                            </tr>
                            <tr>
@@ -225,7 +225,7 @@ defined('ABSPATH') || exit; ?>
                                  <span class="flexify-checkout-description"><?php echo esc_html__( 'Informe a propriedade para obter o endereço que é retornado pelo serviço da API.', 'flexify-checkout-for-woocommerce' ) ?></span>
                               </th>
                               <td class="w-50">
-                                 <input type="text" class="form-control" id="api_auto_fill_address_param" name="api_auto_fill_address_param" value="<?php echo self::get_setting( 'api_auto_fill_address_param') ?>"/>
+                                 <input type="text" class="form-control" id="api_auto_fill_address_param" name="api_auto_fill_address_param" value="<?php echo Init::get_setting( 'api_auto_fill_address_param') ?>"/>
                               </td>
                            </tr>
                            <tr>
@@ -234,7 +234,7 @@ defined('ABSPATH') || exit; ?>
                                  <span class="flexify-checkout-description"><?php echo esc_html__( 'Informe a propriedade para obter o bairro que é retornado pelo serviço da API.', 'flexify-checkout-for-woocommerce' ) ?></span>
                               </th>
                               <td class="w-50">
-                                 <input type="text" class="form-control" id="api_auto_fill_address_neightborhood_param" name="api_auto_fill_address_neightborhood_param" value="<?php echo self::get_setting( 'api_auto_fill_address_neightborhood_param') ?>"/>
+                                 <input type="text" class="form-control" id="api_auto_fill_address_neightborhood_param" name="api_auto_fill_address_neightborhood_param" value="<?php echo Init::get_setting( 'api_auto_fill_address_neightborhood_param') ?>"/>
                               </td>
                            </tr>
                            <tr>
@@ -243,7 +243,7 @@ defined('ABSPATH') || exit; ?>
                                  <span class="flexify-checkout-description"><?php echo esc_html__( 'Informe a propriedade para obter a cidade que é retornado pelo serviço da API.', 'flexify-checkout-for-woocommerce' ) ?></span>
                               </th>
                               <td class="w-50">
-                                 <input type="text" class="form-control" id="api_auto_fill_address_city_param" name="api_auto_fill_address_city_param" value="<?php echo self::get_setting( 'api_auto_fill_address_city_param') ?>"/>
+                                 <input type="text" class="form-control" id="api_auto_fill_address_city_param" name="api_auto_fill_address_city_param" value="<?php echo Init::get_setting( 'api_auto_fill_address_city_param') ?>"/>
                               </td>
                            </tr>
                            <tr>
@@ -252,7 +252,7 @@ defined('ABSPATH') || exit; ?>
                                  <span class="flexify-checkout-description"><?php echo esc_html__( 'Informe a propriedade para obter o estado que é retornado pelo serviço da API.', 'flexify-checkout-for-woocommerce' ) ?></span>
                               </th>
                               <td class="w-50">
-                                 <input type="text" class="form-control" id="api_auto_fill_address_state_param" name="api_auto_fill_address_state_param" value="<?php echo self::get_setting( 'api_auto_fill_address_state_param') ?>"/>
+                                 <input type="text" class="form-control" id="api_auto_fill_address_state_param" name="api_auto_fill_address_state_param" value="<?php echo Init::get_setting( 'api_auto_fill_address_state_param') ?>"/>
                               </td>
                            </tr>
                         </table>
@@ -261,9 +261,7 @@ defined('ABSPATH') || exit; ?>
                </div>
             </td>
          </tr>
-         <?php
-      }
-      ?>
+      <?php endif; ?>
 
       <tr class="container-separator"></tr>
       
@@ -271,7 +269,7 @@ defined('ABSPATH') || exit; ?>
          <th>
             <?php echo esc_html__( 'Termos e condições ativo por padrão', 'flexify-checkout-for-woocommerce' );
             
-            if ( ! self::license_valid() ) : ?>
+            if ( ! License::is_valid() ) : ?>
                <span class="badge pro bg-primary rounded-pill ms-2">
                   <svg class="icon-pro" viewBox="0 0 24.00 24.00" xmlns="http://www.w3.org/2000/svg"><g stroke-width="0"></g><g stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC" stroke-width="0.336"></g><g><path fill-rule="evenodd" clip-rule="evenodd" d="M12.0001 3C12.3334 3 12.6449 3.16613 12.8306 3.443L16.6106 9.07917L21.2523 3.85213C21.5515 3.51525 22.039 3.42002 22.4429 3.61953C22.8469 3.81904 23.0675 4.26404 22.9818 4.70634L20.2956 18.5706C20.0223 19.9812 18.7872 21 17.3504 21H6.64977C5.21293 21 3.97784 19.9812 3.70454 18.5706L1.01833 4.70634C0.932635 4.26404 1.15329 3.81904 1.55723 3.61953C1.96117 3.42002 2.44865 3.51525 2.74781 3.85213L7.38953 9.07917L11.1696 3.443C11.3553 3.16613 11.6667 3 12.0001 3ZM12.0001 5.79533L8.33059 11.2667C8.1582 11.5237 7.8765 11.6865 7.56772 11.7074C7.25893 11.7283 6.95785 11.6051 6.75234 11.3737L3.67615 7.90958L5.66802 18.1902C5.75913 18.6604 6.17082 19 6.64977 19H17.3504C17.8293 19 18.241 18.6604 18.3321 18.1902L20.324 7.90958L17.2478 11.3737C17.0423 11.6051 16.7412 11.7283 16.4324 11.7074C16.1236 11.6865 15.842 11.5237 15.6696 11.2667L12.0001 5.79533Z"></path> </g></svg>
                   <?php echo esc_html__( 'Pro', 'flexify-checkout-for-woocommerce' ) ?>
@@ -281,8 +279,8 @@ defined('ABSPATH') || exit; ?>
             <span class="flexify-checkout-description"><?php echo esc_html__( 'Ative esta opção para a opção de termos e condições da última etapa ficar ativa por padrão, caso exista uma página de termos e condições configurada.', 'flexify-checkout-for-woocommerce' ) ?></span>
          </th>
          <td>
-            <div class="form-check form-switch <?php echo ( ! self::license_valid() ) ? 'require-pro' : ''; ?>">
-               <input type="checkbox" class="toggle-switch <?php echo ( ! self::license_valid() ) ? 'pro-version' : ''; ?>" id="enable_terms_is_checked_default" name="enable_terms_is_checked_default" value="yes" <?php checked( self::get_setting('enable_terms_is_checked_default') === 'yes' && self::license_valid() ); ?> />
+            <div class="form-check form-switch <?php echo ( ! License::is_valid() ) ? 'require-pro' : ''; ?>">
+               <input type="checkbox" class="toggle-switch <?php echo ( ! License::is_valid() ) ? 'pro-version' : ''; ?>" id="enable_terms_is_checked_default" name="enable_terms_is_checked_default" value="yes" <?php checked( Init::get_setting('enable_terms_is_checked_default') === 'yes' && License::is_valid() ); ?> />
             </div>
          </td>
       </tr>
@@ -290,7 +288,7 @@ defined('ABSPATH') || exit; ?>
          <th>
             <?php echo esc_html__( 'Permitir alterar quantidade de produtos', 'flexify-checkout-for-woocommerce' );
             
-            if ( ! self::license_valid() ) : ?>
+            if ( ! License::is_valid() ) : ?>
                <span class="badge pro bg-primary rounded-pill ms-2">
                   <svg class="icon-pro" viewBox="0 0 24.00 24.00" xmlns="http://www.w3.org/2000/svg"><g stroke-width="0"></g><g stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC" stroke-width="0.336"></g><g><path fill-rule="evenodd" clip-rule="evenodd" d="M12.0001 3C12.3334 3 12.6449 3.16613 12.8306 3.443L16.6106 9.07917L21.2523 3.85213C21.5515 3.51525 22.039 3.42002 22.4429 3.61953C22.8469 3.81904 23.0675 4.26404 22.9818 4.70634L20.2956 18.5706C20.0223 19.9812 18.7872 21 17.3504 21H6.64977C5.21293 21 3.97784 19.9812 3.70454 18.5706L1.01833 4.70634C0.932635 4.26404 1.15329 3.81904 1.55723 3.61953C1.96117 3.42002 2.44865 3.51525 2.74781 3.85213L7.38953 9.07917L11.1696 3.443C11.3553 3.16613 11.6667 3 12.0001 3ZM12.0001 5.79533L8.33059 11.2667C8.1582 11.5237 7.8765 11.6865 7.56772 11.7074C7.25893 11.7283 6.95785 11.6051 6.75234 11.3737L3.67615 7.90958L5.66802 18.1902C5.75913 18.6604 6.17082 19 6.64977 19H17.3504C17.8293 19 18.241 18.6604 18.3321 18.1902L20.324 7.90958L17.2478 11.3737C17.0423 11.6051 16.7412 11.7283 16.4324 11.7074C16.1236 11.6865 15.842 11.5237 15.6696 11.2667L12.0001 5.79533Z"></path> </g></svg>
                   <?php echo esc_html__( 'Pro', 'flexify-checkout-for-woocommerce' ) ?>
@@ -300,8 +298,8 @@ defined('ABSPATH') || exit; ?>
             <span class="flexify-checkout-description"><?php echo esc_html__( 'Ative esta opção para exibir os seletores de quantidades do produto na finalização de compras.', 'flexify-checkout-for-woocommerce' ) ?></span>
          </th>
          <td>
-            <div class="form-check form-switch <?php echo ( ! self::license_valid() ) ? 'require-pro' : ''; ?>">
-               <input type="checkbox" class="toggle-switch <?php echo ( ! self::license_valid() ) ? 'pro-version' : ''; ?>" id="enable_change_product_quantity" name="enable_change_product_quantity" value="yes" <?php checked( self::get_setting('enable_change_product_quantity') === 'yes' && self::license_valid() ); ?> />
+            <div class="form-check form-switch <?php echo ( ! License::is_valid() ) ? 'require-pro' : ''; ?>">
+               <input type="checkbox" class="toggle-switch <?php echo ( ! License::is_valid() ) ? 'pro-version' : ''; ?>" id="enable_change_product_quantity" name="enable_change_product_quantity" value="yes" <?php checked( Init::get_setting('enable_change_product_quantity') === 'yes' && License::is_valid() ); ?> />
             </div>
          </td>
       </tr>
@@ -309,7 +307,7 @@ defined('ABSPATH') || exit; ?>
          <th>
             <?php echo esc_html__( 'Permitir remover produtos do carrinho', 'flexify-checkout-for-woocommerce' );
             
-            if ( ! self::license_valid() ) : ?>
+            if ( ! License::is_valid() ) : ?>
                <span class="badge pro bg-primary rounded-pill ms-2">
                   <svg class="icon-pro" viewBox="0 0 24.00 24.00" xmlns="http://www.w3.org/2000/svg"><g stroke-width="0"></g><g stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC" stroke-width="0.336"></g><g><path fill-rule="evenodd" clip-rule="evenodd" d="M12.0001 3C12.3334 3 12.6449 3.16613 12.8306 3.443L16.6106 9.07917L21.2523 3.85213C21.5515 3.51525 22.039 3.42002 22.4429 3.61953C22.8469 3.81904 23.0675 4.26404 22.9818 4.70634L20.2956 18.5706C20.0223 19.9812 18.7872 21 17.3504 21H6.64977C5.21293 21 3.97784 19.9812 3.70454 18.5706L1.01833 4.70634C0.932635 4.26404 1.15329 3.81904 1.55723 3.61953C1.96117 3.42002 2.44865 3.51525 2.74781 3.85213L7.38953 9.07917L11.1696 3.443C11.3553 3.16613 11.6667 3 12.0001 3ZM12.0001 5.79533L8.33059 11.2667C8.1582 11.5237 7.8765 11.6865 7.56772 11.7074C7.25893 11.7283 6.95785 11.6051 6.75234 11.3737L3.67615 7.90958L5.66802 18.1902C5.75913 18.6604 6.17082 19 6.64977 19H17.3504C17.8293 19 18.241 18.6604 18.3321 18.1902L20.324 7.90958L17.2478 11.3737C17.0423 11.6051 16.7412 11.7283 16.4324 11.7074C16.1236 11.6865 15.842 11.5237 15.6696 11.2667L12.0001 5.79533Z"></path> </g></svg>
                   <?php echo esc_html__( 'Pro', 'flexify-checkout-for-woocommerce' ) ?>
@@ -319,8 +317,8 @@ defined('ABSPATH') || exit; ?>
             <span class="flexify-checkout-description"><?php echo esc_html__( 'Ative esta opção para exibir o botão de remoção do produto do carrinho na finalização de compras.', 'flexify-checkout-for-woocommerce' ) ?></span>
          </th>
          <td>
-            <div class="form-check form-switch <?php echo ( ! self::license_valid() ) ? 'require-pro' : ''; ?>">
-               <input type="checkbox" class="toggle-switch <?php echo ( ! self::license_valid() ) ? 'pro-version' : ''; ?>" id="enable_remove_product_cart" name="enable_remove_product_cart" value="yes" <?php checked( self::get_setting('enable_remove_product_cart') === 'yes' && self::license_valid() ); ?> />
+            <div class="form-check form-switch <?php echo ( ! License::is_valid() ) ? 'require-pro' : ''; ?>">
+               <input type="checkbox" class="toggle-switch <?php echo ( ! License::is_valid() ) ? 'pro-version' : ''; ?>" id="enable_remove_product_cart" name="enable_remove_product_cart" value="yes" <?php checked( Init::get_setting('enable_remove_product_cart') === 'yes' && License::is_valid() ); ?> />
             </div>
          </td>
       </tr>
@@ -328,7 +326,7 @@ defined('ABSPATH') || exit; ?>
          <th>
             <?php echo esc_html__( 'Ativar seletor de país em número de telefone', 'flexify-checkout-for-woocommerce' );
             
-            if ( ! self::license_valid() ) : ?>
+            if ( ! License::is_valid() ) : ?>
                   <span class="badge pro bg-primary rounded-pill ms-2">
                      <svg class="icon-pro" viewBox="0 0 24.00 24.00" xmlns="http://www.w3.org/2000/svg"><g stroke-width="0"></g><g stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC" stroke-width="0.336"></g><g><path fill-rule="evenodd" clip-rule="evenodd" d="M12.0001 3C12.3334 3 12.6449 3.16613 12.8306 3.443L16.6106 9.07917L21.2523 3.85213C21.5515 3.51525 22.039 3.42002 22.4429 3.61953C22.8469 3.81904 23.0675 4.26404 22.9818 4.70634L20.2956 18.5706C20.0223 19.9812 18.7872 21 17.3504 21H6.64977C5.21293 21 3.97784 19.9812 3.70454 18.5706L1.01833 4.70634C0.932635 4.26404 1.15329 3.81904 1.55723 3.61953C1.96117 3.42002 2.44865 3.51525 2.74781 3.85213L7.38953 9.07917L11.1696 3.443C11.3553 3.16613 11.6667 3 12.0001 3ZM12.0001 5.79533L8.33059 11.2667C8.1582 11.5237 7.8765 11.6865 7.56772 11.7074C7.25893 11.7283 6.95785 11.6051 6.75234 11.3737L3.67615 7.90958L5.66802 18.1902C5.75913 18.6604 6.17082 19 6.64977 19H17.3504C17.8293 19 18.241 18.6604 18.3321 18.1902L20.324 7.90958L17.2478 11.3737C17.0423 11.6051 16.7412 11.7283 16.4324 11.7074C16.1236 11.6865 15.842 11.5237 15.6696 11.2667L12.0001 5.79533Z"></path> </g></svg>
                      <?php echo esc_html__( 'Pro', 'flexify-checkout-for-woocommerce' ) ?>
@@ -338,8 +336,8 @@ defined('ABSPATH') || exit; ?>
             <span class="flexify-checkout-description"><?php echo esc_html__( 'Ative esta opção para exibir o seletor de país no campo de número de telefone. Útil se você vende para outros países.', 'flexify-checkout-for-woocommerce' ) ?></span>
          </th>
          <td>
-            <div class="form-check form-switch <?php echo ( ! self::license_valid() ) ? 'require-pro' : ''; ?>">
-               <input type="checkbox" class="toggle-switch <?php echo ( ! self::license_valid() ) ? 'pro-version' : ''; ?>" id="enable_ddi_phone_field" name="enable_ddi_phone_field" value="yes" <?php checked( self::get_setting('enable_ddi_phone_field') === 'yes' && self::license_valid() ); ?> />
+            <div class="form-check form-switch <?php echo ( ! License::is_valid() ) ? 'require-pro' : ''; ?>">
+               <input type="checkbox" class="toggle-switch <?php echo ( ! License::is_valid() ) ? 'pro-version' : ''; ?>" id="enable_ddi_phone_field" name="enable_ddi_phone_field" value="yes" <?php checked( Init::get_setting('enable_ddi_phone_field') === 'yes' && License::is_valid() ); ?> />
             </div>
          </td>
       </tr>
@@ -347,7 +345,7 @@ defined('ABSPATH') || exit; ?>
          <th>
             <?php echo esc_html__( 'Aplicar cupom de desconto automaticamente', 'flexify-checkout-for-woocommerce' );
             
-            if ( ! self::license_valid() ) : ?>
+            if ( ! License::is_valid() ) : ?>
                <span class="badge pro bg-primary rounded-pill ms-2">
                   <svg class="icon-pro" viewBox="0 0 24.00 24.00" xmlns="http://www.w3.org/2000/svg"><g stroke-width="0"></g><g stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC" stroke-width="0.336"></g><g><path fill-rule="evenodd" clip-rule="evenodd" d="M12.0001 3C12.3334 3 12.6449 3.16613 12.8306 3.443L16.6106 9.07917L21.2523 3.85213C21.5515 3.51525 22.039 3.42002 22.4429 3.61953C22.8469 3.81904 23.0675 4.26404 22.9818 4.70634L20.2956 18.5706C20.0223 19.9812 18.7872 21 17.3504 21H6.64977C5.21293 21 3.97784 19.9812 3.70454 18.5706L1.01833 4.70634C0.932635 4.26404 1.15329 3.81904 1.55723 3.61953C1.96117 3.42002 2.44865 3.51525 2.74781 3.85213L7.38953 9.07917L11.1696 3.443C11.3553 3.16613 11.6667 3 12.0001 3ZM12.0001 5.79533L8.33059 11.2667C8.1582 11.5237 7.8765 11.6865 7.56772 11.7074C7.25893 11.7283 6.95785 11.6051 6.75234 11.3737L3.67615 7.90958L5.66802 18.1902C5.75913 18.6604 6.17082 19 6.64977 19H17.3504C17.8293 19 18.241 18.6604 18.3321 18.1902L20.324 7.90958L17.2478 11.3737C17.0423 11.6051 16.7412 11.7283 16.4324 11.7074C16.1236 11.6865 15.842 11.5237 15.6696 11.2667L12.0001 5.79533Z"></path> </g></svg>
                   <?php echo esc_html__( 'Pro', 'flexify-checkout-for-woocommerce' ) ?>
@@ -357,8 +355,8 @@ defined('ABSPATH') || exit; ?>
             <span class="flexify-checkout-description"><?php echo esc_html__( 'Ative esta opção para informar um cupom de desconto para ser aplicado automaticamente na finalização de compra.', 'flexify-checkout-for-woocommerce' ) ?></span>
          </th>
          <td>
-            <div class="form-check form-switch <?php echo ( ! self::license_valid() ) ? 'require-pro' : ''; ?>">
-               <input type="checkbox" class="toggle-switch <?php echo ( ! self::license_valid() ) ? 'pro-version' : ''; ?>" id="enable_auto_apply_coupon_code" name="enable_auto_apply_coupon_code" value="yes" <?php checked( self::get_setting('enable_auto_apply_coupon_code') === 'yes' && self::license_valid() ); ?> />
+            <div class="form-check form-switch <?php echo ( ! License::is_valid() ) ? 'require-pro' : ''; ?>">
+               <input type="checkbox" class="toggle-switch <?php echo ( ! License::is_valid() ) ? 'pro-version' : ''; ?>" id="enable_auto_apply_coupon_code" name="enable_auto_apply_coupon_code" value="yes" <?php checked( Init::get_setting('enable_auto_apply_coupon_code') === 'yes' && License::is_valid() ); ?> />
             </div>
          </td>
       </tr>
@@ -368,14 +366,14 @@ defined('ABSPATH') || exit; ?>
             <span class="flexify-checkout-description"><?php echo esc_html__( 'Informe o código do cupom de desconto que será aplicado automaticamente na finalização de compra.', 'flexify-checkout-for-woocommerce' ) ?></span>
          </th>
          <td>
-            <input type="text" name="coupon_code_for_auto_apply" class="form-control" placeholder="<?php echo esc_html__( 'CUPOMDEDESCONTO', 'flexify-checkout-for-woocommerce' ) ?>" value="<?php echo self::get_setting( 'coupon_code_for_auto_apply' ) ?>"/>
+            <input type="text" name="coupon_code_for_auto_apply" class="form-control" placeholder="<?php echo esc_html__( 'CUPOMDEDESCONTO', 'flexify-checkout-for-woocommerce' ) ?>" value="<?php echo Init::get_setting( 'coupon_code_for_auto_apply' ) ?>"/>
          </td>
       </tr>
       <tr>
          <th>
             <?php echo esc_html__( 'Atribuir pedidos de usuários convidados', 'flexify-checkout-for-woocommerce' );
             
-            if ( ! self::license_valid() ) : ?>
+            if ( ! License::is_valid() ) : ?>
                <span class="badge pro bg-primary rounded-pill ms-2">
                   <svg class="icon-pro" viewBox="0 0 24.00 24.00" xmlns="http://www.w3.org/2000/svg"><g stroke-width="0"></g><g stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC" stroke-width="0.336"></g><g><path fill-rule="evenodd" clip-rule="evenodd" d="M12.0001 3C12.3334 3 12.6449 3.16613 12.8306 3.443L16.6106 9.07917L21.2523 3.85213C21.5515 3.51525 22.039 3.42002 22.4429 3.61953C22.8469 3.81904 23.0675 4.26404 22.9818 4.70634L20.2956 18.5706C20.0223 19.9812 18.7872 21 17.3504 21H6.64977C5.21293 21 3.97784 19.9812 3.70454 18.5706L1.01833 4.70634C0.932635 4.26404 1.15329 3.81904 1.55723 3.61953C1.96117 3.42002 2.44865 3.51525 2.74781 3.85213L7.38953 9.07917L11.1696 3.443C11.3553 3.16613 11.6667 3 12.0001 3ZM12.0001 5.79533L8.33059 11.2667C8.1582 11.5237 7.8765 11.6865 7.56772 11.7074C7.25893 11.7283 6.95785 11.6051 6.75234 11.3737L3.67615 7.90958L5.66802 18.1902C5.75913 18.6604 6.17082 19 6.64977 19H17.3504C17.8293 19 18.241 18.6604 18.3321 18.1902L20.324 7.90958L17.2478 11.3737C17.0423 11.6051 16.7412 11.7283 16.4324 11.7074C16.1236 11.6865 15.842 11.5237 15.6696 11.2667L12.0001 5.79533Z"></path> </g></svg>
                   <?php echo esc_html__( 'Pro', 'flexify-checkout-for-woocommerce' ) ?>
@@ -385,8 +383,8 @@ defined('ABSPATH') || exit; ?>
             <span class="flexify-checkout-description"><?php echo esc_html__( 'Ative esta opção para que pedidos de usuários convidados na finalização de compra sejam atribuídos a usuários existentes.', 'flexify-checkout-for-woocommerce' ) ?></span>
          </th>
          <td>
-            <div class="form-check form-switch <?php echo ( ! self::license_valid() ) ? 'require-pro' : ''; ?>">
-               <input type="checkbox" class="toggle-switch <?php echo ( ! self::license_valid() ) ? 'pro-version' : ''; ?>" id="enable_assign_guest_orders" name="enable_assign_guest_orders" value="yes" <?php checked( self::get_setting('enable_assign_guest_orders') === 'yes' && self::license_valid() ); ?> />
+            <div class="form-check form-switch <?php echo ( ! License::is_valid() ) ? 'require-pro' : ''; ?>">
+               <input type="checkbox" class="toggle-switch <?php echo ( ! License::is_valid() ) ? 'pro-version' : ''; ?>" id="enable_assign_guest_orders" name="enable_assign_guest_orders" value="yes" <?php checked( Init::get_setting('enable_assign_guest_orders') === 'yes' && License::is_valid() ); ?> />
             </div>
          </td>
       </tr>
@@ -400,7 +398,7 @@ defined('ABSPATH') || exit; ?>
          </th>
          <td>
             <div class="form-check form-switch">
-               <input type="checkbox" class="toggle-switch" id="enable_thankyou_page_template" name="enable_thankyou_page_template" value="yes" <?php checked( self::get_setting( 'enable_thankyou_page_template') === 'yes' ); ?> />
+               <input type="checkbox" class="toggle-switch" id="enable_thankyou_page_template" name="enable_thankyou_page_template" value="yes" <?php checked( Init::get_setting( 'enable_thankyou_page_template') === 'yes' ); ?> />
             </div>
          </td>
       </tr>
@@ -412,7 +410,7 @@ defined('ABSPATH') || exit; ?>
          <td>
          <select name="contact_page_thankyou" class="form-select">
             <?php foreach ( get_pages() as $page ) :
-               $selected = ( self::get_setting( 'contact_page_thankyou' ) === esc_attr( $page->ID ) ) ? 'selected="selected"' : '';
+               $selected = ( Init::get_setting( 'contact_page_thankyou' ) === esc_attr( $page->ID ) ) ? 'selected="selected"' : '';
                echo '<option value="'. esc_attr( $page->ID ) .'" ' . $selected . '>' . esc_html( $page->post_title ) . '</option>';
             endforeach; ?>
          </select>

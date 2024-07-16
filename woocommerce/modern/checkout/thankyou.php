@@ -1,5 +1,8 @@
 <?php
 
+use MeuMouse\Flexify_Checkout\Steps\Steps;
+use MeuMouse\Flexify_Checkout\Thankyou\Thankyou;
+
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
 
@@ -16,25 +19,27 @@ defined('ABSPATH') || exit;
  *
  * @see https://docs.woocommerce.com/document/template-structure/
  * @package MeuMouse.com
- * @version 1.0.0
+ * @since 1.0.0
+ * @version 3.7.0
  */
 
-?>
+// Exit if accessed directly.
+defined('ABSPATH') || exit; ?>
 
 <div class="flexify-common-wrap">
 	<?php 
-		Flexify_Checkout_Steps::render_header();
-		Flexify_Checkout_Thankyou::render_status( $order );
+		Steps::render_header();
+		Thankyou::render_status( $order );
 		do_action( 'woocommerce_thankyou_' . $order->get_payment_method(), $order->get_id() );
 		do_action( 'woocommerce_thankyou', $order->get_id() ); ?>
 
 	<div class="flexify-common-wrap__wrapper">
 		<div class="flexify-common-wrap__content-left">
-			<?php Flexify_Checkout_Thankyou::left_column( $order ); ?>
+			<?php Thankyou::left_column( $order ); ?>
 		</div>
 		<div class="flexify-common-wrap__content-right">
 			<section class="flexify-ty-order-review">
-				<?php Flexify_Checkout_Thankyou::render_product_details( $order ); ?>
+				<?php Thankyou::render_product_details( $order ); ?>
 			</section>
 		</div>
 	</div>
