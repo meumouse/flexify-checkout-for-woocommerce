@@ -277,11 +277,9 @@ class Steps {
 
 		$has_login_btn_class = ( ! is_user_logged_in() && 'no' !== get_option( 'woocommerce_enable_checkout_login_reminder' ) ) ? 'flexify-heading--has-login-btn' : '';
 		
-		if ( ! empty( Init::get_setting('text_header_step_1') ) ) {
-			?>
+		if ( ! empty( Init::get_setting('text_header_step_1') ) ) : ?>
 			<h2 class="flexify-heading flexify-heading--customer-details  <?php echo esc_attr( $has_login_btn_class ); ?>"><?php echo Init::get_setting('text_header_step_1') ?></h2>
-			<?php
-		}
+		<?php endif;
 
 		/**
 		 * Hook before fields on step 1

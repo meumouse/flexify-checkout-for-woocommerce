@@ -113,7 +113,7 @@ defined('ABSPATH') || exit; ?>
                             <button id="close_add_new_checkout_condition" class="btn-close fs-lg" aria-label="<?php esc_html( 'Fechar', 'flexify-checkout-for-woocommerce' ); ?>"></button>
                         </div>
 
-                        <div class="popup-body p-4 d-flex flex-collumn justify-content-center">
+                        <div class="popup-body p-4 d-flex flex-column justify-content-center">
                             <div class="mb-4 pb-3 d-block">
                                 <h2 class="mb-2"><?php echo esc_html__( 'Crie uma nova condição para finalização de compras', 'flexify-checkout-for-woocommerce' ) ?></h2>
                                 <span class="fs-lg text-muted"><?php echo esc_html__( 'Personalize componentes da finalização de compras com regras específicas.', 'flexify-checkout-for-woocommerce' ) ?></span>

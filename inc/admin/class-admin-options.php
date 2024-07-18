@@ -2,6 +2,7 @@
 
 namespace MeuMouse\Flexify_Checkout\Admin_Options;
 use MeuMouse\Flexify_Checkout\Init\Init;
+use MeuMouse\Flexify_Checkout\Helpers\Helpers;
 use MeuMouse\Flexify_Checkout\License\License;
 
 // Exit if accessed directly.
@@ -13,7 +14,7 @@ class Admin_Options extends Init {
    * Admin constructor
    *
    * @since 1.0.0
-   * @version 3.7.0
+   * @version 3.7.2
    * @package MeuMouse.com
    */
   public function __construct() {

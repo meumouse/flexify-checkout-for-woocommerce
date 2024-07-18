@@ -42,7 +42,7 @@
 
                 <tr class="container-separator require-add-new-field-select d-none"></tr>
                 <tr class="require-add-new-field-select d-none">
-                    <td class="w-100 d-flex flex-collumn align-items-start">
+                    <td class="w-100 d-flex flex-column align-items-start">
                         <select id="preview_select_new_field" class="form-select"></select>
                         <div id="preview_options_container" class="my-3"></div>
 
@@ -69,7 +69,7 @@
                 <tr class="container-separator require-add-new-field-multicheckbox d-none"></tr>
 
                 <tr class="require-add-new-field-multicheckbox d-none">
-                    <td class="w-100 d-flex flex-collumn align-items-start">
+                    <td class="w-100 d-flex flex-column align-items-start">
                         <div id="preview_multicheckbox_container" class="my-3"></div>
 
                         <div class="d-flex align-items-center mt-4">

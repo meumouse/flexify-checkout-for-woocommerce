@@ -1434,41 +1434,32 @@ class Core {
 	 * Save billing fields data in custom session
 	 * 
 	 * @since 1.8.5
-	 * @version 3.7.0
+	 * @version 3.7.2
 	 * @return void
 	 */
 	public function get_checkout_session_data_callback() {
-		// Receber os dados dos campos do POST
+		// Receive data from POST fields
 		$fields_data = isset( $_POST['fields_data'] ) ? json_decode( stripslashes( $_POST['fields_data'] ), true ) : [];
 		$flexify_checkout_session = array();
 		
 		foreach ( $fields_data as $field ) {
-			// Adicionar campo e valor ao array se existirem e não estiverem vazios
+			// Add field and value to array if they exist and are not empty
 			if ( isset( $field['field_id'] ) && isset( $field['value'] ) ) {
 				$field_id = $field['field_id'];
 				$field_value = sanitize_text_field( $field['value'] );
 				
-				// Remover prefixo 'billing_' se presente
+				// Remove 'billing_' prefix if present
 				if ( 'billing_' === substr( $field_id, 0, 8 ) ) {
 					$field_id = str_replace( 'billing_', '', $field_id );
 				}
 				
-				// Salvar campo e valor na sessão WooCommerce
+				// Save Field and Value in WooCommerce Session
 				$flexify_checkout_session[$field_id] = $field_value;
 			}
 		}
 		
-		// Alterar o nome da sessão de "flexify_checkout" para "flexify_checkout_customer_fields" na atualização 3.5.0
+		// Change session name from "flexify checkout" to "flexify_checkout_customer_fields" in 3.5.0 update
 		WC()->session->set( 'flexify_checkout_customer_fields', $flexify_checkout_session );
-
-		// Preparar resposta JSON
-		$response = array(
-			'status' => 'success',
-			'data' => $flexify_checkout_session,
-		);
-		
-		// Enviar resposta JSON de volta
-		wp_send_json( $response );
 	}
 
 

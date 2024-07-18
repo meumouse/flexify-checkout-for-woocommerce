@@ -301,7 +301,7 @@ $inter_module_active = is_plugin_active('module-inter-bank-for-flexify-checkout/
                         
                         <?php if ( ! empty( $key_file ) && ! empty( $crt_file ) ) : ?>
                            <div class="file-uploaded-info my-3">
-                              <div class="d-flex flex-collumn align-items-start me-3">
+                              <div class="d-flex flex-column align-items-start me-3">
                                  <span class="fs-lg"><?php echo esc_html( 'Sua chave e certificado já foram enviados.', 'flexify-checkout-for-woocommerce' ); ?></span>
                                  <span class="text-muted"><?php echo esc_html( 'Sua chave e certificado já foram enviados.', 'flexify-checkout-for-woocommerce' ); ?></span>
                               </div>
@@ -315,7 +315,7 @@ $inter_module_active = is_plugin_active('module-inter-bank-for-flexify-checkout/
                                  <div class="ping me-3">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: #fff"><path d="m10 15.586-3.293-3.293-1.414 1.414L10 18.414l9.707-9.707-1.414-1.414z"></path></svg>
                                  </div>
-                                 <div class="d-flex flex-collumn text-left">
+                                 <div class="d-flex flex-column text-left">
                                     <span class="fs-normal"><?php echo esc_html( 'Ouvindo Webhook do banco Inter.', 'flexify-checkout-for-woocommerce' ); ?></span>
                                     <span class="text-muted"><?php echo esc_html( 'Aprovação automática de pedidos ativada.', 'flexify-checkout-for-woocommerce' ); ?></span>
                                  </div>

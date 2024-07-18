@@ -9,7 +9,7 @@ defined('ABSPATH') || exit;
  * Class for init plugin
  * 
  * @since 1.0.0
- * @version 3.7.0
+ * @version 3.7.2
  * @package MeuMouse.com
  */
 class Init {
@@ -361,13 +361,14 @@ class Init {
    * Schedule email for remind admin to change Inter bank credentials
    * 
    * @since 3.2.0
+   * @version 3.7.2
    * @return void
    */
   public function schedule_remind_inter_bank_credentials() {
     $expire_date = self::get_setting('inter_bank_expire_date');
 
     // Convert date to Y-m-d format
-    $expire_date_formated = DateTime::createFromFormat('d/m/Y', $expire_date)->format('Y-m-d');
+    $expire_date_formated = \DateTime::createFromFormat('d/m/Y', $expire_date)->format('Y-m-d');
 
     // Subtract 7 days from the expiration date
     $send_date_email = date( 'Y-m-d', strtotime( '-7 days', strtotime( $expire_date_formated ) ) );
