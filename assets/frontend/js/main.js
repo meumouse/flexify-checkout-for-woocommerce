@@ -1984,7 +1984,7 @@ flexifyForm.prepareField = function($input) {
  * Update customer data to "flexify_checkout_customer_fields" session
  * 
  * @since 1.8.5
- * @version 3.6.0
+ * @version 3.7.2
  */
 jQuery(document).ready( function($) {
   var all_checkout_fields = flexify_checkout_vars.get_all_checkout_fields || [];
@@ -2019,6 +2019,7 @@ jQuery(document).ready( function($) {
           contentType: false,
           data: session_form_data,
           success: function(response) {
+            jQuery(document.body).trigger('update_checkout');
           //  console.log('Dados da sessão atualizados com sucesso.', response);
            //   update_customer_info(response);
           },
