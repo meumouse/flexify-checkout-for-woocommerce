@@ -1,6 +1,7 @@
 <?php
 
 namespace MeuMouse\Flexify_Checkout\Coupon;
+
 use MeuMouse\Flexify_Checkout\Init\Init;
 
 // Exit if accessed directly.

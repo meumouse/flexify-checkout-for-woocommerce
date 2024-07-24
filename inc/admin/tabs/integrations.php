@@ -33,7 +33,7 @@ $inter_module_active = is_plugin_active('module-inter-bank-for-flexify-checkout/
             </th>
             <td class="d-flex align-items-center">
                <div class="form-check form-switch <?php echo ( ! License::is_valid() ) ? 'require-pro' : ''; ?>">
-                  <input type="checkbox" class="toggle-switch <?php echo ( ! License::is_valid() ) ? 'pro-version' : ''; ?>" id="<?php echo ! class_exists('Module_Inter_Bank') ? 'require_inter_bank_module_trigger' : 'enable_inter_bank_pix_api'; ?>" name="enable_inter_bank_pix_api" value="yes" <?php checked( Init::get_setting( 'enable_inter_bank_pix_api') === 'yes' && class_exists('Module_Inter_Bank') && License::is_valid() ); ?>/>
+                  <input type="checkbox" class="toggle-switch <?php echo ( ! License::is_valid() ) ? 'pro-version' : ''; ?>" id="<?php echo ! class_exists('Module_Inter_Bank') ? 'require_inter_bank_module_trigger' : 'enable_inter_bank_pix_api'; ?>" name="enable_inter_bank_pix_api" value="yes" <?php checked( Init::get_setting('enable_inter_bank_pix_api') === 'yes' && class_exists('Module_Inter_Bank') && License::is_valid() ); ?>/>
                </div>
                
                <?php if ( $inter_module_active ) : ?>
@@ -44,53 +44,60 @@ $inter_module_active = is_plugin_active('module-inter-bank-for-flexify-checkout/
                               <h5 class="popup-title"><?php echo esc_html__( 'Configure a forma de pagamento Pix', 'flexify-checkout-for-woocommerce' ); ?></h5>
                               <button id="inter_bank_pix_close" class=" btn-close fs-lg" aria-label="Fechar"></button>
                            </div>
+
                            <div class="popup-body">
-                              <table class="form-table">
-                                 <tr>
-                                    <th>
-                                       <?php echo esc_html( 'Título da forma de pagamento Pix', 'flexify-checkout-for-woocommerce' ); ?>
-                                       <span class="flexify-checkout-description"><?php echo esc_html__( 'Título que o usuário verá na finalização de compra (Disponível apenas no Brasil).', 'flexify-checkout-for-woocommerce' ) ?></span>
-                                    </th>
-                                    <td>
-                                       <input type="text" class="form-control input-control-wd-20" name="pix_gateway_title" value="<?php echo Init::get_setting( 'pix_gateway_title' ) ?>"/>
-                                    </td>
-                                 </tr>
-                                 <tr>
-                                    <th>
-                                       <?php echo esc_html( 'Descrição da forma de pagamento Pix', 'flexify-checkout-for-woocommerce' ); ?>
-                                       <span class="flexify-checkout-description"><?php echo esc_html__( 'Descrição da forma de pagamento que o usuário verá na finalização de compra.', 'flexify-checkout-for-woocommerce' ) ?></span>
-                                    </th>
-                                    <td>
-                                       <input type="text" class="form-control input-control-wd-20" name="pix_gateway_description" value="<?php echo Init::get_setting( 'pix_gateway_description' ) ?>"/>
-                                    </td>
-                                 </tr>
-                                 <tr>
-                                    <th>
-                                       <?php echo esc_html( 'Instruções por e-mail da forma de pagamento Pix', 'flexify-checkout-for-woocommerce' ); ?>
-                                       <span class="flexify-checkout-description"><?php echo esc_html__( 'Texto exibido no e-mail junto do botão de copiar código Copia e Cola do Pix.', 'flexify-checkout-for-woocommerce' ) ?></span>
-                                    </th>
-                                    <td>
-                                       <input type="text" class="form-control input-control-wd-20" name="pix_gateway_email_instructions" value="<?php echo Init::get_setting( 'pix_gateway_email_instructions' ) ?>"/>
-                                    </td>
-                                 </tr>
-                                 <tr>
-                                    <th>
-                                       <?php echo esc_html( 'Chave Pix', 'flexify-checkout-for-woocommerce' ); ?>
-                                       <span class="flexify-checkout-description"><?php echo esc_html__( 'Chave Pix associada ao banco Inter que receberá o pagamento. Para chaves do tipo celular ou CNPJ, utilize apenas números.', 'flexify-checkout-for-woocommerce' ) ?></span>
-                                    </th>
-                                    <td>
-                                       <input type="text" class="form-control input-control-wd-20" name="pix_gateway_receipt_key" value="<?php echo Init::get_setting( 'pix_gateway_receipt_key' ) ?>"/>
-                                    </td>
-                                 </tr>
-                                 <tr>
-                                    <th>
-                                       <?php echo esc_html( 'Validade do Pix', 'flexify-checkout-for-woocommerce' ); ?>
-                                       <span class="flexify-checkout-description"><?php echo esc_html__( 'Prazo máximo para pagamento do Pix em minutos.', 'flexify-checkout-for-woocommerce' ) ?></span>
-                                    </th>
-                                    <td>
-                                       <input type="number" class="form-control input-control-wd-5" name="pix_gateway_expires" value="<?php echo Init::get_setting( 'pix_gateway_expires' ) ?>"/>
-                                    </td>
-                                 </tr>
+                              <table class="popup-table">
+                                 <tbody>
+                                    <tr>
+                                       <th>
+                                          <?php echo esc_html( 'Título da forma de pagamento Pix', 'flexify-checkout-for-woocommerce' ); ?>
+                                          <span class="flexify-checkout-description"><?php echo esc_html__( 'Título que o usuário verá na finalização de compra (Disponível apenas no Brasil).', 'flexify-checkout-for-woocommerce' ) ?></span>
+                                       </th>
+                                       <td>
+                                          <input type="text" class="form-control input-control-wd-20" name="pix_gateway_title" value="<?php echo Init::get_setting('pix_gateway_title' ) ?>"/>
+                                       </td>
+                                    </tr>
+                                    
+                                    <tr>
+                                       <th>
+                                          <?php echo esc_html( 'Descrição da forma de pagamento Pix', 'flexify-checkout-for-woocommerce' ); ?>
+                                          <span class="flexify-checkout-description"><?php echo esc_html__( 'Descrição da forma de pagamento que o usuário verá na finalização de compra.', 'flexify-checkout-for-woocommerce' ) ?></span>
+                                       </th>
+                                       <td>
+                                          <input type="text" class="form-control input-control-wd-20" name="pix_gateway_description" value="<?php echo Init::get_setting('pix_gateway_description' ) ?>"/>
+                                       </td>
+                                    </tr>
+
+                                    <tr>
+                                       <th>
+                                          <?php echo esc_html( 'Instruções por e-mail da forma de pagamento Pix', 'flexify-checkout-for-woocommerce' ); ?>
+                                          <span class="flexify-checkout-description"><?php echo esc_html__( 'Texto exibido no e-mail junto do botão de copiar código Copia e Cola do Pix.', 'flexify-checkout-for-woocommerce' ) ?></span>
+                                       </th>
+                                       <td>
+                                          <input type="text" class="form-control input-control-wd-20" name="pix_gateway_email_instructions" value="<?php echo Init::get_setting('pix_gateway_email_instructions' ) ?>"/>
+                                       </td>
+                                    </tr>
+
+                                    <tr>
+                                       <th>
+                                          <?php echo esc_html( 'Chave Pix', 'flexify-checkout-for-woocommerce' ); ?>
+                                          <span class="flexify-checkout-description"><?php echo esc_html__( 'Chave Pix associada ao banco Inter que receberá o pagamento. Para chaves do tipo celular ou CNPJ, utilize apenas números.', 'flexify-checkout-for-woocommerce' ) ?></span>
+                                       </th>
+                                       <td>
+                                          <input type="text" class="form-control input-control-wd-20" name="pix_gateway_receipt_key" value="<?php echo Init::get_setting('pix_gateway_receipt_key' ) ?>"/>
+                                       </td>
+                                    </tr>
+
+                                    <tr>
+                                       <th>
+                                          <?php echo esc_html( 'Validade do Pix', 'flexify-checkout-for-woocommerce' ); ?>
+                                          <span class="flexify-checkout-description"><?php echo esc_html__( 'Prazo máximo para pagamento do Pix em minutos.', 'flexify-checkout-for-woocommerce' ) ?></span>
+                                       </th>
+                                       <td>
+                                          <input type="number" class="form-control input-control-wd-5" name="pix_gateway_expires" value="<?php echo Init::get_setting('pix_gateway_expires' ) ?>"/>
+                                       </td>
+                                    </tr>
+                                 </tbody>
                               </table>
                            </div>
                         </div>
@@ -114,7 +121,7 @@ $inter_module_active = is_plugin_active('module-inter-bank-for-flexify-checkout/
             </th>
             <td class="d-flex align-items-center">
                <div class="form-check form-switch <?php echo ( ! License::is_valid() ) ? 'require-pro' : ''; ?>">
-                  <input type="checkbox" class="toggle-switch <?php echo ( ! License::is_valid() ) ? 'pro-version' : ''; ?>" id="<?php echo ! class_exists('Module_Inter_Bank') ? 'require_inter_bank_module_trigger_2' : 'enable_inter_bank_ticket_api'; ?>" name="enable_inter_bank_ticket_api" value="yes" <?php checked( Init::get_setting( 'enable_inter_bank_ticket_api') === 'yes' && class_exists('Module_Inter_Bank') && License::is_valid() ); ?>/>
+                  <input type="checkbox" class="toggle-switch <?php echo ( ! License::is_valid() ) ? 'pro-version' : ''; ?>" id="<?php echo ! class_exists('Module_Inter_Bank') ? 'require_inter_bank_module_trigger_2' : 'enable_inter_bank_ticket_api'; ?>" name="enable_inter_bank_ticket_api" value="yes" <?php checked( Init::get_setting('enable_inter_bank_ticket_api') === 'yes' && class_exists('Module_Inter_Bank') && License::is_valid() ); ?>/>
                </div>
 
                <?php if ( $inter_module_active ) : ?>
@@ -128,56 +135,58 @@ $inter_module_active = is_plugin_active('module-inter-bank-for-flexify-checkout/
                         </div>
 
                         <div class="popup-body">
-                           <table class="form-table">
-                              <tr>
-                                 <th>
-                                    <?php echo esc_html( 'Título da forma de pagamento Boleto', 'flexify-checkout-for-woocommerce' ); ?>
-                                    <span class="flexify-checkout-description"><?php echo esc_html__( 'Título que o usuário verá na finalização de compra.', 'flexify-checkout-for-woocommerce' ) ?></span>
-                                 </th>
-                                 <td>
-                                    <input type="text" class="form-control input-control-wd-20" name="bank_slip_gateway_title" value="<?php echo Init::get_setting( 'bank_slip_gateway_title' ) ?>"/>
-                                 </td>
-                              </tr>
+                           <table class="popup-table">
+                              <tbody>
+                                 <tr>
+                                    <th>
+                                       <?php echo esc_html( 'Título da forma de pagamento Boleto', 'flexify-checkout-for-woocommerce' ); ?>
+                                       <span class="flexify-checkout-description"><?php echo esc_html__( 'Título que o usuário verá na finalização de compra.', 'flexify-checkout-for-woocommerce' ) ?></span>
+                                    </th>
+                                    <td>
+                                       <input type="text" class="form-control input-control-wd-20" name="bank_slip_gateway_title" value="<?php echo Init::get_setting('bank_slip_gateway_title' ) ?>"/>
+                                    </td>
+                                 </tr>
 
-                              <tr>
-                                 <th>
-                                    <?php echo esc_html( 'Descrição da forma de pagamento Boleto', 'flexify-checkout-for-woocommerce' ); ?>
-                                    <span class="flexify-checkout-description"><?php echo esc_html__( 'Descrição da forma de pagamento que o usuário verá na finalização de compra.', 'flexify-checkout-for-woocommerce' ) ?></span>
-                                 </th>
-                                 <td>
-                                    <input type="text" class="form-control input-control-wd-20" name="bank_slip_gateway_description" value="<?php echo Init::get_setting( 'bank_slip_gateway_description' ) ?>"/>
-                                 </td>
-                              </tr>
+                                 <tr>
+                                    <th>
+                                       <?php echo esc_html( 'Descrição da forma de pagamento Boleto', 'flexify-checkout-for-woocommerce' ); ?>
+                                       <span class="flexify-checkout-description"><?php echo esc_html__( 'Descrição da forma de pagamento que o usuário verá na finalização de compra.', 'flexify-checkout-for-woocommerce' ) ?></span>
+                                    </th>
+                                    <td>
+                                       <input type="text" class="form-control input-control-wd-20" name="bank_slip_gateway_description" value="<?php echo Init::get_setting('bank_slip_gateway_description' ) ?>"/>
+                                    </td>
+                                 </tr>
 
-                              <tr>
-                                 <th>
-                                    <?php echo esc_html( 'Instruções por e-mail da forma de pagamento Boleto', 'flexify-checkout-for-woocommerce' ); ?>
-                                    <span class="flexify-checkout-description"><?php echo esc_html__( 'Texto exibido no e-mail junto do botão de copiar código Copia e Cola do Pix.', 'flexify-checkout-for-woocommerce' ) ?></span>
-                                 </th>
-                                 <td>
-                                    <input type="text" class="form-control input-control-wd-20" name="bank_slip_gateway_email_instructions" value="<?php echo Init::get_setting( 'bank_slip_gateway_email_instructions' ) ?>"/>
-                                 </td>
-                              </tr>
+                                 <tr>
+                                    <th>
+                                       <?php echo esc_html( 'Instruções por e-mail da forma de pagamento Boleto', 'flexify-checkout-for-woocommerce' ); ?>
+                                       <span class="flexify-checkout-description"><?php echo esc_html__( 'Texto exibido no e-mail junto do botão de copiar código Copia e Cola do Pix.', 'flexify-checkout-for-woocommerce' ) ?></span>
+                                    </th>
+                                    <td>
+                                       <input type="text" class="form-control input-control-wd-20" name="bank_slip_gateway_email_instructions" value="<?php echo Init::get_setting('bank_slip_gateway_email_instructions' ) ?>"/>
+                                    </td>
+                                 </tr>
 
-                              <tr>
-                                 <th>
-                                    <?php echo esc_html( 'Mensagem do rodapé', 'flexify-checkout-for-woocommerce' ); ?>
-                                    <span class="flexify-checkout-description"><?php echo esc_html__( 'Mensagem do rodapé do boleto bancário. Use a variável {order_id} para inserir o número do pedido.', 'flexify-checkout-for-woocommerce' ) ?></span>
-                                 </th>
-                                 <td>
-                                    <input type="text" class="form-control input-control-wd-20" name="bank_slip_gateway_footer_message" value="<?php echo Init::get_setting( 'bank_slip_gateway_footer_message' ) ?>"/>
-                                 </td>
-                              </tr>
-                              
-                              <tr>
-                                 <th>
-                                    <?php echo esc_html( 'Validade do Pix', 'flexify-checkout-for-woocommerce' ); ?>
-                                    <span class="flexify-checkout-description"><?php echo esc_html__( 'Prazo máximo para pagamento do Pix em minutos.', 'flexify-checkout-for-woocommerce' ) ?></span>
-                                 </th>
-                                 <td>
-                                    <input type="number" class="form-control input-control-wd-5" name="bank_slip_gateway_expires" value="<?php echo Init::get_setting( 'bank_slip_gateway_expires' ) ?>"/>
-                                 </td>
-                              </tr>
+                                 <tr>
+                                    <th>
+                                       <?php echo esc_html( 'Mensagem do rodapé', 'flexify-checkout-for-woocommerce' ); ?>
+                                       <span class="flexify-checkout-description"><?php echo esc_html__( 'Mensagem do rodapé do boleto bancário. Use a variável {order_id} para inserir o número do pedido.', 'flexify-checkout-for-woocommerce' ) ?></span>
+                                    </th>
+                                    <td>
+                                       <input type="text" class="form-control input-control-wd-20" name="bank_slip_gateway_footer_message" value="<?php echo Init::get_setting('bank_slip_gateway_footer_message' ) ?>"/>
+                                    </td>
+                                 </tr>
+                                 
+                                 <tr>
+                                    <th>
+                                       <?php echo esc_html( 'Validade do Pix', 'flexify-checkout-for-woocommerce' ); ?>
+                                       <span class="flexify-checkout-description"><?php echo esc_html__( 'Prazo máximo para pagamento do Pix em minutos.', 'flexify-checkout-for-woocommerce' ) ?></span>
+                                    </th>
+                                    <td>
+                                       <input type="number" class="form-control input-control-wd-5" name="bank_slip_gateway_expires" value="<?php echo Init::get_setting('bank_slip_gateway_expires' ) ?>"/>
+                                    </td>
+                                 </tr>
+                              </tbody>
                            </table>
                         </div>
                      </div>
@@ -202,55 +211,69 @@ $inter_module_active = is_plugin_active('module-inter-bank-for-flexify-checkout/
                         <button id="inter_bank_credendials_close" class="btn-close fs-lg" aria-label="Fechar"></button>
                      </div>
                      <div class="popup-body">
-                        <table class="form-table">
-                           <tr>
-                              <th>
-                                 <?php echo esc_html( 'Ativar modo depuração', 'flexify-checkout-for-woocommerce' ); ?>
-                                 <span class="flexify-checkout-description"><?php echo esc_html__( 'Ative o modo depuração para salvar o registro de requisições da API.', 'flexify-checkout-for-woocommerce' ) ?></span>
-                              </th>
-                              <td>
-                                 <div class="form-check form-switch">
-                                    <input type="checkbox" class="toggle-switch" id="inter_bank_debug_mode" name="inter_bank_debug_mode" value="yes" <?php checked( Init::get_setting( 'inter_bank_debug_mode') === 'yes' ); ?>/>
-                                 </div>
-                              </td>
-                           </tr>
+                        <table class="popup-table">
+                           <tbody>
+                              <tr>
+                                 <th>
+                                    <?php echo esc_html( 'Ativar modo depuração', 'flexify-checkout-for-woocommerce' ); ?>
+                                    <span class="flexify-checkout-description"><?php echo esc_html__( 'Ative o modo depuração para salvar o registro de requisições da API.', 'flexify-checkout-for-woocommerce' ) ?></span>
+                                 </th>
+                                 <td>
+                                    <div class="form-check form-switch">
+                                       <input type="checkbox" class="toggle-switch" id="inter_bank_debug_mode" name="inter_bank_debug_mode" value="yes" <?php checked( Init::get_setting('inter_bank_debug_mode') === 'yes' ); ?>/>
+                                    </div>
+                                 </td>
+                              </tr>
 
-                           <tr>
-                              <th>
-                                 <?php echo esc_html( 'ClientID', 'flexify-checkout-for-woocommerce' ); ?>
-                                 <span class="flexify-checkout-description"><?php echo esc_html__( 'Chave aleatória ClientID da API do banco Inter.', 'flexify-checkout-for-woocommerce' ) ?></span>
-                              </th>
-                              <td>
-                                 <input type="text" class="form-control input-control-wd-20" name="inter_bank_client_id" value="<?php echo Init::get_setting( 'inter_bank_client_id' ) ?>"/>
-                              </td>
-                           </tr>
+                              <tr>
+                                 <th>
+                                    <?php echo esc_html( 'Sandbox/Produção', 'flexify-checkout-for-woocommerce' ); ?>
+                                    <span class="flexify-checkout-description"><?php echo esc_html__( 'Ative essa opção para definir a integração como modo Produção (Operacional) ou desativado para Sandbox (Testes).', 'flexify-checkout-for-woocommerce' ) ?></span>
+                                 </th>
+                                 <td>
+                                    <div class="form-check form-switch">
+                                       <input type="checkbox" class="toggle-switch" id="inter_bank_env_mode" name="inter_bank_env_mode" value="yes" <?php checked( Init::get_setting('inter_bank_env_mode') === 'yes' ); ?>/>
+                                    </div>
+                                 </td>
+                              </tr>
 
-                           <tr>
-                              <th>
-                                 <?php echo esc_html( 'ClientSecret', 'flexify-checkout-for-woocommerce' ); ?>
-                                 <span class="flexify-checkout-description"><?php echo esc_html__( 'Chave aleatória ClientSecret da API do banco Inter.', 'flexify-checkout-for-woocommerce' ) ?></span>
-                              </th>
-                              <td>
-                                 <input type="text" class="form-control input-control-wd-20" name="inter_bank_client_secret" value="<?php echo Init::get_setting( 'inter_bank_client_secret' ) ?>"/>
-                              </td>
-                           </tr>
+                              <tr>
+                                 <th>
+                                    <?php echo esc_html( 'ClientID', 'flexify-checkout-for-woocommerce' ); ?>
+                                    <span class="flexify-checkout-description"><?php echo esc_html__( 'Chave aleatória ClientID da API do banco Inter.', 'flexify-checkout-for-woocommerce' ) ?></span>
+                                 </th>
+                                 <td>
+                                    <input type="text" class="form-control input-control-wd-20" name="inter_bank_client_id" value="<?php echo Init::get_setting('inter_bank_client_id' ) ?>"/>
+                                 </td>
+                              </tr>
 
-                           <tr>
-                              <th>
-                                 <?php echo esc_html( 'Data de expiração da aplicação', 'flexify-checkout-for-woocommerce' ); ?>
-                                 <span class="flexify-checkout-description"><?php echo esc_html__( 'Informe a data de quando irá expirar as credenciais da aplicação, assim poderemos te avisar 7 dias antes das credenciais serem revogadas.', 'flexify-checkout-for-woocommerce' ) ?></span>
-                              </th>
-                              <td>
-                                 <input type="text" class="form-control input-control-wd-10 dateselect" name="inter_bank_expire_date" value="<?php echo Init::get_setting( 'inter_bank_expire_date' ) ?>"/>
-                              </td>
-                           </tr>
+                              <tr>
+                                 <th>
+                                    <?php echo esc_html( 'ClientSecret', 'flexify-checkout-for-woocommerce' ); ?>
+                                    <span class="flexify-checkout-description"><?php echo esc_html__( 'Chave aleatória ClientSecret da API do banco Inter.', 'flexify-checkout-for-woocommerce' ) ?></span>
+                                 </th>
+                                 <td>
+                                    <input type="text" class="form-control input-control-wd-20" name="inter_bank_client_secret" value="<?php echo Init::get_setting('inter_bank_client_secret' ) ?>"/>
+                                 </td>
+                              </tr>
 
-                           <tr>
-                              <th>
-                                 <?php echo esc_html( 'Envie sua chave e certificado', 'flexify-checkout-for-woocommerce' ); ?>
-                                 <span class="flexify-checkout-description"><?php echo esc_html__( 'Envie sua chave e certificado que você recebeu do banco Inter ao criar a aplicação.', 'flexify-checkout-for-woocommerce' ) ?></span>
-                              </th>
-                           </tr>
+                              <tr>
+                                 <th>
+                                    <?php echo esc_html( 'Data de expiração das credenciais', 'flexify-checkout-for-woocommerce' ); ?>
+                                    <span class="flexify-checkout-description"><?php echo esc_html__( 'Informe a data de quando irá expirar as credenciais da aplicação, assim poderemos te avisar 7 dias antes das credenciais serem revogadas.', 'flexify-checkout-for-woocommerce' ) ?></span>
+                                 </th>
+                                 <td>
+                                    <input type="text" class="form-control input-control-wd-10 dateselect" name="inter_bank_expire_date" value="<?php echo Init::get_setting('inter_bank_expire_date' ) ?>"/>
+                                 </td>
+                              </tr>
+
+                              <tr>
+                                 <th>
+                                    <?php echo esc_html( 'Envie sua chave e certificado', 'flexify-checkout-for-woocommerce' ); ?>
+                                    <span class="flexify-checkout-description"><?php echo esc_html__( 'Envie sua chave e certificado que você recebeu do banco Inter ao criar a aplicação.', 'flexify-checkout-for-woocommerce' ) ?></span>
+                                 </th>
+                              </tr>
+                           </tbody>
                         </table>
 
                         <div class="drop-file-inter-bank mb-2">
@@ -259,7 +282,7 @@ $inter_module_active = is_plugin_active('module-inter-bank-for-flexify-checkout/
                            $key_file = get_option('flexify_checkout_inter_bank_key_file');
 
                            if ( empty( $crt_file ) ) : ?>
-                              <div class="dropzone me-2" id="dropzone-crt">
+                              <div class="dropzone py-3 me-2" id="dropzone-crt">
                                  <div class="drag-text">
                                     <svg class="drag-and-drop-file-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M19.937 8.68c-.011-.032-.02-.063-.033-.094a.997.997 0 0 0-.196-.293l-6-6a.997.997 0 0 0-.293-.196c-.03-.014-.062-.022-.094-.033a.991.991 0 0 0-.259-.051C13.04 2.011 13.021 2 13 2H6c-1.103 0-2 .897-2 2v16c0 1.103.897 2 2 2h12c1.103 0 2-.897 2-2V9c0-.021-.011-.04-.013-.062a.99.99 0 0 0-.05-.258zM16.586 8H14V5.414L16.586 8zM6 20V4h6v5a1 1 0 0 0 1 1h5l.002 10H6z"></path></svg>
                                     <?php echo esc_html( 'Arraste e solte o arquivo .crt aqui', 'flexify-checkout-for-woocommerce' ); ?>
@@ -271,7 +294,7 @@ $inter_module_active = is_plugin_active('module-inter-bank-for-flexify-checkout/
                                     <div class="drag-and-drop-file">
                                        <div class="custom-file">
                                           <input type="file" class="custom-file-input" id="upload-file-crt" name="crt_file" hidden>
-                                          <label class="custom-file-label mb-4" for="upload-file-crt"><?php echo esc_html( 'Ou clique para procurar seu arquivo', 'flexify-checkout-for-woocommerce' ); ?></label>
+                                          <label class="custom-file-label" for="upload-file-crt"><?php echo esc_html( 'Ou clique para procurar seu arquivo', 'flexify-checkout-for-woocommerce' ); ?></label>
                                        </div>
                                     </div>
                                  </form>
@@ -279,7 +302,7 @@ $inter_module_active = is_plugin_active('module-inter-bank-for-flexify-checkout/
                            <?php endif;
 
                            if ( empty( $key_file ) ) : ?>
-                              <div class="dropzone ms-2" id="dropzone-key">
+                              <div class="dropzone py-3 ms-2" id="dropzone-key">
                                  <div class="drag-text">
                                     <svg class="drag-and-drop-file-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M19.937 8.68c-.011-.032-.02-.063-.033-.094a.997.997 0 0 0-.196-.293l-6-6a.997.997 0 0 0-.293-.196c-.03-.014-.062-.022-.094-.033a.991.991 0 0 0-.259-.051C13.04 2.011 13.021 2 13 2H6c-1.103 0-2 .897-2 2v16c0 1.103.897 2 2 2h12c1.103 0 2-.897 2-2V9c0-.021-.011-.04-.013-.062a.99.99 0 0 0-.05-.258zM16.586 8H14V5.414L16.586 8zM6 20V4h6v5a1 1 0 0 0 1 1h5l.002 10H6z"></path></svg>
                                     <?php echo esc_html( 'Arraste e solte o arquivo .key aqui', 'flexify-checkout-for-woocommerce' ); ?>
@@ -289,40 +312,44 @@ $inter_module_active = is_plugin_active('module-inter-bank-for-flexify-checkout/
 
                                  <form enctype="multipart/form-data" action="upload.php" class="form-inter-bank-files" method="POST">
                                     <div class="drag-and-drop-file">
-                                          <div class="custom-file">
-                                             <input type="file" class="custom-file-input" id="upload-file-key" name="key_file" hidden>
-                                             <label class="custom-file-label mb-4" for="upload-file-key"><?php echo esc_html( 'Ou clique para procurar seu arquivo', 'flexify-checkout-for-woocommerce' ); ?></label>
-                                          </div>
+                                       <div class="custom-file">
+                                          <input type="file" class="custom-file-input" id="upload-file-key" name="key_file" hidden>
+                                          <label class="custom-file-label" for="upload-file-key"><?php echo esc_html( 'Ou clique para procurar seu arquivo', 'flexify-checkout-for-woocommerce' ); ?></label>
+                                       </div>
                                     </div>
                                  </form>
                               </div>
                            <?php endif; ?>
                         </div>
-                        
-                        <?php if ( ! empty( $key_file ) && ! empty( $crt_file ) ) : ?>
-                           <div class="file-uploaded-info my-3">
-                              <div class="d-flex flex-column align-items-start me-3">
-                                 <span class="fs-lg"><?php echo esc_html( 'Sua chave e certificado já foram enviados.', 'flexify-checkout-for-woocommerce' ); ?></span>
-                                 <span class="text-muted"><?php echo esc_html( 'Sua chave e certificado já foram enviados.', 'flexify-checkout-for-woocommerce' ); ?></span>
+                     </div>
+
+                     <?php if ( ! empty( $key_file ) && ! empty( $crt_file ) ) : ?>
+                        <div class="popup-footer d-grid w-100 justify-content-center">
+                           <div class="file-uploaded-info mt-3 mb-5 w-100">
+                              <div class="d-flex flex-column align-items-start me-4">
+                                 <span class="fs-lg mb-2"><?php echo esc_html( 'Sua chave e certificado já foram enviados.', 'flexify-checkout-for-woocommerce' ); ?></span>
+                                 <span class="text-muted"><?php echo esc_html( 'Os gateways de pagamento já estão disponíveis para uso.', 'flexify-checkout-for-woocommerce' ); ?></span>
                               </div>
+
                               <button class="btn btn-icon btn-outline-danger button-loading" name="exclude_inter_bank_crt_key_files">
                                  <svg class="delete-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M15 2H9c-1.103 0-2 .897-2 2v2H3v2h2v12c0 1.103.897 2 2 2h10c1.103 0 2-.897 2-2V8h2V6h-4V4c0-1.103-.897-2-2-2zM9 4h6v2H9V4zm8 16H7V8h10v12z"></path></svg>
                               </button>
                            </div>
 
                            <?php if ( get_option('flexify_checkout_inter_bank_webhook') === 'enabled' ) : ?>
-                              <div class="webhook-state my-3 d-flex align-items-center">
+                              <div class="webhook-state mb-5 d-flex align-items-center justify-content-center">
                                  <div class="ping me-3">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: #fff"><path d="m10 15.586-3.293-3.293-1.414 1.414L10 18.414l9.707-9.707-1.414-1.414z"></path></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" style="fill: #fff"><path d="m10 15.586-3.293-3.293-1.414 1.414L10 18.414l9.707-9.707-1.414-1.414z"></path></svg>
                                  </div>
                                  <div class="d-flex flex-column text-left">
-                                    <span class="fs-normal"><?php echo esc_html( 'Ouvindo Webhook do banco Inter.', 'flexify-checkout-for-woocommerce' ); ?></span>
-                                    <span class="text-muted"><?php echo esc_html( 'Aprovação automática de pedidos ativada.', 'flexify-checkout-for-woocommerce' ); ?></span>
+                                    <span class="fs-normal"><?php echo esc_html( 'Ouvindo Webhook do banco Inter', 'flexify-checkout-for-woocommerce' ); ?></span>
+                                    <span class="text-muted"><?php echo esc_html( 'Aprovação automática de pedidos ativada', 'flexify-checkout-for-woocommerce' ); ?></span>
                                  </div>
                               </div>
-                           <?php endif;
-                        endif; ?>
-                     </div>
+                           <?php endif; ?>
+                        </div>
+                     <?php endif; ?>
+
                   </div>
                </div>
             </td>

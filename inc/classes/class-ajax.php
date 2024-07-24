@@ -1,6 +1,7 @@
 <?php
 
 namespace MeuMouse\Flexify_Checkout\Ajax;
+
 use MeuMouse\Flexify_Checkout\Init\Init;
 use MeuMouse\Flexify_Checkout\Core\Core;
 use MeuMouse\Flexify_Checkout\Steps\Steps;

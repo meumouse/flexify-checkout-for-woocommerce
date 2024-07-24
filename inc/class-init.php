@@ -9,7 +9,7 @@ defined('ABSPATH') || exit;
  * Class for init plugin
  * 
  * @since 1.0.0
- * @version 3.7.2
+ * @version 3.7.3
  * @package MeuMouse.com
  */
 class Init {
@@ -49,7 +49,7 @@ class Init {
    * Set default options
    * 
    * @since 1.0.0
-   * @version 3.6.0
+   * @version 3.7.3
    * @return array
    */
   public function set_default_data_options() {
@@ -99,6 +99,7 @@ class Init {
       'inter_bank_client_id' => '',
       'inter_bank_client_secret' => '',
       'inter_bank_debug_mode' => 'no',
+      'inter_bank_env_mode' => 'yes',
       'enable_unset_wcbcf_fields_not_brazil' => 'no',
       'enable_manage_fields' => 'no',
       'get_address_api_service' => 'https://viacep.com.br/ws/{postcode}/json/',

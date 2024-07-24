@@ -1,6 +1,7 @@
 <?php
 
 namespace MeuMouse\Flexify_Checkout\Admin_Options;
+
 use MeuMouse\Flexify_Checkout\Init\Init;
 use MeuMouse\Flexify_Checkout\Helpers\Helpers;
 use MeuMouse\Flexify_Checkout\License\License;
@@ -14,7 +15,7 @@ class Admin_Options extends Init {
    * Admin constructor
    *
    * @since 1.0.0
-   * @version 3.7.2
+   * @version 3.7.3
    * @package MeuMouse.com
    */
   public function __construct() {
@@ -67,6 +68,12 @@ class Admin_Options extends Init {
 
     // get AJAX call from remove email provider item
     add_action( 'wp_ajax_remove_email_provider', array( $this, 'remove_email_provider_callback' ) );
+
+    // handle for billing country admin notice
+    add_action( 'woocommerce_checkout_init', array( __CLASS__, 'check_billing_country_field' ) );
+    add_action( 'admin_notices', array( __CLASS__, 'show_billing_country_warning' ) );
+    add_action( 'admin_footer', array( __CLASS__, 'dismiss_billing_country_warning_script' ) );
+    add_action( 'wp_ajax_dismiss_billing_country_warning', array( __CLASS__, 'dismiss_billing_country_warning' ) );
   }
   
 
@@ -104,7 +111,7 @@ class Admin_Options extends Init {
    * Save options in AJAX
    * 
    * @since 1.0.0
-   * @version 3.5.0
+   * @version 3.7.3
    * @return void
    */
   public function flexify_checkout_ajax_save_options_callback() {
@@ -140,6 +147,7 @@ class Admin_Options extends Init {
         $options['check_password_strenght'] = isset( $form_data['check_password_strenght'] ) ? 'yes' : 'no';
         $options['email_providers_suggestion'] = isset( $form_data['email_providers_suggestion'] ) ? 'yes' : 'no';
         $options['display_opened_order_review_mobile'] = isset( $form_data['display_opened_order_review_mobile'] ) ? 'yes' : 'no';
+        $options['inter_bank_env_mode'] = isset( $form_data['inter_bank_env_mode'] ) ? 'yes' : 'no';
 
         // check if form data exists "checkout_step" name and is array
         if ( isset( $form_data['checkout_step'] ) && is_array( $form_data['checkout_step'] ) ) {
@@ -894,6 +902,75 @@ class Admin_Options extends Init {
         wp_send_json( $response );
       }
     }
+  }
+
+
+  /**
+   * Check if billing country is disabled on checkout
+   * 
+   * @since 3.7.3
+   * @return void
+   */
+  public static function check_billing_country_field() {
+    $checkout_fields = WC()->checkout()->get_checkout_fields();
+    $is_disabled = empty( $checkout_fields['billing']['billing_country'] ) || $checkout_fields['billing']['billing_country']['required'] === false;
+
+    // Salva o estado em uma opção
+    update_option( 'billing_country_field_disabled', $is_disabled );
+  }
+
+
+  /**
+  * Display admin notice when billing country field is disabled
+  * 
+  * @since 3.7.3
+  * @return void
+  */
+  public static function show_billing_country_warning() {
+    $is_disabled = get_option('billing_country_field_disabled');
+    $hide_notice = get_user_meta( get_current_user_id(), 'hide_billing_country_notice', true );
+
+    if ( $is_disabled && ! $hide_notice ) {
+        $class = 'notice notice-error is-dismissible';
+    $message = esc_html__( 'O campo País na finalização de compras está desativado, verifique se seu gateway de pagamentos depende deste campo para não receber o erro "Informe um endereço para continuar com sua compra."', 'flexify-checkout-for-woocommerce' );
+        
+        printf( '<div id="billing-country-warning" class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), $message );
+    }
+  }
+
+
+  /**
+   * Send action on dismiss notice for not display
+   * 
+   * @since 3.7.3
+   * @return void
+   */
+  public static function dismiss_billing_country_warning_script() {
+    ?>
+    <script type="text/javascript">
+        jQuery(document).on('click', '#billing-country-warning .notice-dismiss', function() {
+            jQuery.ajax({
+                url: ajaxurl,
+                type: 'POST',
+                data: {
+                    action: 'dismiss_billing_country_warning'
+                }
+            });
+        });
+    </script>
+    <?php
+  }
+
+
+  /**
+  * Update option on get AJAX call for hide notice
+  * 
+  * @since 3.7.3
+  * @return void
+  */
+  public static function dismiss_billing_country_warning() {
+    update_user_meta(get_current_user_id(), 'hide_billing_country_notice', true);
+    wp_die();
   }
 }
 

@@ -1,6 +1,7 @@
 <?php
 
 namespace MeuMouse\Flexify_Checkout\Core;
+
 use MeuMouse\Flexify_Checkout\Init\Init;
 use MeuMouse\Flexify_Checkout\License\License;
 use MeuMouse\Flexify_Checkout\Helpers\Helpers;
@@ -42,6 +43,7 @@ class Core {
 		if ( Init::get_setting('enable_manage_fields') === 'yes' && License::is_valid() ) {
 			add_filter( 'woocommerce_checkout_fields', array( __CLASS__, 'flexify_checkout_fields_manager' ), 150 );
 			add_action( 'woocommerce_checkout_update_order_meta', array( __CLASS__, 'save_custom_checkout_fields' ), 10, 2 );
+			add_filter( 'woocommerce_admin_billing_fields', array( __CLASS__, 'custom_admin_billing_fields' ), 10, 1 );
 			add_action( 'woocommerce_admin_order_data_after_billing_address', array( __CLASS__, 'display_custom_checkout_fields_in_admin_order_meta' ), 10, 1 );
 			add_filter( 'woocommerce_email_order_meta_fields', array( __CLASS__, 'add_custom_checkout_fields_to_order_emails' ), 10, 3 );
 			add_action( 'woocommerce_account_orders_columns', array( __CLASS__, 'add_custom_checkout_fields_to_my_account_orders' ), 10, 1 );
@@ -368,16 +370,26 @@ class Core {
 	 * Add new fields, reorder positions, and manage fields from WooCommerce checkout
 	 * 
 	 * @since 3.0.0
-	 * @version 3.5.0
+	 * @version 3.7.3
 	 * @param array $fields | Checkout fields
 	 * @return array
 	 */
 	public static function flexify_checkout_fields_manager( $fields ) {
 		// get checkout fields from checkout controller
-		$get_field_options = maybe_unserialize( get_option('flexify_checkout_step_fields', array()) );
+		$get_fields = maybe_unserialize( get_option('flexify_checkout_step_fields', array()) );
 
 		// iterate for each step field
-		foreach ( $get_field_options as $index => $value ) {
+		foreach ( $get_fields as $index => $value ) {
+			// field custom class
+			if ( isset( $value['classes'] ) ) {
+				$fields['billing'][$index]['class'][] = $value['classes'];
+			}
+
+			// field input masks
+			if ( ! empty( $value['input_mask'] ) ) {
+				$fields['billing'][$index]['class'][] = 'has-mask';
+			}
+
 			// change array key for valid class
 			$field_class = array(
 				'left' => 'row-first',
@@ -390,14 +402,10 @@ class Core {
 				$fields['billing'][$index]['class'][] = $field_class[$value['position']];
 			}
 
-			// field custom class
-			if ( isset( $value['classes'] ) ) {
-				$fields['billing'][$index]['class'][] = $value['classes'];
-			}
-
-			// field input masks
-			if ( isset( $value['input_mask'] ) ) {
-				$fields['billing'][$index]['class'][] = 'has-mask';
+			// required field
+			if ( isset( $value['required'] ) ) {
+				$fields['billing'][$index]['required'] = $value['required'] === 'yes' ? true : false;
+				$fields['billing'][$index]['class'][] = 'required';
 			}
 
 			// field custom label class
@@ -415,17 +423,6 @@ class Core {
 				$fields['billing'][$index]['priority'] = $value['priority'];
 			}
 
-			$required_filter = array(
-				'yes' => true,
-				'no' => false,
-			);
-
-			// required field
-			if ( isset( $value['required'] ) ) {
-				$fields['billing'][$index]['required'] = $required_filter[$value['required']];
-				$fields['billing'][$index]['class'][] = 'required';
-			}
-
 			// add new field type text
 			if ( isset( $value['source'] ) && $value['source'] === 'added' && isset( $value['type'] ) && $value['type'] === 'text' ) {
 				$fields['billing'][$index] = array(
@@ -433,9 +430,14 @@ class Core {
 					'label' => $value['label'],
 					'class' => array( $value['classes'] ),
 					'clear' => true,
-					'required' => $required_filter[$value['required']],
+					'required' => $value['required'] === 'yes' ? true : false,
 					'priority' => $value['priority'],
 				);
+
+				// field position
+				if ( isset( $value['position'] ) ) {
+					$fields['billing'][$index]['class'][] = $field_class[$value['position']];
+				}
 			}
 
 			// add new field type textarea
@@ -445,9 +447,14 @@ class Core {
 					'label' => $value['label'],
 					'class' => array( $value['classes'] ),
 					'clear' => true,
-					'required' => $required_filter[$value['required']],
+					'required' => $value['required'] === 'yes' ? true : false,
 					'priority' => $value['priority'],
 				);
+
+				// field position
+				if ( isset( $value['position'] ) ) {
+					$fields['billing'][$index]['class'][] = $field_class[$value['position']];
+				}
 			}
 
 			// add new field type number
@@ -457,9 +464,14 @@ class Core {
 					'label' => $value['label'],
 					'class' => array( $value['classes'] ),
 					'clear' => true,
-					'required' => $required_filter[$value['required']],
+					'required' => $value['required'] === 'yes' ? true : false,
 					'priority' => $value['priority'],
 				);
+
+				// field position
+				if ( isset( $value['position'] ) ) {
+					$fields['billing'][$index]['class'][] = $field_class[$value['position']];
+				}
 			}
 
 			// add new field type password
@@ -469,9 +481,14 @@ class Core {
 					'label' => $value['label'],
 					'class' => array( $value['classes'] ),
 					'clear' => true,
-					'required' => $required_filter[$value['required']],
+					'required' => $value['required'] === 'yes' ? true : false,
 					'priority' => $value['priority'],
 				);
+
+				// field position
+				if ( isset( $value['position'] ) ) {
+					$fields['billing'][$index]['class'][] = $field_class[$value['position']];
+				}
 			}
 
 			// add new field type tel
@@ -482,9 +499,14 @@ class Core {
 					'class' => array( $value['classes'] ),
 					'clear' => true,
 					'validate' => array('phone'),
-					'required' => $required_filter[$value['required']],
+					'required' => $value['required'] === 'yes' ? true : false,
 					'priority' => $value['priority'],
 				);
+
+				// field position
+				if ( isset( $value['position'] ) ) {
+					$fields['billing'][$index]['class'][] = $field_class[$value['position']];
+				}
 			}
 
 			// add new field type url
@@ -494,9 +516,14 @@ class Core {
 					'label' => $value['label'],
 					'class' => array( $value['classes'] ),
 					'clear' => true,
-					'required' => $required_filter[$value['required']],
+					'required' => $value['required'] === 'yes' ? true : false,
 					'priority' => $value['priority'],
 				);
+
+				// field position
+				if ( isset( $value['position'] ) ) {
+					$fields['billing'][$index]['class'][] = $field_class[$value['position']];
+				}
 			}
 
 			// add new field type select
@@ -514,9 +541,14 @@ class Core {
 					'label' => $value['label'],
 					'class' => array( $value['classes'] ),
 					'clear' => true,
-					'required' => $required_filter[$value['required']],
+					'required' => $value['required'] === 'yes' ? true : false,
 					'priority' => $value['priority'],
 				);
+
+				// field position
+				if ( isset( $value['position'] ) ) {
+					$fields['billing'][$index]['class'][] = $field_class[$value['position']];
+				}
 			}
 
 			// remove fields thats disabled
@@ -547,6 +579,30 @@ class Core {
 				}
 			}
 		}
+	}
+
+
+	/**
+	 * Add custom billing fields to the billing fields array in the admin
+	 *
+	 * @since 3.7.3
+	 * @param array $fields | Billing fields array
+	 * @return array
+	 */
+	public static function custom_admin_billing_fields( $fields ) {
+		$new_fields = maybe_unserialize( get_option('flexify_checkout_step_fields', array()) );
+
+		foreach ( $new_fields as $index => $value ) {
+			if ( isset( $value['source'] ) && $value['source'] === 'added' ) {
+				$fields[$index] = array(
+					'label' => isset( $value['label'] ) ? $value['label'] : '',
+					'show'  => true,
+					'class' => isset( $value['class'] ) ? $value['class'] : '',
+				);
+			}
+		}
+
+		return $fields;
 	}
 
 
@@ -803,8 +859,8 @@ class Core {
 	 * @param int $priority
 	 */
 	public static function set_field_priority( &$fields_group, $field_id, $priority ) {
-		if ( isset( $fields_group[ $field_id ] ) ) {
-			$fields_group[ $field_id ]['priority'] = $priority;
+		if ( isset( $fields_group[$field_id] ) ) {
+			$fields_group[$field_id]['priority'] = $priority;
 		}
 	}
 

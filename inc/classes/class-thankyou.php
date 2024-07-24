@@ -1,6 +1,7 @@
 <?php
 
 namespace MeuMouse\Flexify_Checkout\Thankyou;
+
 use MeuMouse\Flexify_Checkout\Init\Init;
 use MeuMouse\Flexify_Checkout\Helpers\Helpers;
 

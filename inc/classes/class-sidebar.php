@@ -1,6 +1,7 @@
 <?php
 
 namespace MeuMouse\Flexify_Checkout\Sidebar;
+
 use MeuMouse\Flexify_Checkout\Init\Init;
 use MeuMouse\Flexify_Checkout\Core\Core;
 use MeuMouse\Flexify_Checkout\Steps\Steps;
@@ -118,17 +119,6 @@ class Sidebar {
 
 		echo '<tr id="flexify-checkout-summary-shipping-row"></tr>';
 		echo '<tr class="flexify-checkout__order-review-ghost-row"><th></th><td></td></tr>';
-	}
-
-
-	/**
-	 * Remove checkout shipping fields as we add them ourselves
-	 * 
-	 * @since 1.0.0
-	 * @return void
-	 */
-	public static function remove_checkout_shipping() {
-		remove_action( 'woocommerce_checkout_shipping', array( WC_Checkout::instance(), 'checkout_form_shipping' ) );
 	}
 
 
