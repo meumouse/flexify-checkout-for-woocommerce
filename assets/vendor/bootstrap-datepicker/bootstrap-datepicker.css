@@ -21,7 +21,7 @@
 }
 
 .datepicker-days table thead, .datepicker-months table thead, .datepicker-years table thead, .datepicker-decades table thead, .datepicker-centuries table thead {
-    background: #008aff;
+    background: var(--meumouse-primary);
     color: #ffffff;
     border-radius: 0;
 }
@@ -51,22 +51,18 @@
 }
 
 .datepicker-days table thead, .datepicker-months table thead, .datepicker-years table thead, .datepicker-decades table thead, .datepicker-centuries table thead {
-    background: #008aff;
+    background: var(--meumouse-primary);
     color: #ffffff;
-    border-radius: 0.5rem;
+    border-radius: 0.5rem 0.5rem 0 0;
 }
 
 .datepicker table tr td.active:hover, .datepicker table tr td.active.disabled, .datepicker table tr td.active.disabled:hover {
     background-image: none;
 }
 
-.datepicker table tr td.day {
-    width: 20px !important;
-}
-
 .datepicker table tr td.day:hover {
     cursor: pointer;
-    color: #008aff; 
+    color: var(--meumouse-primary); 
 }
 
 .datepicker table tr td.new.day, .datepicker table tr td.old.day {
@@ -78,11 +74,11 @@
 }
 
 .datepicker table tr td.today.day {
-    border: 2px solid #008aff;
+    border: 2px solid var(--meumouse-primary);
 }
 
 .datepicker table tr td.active.day {
-    background-color: #008aff;
+    background-color: var(--meumouse-primary);
     color: #fff;
 }
 
@@ -121,7 +117,7 @@
 }
 
 .datepicker table tr td span.active, .datepicker table tr td span.active:hover, .datepicker table tr td span.active.disabled, .datepicker table tr td span.active.disabled:hover {
-  background-color: #008aff;
+  background-color: var(--meumouse-primary);
   background-image: none;
 }
 
@@ -140,4 +136,12 @@
 .datepicker ::marker {
     display: none;
     color: transparent;
+}
+
+.datepicker-dropdown.dropdown-menu {
+    padding: 0;
+}
+
+.datepicker table tr td.day {
+    width: 3.125rem;
 }
