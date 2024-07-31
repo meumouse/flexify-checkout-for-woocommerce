@@ -4997,3 +4997,7 @@ label.has-condition.required-field > .optional {
 .flexify-step--2 .flexify-review-customer__row--shipping-method {
   display: none !important;
 }
+
+#order_review .woocommerce-shipping-totals-custom.shipping {
+  display: none !important;
+}

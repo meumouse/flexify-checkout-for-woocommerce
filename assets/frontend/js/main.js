@@ -2120,16 +2120,16 @@ jQuery(document).ready( function($) {
  * Add class on selected shipping method
  * 
  * @since 3.5.0
- * @version 3.5.2
+ * @version 3.7.4
  */
 jQuery(document).ready( function($) {
   // Function to update the selected shipping method
   function update_selected_shipping_method() {
-    // Remove the class from all shipping method items
-    $('.shipping-method-item').removeClass('selected-method');
+      // Remove the class from all shipping method items
+      $('.shipping-method-item').removeClass('selected-method');
 
-    // Find the selected shipping method input and add the class to its parent li
-    $('input[name="shipping_method[0]"]:checked').closest('.shipping-method-item').addClass('selected-method');
+      // Find the selected shipping method input and add the class to its parent li
+      $('input[name="shipping_method[0]"]:checked').closest('.shipping-method-item').addClass('selected-method');
   }
 
   // Initial check on page load
@@ -2137,25 +2137,24 @@ jQuery(document).ready( function($) {
 
   // Event listener for clicks on .shipping-method-item
   $(document).on('click', '.shipping-method-item', function(event) {
-    // Prevent default action if the click target is the input or label to avoid double triggering
-    if ($(event.target).is('input') || $(event.target).is('label')) {
-      return;
-    }
+      // Prevent default action if the click target is the input or label to avoid double triggering
+      if ( $(event.target).is('input') || $(event.target).is('label') ) {
+          return;
+      }
 
-    // Find the input radio inside the clicked .shipping-method-item and click it
-    $(this).find('input[type="radio"]').prop('checked', true).trigger('change');
+      // Find the input radio inside the clicked .shipping-method-item and click it
+      $(this).find('input[type="radio"]').prop('checked', true).trigger('change');
   });
 
   // Check again when the shipping method input changes
   $(document).on('change', 'input[name="shipping_method[0]"]', function() {
-    update_selected_shipping_method();
+      update_selected_shipping_method();
   });
 
   // Reapply the class after checkout fragments are updated
   $(document.body).on('updated_checkout', function() {
-    update_selected_shipping_method();
+      update_selected_shipping_method();
   });
-
 });
 
 
