@@ -7,41 +7,53 @@ use MeuMouse\Flexify_Checkout\Init\Init;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Compatibility with Kangu shipping gateway.
+ * Compatibility with Kangu shipping gateway
  *
  * @since 3.3.0
- * @version 3.7.0
+ * @version 3.7.4
  * @package MeuMouse.com
  */
 class Compat_Kangu {
 
     /**
-     * Construct function.
+     * Construct function
      *
      * @since 3.3.0
+     * @version 3.7.4
      * @return void
      */
     public function __construct() {
-        if ( class_exists('Kangu_Shipping_Method') ) {
-            add_action( 'wp_footer', function() {
-                wp_dequeue_script( 'kangu-cart' );
-            }, 11 );
+        add_action( 'init', array( $this, 'compat_kangu' ) );
+    }
 
-            add_filter( 'woocommerce_package_rates', array( $this, 'fix_kangu_shipping_methods' ), 10, 2 );
 
-            add_action( 'init', function() {
-                remove_filters_with_method_name( 'woocommerce_cart_totals_after_shipping', 'get_shippings_to_cart', 10 );
-                remove_filters_with_method_name( 'woocommerce_review_order_before_order_total', 'get_shippings_to_cart', 10 );
-            });
+    /**
+     * Add compatibility with Kangu shipping gateway on init hook
+     * 
+     * @since 3.7.4
+     * @return void
+     */
+    public function compat_kangu() {
+        if ( ! class_exists('KanguShipping') || ! is_flexify_checkout() ) {
+			return;
+		}
 
-            add_action( 'woocommerce_after_shipping_rate', array( $this, 'add_extra_shipping_details' ), 10, 1 );
+        add_action( 'wp_footer', function() {
+            wp_dequeue_script('kangu-cart');
+        }, 11 );
 
-            if ( Init::get_setting( 'enable_display_local_pickup_kangu' ) === 'yes' ) {
-                add_action( 'woocommerce_after_shipping_rate', array( $this, 'display_local_pickup_kangu' ) );
-            }
+        add_filter( 'woocommerce_package_rates', array( $this, 'fix_kangu_shipping_methods' ), 10, 2 );
 
-            add_filter( 'woocommerce_cart_shipping_method_full_label', array( $this, 'format_names_for_kangu_shipping_method' ), 10, 2 );
+        remove_filters_with_method_name( 'woocommerce_cart_totals_after_shipping', 'get_shippings_to_cart', 10 );
+        remove_filters_with_method_name( 'woocommerce_review_order_before_order_total', 'get_shippings_to_cart', 10 );
+
+        add_action( 'woocommerce_after_shipping_rate', array( $this, 'add_extra_shipping_details' ), 10, 1 );
+
+        if ( Init::get_setting( 'enable_display_local_pickup_kangu' ) === 'yes' ) {
+            add_action( 'woocommerce_after_shipping_rate', array( $this, 'display_local_pickup_kangu' ) );
         }
+
+        add_filter( 'woocommerce_cart_shipping_method_full_label', array( $this, 'format_names_for_kangu_shipping_method' ), 10, 2 );
     }
 
 

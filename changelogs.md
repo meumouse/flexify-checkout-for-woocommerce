@@ -1,3 +1,7 @@
+Versão 3.7.4 (30/07/2024)
+* Correção de bugs
+* Otimizações
+
 Versão 3.7.3 (24/07/2024)
 * Correção de bugs
 * Otimizações

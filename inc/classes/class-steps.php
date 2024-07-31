@@ -14,7 +14,7 @@ defined('ABSPATH') || exit;
  * Handle de steps
  *
  * @since 1.0.0
- * @version 3.7.0
+ * @version 3.7.4
  * @package MeuMouse.com
  */
 class Steps {
@@ -847,28 +847,52 @@ class Steps {
 	 * Get all shipping options for add on checkout fragments
 	 *
 	 * @since 3.5.0
-	 * @version 3.5.1
+	 * @version 3.7.4
 	 * @return string
 	 */
 	public static function get_shipping_options_fragment() {
-		$packages = WC()->shipping()->get_packages();
-
-		if ( empty( WC() ) || empty( WC()->shipping() ) || empty( WC()->cart ) || empty( $packages ) || empty( $packages[0]['rates'] ) || flexify_checkout_only_virtual() ) {
+		// Check if all required WooCommerce objects are available
+		if ( empty( WC() ) || empty( WC()->shipping() ) || empty( WC()->cart ) ) {
 			return '';
 		}
-
-		$shipping_methods = $packages[0]['rates'];
-		
-		ob_start();
-
-		echo '<ul class="woocommerce-shipping-methods">';
-
-		foreach ( $shipping_methods as $method ) {
-			echo sprintf( '<li><input type="radio" name="shipping_method[0]" value="%s" class="shipping_method" /><label>%s</label></li>', esc_attr( $method->id ), esc_html( $method->label . ' - ' . wc_price( $method->cost ) ) );
+	
+		$packages = WC()->shipping()->get_packages();
+	
+		// Check for available packages and shipping rates
+		if ( empty( $packages ) || empty( $packages[0]['rates'] ) || flexify_checkout_only_virtual() ) {
+			return '';
 		}
-
+	
+		$shipping_methods = $packages[0]['rates'];
+		$chosen_shipping_methods = WC()->session->get('chosen_shipping_methods');
+	
+		// Make sure your chosen shipping method is set
+		$chosen_shipping_method = ! empty( $chosen_shipping_methods[0] ) ? $chosen_shipping_methods[0] : '';
+	
+		ob_start();
+	
+		echo '<ul class="woocommerce-shipping-methods">';
+	
+		foreach ( $shipping_methods as $method ) {
+			// Check if the current shipping method is the one chosen
+			$is_checked = $method->id === $chosen_shipping_method ? 'checked="checked"' : '';
+			$is_selected_class = $method->id === $chosen_shipping_method ? 'selected-method' : '';
+	
+			echo sprintf(
+				'<li class="shipping-method-item %s">
+					<input type="radio" name="shipping_method[0]" value="%s" class="shipping_method %s" %s />
+					<label>%s</label>
+				</li>',
+				esc_attr( $is_selected_class ),
+				esc_attr( $method->id ),
+				esc_attr( $is_selected_class ),
+				$is_checked,
+				__( $method->label . ' - ' . wc_price( $method->cost ) )
+			);
+		}
+	
 		echo '</ul>';
-
+	
 		return ob_get_clean();
 	}
 

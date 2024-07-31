@@ -262,7 +262,7 @@ class License {
                 $logger->info('(Flexify Checkout para WooCommerce) Decrypted response: ' . print_r( $decrypted_response, true ), array('source' => $plugin_log_file));
 
                 if ( empty( $decrypted_response ) ) {
-                    update_option( 'flexify_checkout_alternative_license_activation_activation', 'yes' );
+                    update_option( 'flexify_checkout_alternative_license_activation', 'yes' );
 
                     // Handle decryption failure
                     $decryption_error = new \stdClass();

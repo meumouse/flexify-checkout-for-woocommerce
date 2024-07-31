@@ -261,7 +261,7 @@ class Core {
 	 * Override checkout fields
 	 *
 	 * @since 1.0.0
-	 * @version 3.5.0
+	 * @version 3.7.3
 	 * @param array $fields | Checkout fields
 	 * @return array
 	 */
@@ -338,26 +338,24 @@ class Core {
 		}
 
 		// remove shipping fields if optimize for digital products option is active
-		if ( Init::get_setting('enable_optimize_for_digital_products') === 'yes' && License::is_valid() ) {
-			if ( flexify_checkout_only_virtual() ) {
-				$get_field_options = maybe_unserialize( get_option('flexify_checkout_step_fields', array()) );
-				
-				foreach ( $get_field_options as $index => $value ) {
-					if ( isset( $value['step'] ) && $value['step'] === '2' ) {
-						$fields['billing'][$index]['required'] = false;
-						unset( $fields['billing'][$index] );
-					}
+		if ( Init::get_setting('enable_optimize_for_digital_products') === 'yes' && License::is_valid() && flexify_checkout_only_virtual() ) {
+			unset( $fields['order']['order_comments'] );
+
+			// Remove the last class from the postcode field.
+			if ( isset( $fields['billing']['billing_postcode'] ) && isset( $fields['billing']['billing_postcode']['class'] ) ) {
+				$search = array_search( 'form-row-last', $fields['billing']['billing_postcode']['class'] ); // get the key of the value to be removed
+
+				if ( false !== $search ) {
+					unset( $fields['billing']['billing_postcode']['class'][ $search ] ); // remove the item from the array using its key
 				}
+			}
 
-				unset( $fields['order']['order_comments'] );
-
-				// Remove the last class from the postcode field.
-				if ( isset( $fields['billing']['billing_postcode'] ) && isset( $fields['billing']['billing_postcode']['class'] ) ) {
-					$search = array_search( 'form-row-last', $fields['billing']['billing_postcode']['class'] ); // get the key of the value to be removed
-
-					if ( false !== $search ) {
-						unset( $fields['billing']['billing_postcode']['class'][ $search ] ); // remove the item from the array using its key
-					}
+			$get_fields = maybe_unserialize( get_option('flexify_checkout_step_fields', array()) );
+				
+			foreach ( $get_fields as $index => $value ) {
+				if ( isset( $value['step'] ) && $value['step'] === '2' && isset( $value['enabled'] ) && $value['enabled'] !== 'no' ) {
+					$fields['billing'][$index]['required'] = false;
+					unset( $fields['billing'][$index] );
 				}
 			}
 		}
