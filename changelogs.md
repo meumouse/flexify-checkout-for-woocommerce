@@ -1,3 +1,12 @@
+Versão 3.8.0 (22/08/2024)
+* Correção de bugs
+  - Compatibilidade com máscaras de campos do plugin Brazilian Market on WooCommerce
+  - Atualização na compatibilidade com tema Woodmart
+* Otimizações
+  - Carregamento de variáveis de texto de resumo
+* Recurso adicionado: Adição de campos personalizados no perfil do usuário do WordPress
+* Recurso adicionado: Texto do botão para revisitar a loja da página de agradecimento
+
 Versão 3.7.4 (30/07/2024)
 * Correção de bugs
 * Otimizações

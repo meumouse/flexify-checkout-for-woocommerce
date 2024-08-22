@@ -1,6 +1,6 @@
 <?php
 
-namespace MeuMouse\Flexify_Checkout\Compat\Checkout_Field_Editor_For_WooCommerce;
+namespace MeuMouse\Flexify_Checkout\Compat;
 
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
@@ -10,7 +10,7 @@ defined('ABSPATH') || exit;
  *
  * @see https://www.themehigh.com/product/woocommerce-checkout-field-editor-pro/
  * @since 1.0.0
- * @version 3.7.0
+ * @version 3.8.0
  * @package MeuMouse.com
  */
 class Compat_Checkout_Field_Editor_For_WooCommerce {

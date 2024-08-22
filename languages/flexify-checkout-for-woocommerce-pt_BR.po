@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Flexify Checkout para WooCommerce\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-12-19 20:27+0000\n"
-"PO-Revision-Date: 2024-07-24 16:59+0000\n"
+"PO-Revision-Date: 2024-08-22 15:40+0000\n"
 "Last-Translator: \n"
 "Language-Team: Português do Brasil\n"
 "Language: pt_BR\n"
@@ -16,7 +16,7 @@ msgstr ""
 "X-Domain: flexify-checkout-for-woocommerce"
 
 #. %1$s: field name, %2$s finder.eircode.ie URL
-#: inc/classes/class-core.php:1135
+#: inc/classes/class-core.php:1211
 #, php-format
 msgid ""
 "%1$s não é válido. Você pode procurar o Eircode correto <a target=\"_blank\" "
@@ -26,66 +26,66 @@ msgstr ""
 "href=\"%2$s\">aqui</a>."
 
 #. %s: field name
-#: inc/classes/class-core.php:1140
+#: inc/classes/class-core.php:1216
 #, php-format
 msgid "%s não é um código postal válido."
 msgstr ""
 
-#: inc/classes/class-core.php:1164
+#: inc/classes/class-core.php:1240
 #, php-format
 msgid "%s não é um endereço de e-mail válido."
 msgstr "%s não é um endereço de e-mail válido."
 
-#: inc/classes/class-core.php:1147
+#: inc/classes/class-core.php:1223
 #, php-format
 msgid "%s não é um número de telefone válido."
 msgstr "%s não é um número de telefone válido."
 
-#: inc/classes/class-core.php:1109
+#: inc/classes/class-core.php:1185
 #, php-format
 msgid "%s é um campo obrigatório."
 msgstr "%s é um campo obrigatório."
 
 #. ISO 3166-1 alpha-2 country code
-#: inc/classes/class-core.php:1127
+#: inc/classes/class-core.php:1203
 #, php-format
 msgid "'%s' não é um código de país válido."
 msgstr "'%s' não é um código de país válido."
 
-#: flexify-checkout-for-woocommerce.php:352
+#: flexify-checkout-for-woocommerce.php:267
 #, php-format
 msgid ""
 "<strong>%s</strong> requer a versão do PHP 7.4 ou maior. Contate o suporte "
 "da sua hospedagem para realizar a atualização."
 msgstr ""
 
-#: flexify-checkout-for-woocommerce.php:318
+#: flexify-checkout-for-woocommerce.php:235
 #, php-format
 msgid ""
 "<strong>%s</strong> requer a versão do WooCommerce 6.0 ou maior. Faça a "
 "atualização do plugin WooCommerce."
 msgstr ""
 
-#: flexify-checkout-for-woocommerce.php:337
+#: flexify-checkout-for-woocommerce.php:251
 #, php-format
 msgid ""
 "<strong>%s</strong> requer que <strong>WooCommerce</strong> esteja instalado "
 "e ativado."
 msgstr ""
 
-#: inc/admin/tabs/design.php:130
+#: inc/admin/tabs/design.php:137
 msgid "[shortcode id=\"100\"]"
 msgstr "[shortcode id=\"100\"]"
 
-#: inc/admin/tabs/design.php:139
+#: inc/admin/tabs/design.php:147
 msgid "[shortcode id=\"101\"]"
 msgstr "[shortcode id=\"101\"]"
 
-#: inc/classes/class-license.php:380
+#: inc/classes/class-license.php:383
 msgid "A extensão cURL está faltando."
 msgstr "A extensão cURL está faltando."
 
-#: inc/admin/settings.php:106
+#: inc/admin/class-admin-options.php:158
 msgid ""
 "A extensão GD está desativada, e é necessária para gerar o QR Code do Pix. "
 "Ative-a em sua hospedagem para habilitar esse recurso."
@@ -93,24 +93,37 @@ msgstr ""
 "A extensão GD está desativada, e é necessária para gerar o QR Code do Pix. "
 "Ative-a em sua hospedagem para habilitar esse recurso."
 
-#: inc/admin/settings.php:52
+#: inc/classes/class-ajax.php:998
 msgid "A licença foi desativada"
 msgstr "A licença foi desativada"
 
-#: inc/admin/settings.php:77
-msgid "A licença não é permitida para este produto."
+#: inc/classes/class-license.php:1120
+msgid "A licença informada não é permitida para este produto."
 msgstr ""
 
-#: inc/classes/class-updater.php:255
-msgid "A versão do plugin Flexify Checkout para WooCommerce é a mais recente."
+#: inc/classes/class-ajax.php:1191
+msgid "A nova opção foi adicionada com sucesso!"
+msgstr ""
+
+#: inc/classes/class-ajax.php:1139
+msgid "A opção foi removida com sucesso!"
+msgstr ""
+
+#: inc/classes/class-updater.php:258
+#, fuzzy
+#| msgid ""
+#| "A versão do plugin Flexify Checkout para WooCommerce é a mais recente."
+msgid ""
+"A versão do plugin <strong>Flexify Checkout para WooCommerce</strong> é a "
+"mais recente."
 msgstr "A versão do plugin Flexify Checkout para WooCommerce é a mais recente."
 
-#: inc/admin/tabs/about.php:171
+#: inc/admin/tabs/about.php:178
 #| msgid "A versão mínima exigida do PHP é 7.2"
 msgid "A versão mínima exigida do PHP é 7.4"
 msgstr "A versão mínima exigida do PHP é 7.4"
 
-#: inc/admin/tabs/about.php:140
+#: inc/admin/tabs/about.php:147
 msgid "A versão mínima exigida do WooCommerce é 6.0"
 msgstr "A versão mínima exigida do WooCommerce é 6.0"
 
@@ -118,50 +131,54 @@ msgstr "A versão mínima exigida do WooCommerce é 6.0"
 msgid "Adicionar"
 msgstr ""
 
-#: inc/admin/tabs/parts/new-fields.php:170
+#: inc/admin/tabs/parts/new-fields.php:184
 msgid "Adicionar campo"
 msgstr "Adicionar campo"
 
-#: inc/admin/tabs/design.php:286
+#: inc/admin/tabs/design.php:297
 msgid "Adicionar fonte"
 msgstr ""
 
-#: inc/admin/tabs/fields.php:43
+#: inc/admin/tabs/fields.php:44
 msgid "Adicionar máscaras para campos"
 msgstr ""
 
-#: inc/admin/tabs/design.php:222
+#: inc/admin/tabs/design.php:233
 msgid "Adicionar nova fonte"
+msgstr ""
+
+#: inc/admin/class-admin-options.php:307
+msgid "Adicionar nova opção"
 msgstr ""
 
 #: inc/admin/tabs/parts/new-fields.php:4
 msgid "Adicionar novo campo para finalização de compras"
 msgstr "Adicionar novo campo para finalização de compras"
 
-#: inc/admin/tabs/fields.php:410
+#: inc/admin/tabs/fields.php:119
 msgid "Adicionar novos campos"
 msgstr "Adicionar novos campos"
 
-#: inc/classes/class-steps.php:466
+#: inc/classes/class-steps.php:458
 msgid "Adicionar observações ao pedido?"
 msgstr "Adicionar observações ao pedido?"
 
-#: inc/admin/tabs/design.php:127
+#: inc/admin/tabs/design.php:134
 msgid "Adicione seu cabeçalho personalizado informando o shortcode."
 msgstr "Adicione seu cabeçalho personalizado informando o shortcode."
 
-#: inc/admin/tabs/design.php:136
+#: inc/admin/tabs/design.php:144
 msgid "Adicione seu rodapé personalizado informando o shortcode."
 msgstr "Adicione seu rodapé personalizado informando o shortcode."
 
-#: inc/admin/tabs/fields.php:238 inc/admin/tabs/fields.php:390
-#: inc/admin/tabs/parts/new-fields.php:148
+#: inc/admin/class-admin-options.php:351
+#: inc/admin/tabs/parts/new-fields.php:160
 msgid ""
 "Adicione uma máscara de preenchimento para este campo, seguindo o padrão "
 "informado pela documentação. (Opcional)"
 msgstr ""
 
-#: inc/admin/tabs/design.php:259
+#: inc/admin/tabs/design.php:270
 msgid "Adicione uma nova fonte à biblioteca"
 msgstr ""
 
@@ -173,22 +190,22 @@ msgstr ""
 msgid "Ainda não existem condições."
 msgstr ""
 
-#: inc/classes/class-assets.php:277 inc/admin/tabs/fields.php:163
-#: inc/admin/tabs/fields.php:312 inc/admin/tabs/parts/new-fields.php:106
+#: inc/admin/class-admin-options.php:247
+#: inc/admin/tabs/parts/new-fields.php:114
 msgid "Ao desativar, este campo se tornará não obrigatório."
 msgstr "Ao desativar, este campo se tornará não obrigatório."
 
-#: inc/admin/tabs/about.php:398
+#: inc/admin/tabs/about.php:405
 msgid ""
 "Ao redefinir as configurações do plugin, todas opções serão removidas, "
 "voltando ao estado original. Sua licença não será removida."
 msgstr ""
 
-#: inc/classes/class-core.php:270 inc/classes/class-core.php:858
+#: inc/classes/class-core.php:269 inc/classes/class-core.php:934
 msgid "Apartamento, suíte, unidade etc."
 msgstr "Apartamento, suíte, unidade etc."
 
-#: inc/class-init.php:520
+#: inc/class-init.php:374
 msgid "Apartamento, suíte, unidade, etc."
 msgstr "Apartamento, suíte, unidade, etc."
 
@@ -200,31 +217,52 @@ msgstr "Aplicar"
 msgid "Aplicar cupom de desconto automaticamente"
 msgstr "Aplicar cupom de desconto automaticamente"
 
-#: inc/classes/class-assets.php:269
+#: inc/classes/class-assets.php:270
 msgid "Arquivo enviado com sucesso"
 msgstr "Arquivo enviado com sucesso"
 
-#: inc/admin/tabs/fields.php:98
+#: inc/classes/class-ajax.php:485
+msgid "Arquivo inválido. O arquivo deve ser um .crt ou .key."
+msgstr ""
+
+#: inc/admin/tabs/fields.php:99
 msgid "Arraste e solte o campo para reordenar ou mudar o campo de etapa."
 msgstr "Arraste e solte o campo para reordenar ou mudar o campo de etapa."
 
-#: inc/admin/settings.php:34
+#: inc/classes/class-assets.php:275
+msgid "As alterações não serão salvas."
+msgstr ""
+
+#: inc/classes/class-ajax.php:342
 msgid "As configurações foram atualizadas!"
 msgstr "As configurações foram atualizadas!"
+
+#: inc/classes/class-ajax.php:1059
+msgid "As opções foram redefinidas"
+msgstr ""
+
+#: inc/classes/class-ajax.php:1060
+msgid "As opções foram redefinidas com sucesso!"
+msgstr ""
 
 #: inc/admin/tabs/conditions.php:306
 msgid "Assinante"
 msgstr ""
 
-#: inc/admin/tabs/about.php:396
+#: inc/admin/tabs/about.php:37
+#, php-format
+msgid "Assinatura: Clube M - %s"
+msgstr ""
+
+#: inc/admin/tabs/about.php:403
 msgid "Atenção! Você realmente deseja redefinir as configurações?"
 msgstr ""
 
-#: inc/admin/tabs/design.php:30
+#: inc/admin/tabs/design.php:31
 msgid "Ativado"
 msgstr "Ativado"
 
-#: inc/admin/tabs/design.php:44 inc/admin/tabs/design.php:57
+#: inc/admin/tabs/design.php:46 inc/admin/tabs/design.php:60
 msgid "Ativar"
 msgstr "Ativar"
 
@@ -232,25 +270,17 @@ msgstr "Ativar"
 msgid "Ativar Flexify Checkout"
 msgstr "Ativar Flexify Checkout"
 
-#: inc/admin/tabs/about.php:98
+#: inc/admin/tabs/about.php:105
 msgid "Ativar licença"
 msgstr "Ativar licença"
+
+#: inc/admin/tabs/integrations.php:39
+msgid "Ativar módulo"
+msgstr ""
 
 #: inc/admin/tabs/options.php:396
 msgid "Ativar página de agradecimento do Flexify Checkout"
 msgstr "Ativar página de agradecimento do Flexify Checkout"
-
-#: inc/admin/tabs/integrations.php:111
-#| msgid ""
-#| "Ativar recebimento de pagamentos com boleto bancário via Banco Inter (Em "
-#| "breve)"
-msgid "Ativar recebimento de pagamentos com boleto bancário via Banco Inter"
-msgstr "Ativar recebimento de pagamentos com boleto bancário via Banco Inter"
-
-#: inc/admin/tabs/integrations.php:23
-#| msgid "Ativar recebimento de pagamentos com Pix via Banco Inter (Em breve)"
-msgid "Ativar recebimento de pagamentos com Pix via Banco Inter"
-msgstr "Ativar recebimento de pagamentos com Pix via Banco Inter"
 
 #: inc/admin/tabs/options.php:327
 msgid "Ativar seletor de país em número de telefone"
@@ -264,16 +294,9 @@ msgstr ""
 msgid "Ativar verificação de força da senha do usuário"
 msgstr ""
 
-#: inc/classes/class-assets.php:274 inc/admin/tabs/fields.php:150
-#: inc/admin/tabs/fields.php:299
+#: inc/admin/class-admin-options.php:235
 msgid "Ativar/Desativar este campo"
 msgstr "Ativar/Desativar este campo"
-
-#: inc/admin/tabs/integrations.php:231
-msgid ""
-"Ative essa opção para definir a integração como modo Produção (Operacional) "
-"ou desativado para Sandbox (Testes)."
-msgstr ""
 
 #: inc/admin/tabs/options.php:279
 msgid ""
@@ -283,7 +306,7 @@ msgstr ""
 "Ative esta opção para a opção de termos e condições da última etapa ficar "
 "ativa por padrão, caso exista uma página de termos e condições configurada."
 
-#: inc/admin/tabs/fields.php:44
+#: inc/admin/tabs/fields.php:45
 msgid ""
 "Ative esta opção para adicionar máscaras de preenchimento em campos da "
 "finalização de compras."
@@ -296,22 +319,6 @@ msgid ""
 msgstr ""
 "Ative esta opção para carregar o modelo de página de agradecimento do "
 "Flexify Checkout."
-
-#: inc/admin/tabs/integrations.php:120
-msgid ""
-"Ative esta opção para configurar recibimentos via boleto bancário com "
-"aprovação automática gratuitamente."
-msgstr ""
-"Ative esta opção para configurar recibimentos via boleto bancário com "
-"aprovação automática gratuitamente."
-
-#: inc/admin/tabs/integrations.php:32
-msgid ""
-"Ative esta opção para configurar recibimentos via Pix com aprovação "
-"automática gratuitamente (Disponível apenas no Brasil)."
-msgstr ""
-"Ative esta opção para configurar recibimentos via Pix com aprovação "
-"automática gratuitamente (Disponível apenas no Brasil)."
 
 #: inc/admin/tabs/options.php:77
 msgid ""
@@ -364,7 +371,7 @@ msgstr ""
 "Ative esta opção para informar um cupom de desconto para ser aplicado "
 "automaticamente na finalização de compra."
 
-#: inc/admin/tabs/fields.php:22
+#: inc/admin/tabs/fields.php:23
 msgid ""
 "Ative esta opção para mostrar o campo de observações adicionais no pedido."
 msgstr ""
@@ -382,7 +389,7 @@ msgid ""
 "celulares."
 msgstr ""
 
-#: inc/admin/tabs/fields.php:83
+#: inc/admin/tabs/fields.php:84
 msgid ""
 "Ative esta opção para ocultar os campos inseridos pelo plugin Brazilian "
 "Market on WooCommerce quando o país selecionado não for Brasil."
@@ -434,15 +441,11 @@ msgstr ""
 "Ative esta opção para redirecionar o usuário da página de carrinho para a "
 "finalização de compra automaticamente."
 
-#: inc/admin/tabs/fields.php:62
+#: inc/admin/tabs/fields.php:63
 msgid "Ative esta opção para remover a etapa de entrega em produtos digitais."
 msgstr "Ative esta opção para remover a etapa de entrega em produtos digitais."
 
-#: inc/admin/tabs/integrations.php:219
-msgid "Ative o modo depuração para salvar o registro de requisições da API."
-msgstr "Ative o modo depuração para salvar o registro de requisições da API."
-
-#: inc/admin/tabs/about.php:126
+#: inc/admin/tabs/about.php:133
 msgid "Ativo"
 msgstr "Ativo"
 
@@ -458,11 +461,18 @@ msgstr ""
 msgid "Atributos específicos:"
 msgstr ""
 
+#: inc/admin/tabs/integrations.php:63
+msgid ""
+"Automatize o envio de mensagens via WhatsApp ao receber eventos no Flexify "
+"Checkout, recupere vendas de maneira mais assertiva. Deixe tudo no fluxo "
+"certo sem esforço!"
+msgstr ""
+
 #: inc/admin/tabs/conditions.php:305
 msgid "Autor"
 msgstr ""
 
-#: inc/class-init.php:696
+#: inc/class-init.php:555
 msgid "Bairro"
 msgstr "Bairro"
 
@@ -474,11 +484,11 @@ msgstr "Bem vindo de volta!"
 msgid "billing_"
 msgstr "billing_"
 
-#: inc/admin/tabs/parts/new-fields.php:52
+#: inc/classes/class-assets.php:281 inc/admin/tabs/parts/new-fields.php:54
 msgid "BR"
 msgstr "BR"
 
-#: inc/admin/tabs/parts/new-fields.php:56
+#: inc/classes/class-assets.php:282 inc/admin/tabs/parts/new-fields.php:59
 msgid "Brasil"
 msgstr "Brasil"
 
@@ -486,19 +496,19 @@ msgstr "Brasil"
 msgid "Básicos"
 msgstr ""
 
-#: inc/admin/tabs/design.php:126
+#: inc/admin/tabs/design.php:133
 msgid "Cabeçalho personalizado"
 msgstr "Cabeçalho personalizado"
 
-#: inc/admin/settings.php:99
-msgid "Cache de ativação limpo com sucesso!"
+#: inc/classes/class-ajax.php:1030
+msgid "Cache de ativação limpo"
 msgstr ""
 
 #: inc/admin/tabs/conditions.php:141 inc/admin/tabs/conditions.php:196
 msgid "Campo"
 msgstr ""
 
-#: inc/admin/class-admin-options.php:729 inc/admin/class-admin-options.php:742
+#: inc/classes/class-ajax.php:778 inc/classes/class-ajax.php:791
 #: inc/admin/tabs/conditions.php:62
 #, php-format
 msgid "Campo %s"
@@ -508,12 +518,16 @@ msgstr ""
 msgid "Campo do checkout: *"
 msgstr ""
 
+#: inc/classes/class-ajax.php:374
+msgid "Campo removido"
+msgstr ""
+
 #: inc/admin/tabs/conditions.php:49
 #, php-format
 msgid "Campo: %s"
 msgstr ""
 
-#: inc/admin/settings.php:150
+#: inc/admin/settings.php:51
 msgid "Campos e etapas"
 msgstr "Campos e etapas"
 
@@ -525,57 +539,33 @@ msgstr ""
 msgid "Categorias específicas:"
 msgstr ""
 
-#: inc/class-init.php:628
+#: inc/class-init.php:487
 msgid "Celular"
 msgstr "Celular"
 
-#: inc/admin/settings.php:24
+#: inc/admin/settings.php:23
 msgid "Central de ajuda"
 msgstr "Central de ajuda"
 
-#: inc/class-init.php:493
+#: inc/class-init.php:347
 msgid "CEP"
 msgstr "CEP"
 
-#: inc/admin/tabs/integrations.php:243
-msgid "Chave aleatória ClientID da API do banco Inter."
-msgstr "Chave aleatória ClientID da API do banco Inter."
-
-#: inc/admin/tabs/integrations.php:253
-msgid "Chave aleatória ClientSecret da API do banco Inter."
-msgstr "Chave aleatória ClientSecret da API do banco Inter."
-
-#: inc/admin/tabs/integrations.php:84
-msgid ""
-"Chave Pix associada ao banco Inter que receberá o pagamento. Para chaves do "
-"tipo celular ou CNPJ, utilize apenas números."
-msgstr ""
-"Chave Pix associada ao banco Inter que receberá o pagamento. Para chaves do "
-"tipo celular ou CNPJ, utilize apenas números."
-
-#: inc/admin/tabs/design.php:118
+#: inc/admin/tabs/design.php:125
 msgid "CHECKOUT"
 msgstr "CHECKOUT"
 
-#: inc/class-init.php:533
+#: inc/class-init.php:387
 msgid "Cidade"
 msgstr "Cidade"
 
-#: inc/admin/tabs/fields.php:369
-msgid "Classe CSS personalizada do campo"
-msgstr "Classe CSS personalizada do campo"
-
-#: inc/classes/class-assets.php:285 inc/admin/tabs/fields.php:217
-#: inc/admin/tabs/parts/new-fields.php:129
+#: inc/admin/class-admin-options.php:329
+#: inc/admin/tabs/parts/new-fields.php:139
 msgid "Classe CSS personalizada do campo (Opcional)"
 msgstr "Classe CSS personalizada do campo (Opcional)"
 
-#: inc/admin/tabs/fields.php:379
-msgid "Classe CSS personalizada do título"
-msgstr "Classe CSS personalizada do título"
-
-#: inc/classes/class-assets.php:287 inc/admin/tabs/fields.php:227
-#: inc/admin/tabs/parts/new-fields.php:138
+#: inc/admin/class-admin-options.php:339
+#: inc/admin/tabs/parts/new-fields.php:149
 msgid "Classe CSS personalizada do título (Opcional)"
 msgstr "Classe CSS personalizada do título (Opcional)"
 
@@ -583,11 +573,11 @@ msgstr "Classe CSS personalizada do título (Opcional)"
 msgid "Cliente"
 msgstr ""
 
-#: inc/admin/tabs/about.php:62
+#: inc/admin/tabs/about.php:69
 msgid "Clique aqui para gerar seu arquivo de licença"
 msgstr ""
 
-#: inc/class-init.php:600
+#: inc/class-init.php:459
 msgid "CNPJ"
 msgstr "CNPJ"
 
@@ -599,15 +589,21 @@ msgstr "Cobrança"
 msgid "Colaborador"
 msgstr ""
 
-#: inc/classes/class-steps.php:684 inc/classes/class-steps.php:722
+#: inc/classes/class-steps.php:676 inc/classes/class-steps.php:714
 msgid "Comece a digitar seu endereço para pesquisar."
 msgstr "Comece a digitar seu endereço para pesquisar."
 
-#: inc/classes/class-steps.php:690 inc/classes/class-steps.php:728
+#: inc/admin/tabs/integrations.php:34
+msgid ""
+"Comece a receber via Pix e Boleto com aprovação imediata e sem cobrança de "
+"taxas. Exclusivo para clientes Inter Empresas."
+msgstr ""
+
+#: inc/classes/class-steps.php:682 inc/classes/class-steps.php:720
 msgid "Comece com o endereço da sua casa e depois o número da casa."
 msgstr "Comece com o endereço da sua casa e depois o número da casa."
 
-#: inc/admin/class-admin-options.php:756 inc/admin/tabs/conditions.php:76
+#: inc/classes/class-ajax.php:805 inc/admin/tabs/conditions.php:76
 #: inc/admin/tabs/conditions.php:226
 msgid "Começa com"
 msgstr ""
@@ -616,11 +612,11 @@ msgstr ""
 msgid "Componente: *"
 msgstr ""
 
-#: inc/admin/tabs/about.php:88
+#: inc/admin/tabs/about.php:95
 msgid "Comprar licença"
 msgstr "Comprar licença"
 
-#: inc/admin/settings.php:128
+#: inc/classes/class-license.php:1036
 msgid "Comprar uma licença"
 msgstr "Comprar uma licença"
 
@@ -628,7 +624,7 @@ msgstr "Comprar uma licença"
 msgid "Condição de verificação: *"
 msgstr ""
 
-#: inc/admin/class-admin-options.php:768 inc/admin/tabs/conditions.php:86
+#: inc/classes/class-ajax.php:817 inc/admin/tabs/conditions.php:86
 #, php-format
 msgid "Condição: %s %s"
 msgstr ""
@@ -637,11 +633,11 @@ msgstr ""
 msgid "Condição: *"
 msgstr ""
 
-#: inc/admin/settings.php:154
+#: inc/admin/settings.php:56
 msgid "Condições"
 msgstr ""
 
-#: flexify-checkout-for-woocommerce.php:367
+#: flexify-checkout-for-woocommerce.php:282 inc/admin/tabs/integrations.php:37
 msgid "Configurar"
 msgstr "Configurar"
 
@@ -653,30 +649,10 @@ msgstr "Configurar API"
 msgid "Configurar API de preenchimento de endereço"
 msgstr "Configurar API de preenchimento de endereço"
 
-#: inc/admin/tabs/integrations.php:128
-msgid "Configurar Boleto"
-msgstr "Configurar Boleto"
-
-#: inc/classes/class-assets.php:273
-msgid "Configurar campo"
-msgstr "Configurar campo"
-
-#: inc/admin/tabs/fields.php:143 inc/admin/tabs/fields.php:292
+#: inc/admin/class-admin-options.php:208
 #, php-format
 msgid "Configurar campo <strong class=\"field-name\">%s</strong>"
 msgstr "Configurar campo <strong class=\"field-name\">%s</strong>"
-
-#: inc/admin/tabs/integrations.php:205
-msgid "Configurar credenciais"
-msgstr "Configurar credenciais"
-
-#: inc/admin/tabs/integrations.php:201
-msgid "Configurar integração com banco Inter"
-msgstr "Configurar integração com banco Inter"
-
-#: inc/admin/tabs/integrations.php:40
-msgid "Configurar Pix"
-msgstr "Configurar Pix"
 
 #: inc/admin/tabs/options.php:85
 msgid "Configurar provedores"
@@ -686,15 +662,7 @@ msgstr ""
 msgid "Configurar sugestão de e-mails"
 msgstr ""
 
-#: inc/admin/tabs/integrations.php:133
-msgid "Configure a forma de pagamento Boleto bancário"
-msgstr "Configure a forma de pagamento Boleto bancário"
-
-#: inc/admin/tabs/integrations.php:44
-msgid "Configure a forma de pagamento Pix"
-msgstr "Configure a forma de pagamento Pix"
-
-#: inc/admin/settings.php:23
+#: inc/admin/settings.php:22
 msgid ""
 "Configure abaixo as opções da finalização de compra do WooCommerce. Se "
 "precisar de ajuda para configurar, acesse nossa"
@@ -702,40 +670,32 @@ msgstr ""
 "Configure abaixo as opções da finalização de compra do WooCommerce. Se "
 "precisar de ajuda para configurar, acesse nossa"
 
-#: inc/admin/tabs/integrations.php:202
-msgid ""
-"Configure suas credenciais para habilitar o recebimento via Pix ou boleto "
-"usando o banco Inter."
-msgstr ""
-"Configure suas credenciais para habilitar o recebimento via Pix ou boleto "
-"usando o banco Inter."
-
-#: inc/classes/class-steps.php:936 inc/classes/class-thankyou.php:178
+#: inc/classes/class-steps.php:946 inc/classes/class-thankyou.php:178
 msgid "Contato"
 msgstr "Contato"
 
-#: inc/classes/class-steps.php:201
+#: inc/classes/class-steps.php:196
 msgid "Continuar"
 msgstr "Continuar"
 
-#: inc/classes/class-steps.php:209
+#: inc/classes/class-steps.php:203
 msgid "Continuar para"
 msgstr "Continuar para"
 
-#: inc/admin/class-admin-options.php:754 inc/admin/tabs/conditions.php:74
+#: inc/classes/class-ajax.php:803 inc/admin/tabs/conditions.php:74
 #: inc/admin/tabs/conditions.php:224
 msgid "Contém"
 msgstr ""
 
-#: inc/admin/tabs/design.php:177
+#: inc/admin/tabs/design.php:187
 msgid "Cor do título dos campos"
 msgstr "Cor do título dos campos"
 
-#: inc/admin/tabs/design.php:147
+#: inc/admin/tabs/design.php:155
 msgid "Cor primária"
 msgstr "Cor primária"
 
-#: inc/admin/tabs/design.php:162
+#: inc/admin/tabs/design.php:171
 msgid "Cor secundára"
 msgstr "Cor secundára"
 
@@ -743,7 +703,7 @@ msgstr "Cor secundára"
 msgid "Corrija todos os erros e tente novamente."
 msgstr "Corrija todos os erros e tente novamente."
 
-#: inc/class-init.php:586
+#: inc/class-init.php:445
 msgid "CPF"
 msgstr "CPF"
 
@@ -751,7 +711,7 @@ msgstr "CPF"
 msgid "Criar condição"
 msgstr ""
 
-#: inc/classes/class-steps.php:610
+#: inc/classes/class-steps.php:602
 msgid "Criar uma conta?"
 msgstr "Criar uma conta?"
 
@@ -759,7 +719,7 @@ msgstr "Criar uma conta?"
 msgid "Criar uma nova condição"
 msgstr ""
 
-#: inc/classes/class-steps.php:636
+#: inc/classes/class-steps.php:628
 msgid ""
 "Crie uma conta inserindo as informações abaixo. Se você já é um cliente, "
 "faça login."
@@ -768,7 +728,7 @@ msgstr ""
 "faça login."
 
 #. %1$s = Opening login link, %2$s = Closing login link.
-#: inc/classes/class-steps.php:634
+#: inc/classes/class-steps.php:626
 msgid ""
 "Crie uma conta inserindo as informações abaixo. Se você já é um cliente, por "
 "favor faça %1$login na página da sua conta%2$s."
@@ -780,7 +740,7 @@ msgstr ""
 msgid "Crie uma nova condição para finalização de compras"
 msgstr ""
 
-#: inc/classes/class-steps.php:639
+#: inc/classes/class-steps.php:631
 msgid ""
 "Crie uma senha para sua conta, caso seja sua primeira compra. Se já é um "
 "cliente, entre em sua conta para resgatar sua informações pessoais."
@@ -796,7 +756,7 @@ msgstr "Cupom de desconto"
 msgid "CUPOMDEDESCONTO"
 msgstr "CUPOMDEDESCONTO"
 
-#: inc/admin/tabs/about.php:94
+#: inc/admin/tabs/about.php:101
 msgid "Código da licença"
 msgstr "Código da licença"
 
@@ -804,58 +764,47 @@ msgstr "Código da licença"
 msgid "Código do cupom de desconto"
 msgstr "Código do cupom de desconto"
 
-#: inc/classes/class-license.php:717
+#: inc/classes/class-license.php:724
 msgid "Dados inválidos."
 msgstr "Dados inválidos."
 
-#: inc/class-init.php:656
+#: inc/class-init.php:515
 msgid "Data de nascimento"
 msgstr "Data de nascimento"
 
-#: inc/classes/class-assets.php:281 inc/admin/tabs/fields.php:176
-#: inc/admin/tabs/fields.php:204 inc/admin/tabs/fields.php:325
-#: inc/admin/tabs/parts/new-fields.php:117
+#: inc/admin/class-admin-options.php:260 inc/admin/class-admin-options.php:288
+#: inc/admin/class-admin-options.php:316
+#: inc/admin/tabs/parts/new-fields.php:126
 msgid "Define a posição deste campo na finalização de compras."
 msgstr "Define a posição deste campo na finalização de compras."
 
-#: inc/admin/tabs/parts/new-fields.php:157
+#: inc/admin/tabs/parts/new-fields.php:170
 msgid "Define em qual etapa da finalização de compras o campo será exibido."
 msgstr "Define em qual etapa da finalização de compras o campo será exibido."
 
-#: inc/admin/tabs/fields.php:356
-msgid "Define o endpoint que será usado como link permanente para esta guia."
-msgstr "Define o endpoint que será usado como link permanente para esta guia."
-
-#: inc/classes/class-assets.php:279 inc/admin/tabs/fields.php:194
-#: inc/admin/tabs/fields.php:346
+#: inc/admin/class-admin-options.php:277
 msgid "Define o título que será exibido para este campo."
 msgstr "Define o título que será exibido para este campo."
 
-#: inc/admin/tabs/fields.php:175 inc/admin/tabs/fields.php:324
+#: inc/admin/class-admin-options.php:259
 msgid "Definir país padrão"
 msgstr "Definir país padrão"
 
-#: inc/admin/tabs/texts.php:22 inc/admin/tabs/texts.php:31
-#: inc/admin/tabs/texts.php:40 inc/admin/tabs/texts.php:49
-#: inc/admin/tabs/texts.php:58 inc/admin/tabs/texts.php:67
-#: inc/admin/tabs/texts.php:76 inc/admin/tabs/texts.php:85
-#: inc/admin/tabs/texts.php:94
+#: inc/admin/tabs/texts.php:22 inc/admin/tabs/texts.php:32
+#: inc/admin/tabs/texts.php:42 inc/admin/tabs/texts.php:52
+#: inc/admin/tabs/texts.php:62 inc/admin/tabs/texts.php:72
+#: inc/admin/tabs/texts.php:82 inc/admin/tabs/texts.php:92
+#: inc/admin/tabs/texts.php:102 inc/admin/tabs/texts.php:112
 msgid "Deixe em branco para não exibir."
 msgstr ""
 
-#: inc/admin/tabs/about.php:126
+#: inc/admin/tabs/about.php:133
 msgid "Desativado"
 msgstr "Desativado"
 
-#: inc/admin/tabs/about.php:52
+#: inc/admin/tabs/about.php:59
 msgid "Desativar licença"
 msgstr "Desativar licença"
-
-#: inc/admin/tabs/integrations.php:64 inc/admin/tabs/integrations.php:153
-msgid ""
-"Descrição da forma de pagamento que o usuário verá na finalização de compra."
-msgstr ""
-"Descrição da forma de pagamento que o usuário verá na finalização de compra."
 
 #. 1: product name 2: quantity in stock
 #: inc/classes/class-sidebar.php:418
@@ -867,7 +816,7 @@ msgstr ""
 "Desculpe, não temos \"%1$s\" suficientes em estoque para atender seu pedido "
 "(%2$s disponíveis). Pedimos desculpas por qualquer inconveniente causado."
 
-#: inc/classes/class-core.php:1015
+#: inc/classes/class-core.php:1091
 msgid ""
 "Desculpe, parece que não há métodos de pagamento disponíveis para sua "
 "localização. Entre em contato conosco se precisar de assistência ou desejar "
@@ -877,34 +826,29 @@ msgstr ""
 "localização. Entre em contato conosco se precisar de assistência ou desejar "
 "pagar de outra forma."
 
-#: inc/admin/tabs/about.php:367
+#: inc/admin/tabs/about.php:374
 msgid "Desligado"
 msgstr "Desligado"
 
-#: inc/classes/class-steps.php:705 inc/classes/class-steps.php:742
+#: inc/classes/class-steps.php:697 inc/classes/class-steps.php:734
 msgid "Digitar endereço manualmente"
 msgstr "Digitar endereço manualmente"
 
-#: inc/classes/class-assets.php:283 inc/admin/tabs/fields.php:209
-#: inc/admin/tabs/fields.php:361 inc/admin/tabs/parts/new-fields.php:122
+#: inc/admin/class-admin-options.php:321
+#: inc/admin/tabs/parts/new-fields.php:131
 msgid "Direita"
 msgstr "Direita"
 
-#: inc/admin/tabs/fields.php:255
-msgid "Disponível apenas em produtos físicos"
-msgstr ""
-
-#: flexify-checkout-for-woocommerce.php:387
+#: flexify-checkout-for-woocommerce.php:302
 msgid "Documentação"
 msgstr "Documentação"
 
-#: inc/admin/tabs/about.php:182
+#: inc/admin/tabs/about.php:189
 msgid "DOMDocument:"
 msgstr "DOMDocument:"
 
-#: inc/classes/class-assets.php:272 inc/classes/class-steps.php:944
-#: inc/classes/class-steps.php:982 inc/classes/class-steps.php:997
-#: inc/admin/tabs/fields.php:132 inc/admin/tabs/fields.php:281
+#: inc/admin/class-admin-options.php:195 inc/classes/class-steps.php:954
+#: inc/classes/class-steps.php:992 inc/classes/class-steps.php:1007
 msgid "Editar"
 msgstr "Editar"
 
@@ -912,33 +856,41 @@ msgstr "Editar"
 msgid "Editor"
 msgstr ""
 
-#: inc/admin/tabs/design.php:106 inc/admin/tabs/design.php:200
-#: inc/admin/tabs/design.php:237
+#: inc/admin/tabs/design.php:112 inc/admin/tabs/design.php:211
+#: inc/admin/tabs/design.php:248
 msgid "em"
 msgstr "em"
 
-#: inc/admin/tabs/design.php:39 inc/admin/tabs/design.php:52
+#: inc/admin/tabs/integrations.php:65 inc/admin/tabs/integrations.php:88
+msgid "Em breve"
+msgstr ""
+
+#: inc/admin/tabs/design.php:41 inc/admin/tabs/design.php:55
 msgid "Em breve..."
 msgstr "Em breve..."
 
-#: inc/class-init.php:467
+#: inc/class-init.php:321
 msgid "Empresa"
 msgstr "Empresa"
 
-#: inc/class-init.php:507
+#: inc/class-init.php:361
 msgid "Endereço"
 msgstr "Endereço"
 
-#: inc/class-init.php:414
+#: inc/classes/class-core.php:782
+msgid "Endereço de cobrança"
+msgstr ""
+
+#: inc/class-init.php:268
 msgid "Endereço de e-mail"
 msgstr "Endereço de e-mail"
 
-#: inc/classes/class-assets.php:186 inc/classes/class-steps.php:578
+#: inc/classes/class-assets.php:186 inc/classes/class-steps.php:570
 #: woocommerce/modern/checkout/form-checkout.php:48
 msgid "Entrar"
 msgstr "Entrar"
 
-#: inc/classes/class-thankyou.php:432
+#: inc/classes/class-thankyou.php:425
 msgid "Entrar em contato"
 msgstr "Entrar em contato"
 
@@ -946,55 +898,67 @@ msgstr "Entrar em contato"
 msgid "Entre em sua conta de cliente:"
 msgstr "Entre em sua conta de cliente:"
 
-#: inc/classes/class-steps.php:696 inc/classes/class-steps.php:734
-#: inc/classes/class-steps.php:976 inc/classes/class-thankyou.php:193
+#: inc/classes/class-steps.php:688 inc/classes/class-steps.php:726
+#: inc/classes/class-steps.php:986 inc/classes/class-thankyou.php:193
 msgid "Entrega"
 msgstr "Entrega"
 
-#: inc/classes/class-steps.php:400
+#: inc/classes/class-steps.php:392
 msgid "Enviar para um endereço diferente?"
 msgstr "Enviar para um endereço diferente?"
-
-#: inc/admin/tabs/integrations.php:273
-msgid ""
-"Envie sua chave e certificado que você recebeu do banco Inter ao criar a "
-"aplicação."
-msgstr ""
-"Envie sua chave e certificado que você recebeu do banco Inter ao criar a "
-"aplicação."
 
 #: inc/classes/class-thankyou.php:207
 msgid "Envio"
 msgstr "Envio"
 
-#: inc/classes/class-license.php:415
+#: inc/classes/class-ajax.php:1196 inc/classes/class-ajax.php:1205
+msgid "Erro ao adicionar"
+msgstr ""
+
+#: inc/classes/class-ajax.php:463
+msgid "Erro ao carregar o arquivo. A ação não foi acionada corretamente."
+msgstr ""
+
+#: inc/classes/class-ajax.php:473
+msgid "Erro ao carregar o arquivo. O arquivo não foi enviado."
+msgstr ""
+
+#: inc/classes/class-ajax.php:1144 inc/classes/class-ajax.php:1153
+msgid "Erro ao remover"
+msgstr ""
+
+#: inc/classes/class-license.php:363 inc/classes/class-license.php:416
+msgid "Erro cURL 35: Problema de comunicação SSL/TLS."
+msgstr ""
+
+#: inc/classes/class-license.php:418
 #, php-format
 msgid "Erro cURL: %s"
 msgstr "Erro cURL: %s"
 
-#: inc/classes/class-license.php:291
+#: inc/classes/class-license.php:289
 #, php-format
 msgid "Erro JSON: %s"
 msgstr "Erro JSON: %s"
 
-#: inc/classes/class-assets.php:267
+#: inc/classes/class-assets.php:268
 msgid "Escolher Imagem de cabeçalho"
 msgstr "Escolher Imagem de cabeçalho"
 
-#: inc/admin/tabs/design.php:43
+#: inc/admin/tabs/design.php:45
 msgid "Escuro"
 msgstr "Escuro"
 
-#: inc/classes/class-assets.php:282 inc/admin/tabs/fields.php:208
-#: inc/admin/tabs/fields.php:360 inc/admin/tabs/parts/new-fields.php:121
+#: inc/admin/class-admin-options.php:320
+#: inc/admin/tabs/parts/new-fields.php:130
 msgid "Esquerda"
 msgstr "Esquerda"
 
-#: inc/class-init.php:546
+#: inc/class-init.php:400
 msgid "Estado"
 msgstr "Estado"
 
-#: inc/classes/class-core.php:943
+#: inc/classes/class-core.php:1019
 msgid "Este campo é obrigatório"
 msgstr "Este campo é obrigatório"
 
@@ -1002,11 +966,11 @@ msgstr "Este campo é obrigatório"
 msgid "Este nome e ID do campo já está em uso. Use um outro nome."
 msgstr "Este nome e ID do campo já está em uso. Use um outro nome."
 
-#: inc/admin/settings.php:119
+#: inc/classes/class-license.php:1028
 msgid "Este recurso está disponível na versão Pro"
 msgstr "Este recurso está disponível na versão Pro"
 
-#: inc/classes/class-assets.php:275 inc/admin/tabs/fields.php:151
+#: inc/admin/class-admin-options.php:236
 msgid ""
 "Este é um campo nativo do WooCommerce e não pode ser removido, apenas "
 "desativado."
@@ -1014,39 +978,31 @@ msgstr ""
 "Este é um campo nativo do WooCommerce e não pode ser removido, apenas "
 "desativado."
 
-#: inc/admin/tabs/fields.php:300
-msgid ""
-"Este é um campo obrigatório para finalização de compras e não pode ser "
-"desativado."
-msgstr ""
-"Este é um campo obrigatório para finalização de compras e não pode ser "
-"desativado."
-
-#: inc/admin/settings.php:162
+#: inc/admin/settings.php:66
 msgid "Estilos"
 msgstr "Estilos"
 
-#: inc/admin/tabs/fields.php:110 inc/admin/tabs/parts/new-fields.php:161
+#: inc/admin/tabs/fields.php:111 inc/admin/tabs/parts/new-fields.php:174
 msgid "Etapa 1 (Contato)"
 msgstr "Etapa 1 (Contato)"
 
-#: inc/admin/tabs/fields.php:258 inc/admin/tabs/parts/new-fields.php:162
+#: inc/admin/tabs/fields.php:112 inc/admin/tabs/parts/new-fields.php:175
 msgid "Etapa 2 (Entrega)"
 msgstr "Etapa 2 (Entrega)"
 
-#: inc/admin/tabs/parts/new-fields.php:156
+#: inc/admin/tabs/parts/new-fields.php:169
 msgid "Etapa do campo"
 msgstr "Etapa do campo"
 
-#: inc/admin/tabs/about.php:198
+#: inc/admin/tabs/about.php:205
 msgid "Extensão cURL:"
 msgstr "Extensão cURL:"
 
-#: inc/admin/tabs/about.php:216
+#: inc/admin/tabs/about.php:223
 msgid "Extensão GD:"
 msgstr "Extensão GD:"
 
-#: inc/admin/tabs/about.php:234
+#: inc/admin/tabs/about.php:241
 msgid "Extensão OpenSSL:"
 msgstr "Extensão OpenSSL:"
 
@@ -1058,6 +1014,24 @@ msgstr ""
 "Extensão que otimiza a finalização de compras em multi etapas para lojas "
 "WooCommerce."
 
+#: inc/admin/tabs/integrations.php:86
+msgid ""
+"Facilite o preenchimento do endereço de entrega aos usuários, permitindo "
+"pesquisar seu endereço ou usando recursos de geolocalização com Google Maps."
+msgstr ""
+
+#: inc/classes/class-modules.php:118
+msgid "Falha ao ativar o plugin."
+msgstr ""
+
+#: inc/classes/class-modules.php:127
+msgid "Falha ao instalar/atualizar o plugin."
+msgstr ""
+
+#: inc/admin/class-admin-options.php:209 inc/classes/class-assets.php:283
+msgid "Fechar"
+msgstr ""
+
 #: inc/admin/tabs/conditions.php:276
 msgid "Filtro de produtos: *"
 msgstr ""
@@ -1067,17 +1041,21 @@ msgid "Filtros"
 msgstr ""
 
 #. page title
-#: inc/admin/class-admin-options.php:91
+#: inc/admin/class-admin-options.php:58
 msgid "Flexify Checkout"
 msgstr "Flexify Checkout"
 
+#: inc/admin/tabs/integrations.php:26
+msgid "Flexify Checkout - Inter addon"
+msgstr ""
+
 #. parent page slug
 #. Name of the plugin
-#: flexify-checkout-for-woocommerce.php:91 inc/admin/class-admin-options.php:90
+#: flexify-checkout-for-woocommerce.php:91 inc/admin/class-admin-options.php:57
 msgid "Flexify Checkout para WooCommerce"
 msgstr "Flexify Checkout para WooCommerce"
 
-#: inc/admin/tabs/design.php:209
+#: inc/admin/tabs/design.php:220
 msgid "Fontes do Google"
 msgstr "Fontes do Google"
 
@@ -1085,7 +1063,7 @@ msgstr "Fontes do Google"
 msgid "Forma de entrega"
 msgstr ""
 
-#: inc/admin/class-admin-options.php:732
+#: inc/classes/class-ajax.php:781
 #, php-format
 msgid "Forma de entrega %s"
 msgstr ""
@@ -1103,7 +1081,7 @@ msgstr ""
 msgid "Forma de pagamento"
 msgstr ""
 
-#: inc/admin/class-admin-options.php:735
+#: inc/classes/class-ajax.php:784
 #, php-format
 msgid "Forma de pagamento %s"
 msgstr ""
@@ -1117,7 +1095,7 @@ msgstr ""
 msgid "Forma de pagamento: %s"
 msgstr ""
 
-#: inc/classes/class-steps.php:991
+#: inc/classes/class-steps.php:1001
 msgid "Frete"
 msgstr ""
 
@@ -1129,19 +1107,19 @@ msgstr ""
 msgid "Função de usuário específica:"
 msgstr ""
 
-#: inc/admin/tabs/about.php:363
+#: inc/admin/tabs/about.php:370
 msgid "Função PHP \"file_get_content\":"
 msgstr "Função PHP \"file_get_content\":"
 
-#: inc/admin/tabs/parts/new-fields.php:82
+#: inc/admin/tabs/parts/new-fields.php:87
 msgid "GDPR"
 msgstr "GDPR"
 
-#: inc/admin/settings.php:142
+#: inc/admin/settings.php:41
 msgid "Geral"
 msgstr "Geral"
 
-#: inc/admin/tabs/fields.php:97
+#: inc/admin/tabs/fields.php:98
 #, fuzzy
 #| msgid "Gerencie os campos e etapas da finalização de compras"
 msgid "Gerenciar os campos e etapas da finalização de compras"
@@ -1151,7 +1129,11 @@ msgstr "Gerencie os campos e etapas da finalização de compras"
 msgid "Gerente de loja"
 msgstr ""
 
-#: inc/class-init.php:670
+#: inc/admin/tabs/integrations.php:85
+msgid "Google Maps"
+msgstr ""
+
+#: inc/class-init.php:529
 msgid "Gênero"
 msgstr "Gênero"
 
@@ -1163,33 +1145,25 @@ msgstr "https://meumouse.com/"
 msgid "https://meumouse.com/plugins/flexify-checkout-para-woocommerce/"
 msgstr "https://meumouse.com/plugins/flexify-checkout-para-woocommerce/"
 
-#: inc/admin/tabs/parts/new-fields.php:77
+#: inc/admin/tabs/parts/new-fields.php:81
 msgid "ID da opção"
 msgstr "ID da opção"
 
-#: inc/admin/tabs/design.php:72
+#: inc/admin/tabs/design.php:75
 msgid "Imagem (Padrão)"
 msgstr "Imagem (Padrão)"
 
-#: inc/admin/tabs/design.php:79
+#: inc/admin/tabs/design.php:83
 msgid "Imagem de cabeçalho"
 msgstr "Imagem de cabeçalho"
 
-#: inc/classes/class-steps.php:687 inc/classes/class-steps.php:725
+#: inc/classes/class-steps.php:679 inc/classes/class-steps.php:717
 msgid "Informações"
 msgstr "Informações"
 
 #: inc/admin/tabs/about.php:13
 msgid "Informações sobre a licença:"
 msgstr "Informações sobre a licença:"
-
-#: inc/admin/tabs/integrations.php:263
-msgid ""
-"Informe a data de quando irá expirar as credenciais da aplicação, assim "
-"poderemos te avisar 7 dias antes das credenciais serem revogadas."
-msgstr ""
-"Informe a data de quando irá expirar as credenciais da aplicação, assim "
-"poderemos te avisar 7 dias antes das credenciais serem revogadas."
 
 #: inc/admin/tabs/options.php:243
 msgid ""
@@ -1223,13 +1197,13 @@ msgstr ""
 "Informe a propriedade para obter o estado que é retornado pelo serviço da "
 "API."
 
-#: inc/classes/class-assets.php:286 inc/admin/tabs/fields.php:218
-#: inc/admin/tabs/fields.php:370 inc/admin/tabs/parts/new-fields.php:130
+#: inc/admin/class-admin-options.php:330
+#: inc/admin/tabs/parts/new-fields.php:140
 msgid "Informe a(s) classe(s) CSS personalizadas para este campo. (Opcional)"
 msgstr "Informe a(s) classe(s) CSS personalizadas para este campo. (Opcional)"
 
-#: inc/classes/class-assets.php:288 inc/admin/tabs/fields.php:228
-#: inc/admin/tabs/fields.php:380 inc/admin/tabs/parts/new-fields.php:139
+#: inc/admin/class-admin-options.php:340
+#: inc/admin/tabs/parts/new-fields.php:150
 msgid ""
 "Informe a(s) classe(s) CSS personalizadas para o título (label) deste campo. "
 "(Opcional)"
@@ -1253,17 +1227,17 @@ msgstr ""
 "Informe o endereço da API para obter o endereço do usuário através do seu "
 "CEP em formato JSON. Use a variável {postcode} para informar o CEP."
 
-#: inc/admin/tabs/design.php:276
+#: inc/admin/tabs/design.php:287
 msgid ""
 "Informe o link da fonte para ser usado no formato @import na folha de "
 "estilos da finalização de compras."
 msgstr ""
 
-#: inc/admin/tabs/design.php:91
+#: inc/admin/tabs/design.php:96
 msgid "Informe o link da imagem do cabeçalho."
 msgstr "Informe o link da imagem do cabeçalho."
 
-#: inc/admin/tabs/design.php:267
+#: inc/admin/tabs/design.php:278
 msgid ""
 "Informe o nome da fonte do Google que deseja adicionar à biblioteca de "
 "opções."
@@ -1286,7 +1260,7 @@ msgstr ""
 "Informe o nome que será usado no campo em letras minúsculas, usando "
 "underline no lugar dos espaços e após o prefixo \"billing_\"."
 
-#: inc/admin/tabs/design.php:115
+#: inc/admin/tabs/design.php:122
 msgid ""
 "Informe o texto que será exibido no cabeçalho da página de finalização de "
 "compras."
@@ -1294,39 +1268,31 @@ msgstr ""
 "Informe o texto que será exibido no cabeçalho da página de finalização de "
 "compras."
 
-#: inc/admin/tabs/parts/new-fields.php:97
+#: inc/admin/tabs/parts/new-fields.php:104
 msgid "Informe o título do campo."
 msgstr "Informe o título do campo."
 
-#: inc/admin/tabs/about.php:92
+#: inc/admin/tabs/about.php:99
 msgid "Informe sua licença abaixo para desbloquear todos os recursos."
 msgstr "Informe sua licença abaixo para desbloquear todos os recursos."
 
-#: inc/admin/tabs/integrations.php:210
-msgid "Informe suas credenciais para integração"
-msgstr "Informe suas credenciais para integração"
-
-#: inc/class-init.php:614
+#: inc/class-init.php:473
 msgid "Inscrição Estadual"
 msgstr "Inscrição Estadual"
 
-#: inc/classes/class-steps.php:763
+#: inc/classes/class-steps.php:755
 msgid "Inserir cupom de desconto"
 msgstr "Inserir cupom de desconto"
 
-#: inc/admin/tabs/integrations.php:373
+#: inc/admin/tabs/integrations.php:41
 msgid "Instalar módulo"
 msgstr "Instalar módulo"
 
-#: inc/admin/tabs/integrations.php:365
-msgid "Instalar módulo adicional do banco Inter"
-msgstr "Instalar módulo adicional do banco Inter"
-
-#: inc/admin/settings.php:158
+#: inc/admin/settings.php:61
 msgid "Integrações"
 msgstr "Integrações"
 
-#: inc/class-init.php:126
+#: inc/class-init.php:94
 msgid "Inter"
 msgstr ""
 
@@ -1334,78 +1300,78 @@ msgstr ""
 msgid "Inválida"
 msgstr "Inválida"
 
-#: inc/admin/settings.php:125
+#: inc/admin/tabs/integrations.php:62
+msgid "Joinotify"
+msgstr ""
+
+#: inc/classes/class-license.php:1034
 msgid "Já tenho uma licença"
 msgstr "Já tenho uma licença"
 
-#: inc/classes/class-steps.php:562 inc/classes/class-steps.php:577
+#: inc/classes/class-steps.php:554 inc/classes/class-steps.php:569
 msgid "Já é um cliente?"
 msgstr "Já é um cliente?"
 
-#: inc/classes/class-assets.php:284 inc/admin/tabs/fields.php:210
-#: inc/admin/tabs/fields.php:362 inc/admin/tabs/parts/new-fields.php:123
+#: inc/admin/class-admin-options.php:322
+#: inc/admin/tabs/parts/new-fields.php:132
 msgid "Largura completa"
 msgstr "Largura completa"
 
-#: inc/admin/tabs/design.php:99
+#: inc/admin/tabs/design.php:105
 msgid "Largura da imagem de cabeçalho"
 msgstr "Largura da imagem de cabeçalho"
 
-#: inc/class-init.php:150
+#: inc/class-init.php:118
 msgid "Lato"
 msgstr "Lato"
 
-#: inc/admin/settings.php:41
+#: inc/classes/class-license.php:1057
 msgid "Licença ativada com sucesso!"
 msgstr "Licença ativada com sucesso!"
 
-#: inc/admin/tabs/about.php:35
+#: inc/classes/class-ajax.php:506
+msgid "Licença enviada e decriptografada com sucesso."
+msgstr ""
+
+#: inc/admin/tabs/about.php:42
 #, php-format
 #| msgid "Licença expira em:"
 msgid "Licença expira em: %s"
 msgstr "Licença expira em: %s"
 
-#: inc/classes/class-license.php:965
+#: inc/classes/class-license.php:952
 msgid "Licença expirada"
 msgstr "Licença expirada"
 
-#: inc/admin/tabs/about.php:371
+#: inc/admin/tabs/about.php:378
 msgid "Ligado"
 msgstr "Ligado"
 
-#: inc/admin/tabs/about.php:321
+#: inc/admin/tabs/about.php:328
 msgid "Limite de memória do PHP:"
 msgstr "Limite de memória do PHP:"
 
-#: inc/admin/tabs/about.php:277
+#: inc/admin/tabs/about.php:284
 msgid "Limite de tempo do PHP:"
 msgstr "Limite de tempo do PHP:"
 
-#: inc/admin/tabs/about.php:417
+#: inc/admin/tabs/about.php:422
 msgid "Limpar cache de ativação"
 msgstr "Limpar cache de ativação"
 
-#: inc/admin/tabs/design.php:90
+#: inc/admin/tabs/design.php:95
 msgid "Link da imagem de cabeçalho"
 msgstr "Link da imagem de cabeçalho"
 
-#: inc/admin/class-admin-options.php:758 inc/admin/tabs/conditions.php:78
+#: inc/classes/class-ajax.php:807 inc/admin/tabs/conditions.php:78
 #: inc/admin/tabs/conditions.php:228
 msgid "Maior que"
 msgstr ""
 
-#: inc/admin/class-admin-options.php:759 inc/admin/tabs/conditions.php:79
+#: inc/classes/class-ajax.php:808 inc/admin/tabs/conditions.php:79
 #: inc/admin/tabs/conditions.php:229
 msgid "Menor que"
 msgstr ""
-
-#: inc/admin/tabs/integrations.php:173
-msgid ""
-"Mensagem do rodapé do boleto bancário. Use a variável {order_id} para "
-"inserir o número do pedido."
-msgstr ""
-"Mensagem do rodapé do boleto bancário. Use a variável {order_id} para "
-"inserir o número do pedido."
 
 #. Author of the plugin
 msgid "MeuMouse.com"
@@ -1415,19 +1381,19 @@ msgstr "MeuMouse.com"
 msgid "meumouse.com"
 msgstr ""
 
-#: inc/admin/tabs/design.php:29
+#: inc/admin/tabs/design.php:30
 msgid "Moderno"
 msgstr "Moderno"
 
-#: inc/admin/tabs/about.php:125
+#: inc/admin/tabs/about.php:132
 msgid "Modo de depuração do WordPress:"
 msgstr "Modo de depuração do WordPress:"
 
-#: inc/class-init.php:134
+#: inc/class-init.php:102
 msgid "Montserrat"
 msgstr "Montserrat"
 
-#: inc/admin/class-admin-options.php:721 inc/admin/tabs/conditions.php:41
+#: inc/classes/class-ajax.php:770 inc/admin/tabs/conditions.php:41
 #: inc/admin/tabs/conditions.php:131
 msgid "Mostrar"
 msgstr ""
@@ -1436,7 +1402,7 @@ msgstr ""
 msgid "Mostrar botão Voltar à loja"
 msgstr "Mostrar botão Voltar à loja"
 
-#: inc/admin/tabs/fields.php:21
+#: inc/admin/tabs/fields.php:22
 #| msgid "Mostrar observações adicionais"
 msgid "Mostrar campo de observações adicionais"
 msgstr "Mostrar campo de observações adicionais"
@@ -1453,41 +1419,48 @@ msgstr "Mostrar resumo do pedido"
 msgid "Mostrar resumo do pedido aberto por padrão"
 msgstr ""
 
-#: inc/admin/tabs/fields.php:237 inc/admin/tabs/fields.php:389
-#: inc/admin/tabs/parts/new-fields.php:147
+#: inc/admin/class-admin-options.php:350
+#: inc/admin/tabs/parts/new-fields.php:159
 msgid "Máscara do campo (Opcional)"
 msgstr ""
 
-#: inc/admin/class-admin-options.php:621
+#: inc/classes/class-ajax.php:668
 msgid "Nenhum atributo encontrado."
 msgstr ""
 
-#: inc/admin/class-admin-options.php:661
+#: inc/classes/class-ajax.php:709
 msgid "Nenhum usuário encontrado."
 msgstr ""
 
-#: inc/admin/class-admin-options.php:581
+#: inc/classes/class-ajax.php:627
 msgid "Nenhuma categoria encontrada."
+msgstr ""
+
+#: inc/classes/class-helpers.php:580
+msgid "Nenhuma forma de entrega selecionada"
+msgstr ""
+
+#: inc/classes/class-core.php:1748
+msgid "Nenhuma forma de pagamento selecionada"
 msgstr ""
 
 #: inc/admin/tabs/about.php:19
 msgid "Nenhuma licença informada"
 msgstr "Nenhuma licença informada"
 
-#: inc/admin/class-admin-options.php:550
+#: inc/classes/class-ajax.php:595
 msgid "Nenhuma produto encontrado."
 msgstr ""
 
-#: inc/class-init.php:427
+#: inc/class-init.php:281
 msgid "Nome"
 msgstr "Nome"
 
-#: inc/admin/tabs/design.php:266
+#: inc/admin/tabs/design.php:277
 msgid "Nome da fonte"
 msgstr ""
 
-#: inc/classes/class-assets.php:278 inc/admin/tabs/fields.php:193
-#: inc/admin/tabs/fields.php:345
+#: inc/admin/class-admin-options.php:276
 msgid "Nome do campo"
 msgstr "Nome do campo"
 
@@ -1500,73 +1473,93 @@ msgstr ""
 msgid "Nome e ID do campo *"
 msgstr "Nome e ID do campo *"
 
-#: inc/admin/tabs/about.php:60
+#: inc/admin/tabs/about.php:67
 msgid "Notamos que teve problemas de conexão ao tentar ativar sua licença"
 msgstr ""
 
-#: inc/classes/class-license.php:959
+#: inc/classes/class-ajax.php:1190
+msgid "Nova opção adicionada"
+msgstr ""
+
+#: inc/classes/class-modules.php:224
+msgid "Novo recurso adicionado!"
+msgstr ""
+
+#: inc/classes/class-license.php:943
 msgid "Nunca expira"
 msgstr "Nunca expira"
 
-#: inc/class-init.php:158
+#: inc/class-init.php:126
 msgid "Nunito"
 msgstr "Nunito"
 
-#: inc/admin/tabs/about.php:121 inc/admin/tabs/about.php:187
-#: inc/admin/tabs/about.php:203 inc/admin/tabs/about.php:221
-#: inc/admin/tabs/about.php:239
+#: inc/admin/tabs/about.php:128 inc/admin/tabs/about.php:194
+#: inc/admin/tabs/about.php:210 inc/admin/tabs/about.php:228
+#: inc/admin/tabs/about.php:246
 msgid "Não"
 msgstr "Não"
 
-#: inc/admin/class-admin-options.php:755 inc/admin/tabs/conditions.php:75
+#: inc/classes/class-ajax.php:804 inc/admin/tabs/conditions.php:75
 #: inc/admin/tabs/conditions.php:225
 msgid "Não contém"
 msgstr ""
 
-#: inc/classes/class-license.php:942 inc/admin/tabs/about.php:41
+#: inc/classes/class-license.php:926 inc/admin/tabs/about.php:48
 msgid "Não disponível"
 msgstr "Não disponível"
 
-#: inc/admin/class-admin-options.php:753 inc/admin/tabs/conditions.php:73
+#: inc/classes/class-ajax.php:802 inc/admin/tabs/conditions.php:73
 #: inc/admin/tabs/conditions.php:223
 msgid "Não está vazio"
 msgstr ""
 
-#: inc/classes/class-updater.php:262
+#: inc/classes/class-ajax.php:511
+msgid "Não foi possível descriptografar o arquivo de licença."
+msgstr ""
+
+#: inc/classes/class-updater.php:265
+#, fuzzy
+#| msgid ""
+#| "Não foi possível verificar atualizações para o plugin Flexify Checkout "
+#| "para WooCommerce."
 msgid ""
-"Não foi possível verificar atualizações para o plugin Flexify Checkout para "
-"WooCommerce."
+"Não foi possível verificar atualizações para o plugin <strong>Flexify "
+"Checkout para WooCommerce.</strong>"
 msgstr ""
 "Não foi possível verificar atualizações para o plugin Flexify Checkout para "
 "WooCommerce."
 
-#: inc/admin/class-admin-options.php:751 inc/admin/tabs/conditions.php:71
+#: inc/classes/class-ajax.php:800 inc/admin/tabs/conditions.php:71
 #: inc/admin/tabs/conditions.php:221
 msgid "Não é"
 msgstr ""
 
-#: inc/admin/tabs/parts/new-fields.php:34
+#: inc/admin/tabs/parts/new-fields.php:35
 msgid "Número"
 msgstr "Número"
 
-#: inc/class-init.php:683
+#: inc/class-init.php:542
 msgid "Número da residência"
 msgstr "Número da residência"
 
-#: inc/classes/class-core.php:1153 inc/classes/class-core.php:1159
+#: inc/classes/class-core.php:1229 inc/classes/class-core.php:1235
 #, php-format
 msgid "O %s informado não é válido."
 msgstr ""
 
-#: inc/classes/class-assets.php:270
+#: inc/classes/class-assets.php:271
 msgid "O arquivo enviado não é permitido."
 msgstr "O arquivo enviado não é permitido."
 
-#: inc/admin/settings.php:96
-msgid "O cache de ativação foi limpo"
+#: inc/classes/class-ajax.php:1031
+msgid "O cache de ativação foi limpo com sucesso!"
 msgstr ""
 
-#: inc/admin/class-admin-options.php:935
+#: inc/classes/class-ajax.php:375
+msgid "O campo foi removido com sucesso!"
+msgstr ""
+
+#: inc/admin/class-admin-options.php:103
 msgid ""
 "O campo País na finalização de compras está desativado, verifique se seu "
 "gateway de pagamentos depende deste campo para não receber o erro \"Informe "
@@ -1577,8 +1570,18 @@ msgstr ""
 msgid "O cupom foi removido."
 msgstr "O cupom foi removido."
 
-#: inc/admin/settings.php:66
+#: inc/classes/class-license.php:1100
 msgid "O domínio de ativação não é permitido."
+msgstr ""
+
+#: inc/admin/class-admin-options.php:142
+msgid ""
+"O Flexify Checkout depende do shortcode [woocommerce_checkout] na página de "
+"finalização de compras para funcionar corretamente."
+msgstr ""
+
+#: inc/classes/class-modules.php:119
+msgid "O plugin foi instalado, mas não pôde ser ativado."
 msgstr ""
 
 #: inc/classes/class-thankyou.php:69
@@ -1586,8 +1589,8 @@ msgstr ""
 msgid "Obrigado, %s!"
 msgstr "Obrigado, %s!"
 
-#: inc/classes/class-assets.php:276 inc/admin/tabs/fields.php:162
-#: inc/admin/tabs/fields.php:311 inc/admin/tabs/parts/new-fields.php:105
+#: inc/admin/class-admin-options.php:246
+#: inc/admin/tabs/parts/new-fields.php:113
 msgid "Obrigatoriedade do campo"
 msgstr "Obrigatoriedade do campo"
 
@@ -1595,19 +1598,23 @@ msgstr "Obrigatoriedade do campo"
 msgid "obrigatório"
 msgstr ""
 
-#: inc/admin/tabs/integrations.php:369
-msgid ""
-"Observação: Para usar este módulo adicional é necessário que seja um cliente "
-"PJ do banco Inter. <strong>Não pode ser MEI.</strong>"
-msgstr ""
-"Observação: Para usar este módulo adicional é necessário que seja um cliente "
-"PJ do banco Inter. <strong>Não pode ser MEI.</strong>"
-
 #: inc/classes/class-assets.php:191
 msgid "Ocorreu um erro"
 msgstr "Ocorreu um erro"
 
-#: inc/classes/class-license.php:270
+#: inc/classes/class-ajax.php:1005
+msgid "Ocorreu um erro ao desativar sua licença."
+msgstr ""
+
+#: inc/classes/class-ajax.php:382 inc/classes/class-ajax.php:1066
+msgid "Ocorreu um erro ao redefinir as configurações."
+msgstr ""
+
+#: inc/classes/class-modules.php:128
+msgid "Ocorreu um erro ao tentar instalar ou atualizar o plugin."
+msgstr ""
+
+#: inc/classes/class-license.php:268
 msgid ""
 "Ocorreu um erro na conexão com o servidor de verificação de licenças. "
 "Verifique o erro nos logs do WooCommerce."
@@ -1615,16 +1622,16 @@ msgstr ""
 "Ocorreu um erro na conexão com o servidor de verificação de licenças. "
 "Verifique o erro nos logs do WooCommerce."
 
-#: inc/admin/class-admin-options.php:722 inc/admin/tabs/conditions.php:42
+#: inc/classes/class-ajax.php:771 inc/admin/tabs/conditions.php:42
 #: inc/admin/tabs/conditions.php:132
 msgid "Ocultar"
 msgstr ""
 
-#: inc/admin/tabs/fields.php:32
+#: inc/admin/tabs/fields.php:33
 msgid "Ocultar campo de cupom de desconto"
 msgstr "Ocultar campo de cupom de desconto"
 
-#: inc/admin/tabs/fields.php:74
+#: inc/admin/tabs/fields.php:75
 msgid "Ocultar campos do mercado brasileiro se país não for Brasil"
 msgstr "Ocultar campos do mercado brasileiro se país não for Brasil"
 
@@ -1632,28 +1639,54 @@ msgstr "Ocultar campos do mercado brasileiro se país não for Brasil"
 msgid "Ocultar resumo do pedido"
 msgstr "Ocultar resumo do pedido"
 
-#: inc/class-init.php:138
+#: inc/class-init.php:106
 msgid "Open Sans"
 msgstr "Open Sans"
 
-#: inc/classes/class-assets.php:289
+#: inc/classes/class-assets.php:272
 msgid "Ops! Essa fonte já existe."
 msgstr ""
 
-#: inc/admin/class-admin-options.php:780
+#: inc/classes/class-ajax.php:1197
+msgid "Ops! Não foi possível adicionar a nova opção."
+msgstr ""
+
+#: inc/classes/class-ajax.php:829
 msgid "Ops! Não foi possível criar uma nova condição."
 msgstr ""
 
-#: inc/admin/settings.php:63 inc/admin/settings.php:74
-#: inc/admin/settings.php:85
+#: inc/classes/class-ajax.php:1145
+msgid "Ops! Não foi possível remover a opção."
+msgstr ""
+
+#: inc/classes/class-assets.php:274
+msgid "Ops! Não há conexão com a internet"
+msgstr ""
+
+#: inc/classes/class-ajax.php:1154 inc/classes/class-ajax.php:1206
+msgid "Ops! O campo não existe ou não é do tipo select."
+msgstr ""
+
+#: inc/classes/class-ajax.php:381 inc/classes/class-ajax.php:1004
+#: inc/classes/class-ajax.php:1065 inc/classes/class-license.php:1077
+#: inc/classes/class-license.php:1097 inc/classes/class-license.php:1117
+#: inc/classes/class-modules.php:217
 msgid "Ops! Ocorreu um erro."
 msgstr "Ops! Ocorreu um erro."
 
-#: inc/admin/tabs/fields.php:54
+#: inc/classes/class-ajax.php:1138
+msgid "Opção removida"
+msgstr ""
+
+#: inc/admin/class-admin-options.php:287
+msgid "Opções "
+msgstr ""
+
+#: inc/admin/tabs/fields.php:55
 msgid "Otimizar para produtos digitais"
 msgstr "Otimizar para produtos digitais"
 
-#: inc/classes/class-steps.php:518 inc/classes/class-thankyou.php:217
+#: inc/classes/class-steps.php:510 inc/classes/class-thankyou.php:217
 msgid "Pagamento"
 msgstr "Pagamento"
 
@@ -1666,7 +1699,7 @@ msgstr "Pagar"
 msgid "Pagar pelo pedido"
 msgstr "Pagar pelo pedido"
 
-#: inc/class-init.php:480
+#: inc/class-init.php:334
 msgid "País"
 msgstr "País"
 
@@ -1689,19 +1722,39 @@ msgid ""
 "Personalize componentes da finalização de compras com regras específicas."
 msgstr ""
 
-#: inc/classes/class-steps.php:356
+#: inc/classes/class-steps.php:348
 msgid "Pesquisar um endereço"
 msgstr "Pesquisar um endereço"
 
-#: inc/class-init.php:130
+#: inc/class-init.php:438
+msgid "Pessoa Física (CPF)"
+msgstr ""
+
+#: inc/class-init.php:439
+msgid "Pessoa Jurífica (CNPJ)"
+msgstr ""
+
+#: inc/classes/class-modules.php:223
+msgid "Plugin ativado com sucesso."
+msgstr ""
+
+#: inc/classes/class-modules.php:110
+msgid "Plugin instalado e ativado com sucesso."
+msgstr ""
+
+#: inc/classes/class-modules.php:109
+msgid "Plugin instalado e ativado."
+msgstr ""
+
+#: inc/class-init.php:98
 msgid "Poppins"
 msgstr "Poppins"
 
-#: inc/classes/class-steps.php:701
+#: inc/classes/class-steps.php:693
 msgid "Por favor insira seu endereço"
 msgstr "Por favor insira seu endereço"
 
-#: inc/classes/class-core.php:944
+#: inc/classes/class-core.php:1020
 msgid "Por favor insira um número de telefone válido"
 msgstr "Por favor insira um número de telefone válido"
 
@@ -1717,16 +1770,12 @@ msgstr "Por favor, insira um CPF válido."
 msgid "Por favor, insira um número de telefone válido."
 msgstr "Por favor, insira um número de telefone válido."
 
-#: inc/classes/class-assets.php:280 inc/admin/tabs/fields.php:203
-#: inc/admin/tabs/fields.php:355 inc/admin/tabs/parts/new-fields.php:116
+#: inc/admin/class-admin-options.php:315
+#: inc/admin/tabs/parts/new-fields.php:125
 msgid "Posição do campo"
 msgstr "Posição do campo"
 
-#: inc/admin/tabs/integrations.php:94 inc/admin/tabs/integrations.php:183
-msgid "Prazo máximo para pagamento do Pix em minutos."
-msgstr "Prazo máximo para pagamento do Pix em minutos."
-
-#: inc/classes/class-thankyou.php:432
+#: inc/classes/class-thankyou.php:425
 msgid "Precisa de ajuda?"
 msgstr "Precisa de ajuda?"
 
@@ -1743,22 +1792,21 @@ msgstr "Preencher informações da empresa automaticamente"
 msgid "Primeira renovação"
 msgstr "Primeira renovação"
 
-#: inc/admin/settings.php:17 inc/admin/tabs/about.php:27
-#: inc/admin/tabs/about.php:154 inc/admin/tabs/fields.php:59
-#: inc/admin/tabs/fields.php:79 inc/admin/tabs/integrations.php:28
-#: inc/admin/tabs/integrations.php:116 inc/admin/tabs/options.php:170
-#: inc/admin/tabs/options.php:191 inc/admin/tabs/options.php:275
-#: inc/admin/tabs/options.php:294 inc/admin/tabs/options.php:313
-#: inc/admin/tabs/options.php:332 inc/admin/tabs/options.php:351
-#: inc/admin/tabs/options.php:379
+#: inc/admin/settings.php:16 inc/admin/tabs/about.php:27
+#: inc/admin/tabs/about.php:161 inc/admin/tabs/fields.php:60
+#: inc/admin/tabs/fields.php:80 inc/admin/tabs/integrations.php:30
+#: inc/admin/tabs/options.php:170 inc/admin/tabs/options.php:191
+#: inc/admin/tabs/options.php:275 inc/admin/tabs/options.php:294
+#: inc/admin/tabs/options.php:313 inc/admin/tabs/options.php:332
+#: inc/admin/tabs/options.php:351 inc/admin/tabs/options.php:379
 msgid "Pro"
 msgstr "Pro"
 
-#: inc/admin/tabs/design.php:84
+#: inc/admin/tabs/design.php:88
 msgid "Procurar"
 msgstr "Procurar"
 
-#: inc/classes/class-steps.php:411
+#: inc/classes/class-steps.php:403
 msgid "Procurar um endereço"
 msgstr "Procurar um endereço"
 
@@ -1798,8 +1846,8 @@ msgstr "Propriedade de obtenção do bairro"
 msgid "Pular página do carrinho"
 msgstr "Pular página do carrinho"
 
-#: inc/admin/tabs/design.php:105 inc/admin/tabs/design.php:199
-#: inc/admin/tabs/design.php:236
+#: inc/admin/tabs/design.php:111 inc/admin/tabs/design.php:210
+#: inc/admin/tabs/design.php:247
 msgid "px"
 msgstr "px"
 
@@ -1807,11 +1855,11 @@ msgstr "px"
 msgid "Página de contato"
 msgstr "Página de contato"
 
-#: inc/admin/tabs/design.php:56
+#: inc/admin/tabs/design.php:59
 msgid "Página única"
 msgstr "Página única"
 
-#: inc/admin/tabs/fields.php:33
+#: inc/admin/tabs/fields.php:34
 msgid ""
 "Quando ativado, o campo do cupom não será exibido aos usuários e eles não "
 "poderão inserir um código de cupom. No entanto, você pode aplicar um cupom "
@@ -1825,7 +1873,7 @@ msgstr ""
 msgid "Quantidade"
 msgstr "Quantidade"
 
-#: inc/admin/class-admin-options.php:744 inc/admin/tabs/conditions.php:64
+#: inc/classes/class-ajax.php:793 inc/admin/tabs/conditions.php:64
 #: inc/admin/tabs/conditions.php:197
 msgid "Quantidade total do carrinho"
 msgstr ""
@@ -1834,15 +1882,15 @@ msgstr ""
 msgid "Quantidade total do carrinho:"
 msgstr ""
 
-#: inc/class-init.php:162
+#: inc/class-init.php:130
 msgid "Quicksand"
 msgstr "Quicksand"
 
-#: inc/admin/tabs/design.php:192
+#: inc/admin/tabs/design.php:203
 msgid "Raio da borda dos elementos"
 msgstr "Raio da borda dos elementos"
 
-#: inc/class-init.php:154
+#: inc/class-init.php:122
 msgid "Raleway"
 msgstr "Raleway"
 
@@ -1850,12 +1898,12 @@ msgstr "Raleway"
 msgid "Recursos:"
 msgstr "Recursos:"
 
-#: inc/admin/tabs/about.php:383
+#: inc/admin/tabs/about.php:390
 msgid "Redefinir configurações"
 msgstr ""
 
-#: inc/admin/tabs/design.php:154 inc/admin/tabs/design.php:169
-#: inc/admin/tabs/design.php:184
+#: inc/admin/tabs/design.php:162 inc/admin/tabs/design.php:178
+#: inc/admin/tabs/design.php:194
 msgid "Redefinir para cor padrão"
 msgstr "Redefinir para cor padrão"
 
@@ -1863,8 +1911,8 @@ msgstr "Redefinir para cor padrão"
 msgid "Regra"
 msgstr ""
 
-#: inc/admin/tabs/design.php:107 inc/admin/tabs/design.php:201
-#: inc/admin/tabs/design.php:238
+#: inc/admin/tabs/design.php:113 inc/admin/tabs/design.php:212
+#: inc/admin/tabs/design.php:249
 msgid "rem"
 msgstr "rem"
 
@@ -1872,15 +1920,15 @@ msgstr "rem"
 msgid "Remover este item"
 msgstr "Remover este item"
 
-#: inc/admin/tabs/about.php:414
+#: inc/admin/tabs/about.php:421
 msgid "Reportar problemas"
 msgstr "Reportar problemas"
 
-#: inc/classes/class-license.php:302
+#: inc/classes/class-license.php:300
 msgid "Resposta desconhecida"
 msgstr "Resposta desconhecida"
 
-#: inc/classes/class-license.php:327
+#: inc/classes/class-license.php:325
 msgid "Resposta vazia."
 msgstr "Resposta vazia."
 
@@ -1892,40 +1940,32 @@ msgstr "Resumo do pedido"
 msgid "Retornar à loja"
 msgstr "Retornar à loja"
 
-#: inc/class-init.php:642
+#: inc/class-init.php:501
 msgid "RG"
 msgstr "RG"
 
-#: inc/class-init.php:146
+#: inc/class-init.php:114
 msgid "Roboto"
 msgstr "Roboto"
 
-#: inc/admin/tabs/design.php:135
+#: inc/admin/tabs/design.php:143
 msgid "Rodapé personalizado"
 msgstr "Rodapé personalizado"
 
-#: inc/class-init.php:142
+#: inc/class-init.php:110
 msgid "Rubik"
 msgstr "Rubik"
 
-#: inc/admin/settings.php:31
+#: inc/classes/class-ajax.php:341
 msgid "Salvo com sucesso"
 msgstr "Salvo com sucesso"
 
-#: inc/admin/tabs/integrations.php:370
-msgid ""
-"Se preencher o requisito acima, por favor, siga para a instalação clicando "
-"no botão <strong>Instalar módulo</strong> abaixo."
-msgstr ""
-"Se preencher o requisito acima, por favor, siga para a instalação clicando "
-"no botão <strong>Instalar módulo</strong> abaixo."
-
-#: inc/admin/class-admin-options.php:769 inc/admin/tabs/conditions.php:89
+#: inc/classes/class-ajax.php:818 inc/admin/tabs/conditions.php:89
 #, php-format
 msgid "Se: %s %s %s"
 msgstr ""
 
-#: flexify-checkout-for-woocommerce.php:405
+#: flexify-checkout-for-woocommerce.php:321
 msgid "Seja PRO"
 msgstr ""
 
@@ -1941,7 +1981,7 @@ msgstr ""
 "Selecione a página de contato que será exibida aos clientes na finalização "
 "de compra."
 
-#: inc/admin/tabs/design.php:68
+#: inc/admin/tabs/design.php:71
 msgid ""
 "Selecione o tipo de marca que será exibida no cabeçalho da página de "
 "finalização de compra."
@@ -1953,7 +1993,7 @@ msgstr ""
 msgid "Selecione o tipo de regra"
 msgstr ""
 
-#: inc/admin/tabs/parts/new-fields.php:28
+#: inc/admin/tabs/parts/new-fields.php:29
 msgid "Selecione o tipo do campo que será incluído na finalização de compras."
 msgstr "Selecione o tipo do campo que será incluído na finalização de compras."
 
@@ -1995,15 +2035,15 @@ msgstr ""
 msgid "Selecione uma função de usuário"
 msgstr ""
 
-#: inc/admin/tabs/parts/new-fields.php:38
+#: inc/admin/tabs/parts/new-fields.php:39
 msgid "Seletor/Lista suspensa"
 msgstr ""
 
-#: inc/admin/tabs/parts/new-fields.php:35
+#: inc/admin/tabs/parts/new-fields.php:36
 msgid "Senha"
 msgstr "Senha"
 
-#: inc/admin/tabs/about.php:161
+#: inc/admin/tabs/about.php:168
 msgid "Servidor"
 msgstr "Servidor"
 
@@ -2015,21 +2055,21 @@ msgstr "Serviço de API para busca de endereço"
 msgid "Seu carrinho está vazio, visite nossa loja para comprar algum produto."
 msgstr "Seu carrinho está vazio, visite nossa loja para comprar algum produto."
 
-#: inc/admin/tabs/about.php:121 inc/admin/tabs/about.php:191
-#: inc/admin/tabs/about.php:207 inc/admin/tabs/about.php:225
-#: inc/admin/tabs/about.php:243
+#: inc/admin/tabs/about.php:128 inc/admin/tabs/about.php:198
+#: inc/admin/tabs/about.php:214 inc/admin/tabs/about.php:232
+#: inc/admin/tabs/about.php:250
 msgid "Sim"
 msgstr "Sim"
 
-#: inc/admin/tabs/about.php:402
+#: inc/admin/tabs/about.php:409
 msgid "Sim, desejo redefinir"
 msgstr ""
 
-#: inc/admin/settings.php:166
+#: inc/admin/settings.php:71
 msgid "Sobre"
 msgstr "Sobre"
 
-#: inc/class-init.php:440
+#: inc/class-init.php:294
 msgid "Sobrenome"
 msgstr "Sobrenome"
 
@@ -2037,11 +2077,11 @@ msgstr "Sobrenome"
 msgid "Status da licença:"
 msgstr "Status da licença:"
 
-#: inc/admin/tabs/about.php:110
+#: inc/admin/tabs/about.php:117
 msgid "Status do sistema:"
 msgstr "Status do sistema:"
 
-#: inc/admin/tabs/about.php:37
+#: inc/admin/tabs/about.php:44
 msgid "Sua chave de licença:"
 msgstr "Sua chave de licença:"
 
@@ -2050,27 +2090,35 @@ msgstr "Sua chave de licença:"
 msgid "Subtotal"
 msgstr ""
 
-#: inc/admin/tabs/design.php:229
+#: inc/admin/tabs/design.php:240
 msgid "Tamanho do h2"
 msgstr "Tamanho do h2"
 
-#: inc/admin/tabs/about.php:255
+#: inc/admin/tabs/about.php:262
 msgid "Tamanho máximo da postagem do PHP:"
 msgstr "Tamanho máximo da postagem do PHP:"
 
-#: inc/admin/tabs/about.php:343
+#: inc/admin/tabs/about.php:350
 msgid "Tamanho máximo de envio do PHP:"
 msgstr "Tamanho máximo de envio do PHP:"
 
-#: inc/class-init.php:453 inc/admin/tabs/parts/new-fields.php:36
+#: inc/class-init.php:307 inc/admin/tabs/parts/new-fields.php:37
 msgid "Telefone"
 msgstr "Telefone"
 
-#: inc/classes/class-assets.php:290
+#: inc/classes/class-assets.php:273
 msgid "Tem certeza que deseja desativar sua licença?"
 msgstr ""
 
-#: inc/admin/class-admin-options.php:757 inc/admin/tabs/conditions.php:77
+#: inc/classes/class-assets.php:278
+msgid "Tem certeza que deseja excluir esta opção?"
+msgstr ""
+
+#: inc/classes/class-assets.php:276
+msgid "Tem certeza que deseja excluir este campo?"
+msgstr ""
+
+#: inc/classes/class-ajax.php:806 inc/admin/tabs/conditions.php:77
 #: inc/admin/tabs/conditions.php:227
 msgid "Termina com"
 msgstr ""
@@ -2079,41 +2127,39 @@ msgstr ""
 msgid "Termos e condições ativo por padrão"
 msgstr "Termos e condições ativo por padrão"
 
-#: inc/admin/tabs/design.php:73 inc/admin/tabs/parts/new-fields.php:32
+#: inc/admin/tabs/design.php:76 inc/admin/tabs/parts/new-fields.php:33
 msgid "Texto"
 msgstr "Texto"
 
-#: inc/admin/tabs/texts.php:93
+#: inc/admin/tabs/texts.php:101
 msgid "Texto do botão de voltar etapas"
 msgstr ""
 
-#: inc/admin/tabs/design.php:114
+#: inc/admin/tabs/texts.php:111
+msgid "Texto do botão para revisitar a loja da página de agradecimento"
+msgstr ""
+
+#: inc/admin/tabs/design.php:121
 msgid "Texto do cabeçalho"
 msgstr "Texto do cabeçalho"
 
-#: inc/admin/tabs/texts.php:105
+#: inc/admin/tabs/texts.php:123
 msgid "Texto do resumo de informações de contato"
 msgstr ""
 
-#: inc/admin/tabs/texts.php:121
+#: inc/admin/tabs/texts.php:140
 msgid "Texto do resumo de informações de entrega"
 msgstr ""
 
-#: inc/admin/tabs/integrations.php:74 inc/admin/tabs/integrations.php:163
-msgid ""
-"Texto exibido no e-mail junto do botão de copiar código Copia e Cola do Pix."
-msgstr ""
-"Texto exibido no e-mail junto do botão de copiar código Copia e Cola do Pix."
-
-#: inc/admin/tabs/texts.php:66
+#: inc/admin/tabs/texts.php:71
 msgid "Texto informativo do verificador da etapa de contato"
 msgstr ""
 
-#: inc/admin/tabs/texts.php:75
+#: inc/admin/tabs/texts.php:81
 msgid "Texto informativo do verificador da etapa de entrega"
 msgstr ""
 
-#: inc/admin/tabs/texts.php:84
+#: inc/admin/tabs/texts.php:91
 msgid "Texto informativo do verificador da etapa de pagamento"
 msgstr ""
 
@@ -2121,23 +2167,23 @@ msgstr ""
 msgid "Texto informativo dos campos da etapa de contato"
 msgstr ""
 
-#: inc/admin/tabs/texts.php:39
+#: inc/admin/tabs/texts.php:41
 msgid "Texto informativo dos campos da etapa de entrega"
 msgstr ""
 
-#: inc/admin/tabs/texts.php:48
+#: inc/admin/tabs/texts.php:51
 msgid "Texto informativo dos campos da etapa de pagamento"
 msgstr ""
 
-#: inc/admin/tabs/texts.php:57
+#: inc/admin/tabs/texts.php:61
 msgid "Texto informativo dos itens do carrinho"
 msgstr ""
 
-#: inc/admin/settings.php:146
+#: inc/admin/settings.php:46
 msgid "Textos"
 msgstr ""
 
-#: inc/admin/tabs/about.php:34
+#: inc/admin/tabs/about.php:39
 #, php-format
 #| msgid "Tipo da licença:"
 msgid "Tipo da licença: %s"
@@ -2147,15 +2193,15 @@ msgstr "Tipo da licença: %s"
 msgid "Tipo da regra: *"
 msgstr ""
 
-#: inc/admin/tabs/design.php:67
+#: inc/admin/tabs/design.php:70
 msgid "Tipo de marca no cabeçalho"
 msgstr "Tipo de marca no cabeçalho"
 
-#: inc/class-init.php:573
+#: inc/class-init.php:428
 msgid "Tipo de Pessoa"
 msgstr "Tipo de Pessoa"
 
-#: inc/admin/tabs/parts/new-fields.php:27
+#: inc/admin/tabs/parts/new-fields.php:28
 #| msgid "Tipo do campo"
 msgid "Tipo do campo *"
 msgstr "Tipo do campo *"
@@ -2176,13 +2222,13 @@ msgstr ""
 msgid "Todos os produtos (Padrão)"
 msgstr ""
 
-#: inc/admin/settings.php:44
-msgid "Todos os recursos agora estão ativados!"
-msgstr "Todos os recursos agora estão ativados!"
+#: inc/classes/class-license.php:1060
+msgid "Todos os recursos da versão Pro agora estão ativos!"
+msgstr ""
 
-#: inc/admin/settings.php:55
-msgid "Todos os recursos agora estão desativados!"
-msgstr "Todos os recursos agora estão desativados!"
+#: inc/classes/class-ajax.php:999
+msgid "Todos os recursos da versão Pro agora estão desativados!"
+msgstr ""
 
 #: inc/admin/tabs/conditions.php:267
 msgid "Todos os usuários (Padrão)"
@@ -2200,37 +2246,25 @@ msgstr ""
 msgid "Tradutor"
 msgstr ""
 
-#: flexify-checkout-for-woocommerce.php:462
-#: flexify-checkout-for-woocommerce.php:473
+#: flexify-checkout-for-woocommerce.php:401
+#: flexify-checkout-for-woocommerce.php:412
 msgid "Trapaceando?"
 msgstr "Trapaceando?"
 
-#: inc/admin/tabs/parts/new-fields.php:55
-#: inc/admin/tabs/parts/new-fields.php:81
+#: inc/classes/class-assets.php:280 inc/admin/tabs/parts/new-fields.php:58
+#: inc/admin/tabs/parts/new-fields.php:86
 msgid "Título da opção"
 msgstr "Título da opção"
 
-#: inc/admin/tabs/texts.php:30
+#: inc/admin/tabs/texts.php:31
 msgid "Título das formas de entrega"
 msgstr ""
 
-#: inc/admin/tabs/parts/new-fields.php:96
+#: inc/admin/tabs/parts/new-fields.php:103
 msgid "Título do campo *"
 msgstr "Título do campo *"
 
-#: inc/admin/tabs/integrations.php:54
-msgid ""
-"Título que o usuário verá na finalização de compra (Disponível apenas no "
-"Brasil)."
-msgstr ""
-"Título que o usuário verá na finalização de compra (Disponível apenas no "
-"Brasil)."
-
-#: inc/admin/tabs/integrations.php:143
-msgid "Título que o usuário verá na finalização de compra."
-msgstr "Título que o usuário verá na finalização de compra."
-
-#: inc/classes/class-core.php:1176
+#: inc/classes/class-core.php:1252
 msgid ""
 "Uma conta já está registrada com este endereço de e-mail. <a href=\"#\" data-"
 "login>Deseja entrar na sua conta?</a>"
@@ -2246,7 +2280,7 @@ msgstr ""
 "Uma conta já está registrada com este endereço de e-mail. Gostaria de entrar "
 "nela?"
 
-#: inc/admin/settings.php:121
+#: inc/classes/class-license.php:1030
 msgid ""
 "Uma licença permite que você desbloqueie todos os recursos Pro que o plugin "
 "tem a oferecer."
@@ -2254,25 +2288,30 @@ msgstr ""
 "Uma licença permite que você desbloqueie todos os recursos Pro que o plugin "
 "tem a oferecer."
 
-#: inc/classes/class-updater.php:241
+#: inc/classes/class-updater.php:244
+#, fuzzy
+#| msgid ""
+#| "Uma nova versão do plugin Flexify Checkout para WooCommerce está "
+#| "disponível."
 msgid ""
-"Uma nova versão do plugin Flexify Checkout para WooCommerce está disponível."
+"Uma nova versão do plugin <strong>Flexify Checkout para WooCommerce</strong> "
+"está disponível."
 msgstr ""
 "Uma nova versão do plugin Flexify Checkout para WooCommerce está disponível."
 
-#: inc/class-init.php:166
+#: inc/class-init.php:134
 msgid "Urbanist"
 msgstr "Urbanist"
 
-#: inc/admin/tabs/parts/new-fields.php:37
+#: inc/admin/tabs/parts/new-fields.php:38
 msgid "URL"
 msgstr "URL"
 
-#: inc/admin/tabs/design.php:275
+#: inc/admin/tabs/design.php:286
 msgid "URL da fonte"
 msgstr ""
 
-#: inc/classes/class-assets.php:268
+#: inc/classes/class-assets.php:269
 msgid "Usar esta imagem"
 msgstr "Usar esta imagem"
 
@@ -2284,7 +2323,7 @@ msgstr ""
 msgid "Usuários específicos:"
 msgstr ""
 
-#: inc/admin/tabs/texts.php:106 inc/admin/tabs/texts.php:122
+#: inc/admin/tabs/texts.php:124 inc/admin/tabs/texts.php:141
 msgid ""
 "Utilize as variáveis abaixo para recuperar as informações de campos, use <br>"
 " para quebrar uma linha. Ou deixe em branco para não exibir."
@@ -2294,27 +2333,27 @@ msgstr ""
 msgid "Valor da condição: *"
 msgstr ""
 
-#: inc/admin/tabs/parts/new-fields.php:51
+#: inc/classes/class-assets.php:279 inc/admin/tabs/parts/new-fields.php:53
 msgid "Valor da opção"
 msgstr "Valor da opção"
 
-#: inc/admin/tabs/about.php:308
+#: inc/admin/tabs/about.php:315
 msgid "Valor mínimo recomendado é 10000"
 msgstr "Valor mínimo recomendado é 10000"
 
-#: inc/admin/tabs/about.php:330
+#: inc/admin/tabs/about.php:337
 msgid "Valor mínimo recomendado é 128M"
 msgstr "Valor mínimo recomendado é 128M"
 
-#: inc/admin/tabs/about.php:286
+#: inc/admin/tabs/about.php:293
 msgid "Valor mínimo recomendado é 180"
 msgstr "Valor mínimo recomendado é 180"
 
-#: inc/admin/tabs/about.php:264 inc/admin/tabs/about.php:352
+#: inc/admin/tabs/about.php:271 inc/admin/tabs/about.php:359
 msgid "Valor mínimo recomendado é 64M"
 msgstr "Valor mínimo recomendado é 64M"
 
-#: inc/admin/class-admin-options.php:746 inc/admin/tabs/conditions.php:66
+#: inc/classes/class-ajax.php:795 inc/admin/tabs/conditions.php:66
 #: inc/admin/tabs/conditions.php:198
 msgid "Valor total do carrinho"
 msgstr ""
@@ -2323,20 +2362,16 @@ msgstr ""
 msgid "Valor total do carrinho:"
 msgstr ""
 
-#: inc/admin/tabs/about.php:299
+#: inc/admin/tabs/about.php:306
 msgid "Variáveis máximas de entrada do PHP:"
 msgstr "Variáveis máximas de entrada do PHP:"
 
-#: inc/admin/class-admin-options.php:752 inc/admin/tabs/conditions.php:72
+#: inc/classes/class-ajax.php:801 inc/admin/tabs/conditions.php:72
 #: inc/admin/tabs/conditions.php:222
 msgid "Vazio"
 msgstr ""
 
-#: inc/classes/class-thankyou.php:438
-msgid "Ver mais produtos"
-msgstr "Ver mais produtos"
-
-#: inc/classes/class-updater.php:210
+#: inc/classes/class-updater.php:213
 msgid "Verificar atualizações"
 msgstr "Verificar atualizações"
 
@@ -2344,27 +2379,27 @@ msgstr "Verificar atualizações"
 msgid "Verificação"
 msgstr ""
 
-#: inc/admin/tabs/parts/new-fields.php:78
+#: inc/admin/tabs/parts/new-fields.php:82
 msgid "verify_gdpr"
 msgstr "verify_gdpr"
 
-#: inc/admin/tabs/about.php:151
+#: inc/admin/tabs/about.php:158
 msgid "Versão do Flexify Checkout para WooCommerce:"
 msgstr "Versão do Flexify Checkout para WooCommerce:"
 
-#: inc/admin/tabs/about.php:163
+#: inc/admin/tabs/about.php:170
 msgid "Versão do PHP:"
 msgstr "Versão do PHP:"
 
-#: inc/admin/tabs/about.php:132
+#: inc/admin/tabs/about.php:139
 msgid "Versão do WooCommerce:"
 msgstr "Versão do WooCommerce:"
 
-#: inc/admin/tabs/about.php:115
+#: inc/admin/tabs/about.php:122
 msgid "Versão do WordPress:"
 msgstr "Versão do WordPress:"
 
-#: inc/admin/tabs/about.php:61
+#: inc/admin/tabs/about.php:68
 msgid ""
 "Você pode fazer upload do arquivo .key da licença para fazer sua ativação "
 "manual."
@@ -2384,7 +2419,7 @@ msgstr "Você só pode comprar 1 %s por pedido."
 msgid "Voltar para a conta"
 msgstr "Voltar para a conta"
 
-#: inc/classes/class-steps.php:795
+#: inc/classes/class-steps.php:785
 msgid "Voltar à loja"
 msgstr "Voltar à loja"
 
@@ -2392,23 +2427,23 @@ msgstr "Voltar à loja"
 msgid "Válida"
 msgstr "Válida"
 
-#: inc/admin/tabs/about.php:129
+#: inc/admin/tabs/about.php:136
 msgid "WooCommerce"
 msgstr "WooCommerce"
 
-#: inc/admin/tabs/about.php:112
+#: inc/admin/tabs/about.php:119
 msgid "WordPress"
 msgstr "WordPress"
 
-#: inc/admin/tabs/about.php:120
+#: inc/admin/tabs/about.php:127
 msgid "WordPress Multisite:"
 msgstr "WordPress Multisite:"
 
-#: inc/admin/tabs/parts/new-fields.php:33
+#: inc/admin/tabs/parts/new-fields.php:34
 msgid "Área de texto"
 msgstr "Área de texto"
 
-#: inc/admin/class-admin-options.php:750 inc/admin/tabs/conditions.php:70
+#: inc/classes/class-ajax.php:799 inc/admin/tabs/conditions.php:70
 #: inc/admin/tabs/conditions.php:220
 msgid "É"
 msgstr ""

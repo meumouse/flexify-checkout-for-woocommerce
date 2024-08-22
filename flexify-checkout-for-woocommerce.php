@@ -6,11 +6,11 @@
  * Plugin URI: 				https://meumouse.com/plugins/flexify-checkout-para-woocommerce/
  * Author: 					MeuMouse.com
  * Author URI: 				https://meumouse.com/
- * Version: 				3.7.4
+ * Version: 				3.8.0
  * WC requires at least: 	6.0.0
  * WC tested up to: 		9.1.2
  * Requires PHP: 			7.4
- * Tested up to:      		6.5.5
+ * Tested up to:      		6.6.1
  * Text Domain: 			flexify-checkout-for-woocommerce
  * Domain Path: 			/languages
  * License: 				GPL2
@@ -25,7 +25,7 @@ defined('ABSPATH') || exit;
  * Flexify_Checkout
  * 
  * @since 1.0.0
- * @version 3.7.0
+ * @version 3.8.0
  * @package MeuMouse.com
  */
 class Flexify_Checkout {
@@ -44,7 +44,7 @@ class Flexify_Checkout {
 	 * @since 1.0.0
 	 * @var string
 	 */
-	public static $version = '3.7.4';
+	public static $version = '3.8.0';
 
 	/**
 	 * Plugin initiated
@@ -96,7 +96,7 @@ class Flexify_Checkout {
 	 * Checker dependencies before activate plugin
 	 * 
 	 * @since 1.0.0
-	 * @version 3.7.0
+	 * @version 3.8.0
 	 * @return void
 	 */
 	public function load_checker() {
@@ -112,12 +112,11 @@ class Flexify_Checkout {
 		}
 
 		// check if WooCommerce is active
-		if ( is_plugin_active( 'woocommerce/woocommerce.php' ) && version_compare( WC_VERSION, '6.0', '>' ) ) {
+		if ( is_plugin_active('woocommerce/woocommerce.php') && version_compare( WC_VERSION, '6.0', '>' ) ) {
+			add_action( 'before_woocommerce_init', array( __CLASS__, 'setup_woo_new_features_compatibility' ) );
 			add_filter( 'plugin_action_links_' . FLEXIFY_CHECKOUT_BASENAME, array( $this, 'setup_action_links' ), 10, 4 );
 			add_filter( 'plugin_row_meta', array( $this, 'setup_row_meta_links' ), 10, 4 );
-			add_action( 'before_woocommerce_init', array( __CLASS__, 'setup_hpos_compatibility' ) );
 
-			$this->setup_compat_autoloader();
 			$this->setup_includes();
 			$this->initiated = true;
 
@@ -125,12 +124,12 @@ class Flexify_Checkout {
 
 			// remove Pro badge if plugin is licensed
 			if ( get_option('flexify_checkout_license_status') !== 'valid' && false !== strpos( $url, 'wp-admin/plugins.php' ) ) {
-				add_filter( 'plugin_action_links_' . FLEXIFY_CHECKOUT_BASENAME, array( $this, 'get_pro_flexify_checkout_link' ), 10, 4 );
-				add_action( 'admin_head', array( $this, 'badge_pro_flexify_checkout' ) );
+				add_filter( 'plugin_action_links_' . FLEXIFY_CHECKOUT_BASENAME, array( $this, 'be_pro_link' ), 10, 4 );
+				add_action( 'admin_head', array( $this, 'be_pro_styles' ) );
 			}
 		} else {
 			add_action( 'admin_notices', array( $this, 'woocommerce_version_notice' ) );
-			deactivate_plugins( 'flexify-checkout-for-woocommerce/flexify-checkout-for-woocommerce.php' );
+			deactivate_plugins('flexify-checkout-for-woocommerce/flexify-checkout-for-woocommerce.php');
 			add_action( 'admin_notices', array( $this, 'deactivate_flexify_checkout_notice' ) );
 		}
 	}
@@ -172,18 +171,6 @@ class Flexify_Checkout {
 
 
 	/**
-	 * Setup compability autoloader
-	 * 
-	 * @since 1.0.0
-	 * @version 3.7.0
-	 * @return void
-	 */
-	private function setup_compat_autoloader() {
-		include_once FLEXIFY_CHECKOUT_INC_PATH . 'classes/class-compat-autoloader.php';
-	}
-
-
-	/**
 	 * Define constant if not already set
 	 *
 	 * @since 1.0.0
@@ -202,107 +189,37 @@ class Flexify_Checkout {
 	 * Load classes
 	 * 
 	 * @since 1.0.0
-	 * @version 3.7.0
+	 * @version 3.8.0
 	 * @return void
 	 */
 	private function setup_includes() {
-		/**
-		 * Plugin functions
-		 * 
-		 * @since 2.3.0
-		 */
-		include_once FLEXIFY_CHECKOUT_INC_PATH . 'functions.php';
+		$includes = apply_filters( 'flexify_checkout_setup_includes', array(
+			'functions.php',
+			'classes/class-license.php',
+			'class-init.php',
+			'admin/class-admin-options.php',
+			'classes/class-core.php',
+			'classes/class-helpers.php',
+			'classes/class-assets.php',
+			'classes/class-ajax.php',
+			'classes/class-compat-autoloader.php',
+			'classes/class-sidebar.php',
+			'classes/class-steps.php',
+			'classes/class-order.php',
+			'classes/class-conditions.php',
+			'classes/class-thankyou.php',
+			'classes/class-logger.php',
+			'classes/class-modules.php',
+			'classes/class-updater.php',
+		));
 
-		/**
-		 * Load API settings
-		 * 
-		 * @since 1.0.0
-		 */
-		include_once FLEXIFY_CHECKOUT_INC_PATH . 'classes/class-license.php';
+		foreach ( $includes as $file ) {
+			$file_path = FLEXIFY_CHECKOUT_INC_PATH . $file;
 
-		/**
-		 * Class init plugin
-		 * 
-		 * @since 1.0.0
-		 */
-		include_once FLEXIFY_CHECKOUT_INC_PATH . 'class-init.php';
-
-		/**
-		 * Admin options
-		 * 
-		 * @since 1.0.0
-		 */
-		include_once FLEXIFY_CHECKOUT_INC_PATH . 'admin/class-admin-options.php';
-
-		/**
-		 * Load core plugin
-		 * 
-		 * @since 1.0.0
-		 */
-		include_once FLEXIFY_CHECKOUT_INC_PATH . 'classes/class-core.php';
-
-		/**
-		 * Load plugin assets
-		 * 
-		 * @since 1.0.0
-		 */
-		include_once FLEXIFY_CHECKOUT_INC_PATH . 'classes/class-assets.php';
-
-		/**
-		 * Load AJAX functions
-		 * 
-		 * @since 1.0.0
-		 */
-		include_once FLEXIFY_CHECKOUT_INC_PATH . 'classes/class-ajax.php';
-
-		/**
-		 * Load class helper
-		 * 
-		 * @since 1.0.0
-		 */
-		include_once FLEXIFY_CHECKOUT_INC_PATH . 'classes/class-helpers.php';
-
-		/**
-		 * Load guest user order
-		 * 
-		 * @since 1.0.0
-		 */
-		include_once FLEXIFY_CHECKOUT_INC_PATH . 'classes/class-order.php';
-
-		/**
-		 * Load checkout sidebar functions
-		 * 
-		 * @since 1.0.0
-		 */
-		include_once FLEXIFY_CHECKOUT_INC_PATH . 'classes/class-sidebar.php';
-
-		/**
-		 * Load checkout functions steps
-		 * 
-		 * @since 1.0.0
-		 */
-		include_once FLEXIFY_CHECKOUT_INC_PATH . 'classes/class-steps.php';
-
-		/**
-		 * Load thankyou page functions
-		 * 
-		 * @since 1.0.0
-		 */
-		include_once FLEXIFY_CHECKOUT_INC_PATH . 'classes/class-thankyou.php';
-
-		/**
-		 * Load checkout conditions
-		 * 
-		 * @since 3.5.0
-		 */
-		include_once FLEXIFY_CHECKOUT_INC_PATH . 'classes/class-conditions.php';
-
-		/**
-		 * Update checker
-		 * 
-		 * @since 1.0.0
-		 */
-		include_once FLEXIFY_CHECKOUT_INC_PATH . 'classes/class-updater.php';
+			if ( file_exists( $file_path ) ) {
+				include_once $file_path;
+			}
+		}
 	}
 
 	
@@ -315,7 +232,7 @@ class Flexify_Checkout {
 	 */
 	public function woocommerce_version_notice() {
 		$class = 'notice notice-error is-dismissible';
-		$message = sprintf( esc_html__( '<strong>%s</strong> requer a versão do WooCommerce 6.0 ou maior. Faça a atualização do plugin WooCommerce.', 'flexify-checkout-for-woocommerce' ), FLEXIFY_CHECKOUT_PLUGIN_NAME );
+		$message = sprintf( __( '<strong>%s</strong> requer a versão do WooCommerce 6.0 ou maior. Faça a atualização do plugin WooCommerce.', 'flexify-checkout-for-woocommerce' ), FLEXIFY_CHECKOUT_PLUGIN_NAME );
 
 		printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), $message );
 	}
@@ -325,18 +242,16 @@ class Flexify_Checkout {
 	 * Notice if WooCommerce is deactivate
 	 * 
 	 * @since 1.0.0
-	 * @version 3.6.5
+	 * @version 3.8.0
 	 * @return void
 	 */
 	public function deactivate_flexify_checkout_notice() {
-		if ( ! current_user_can('install_plugins') ) {
-			return;
+		if ( current_user_can('install_plugins') ) {
+			$class = 'notice notice-error is-dismissible';
+			$message = sprintf( __( '<strong>%s</strong> requer que <strong>WooCommerce</strong> esteja instalado e ativado.', 'flexify-checkout-for-woocommerce' ), FLEXIFY_CHECKOUT_PLUGIN_NAME );
+
+			printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), $message );
 		}
-
-		$class = 'notice notice-error is-dismissible';
-		$message = sprintf( esc_html__( '<strong>%s</strong> requer que <strong>WooCommerce</strong> esteja instalado e ativado.', 'flexify-checkout-for-woocommerce' ), FLEXIFY_CHECKOUT_PLUGIN_NAME );
-
-		printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), $message );
 	}
 
 
@@ -344,12 +259,12 @@ class Flexify_Checkout {
 	 * PHP version notice
 	 * 
 	 * @since 1.0.0
-	 * @version 3.6.5
+	 * @version 3.8.0
 	 * @return void
 	 */
 	public function php_version_notice() {
 		$class = 'notice notice-error is-dismissible';
-		$message = sprintf( esc_html__( '<strong>%s</strong> requer a versão do PHP 7.4 ou maior. Contate o suporte da sua hospedagem para realizar a atualização.', 'flexify-checkout-for-woocommerce' ), FLEXIFY_CHECKOUT_PLUGIN_NAME );
+		$message = sprintf( __( '<strong>%s</strong> requer a versão do PHP 7.4 ou maior. Contate o suporte da sua hospedagem para realizar a atualização.', 'flexify-checkout-for-woocommerce' ), FLEXIFY_CHECKOUT_PLUGIN_NAME );
 
 		printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), $message );
 	}
@@ -384,8 +299,8 @@ class Flexify_Checkout {
 	public function setup_row_meta_links( $plugin_meta, $plugin_file, $plugin_data, $status ) {
 		if ( strpos( $plugin_file, FLEXIFY_CHECKOUT_BASENAME ) !== false ) {
 			$new_links = array(
-					'docs' => '<a href="'. FLEXIFY_CHECKOUT_DOCS_LINK .'" target="_blank">'. __( 'Documentação', 'flexify-checkout-for-woocommerce' ) .'</a>',
-					);
+				'docs' => '<a href="'. FLEXIFY_CHECKOUT_DOCS_LINK .'" target="_blank">'. __( 'Documentação', 'flexify-checkout-for-woocommerce' ) .'</a>',
+			);
 			
 			$plugin_meta = array_merge( $plugin_meta, $new_links );
 		}
@@ -398,9 +313,10 @@ class Flexify_Checkout {
 	 * Plugin action links Pro version
 	 * 
 	 * @since 3.3.0
+	 * @version 3.8.0
 	 * @return array
 	 */
-	public static function get_pro_flexify_checkout_link( $action_links ) {
+	public static function be_pro_link( $action_links ) {
 		$plugins_links = array(
 			'<a id="get-pro-flexify-checkout" target="_blank" href="https://meumouse.com/plugins/flexify-checkout-para-woocommerce/?utm_source=wordpress&utm_medium=plugins-list&utm_campaign=flexify-checkout">' . __( 'Seja PRO', 'flexify-checkout-for-woocommerce' ) . '</a>'
 		);
@@ -413,41 +329,64 @@ class Flexify_Checkout {
 	 * Display badge in CSS for get pro in plugins page
 	 * 
 	 * @since 3.3.0
+	 * @version 3.8.0
 	 * @return void
 	 */
-	public function badge_pro_flexify_checkout() {
-		echo '<style>
-			#get-pro-flexify-checkout {
-				display: inline-block;
-				padding: 0.35em 0.6em;
-				font-size: 0.8125em;
-				font-weight: 600;
-				line-height: 1;
-				color: #fff;
-				text-align: center;
-				white-space: nowrap;
-				vertical-align: baseline;
-				border-radius: 0.25rem;
-				background-color: #008aff;
-				transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;
-			}
+	public function be_pro_styles() {
+		ob_start(); ?>
 
-			#get-pro-flexify-checkout:hover {
-				background-color: #0078ed;
-			}
-		</style>';
+		#get-pro-flexify-checkout {
+			display: inline-block;
+			padding: 0.35em 0.6em;
+			font-size: 0.8125em;
+			font-weight: 600;
+			line-height: 1;
+			color: #fff;
+			text-align: center;
+			white-space: nowrap;
+			vertical-align: baseline;
+			border-radius: 0.25rem;
+			background-color: #008aff;
+			transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;
+		}
+
+		#get-pro-flexify-checkout:hover {
+			background-color: #0078ed;
+		}
+
+		<?php $css = ob_get_clean();
+		$css = wp_strip_all_tags( $css );
+
+		printf( __('<style>%s</style>'), $css );
 	}
 
 
 	/**
-	 * Setp compatibility with HPOS/Custom order table feature of WooCommerce.
+	 * Declare compatibility with new WooCommerce features
 	 *
 	 * @since 1.0.0
+	 * @version 3.8.0
 	 * @return void
 	 */
-	public static function setup_hpos_compatibility() {
-		if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
-			\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', FLEXIFY_CHECKOUT_FILE, true );
+	public static function setup_woo_new_features_compatibility() {
+		if ( defined('WC_VERSION') && version_compare( WC_VERSION, '7.1', '>' ) ) {
+			/**
+			 * Setup compatibility with HPOS/Custom order table feature of WooCommerce
+			 * 
+			 * @since 1.0.0
+			 */
+			if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
+				\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', FLEXIFY_CHECKOUT_FILE, true );
+			}
+
+			/**
+			 * Display incompatible notice with WooCommerce checkout blocks
+			 * 
+			 * @since 3.8.0
+			 */
+			if ( class_exists( '\Automattic\WooCommerce\Utilities\FeaturesUtil' ) ) {
+				\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'cart_checkout_blocks', FLEXIFY_CHECKOUT_FILE, false );
+			}
 		}
 	}
 

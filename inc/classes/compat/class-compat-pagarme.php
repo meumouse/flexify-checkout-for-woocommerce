@@ -1,6 +1,6 @@
 <?php
 
-namespace MeuMouse\Flexify_Checkout\Compat\Pagarme;
+namespace MeuMouse\Flexify_Checkout\Compat;
 
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
@@ -9,7 +9,7 @@ defined( 'ABSPATH' ) || exit;
  * Compatibility with Pagar.me gateway.
  *
  * @since 2.1.0
- * @version 3.7.0
+ * @version 3.8.0
  * @link https://br.wordpress.org/plugins/pagarme-payments-for-woocommerce/
  */
 class Compat_Pagarme {

@@ -1,6 +1,6 @@
 <?php
 
-use MeuMouse\Flexify_Checkout\Init\Init;
+use MeuMouse\Flexify_Checkout\Init;
 
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
@@ -10,7 +10,7 @@ defined('ABSPATH') || exit;
  * This template can be overridden by copying it to yourtheme/woocommerce/common/checkout/cart-heading.php.
  *
  * @since 1.0.0
- * @version 3.7.0
+ * @version 3.8.0
  * @package MeuMouse.com
  */
 if ( ! empty( Init::get_setting('text_header_sidebar_right') ) ) : ?>

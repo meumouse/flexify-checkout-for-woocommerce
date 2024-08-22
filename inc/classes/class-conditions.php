@@ -1,6 +1,6 @@
 <?php
 
-namespace MeuMouse\Flexify_Checkout\Conditions;
+namespace MeuMouse\Flexify_Checkout;
 
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
@@ -544,3 +544,7 @@ class Conditions {
 }
 
 new Conditions();
+
+if ( ! class_exists('MeuMouse\Flexify_Checkout\Conditions\Conditions') ) {
+    class_alias( 'MeuMouse\Flexify_Checkout\Conditions', 'MeuMouse\Flexify_Checkout\Conditions\Conditions' );
+}

@@ -1,8 +1,8 @@
 <?php
 
-namespace MeuMouse\Flexify_Checkout\Order;
+namespace MeuMouse\Flexify_Checkout;
 
-use MeuMouse\Flexify_Checkout\Init\Init;
+use MeuMouse\Flexify_Checkout\Init;
 
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
@@ -11,7 +11,7 @@ defined('ABSPATH') || exit;
  * Order class
  *
  * @since 1.0.0
- * @version 3.7.0
+ * @version 3.8.0
  * @package MeuMouse.com
  */
 class Order {
@@ -65,3 +65,7 @@ class Order {
 }
 
 new Order();
+
+if ( ! class_exists('MeuMouse\Flexify_Checkout\Order\Order') ) {
+    class_alias( 'MeuMouse\Flexify_Checkout\Order', 'MeuMouse\Flexify_Checkout\Order\Order' );
+}

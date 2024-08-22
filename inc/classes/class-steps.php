@@ -1,11 +1,11 @@
 <?php
 
-namespace MeuMouse\Flexify_Checkout\Steps;
+namespace MeuMouse\Flexify_Checkout;
 
-use MeuMouse\Flexify_Checkout\Init\Init;
-use MeuMouse\Flexify_Checkout\Core\Core;
-use MeuMouse\Flexify_Checkout\Helpers\Helpers;
-use MeuMouse\Flexify_Checkout\Sidebar\Sidebar;
+use MeuMouse\Flexify_Checkout\Init;
+use MeuMouse\Flexify_Checkout\Core;
+use MeuMouse\Flexify_Checkout\Helpers;
+use MeuMouse\Flexify_Checkout\Sidebar;
 
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
@@ -14,7 +14,7 @@ defined('ABSPATH') || exit;
  * Handle de steps
  *
  * @since 1.0.0
- * @version 3.7.4
+ * @version 3.8.0
  * @package MeuMouse.com
  */
 class Steps {
@@ -119,24 +119,20 @@ class Steps {
 	 * Render checkout steps
 	 * 
 	 * @since 1.0.0
+	 * @version 3.8.0
 	 * @return void
 	 */
 	public static function render_steps() {
 		$checkout = WC()->checkout;
-		$theme = Core::get_theme();
-		$show_back_to_shop = Init::get_setting('enable_back_to_shop_button') === 'yes';
 		$steps = self::get_steps();
 
 		if ( empty( $steps ) ) {
 			return;
 		}
 
-		foreach ( $steps as $key => $step ) {
-			?>
+		foreach ( $steps as $key => $step ) : ?>
 			<section data-step="<?php echo esc_attr( $key + 1 ); ?>" class="flexify-step flexify-step--<?php echo esc_attr( $key + 1 ); ?> flexify-step--<?php echo esc_attr( $step['slug'] ); ?>" <?php echo 0 !== $key ? 'style="display:none;" aria-hidden="true"' : ''; ?>>
-				<?php
-				// @todo: should these be blocks, so they can be placed by the customer?
-				if ( 0 === $key ) {
+				<?php if ( 0 === $key ) :
 					/**
 					 * Before customer details
 					 *
@@ -145,15 +141,15 @@ class Steps {
 					do_action( 'woocommerce_checkout_before_customer_details' );
 
 					/**
-					 * Before checkout billing form.
+					 * Before checkout billing form
 					 *
-					 * @param WC_Checkout $checkout
+					 * @param WC_Checkout $checkout | Checkout object
 					 *
 					 * @since 1.0.0
 					 */
 					do_action( 'woocommerce_before_checkout_billing_form', $checkout );
-				}
-				?>
+				endif; ?>
+
 				<div class="flexify-step__content">
 					<?php
 						/**
@@ -173,49 +169,44 @@ class Steps {
 						do_action( 'flexify_checkout_after_step_content', $step );
 					?>
 				</div>
-				<?php
-				// Render before last step.
-				if ( count( $steps ) - 2 === $key ) {
-					// @todo: should these be blocks, so they can be placed by the customer?
+
+				<?php if ( count( $steps ) - 2 === $key ) {
+					// Render before last step
+
 					/**
-					 * After checkout billing form.
+					 * After checkout billing form
 					 *
-					 * @param WC_Checkout $checkout Checkout object.
+					 * @param WC_Checkout $checkout | Checkout object
 					 *
 					 * @since 2.0.0
 					 */
 					do_action( 'woocommerce_after_checkout_billing_form', $checkout );
 
 					/**
-					 * After customer details.
+					 * After customer details
 					 *
 					 * @since 2.0.0
 					 */
 					do_action( 'woocommerce_checkout_after_customer_details' );
 				}
 				
-				if ( count( $steps ) - 1 !== $key ) {
-					if ( 'classic' === $theme ) {
-						?>
+				if ( count( $steps ) - 1 !== $key ) :
+					if ( Core::get_theme() === 'classic' ) : ?>
 						<button class="flexify-button--step flexify-button" data-step-next data-step-show="<?php echo esc_attr( $key + 2 ); ?>">
 							<?php esc_html_e( 'Continuar', 'flexify-checkout-for-woocommerce' ); ?>
 						</button>
-						<?php
-					} else {
-						?>
-						<footer class="flexify-footer <?php echo ( ! $show_back_to_shop && 'details' === $step['slug'] ) ? 'flexify-footer--no-back-shop' : ''; ?>">
+					<?php else : ?>
+						<footer class="flexify-footer <?php echo ( Init::get_setting('enable_back_to_shop_button') !== 'yes' && 'customer-info' === $step['slug'] ) ? 'flexify-footer--no-back-shop' : ''; ?>">
 							<?php self::back_button( $step['slug'] ); ?>
+
 							<button class="flexify-button" data-step-next data-step-show="<?php echo esc_attr( $key + 2 ); ?>">
 								<?php esc_html_e( 'Continuar para', 'flexify-checkout-for-woocommerce' ); ?>&nbsp;<?php echo strtolower( esc_html( $steps[ $key + 1 ]['title'] ) ); ?>
 							</button>
 						</footer>
-						<?php
-					}
-				}
-				?>
+					<?php endif;
+				endif; ?>
 			</section>
-			<?php
-		}
+		<?php endforeach;
 	}
 
 
@@ -226,6 +217,7 @@ class Steps {
 	 * steps being defined via sub-pages of the checkout page.
 	 *
 	 * @since 1.0.0
+	 * @version 3.7.4
 	 * @return array
 	 */
 	public static function get_steps() {
@@ -251,10 +243,10 @@ class Steps {
 		);
 
 		/**
-		 * Filters the Custom Steps.
+		 * Filters the Custom Steps
 		 *
 		 * @since 1.0.0
-		 * @param array $steps Steps.
+		 * @param array $steps | Steps
 		 * @return array
 		 */
 		return apply_filters( 'flexify_custom_steps', $steps );
@@ -775,35 +767,29 @@ class Steps {
 	 * Print back button
 	 *
 	 * @since 1.0.0
-	 * @version 3.3.0
+	 * @version 3.8.0
 	 * @param array $step | Step slug
 	 * @return void
 	 */
 	public static function back_button( $step ) {
-		if ( 'details' === $step ) {
-			if ( Init::get_setting('enable_back_to_shop_button') === 'yes' ) {
+		if ( 'customer-info' === $step ) {
+			if ( Init::get_setting('enable_back_to_shop_button') === 'yes' ) :
 				/**
-				 * Filter to modify the URL for the back button.
-				 *
-				 * @param string $url Back button URL.
+				 * Filter to modify the URL for the back button
 				 *
 				 * @since 2.0.0
+				 * @param string $url | Back button URL
 				 */
-				$flexify_checkout_back_button_href = apply_filters( 'flexify_checkout_back_button_href', get_permalink( wc_get_page_id('shop') ) ); ?>
+				$button_url = apply_filters( 'flexify_checkout_back_button_href', get_permalink( wc_get_page_id('shop') ) ); ?>
 
-				<a class="flexify-step__back flexify-step__back--back-shop" href="<?php echo esc_url( $flexify_checkout_back_button_href ); ?>">
-					<?php echo esc_html__( 'Voltar à loja', 'flexify-checkout-for-woocommerce' ); ?>
-				</a>
-				<?php
-			}
+				<a class="flexify-step__back flexify-step__back--back-shop" href="<?php echo esc_url( $button_url ); ?>"><?php echo esc_html__( 'Voltar à loja', 'flexify-checkout-for-woocommerce' ); ?></a>
+			<?php endif;
 		} else {
-			if ( ! empty( Init::get_setting('text_previous_step_button') ) ) {
-				?>
+			if ( ! empty( Init::get_setting('text_previous_step_button') ) ) : ?>
 				<a class="flexify-step__back flexify-step__back--back-history" href="#<?php echo esc_attr( self::get_prev_step_slug( $step ) ); ?>">
 					<?php echo Init::get_setting('text_previous_step_button'); ?>
 				</a>
-				<?php
-			}
+			<?php endif;
 		}
 	}
 
@@ -1041,20 +1027,25 @@ class Steps {
 	 * Get review customer fragment
 	 *
 	 * @since 1.0.0
-	 * @version 3.7.0
+	 * @version 3.8.0
 	 * @return array
 	 */
 	public static function get_review_customer_fragment() {
 		// get checkout session data
 		$session_data = WC()->session->get('flexify_checkout_customer_fields');
 		$fragment_data = array();
-
-		if ( is_array( $session_data ) && $session_data !== null ) {
+	
+		// Returns an empty array if session data is not loaded
+		if ( ! is_array( $session_data ) || empty( $session_data ) ) {
+			return $fragment_data;
+		}
+	
+		if ( is_array( $session_data ) ) {
 			foreach ( $session_data as $field_id => $value ) {
 				$fragment_data[str_replace( 'billing_', '', $field_id )] = isset( $value ) ? $value : '';
 			}
 		}
-
+	
 		return apply_filters( 'flexify_checkout_review_customer_fragments', $fragment_data );
 	}
 
@@ -1063,31 +1054,37 @@ class Steps {
 	 * Get customer review text with placeholder values
 	 * 
 	 * @since 3.6.0
+	 * @version 3.8.0
 	 * @param string $text | Text with placeholders
 	 * @param array $data | Data for replace on placeholders
 	 * @return string
 	 */
 	public static function strings_to_replace( $text, $data ) {
+		// If data is empty, returns an empty string
+		if ( empty( $data ) ) {
+			return '';
+		}
+	
 		$placeholders = array();
-
+	
 		// Map placeholders to corresponding data
 		foreach ( $data as $key => $value ) {
 			$placeholders[$key] = isset( $data[$key] ) ? esc_html( $data[$key] ) : '';
 		}
-
+	
 		// Split text into parts, preserving delimiters and handling <br>
 		$parts = preg_split('/(\{\{\s*\w+\s*\}\}|<br>)/', $text, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
-
+	
 		$output = '<div class="customer-review-container">';
 		$current_paragraph = '';
-
+	
 		foreach ( $parts as $part ) {
 			// Check if part is a placeholder
 			if ( preg_match( '/\{\{\s*(\w+)\s*\}\}/', $part, $matches ) ) {
 				$key = $matches[1];
 				$value = isset( $placeholders[$key] ) ? $placeholders[$key] : $matches[0];
 				$current_paragraph .= sprintf('<span class="customer-details-info %s">%s</span>', esc_attr( $key ), $value);
-			} elseif ($part === '<br>') {
+			} elseif ( $part === '<br>' ) {
 				// If part is <br>, close current paragraph and start a new one
 				if ( ! empty( $current_paragraph ) ) {
 					$output .= '<p class="customer-details-info">' . $current_paragraph . '</p>';
@@ -1098,14 +1095,14 @@ class Steps {
 				$current_paragraph .= $part;
 			}
 		}
-
+	
 		// Close the last paragraph if any
 		if ( ! empty( $current_paragraph ) ) {
 			$output .= '<p class="customer-details-info">' . $current_paragraph . '</p>';
 		}
-
+	
 		$output .= '</div>';
-
+	
 		return $output;
 	}
 	
@@ -1149,4 +1146,8 @@ class Steps {
 
 		return isset( $steps[ $prev_index ] ) ? $steps[ $prev_index ] : '';
 	}
+}
+
+if ( ! class_exists('MeuMouse\Flexify_Checkout\Steps\Steps') ) {
+    class_alias( 'MeuMouse\Flexify_Checkout\Steps', 'MeuMouse\Flexify_Checkout\Steps\Steps' );
 }

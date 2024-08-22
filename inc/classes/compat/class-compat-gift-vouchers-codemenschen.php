@@ -1,6 +1,6 @@
 <?php
 
-namespace MeuMouse\Flexify_Checkout\Compat\Gift_Vouchers_Codemenschen;
+namespace MeuMouse\Flexify_Checkout\Compat;
 
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
@@ -9,7 +9,7 @@ defined('ABSPATH') || exit;
  * Compatibility with Gift Vouchers and Packages by Codemenschen.
  *
  * @since 1.0.0
- * @version 3.7.0
+ * @version 3.8.0
  * @package MeuMouse.com
  */
 class Compat_Gift_Vouchers_Codemenschen {

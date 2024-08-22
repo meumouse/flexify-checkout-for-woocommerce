@@ -1,8 +1,8 @@
 <?php
 
-use MeuMouse\Flexify_Checkout\Helpers\Helpers;
-use MeuMouse\Flexify_Checkout\Steps\Steps;
-use MeuMouse\Flexify_Checkout\Thankyou\Thankyou;
+use MeuMouse\Flexify_Checkout\Helpers;
+use MeuMouse\Flexify_Checkout\Steps;
+use MeuMouse\Flexify_Checkout\Thankyou;
 
 /**
  * Pay for order form
@@ -18,7 +18,7 @@ use MeuMouse\Flexify_Checkout\Thankyou\Thankyou;
  * @see https://docs.woocommerce.com/document/template-structure/
  * @package WooCommerce\Templates
  * @since 1.0.0
- * @version 3.7.0
+ * @version 3.8.0
  */
 
 // Exit if accessed directly.

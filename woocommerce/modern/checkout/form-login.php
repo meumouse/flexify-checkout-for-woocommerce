@@ -81,7 +81,7 @@ $auto_open_class = filter_input( INPUT_POST, 'login' ) ? 'woocommerce-form-login
 		 *
 		 * @since 1.0.0
 		 */
-		do_action( 'woocommerce_login_form_end' ); ?>
+		do_action('woocommerce_login_form_end'); ?>
 
 		<div class="clear"></div>
 	</form>

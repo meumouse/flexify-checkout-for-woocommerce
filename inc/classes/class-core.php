@@ -1,11 +1,11 @@
 <?php
 
-namespace MeuMouse\Flexify_Checkout\Core;
+namespace MeuMouse\Flexify_Checkout;
 
-use MeuMouse\Flexify_Checkout\Init\Init;
-use MeuMouse\Flexify_Checkout\License\License;
-use MeuMouse\Flexify_Checkout\Helpers\Helpers;
-use MeuMouse\Flexify_Checkout\Steps\Steps;
+use MeuMouse\Flexify_Checkout\Init;
+use MeuMouse\Flexify_Checkout\License;
+use MeuMouse\Flexify_Checkout\Helpers;
+use MeuMouse\Flexify_Checkout\Steps;
 
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
@@ -14,7 +14,7 @@ defined('ABSPATH') || exit;
  * Checkout core actions
  *
  * @since 1.0.0
- * @version 3.7.0
+ * @version 3.8.0
  * @package MeuMouse.com
  */
 class Core {
@@ -23,7 +23,7 @@ class Core {
 	 * Construct function
 	 * 
 	 * @since 1.0.0
-	 * @version 3.7.0
+	 * @version 3.8.0
 	 * @return void
 	 */
 	public function __construct() {
@@ -50,6 +50,8 @@ class Core {
 			add_action( 'woocommerce_my_account_my_orders_column', array( __CLASS__, 'display_custom_checkout_fields_in_my_account_orders' ), 10, 2 );
 			add_action( 'woocommerce_customer_save_address', array( __CLASS__, 'save_custom_address_fields' ), 10, 1 );
 			add_filter( 'woocommerce_billing_fields', array( __CLASS__, 'add_custom_fields_to_billing_address' ), 20, 1 );
+			add_filter( 'woocommerce_customer_meta_fields', array( __CLASS__, 'custom_fields_on_user_profile' ) );
+			add_filter( 'woocommerce_user_column_billing_address', array( __CLASS__, 'user_column_billing_address' ), 1, 2 );
 		}
 
 		add_filter( 'woocommerce_billing_fields', array( __CLASS__, 'custom_override_billing_field_priorities' ), 100 );
@@ -126,9 +128,6 @@ class Core {
 
 		// add custom footer on checkout page
 		add_action( 'flexify_checkout_after_layout', array( $this, 'custom_footer' ) );
-
-		// disable inter bank gateways if deactivated
-		add_filter( 'woocommerce_available_payment_gateways', array( $this, 'disable_inter_bank_gateways' ) );
 
 		// set default country on checkout
 		if ( Init::get_setting('enable_manage_fields') === 'yes' && License::is_valid() ) {
@@ -220,11 +219,11 @@ class Core {
 	 * Check if current page is a Thank you page.
 	 *
 	 * @since 1.0.0
-	 * @version 1.9.2
+	 * @version 3.8.0
 	 * @return bool
 	 */
 	public static function is_thankyou_page() {
-		$force = filter_input( INPUT_GET, 'flexify_force_ty' );
+		$force = filter_input( INPUT_GET, 'flexify_force_ty', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 
 		if ( '1' !== $force && Init::get_setting('enable_thankyou_page_template') !== 'yes' ) {
 			return false;
@@ -422,7 +421,7 @@ class Core {
 			}
 
 			// add new field type text
-			if ( isset( $value['source'] ) && $value['source'] === 'added' && isset( $value['type'] ) && $value['type'] === 'text' ) {
+			if ( isset( $value['source'] ) && $value['source'] !== 'native' && isset( $value['type'] ) && $value['type'] === 'text' ) {
 				$fields['billing'][$index] = array(
 					'type' => 'text',
 					'label' => $value['label'],
@@ -439,7 +438,7 @@ class Core {
 			}
 
 			// add new field type textarea
-			if ( isset( $value['source'] ) && $value['source'] === 'added' && isset( $value['type'] ) && $value['type'] === 'textarea' ) {
+			if ( isset( $value['source'] ) && $value['source'] !== 'native' && isset( $value['type'] ) && $value['type'] === 'textarea' ) {
 				$fields['billing'][$index] = array(
 					'type' => 'textarea',
 					'label' => $value['label'],
@@ -456,7 +455,7 @@ class Core {
 			}
 
 			// add new field type number
-			if ( isset( $value['source'] ) && $value['source'] === 'added' && isset( $value['type'] ) && $value['type'] === 'number' ) {
+			if ( isset( $value['source'] ) && $value['source'] !== 'native' && isset( $value['type'] ) && $value['type'] === 'number' ) {
 				$fields['billing'][$index] = array(
 					'type' => 'number',
 					'label' => $value['label'],
@@ -473,7 +472,7 @@ class Core {
 			}
 
 			// add new field type password
-			if ( isset( $value['source'] ) && $value['source'] === 'added' && isset( $value['type'] ) && $value['type'] === 'password' ) {
+			if ( isset( $value['source'] ) && $value['source'] !== 'native' && isset( $value['type'] ) && $value['type'] === 'password' ) {
 				$fields['billing'][$index] = array(
 					'type' => 'password',
 					'label' => $value['label'],
@@ -490,7 +489,7 @@ class Core {
 			}
 
 			// add new field type tel
-			if ( isset( $value['source'] ) && $value['source'] === 'added' && isset( $value['type'] ) && $value['type'] === 'phone' ) {
+			if ( isset( $value['source'] ) && $value['source'] !== 'native' && isset( $value['type'] ) && $value['type'] === 'phone' ) {
 				$fields['billing'][$index] = array(
 					'type' => 'tel',
 					'label' => $value['label'],
@@ -508,7 +507,7 @@ class Core {
 			}
 
 			// add new field type url
-			if ( isset( $value['source'] ) && $value['source'] === 'added' && isset( $value['type'] ) && $value['type'] === 'url' ) {
+			if ( isset( $value['source'] ) && $value['source'] !== 'native' && isset( $value['type'] ) && $value['type'] === 'url' ) {
 				$fields['billing'][$index] = array(
 					'type' => 'url',
 					'label' => $value['label'],
@@ -525,12 +524,12 @@ class Core {
 			}
 
 			// add new field type select
-			if ( isset( $value['source'] ) && $value['source'] === 'added' && isset( $value['type'] ) && $value['type'] === 'select' ) {
+			if ( isset( $value['source'] ) && $value['source'] !== 'native' && isset( $value['type'] ) && $value['type'] === 'select' ) {
 				$index_option = array();
 				
 				// get select options
 				foreach ( $value['options'] as $option ) {
-					$index_option[ $option['value'] ] = $option['text'];
+					$index_option[$option['value']] = $option['text'] ?? '';
 				}
 
 				$fields['billing'][$index] = array(
@@ -571,7 +570,7 @@ class Core {
 		$new_fields = maybe_unserialize( get_option('flexify_checkout_step_fields', array()) );
 	
 		foreach ( $new_fields as $index => $value ) {
-			if ( isset( $value['source'] ) && $value['source'] === 'added' ) {
+			if ( isset( $value['source'] ) && $value['source'] !== 'native' ) {
 				if ( ! empty( $_POST[$index] ) ) {
 					update_post_meta( $order_id, $index, sanitize_text_field( $_POST[$index] ) );
 				}
@@ -591,7 +590,7 @@ class Core {
 		$new_fields = maybe_unserialize( get_option('flexify_checkout_step_fields', array()) );
 
 		foreach ( $new_fields as $index => $value ) {
-			if ( isset( $value['source'] ) && $value['source'] === 'added' ) {
+			if ( isset( $value['source'] ) && $value['source'] !== 'native' ) {
 				$fields[$index] = array(
 					'label' => isset( $value['label'] ) ? $value['label'] : '',
 					'show'  => true,
@@ -615,7 +614,7 @@ class Core {
 		$new_fields = maybe_unserialize( get_option('flexify_checkout_step_fields', array()) );
 	
 		foreach ( $new_fields as $index => $value ) {
-			if ( isset( $value['source'] ) && $value['source'] === 'added' ) {
+			if ( isset( $value['source'] ) && $value['source'] !== 'native' ) {
 				$field_value = get_post_meta( $order->get_id(), $index, true );
 
 				if ( ! empty( $field_value ) ) {
@@ -639,7 +638,7 @@ class Core {
 		$new_fields = maybe_unserialize( get_option('flexify_checkout_step_fields', array()) );
 	
 		foreach ( $new_fields as $index => $value ) {
-			if ( isset( $value['source'] ) && $value['source'] === 'added' ) {
+			if ( isset( $value['source'] ) && $value['source'] !== 'native' ) {
 				$field_value = get_post_meta( $order->get_id(), $index, true );
 
 				if ( ! empty( $field_value ) ) {
@@ -666,7 +665,7 @@ class Core {
 		$new_fields = maybe_unserialize( get_option('flexify_checkout_step_fields', array()));
 	
 		foreach ( $new_fields as $index => $value ) {
-			if ( isset( $value['source'] ) && $value['source'] === 'added' ) {
+			if ( isset( $value['source'] ) && $value['source'] !== 'native' ) {
 				$columns[$index] = $value['label'];
 			}
 		}
@@ -686,7 +685,7 @@ class Core {
 		$new_fields = maybe_unserialize( get_option('flexify_checkout_step_fields', array()) );
 	
 		foreach ( $new_fields as $index => $value ) {
-			if ( isset( $value['source'] ) && $value['source'] === 'added' ) {
+			if ( isset( $value['source'] ) && $value['source'] !== 'native' ) {
 				$field_value = get_post_meta( $order->get_id(), $index, true );
 
 				if ( ! empty( $field_value ) ) {
@@ -708,7 +707,7 @@ class Core {
 		$new_fields = maybe_unserialize( get_option('flexify_checkout_step_fields', array()) );
 	
 		foreach ( $new_fields as $index => $value ) {
-			if ( isset( $value['source'] ) && $value['source'] === 'added' ) {
+			if ( isset( $value['source'] ) && $value['source'] !== 'native' ) {
 				if ( isset( $_POST[$index] ) ) {
 					update_user_meta( $user_id, $index, sanitize_text_field( $_POST[$index] ) );
 				}
@@ -730,7 +729,7 @@ class Core {
 		$new_fields = maybe_unserialize( get_option('flexify_checkout_step_fields', array()) );
 	
 		foreach ( $new_fields as $index => $value ) {
-			if ( isset( $value['source'] ) && $value['source'] === 'added' ) {
+			if ( isset( $value['source'] ) && $value['source'] !== 'native' ) {
 				$address[$index] = array(
 					'label' => $value['label'],
 					'value' => get_user_meta( $user_id, $index, true ),
@@ -756,7 +755,7 @@ class Core {
 		$new_fields = maybe_unserialize( get_option('flexify_checkout_step_fields', array()) );
 	
 		foreach ( $new_fields as $index => $value ) {
-			if ( isset( $value['source'] ) && $value['source'] === 'added' ) {
+			if ( isset( $value['source'] ) && $value['source'] !== 'native' ) {
 				$fields[$index] = array(
 					'label' => $value['label'],
 					'type' => isset( $value['type'] ) ? $value['type'] : 'text',
@@ -768,6 +767,55 @@ class Core {
 		}
 	
 		return $fields;
+	}
+
+
+	/**
+	 * Add new custom fields to user profile on WordPress user meta fields
+	 * 
+	 * @since 3.8.0
+	 * @param array $fields | Current fields
+	 * @return array
+	 */
+	public static function custom_fields_on_user_profile( $fields ) {
+		$custom_fields = maybe_unserialize( get_option('flexify_checkout_step_fields', array()) );
+		$new_fields['billing']['title'] = __( 'Endereço de cobrança', 'flexify-checkout-for-woocommerce' );
+		
+		foreach ( $custom_fields as $index => $value ) {
+			if ( isset( $value['source'] ) && $value['source'] !== 'native' && $value['type'] !== 'select' ) {
+				$new_fields['billing']['fields'][$index] = array(
+					'label' => isset( $value['label'] ) ? $value['label'] : '',
+					'description' => '',
+					'type' => isset( $value['type'] ) ? $value['type'] : 'text',
+					'required' => isset( $value['required'] ) && $value['required'] === 'yes' ? true : false,
+				);
+			}
+		}
+	
+		$new_fields = apply_filters( 'flexify_customer_user_meta_fields', $new_fields );
+	
+		return array_merge( $fields, $new_fields );
+	}
+
+
+	/**
+	 * Add column billing address on user meta fields
+	 * 
+	 * @since 3.8.0
+	 * @param array $address | Address column
+	 * @param int $user_id | User ID
+	 * @return array
+	 */
+	public static function user_column_billing_address( $address, $user_id ) {
+		$custom_fields = maybe_unserialize( get_option('flexify_checkout_step_fields', array()) );
+	
+		foreach ( $custom_fields as $index => $value ) {
+			if ( isset( $value['source'] ) && $value['source'] !== 'native' ) {
+				$address[$index] = get_user_meta( $user_id, 'billing_' . $index, true );
+			}
+		}
+	
+		return $address;
 	}
 	
 
@@ -1105,7 +1153,7 @@ class Core {
 	 * Render inline errors for validate fields
 	 *
 	 * @since 1.0.0
-	 * @version 3.7.0
+	 * @version 3.8.0
 	 * @param string $field | Checkout field
 	 * @param string $key | Field name and ID
 	 * @param array $args | Array of field parameters (type, country, label, description, placeholder, maxlenght, required, autocomplete, id, class, label_class, input_class, return, options, custom_attributes, validate, default, autofocus)
@@ -1122,10 +1170,10 @@ class Core {
 
 		// If we are doing AJAX, get the parameters from POST request.
 		if ( defined( 'DOING_AJAX' ) && DOING_AJAX && ! $called_inline ) {
-			$key = filter_input( INPUT_POST, 'key', FILTER_SANITIZE_STRING );
-			$args = filter_input( INPUT_POST, 'args', FILTER_SANITIZE_STRING, FILTER_REQUIRE_ARRAY );
-			$value = filter_input( INPUT_POST, 'value', FILTER_SANITIZE_STRING );
-			$country = filter_input( INPUT_POST, 'country', FILTER_SANITIZE_STRING );
+			$key = filter_input( INPUT_POST, 'key', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+			$args = filter_input( INPUT_POST, 'args', FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_REQUIRE_ARRAY );
+			$value = filter_input( INPUT_POST, 'value', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+			$country = filter_input( INPUT_POST, 'country', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 		}
 
 		$message = '';
@@ -1177,19 +1225,19 @@ class Core {
 			}
 
 			// add compatibility with multiple cpf fields
-			if ( strpos( $key, 'billing_cpf') !== false && ! Helpers::validate_cpf( $value ) || 'validate-cpf-field' === $args['class'] && ! Helpers::validate_cpf( $value ) ) {
-				$message = sprintf( __( 'O %s informado não é válido.', 'flexify-checkout-for-woocommerce' ), esc_html( $args['label'] ) );
+			if ( strpos( $key, 'billing_cpf' ) !== false && ! Helpers::validate_cpf( $value ) || ( isset( $args['class'] ) && 'validate-cpf-field' === $args['class'] && ! Helpers::validate_cpf( $value ) ) ) {
+				$message = sprintf( __('O %s informado não é válido.', 'flexify-checkout-for-woocommerce'), esc_html( $args['label'] ) );
 				$custom  = true;
 			}
 
 			// add compatibility with multiple cnpj fields
-			if ( strpos( $key, 'billing_cnpj' ) !== false && ! Helpers::validate_cnpj( $value ) || 'validate-cnpj-field' === $args['class'] && ! Helpers::validate_cnpj( $value ) ) {
-				$message = sprintf( __( 'O %s informado não é válido.', 'flexify-checkout-for-woocommerce' ), esc_html( $args['label'] ) );
+			if ( strpos( $key, 'billing_cnpj' ) !== false && ! Helpers::validate_cnpj( $value ) || ( isset( $args['class'] ) && 'validate-cnpj-field' === $args['class'] && ! Helpers::validate_cnpj( $value ) ) ) {
+				$message = sprintf(__('O %s informado não é válido.', 'flexify-checkout-for-woocommerce'), esc_html( $args['label'] ) );
 				$custom  = true;
 			}
 
-			if ( 'email' === $args['type'] && ! is_email( $value ) || 'validate-email-field' === $args['class'] && ! is_email( $value ) ) {
-				$message = sprintf( __( '%s não é um endereço de e-mail válido.', 'flexify-checkout-for-woocommerce' ), esc_html( $args['label'] ) );
+			if ( 'email' === $args['type'] && ! is_email( $value ) || ( isset( $args['class'] ) && 'validate-email-field' === $args['class'] && ! is_email( $value ) ) ) {
+				$message = sprintf( __('%s não é um endereço de e-mail válido.', 'flexify-checkout-for-woocommerce'), esc_html( $args['label'] ) );
 				$custom  = true;
 			}
 
@@ -1356,28 +1404,9 @@ class Core {
 		return $classes;
 	}
 
-
-	/**
-	 * Get array index of checkout fields
-	 * 
-	 * @since 3.2.0
-	 * @return array
-	 */
-	public static function get_array_index_checkout_fields() {
-		$fields = get_option('flexify_checkout_step_fields', array());
-		$fields = maybe_unserialize( $fields );
-		$array_index = array();
-
-		foreach ( $fields as $index => $value ) {
-			$array_index[] = $index;
-		}
-
-		return $array_index;
-	}
-
 	
 	/**
-	 * Locate templates.
+	 * Locate templates
 	 *
 	 * @since 1.0.0
 	 * @version 3.5.0
@@ -1547,13 +1576,14 @@ class Core {
 	 * Replace phone number - use the phone number saved in the hidden field by intl-tel-input script.
 	 *
 	 * @since 1.0.0
+	 * @version 3.8.0
 	 * @param int $order_id | Order ID.
 	 * @param array $posted_data | Posted Data.
 	 * @param WC_Order $order | Order class
 	 * @return void
 	 */
 	public static function replace_phone_number_on_submit( $order_id, $posted_data, $order ) {
-		$billing_phone_formated = filter_input( INPUT_POST, 'billing_phone_full_number' );
+		$billing_phone_formated = filter_input( INPUT_POST, 'billing_phone_full_number', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 
 		if ( empty( $billing_phone_formated ) ) {
 			return;
@@ -1631,26 +1661,6 @@ class Core {
 
 
 	/**
-	 * Disable Inter bank gateways
-	 * 
-	 * @since 2.3.0
-	 * @param array $available_gateways
-	 * @return array
-	 */
-	public function disable_inter_bank_gateways( $available_gateways ) {
-		if ( Init::get_setting('enable_inter_bank_pix_api') !== 'yes' && isset( $available_gateways['interpix'] ) ) {
-			unset( $available_gateways['interpix'] );
-		}
-
-		if ( Init::get_setting('enable_inter_bank_ticket_api') !== 'yes' && isset( $available_gateways['interboleto'] ) ) {
-			unset( $available_gateways['interboleto'] );
-		}
-
-		return $available_gateways;
-	}
-
-
-	/**
 	 * Set default country on WooCommerce checkout
 	 * 
 	 * @since 3.2.0
@@ -1702,6 +1712,7 @@ class Core {
 	 * Get product cart data from checkout session in AJAX callback
 	 * 
 	 * @since 3.5.0
+	 * @version 3.8.0
 	 * @return void
 	 */
 	public function get_product_cart_session_data_callback() {
@@ -1732,22 +1743,9 @@ class Core {
 			}
 		}
 	
-		// Get selected shipping method
-		$chosen_shipping_methods = WC()->session->get('chosen_shipping_methods');
-		$shipping_method = ! empty( $chosen_shipping_methods ) ? $chosen_shipping_methods[0] : 'none';
-		$shipping_method_label = 'Nenhuma forma de entrega selecionada';
-
-		if ( ! empty( $chosen_shipping_methods ) ) {
-			$shipping_methods = WC()->shipping()->get_shipping_methods();
-
-			if ( isset( $shipping_methods[$shipping_method] ) ) {
-				$shipping_method_label = $shipping_methods[$shipping_method]->get_title();
-			}
-		}
-	
 		// Get selected payment method
 		$payment_method = WC()->session->get('chosen_payment_method');
-		$payment_method_label = 'Nenhuma forma de pagamento selecionada';
+		$payment_method_label = __( 'Nenhuma forma de pagamento selecionada', 'flexify-checkout-for-woocommerce' );
 
 		if ( $payment_method ) {
 			$available_gateways = WC()->payment_gateways()->get_available_payment_gateways();
@@ -1760,12 +1758,12 @@ class Core {
 		$session_data = array(
 			'items' => $items,
 			'shipping_method' => array(
-				'id' => $shipping_method,
-				'label' => $shipping_method_label
+				'id' => WC()->session->get('chosen_shipping_methods'),
+				'label' => Helpers::get_selected_shipping_method_name(),
 			),
 			'payment_method' => array(
 				'id' => $payment_method,
-				'label' => $payment_method_label
+				'label' => $payment_method_label,
 			),
 			'checkout_entry_time' => WC()->session->get('checkout_entry_time'),
 		);
@@ -1845,4 +1843,8 @@ class Core {
 
 if ( Init::get_setting('enable_flexify_checkout') === 'yes' ) {
 	new Core();
+}
+
+if ( ! class_exists('MeuMouse\Flexify_Checkout\Core\Core') ) {
+    class_alias( 'MeuMouse\Flexify_Checkout\Core', 'MeuMouse\Flexify_Checkout\Core\Core' );
 }

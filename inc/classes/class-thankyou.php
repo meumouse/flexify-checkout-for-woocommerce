@@ -1,9 +1,9 @@
 <?php
 
-namespace MeuMouse\Flexify_Checkout\Thankyou;
+namespace MeuMouse\Flexify_Checkout;
 
-use MeuMouse\Flexify_Checkout\Init\Init;
-use MeuMouse\Flexify_Checkout\Helpers\Helpers;
+use MeuMouse\Flexify_Checkout\Init;
+use MeuMouse\Flexify_Checkout\Helpers;
 
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
@@ -12,7 +12,7 @@ defined('ABSPATH') || exit;
  * Functions related to the Thank you page
  *
  * @since 1.0.0
- * @version 3.7.0
+ * @version 3.8.0
  * @package MeuMouse.com
  */
 class Thankyou {
@@ -243,6 +243,7 @@ class Thankyou {
 	 * Render Product details.
 	 *
 	 * @since 1.0.0
+	 * @version 3.8.0
 	 * @param object $order | Object WC_Order
 	 * @return void
 	 */
@@ -341,29 +342,22 @@ class Thankyou {
 				}
 				?>
 			</div>
-				<?php
-
-				$totals = $order->get_order_item_totals();
-
-				foreach ( $totals as $key => $total ) {
-					if ( 'payment_method' === $key ) {
+				<?php foreach ( $order->get_order_item_totals() as $key => $total ) :
+					if ( 'payment_method' === $key ) :
 						continue;
-					}
-					?>
+					endif; ?>
+
 					<div class="flexify-cart-totals <?php echo 'flexify-cart-totals--' . esc_html( $key ); ?>">
 						<div class="flexify-cart-totals__label"><span><?php echo esc_html( trim( $total['label'], ':' ) ); ?></span></div>
 						<div class="flexify-cart-totals__value">
-							<?php
-							if ( 'order_total' === $key ) {
+							<?php if ( 'order_total' === $key ) :
 								echo sprintf( '<div class="flexify-cart-totals__currency-badge">%s</div>', esc_html( $order->get_currency() ) );
-							}
-							?>
+							endif; ?>
+
 							<span><?php echo wp_kses_post( $total['value'] ); ?></span>
 						</div>
 					</div>
-					<?php
-				}
-				?>
+				<?php endforeach; ?>
 		</div>
 		<?php
 
@@ -414,29 +408,30 @@ class Thankyou {
 	 * Show Contact Us at the footer
 	 *
 	 * @since 1.0.0
-	 * @param WC_Order $order Order
+	 * @version 3.8.0
+	 * @param WC_Order $order | Order object
 	 * @return void
 	 */
 	public static function contact_us( $order ) {
-		$contact_page = Init::get_setting('contact_page_thankyou');
-		$shop_url = Helpers::get_shop_page_url(); ?>
+		$contact_page = apply_filters( 'flexify_checkout_contact_permalink_thankyou', Init::get_setting('contact_page_thankyou') ); ?>
 		
 		<div class="flexify-ty-footer">
 			<span class="flexify-ty-footer__contact">
-				<?php
-				if ( ! empty( $contact_page ) ) {
+				<?php if ( ! empty( $contact_page ) ) :
 					$contact_page_url = get_permalink( $contact_page );
 					
 					echo '<span class="flexift-ty-footer-contact-container">';
 						echo '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="M12 2C6.486 2 2 6.486 2 12v4.143C2 17.167 2.897 18 4 18h1a1 1 0 0 0 1-1v-5.143a1 1 0 0 0-1-1h-.908C4.648 6.987 7.978 4 12 4s7.352 2.987 7.908 6.857H19a1 1 0 0 0-1 1V18c0 1.103-.897 2-2 2h-2v-1h-4v3h6c2.206 0 4-1.794 4-4 1.103 0 2-.833 2-1.857V12c0-5.514-4.486-10-10-10z"></path></svg>';
 						echo sprintf( '<span class="flexify-ty-footer__contact-span">%s <a href="%s">%s</a></span>', esc_html__( 'Precisa de ajuda?', 'flexify-checkout-for-woocommerce' ), esc_url( $contact_page_url ), esc_html__( 'Entrar em contato', 'flexify-checkout-for-woocommerce' ) );
 					echo '</span>';
-					}
-				?>
+				endif; ?>
 			</span>
-			<span class="flexify-ty-footer__continue-shipping">
-				<a class="flexify-button flexify-button--ty" href="<?php echo esc_url( $shop_url ); ?>" ><?php esc_html_e( 'Ver mais produtos', 'flexify-checkout-for-woocommerce' ); ?></a>
-			</span>
+
+			<?php if ( ! empty( Init::get_setting('text_view_shop_thankyou') ) ) : ?>
+				<span class="flexify-ty-footer__continue-shipping">
+					<a class="flexify-button flexify-button--ty" href="<?php echo esc_url( Helpers::get_shop_page_url() ); ?>" ><?php echo Init::get_setting('text_view_shop_thankyou') ?></a>
+				</span>
+			<?php endif; ?>
 		</div>
 		<?php
 	}
@@ -476,3 +471,7 @@ class Thankyou {
 }
 
 new Thankyou();
+
+if ( ! class_exists('MeuMouse\Flexify_Checkout\Thankyou\Thankyou') ) {
+    class_alias( 'MeuMouse\Flexify_Checkout\Thankyou', 'MeuMouse\Flexify_Checkout\Thankyou\Thankyou' );
+}

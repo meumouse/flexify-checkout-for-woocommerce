@@ -1,13 +1,13 @@
 <?php
 
-namespace MeuMouse\Flexify_Checkout\Assets;
+namespace MeuMouse\Flexify_Checkout;
 
-use MeuMouse\Flexify_Checkout\Init\Init;
-use MeuMouse\Flexify_Checkout\License\License;
-use MeuMouse\Flexify_Checkout\Helpers\Helpers;
-use MeuMouse\Flexify_Checkout\Steps\Steps;
-use MeuMouse\Flexify_Checkout\Core\Core;
-use MeuMouse\Flexify_Checkout\Conditions\Conditions;
+use MeuMouse\Flexify_Checkout\Init;
+use MeuMouse\Flexify_Checkout\License;
+use MeuMouse\Flexify_Checkout\Helpers;
+use MeuMouse\Flexify_Checkout\Steps;
+use MeuMouse\Flexify_Checkout\Core;
+use MeuMouse\Flexify_Checkout\Conditions;
 
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
@@ -16,7 +16,7 @@ defined('ABSPATH') || exit;
  * Register/enqueue frontend and backend scripts
  *
  * @since 1.0.0
- * @version 3.7.1
+ * @version 3.8.0
  * @package MeuMouse.com
  */
 class Assets {
@@ -237,7 +237,7 @@ class Assets {
 	 * Enqueue admin scripts in page settings only
 	 * 
 	 * @since 1.0.0
-	 * @version 3.7.0
+	 * @version 3.8.0
 	 * @return void
 	 */
 	public function admin_assets() {
@@ -246,6 +246,7 @@ class Assets {
 		// check if is admin settings
 		if ( is_flexify_checkout_admin_settings() ) {
 			wp_enqueue_media();
+			
 			wp_enqueue_script( 'flexify-checkout-modal', FLEXIFY_CHECKOUT_ASSETS . 'components/modal/modal'. $min_file .'.js', array('jquery'), FLEXIFY_CHECKOUT_VERSION );
 			wp_enqueue_style( 'flexify-checkout-modal-styles', FLEXIFY_CHECKOUT_ASSETS . 'components/modal/modal'. $min_file .'.css', array(), FLEXIFY_CHECKOUT_VERSION );
 			wp_enqueue_script( 'flexify-checkout-visibility-controller', FLEXIFY_CHECKOUT_ASSETS . 'components/visibility-controller/visibility-controller'. $min_file .'.js', array('jquery'), FLEXIFY_CHECKOUT_VERSION );
@@ -268,26 +269,18 @@ class Assets {
 				'use_this_image_title' => esc_html__( 'Usar esta imagem', 'flexify-checkout-for-woocommerce' ),
 				'upload_success' => esc_html__( 'Arquivo enviado com sucesso', 'flexify-checkout-for-woocommerce' ),
 				'invalid_file' => esc_html__( 'O arquivo enviado não é permitido.', 'flexify-checkout-for-woocommerce' ),
-				'get_array_checkout_fields' => Core::get_array_index_checkout_fields(),
-				'edit_popup_trigger_btn' => esc_html__( 'Editar', 'flexify-checkout-for-woocommerce' ),
-				'edit_popup_title' => esc_html__( 'Configurar campo', 'flexify-checkout-for-woocommerce' ),
-				'edit_popup_active_field_title' => esc_html__( 'Ativar/Desativar este campo', 'flexify-checkout-for-woocommerce' ),
-				'edit_popup_active_field_description' => esc_html__('Este é um campo nativo do WooCommerce e não pode ser removido, apenas desativado.', 'flexify-checkout-for-woocommerce' ),
-				'edit_popup_required_title' => esc_html__( 'Obrigatoriedade do campo', 'flexify-checkout-for-woocommerce' ),
-				'edit_popup_required_description' => esc_html__('Ao desativar, este campo se tornará não obrigatório.', 'flexify-checkout-for-woocommerce' ),
-				'edit_popup_label_title' => esc_html__( 'Nome do campo', 'flexify-checkout-for-woocommerce' ),
-				'edit_popup_label_description' => esc_html__('Define o título que será exibido para este campo.', 'flexify-checkout-for-woocommerce' ),
-				'edit_popup_position_title' => esc_html__( 'Posição do campo', 'flexify-checkout-for-woocommerce' ),
-				'edit_popup_position_description' => esc_html__('Define a posição deste campo na finalização de compras.', 'flexify-checkout-for-woocommerce' ),
-				'edit_popup_position_left_option' => esc_html__( 'Esquerda', 'flexify-checkout-for-woocommerce' ),
-				'edit_popup_position_right_option' => esc_html__( 'Direita', 'flexify-checkout-for-woocommerce' ),
-				'edit_popup_position_full_option' => esc_html__( 'Largura completa', 'flexify-checkout-for-woocommerce' ),
-				'edit_popup_classes_title' => esc_html__( 'Classe CSS personalizada do campo (Opcional)', 'flexify-checkout-for-woocommerce' ),
-				'edit_popup_classes_description' => esc_html__('Informe a(s) classe(s) CSS personalizadas para este campo. (Opcional)', 'flexify-checkout-for-woocommerce' ),
-				'edit_popup_label_classes_title' => esc_html__( 'Classe CSS personalizada do título (Opcional)', 'flexify-checkout-for-woocommerce' ),
-				'edit_popup_label_classes_description' => esc_html__('Informe a(s) classe(s) CSS personalizadas para o título (label) deste campo. (Opcional)', 'flexify-checkout-for-woocommerce' ),
 				'font_exists' => esc_html__( 'Ops! Essa fonte já existe.', 'flexify-checkout-for-woocommerce' ),
 				'confirm_deactivate_license' => esc_html__( 'Tem certeza que deseja desativar sua licença?', 'flexify-checkout-for-woocommerce' ),
+				'offline_toast_header' => esc_html__( 'Ops! Não há conexão com a internet', 'flexify-checkout-for-woocommerce' ),
+                'offline_toast_body' => esc_html__( 'As alterações não serão salvas.', 'flexify-checkout-for-woocommerce' ),
+				'confirm_exclude_field' => esc_html__( 'Tem certeza que deseja excluir este campo?', 'flexify-checkout-for-woocommerce' ),
+				'get_array_checkout_fields' => Helpers::get_array_index_checkout_fields(),
+				'confirm_remove_option' => esc_html__( 'Tem certeza que deseja excluir esta opção?', 'flexify-checkout-for-woocommerce' ),
+				'new_option_value' => esc_html__( 'Valor da opção', 'flexify-checkout-for-woocommerce' ),
+				'new_option_title' => esc_html__( 'Título da opção', 'flexify-checkout-for-woocommerce' ),
+				'placeholder_new_option_value' => esc_attr__( 'BR', 'flexify-checkout-for-woocommerce' ),
+				'placeholder_new_option_title' => esc_attr__( 'Brasil', 'flexify-checkout-for-woocommerce' ),
+				'close_aria_label_notice' => esc_attr__( 'Fechar', 'flexify-checkout-for-woocommerce' ),
 			));
 		}
 	}
@@ -375,10 +368,8 @@ class Assets {
 		$border_radius = Init::get_setting('input_border_radius') . Init::get_setting('unit_input_border_radius');
 		$font = Init::get_setting('set_font_family');
 
-		ob_start();
+		ob_start(); ?>
 
-		// set font family
-		?>
 		@import url('<?php echo esc_attr( $settings['font_family'][$font]['font_url'] ); ?>');
 
 		* {
@@ -391,9 +382,8 @@ class Assets {
 		 * but we are not rendering it, output buffer comes after
 		 * the start and before the end.
 		 */
-		if ( 'modern' === $theme ) {
-			if ( $settings['set_placeholder_color'] ) {
-				?>
+		if ( 'modern' === $theme ) :
+			if ( $settings['set_placeholder_color'] ) : ?>
 				.flexify-checkout ::-webkit-input-placeholder {
 					color: <?php echo esc_attr( $settings['set_placeholder_color'] ); ?>;
 				}
@@ -422,11 +412,9 @@ class Assets {
 				.flexify-checkout .form-row label:not(.checkbox) span {
 					color: <?php echo esc_attr( $settings['set_placeholder_color'] ); ?>;
 				}
-				<?php
-			}
+			<?php endif;
 
-			if ( $settings['set_primary_color'] ) {
-				?>
+			if ( $settings['set_primary_color'] ) : ?>
 				::-webkit-scrollbar-thumb:hover {
 					background-color: <?php echo esc_attr( $settings['set_primary_color'] ); ?>;
 				}
@@ -525,11 +513,9 @@ class Assets {
 					border-color: <?php echo esc_attr( $settings['set_primary_color'] ); ?> !important;
 				}
 
-				<?php
-			}
+			<?php endif;
 
-			if ( $settings['set_primary_color_on_hover'] ) {
-				?>
+			if ( $settings['set_primary_color_on_hover'] ) : ?>
 				.flexify-checkout .button:not(.wc-forward,.woocommerce-MyAccount-downloads-file),
 				.flexify-checkout .button:not(.wc-forward,.woocommerce-MyAccount-downloads-file):hover, .button:hover, button:hover {
 					background-color: <?php echo esc_attr( $settings['set_primary_color_on_hover'] ); ?>;
@@ -538,12 +524,10 @@ class Assets {
 				.mp-details-pix-button:hover {
 					background-color: <?php echo esc_attr( $settings['set_primary_color_on_hover'] ); ?> !important;
 				}
-				<?php
-			}
+			<?php endif;
 
 			// set border radius
-			if ( ! empty( $settings['input_border_radius'] ) ) {
-				?>
+			if ( ! empty( $settings['input_border_radius'] ) ) : ?>
 				.form-row .select2-selection,
 				.form-row .select2-selection,
 				.form-row input[type="email"],
@@ -574,33 +558,26 @@ class Assets {
 					border-top-right-radius: <?php echo esc_attr( $border_radius ); ?> !important;
 					border-bottom-right-radius: <?php echo esc_attr( $border_radius ); ?> !important;
 				}
-				<?php
-			}
+			<?php endif;
 
 			// set h2 font size
-			if ( ! empty( $settings['h2_size'] ) ) {
-				?>
+			if ( ! empty( $settings['h2_size'] ) ) : ?>
 				.h2, h2 {
 					font-size: <?php echo esc_attr( $settings['h2_size'] . $settings['h2_size_unit'] ); ?> !important;
 				}
-				<?php
-			}
+			<?php endif; ?>
 
-			?>
 			.processing .blockUI.blockOverlay {
   				background-image: url("<?php echo esc_attr( FLEXIFY_CHECKOUT_ASSETS . 'frontend/img/loader.gif' ); ?>") !important;
 			}
-			<?php
-		}
+		<?php endif;
 
-		if ( Init::get_setting('enable_inter_bank_pix_api') === 'yes' ) {
-			?>
+		if ( Init::get_setting('enable_inter_bank_pix_api') === 'yes' ) : ?>
 			.interpix-open-browser {
-				background: <?php esc_attr( $settings['set_primary_color'] ); ?> !important;
-				border: 1px solid <?php esc_attr( $settings['set_primary_color'] ); ?>;
+				background: <?php echo esc_attr( $settings['set_primary_color'] ); ?> !important;
+				border: 1px solid <?php echo esc_attr( $settings['set_primary_color'] ); ?>;
 			}
-			<?php
-		}
+		<?php endif;
 		
 		$css = ob_get_clean();
 		$css = wp_strip_all_tags( $css );
@@ -611,3 +588,7 @@ class Assets {
 }
 
 new Assets();
+
+if ( ! class_exists('MeuMouse\Flexify_Checkout\Assets\Assets') ) {
+    class_alias( 'MeuMouse\Flexify_Checkout\Assets', 'MeuMouse\Flexify_Checkout\Assets\Assets' );
+}

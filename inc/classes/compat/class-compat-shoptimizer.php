@@ -1,6 +1,6 @@
 <?php
 
-namespace MeuMouse\Flexify_Checkout\Compat\Shoptimizer;
+namespace MeuMouse\Flexify_Checkout\Compat;
 
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
@@ -9,7 +9,7 @@ defined('ABSPATH') || exit;
  * Compatibility with Shoptimizer
  *
  * @since 1.2.0
- * @version 3.7.0
+ * @version 3.8.0
  * @package MeuMouse.com
  */
 class Compat_Shoptimizer {

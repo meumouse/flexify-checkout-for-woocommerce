@@ -1,7 +1,7 @@
 <?php
 
-use MeuMouse\Flexify_Checkout\Helpers\Helpers;
-use MeuMouse\Flexify_Checkout\License\License;
+use MeuMouse\Flexify_Checkout\Helpers;
+use MeuMouse\Flexify_Checkout\License;
 
 // Exit if accessed directly.
 defined('ABSPATH') || exit; ?>
@@ -59,7 +59,7 @@ defined('ABSPATH') || exit; ?>
 
                                     if ( $value['verification_condition'] === 'field' ) {
                                         $field_id = $value['verification_condition_field'];
-                                        $component_verification_label = sprintf( esc_html__( 'Campo %s', 'flexify-checkout-for-woocommerce' ), $get_fields['billing'][$field_id]['label'] );
+                                        $component_verification_label = sprintf( esc_html__( 'Campo %s', 'flexify-checkout-for-woocommerce' ), isset( $get_fields['billing'][$field_id]['label'] ) ? $get_fields['billing'][$field_id]['label'] : '' );
                                     } elseif ( $value['verification_condition'] === 'qtd_cart_total' ) {
                                         $component_verification_label = esc_html__( 'Quantidade total do carrinho', 'flexify-checkout-for-woocommerce' );
                                     } elseif ( $value['verification_condition'] === 'cart_total_value' ) {
@@ -107,7 +107,7 @@ defined('ABSPATH') || exit; ?>
                     <?php echo esc_html__( 'Criar uma nova condição', 'flexify-checkout-for-woocommerce' ) ?>
                 </button>
 
-                <div id="add_new_checkout_condition_container">
+                <div id="add_new_checkout_condition_container" class="popup-container">
                     <div class="popup-content popup-fullscreen">
                         <div class="popup-header border-bottom-0 justify-content-end">
                             <button id="close_add_new_checkout_condition" class="btn-close fs-lg" aria-label="<?php esc_html( 'Fechar', 'flexify-checkout-for-woocommerce' ); ?>"></button>

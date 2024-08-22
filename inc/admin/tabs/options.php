@@ -1,7 +1,7 @@
 <?php
 
-use MeuMouse\Flexify_Checkout\Init\Init;
-use MeuMouse\Flexify_Checkout\License\License;
+use MeuMouse\Flexify_Checkout\Init;
+use MeuMouse\Flexify_Checkout\License;
 
 // Exit if accessed directly.
 defined('ABSPATH') || exit; ?>
@@ -84,7 +84,7 @@ defined('ABSPATH') || exit; ?>
          <td class="require-email-suggestions-enabled">
             <button id="set_email_providers_trigger" class="btn btn-outline-primary ms-2"><?php echo esc_html__( 'Configurar provedores', 'flexify-checkout-for-woocommerce' ) ?></button>
 
-            <div id="set_email_providers_container">
+            <div id="set_email_providers_container" class="popup-container">
                <div class="popup-content">
                   <div class="popup-header">
                      <h5 class="popup-title"><?php echo esc_html__('Configurar sugestão de e-mails', 'flexify-checkout-for-woocommerce') ?></h5>
@@ -100,7 +100,7 @@ defined('ABSPATH') || exit; ?>
                            <td class="w-50">
                               <div class="input-group">
                                  <input type="text" class="form-control" id="get_new_email_provider" value="" placeholder="<?php echo esc_html__( 'meumouse.com', 'flexify-checkout-for-woocommerce' ) ?>"/>
-                                 <button id="add_new_email_provider" class="btn btn-outline-primary" disabled><?php echo esc_html__( 'Adicionar', 'flexify-checkout-for-woocommerce' ) ?></button>
+                                 <button id="add_new_email_provider" class="btn btn-outline-secondary" disabled><?php echo esc_html__( 'Adicionar', 'flexify-checkout-for-woocommerce' ) ?></button>
                               </div>
                            </td>
                         </tr>
@@ -202,7 +202,7 @@ defined('ABSPATH') || exit; ?>
             <td class="require-auto-fill-address">
                <button id="auto_fill_address_api_trigger" class="btn btn-outline-primary ms-2"><?php echo esc_html__( 'Configurar API', 'flexify-checkout-for-woocommerce' ) ?></button>
 
-               <div class="auto-fill-address-api-container">
+               <div class="auto-fill-address-api-container popup-container">
                   <div class="popup-content">
                      <div class="popup-header">
                         <h5 class="popup-title"><?php echo esc_html__('Configurar API de preenchimento de endereço', 'flexify-checkout-for-woocommerce') ?></h5>

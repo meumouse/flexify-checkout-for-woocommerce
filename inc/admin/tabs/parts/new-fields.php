@@ -1,4 +1,4 @@
-<div class="add-new-checkout-fields-container">
+<div class="add-new-checkout-fields-container popup-container">
     <div class="popup-content">
         <div class="popup-header">
             <h5 class="popup-title"><?php echo esc_html__('Adicionar novo campo para finalização de compras', 'flexify-checkout-for-woocommerce') ?></h5>
@@ -22,6 +22,7 @@
                         <div id="check_field_availability" class="d-none bg-translucent-danger text-danger px-3 py-2 rounded-pill mt-2 w-fit" data-avalability="true"><?php echo esc_html__( 'Este nome e ID do campo já está em uso. Use um outro nome.', 'flexify-checkout-for-woocommerce' ) ?></div>
                     </td>
                 </tr>
+                
                 <tr>
                     <th class="w-50">
                         <?php echo esc_html__( 'Tipo do campo *', 'flexify-checkout-for-woocommerce' ) ?>
@@ -41,6 +42,7 @@
                 </tr>
 
                 <tr class="container-separator require-add-new-field-select d-none"></tr>
+
                 <tr class="require-add-new-field-select d-none">
                     <td class="w-100 d-flex flex-column align-items-start">
                         <select id="preview_select_new_field" class="form-select"></select>
@@ -51,10 +53,12 @@
                                 <span class="input-group-text w-fit"><?php echo esc_html__( 'Valor da opção', 'flexify-checkout-for-woocommerce' ) ?></span>
                                 <input type="text" id="add_new_field_select_option_value" class="form-control input-control-wd-12" value="" placeholder="<?php echo esc_html__( 'BR', 'flexify-checkout-for-woocommerce' ) ?>"/>
                             </div>
+                            
                             <div class="input-group me-3">
                                 <span class="input-group-text w-fit"><?php echo esc_html__( 'Título da opção', 'flexify-checkout-for-woocommerce' ) ?></span>
                                 <input type="text" id="add_new_field_select_option_title" class="form-control input-control-wd-12" value="" placeholder="<?php echo esc_html__( 'Brasil', 'flexify-checkout-for-woocommerce' ) ?>"/>
                             </div>
+
                             <div class="w-25">
                                 <button id="add_new_options_to_select" class="btn btn-icon btn-icon-lg btn-outline-secondary">
                                     <svg class="icon icon-dark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 11h-6V5h-2v6H5v2h6v6h2v-6h6z"></path></svg>
@@ -77,10 +81,12 @@
                                 <span class="input-group-text w-fit"><?php echo esc_html__( 'ID da opção', 'flexify-checkout-for-woocommerce' ) ?></span>
                                 <input type="text" id="add_new_field_multicheckbox_option_id" class="form-control input-control-wd-12" value="" placeholder="<?php echo esc_html__( 'verify_gdpr', 'flexify-checkout-for-woocommerce' ) ?>"/>
                             </div>
+
                             <div class="input-group me-3">
                                 <span class="input-group-text w-fit"><?php echo esc_html__( 'Título da opção', 'flexify-checkout-for-woocommerce' ) ?></span>
                                 <input type="text" id="add_new_field_multicheckbox_option_title" class="form-control input-control-wd-12" value="" placeholder="<?php echo esc_html__( 'GDPR', 'flexify-checkout-for-woocommerce' ) ?>"/>
                             </div>
+
                             <div class="w-25">
                                 <button id="add_new_options_to_multicheckbox" class="btn btn-icon btn-icon-lg btn-outline-secondary">
                                     <svg class="icon icon-dark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 11h-6V5h-2v6H5v2h6v6h2v-6h6z"></path></svg>
@@ -89,6 +95,7 @@
                         </div>
                     </td>
                 </tr>
+
                 <tr class="container-separator require-add-new-field-multicheckbox d-none"></tr>
                 
                 <tr>
@@ -100,6 +107,7 @@
                         <input type="text" class="form-control" id="checkout_field_title" name="checkout_field_title" value=""/>
                     </td>
                 </tr>
+
                 <tr>
                     <th class="w-50">
                         <?php echo esc_html__( 'Obrigatoriedade do campo', 'flexify-checkout-for-woocommerce' ) ?>
@@ -111,6 +119,7 @@
                         </div>
                     </td>
                 </tr>
+
                 <tr>
                     <th class="w-50">
                         <?php echo esc_html__( 'Posição do campo', 'flexify-checkout-for-woocommerce' ) ?>
@@ -124,6 +133,7 @@
                         </select>
                     </td>
                 </tr>
+
                 <tr>
                     <th class="w-50">
                         <?php echo esc_html__( 'Classe CSS personalizada do campo (Opcional)', 'flexify-checkout-for-woocommerce' ) ?>
@@ -133,6 +143,7 @@
                         <input type="text" class="form-control" id="field_classes" value=""/>
                     </td>
                 </tr>
+
                 <tr>
                     <th class="w-50">
                         <?php echo esc_html__( 'Classe CSS personalizada do título (Opcional)', 'flexify-checkout-for-woocommerce' ) ?>
@@ -142,6 +153,7 @@
                         <input type="text" class="form-control" id="field_label_classes" value=""/>
                     </td>
                 </tr>
+
                 <tr class="require-input-mask">
                     <th class="w-50">
                         <?php echo esc_html__( 'Máscara do campo (Opcional)', 'flexify-checkout-for-woocommerce' ) ?>
@@ -151,6 +163,7 @@
                         <input type="text" class="form-control" id="field_input_mask" value=""/>
                     </td>
                 </tr>
+
                 <tr>
                     <th class="w-50">
                         <?php echo esc_html__( 'Etapa do campo', 'flexify-checkout-for-woocommerce' ) ?>
@@ -165,6 +178,7 @@
                 </tr>
             </table>
         </div>
+
         <div class="popup-footer">
             <div class="w-100 d-flex justify-content-end">
                 <button id="fcw_add_new_field" class="btn btn-primary" ><?php echo esc_html__( 'Adicionar campo', 'flexify-checkout-for-woocommerce' ) ?></button>

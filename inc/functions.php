@@ -1,88 +1,9 @@
 <?php
 
-use MeuMouse\Flexify_Checkout\Core\Core;
+use MeuMouse\Flexify_Checkout\Core;
 
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
-
-/**
- * Generate hash
- * 
- * @since 2.3.0
- * @version 3.0.0
- * @param int $lenght | Lenght hash
- * @return string
- */
-function generate_hash( $length ) {
-    $result = '';
-    $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    $charactersLength = strlen( $characters );
-
-    for ( $i = 0; $i < $length; $i++ ) {
-        $result .= $characters[wp_rand(0, $charactersLength - 1)];
-    }
-
-    return $result;
-}
-
-    
-/**
- * Check if plugin is installed
- * 
- * @since 2.3.0
- * @param string $plugin_slug | Plugin slug
- * @return bool
- */
-function is_plugin_installed( $plugin_slug ) {
-    if ( ! function_exists( 'get_plugins' ) ) {
-        require_once ABSPATH . 'wp-admin/includes/plugin.php';
-    }
-
-    $all_plugins = get_plugins();
-    
-    if ( ! empty( $all_plugins[$plugin_slug] ) ) {
-        return true;
-    } else {
-        return false;
-    }
-}
-
-
-/**
- * Install plugin
- * 
- * @since 2.3.0
- * @param string $plugin_zip | URL of plugin
- * @return object
- */
-function install_plugin( $plugin_zip ) {
-    include_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
-    wp_cache_flush();
-        
-    $upgrader = new Plugin_Upgrader();
-    $installed = $upgrader->install( $plugin_zip );
-
-    return $installed;
-}
-
-
-/**
- * Upgrade plugin
- * 
- * @since 2.3.0
- * @param string $plugin_slug | Plugin slug
- * @return object
- */
-function upgrade_plugin( $plugin_slug ) {
-    include_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
-    wp_cache_flush();
-        
-    $upgrader = new Plugin_Upgrader();
-    $upgraded = $upgrader->upgrade( $plugin_slug );
-
-    return $upgraded;
-}
-
 
 /**
  * Remove filter/action declared by class
@@ -120,29 +41,6 @@ function remove_filters_with_method_name( $hook_name = '', $method_name = '', $p
     }
 
     return false;
-}
-
-
-/**
- * Try to decrypt with multiple keys
- * 
- * @since 3.3.0
- * @version 3.7.0
- * @param string $encrypted_data | Encrypted data
- * @param array $possible_keys | Array list with decryp keys
- * @return mixed Decrypted string or null
- */
-function flexify_checkout_decrypt_license_file( $encrypted_data, $possible_keys ) {
-    foreach ( $possible_keys as $key ) {
-        $decrypted_data = openssl_decrypt( $encrypted_data, 'AES-256-CBC', $key, 0, substr( $key, 0, 16 ) );
-
-        // Checks whether decryption was successful
-        if ( $decrypted_data !== false ) {
-            return $decrypted_data;
-        }
-    }
-
-    return null;
 }
 
 

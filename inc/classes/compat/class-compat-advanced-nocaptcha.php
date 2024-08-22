@@ -1,6 +1,6 @@
 <?php
 
-namespace MeuMouse\Flexify_Checkout\Compat\Advanced_Nocaptcha;
+namespace MeuMouse\Flexify_Checkout\Compat;
 
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
@@ -12,7 +12,7 @@ defined('ABSPATH') || exit;
  * [https://wordpress.org/plugins/advanced-nocaptcha-recaptcha/]
  *
  * @since 1.0.0
- * @version 3.7.0
+ * @version 3.8.0
  * @package MeuMouse.com
  */
 class Advanced_Nocaptcha {

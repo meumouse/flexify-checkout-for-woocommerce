@@ -1,6 +1,6 @@
 <?php
 
-namespace MeuMouse\Flexify_Checkout\Updater;
+namespace MeuMouse\Flexify_Checkout;
 
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
@@ -9,7 +9,7 @@ defined('ABSPATH') || exit;
  * Class to make requests to a remote server to get plugin versions and updates
  * 
  * @since 1.0.0
- * @version 3.7.0
+ * @version 3.8.0
  * @package MeuMouse.com
  */
 class Updater {
@@ -55,8 +55,8 @@ class Updater {
      * Request on remote server
      * 
      * @since 1.0.0
+     * @version 3.8.0
      * @return array
-     * @package MeuMouse.com
      */
     public function request() {
         $cached_data = wp_cache_get( $this->cache_key );
@@ -65,14 +65,17 @@ class Updater {
             $remote = get_transient( $this->cache_data_base_key );
     
             if ( false === $remote ) {
-                $remote = wp_remote_get('https://raw.githubusercontent.com/meumouse/flexify-checkout-for-woocommerce/main/updater/flexify-checkout-updater.json', [
+                $url = 'https://raw.githubusercontent.com/meumouse/flexify-checkout-for-woocommerce/main/updater/flexify-checkout-updater.json';
+                $params = array(
                     'timeout' => 10,
-                    'headers' => [
-                        'Accept' => 'application/json'
-                    ]
-                ]);
+                    'headers' => array(
+                        'Accept' => 'application/json',
+                    ),
+                );
+
+                $remote = wp_remote_get( $url, $params );
     
-                if ( !is_wp_error( $remote ) && 200 === wp_remote_retrieve_response_code( $remote ) ) {
+                if ( ! is_wp_error( $remote ) && 200 === wp_remote_retrieve_response_code( $remote ) ) {
                     $remote_data = json_decode( wp_remote_retrieve_body( $remote ) );
     
                     // set cache remote data for 1 day
@@ -219,7 +222,7 @@ class Updater {
      * Check manual updates
      * 
      * @since 1.0.0
-     * @version 3.7.0
+     * @version 3.8.0
      * @return void
      */
     public function check_manual_update_query_arg( $plugins ) {
@@ -238,7 +241,7 @@ class Updater {
     
                 // if the current version is lower than that of the remote server
                 if ( version_compare( $current_version, $latest_version, '<' )) {
-                    $message = esc_html__('Uma nova versão do plugin Flexify Checkout para WooCommerce está disponível.', 'flexify-checkout-for-woocommerce');
+                    $message = __('Uma nova versão do plugin <strong>Flexify Checkout para WooCommerce</strong> está disponível.', 'flexify-checkout-for-woocommerce');
                     $class = 'notice is-dismissible notice-success';
     
                     // Display notice
@@ -252,14 +255,14 @@ class Updater {
                     </script>
                     <?php
                 } elseif ( version_compare( $current_version, $latest_version, '>=' ) ) {
-                    $message = esc_html__('A versão do plugin Flexify Checkout para WooCommerce é a mais recente.', 'flexify-checkout-for-woocommerce');
+                    $message = __('A versão do plugin <strong>Flexify Checkout para WooCommerce</strong> é a mais recente.', 'flexify-checkout-for-woocommerce');
                     $class = 'notice is-dismissible notice-success';
     
                     // Display notice
                     printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), $message );
                 }
             } else {
-                $message = esc_html__('Não foi possível verificar atualizações para o plugin Flexify Checkout para WooCommerce.', 'flexify-checkout-for-woocommerce');
+                $message = __('Não foi possível verificar atualizações para o plugin <strong>Flexify Checkout para WooCommerce.</strong>', 'flexify-checkout-for-woocommerce');
                 $class = 'notice is-dismissible notice-error';
     
                 // Display notice
@@ -272,3 +275,7 @@ class Updater {
 }
 
 new Updater();
+
+if ( ! class_exists('MeuMouse\Flexify_Checkout\Updater\Updater') ) {
+    class_alias( 'MeuMouse\Flexify_Checkout\Updater', 'MeuMouse\Flexify_Checkout\Updater\Updater' );
+}

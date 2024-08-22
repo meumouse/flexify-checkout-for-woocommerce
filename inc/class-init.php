@@ -1,6 +1,6 @@
 <?php
 
-namespace MeuMouse\Flexify_Checkout\Init;
+namespace MeuMouse\Flexify_Checkout;
 
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
@@ -9,7 +9,7 @@ defined('ABSPATH') || exit;
  * Class for init plugin
  * 
  * @since 1.0.0
- * @version 3.7.3
+ * @version 3.8.0
  * @package MeuMouse.com
  */
 class Init {
@@ -18,7 +18,7 @@ class Init {
    * Construct function
    * 
    * @since 1.0.0
-   * @version 3.7.0
+   * @version 3.8.0
    * @return void
    */
   public function __construct() {
@@ -27,21 +27,6 @@ class Init {
 
     // set default checkout fields options
     add_action( 'admin_init', array( $this, 'set_checkout_fields_steps_options' ) );
-
-    // Inter bank module actions
-    add_action( 'admin_init', array( $this, 'inter_bank_module_actions' ) );
-
-    // check if inter bank module is active and exists expire date
-    if ( class_exists('Module_Inter_Bank') && ! empty( self::get_setting('inter_bank_expire_date') ) ) {
-      // Hook for schedule remind inter bank credentials
-      add_action( 'wp_loaded', array( $this, 'schedule_remind_inter_bank_credentials' ) );
-
-      // Hook for send email remind
-      add_action( 'remind_expire_inter_bank_credentials_event', array( $this, 'remind_expire_inter_bank_credentials' ) );
-    }
-
-    // set to default settings on reset
-    add_action( 'admin_init', array( $this, 'reset_plugin_settings' ) );
   }
 
 
@@ -49,7 +34,7 @@ class Init {
    * Set default options
    * 
    * @since 1.0.0
-   * @version 3.7.3
+   * @version 3.8.0
    * @return array
    */
   public function set_default_data_options() {
@@ -70,8 +55,6 @@ class Init {
       'enable_hide_coupon_code_field' => 'no',
       'enable_auto_apply_coupon_code' => 'no',
       'enable_assign_guest_orders' => 'yes',
-      'enable_inter_bank_pix_api' => 'no',
-      'enable_inter_bank_ticket_api' => 'no',
       'checkout_header_type' => 'logo',
       'search_image_header_checkout' => '',
       'header_width_image_checkout' => '200',
@@ -81,25 +64,11 @@ class Init {
       'set_primary_color_on_hover' => '#33404D',
       'set_placeholder_color' => '#33404D',
       'flexify_checkout_theme' => 'modern',
-      'input_border_radius' => '0.5',
+      'input_border_radius' => '0.375',
       'unit_input_border_radius' => 'rem',
       'h2_size' => '1.5',
       'h2_size_unit' => 'rem',
       'enable_thankyou_page_template' => 'yes',
-      'pix_gateway_title' => 'Pix',
-      'pix_gateway_description' => 'Pague via transferência imediata Pix a qualquer hora, a aprovação é imediata!',
-      'pix_gateway_email_instructions' => 'Clique no botão abaixo para ver os dados de pagamento do seu Pix.',
-      'pix_gateway_receipt_key' => '',
-      'pix_gateway_expires' => '30',
-      'bank_slip_gateway_title' => 'Boleto bancário',
-      'bank_slip_gateway_description' => 'Pague com boleto. Aprovação de 1 a 3 dias úteis após o pagamento.',
-      'bank_slip_gateway_email_instructions' => 'Clique no botão abaixo para acessar seu boleto ou utilize a linha digitável para pagar via Internet Banking.',
-      'bank_slip_gateway_expires' => '3',
-      'bank_slip_gateway_footer_message' => 'Pagamento do pedido #{order_id}. Não receber após o vencimento.',
-      'inter_bank_client_id' => '',
-      'inter_bank_client_secret' => '',
-      'inter_bank_debug_mode' => 'no',
-      'inter_bank_env_mode' => 'yes',
       'enable_unset_wcbcf_fields_not_brazil' => 'no',
       'enable_manage_fields' => 'no',
       'get_address_api_service' => 'https://viacep.com.br/ws/{postcode}/json/',
@@ -108,7 +77,6 @@ class Init {
       'api_auto_fill_address_city_param' => 'localidade',
       'api_auto_fill_address_state_param' => 'uf',
       'logo_header_link' => get_permalink( wc_get_page_id('shop') ),
-      'inter_bank_expire_date' => '',
       'enable_field_masks' => 'yes',
       'enable_display_local_pickup_kangu' => 'no',
       'text_header_step_1' => 'Informações do cliente',
@@ -181,6 +149,7 @@ class Init {
       'display_opened_order_review_mobile' => 'no',
       'text_contact_customer_review' => '{{ first_name }} {{ last_name }} <br> {{ phone }} <br> {{ email }}',
       'text_shipping_customer_review' => '{{ address_1 }}, {{ number }}, {{ city }} - {{ state }} (CEP: {{ postcode }})',
+      'text_view_shop_thankyou' => 'Ver mais produtos',
     );
 
     return apply_filters( 'flexify_checkout_set_default_options', $options );
@@ -284,122 +253,7 @@ class Init {
     }
   }
 
-
-  /**
-   * Process for remove inter bank files
-   * 
-   * @since 2.3.0
-   * @return void
-   */
-  public function inter_bank_module_actions() {
-    if ( isset( $_POST['exclude_inter_bank_crt_key_files'] ) ) {
-        $uploads_dir = wp_upload_dir();
-        $upload_path = $uploads_dir['basedir'] . '/flexify_checkout_integrations/';
-        $crt_file = get_option('flexify_checkout_inter_bank_crt_file');
-        $key_file = get_option('flexify_checkout_inter_bank_key_file');
-
-        // exclude crt file
-        if ( ! empty( $crt_file ) ) {
-            $file_path = $upload_path . $crt_file;
-
-            if ( file_exists( $file_path ) ) {
-              wp_delete_file( $file_path );
-            }
-        }
-
-        // exclude key file
-        if ( ! empty( $key_file ) ) {
-            $file_path = $upload_path . $key_file;
-
-            if ( file_exists( $file_path ) ) {
-              wp_delete_file( $file_path );
-            }
-        }
-
-        delete_option('flexify_checkout_inter_bank_crt_file');
-        delete_option('flexify_checkout_inter_bank_key_file');
-    }
-
-    if ( isset( $_POST['active_inter_bank_module'] ) ) {
-      if ( ! function_exists( 'activate_plugin' ) ) {
-        include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
-      }
-
-      $plugin_path = 'module-inter-bank-for-flexify-checkout/module-inter-bank-for-flexify-checkout.php';
-      $activate = activate_plugin( $plugin_path );
-
-      if ( false === $activate ) {
-          $error_message = get_plugin_activation_error( $plugin_path );
-          echo '<div class="notice notice-error">
-          <p>'. sprintf( esc_html( 'Erro ao ativar o plugin:', 'flexify-checkout-for-woocommerce' ), $error_message ) .'</p>
-          </div>';
-      } else {
-        echo '<div class="notice notice-success">
-        <p>'. esc_html( 'O módulo adicional foi ativo com sucesso!', 'flexify-checkout-for-woocommerce' ) .'</p>
-        </div>';
-      }
-    }
-  }
-
-
-  /**
-   * Create e-mail for remind admin to change Inter bank credentials
-   * 
-   * @since 3.2.0
-   * @return void
-   */
-  public function remind_expire_inter_bank_credentials() {
-    $to = get_option('admin_email');
-    $subject = 'IMPORTANTE: As credenciais da sua aplicação do banco Inter irão expirar em breve!';
-    $message = 'Este é um aviso para te lembrar que as credenciais de integração com o Módulo adicional banco Inter para Flexify Checkout para WooCommerce irão expirar em 7 dias. Não esqueça de fazer a atualização das credenciais para não desativar a forma de pagamento em sua loja.';
-    $headers = array('Content-Type: text/html; charset=UTF-8');
-
-    wp_mail( $to, $subject, $message, $headers );
-  }
-
-
-  /**
-   * Schedule email for remind admin to change Inter bank credentials
-   * 
-   * @since 3.2.0
-   * @version 3.7.2
-   * @return void
-   */
-  public function schedule_remind_inter_bank_credentials() {
-    $expire_date = self::get_setting('inter_bank_expire_date');
-
-    // Convert date to Y-m-d format
-    $expire_date_formated = \DateTime::createFromFormat('d/m/Y', $expire_date)->format('Y-m-d');
-
-    // Subtract 7 days from the expiration date
-    $send_date_email = date( 'Y-m-d', strtotime( '-7 days', strtotime( $expire_date_formated ) ) );
-
-    // Schedule email sending
-    $timestamp_send_email = strtotime( $send_date_email . ' 08:00:00' );
-    wp_schedule_single_event( $timestamp_send_email, 'remind_expire_inter_bank_credentials_event' );
-  }
-
-
-  /**
-   * Reset settings to default
-   * 
-   * @since 3.5.0
-   * @version 3.7.0
-   * @return void
-   */
-  public function reset_plugin_settings() {
-    if ( isset( $_POST['confirm_reset_settings'] ) ) {
-      delete_option('flexify_checkout_settings');
-      delete_option('flexify_checkout_step_fields');
-      delete_option('flexify_checkout_conditions');
-      delete_option('flexify_checkout_alternative_license_activation');
-      delete_transient('flexify_checkout_api_request_cache');
-      delete_transient('flexify_checkout_api_response_cache');
-      delete_transient('flexify_checkout_license_status_cached');
-    }
-  }
-
-
+  
   /**
    * Get checkout step fields
    * 
@@ -563,6 +417,7 @@ class Init {
    * Get fields from Brazilian Market on WooCommerce plugin
    * 
    * @since 3.0.0
+   * @version 3.8.0
    * @return array
    */
   public static function get_wcbcf_fields() {
@@ -579,6 +434,10 @@ class Init {
         'source' => 'plugin',
         'enabled' => 'yes',
         'step' => '1',
+        'options' => array(
+          '1' => esc_html__( 'Pessoa Física (CPF)', 'flexify-checkout-for-woocommerce' ),
+          '2' => esc_html__( 'Pessoa Jurífica (CNPJ)', 'flexify-checkout-for-woocommerce' ),
+        ),
       ),
       'billing_cpf' => array(
         'id' => 'billing_cpf',
@@ -679,7 +538,7 @@ class Init {
       ),
       'billing_number' => array(
         'id' => 'billing_number',
-        'type' => 'number',
+        'type' => 'text',
         'label' => esc_html__( 'Número da residência', 'flexify-checkout-for-woocommerce' ),
         'position' => 'right',
         'classes' => '',
@@ -708,3 +567,7 @@ class Init {
 }
 
 new Init();
+
+if ( ! class_exists('MeuMouse\Flexify_Checkout\Init\Init') ) {
+  class_alias( 'MeuMouse\Flexify_Checkout\Init', 'MeuMouse\Flexify_Checkout\Init\Init' );
+}

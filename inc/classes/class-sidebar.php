@@ -1,11 +1,11 @@
 <?php
 
-namespace MeuMouse\Flexify_Checkout\Sidebar;
+namespace MeuMouse\Flexify_Checkout;
 
-use MeuMouse\Flexify_Checkout\Init\Init;
-use MeuMouse\Flexify_Checkout\Core\Core;
-use MeuMouse\Flexify_Checkout\Steps\Steps;
-use MeuMouse\Flexify_Checkout\Helpers\Helpers;
+use MeuMouse\Flexify_Checkout\Init;
+use MeuMouse\Flexify_Checkout\Core;
+use MeuMouse\Flexify_Checkout\Steps;
+use MeuMouse\Flexify_Checkout\Helpers;
 
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
@@ -14,7 +14,7 @@ defined('ABSPATH') || exit;
  * Sidebar related functions
  *
  * @since 1.0.0
- * @version 3.7.0
+ * @version 3.8.0
  * @package MeuMouse.com
  */
 class Sidebar {
@@ -436,3 +436,7 @@ class Sidebar {
 }
 
 new Sidebar();
+
+if ( ! class_exists('MeuMouse\Flexify_Checkout\Sidebar\Sidebar') ) {
+    class_alias( 'MeuMouse\Flexify_Checkout\Sidebar', 'MeuMouse\Flexify_Checkout\Sidebar\Sidebar' );
+}

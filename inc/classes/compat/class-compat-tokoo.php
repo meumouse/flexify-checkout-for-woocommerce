@@ -1,6 +1,6 @@
 <?php
 
-namespace MeuMouse\Flexify_Checkout\Compat\Tokoo;
+namespace MeuMouse\Flexify_Checkout\Compat;
 
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
@@ -9,7 +9,7 @@ defined('ABSPATH') || exit;
  * Compatibility with Tokoo theme.
  *
  * @since 1.0.0
- * @version 3.7.0
+ * @version 3.8.0
  * @link https://themeforest.net/item/tokoo-electronics-store-woocommerce-theme-for-affiliates-dropship-and-multivendor-websites/22359036
  */
 class Compat_Tokoo {

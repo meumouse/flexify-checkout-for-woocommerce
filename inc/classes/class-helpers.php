@@ -1,9 +1,9 @@
 <?php
 
-namespace MeuMouse\Flexify_Checkout\Helpers;
+namespace MeuMouse\Flexify_Checkout;
 
-use MeuMouse\Flexify_Checkout\Init\Init;
-use MeuMouse\Flexify_Checkout\License\License;
+use MeuMouse\Flexify_Checkout\Init;
+use MeuMouse\Flexify_Checkout\License;
 
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
@@ -12,7 +12,7 @@ defined('ABSPATH') || exit;
  * Useful helper functions
  *
  * @since 1.0.0
- * @version 3.7.0
+ * @version 3.8.0
  * @package MeuMouse.com
  */
 class Helpers {
@@ -347,7 +347,7 @@ class Helpers {
 	 * @return string
 	 */
 	public static function get_shop_page_url() {
-		$shop_page_id = wc_get_page_id( 'shop' );
+		$shop_page_id = wc_get_page_id('shop');
 
 		if ( -1 === $shop_page_id ) {
 			/**
@@ -513,6 +513,7 @@ class Helpers {
 	 * Get checkout input values and parcial name for customer review fragments
 	 * 
 	 * @since 3.6.0
+	 * @version 3.8.0
 	 * @return array
 	 */
 	public static function get_placeholder_input_values() {
@@ -523,8 +524,8 @@ class Helpers {
 
 			$fields[$field_id] = array(
 				'placeholder_id' => $placeholder_id,
-				'placeholder_html' => sprintf( esc_html( '{{ %s }}', 'flexify-checkout-for-woocommerce' ), $placeholder_id ),
-				'description' => sprintf( esc_html( 'Para recuperar o valor de %s', 'flexify-checkout-for-woocommerce' ), $value['label'] ),
+				'placeholder_html' => sprintf( esc_html( '{{ %s }}', 'flexify-checkout-for-woocommerce' ), $placeholder_id ?? '' ),
+				'description' => sprintf( esc_html( 'Para recuperar o valor de %s', 'flexify-checkout-for-woocommerce' ), isset( $value['label'] ) ? $value['label'] : '' ),
 			);
 		}
 
@@ -566,4 +567,80 @@ class Helpers {
 	
 		return $selected_shipping_method->label;
 	}
+
+
+	/**
+	 * Get selected shipping method name on checkout
+	 * 
+	 * @since 3.8.0
+	 * @return string
+	 */
+	public static function get_selected_shipping_method_name() {
+		$current_shipping_method = WC()->session->get('chosen_shipping_methods');
+		$selected_method_name = __( 'Nenhuma forma de entrega selecionada', 'flexify-checkout-for-woocommerce' );
+	
+		if ( $current_shipping_method && ! empty( $current_shipping_method[0] ) ) {
+			$chosen_method_id = $current_shipping_method[0];
+			$zones = \WC_Shipping_Zones::get_zones();
+			$zones[0] = \WC_Shipping_Zones::get_zone_by('zone_id', 0);
+	
+			foreach ( $zones as $zone ) {
+				$shipping_methods = $zone['shipping_methods'];
+	
+				foreach ( $shipping_methods as $method ) {
+					if ( $method->id === explode(':', $chosen_method_id)[0] ) {
+						$selected_method_name = $method->get_title();
+						break 2;
+					}
+				}
+			}
+		}
+
+		return $selected_method_name;
+	}
+
+
+	/**
+	 * Check if the WooCommerce checkout page contains the [woocommerce_checkout] shortcode
+	 *
+	 * @since 3.8.0
+	 * @return bool
+	 */
+	public static function has_shortcode_checkout() {
+		// Get the checkout page ID from WooCommerce settings
+		$checkout_page_id = wc_get_page_id('checkout');
+
+		// Get the content of the checkout page
+		$checkout_page = get_post( $checkout_page_id );
+
+		// Check if the content of the checkout page contains the shortcode
+		if ( $checkout_page && has_shortcode( $checkout_page->post_content, 'woocommerce_checkout' ) ) {
+			return true;
+		}
+
+		return false;
+	}
+
+
+	/**
+	 * Get array index of checkout fields
+	 * 
+	 * @since 3.2.0
+	 * @version 3.8.0
+	 * @return array
+	 */
+	public static function get_array_index_checkout_fields() {
+		$fields = maybe_unserialize( get_option('flexify_checkout_step_fields', array()) );
+		$array_index = array();
+
+		foreach ( $fields as $index => $value ) {
+			$array_index[] = $index;
+		}
+
+		return $array_index;
+	}
+}
+
+if ( ! class_exists('MeuMouse\Flexify_Checkout\Helpers\Helpers') ) {
+    class_alias( 'MeuMouse\Flexify_Checkout\Helpers', 'MeuMouse\Flexify_Checkout\Helpers\Helpers' );
 }

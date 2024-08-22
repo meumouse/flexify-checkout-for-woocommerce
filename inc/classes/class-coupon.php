@@ -1,8 +1,8 @@
 <?php
 
-namespace MeuMouse\Flexify_Checkout\Coupon;
+namespace MeuMouse\Flexify_Checkout;
 
-use MeuMouse\Flexify_Checkout\Init\Init;
+use MeuMouse\Flexify_Checkout\Init;
 
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
@@ -11,7 +11,7 @@ defined('ABSPATH') || exit;
  * Coupon related functions
  *
  * @since 1.0.0
- * @version 3.7.0
+ * @version 3.8.0
  * @package MeuMouse.com
  */
 class Coupon {
@@ -115,3 +115,7 @@ class Coupon {
 }
 
 new Coupon();
+
+if ( ! class_exists('MeuMouse\Flexify_Checkout\Coupon\Coupon') ) {
+    class_alias( 'MeuMouse\Flexify_Checkout\Coupon', 'MeuMouse\Flexify_Checkout\Coupon\Coupon' );
+}

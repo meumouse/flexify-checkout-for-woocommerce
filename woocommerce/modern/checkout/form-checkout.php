@@ -1,7 +1,7 @@
 <?php
 
-use MeuMouse\Flexify_Checkout\Sidebar\Sidebar;
-use MeuMouse\Flexify_Checkout\Steps\Steps;
+use MeuMouse\Flexify_Checkout\Sidebar;
+use MeuMouse\Flexify_Checkout\Steps;
 
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
@@ -19,7 +19,7 @@ defined('ABSPATH') || exit;
  *
  * @see https://docs.woocommerce.com/document/template-structure/
  * @since 1.0.0
- * @version 3.7.0
+ * @version 3.8.0
  * @package MeuMouse.com
  */
 
@@ -87,6 +87,7 @@ endif; ?>
 			 */
 			do_action( 'flexify_checkout_content_left_end', $checkout ); ?>
 		</div>
+		
 		<?php if ( Sidebar::is_sidebar_enabled() ) : ?>
 			<div class="flexify-checkout__content-right">
 				<?php

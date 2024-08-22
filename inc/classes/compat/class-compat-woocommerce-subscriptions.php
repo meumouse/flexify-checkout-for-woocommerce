@@ -1,6 +1,6 @@
 <?php
 
-namespace MeuMouse\Flexify_Checkout\Compat\Woo_Subscriptions;
+namespace MeuMouse\Flexify_Checkout\Compat;
 
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
@@ -9,7 +9,7 @@ defined('ABSPATH') || exit;
  * Compatibility with WooCommerce Subscriptions
  *
  * @since 1.0.0
- * @version 3.7.0
+ * @version 3.8.0
  * @link https://woocommerce.com/products/woocommerce-subscriptions/
  * @package MeuMouse.com
  */

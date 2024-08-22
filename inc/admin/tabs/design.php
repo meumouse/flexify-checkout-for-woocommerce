@@ -1,6 +1,6 @@
 <?php
 
-use MeuMouse\Flexify_Checkout\Init\Init;
+use MeuMouse\Flexify_Checkout\Init;
 
 // Exit if accessed directly.
 defined('ABSPATH') || exit; ?>
@@ -21,6 +21,7 @@ defined('ABSPATH') || exit; ?>
             <span class="flexify-checkout-description"><?php echo esc_html__( 'Selecione um tema que será carregado na página de finalização de compras.', 'flexify-checkout-for-woocommerce' ) ?></span>
          </th>
       </tr>
+
       <tr>
          <td>
             <div class="card card-theme-item active">
@@ -32,6 +33,7 @@ defined('ABSPATH') || exit; ?>
                </div>
             </div>
          </td>
+
          <td>
             <div class="card card-theme-item coming-soon">
                <div class="coming-soon-message">
@@ -45,6 +47,7 @@ defined('ABSPATH') || exit; ?>
                </div>
             </div>
          </td>
+
          <td>
             <div class="card card-theme-item coming-soon">
                <div class="coming-soon-message">
@@ -68,12 +71,13 @@ defined('ABSPATH') || exit; ?>
             <span class="flexify-checkout-description"><?php echo esc_html__( 'Selecione o tipo de marca que será exibida no cabeçalho da página de finalização de compra.', 'flexify-checkout-for-woocommerce' ) ?></span>
          </th>
          <td>
-            <select name="checkout_header_type" class="form-select">
+            <select id="checkout_header_type" name="checkout_header_type" class="form-select">
                <option value="logo" <?php echo ( Init::get_setting('checkout_header_type') === 'logo' ) ? "selected=selected" : ""; ?>><?php echo esc_html__( 'Imagem (Padrão)', 'flexify-checkout-for-woocommerce' ) ?></option>
                <option value="text" <?php echo ( Init::get_setting('checkout_header_type') === 'text' ) ? "selected=selected" : ""; ?>><?php echo esc_html__( 'Texto', 'flexify-checkout-for-woocommerce' ) ?></option>
             </select>
          </td>
       </tr>
+
       <tr class="header-styles-option-logo">
          <th>
             <?php echo esc_html__( 'Imagem de cabeçalho', 'flexify-checkout-for-woocommerce' ) ?>
@@ -85,6 +89,7 @@ defined('ABSPATH') || exit; ?>
             </div>
          </td>
       </tr>
+
       <tr class="header-styles-option-logo">
          <th>
             <?php echo esc_html__( 'Link da imagem de cabeçalho', 'flexify-checkout-for-woocommerce' ) ?>
@@ -94,6 +99,7 @@ defined('ABSPATH') || exit; ?>
             <input type="text" name="logo_header_link" class="form-control input-control-wd-20" value="<?php echo esc_attr( Init::get_setting('logo_header_link') ) ?>"/>
          </td>
       </tr>
+
       <tr class="header-styles-option-logo">
          <th>
             <?php echo esc_html__( 'Largura da imagem de cabeçalho', 'flexify-checkout-for-woocommerce' ) ?>
@@ -109,6 +115,7 @@ defined('ABSPATH') || exit; ?>
             </div>
          </td>
       </tr>
+
       <tr class="header-styles-option-text">
          <th>
             <?php echo esc_html__( 'Texto do cabeçalho', 'flexify-checkout-for-woocommerce' ) ?>
@@ -130,6 +137,7 @@ defined('ABSPATH') || exit; ?>
             <input type="text" name="shortcode_header" class="form-control input-control-wd-20" placeholder="<?php echo esc_html__( '[shortcode id="100"]', 'flexify-checkout-for-woocommerce' ) ?>" value="<?php echo esc_attr( Init::get_setting('shortcode_header') ) ?>"/>
          </td>
       </tr>
+
       <tr>
          <th>
             <?php echo esc_html__( 'Rodapé personalizado', 'flexify-checkout-for-woocommerce' ) ?>
@@ -157,6 +165,7 @@ defined('ABSPATH') || exit; ?>
             </div>
          </td>
       </tr>
+
       <tr>
          <th>
             <?php echo esc_html__( 'Cor secundára', 'flexify-checkout-for-woocommerce' ) ?>
@@ -172,6 +181,7 @@ defined('ABSPATH') || exit; ?>
             </div>
          </td>
       </tr>
+
       <tr>
          <th>
             <?php echo esc_html__( 'Cor do título dos campos', 'flexify-checkout-for-woocommerce' ) ?>
@@ -187,6 +197,7 @@ defined('ABSPATH') || exit; ?>
             </div>
          </td>
       </tr>
+
       <tr>
          <th>
             <?php echo esc_html__( 'Raio da borda dos elementos', 'flexify-checkout-for-woocommerce' ) ?>
@@ -253,7 +264,7 @@ defined('ABSPATH') || exit; ?>
 </div>
 
 <!-- Add new font modal -->
-<div id="set_new_font_family_container">
+<div id="set_new_font_family_container" class="popup-container">
    <div class="popup-content">
       <div class="popup-header">
          <h5 class="popup-title"><?php echo esc_html__('Adicione uma nova fonte à biblioteca', 'flexify-checkout-for-woocommerce') ?></h5>

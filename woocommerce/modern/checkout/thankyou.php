@@ -1,7 +1,7 @@
 <?php
 
-use MeuMouse\Flexify_Checkout\Steps\Steps;
-use MeuMouse\Flexify_Checkout\Thankyou\Thankyou;
+use MeuMouse\Flexify_Checkout\Steps;
+use MeuMouse\Flexify_Checkout\Thankyou;
 
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
@@ -20,7 +20,7 @@ defined('ABSPATH') || exit;
  * @see https://docs.woocommerce.com/document/template-structure/
  * @package MeuMouse.com
  * @since 1.0.0
- * @version 3.7.0
+ * @version 3.8.0
  */
 
 // Exit if accessed directly.

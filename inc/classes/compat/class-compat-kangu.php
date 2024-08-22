@@ -1,7 +1,7 @@
 <?php
 
-namespace MeuMouse\Flexify_Checkout\Compat\Kangu;
-use MeuMouse\Flexify_Checkout\Init\Init;
+namespace MeuMouse\Flexify_Checkout\Compat;
+use MeuMouse\Flexify_Checkout\Init;
 
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
@@ -10,7 +10,7 @@ defined( 'ABSPATH' ) || exit;
  * Compatibility with Kangu shipping gateway
  *
  * @since 3.3.0
- * @version 3.7.4
+ * @version 3.8.0
  * @package MeuMouse.com
  */
 class Compat_Kangu {

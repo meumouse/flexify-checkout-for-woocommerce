@@ -1,6 +1,6 @@
 <?php
 
-use MeuMouse\Flexify_Checkout\Init\Init;
+use MeuMouse\Flexify_Checkout\Init;
 
 /**
  * Shipping Methods Display
@@ -18,7 +18,7 @@ use MeuMouse\Flexify_Checkout\Init\Init;
  * @see https://woocommerce.com/document/template-structure/
  * @package Flexify Checkout | MeuMouse.com
  * @since 3.5.0
- * @version 3.7.0
+ * @version 3.8.0
  */
 
 defined( 'ABSPATH' ) || exit;
