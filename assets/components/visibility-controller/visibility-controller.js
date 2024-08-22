@@ -61,3 +61,42 @@ function select_visibility_controller(select, options, container) {
         jQuery(container).addClass('d-none');
     }
 }
+
+/**
+ * Check visibility with select component for multiple containers
+ * 
+ * @since 3.8.0
+ * @param {string} select | Select ID
+ * @param {Object} options_containers | Object containing option keys and their corresponding containers
+ * @package MeuMouse.com
+ */
+function multi_select_visibility_controller(select, options_containers) {
+    // Remove any existing 'change' event handlers
+    jQuery(document).off('change', select);
+
+    // Adds a single 'change' event handler
+    jQuery(document).on('change', select, function() {
+        var get_option = jQuery(select).val();
+
+        // Loop through the options_containers object
+        jQuery.each(options_containers, function(option, container) {
+            if (get_option === option) {
+                jQuery(container).removeClass('d-none');
+            } else {
+                jQuery(container).addClass('d-none');
+            }
+        });
+    });
+
+    // Initialize visibility on page load
+    var initial_option = jQuery(select).val();
+
+    // Set the visibility based on the initial selected option
+    jQuery.each(options_containers, function(option, container) {
+        if (initial_option === option) {
+            jQuery(container).removeClass('d-none');
+        } else {
+            jQuery(container).addClass('d-none');
+        }
+    });
+}

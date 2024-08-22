@@ -847,11 +847,12 @@ jQuery(document).ready( function($) {
  * Change customer review data on update
  * 
  * @since 3.6.5
+ * @version 3.8.0
  */
-jQuery(document).ready(function() {
+jQuery(document).ready( function() {
   var fields = document.querySelectorAll('input, select, textarea');
   
-  fields.forEach(function(field) {
+  fields.forEach( function(field) {
     jQuery(field).on('change input keyup', function() {
       var update_element_text = field.id.replace('billing_', '');
       var get_element_to_update = jQuery('.flexify-review-customer__content').find('.customer-details-info.' + update_element_text);
@@ -1736,15 +1737,28 @@ flexifyCoupon.onFormSubmit = function() {
       security: wc_checkout_params.apply_coupon_nonce,
     };
 
-    _stepper__WEBPACK_IMPORTED_MODULE_1__["default"].loadSpinner();
+    var btn = jQuery(this);
+    var btn_width = btn.width();
+    var btn_height = btn.height();
+    var btn_html = btn.html();
+
+    // keep original width and height
+    btn.width(btn_width);
+    btn.height(btn_height);
+    btn.prop('disabled', true);
+
+    // Add spinner inside button
+    btn.html('<span class="flexify-btn-processing-inline"></span>');
     let onError = function (err) {};
 
-    await _helper__WEBPACK_IMPORTED_MODULE_0__["default"].ajaxRequestWoo(data, function(response) {
+    await _helper__WEBPACK_IMPORTED_MODULE_0__["default"].ajax_request_woo(data, function(response) {
       var message = response.replace(/(<([^>]+)>)/gi, '');
 
       if (response.includes('woocommerce-error')) {
         $row.addClass('woocommerce-invalid');
         $row.eq(0).append(`<div class='error' aria-hidden='false' aria-live='polite'>${message}</div>`);
+        btn.html(btn_html);
+        btn.prop('disabled', false);
       } else {
         jQuery(document.body).trigger('update_checkout', {
           update_shipping_method: false,
@@ -1753,6 +1767,9 @@ flexifyCoupon.onFormSubmit = function() {
         jQuery(document.body).one('updated_checkout', function() {
           jQuery('.woocommerce-form-coupon__inner .form-row-first').append(`<div class="success" aria-hidden="false" aria-live="polite">${message}</div>`);
         });
+
+        btn.html(btn_html);
+        btn.prop('disabled', false);
       }
     }, onError);
     _stepper__WEBPACK_IMPORTED_MODULE_1__["default"].removeSpinner();
@@ -1782,11 +1799,11 @@ flexifyCoupon.removeCoupon = function(e) {
 
     var container = jQuery(this).parents('.woocommerce-checkout-review-order'), coupon = jQuery(this).data('coupon');
 
-    container.addClass('processing').block({
+    container.block({
       message: null,
       overlayCSS: {
         background: '#fff',
-        opacity: 0.6
+        opacity: 0.6,
       }
     });
 
@@ -1802,7 +1819,7 @@ flexifyCoupon.removeCoupon = function(e) {
       success: function(code) {
         jQuery('.woocommerce-error, .woocommerce-message').remove();
         jQuery('.woocommerce-form-coupon__wrapper').find('.error, .success').remove();
-        container.removeClass('processing').unblock();
+        container.unblock();
         
         if (code) {
           jQuery(document.body).trigger('removed_coupon_in_checkout', [data.coupon]);
@@ -2375,7 +2392,7 @@ flexifyHelper.ajaxRequest = async function(data, onSuccess, onError) {
  * @param {function} onSuccess | Success function
  * @param {function} onError | Error function
  */
-flexifyHelper.ajaxRequestWoo = async function(data, onSuccess, onError) {
+flexifyHelper.ajax_request_woo = async function(data, onSuccess, onError) {
   await new Promise((resolve, reject) => {
     var request = new XMLHttpRequest();
     var url = wc_checkout_params.wc_ajax_url.toString().replace('%%endpoint%%', data.action);
@@ -2858,11 +2875,13 @@ var flexifyLoginForm = {
     });
   },
   /**
-   * Handle submit event.
+   * Handle submit login event
    *
+   * @since 1.0.0
+   * @version 3.8.0
    * @param {obj} e event. 
    */
-  onSubmit: function (e) {
+  onSubmit: function(e) {
     e.preventDefault();
 
     var data = {
@@ -2873,11 +2892,25 @@ var flexifyLoginForm = {
       _wpnonce: flexifyLoginForm.els.$form.find('#woocommerce-login-nonce').val()
     };
     
-    flexifyLoginForm.block();
+    var btn = jQuery('.flexify-button.woocommerce-button.button.woocommerce-form-login__submit');
+    var btn_width = btn.width();
+    var btn_height = btn.height();
+    var btn_html = btn.html();
+
+    // keep original width and height
+    btn.width(btn_width);
+    btn.height(btn_height);
+    btn.prop('disabled', true);
+
+    // Add spinner inside button
+    btn.html('<span class="flexify-btn-processing-inline"></span>');
 
     jQuery.post(flexify_checkout_vars.ajax_url, data).done( function(data) {
       if (data.success) {
         flexifyLoginForm.showGlobalNotice(flexify_checkout_vars.i18n.login_successful, 'success');
+        btn.prop('disabled', true);
+        btn.addClass('btn-success');
+        btn.html('<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: #ffffff"><path d="m10 15.586-3.293-3.293-1.414 1.414L10 18.414l9.707-9.707-1.414-1.414z"></path></svg>');
         window.location.reload();
       } else {
         flexifyLoginForm.showGlobalNotice(data.data.error, 'error');
@@ -2885,7 +2918,8 @@ var flexifyLoginForm = {
     }).fail( function() {
       flexifyLoginForm.showGlobalNotice(flexify_checkout_vars.i18n.error, 'error');
     }).always( function() {
-      flexifyLoginForm.unblock();
+      btn.html(btn_html);
+      btn.prop('disabled', false);
     });
   },
   /**
@@ -3609,28 +3643,28 @@ flexifyValidation.checkFieldsForErrors = async function(fields, hasErrors = fals
   
   // Get all the data so we can do an inline validation.
   Array.from(fields).forEach( function(field) {
+    if ( ! field ) return;
+
     var row = field.closest('.form-row');
 
-    if ( ! row ) {
-      return;
-    }
+    if (!row) return;
 
-    if ( ! row.attributes['data-label'] || ! row.attributes['data-type'] ) {
-      return;
+    if (!row.attributes['data-label'] || !row.attributes['data-type']) {
+        return;
     }
 
     var value = _helper__WEBPACK_IMPORTED_MODULE_0__["default"].get_field_value(field);
     var billingCountryElement = document.getElementById('billing_country');
 
     inputs[field.attributes.name.value] = {
-      args: {
-        label: row.attributes['data-label'].value,
-        required: row.classList.contains('required'),
-        type: row.attributes['data-type'].value
-      },
-      country: billingCountryElement ? billingCountryElement.value : '',
-      key: field.attributes.name.value,
-      value: value,
+        args: {
+            label: row.attributes['data-label'].value,
+            required: row.classList.contains('required'),
+            type: row.attributes['data-type'].value
+        },
+        country: billingCountryElement ? billingCountryElement.value : '',
+        key: field.attributes.name.value,
+        value: value,
     };
   });
 
@@ -3689,21 +3723,33 @@ flexifyValidation.checkFieldsForErrors = async function(fields, hasErrors = fals
   flexifyValidation.clearErrorMessages('data-flexify-error');
 
   // Check password strength if set.
-  var passwords = fields[0].closest('[data-step]').querySelectorAll('#account_password');
+  if (fields[0]) { // Verifica se fields[0] existe
+    var stepContainer = fields[0].closest('[data-step]');
+    
+    if (stepContainer) {
+        var passwords = stepContainer.querySelectorAll('#account_password');
 
-  Array.from(passwords).forEach( function (password) {
-    if ( password.closest('.woocommerce-account-fields').querySelector('#createaccount') && ! password.closest('.woocommerce-account-fields').querySelector('#createaccount').checked ) {
-      return;
-    }
+        Array.from(passwords).forEach(function (password) {
+            var accountFields = password.closest('.woocommerce-account-fields');
+            
+            if (accountFields) {
+                var createAccountCheckbox = accountFields.querySelector('#createaccount');
 
-    if ( ! password.value ) {
-      return;
-    }
+                if (createAccountCheckbox && !createAccountCheckbox.checked) {
+                    return;
+                }
 
-    if ( ! password.closest('.form-row').querySelectorAll('.woocommerce-password-strength.good, .woocommerce-password-strength.strong').length ) {
-      hasErrors = true;
+                if (!password.value) {
+                    return;
+                }
+
+                if (!password.closest('.form-row').querySelectorAll('.woocommerce-password-strength.good, .woocommerce-password-strength.strong').length) {
+                    hasErrors = true;
+                }
+            }
+        });
     }
-  });
+  }
 
   if ( errorFields.length ) {
     var step = fields[0].closest('[data-step]').attributes['data-step'].value;

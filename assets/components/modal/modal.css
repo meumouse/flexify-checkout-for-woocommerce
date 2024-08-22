@@ -1,16 +1,5 @@
-#inter_bank_credendials_container,
-#inter_bank_pix_container,
-#inter_bank_slip_container,
-#require_inter_bank_module_container,
-.flexify-checkout-step-container,
-.require-pro-container,
-.set-api-service-container,
-.add-new-checkout-fields-container,
-.auto-fill-address-api-container,
-#set_new_font_family_container,
-#fcw_reset_settings_container,
-#add_new_checkout_condition_container,
-#set_email_providers_container {
+
+.popup-container {
     position: fixed;
     top: 0;
     left: 0;
@@ -26,19 +15,7 @@
     transition: opacity 0.3s ease, visibility 0s linear 0.3s;
 }
 
-#inter_bank_credendials_container.show,
-#inter_bank_pix_container.show,
-#inter_bank_slip_container.show,
-#require_inter_bank_module_container.show,
-.flexify-checkout-step-container.show,
-.require-pro-container.show,
-.set-api-service-container.show,
-.add-new-checkout-fields-container.show,
-.auto-fill-address-api-container.show,
-#set_new_font_family_container.show,
-#fcw_reset_settings_container.show,
-#add_new_checkout_condition_container.show,
-#set_email_providers_container.show {
+.popup-container.show {
     opacity: 1;
     visibility: visible;
     transform: none;
@@ -58,24 +35,8 @@
     transition: transform .3s ease-out;
 }
 
-#inter_bank_credendials_container.show .popup-content,
-#inter_bank_pix_container.show .popup-content,
-#inter_bank_slip_container.show .popup-content,
-#require_inter_bank_module_container.show .popup-content,
-.flexify-checkout-step-container.show .popup-content,
-.require-pro-container.show .popup-content,
-.set-api-service-container.show .popup-content,
-.add-new-checkout-fields-container.show .popup-content,
-.auto-fill-address-api-container.show .popup-content,
-#set_new_font_family_container.show .popup.content,
-#fcw_reset_settings_container.show .popup-content,
-#add_new_checkout_condition_container.show .popup-content,
-#set_email_providers_container.show .popup-content {
+.popup-container.show .popup-content {
     transform: none;
-}
-
-#require_inter_bank_module_container .popup-content {
-    width: 600px;
 }
 
 .add-new-checkout-fields-container .popup-content {
@@ -108,7 +69,7 @@
     border-top: 1px solid #dee2e6;
 }
 
-.popup-header .popup-title {
+.popup-title {
     font-size: 1.325rem;
     margin-bottom: 0;
 }
@@ -127,7 +88,7 @@
     .popup-content:not(.popup-fullscreen) {
         width: 800px;
         height: fit-content;
-        max-height: 75%;
+        max-height: 85dvh;
     }
 }
 
@@ -139,10 +100,8 @@
         position: absolute;
     }
 
-    #inter_bank_credendials_container.show,
     #inter_bank_pix_container.show,
     #inter_bank_slip_container.show,
-    #require_inter_bank_module_container.show,
     .flexify-checkout-step-container.show,
     .add-new-checkout-fields-container.show,
     .auto-fill-address-api-container.show,
@@ -152,14 +111,6 @@
     #set_email_providers_container.show {
         position: fixed;
     }
-}
-
-.popup-content table tr {
-    padding-left: 0;
-}
-
-table.popup-table {
-    width: 100%;
 }
 
 .popup-fullscreen {
@@ -193,6 +144,14 @@ table.popup-table {
     filter: invert(1) grayscale(100%) brightness(200%);
 }
 
+.popup-content table tr {
+    padding-left: 0;
+}
+
+table.popup-table {
+    width: 100%;
+}
+
 table.popup-table tr {
     width: 100%;
     display: flex;
@@ -210,16 +169,4 @@ table.popup-table td {
 table.popup-table th {
     padding-right: 1rem;
     font-weight: 600;
-}
-
-#add_new_checkout_condition_container .popup-body {
-    height: -webkit-fill-available;
-    margin-top: -3.5rem;
-    z-index: 1;
-}
-
-#close_add_new_checkout_condition {
-    z-index: 2;
-    top: 1.5rem;
-    position: absolute;
 }

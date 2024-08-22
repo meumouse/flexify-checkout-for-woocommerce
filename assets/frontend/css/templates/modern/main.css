@@ -1,12 +1,20 @@
 :root {
   --flexify-checkout-dark-text: #495057;
+  --flexify-checkout-success: #22c55e;
+  --flexify-checkout-success-rgb: 34, 197, 94;
+  --flexify-checkout-danger: #ef4444;
+  --flexify-checkout-danger-rgb: 239, 68, 68;
+  --flexify-checkout-warning: #ffba08;
+  --flexify-checkout-warning-rgb: 255, 186, 8;
+  --flexify-checkout-info: #0dcaf0;
+  --flexify-checkout-info-rgb: 13, 202, 240;
 }
 
 .mfp-bg {
   z-index: 1042;
   overflow: hidden;
-  background: #0b0b0b;
-  opacity: 0.8;
+  background-color: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(3px);
 }
 
 .mfp-bg,
@@ -573,6 +581,9 @@ h6,
 
 .button,
 button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   border: none;
   cursor: pointer;
   outline: none;
@@ -1228,6 +1239,7 @@ form.woocommerce-checkout>.woocommerce-NoticeGroup.woocommerce-NoticeGroup-check
 .form-row input[type="password"],
 .form-row input[type="tel"],
 .form-row input[type="text"],
+.form-row input[type="number"],
 .form-row select,
 .form-row textarea {
   -webkit-appearance: auto;
@@ -1261,6 +1273,8 @@ form.woocommerce-checkout>.woocommerce-NoticeGroup.woocommerce-NoticeGroup-check
 .form-row input[type="tel"]:hover,
 .form-row input[type="text"]:focus,
 .form-row input[type="text"]:hover,
+.form-row input[type="number"]:focus,
+.form-row input[type="number"]:hover,
 .form-row select:focus,
 .form-row select:hover,
 .form-row textarea:focus,
@@ -1659,7 +1673,7 @@ button#place_order {
 
 .flexify-button:disabled,
 button#place_order:disabled {
-  opacity: 0.4;
+  opacity: 0.7;
 }
 
 button#place_order {
@@ -2458,7 +2472,7 @@ _:-ms-fullscreen .flexify-tooltip .flexify-tooltip__icon:before {
 }
 
 .coupon-form td .checkout_coupon.woocommerce-form-coupon {
-  margin: 0;
+  margin: 1rem 0;
   padding: 0;
 }
 
@@ -2507,6 +2521,7 @@ _:-ms-fullscreen .flexify-tooltip .flexify-tooltip__icon:before {
 }
 
 .flexify-checkout__login-button {
+  display: inline-block;
   background: none !important;
   border: none;
   cursor: pointer;
@@ -2598,7 +2613,7 @@ _:-ms-fullscreen .flexify-tooltip .flexify-tooltip__icon:before {
 }
 
 .woocommerce-form-login button.woocommerce-form-login__submit {
-  margin-top: 32px;
+  margin-top: 2rem;
 }
 
 .woocommerce-form-login .form-row.form-row-first,
@@ -3366,17 +3381,9 @@ body .pac-container .pac-item .pac-icon.pac-icon-marker {
     align-content: center;
     flex-direction: row-reverse;
   }
-
-  .flexify-step--1 .flexify-footer {
-    justify-content: flex-start !important;
-  }
 }
 
-.flexify-step--1 a.flexify-step__back {
-  display: none;
-}
-
-.flexify-step--1 .flexify-footer {
+.flexify-footer.flexify-footer--no-back-shop {
   justify-content: flex-end;
 }
 
@@ -5000,4 +5007,98 @@ label.has-condition.required-field > .optional {
 
 #order_review .woocommerce-shipping-totals-custom.shipping {
   display: none !important;
+}
+
+.wd-login-divider.social-login-title {
+  text-align: center;
+  margin: 2rem 0;
+}
+
+.wd-login-divider.social-login-title > span {
+  font-size: 1.125rem;
+  color: #495057;
+}
+
+.social-login-btn a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  line-height: 1.6;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  padding: 0.625rem 1.75rem;
+  font-size: 1.125rem;
+  border-radius: 0.375rem;
+  transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  color: #434a57;
+  background-color: transparent;
+  border: 1px solid #d7dde2;
+  margin-bottom: 1rem;
+}
+
+.social-login-btn a:hover {
+  color: #121519;
+  background-color: #edf1f5;
+}
+
+.social-login-btn .social-icon {
+  width: 2.525rem;
+  height: 2.525rem;
+  margin-right: 0.725rem;
+}
+
+.flexify-checkout-loading-placeholder {
+  overflow: hidden;
+  display: inline-flex;
+  width: fit-content;
+  position: relative;
+  -webkit-animation-duration: 1.7s;
+  animation-duration: 1.7s;
+  -webkit-animation-fill-mode: forwards;
+  animation-fill-mode: forwards;
+  -webkit-animation-iteration-count: infinite;
+  animation-iteration-count: infinite;
+  -webkit-animation-timing-function: linear;
+  animation-timing-function: linear;
+  -webkit-animation-name: placeholder_animation;
+  animation-name: placeholder_animation;
+  background: linear-gradient(to right, #eee 2%, #ddd 18%, #eee 33%);
+  background-size: 1300px;
+  border-radius: 0.375rem;
+}
+
+@keyframes placeholder_animation {
+  0% {
+      background-position: -650px 0;
+  }
+  100% {
+      background-position: 650px 0;
+  }
+}
+
+.flexify-btn-processing-inline {
+  display: inline-block;
+  width: 1.225rem;
+  height: 1.225rem;
+  border-radius: 50%;
+  border: 2px solid hsla(0, 0%, 96.9%, 0.4392156863);
+  border-top-color: #fff;
+  transform: none;
+  animation: 1.2s linear infinite spinner-border;
+  box-sizing: content-box;
+}
+
+@keyframes spinner-border {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.btn-success {
+  background-color: var(--flexify-checkout-success) !important;
+  border-color: var(--flexify-checkout-success) !important;
 }
