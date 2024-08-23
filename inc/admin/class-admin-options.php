@@ -362,6 +362,7 @@ class Admin_Options extends Init {
   * Render step container for settings panel
   * 
   * @since 3.8.0
+  * @version 3.8.2
   * @param string $step | Steps - 1 or 2
   * @param string $title | Title from step
   * @param array $fields | 
@@ -372,8 +373,10 @@ class Admin_Options extends Init {
         <span class="step-title"><?php echo $title; ?></span>
 
         <div id="flexify_checkout_step_<?php echo esc_attr( $step ); ?>" data-step="<?php echo esc_attr( $step ); ?>">
-            <?php foreach ( $fields as $index => $value ) : 
-                self::render_field( $index, $value, $step );
+            <?php foreach ( $fields as $index => $value ) :
+                if ( strpos( $index, 'billing_') !== false ) {
+                    self::render_field( $index, $value, $step );
+                }
             endforeach; ?>
         </div>
     </td>
