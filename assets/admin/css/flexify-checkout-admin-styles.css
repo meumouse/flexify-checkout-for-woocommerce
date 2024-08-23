@@ -19,22 +19,16 @@
     --bs-danger-rgb: 239, 68, 68 !important;
 }
 
-.h1,
-.h2,
-.h3,
-.h4,
-.h5,
-.h6,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+.h1, .h2, .h3, .h4, .h5, .h6,
+h1, h2, h3, h4, h5, h6 {
     margin-top: 0;
     margin-bottom: 0.5rem;
     font-weight: 500;
     line-height: 1.2;
+}
+
+.h5, h5 {
+    font-size: 1.25rem;
 }
 
 .flexify-checkout-admin-section-tile {
