@@ -9,7 +9,7 @@ defined('ABSPATH') || exit;
  * Connect to license authentication server
  * 
  * @since 1.0.0
- * @version 3.8.0
+ * @version 3.8.3
  * @package MeuMouse.com
  */
 class License {
@@ -775,7 +775,7 @@ class License {
      * Load API settings
      * 
      * @since 1.0.0
-     * @version 3.8.0
+     * @version 3.8.3
      * @return void
      */
     public function licenses_api_connection() {
@@ -795,7 +795,7 @@ class License {
             update_option( 'flexify_checkout_temp_license_key', $license_key ) || add_option('flexify_checkout_temp_license_key', $license_key );
     
             // Check on the server if the license is valid and update responses and options
-            if ( self::check_license( $license_key, $this->license_message, $this->response_obj, WOO_CUSTOM_INSTALLMENTS_FILE ) ) {
+            if ( self::check_license( $license_key, $this->license_message, $this->response_obj, FLEXIFY_CHECKOUT_FILE ) ) {
                 if ( $this->response_obj && $this->response_obj->is_valid ) {
                     update_option( 'flexify_checkout_license_status', 'valid' );
                     delete_option('flexify_checkout_temp_license_key');
