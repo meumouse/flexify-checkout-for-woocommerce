@@ -9,6 +9,9 @@ defined('ABSPATH') || exit;
  *
  * Provides logging functionality for classes that use it.
  * Allows setting a source for logs and optionally logs only critical events.
+ * 
+ * @since 3.8.6
+ * @package MeuMouse.com
  */
 trait Logger {
   
@@ -29,15 +32,15 @@ trait Logger {
   /**
    * WooCommerce logger instance.
    *
-   * @var \WC_Logger
+   * @var WC_Logger
    */
-  protected static $log;
+  public static $log;
 
   
   /**
    * Set the source for the logger and whether to log only critical events.
    *
-   * @since 3.8.5
+   * @since 3.8.6
    * @param string $set | The source identifier for the logs.
    * @param bool $critical_only | Whether to log only critical events, default true.
    * @return void
@@ -55,7 +58,7 @@ trait Logger {
    * only logs messages with levels 'emergency', 'alert', or 'critical'.
    *
    * @since 3.8.0
-   * @version 3.8.5
+   * @version 3.8.6
    * @param string $message | The log message.
    * @param string $level | Optional, defaults to 'info'. Valid levels: emergency|alert|critical|error|warning|notice|info|debug.
    * @return void
@@ -65,7 +68,7 @@ trait Logger {
       return;
     }
 
-    if ( $this->critical_only && ! in_array( $level, [ 'emergency', 'alert', 'critical' ] ) ) {
+    if ( $this->critical_only && ! in_array( $level, array( 'emergency', 'alert', 'critical' ) ) ) {
       return;
     }
 

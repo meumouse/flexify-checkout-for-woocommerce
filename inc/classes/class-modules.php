@@ -3,6 +3,7 @@
 namespace MeuMouse\Flexify_Checkout;
 
 use WP_Error;
+use MeuMouse\Flexify_Checkout\Logger;
 
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
@@ -11,7 +12,7 @@ defined('ABSPATH') || exit;
  * Class for handling the installation of external modules (plugins)
  * 
  * @since 3.8.0
- * @version 3.8.5
+ * @version 3.8.6
  * @package MeuMouse.com
  */
 class Modules {
@@ -29,16 +30,14 @@ class Modules {
      * Construct function
      * 
      * @since 3.8.0
+     * @version 3.8.6
      * @return void
      */
     public function __construct() {
-        // Set logging enabled or disabled
-        $this->logging_enabled = true;
+        $this->set_logger_source('flexify-checkout-modules', false);
 
-        // Initialize logger if logging is enabled
-        if ( $this->logging_enabled ) {
-            $this->set_logger_source( 'flexify_checkout_modules', true );
-        }
+        // Set logging enabled or disabled
+        $this->logging_enabled = false;
 
         // Handle AJAX requests for installing external modules.
         add_action( 'wp_ajax_install_modules_action', array( $this, 'install_modules_ajax_callback' ) );
@@ -52,14 +51,14 @@ class Modules {
      * Log a message if logging is enabled.
      * 
      * @since 3.8.0
-     * @version 3.8.5
-     * @param string $category
+     * @version 3.8.6
      * @param string $message
+     * @param string $level
      * @return void
      */
-    private function log( $category, $message ) {
+    private function log( $message, $level = 'info' ) {
         if ( $this->logging_enabled ) {
-            $this->logger->log( $category, $message );
+            $this->log( $message, $level );
         }
     }
 
@@ -165,9 +164,9 @@ class Modules {
         $installed = $upgrader->install( $plugin_zip );
 
         if ( is_wp_error( $installed ) ) {
-            $this->logger->log('plugin_installation', "Erro ao instalar o plugin: " . $installed->get_error_message() );
+            $this->log('plugin_installation', "Erro ao instalar o plugin: " . $installed->get_error_message() );
         } else {
-            $this->logger->log('plugin_installation', "Plugin instalado: $plugin_zip");
+            $this->log('plugin_installation', "Plugin instalado: $plugin_zip");
         }
 
         return $installed;
@@ -189,9 +188,9 @@ class Modules {
         $upgraded = $upgrader->upgrade( $plugin_slug );
 
         if ( is_wp_error( $upgraded ) ) {
-            $this->logger->log('plugin_installation', "Erro ao atualizar o plugin: " . $upgraded->get_error_message());
+            $this->log('plugin_installation', "Erro ao atualizar o plugin: " . $upgraded->get_error_message());
         } else {
-            $this->logger->log('plugin_installation', "Plugin atualizado: $plugin_slug");
+            $this->log('plugin_installation', "Plugin atualizado: $plugin_slug");
         }
 
         return $upgraded;
