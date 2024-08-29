@@ -14,7 +14,7 @@ defined('ABSPATH') || exit;
  * Checkout core actions
  *
  * @since 1.0.0
- * @version 3.8.0
+ * @version 3.8.5
  * @package MeuMouse.com
  */
 class Core {
@@ -367,7 +367,7 @@ class Core {
 	 * Add new fields, reorder positions, and manage fields from WooCommerce checkout
 	 * 
 	 * @since 3.0.0
-	 * @version 3.7.3
+	 * @version 3.8.5
 	 * @param array $fields | Checkout fields
 	 * @return array
 	 */
@@ -524,12 +524,14 @@ class Core {
 			}
 
 			// add new field type select
-			if ( isset( $value['source'] ) && $value['source'] !== 'native' && isset( $value['type'] ) && $value['type'] === 'select' ) {
+			if ( isset( $value['source'] ) && $value['source'] !== 'native' && isset( $value['type'] ) && $value['type'] === 'select' && isset( $value['options'] ) && is_array( $value['options'] ) ) {
 				$index_option = array();
 				
 				// get select options
 				foreach ( $value['options'] as $option ) {
-					$index_option[$option['value']] = $option['text'] ?? '';
+					if ( is_array( $option ) ) {
+						$index_option[$option['value']] = $option['text'] ?? '';
+					}
 				}
 
 				$fields['billing'][$index] = array(

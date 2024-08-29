@@ -2,59 +2,79 @@
 
 namespace MeuMouse\Flexify_Checkout;
 
-use WP_Error;
-
-// Exit if accessed directly.
 defined('ABSPATH') || exit;
 
 /**
- * Class for handling custom logging
- * 
- * @since 3.8.0
- * @package MeuMouse.com
+ * Trait Logger
+ *
+ * Provides logging functionality for classes that use it.
+ * Allows setting a source for logs and optionally logs only critical events.
  */
-class Logger {
+trait Logger {
+  
+  /**
+   * The source identifier for the log entries.
+   *
+   * @var string
+   */
+  public $source;
 
-    /**
-     * The directory where logs will be stored
-     * 
-     * @var string
-     */
-    private $log_dir;
+  /**
+   * Flag to determine if only critical logs should be saved.
+   *
+   * @var bool
+   */
+  public $critical_only;
 
-    /**
-     * Logger constructor
-     * 
-     * @since 3.8.0
-     * @return void
-     */
-    public function __construct() {
-        $upload_dir = wp_upload_dir();
-        $this->log_dir = WP_CONTENT_DIR . '/flexify-checkout-logs/';
+  /**
+   * WooCommerce logger instance.
+   *
+   * @var \WC_Logger
+   */
+  protected static $log;
 
-        // Ensure the log directory exists.
-        if ( ! file_exists( $this->log_dir ) ) {
-            wp_mkdir_p( $this->log_dir );
-        }
+  
+  /**
+   * Set the source for the logger and whether to log only critical events.
+   *
+   * @since 3.8.5
+   * @param string $set | The source identifier for the logs.
+   * @param bool $critical_only | Whether to log only critical events, default true.
+   * @return void
+   */
+  public function set_logger_source( $set, $critical_only = true ) {
+    $this->source = $set;
+    $this->critical_only = $critical_only;
+  }
+
+
+  /**
+   * Log an event.
+   *
+   * Logs a message with the given severity level. If $critical_only is true,
+   * only logs messages with levels 'emergency', 'alert', or 'critical'.
+   *
+   * @since 3.8.0
+   * @version 3.8.5
+   * @param string $message | The log message.
+   * @param string $level | Optional, defaults to 'info'. Valid levels: emergency|alert|critical|error|warning|notice|info|debug.
+   * @return void
+   */
+  public function log( $message, $level = 'info' ) {
+    if ( ! $this->source ) {
+      return;
     }
 
-
-    /**
-     * Write a log entry
-     * 
-     * @since 3.8.0
-     * @param string $log_name | The name of the log file
-     * @param string $message | The message to log
-     * @return void
-     */
-    public function log( $log_name, $message ) {
-        $file = $this->log_dir . sanitize_file_name( $log_name ) . '.log';
-
-        // Create the message with timestamp
-        $timestamp = current_time('Y-m-d H:i:s');
-        $log_entry = "[$timestamp] $message" . PHP_EOL;
-
-        // Write the message to the log file.
-        file_put_contents( $file, $log_entry, FILE_APPEND | LOCK_EX );
+    if ( $this->critical_only && ! in_array( $level, [ 'emergency', 'alert', 'critical' ] ) ) {
+      return;
     }
+
+    $message = is_string( $message ) ? $message : print_r( $message, true );
+
+    if ( ! isset( self::$log ) ) {
+      self::$log = wc_get_logger();
+    }
+
+    self::$log->log( $level, $message, array( 'source' => $this->source ) );
+  }
 }

@@ -4,9 +4,10 @@
  * Plugin Name: 			Flexify Checkout para WooCommerce
  * Description: 			Extensão que otimiza a finalização de compras em multi etapas para lojas WooCommerce.
  * Plugin URI: 				https://meumouse.com/plugins/flexify-checkout-para-woocommerce/
+ * Requires Plugins: 		woocommerce
  * Author: 					MeuMouse.com
  * Author URI: 				https://meumouse.com/
- * Version: 				3.8.3
+ * Version: 				3.8.5
  * WC requires at least: 	6.0.0
  * WC tested up to: 		9.1.2
  * Requires PHP: 			7.4
@@ -25,7 +26,7 @@ defined('ABSPATH') || exit;
  * Flexify_Checkout
  * 
  * @since 1.0.0
- * @version 3.8.0
+ * @version 3.8.5
  * @package MeuMouse.com
  */
 class Flexify_Checkout {
@@ -44,7 +45,7 @@ class Flexify_Checkout {
 	 * @since 1.0.0
 	 * @var string
 	 */
-	public static $version = '3.8.3';
+	public static $version = '3.8.5';
 
 	/**
 	 * Plugin initiated
@@ -189,7 +190,7 @@ class Flexify_Checkout {
 	 * Load classes
 	 * 
 	 * @since 1.0.0
-	 * @version 3.8.0
+	 * @version 3.8.5
 	 * @return void
 	 */
 	private function setup_includes() {
@@ -209,6 +210,7 @@ class Flexify_Checkout {
 			'classes/class-conditions.php',
 			'classes/class-thankyou.php',
 			'classes/class-logger.php',
+			'classes/class-error-handler.php',
 			'classes/class-modules.php',
 			'classes/class-updater.php',
 		));

@@ -13,7 +13,7 @@ defined('ABSPATH') || exit;
  * Class to handle plugin admin panel objects and functions
  * 
  * @since 1.0.0
- * @version 3.8.0
+ * @version 3.8.5
  * @package MeuMouse.com
  */
 class Admin_Options extends Init {
@@ -224,6 +224,7 @@ class Admin_Options extends Init {
   * Render checkout field options for settings panel
   * 
   * @since 3.8.0
+  * @version 3.8.5
   * @param string $index | Field ID
   * @param array $value | Field configuration array
   * @return void
@@ -253,7 +254,7 @@ class Admin_Options extends Init {
         </td>
     </tr>
     
-    <?php if ( $index === 'billing_country' && $field_type === 'select' ) : ?>
+    <?php if ( $index === 'billing_country' && $field_type === 'select' && isset( $value['country'] ) && is_array( $value['country'] ) ) : ?>
         <tr>
             <th class="w-50">
                 <?php echo esc_html__('Definir país padrão', 'flexify-checkout-for-woocommerce'); ?>
@@ -281,7 +282,7 @@ class Admin_Options extends Init {
         </td>
     </tr>
 
-    <?php if ( $index !== 'billing_country' && $field_type === 'select' && isset( $value['options'] ) ) : ?>
+    <?php if ( $index !== 'billing_country' && $field_type === 'select' && isset( $value['options'] ) && is_array( $value['options'] ) ) : ?>
       <tr class="d-flex align-items-start">
         <th class="w-50">
             <?php echo esc_html__('Opções ', 'flexify-checkout-for-woocommerce'); ?>
@@ -290,18 +291,20 @@ class Admin_Options extends Init {
         <td class="w-50">
           <div class="d-grid">
             <div class="mb-3 options-container-live">
-              <?php foreach ( $value['options'] as $option ) : ?>
-                <div class="d-flex align-items-center mb-3 option-container-live" data-option="<?php echo esc_attr( $option['value'] ) ?>">
-                  <div class="input-group me-3">
-                    <span class="input-group-text d-flex align-items-center justify-content-center py-2 w-25"><?php echo esc_attr( $option['value'] ) ?></span>
-                    <span class="input-group-text d-flex align-items-center justify-content-center w-75"><?php echo esc_html( $option['text'] ) ?></span>
-                  </div>
+              <?php foreach ( $value['options'] as $option ) :
+                if ( is_array( $option ) ) : ?>
+                    <div class="d-flex align-items-center mb-3 option-container-live" data-option="<?php echo esc_attr( $option['value'] ) ?>">
+                    <div class="input-group me-3">
+                        <span class="input-group-text d-flex align-items-center justify-content-center py-2 w-25"><?php echo esc_attr( $option['value'] ) ?></span>
+                        <span class="input-group-text d-flex align-items-center justify-content-center w-75"><?php echo esc_html( $option['text'] ) ?></span>
+                    </div>
 
-                  <button class="btn btn-outline-danger btn-icon rounded-3 exclude-option-select-live" data-field-id="<?php echo esc_attr( $value['id'] ) ?>" data-option="<?php echo esc_attr( $option['value'] ) ?>">
-                    <svg class="icon icon-danger" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15 2H9c-1.103 0-2 .897-2 2v2H3v2h2v12c0 1.103.897 2 2 2h10c1.103 0 2-.897 2-2V8h2V6h-4V4c0-1.103-.897-2-2-2zM9 4h6v2H9V4zm8 16H7V8h10v12z"></path></svg>
-                  </button>
-                </div>
-              <?php endforeach; ?>
+                    <button class="btn btn-outline-danger btn-icon rounded-3 exclude-option-select-live" data-field-id="<?php echo esc_attr( $value['id'] ) ?>" data-option="<?php echo esc_attr( $option['value'] ) ?>">
+                        <svg class="icon icon-danger" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15 2H9c-1.103 0-2 .897-2 2v2H3v2h2v12c0 1.103.897 2 2 2h10c1.103 0 2-.897 2-2V8h2V6h-4V4c0-1.103-.897-2-2-2zM9 4h6v2H9V4zm8 16H7V8h10v12z"></path></svg>
+                    </button>
+                    </div>
+                <?php endif;
+              endforeach; ?>
             </div>
 
             <button id="add_new_select_option_live" class="btn btn-outline-secondary"><?php echo esc_html__('Adicionar nova opção', 'flexify-checkout-for-woocommerce'); ?></button>

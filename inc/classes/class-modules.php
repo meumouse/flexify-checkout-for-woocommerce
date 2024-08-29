@@ -11,16 +11,12 @@ defined('ABSPATH') || exit;
  * Class for handling the installation of external modules (plugins)
  * 
  * @since 3.8.0
+ * @version 3.8.5
  * @package MeuMouse.com
  */
 class Modules {
 
-    /**
-     * Logger instance.
-     * 
-     * @var Logger
-     */
-    private $logger;
+    use Logger;
 
     /**
      * Enable or disable logging.
@@ -41,7 +37,7 @@ class Modules {
 
         // Initialize logger if logging is enabled
         if ( $this->logging_enabled ) {
-            $this->logger = new Logger();
+            $this->set_logger_source( 'flexify_checkout_modules', true );
         }
 
         // Handle AJAX requests for installing external modules.
@@ -51,16 +47,18 @@ class Modules {
         add_action( 'wp_ajax_activate_plugin_action', array( $this, 'activate_plugin_callback' ) );
     }
 
+
     /**
      * Log a message if logging is enabled.
      * 
      * @since 3.8.0
+     * @version 3.8.5
      * @param string $category
      * @param string $message
      * @return void
      */
     private function log( $category, $message ) {
-        if ( $this->logging_enabled && $this->logger ) {
+        if ( $this->logging_enabled ) {
             $this->logger->log( $category, $message );
         }
     }
