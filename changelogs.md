@@ -1,3 +1,7 @@
+Versão 3.8.6 (29/08/2024)
+* Correção de bugs
+* Recurso removido: Classe Error_Handler
+
 Versão 3.8.5 (29/08/2024)
 * Correção de bugs
 * Recurso adicionado: Classe Error_Handler para lidar com erros críticos e prevenir quebras no site
