@@ -1,3 +1,6 @@
+Versão 3.8.7 (02/09/2024)
+* Correção de bugs
+
 Versão 3.8.6 (29/08/2024)
 * Correção de bugs
 * Recurso removido: Classe Error_Handler
