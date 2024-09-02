@@ -3618,7 +3618,7 @@ flexifyValidation.checkFieldForErrors = async function(field) {
  * Check fields for errors
  *
  * @since 1.0.0
- * @version 3.5.0
+ * @version 3.8.7
  * @param {array} fields | Checkout fields
  * @returns bool
  */
@@ -3649,8 +3649,8 @@ flexifyValidation.checkFieldsForErrors = async function(fields, hasErrors = fals
 
     if (!row) return;
 
-    if (!row.attributes['data-label'] || !row.attributes['data-type']) {
-        return;
+    if (!field.attributes['name'] || !row.attributes['data-label'] || !row.attributes['data-type']) {
+      return;
     }
 
     var value = _helper__WEBPACK_IMPORTED_MODULE_0__["default"].get_field_value(field);
