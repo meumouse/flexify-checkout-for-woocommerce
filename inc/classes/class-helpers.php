@@ -12,7 +12,7 @@ defined('ABSPATH') || exit;
  * Useful helper functions
  *
  * @since 1.0.0
- * @version 3.8.0
+ * @version 3.8.8
  * @package MeuMouse.com
  */
 class Helpers {
@@ -639,6 +639,23 @@ class Helpers {
 
 		return $array_index;
 	}
+
+
+	/**
+     * Check if a specific theme is active
+     *
+     * @since 3.7.0
+	 * @version 3.8.8
+     * @param string $theme_name | The name of the theme to check
+     * @return bool True if the theme is active, false otherwise
+     */
+    public static function check_active_theme( $theme_name ) {
+        $current_theme = wp_get_theme();
+        $current_theme_name = $current_theme->get('Name');
+    
+        // Check if the lowercase version of both names match
+        return ( strtolower( $current_theme_name ) === strtolower( $theme_name ) );
+    }
 }
 
 if ( ! class_exists('MeuMouse\Flexify_Checkout\Helpers\Helpers') ) {

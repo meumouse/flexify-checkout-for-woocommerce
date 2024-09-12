@@ -14,7 +14,7 @@ defined('ABSPATH') || exit;
  * Checkout core actions
  *
  * @since 1.0.0
- * @version 3.8.5
+ * @version 3.8.7
  * @package MeuMouse.com
  */
 class Core {
@@ -23,7 +23,7 @@ class Core {
 	 * Construct function
 	 * 
 	 * @since 1.0.0
-	 * @version 3.8.0
+	 * @version 3.8.7
 	 * @return void
 	 */
 	public function __construct() {
@@ -37,7 +37,7 @@ class Core {
 		add_action( 'body_class', array( __CLASS__, 'update_body_class' ) );
 
 		// Set priorities.
-		add_filter( 'woocommerce_checkout_fields', array( __CLASS__, 'custom_override_checkout_fields' ), 100 );
+		add_filter( 'woocommerce_checkout_fields', array( __CLASS__, 'custom_override_checkout_fields' ), 200 );
 
 		// enable checkout fields manager
 		if ( Init::get_setting('enable_manage_fields') === 'yes' && License::is_valid() ) {
@@ -260,7 +260,7 @@ class Core {
 	 * Override checkout fields
 	 *
 	 * @since 1.0.0
-	 * @version 3.7.3
+	 * @version 3.8.8
 	 * @param array $fields | Checkout fields
 	 * @return array
 	 */
@@ -284,15 +284,15 @@ class Core {
 
 		foreach ( $remove_placeholder as $field_name ) {
 			if ( isset( $fields['billing'][ 'billing_' . $field_name ] ) ) {
-				$fields['billing'][ 'billing_' . $field_name ]['placeholder'] = '';
+				$fields['billing']['billing_' . $field_name]['placeholder'] = '';
 			}
 
 			if ( isset( $fields['shipping'][ 'shipping_' . $field_name ] ) ) {
-				$fields['shipping'][ 'shipping_' . $field_name ]['placeholder'] = '';
+				$fields['shipping']['shipping_' . $field_name]['placeholder'] = '';
 			}
 
 			if ( isset( $fields['account'][ 'account_' . $field_name ] ) ) {
-				$fields['account'][ 'account_' . $field_name ]['placeholder'] = '';
+				$fields['account']['account_' . $field_name]['placeholder'] = '';
 			}
 		}
 
@@ -340,22 +340,34 @@ class Core {
 		if ( Init::get_setting('enable_optimize_for_digital_products') === 'yes' && License::is_valid() && flexify_checkout_only_virtual() ) {
 			unset( $fields['order']['order_comments'] );
 
-			// Remove the last class from the postcode field.
-			if ( isset( $fields['billing']['billing_postcode'] ) && isset( $fields['billing']['billing_postcode']['class'] ) ) {
-				$search = array_search( 'form-row-last', $fields['billing']['billing_postcode']['class'] ); // get the key of the value to be removed
+			// if manager fields is enabled
+			if ( Init::get_setting('enable_manage_fields') === 'yes' ) {
+				$get_fields = maybe_unserialize( get_option('flexify_checkout_step_fields', array()) );
 
-				if ( false !== $search ) {
-					unset( $fields['billing']['billing_postcode']['class'][ $search ] ); // remove the item from the array using its key
+				foreach ( $get_fields as $index => $value ) {
+					// prevent removing country field as it may cause address error on gateways that require this field
+					if ( isset( $value['step'] ) && $value['step'] === '2' ) {
+						$fields['billing'][$index]['required'] = false;
+						unset( $fields['billing'][$index] );
+					}
 				}
-			}
+			} else {
+				$shipping_fields = apply_filters( 'flexify_checkout_remove_fields_for_digital_products', array(
+					'billing_postcode',
+					'billing_address_1',
+					'billing_number',
+					'billing_address_2',
+					'billing_neighborhood',
+					'billing_city',
+					'billing_state',
+				));
 
-			$get_fields = maybe_unserialize( get_option('flexify_checkout_step_fields', array()) );
-				
-			foreach ( $get_fields as $index => $value ) {
-				if ( isset( $value['step'] ) && $value['step'] === '2' && isset( $value['enabled'] ) && $value['enabled'] !== 'no' ) {
-					$fields['billing'][$index]['required'] = false;
-					unset( $fields['billing'][$index] );
+				foreach ( $shipping_fields as $field ) {
+					$fields['billing'][$field]['required'] = false;
+					unset( $fields['billing'][$field] );
 				}
+
+				$fields['billing']['billing_country']['required'] = false;
 			}
 		}
 		
