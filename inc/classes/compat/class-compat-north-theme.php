@@ -2,20 +2,22 @@
 
 namespace MeuMouse\Flexify_Checkout\Compat;
 
+use MeuMouse\Flexify_Checkout\Helpers;
+
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Compatibility with North Theme.
+ * Compatibility with North Theme
  *
  * @since 1.0.0
- * @version 3.8.0
+ * @version 3.8.8
  * @package MeuMouse.com
  */
 class Compat_North_Theme {
 
     /**
-     * Construct function.
+     * Construct function
      *
      * @since 1.0.0
      * @return void
@@ -24,11 +26,15 @@ class Compat_North_Theme {
         add_action( 'init', array( $this, 'compat_north_theme' ) );
     }
 
+
     /**
-     * Disable Divi checkout customizations.
+     * Disable Divi checkout customizations
+     * 
+     * @since 1.0.0
+     * @version 3.8.8
      */
     public function compat_north_theme() {
-        if ( ! flexify_checkout_check_theme_active('North') || ! is_flexify_checkout() ) {
+        if ( ! Helpers::check_active_theme('North') || ! is_flexify_checkout() ) {
             return;
         }
 

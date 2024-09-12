@@ -2,14 +2,16 @@
 
 namespace MeuMouse\Flexify_Checkout\Compat;
 
+use MeuMouse\Flexify_Checkout\Helpers;
+
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Compatibility with Sala theme.
+ * Compatibility with Sala theme
  *
  * @since 1.0.0
- * @version 3.8.0
+ * @version 3.8.8
  * @package MeuMouse.com
  */
 class Compat_Sala {
@@ -24,11 +26,15 @@ class Compat_Sala {
         add_action( 'after_setup_theme', array( $this, 'compat_sala' ), 20 );
     }
 
+
     /**
-     * Disable Sala checkout customizations.
+     * Disable Sala checkout customizations
+     * 
+     * @since 1.0.0
+     * @version 3.8.8
      */
     public function compat_sala() {
-        if ( ! flexify_checkout_check_theme_active('Sala') || ! is_flexify_checkout( true ) ) {
+        if ( ! Helpers::check_active_theme('Sala') || ! is_flexify_checkout( true ) ) {
             return;
         }
         

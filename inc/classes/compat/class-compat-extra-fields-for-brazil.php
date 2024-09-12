@@ -30,7 +30,7 @@ class Extra_Fields_For_Brazil {
      * Add compatibility with scripts on checkout
      * 
      * @since 3.8.0
-     * @version 3.8.2
+     * @version 3.8.8
      * @return void
      */
     public function compat_scripts() {
@@ -38,7 +38,7 @@ class Extra_Fields_For_Brazil {
             return;
         }
         
-        if ( Init::get_setting('enable_field_masks') ) {
+        if ( Init::get_setting('enable_field_masks') === 'yes' && Init::get_setting('enable_manage_fields') === 'yes' ) {
             // Prevent conflict with jQuery mask from Brazilian Market on WooCommerce plugin
             wp_dequeue_script('jquery-mask');
             wp_deregister_script('jquery-mask');

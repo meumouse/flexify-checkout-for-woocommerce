@@ -2,20 +2,22 @@
 
 namespace MeuMouse\Flexify_Checkout\Compat;
 
+use MeuMouse\Flexify_Checkout\Helpers;
+
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Compatibility with Martfury theme.
+ * Compatibility with Martfury theme
  *
  * @since 1.0.0
- * @version 3.8.0
+ * @version 3.8.8
  * @package MeuMouse.com
  */
 class Compat_Martfury {
 
     /**
-     * Construct function.
+     * Construct function
      *
      * @since 1.0.0
      * @return void
@@ -24,11 +26,15 @@ class Compat_Martfury {
         add_action( 'wp', array( $this, 'compat_martfury' ) );
     }
 
+
     /**
-     * Martfury theme compatibility.
+     * Martfury theme compatibility
+     * 
+     * @since 1.0.0
+     * @version 3.8.8
      */
     public function compat_martfury() {
-        if ( ! flexify_checkout_check_theme_active('Martfury') || ! is_flexify_checkout() ) {
+        if ( ! Helpers::check_active_theme('Martfury') || ! is_flexify_checkout() ) {
             return;
         }
 

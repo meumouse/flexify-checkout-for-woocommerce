@@ -2,6 +2,8 @@
 
 namespace MeuMouse\Flexify_Checkout\Compat;
 
+use MeuMouse\Flexify_Checkout\Helpers;
+
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
 
@@ -9,7 +11,7 @@ defined('ABSPATH') || exit;
  * Compatibility with Blocksy Theme
  *
  * @since 1.0.0
- * @version 3.8.0
+ * @version 3.8.8
  * @package MeuMouse.com
  */
 class Compat_Blocksy {
@@ -30,10 +32,11 @@ class Compat_Blocksy {
 	 * Set this global variable to prevent Blocksy from overriding the checkout template
 	 *
 	 * @since 1.0.0
+	 * @version 3.8.8
 	 * @return void
 	 */
 	public static function set_blocksy_global_variable() {
-		if ( ! is_flexify_checkout() || ! flexify_checkout_check_theme_active('Blocksy') ) {
+		if ( ! is_flexify_checkout() || ! Helpers::check_active_theme('Blocksy') ) {
 			return;
 		}
 		
