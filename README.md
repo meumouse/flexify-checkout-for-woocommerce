@@ -34,6 +34,14 @@ Você pode instalar um plugin WordPress de duas maneiras: via o painel de admini
 
 ### Registro de alterações (Changelogs):
 
+Versão 3.8.8 (12/09/2024)
+* Correção de bugs
+* Otimizações
+* Compatibilidade com tema TutorStarter
+* Compatibilidade com tema Elessi
+* Compatibilidade com tema Tooldic
+* Compatibilidade com tema Ricky
+
 Versão 3.8.7 (02/09/2024)
 * Correção de bugs
 
