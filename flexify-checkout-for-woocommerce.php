@@ -7,7 +7,7 @@
  * Requires Plugins: 		woocommerce
  * Author: 					MeuMouse.com
  * Author URI: 				https://meumouse.com/
- * Version: 				3.8.8
+ * Version: 				3.9.0
  * WC requires at least: 	6.0.0
  * WC tested up to: 		9.2.3
  * Requires PHP: 			7.4
@@ -26,7 +26,7 @@ defined('ABSPATH') || exit;
  * Flexify_Checkout
  * 
  * @since 1.0.0
- * @version 3.8.5
+ * @version 3.9.0
  * @package MeuMouse.com
  */
 class Flexify_Checkout {
@@ -45,7 +45,7 @@ class Flexify_Checkout {
 	 * @since 1.0.0
 	 * @var string
 	 */
-	public static $version = '3.8.8';
+	public static $version = '3.9.0';
 
 	/**
 	 * Plugin initiated
@@ -59,37 +59,11 @@ class Flexify_Checkout {
 	 * Construct the plugin
 	 * 
 	 * @since 1.0.0
-	 * @version 3.7.0
+	 * @version 3.9.0
 	 * @return void
 	 */
 	public function __construct() {
-		$this->define_constants();
-
-		load_plugin_textdomain( 'flexify-checkout-for-woocommerce', false, dirname( FLEXIFY_CHECKOUT_BASENAME ) . '/languages/' );
-		add_action( 'plugins_loaded', array( $this, 'load_checker' ), 5 );
-	}
-
-
-	/**
-	 * Define constants
-	 * 
-	 * @since 1.0.0
-	 * @version 3.6.5
-	 * @return void
-	 */
-	private function define_constants() {
-		$this->define( 'FLEXIFY_CHECKOUT_FILE', __FILE__ );
-		$this->define( 'FLEXIFY_CHECKOUT_PATH', plugin_dir_path( __FILE__ ) );
-		$this->define( 'FLEXIFY_CHECKOUT_URL', plugin_dir_url( __FILE__ ) );
-		$this->define( 'FLEXIFY_CHECKOUT_ASSETS', FLEXIFY_CHECKOUT_URL . 'assets/' );
-		$this->define( 'FLEXIFY_CHECKOUT_INC_PATH', FLEXIFY_CHECKOUT_PATH . 'inc/' );
-		$this->define( 'FLEXIFY_CHECKOUT_TPL_PATH', FLEXIFY_CHECKOUT_PATH . 'templates/' );
-		$this->define( 'FLEXIFY_CHECKOUT_BASENAME', plugin_basename( __FILE__ ) );
-		$this->define( 'FLEXIFY_CHECKOUT_VERSION', self::$version );
-		$this->define( 'FLEXIFY_CHECKOUT_SLUG', self::$slug );
-		$this->define( 'FLEXIFY_CHECKOUT_ADMIN_EMAIL', get_option('admin_email') );
-		$this->define( 'FLEXIFY_CHECKOUT_DOCS_LINK', 'https://meumouse.com/docs/flexify-checkout-para-woocommerce/' );
-		$this->define( 'FLEXIFY_CHECKOUT_PLUGIN_NAME', esc_html__( 'Flexify Checkout para WooCommerce', 'flexify-checkout-for-woocommerce' ) );
+		add_action( 'plugins_loaded', array( $this, 'init' ), 99 );
 	}
 
 
@@ -97,16 +71,19 @@ class Flexify_Checkout {
 	 * Checker dependencies before activate plugin
 	 * 
 	 * @since 1.0.0
-	 * @version 3.8.0
+	 * @version 3.9.0
 	 * @return void
 	 */
-	public function load_checker() {
+	public function init() {
 		// Display notice if PHP version is bottom 7.4
 		if ( version_compare( phpversion(), '7.4', '<' ) ) {
 			add_action( 'admin_notices', array( $this, 'php_version_notice' ) );
-
-			return; // stop here
+			return;
 		}
+		
+		$this->define_constants();
+
+		load_plugin_textdomain( 'flexify-checkout-for-woocommerce', false, dirname( FLEXIFY_CHECKOUT_BASENAME ) . '/languages/' );
 		
 		if ( ! function_exists( 'is_plugin_active' ) ) {
 			include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
@@ -133,6 +110,29 @@ class Flexify_Checkout {
 			deactivate_plugins('flexify-checkout-for-woocommerce/flexify-checkout-for-woocommerce.php');
 			add_action( 'admin_notices', array( $this, 'deactivate_flexify_checkout_notice' ) );
 		}
+	}
+
+
+	/**
+	 * Define constants
+	 * 
+	 * @since 1.0.0
+	 * @version 3.9.0
+	 * @return void
+	 */
+	private function define_constants() {
+		$this->define( 'FLEXIFY_CHECKOUT_FILE', __FILE__ );
+		$this->define( 'FLEXIFY_CHECKOUT_PATH', plugin_dir_path( __FILE__ ) );
+		$this->define( 'FLEXIFY_CHECKOUT_URL', plugin_dir_url( __FILE__ ) );
+		$this->define( 'FLEXIFY_CHECKOUT_ASSETS', FLEXIFY_CHECKOUT_URL . 'assets/' );
+		$this->define( 'FLEXIFY_CHECKOUT_INC_PATH', FLEXIFY_CHECKOUT_PATH . 'inc/' );
+		$this->define( 'FLEXIFY_CHECKOUT_TPL_PATH', FLEXIFY_CHECKOUT_PATH . 'templates/' );
+		$this->define( 'FLEXIFY_CHECKOUT_BASENAME', plugin_basename( __FILE__ ) );
+		$this->define( 'FLEXIFY_CHECKOUT_VERSION', self::$version );
+		$this->define( 'FLEXIFY_CHECKOUT_SLUG', self::$slug );
+		$this->define( 'FLEXIFY_CHECKOUT_ADMIN_EMAIL', get_option('admin_email') );
+		$this->define( 'FLEXIFY_CHECKOUT_DOCS_LINK', 'https://ajuda.meumouse.com/docs/flexify-checkout-for-woocommerce/overview' );
+		$this->define( 'FLEXIFY_CHECKOUT_PLUGIN_NAME', esc_html__( 'Flexify Checkout para WooCommerce', 'flexify-checkout-for-woocommerce' ) );
 	}
 
 

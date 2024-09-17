@@ -34,6 +34,12 @@ Você pode instalar um plugin WordPress de duas maneiras: via o painel de admini
 
 ### Registro de alterações (Changelogs):
 
+Versão 3.9.0 (17/09/2024)
+* Correção de bugs
+* Otimizações
+* Atualização na compatibilidade com tema Astra
+* Compatibilidade com SuperFrete
+
 Versão 3.8.8 (12/09/2024)
 * Correção de bugs
 * Otimizações

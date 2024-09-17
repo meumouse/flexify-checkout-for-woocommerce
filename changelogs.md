@@ -1,3 +1,9 @@
+Versão 3.9.0 (17/09/2024)
+* Correção de bugs
+* Otimizações
+* Atualização na compatibilidade com tema Astra
+* Compatibilidade com SuperFrete
+
 Versão 3.8.8 (12/09/2024)
 * Correção de bugs
 * Otimizações
