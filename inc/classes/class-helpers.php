@@ -573,6 +573,7 @@ class Helpers {
 	 * Get selected shipping method name on checkout
 	 * 
 	 * @since 3.8.0
+	 * @version 3.9.0
 	 * @return string
 	 */
 	public static function get_selected_shipping_method_name() {
@@ -585,7 +586,7 @@ class Helpers {
 			$zones[0] = \WC_Shipping_Zones::get_zone_by('zone_id', 0);
 	
 			foreach ( $zones as $zone ) {
-				$shipping_methods = $zone['shipping_methods'];
+				$shipping_methods = $zone->get_shipping_methods(); 
 	
 				foreach ( $shipping_methods as $method ) {
 					if ( $method->id === explode(':', $chosen_method_id)[0] ) {
