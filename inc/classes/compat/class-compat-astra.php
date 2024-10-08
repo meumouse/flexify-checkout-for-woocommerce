@@ -9,7 +9,7 @@ defined('ABSPATH') || exit;
  * Compatibility with Astra theme
  *
  * @since 1.0.0
- * @version 3.9.0
+ * @version 3.9.2
  * @package MeuMouse.com
  */
 class Compat_Astra {
@@ -53,7 +53,7 @@ class Compat_Astra {
 	 * Dequeue scripts
 	 * 
 	 * @since 1.0.0
-	 * @version 3.9.0
+	 * @version 3.9.2
 	 * @return void
 	 */
 	public static function compat_astra_dequeue_scripts() {
@@ -64,6 +64,8 @@ class Compat_Astra {
 		wp_dequeue_script('astra-checkout-persistence-form-data');
 		wp_dequeue_style('astra-addon-css');
 		wp_deregister_style('astra-addon-css');
+		wp_dequeue_style('astra-theme-css');
+		wp_deregister_style('astra-theme-css');
 	}
 }
 
