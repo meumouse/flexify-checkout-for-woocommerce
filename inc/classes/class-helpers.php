@@ -12,7 +12,7 @@ defined('ABSPATH') || exit;
  * Useful helper functions
  *
  * @since 1.0.0
- * @version 3.8.8
+ * @version 3.9.2
  * @package MeuMouse.com
  */
 class Helpers {
@@ -573,32 +573,41 @@ class Helpers {
 	 * Get selected shipping method name on checkout
 	 * 
 	 * @since 3.8.0
-	 * @version 3.9.0
+	 * @version 3.9.2
 	 * @return string
 	 */
 	public static function get_selected_shipping_method_name() {
 		$current_shipping_method = WC()->session->get('chosen_shipping_methods');
 		$selected_method_name = __( 'Nenhuma forma de entrega selecionada', 'flexify-checkout-for-woocommerce' );
-	
+		
 		if ( $current_shipping_method && ! empty( $current_shipping_method[0] ) ) {
 			$chosen_method_id = $current_shipping_method[0];
 			$zones = \WC_Shipping_Zones::get_zones();
 			$zones[0] = \WC_Shipping_Zones::get_zone_by('zone_id', 0);
-	
+			
 			foreach ( $zones as $zone ) {
-				$shipping_methods = $zone->get_shipping_methods(); 
+				// Check if $zone is an object before calling the method
+				if ( is_object( $zone ) && method_exists( $zone, 'get_shipping_methods' ) ) {
+					$shipping_methods = $zone->get_shipping_methods();
 	
-				foreach ( $shipping_methods as $method ) {
-					if ( $method->id === explode(':', $chosen_method_id)[0] ) {
-						$selected_method_name = $method->get_title();
-						break 2;
+					// Check if $shipping_methods is an array
+					if ( is_array( $shipping_methods ) ) {
+						foreach ( $shipping_methods as $method ) {
+							// Check if $method is an object before accessing its properties
+							if ( is_object( $method ) && property_exists( $method, 'id' ) ) {
+								if ( $method->id === explode(':', $chosen_method_id)[0] ) {
+									$selected_method_name = $method->get_title();
+									break 2;
+								}
+							}
+						}
 					}
 				}
 			}
 		}
-
+	
 		return $selected_method_name;
-	}
+	}	
 
 
 	/**
