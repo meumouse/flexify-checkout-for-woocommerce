@@ -1,3 +1,7 @@
+Versão 3.9.2 (08/10/2024)
+* Correção de bugs
+* Atualização na compatibilidade com tema Astra
+
 Versão 3.9.0 (17/09/2024)
 * Correção de bugs
 * Otimizações
