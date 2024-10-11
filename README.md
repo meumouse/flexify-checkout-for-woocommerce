@@ -34,6 +34,9 @@ Você pode instalar um plugin WordPress de duas maneiras: via o painel de admini
 
 ### Registro de alterações (Changelogs):
 
+Versão 3.9.3 (11/10/2024)
+* Atualização na compatibilidade com tema Elessi
+
 Versão 3.9.2 (08/10/2024)
 * Correção de bugs
 * Atualização na compatibilidade com tema Astra
