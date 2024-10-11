@@ -9,6 +9,7 @@ defined('ABSPATH') || exit;
  * Compatibility with Elessi theme
  *
  * @since 3.8.8
+ * @version 3.9.3
  * @package MeuMouse.com
  */
 class Elessi {
@@ -44,9 +45,14 @@ class Elessi {
      * Remove WooCommerce actions on checkout
      * 
      * @since 3.8.8
+     * @version 3.9.3
      * @return void
      */
     public function remove_woo_actions() {
+        if ( ! is_flexify_template() || ! function_exists('elessi_setup') ) {
+			return;
+		}
+
         remove_action('init', 'elessi_add_action_woo');
     }
 }
