@@ -1,3 +1,12 @@
+Versão 3.9.5 (26/11/2024)
+* Correção de bugs
+
+Versão 3.9.4 (25/11/2024)
+* Atualização na compatibilidade com tema Woodmart
+* Compatibilidade com tema Ecomus
+* Recurso adicionado: Remover controles de quantidade em produtos vendidos individualmente
+* Recurso adicionado: Ativar animações de processamento de compra
+
 Versão 3.9.3 (11/10/2024)
 * Atualização na compatibilidade com tema Elessi
 
