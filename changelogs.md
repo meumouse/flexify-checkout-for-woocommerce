@@ -1,3 +1,8 @@
+Versão 3.9.6 (28/11/2024)
+* Correção de bugs
+  * Atualização da compatibilidade com máscaras de campos e plugin Brazilian Market on WooCommerce
+* Otimizações
+
 Versão 3.9.5 (26/11/2024)
 * Correção de bugs
 
