@@ -5,6 +5,7 @@
      * Build checkout fields conditions
      * 
      * @since 3.5.0
+     * @version 3.9.6
      * @package MeuMouse.com
      */
     jQuery(document).ready( function($) {
@@ -65,6 +66,7 @@
          * Check field visibility if has condition
          * 
          * @since 3.5.0
+         * @version 3.9.6
          */
         function check_field_visibility() {
             // get each field condition
@@ -75,9 +77,9 @@
                     if (condition.verification_condition === 'field') {
                         if (check_condition(condition.condition, verification_condition_value.val(), condition.condition_value)) {
                             // CSS class "temp-hidden" then skip validate field
-                            $('#' + condition.component_field).prop('required', true).closest('.form-row').removeClass('temp-hidden').addClass('required required-field').show();
+                            $('#' + condition.component_field).prop('required', true).closest('.form-row').removeClass('temp-hidden').addClass('validate-required required-field').show();
                         } else {
-                            $('#' + condition.component_field).prop('required', false).closest('.form-row').removeClass('required required-field woocommerce-invalid validate-required').addClass('temp-hidden').hide();
+                            $('#' + condition.component_field).prop('required', false).closest('.form-row').removeClass('required-field woocommerce-invalid validate-required').addClass('temp-hidden').hide();
                         }
                     }
                 } else if (condition.type_rule === 'hide') {
@@ -85,7 +87,7 @@
                         // CSS class "temp-hidden" then skip validate field
                         $('#' + condition.component_field).prop('required', false).closest('.form-row').removeClass('required required-field woocommerce-invalid validate-required').addClass('temp-hidden').hide();
                     } else {
-                        $('#' + condition.component_field).prop('required', true).closest('.form-row').removeClass('temp-hidden').addClass('required required-field').show();
+                        $('#' + condition.component_field).prop('required', true).closest('.form-row').removeClass('temp-hidden').addClass('validate-required required-field').show();
                     }
                 }
             });

@@ -643,6 +643,148 @@ jQuery(document.body).on('update_checkout', function() {
 
 
 /**
+ * Process purchase animation
+ * 
+ * @since 3.9.4
+ * @version 3.9.6
+ * @package MeuMouse.com
+ */
+const PurchaseAnimation = ( function($) {
+  let currentStep = 1; // Starts at the first animation
+  let totalSteps = 3; // Total number of steps
+  let progressWidth = 0; // Current progress bar width
+  let maxProgress = 95; // Maximum limit for progress bar
+  let progressBarInterval; // Interval for the progress bar
+  let animationTimeout; // Timeout to manage animation transitions
+
+  const start_purchase_animation = function() {
+      const animation_group = $('#flexify_checkout_purchase_animation');
+      const progress_bar = animation_group.find('.animation-progress-bar');
+
+      // Prevent bugs on failed purchases
+      $('.purchase-animation-item').removeClass('active');
+
+      // Resets the progress bar
+      progressWidth = 0;
+      progress_bar.css('width', '0%');
+
+      // Clears any previous animation or progress intervals
+      clearTimeout(animationTimeout);
+      clearInterval(progressBarInterval);
+
+      // Adds the "active" class to the main group
+      animation_group.addClass('active');
+
+      // Start looping through animations
+      loop_animations();
+
+      // Removes WooCommerce processing overlay
+      setTimeout( function() {
+        $('.woocommerce-checkout.processing').find('.blockOverlay').css('display', 'none');
+      }, 10);
+
+      // Gradually increase the progress bar
+      progressBarInterval = setInterval( function() {
+          // Increment progress randomly between 5% and 15%
+          const increment = Math.floor(Math.random() * (15 - 5 + 1)) + 5;
+          progressWidth += increment;
+
+          if (progressWidth > maxProgress) {
+              progressWidth = maxProgress;
+          }
+
+          progress_bar.css('width', progressWidth + '%');
+
+          if (progressWidth >= maxProgress) {
+              clearInterval(progressBarInterval);
+          }
+      }, 1500); // Update every 1.5 seconds
+  };
+
+  const loop_animations = function() {
+      const animation_group = $('#flexify_checkout_purchase_animation');
+
+      // Remove the "active" class from all steps
+      animation_group.find('.purchase-animation-item').removeClass('active');
+
+      // Get the current item
+      const currentItem = animation_group.find('.purchase-animation-item.animation-' + currentStep);
+
+      // Add the "active" class to the current step
+      currentItem.addClass('active');
+
+      // Play the Lordicon animation
+      const icon = currentItem.find('lord-icon')[0];
+
+      if (icon) {
+          const player = icon.playerInstance;
+
+          if (player) {
+              // Start the animation from the beginning
+              player.playFromBeginning();
+
+              // Listen for the animation to complete
+              player.addEventListener('complete', function onComplete() {
+                  player.removeEventListener('complete', onComplete); // Remove listener to avoid duplicate calls
+                  currentStep = (currentStep % totalSteps) + 1; // Move to the next step
+                  loop_animations(); // Recursive call to continue the loop
+              });
+          }
+      }
+  };
+
+  const complete_purchase_animation = function() {
+      const animation_group = $('#flexify_checkout_purchase_animation');
+      const progress_bar = animation_group.find('.animation-progress-bar');
+
+      // Sets the progress bar to 100%
+      progress_bar.css('width', '100%');
+
+      // Clears the animation loop
+      clearTimeout(animationTimeout);
+      clearInterval(progressBarInterval);
+
+      // Remove the "active" class from all steps
+      animation_group.find('.purchase-animation-item').removeClass('active');
+  };
+
+  const stop_all_animations = function() {
+      const animation_group = $('#flexify_checkout_purchase_animation');
+      const progress_bar = animation_group.find('.animation-progress-bar');
+
+      // Stop progress bar updates
+      clearTimeout(animationTimeout);
+      clearInterval(progressBarInterval);
+
+      // Reset the progress bar
+      progress_bar.css('width', '0%');
+
+      // Remove "active" class from animation group and all items
+      animation_group.removeClass('active');
+      animation_group.find('.purchase-animation-item').removeClass('active');
+
+      // Stop all Lordicon animations
+      animation_group.find('lord-icon').each( function() {
+          const icon = this.playerInstance;
+
+          if (icon) {
+              icon.stop(); // Stop the current animation
+          }
+      });
+  };
+
+  return {
+      start: start_purchase_animation,
+      stop: stop_all_animations,
+      complete: complete_purchase_animation,
+  };
+})(jQuery);
+
+// set it globally accessible
+window.PurchaseAnimation = PurchaseAnimation;
+
+
+/**
  * Update fragments on updated_checkout event
  * 
  * @since 1.0.0
@@ -951,7 +1093,7 @@ var CheckoutButton = {
    * On button click
    * 
    * @since 1.0.0
-   * @version 3.6.0
+   * @version 3.9.6
    */
   on_button_click: function(e) {
     // Prevent the default behavior of the button
@@ -960,14 +1102,24 @@ var CheckoutButton = {
     CheckoutButton.prepare_button_dom();
     jQuery('#place_order').addClass('flexify-checkout-btn-loading');
 
+    if ( flexify_checkout_vars.enable_animation_process_purchase === 'yes' ) {
+      PurchaseAnimation.start();
+    }
+
     // Simulate the form submission event
     jQuery('#place_order').closest('form').submit();
   },
   /**
-   * On WooCommerce error.
+   * On WooCommerce error
+   * 
+   * @since 1.0.0
+   * @version 3.9.6
    */
   on_error: function() {
     jQuery('#place_order').removeClass('flexify-checkout-btn-loading');
+
+    // Stop all ongoing animations and reset state
+    PurchaseAnimation.stop();
   },
   /**
    * On updated_checkout event. Modify the button html.
@@ -3018,11 +3170,13 @@ flexifyStepper.init = function() {
   this.onStepperClick();
   window.addEventListener('hashchange', flexifyStepper.onHashChange);
 };
+
 flexifyStepper.handeStepOnPageLoad = function() {
-  if (!window.location.hash) {
+  if ( ! window.location.hash ) {
     window.location.hash = this.steps_hash[1];
     return;
   }
+
   flexifyStepper.onHashChange();
 };
 
@@ -3047,6 +3201,37 @@ jQuery(document).ready( function($) {
       hidePasswordIcon.hide();
     }
   });
+});
+
+/**
+ * Brazilian Market on WooCommerce display fields
+ * 
+ * @since 3.9.6
+ * @package MeuMouse.com
+ */
+jQuery(document).ready( function($) {
+  function change_persontype() {
+    var person_type = parseInt( $('#billing_persontype').val() );
+
+    if ( person_type === 1 ) {
+      $('#billing_cpf').prop('required', true).closest('.form-row').removeClass('temp-hidden').addClass('validate-required required-field').show();
+      $('#billing_cnpj').prop('required', false).closest('.form-row').removeClass('validate-required required-field').addClass('temp-hidden').hide();
+      $('#billing_ie').prop('required', false).closest('.form-row').removeClass('validate-required required-field').addClass('temp-hidden').hide();
+      $('#billing_company').prop('required', false).closest('.form-row').removeClass('validate-required required-field').addClass('temp-hidden').hide();
+    } else if ( person_type === 2 ) {
+      $('#billing_cpf').prop('required', false).closest('.form-row').removeClass('validate-required required-field').addClass('temp-hidden').hide();
+      $('#billing_cnpj').prop('required', true).closest('.form-row').removeClass('temp-hidden').removeClass('validate-required required-field').show();
+      $('#billing_ie').prop('required', true).closest('.form-row').removeClass('temp-hidden').removeClass('validate-required required-field').show();
+      $('#billing_company').prop('required', true).closest('.form-row').removeClass('temp-hidden').removeClass('validate-required required-field').show();
+    }
+  }
+
+  $(document).on('change', '#billing_persontype', function() {
+    change_persontype();
+  });
+
+  // change on load page
+  change_persontype();
 });
 
 /**
@@ -3618,7 +3803,7 @@ flexifyValidation.checkFieldForErrors = async function(field) {
  * Check fields for errors
  *
  * @since 1.0.0
- * @version 3.8.7
+ * @version 3.9.6
  * @param {array} fields | Checkout fields
  * @returns bool
  */
@@ -3693,8 +3878,7 @@ flexifyValidation.checkFieldsForErrors = async function(fields, hasErrors = fals
 
       // If this field is hidden by Conditinal Field of Checkout Fields Manager plugin
       // then skip validation for this field.
-      // if field has class "temp-hidden" then skip validate field because has custom condition
-      if ( flexifyValidation.isHiddenConditionalField(field) || field.closest('.form-row').classList.contains('temp-hidden') ) {
+      if ( flexifyValidation.isHiddenConditionalField(field) ) {
         return;
       }
 
@@ -3983,7 +4167,7 @@ flexifyValidation.isValidEmail = function(email) {
 flexifyValidation.isHiddenConditionalField = function (field) {
   var $row = jQuery(field).closest('.form-row');
 
-  return $row.is(":hidden") && $row.hasClass("wooccm-conditional-child");
+  return $row.is(':hidden') && $row.hasClass('wooccm-conditional-child') || $row.hasClass('temp-hidden');
 };
 
 /**
