@@ -9,7 +9,7 @@ defined('ABSPATH') || exit;
  * Class to make requests to a remote server to get plugin versions and updates
  * 
  * @since 1.0.0
- * @version 3.8.0
+ * @version 3.9.6
  * @package MeuMouse.com
  */
 class Updater {
@@ -101,6 +101,7 @@ class Updater {
      * Get plugin info
      * 
      * @since 1.0.0
+     * @version 3.9.6
      * @return array
      * @package MeuMouse.com
      */
@@ -131,7 +132,6 @@ class Updater {
         $response->requires = $remote->requires;
         $response->author = $remote->author;
         $response->author_profile = $remote->author_profile;
-        $response->donate_link = $remote->donate_link;
         $response->homepage = $remote->homepage;
         $response->download_link = $remote->download_url;
         $response->trunk = $remote->download_url;

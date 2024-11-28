@@ -16,7 +16,7 @@ defined('ABSPATH') || exit;
  * Register/enqueue frontend and backend scripts
  *
  * @since 1.0.0
- * @version 3.8.0
+ * @version 3.9.6
  * @package MeuMouse.com
  */
 class Assets {
@@ -28,7 +28,7 @@ class Assets {
 	 * @return void
 	 */
 	public function __construct() {
-		$max_priority = defined( 'PHP_INT_MAX' ) ? PHP_INT_MAX : 2147483647;
+		$max_priority = defined('PHP_INT_MAX') ? PHP_INT_MAX : 2147483647;
 
 		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'frontend_assets' ), $max_priority );
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_assets' ) );
@@ -39,7 +39,7 @@ class Assets {
 	 * Frontend assets
 	 * 
 	 * @since 1.0.0
-	 * @version 3.5.0
+	 * @version 3.9.4
 	 * @return void
 	 */
 	public static function frontend_assets() {
@@ -165,11 +165,16 @@ class Assets {
 			wp_localize_script( 'flexify-checkout-conditions', 'fcw_condition_param', $conditions_params );
 		}
 
+		// process animation purchase
+		if ( Init::get_setting('enable_animation_process_purchase') === 'yes' ) {
+			wp_enqueue_script( 'lordicon-player', 'https://cdn.lordicon.com/lordicon.js', array() );
+		}
+
 		/**
 		 * Flexify checkout script localized data
 		 *
 		 * @since 1.0.0
-		 * @version 3.5.0
+		 * @version 3.9.4
 		 * @return array
 		 */
 		$flexify_script_data = apply_filters( 'flexify_checkout_script_data', array(
@@ -208,6 +213,7 @@ class Assets {
 			'check_password_strenght' => Init::get_setting('check_password_strenght'),
 			'get_all_checkout_fields' => Helpers::export_all_checkout_fields(),
 			'opened_default_order_summary' => Init::get_setting('display_opened_order_review_mobile'),
+			'enable_animation_process_purchase' => Init::get_setting('enable_animation_process_purchase'),
 		));
 
 		wp_localize_script( 'flexify-checkout-for-woocommerce', 'flexify_checkout_vars', $flexify_script_data );
@@ -281,6 +287,8 @@ class Assets {
 				'placeholder_new_option_value' => esc_attr__( 'BR', 'flexify-checkout-for-woocommerce' ),
 				'placeholder_new_option_title' => esc_attr__( 'Brasil', 'flexify-checkout-for-woocommerce' ),
 				'close_aria_label_notice' => esc_attr__( 'Fechar', 'flexify-checkout-for-woocommerce' ),
+				'set_animation_modal_title' => esc_html__( 'Escolher animação', 'flexify-checkout-for-woocommerce' ),
+				'set_animation_button_title' => esc_html__( 'Usar este arquivo', 'flexify-checkout-for-woocommerce' ),
 			));
 		}
 	}

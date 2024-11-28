@@ -14,7 +14,7 @@ defined('ABSPATH') || exit;
  * Checkout core actions
  *
  * @since 1.0.0
- * @version 3.8.7
+ * @version 3.9.6
  * @package MeuMouse.com
  */
 class Core {
@@ -23,7 +23,7 @@ class Core {
 	 * Construct function
 	 * 
 	 * @since 1.0.0
-	 * @version 3.8.7
+	 * @version 3.9.4
 	 * @return void
 	 */
 	public function __construct() {
@@ -145,6 +145,9 @@ class Core {
 		// update fragments on update_order_review event
 		add_action( 'woocommerce_update_order_review_fragments', array( __CLASS__, 'update_order_review_framents' ) );
 		add_filter( 'woocommerce_update_order_review_fragments', array( __CLASS__, 'override_empty_cart_fragment' ) );
+
+		// add custom footer on checkout page
+		add_action( 'flexify_checkout_after_layout', array( $this, 'add_processing_purchase_animation' ) );
 	}
 
 
@@ -260,7 +263,7 @@ class Core {
 	 * Override checkout fields
 	 *
 	 * @since 1.0.0
-	 * @version 3.8.8
+	 * @version 3.9.6
 	 * @param array $fields | Checkout fields
 	 * @return array
 	 */
@@ -315,16 +318,47 @@ class Core {
 				$fields['billing']['billing_address_1']['class'][] = 'row-first';
 			}
 
-			if ( isset( $fields['billing']['billing_number'] ) ) {
-				$fields['billing']['billing_number']['class'][] = 'row-last';
-			}
-
 			if ( isset( $fields['billing']['billing_address_2'] ) ) {
 				$fields['billing']['billing_address_2']['class'][] = 'row-first';
 			}
 
-			if ( isset( $fields['billing']['billing_neighborhood'] ) ) {
-				$fields['billing']['billing_neighborhood']['class'][] = 'row-last';
+			// Brazilian Market on WooCommerce integration
+			if ( class_exists('Extra_Checkout_Fields_For_Brazil_Front_End') ) {
+				$wcbcf_settings = get_option('wcbcf_settings');
+				$person_type = intval( $wcbcf_settings['person_type'] );
+
+				if ( isset( $fields['billing']['billing_number'] ) ) {
+					$fields['billing']['billing_number']['class'][] = 'row-last';
+				}
+
+				if ( isset( $wcbcf_settings['neighborhood_required'] ) && '1' === $wcbcf_settings['neighborhood_required'] ) {
+					$fields['billing']['billing_neighborhood']['class'][] = 'required required-field';
+					$fields['billing']['billing_neighborhood']['class'][] = 'row-last';
+				}
+
+				if ( 0 !== $person_type ) {
+					if ( 1 === $person_type || 2 === $person_type ) {
+						if ( isset( $wcbcf_settings['rg'] ) ) {
+							$fields['billing']['billing_cpf']['class'][] = 'validate-required required-field';
+							$fields['billing']['billing_rg']['class'][] = 'validate-required required-field';
+						} else {
+							$fields['billing']['billing_cpf']['class'][] = 'validate-required required-field';
+						}
+					}
+
+					if ( 1 === $person_type || 3 === $person_type ) {
+						if ( isset( $fields['billing_company'] ) ) {
+							$fields['billing']['billing_company']['class'][] = 'validate-required required-field';
+						}
+		
+						if ( isset( $wcbcf_settings['ie'] ) ) {
+							$fields['billing']['billing_cnpj']['class'][] = 'required required-field';
+							$fields['billing']['billing_ie']['class'][] = 'validate-required required-field';
+						} else {
+							$fields['billing']['billing_cnpj']['class'][] = 'validate-required required-field';
+						}
+					}
+				}
 			}
 
 			if ( isset( $fields['billing']['billing_city'] ) ) {
@@ -1852,6 +1886,46 @@ class Core {
 		}
 
 		return $template;
+	}
+
+
+	/**
+	 * Add processing purchase animation
+	 * 
+	 * @since 3.9.4
+	 * @return void
+	 */
+	public function add_processing_purchase_animation() {
+		if ( Init::get_setting('enable_animation_process_purchase') === 'yes' && License::is_valid() ) : ?>
+			<div id="flexify_checkout_purchase_animation" class="purchase-animations-group">
+				<div class="animations-content">
+					<div class="animations-group">
+						<div class="purchase-animation-item animation-1">
+							<lord-icon class="animation-item" src="<?php echo esc_url( Init::get_setting('animation_process_purchase_file_1') ) ?>" trigger="loop" target=".purchase-animation-item" delay="1000" stroke="regular" state="hover" colors="primary:#212529, secondary:#212529"></lord-icon>
+							<h5 class="text-animation-item"><?php echo esc_html( Init::get_setting('text_animation_process_purchase_1') ) ?></h5>
+						</div>
+
+						<div class="purchase-animation-item animation-2">
+							<lord-icon class="animation-item" src="<?php echo esc_url( Init::get_setting('animation_process_purchase_file_2') ) ?>" trigger="loop" target=".purchase-animation-item" delay="1000" stroke="regular" state="hover" colors="primary:#212529, secondary:#212529"></lord-icon>
+							<h5 class="text-animation-item"><?php echo esc_html( Init::get_setting('text_animation_process_purchase_2') ) ?></h5>
+						</div>
+
+						<div class="purchase-animation-item animation-3">
+							<lord-icon class="animation-item" src="<?php echo esc_url( Init::get_setting('animation_process_purchase_file_3') ) ?>" trigger="loop" target=".purchase-animation-item" delay="1000" stroke="regular" state="hover" colors="primary:#212529, secondary:#212529"></lord-icon>
+							<h5 class="text-animation-item"><?php echo esc_html( Init::get_setting('text_animation_process_purchase_3') ) ?></h5>
+						</div>
+					</div>
+
+					<div class="animation-progress-content">
+						<div class="animation-progress-container">
+							<div class="progress-bar animation-progress-bar"></div>
+							<div class="progress-bar animation-progress-base"></div>
+						</div>
+						<span class="description-progress-bar"><?php esc_html_e( 'Aguarde alguns instantes', 'flexify-checkout-for-woocommerce' ) ?></span>
+					</div>
+				</div>
+			</div>
+		<?php endif;
 	}
 }
 
