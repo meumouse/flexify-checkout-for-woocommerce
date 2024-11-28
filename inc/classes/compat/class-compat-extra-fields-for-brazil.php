@@ -11,7 +11,7 @@ defined( 'ABSPATH' ) || exit;
  * Compatibility with Brazilian Market on WooCommerce plugin
  *
  * @since 3.8.0
- * @version 3.8.2
+ * @version 3.9.6
  * @package MeuMouse.com
  */
 class Extra_Fields_For_Brazil {
@@ -30,7 +30,7 @@ class Extra_Fields_For_Brazil {
      * Add compatibility with scripts on checkout
      * 
      * @since 3.8.0
-     * @version 3.8.8
+     * @version 3.9.6
      * @return void
      */
     public function compat_scripts() {
@@ -38,7 +38,7 @@ class Extra_Fields_For_Brazil {
             return;
         }
         
-        if ( Init::get_setting('enable_field_masks') === 'yes' && Init::get_setting('enable_manage_fields') === 'yes' ) {
+        if ( Init::get_setting('enable_field_masks') === 'yes' ) {
             // Prevent conflict with jQuery mask from Brazilian Market on WooCommerce plugin
             wp_dequeue_script('jquery-mask');
             wp_deregister_script('jquery-mask');
@@ -58,6 +58,14 @@ class Extra_Fields_For_Brazil {
 
             // Enqueue the custom version of the script
             wp_enqueue_script('woocommerce-extra-checkout-fields-for-brazil-front-custom');
+            
+            wp_localize_script(
+                'woocommerce-extra-checkout-fields-for-brazil-front-custom',
+                'bmwPublicParams',
+                array(
+                    'maskedinput' => 'no',
+                )
+            );
         }
     }
 }
