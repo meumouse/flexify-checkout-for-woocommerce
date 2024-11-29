@@ -646,137 +646,118 @@ jQuery(document.body).on('update_checkout', function() {
  * Process purchase animation
  * 
  * @since 3.9.4
- * @version 3.9.6
+ * @version 3.9.7
  * @package MeuMouse.com
  */
 const PurchaseAnimation = ( function($) {
-  let currentStep = 1; // Starts at the first animation
-  let totalSteps = 3; // Total number of steps
+  let currentStep = 1; // Start at the first animation
+  const totalSteps = 3; // Total number of steps
+  const maxProgress = 95; // Maximum progress bar width
   let progressWidth = 0; // Current progress bar width
-  let maxProgress = 95; // Maximum limit for progress bar
-  let progressBarInterval; // Interval for the progress bar
-  let animationTimeout; // Timeout to manage animation transitions
+  let animationInterval; // Interval for animations
+  let progressBarInterval; // Interval for progress bar
+  let isAnimating = false; // Flag to track animation state
 
+  // Start purchase animation
   const start_purchase_animation = function() {
-      const animation_group = $('#flexify_checkout_purchase_animation');
-      const progress_bar = animation_group.find('.animation-progress-bar');
+    const animationGroup = $('#flexify_checkout_purchase_animation');
+    const progressBar = animationGroup.find('.animation-progress-bar');
 
-      // Prevent bugs on failed purchases
-      $('.purchase-animation-item').removeClass('active');
+    // Prevent multiple animations from starting
+    if (isAnimating) return;
+    isAnimating = true;
 
-      // Resets the progress bar
-      progressWidth = 0;
-      progress_bar.css('width', '0%');
+    // Reset progress and step
+    reset_animation();
+    progressBar.css('width', '0%');
 
-      // Clears any previous animation or progress intervals
-      clearTimeout(animationTimeout);
-      clearInterval(progressBarInterval);
+    // Add "active" class to main group
+    animationGroup.addClass('active');
 
-      // Adds the "active" class to the main group
-      animation_group.addClass('active');
+    // Remove WooCommerce overlay
+    setTimeout(() => {
+      $('.woocommerce-checkout.processing').find('.blockOverlay').css('display', 'none');
+    }, 10);
 
-      // Start looping through animations
-      loop_animations();
+    // Start animation sequence
+    loop_animations();
 
-      // Removes WooCommerce processing overlay
-      setTimeout( function() {
-        $('.woocommerce-checkout.processing').find('.blockOverlay').css('display', 'none');
-      }, 10);
-
-      // Gradually increase the progress bar
-      progressBarInterval = setInterval( function() {
-          // Increment progress randomly between 5% and 15%
-          const increment = Math.floor(Math.random() * (15 - 5 + 1)) + 5;
-          progressWidth += increment;
-
-          if (progressWidth > maxProgress) {
-              progressWidth = maxProgress;
-          }
-
-          progress_bar.css('width', progressWidth + '%');
-
-          if (progressWidth >= maxProgress) {
-              clearInterval(progressBarInterval);
-          }
-      }, 1500); // Update every 1.5 seconds
+    // Start progress bar updates
+    progressBarInterval = setInterval(() => {
+      update_progress_bar(progressBar);
+    }, 1200);
   };
 
+  // Loop through animations
   const loop_animations = function() {
-      const animation_group = $('#flexify_checkout_purchase_animation');
+    const animationGroup = $('#flexify_checkout_purchase_animation');
 
-      // Remove the "active" class from all steps
-      animation_group.find('.purchase-animation-item').removeClass('active');
+    // Clear previous interval
+    clearInterval(animationInterval);
 
-      // Get the current item
-      const currentItem = animation_group.find('.purchase-animation-item.animation-' + currentStep);
+    // Start looping through steps
+    animationInterval = setInterval(() => {
+      // Remove "active" class from all steps
+      animationGroup.find('.purchase-animation-item').removeClass('active');
 
-      // Add the "active" class to the current step
+      // Get the current animation item
+      const currentItem = animationGroup.find(`.purchase-animation-item.animation-${currentStep}`);
       currentItem.addClass('active');
 
-      // Play the Lordicon animation
+      // Play Lordicon animation
       const icon = currentItem.find('lord-icon')[0];
-
-      if (icon) {
-          const player = icon.playerInstance;
-
-          if (player) {
-              // Start the animation from the beginning
-              player.playFromBeginning();
-
-              // Listen for the animation to complete
-              player.addEventListener('complete', function onComplete() {
-                  player.removeEventListener('complete', onComplete); // Remove listener to avoid duplicate calls
-                  currentStep = (currentStep % totalSteps) + 1; // Move to the next step
-                  loop_animations(); // Recursive call to continue the loop
-              });
-          }
+      
+      if (icon && icon.playerInstance) {
+        icon.playerInstance.playFromBeginning();
       }
+
+      // Move to the next step
+      currentStep = (currentStep % totalSteps) + 1;
+    }, 2000); // 2 seconds between each animation
   };
 
-  const complete_purchase_animation = function() {
-      const animation_group = $('#flexify_checkout_purchase_animation');
-      const progress_bar = animation_group.find('.animation-progress-bar');
+  // Update progress bar
+  const update_progress_bar = function(progressBar) {
+    // Increment progress by a random value between 15% and 25%
+    const increment = Math.floor(Math.random() * (25 - 15 + 1)) + 15;
+    progressWidth += increment;
 
-      // Sets the progress bar to 100%
-      progress_bar.css('width', '100%');
+    if (progressWidth > maxProgress) {
+      progressWidth = maxProgress;
+      clearInterval(progressBarInterval); // Stop updates when max is reached
+    }
 
-      // Clears the animation loop
-      clearTimeout(animationTimeout);
-      clearInterval(progressBarInterval);
-
-      // Remove the "active" class from all steps
-      animation_group.find('.purchase-animation-item').removeClass('active');
+    progressBar.css('width', `${progressWidth}%`);
   };
 
-  const stop_all_animations = function() {
-      const animation_group = $('#flexify_checkout_purchase_animation');
-      const progress_bar = animation_group.find('.animation-progress-bar');
+  // Stop all animations
+  const stop_all_animations = function () {
+    const animationGroup = $('#flexify_checkout_purchase_animation');
+    const progressBar = animationGroup.find('.animation-progress-bar');
 
-      // Stop progress bar updates
-      clearTimeout(animationTimeout);
-      clearInterval(progressBarInterval);
+    // Clear intervals and reset progress
+    clearInterval(animationInterval);
+    clearInterval(progressBarInterval);
+    isAnimating = false;
+    progressWidth = 0;
 
-      // Reset the progress bar
-      progress_bar.css('width', '0%');
+    // Reset progress bar and animation steps
+    progressBar.css('width', '0%');
+    animationGroup.find('.purchase-animation-item').removeClass('active');
+    animationGroup.removeClass('active');
+  };
 
-      // Remove "active" class from animation group and all items
-      animation_group.removeClass('active');
-      animation_group.find('.purchase-animation-item').removeClass('active');
-
-      // Stop all Lordicon animations
-      animation_group.find('lord-icon').each( function() {
-          const icon = this.playerInstance;
-
-          if (icon) {
-              icon.stop(); // Stop the current animation
-          }
-      });
+  // Reset animation state
+  const reset_animation = function () {
+    currentStep = 1; // Reset to the first animation
+    progressWidth = 0; // Reset progress bar
+    clearInterval(animationInterval);
+    clearInterval(progressBarInterval);
   };
 
   return {
-      start: start_purchase_animation,
-      stop: stop_all_animations,
-      complete: complete_purchase_animation,
+    start: start_purchase_animation,
+    stop: stop_all_animations,
   };
 })(jQuery);
 
@@ -3207,22 +3188,26 @@ jQuery(document).ready( function($) {
  * Brazilian Market on WooCommerce display fields
  * 
  * @since 3.9.6
+ * @version 3.9.7
  * @package MeuMouse.com
  */
 jQuery(document).ready( function($) {
   function change_persontype() {
-    var person_type = parseInt( $('#billing_persontype').val() );
+    // check if person type field exists
+    if ( $('#billing_persontype').length ) {
+      var person_type = parseInt( $('#billing_persontype').val() );
 
-    if ( person_type === 1 ) {
-      $('#billing_cpf').prop('required', true).closest('.form-row').removeClass('temp-hidden').addClass('validate-required required-field').show();
-      $('#billing_cnpj').prop('required', false).closest('.form-row').removeClass('validate-required required-field').addClass('temp-hidden').hide();
-      $('#billing_ie').prop('required', false).closest('.form-row').removeClass('validate-required required-field').addClass('temp-hidden').hide();
-      $('#billing_company').prop('required', false).closest('.form-row').removeClass('validate-required required-field').addClass('temp-hidden').hide();
-    } else if ( person_type === 2 ) {
-      $('#billing_cpf').prop('required', false).closest('.form-row').removeClass('validate-required required-field').addClass('temp-hidden').hide();
-      $('#billing_cnpj').prop('required', true).closest('.form-row').removeClass('temp-hidden').removeClass('validate-required required-field').show();
-      $('#billing_ie').prop('required', true).closest('.form-row').removeClass('temp-hidden').removeClass('validate-required required-field').show();
-      $('#billing_company').prop('required', true).closest('.form-row').removeClass('temp-hidden').removeClass('validate-required required-field').show();
+      if ( person_type === 1 ) {
+        $('#billing_cpf').prop('required', true).closest('.form-row').removeClass('temp-hidden').addClass('validate-required required-field').show();
+        $('#billing_cnpj').prop('required', false).closest('.form-row').removeClass('validate-required required-field').addClass('temp-hidden').hide();
+        $('#billing_ie').prop('required', false).closest('.form-row').removeClass('validate-required required-field').addClass('temp-hidden').hide();
+        $('#billing_company').prop('required', false).closest('.form-row').addClass('temp-hidden').hide();
+      } else if ( person_type === 2 ) {
+        $('#billing_cpf').prop('required', false).closest('.form-row').removeClass('validate-required required-field').addClass('temp-hidden').hide();
+        $('#billing_cnpj').prop('required', true).closest('.form-row').removeClass('temp-hidden').addClass('validate-required required-field').show();
+        $('#billing_ie').prop('required', true).closest('.form-row').removeClass('temp-hidden').addClass('validate-required required-field').show();
+        $('#billing_company').prop('required', true).closest('.form-row').removeClass('temp-hidden').show();
+      }
     }
   }
 
