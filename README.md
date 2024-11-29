@@ -34,6 +34,11 @@ Você pode instalar um plugin WordPress de duas maneiras: via o painel de admini
 
 ### Registro de alterações (Changelogs):
 
+Versão 3.9.7 (29/11/2024)
+* Correção de bugs
+* Otimizações
+* Recurso adicionado: Permitir envio para um endereço diferente
+
 Versão 3.9.6 (28/11/2024)
 * Correção de bugs
   * Atualização da compatibilidade com máscaras de campos e plugin Brazilian Market on WooCommerce
