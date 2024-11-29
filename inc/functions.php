@@ -67,7 +67,7 @@ function is_flexify_checkout_admin_settings() {
  * Check if is checkout must run on `wp` hook at the earliest.
  *
  * @since 1.0.0
- * @version 3.5.0
+ * @version 3.9.5
  * @param bool $force_early Force early check by getting the post ID from the URL.
  * @return bool
  */
@@ -101,7 +101,11 @@ function is_flexify_checkout( $force_early = false ) {
 
     $checkout_page_id = wc_get_page_id('checkout');
 
-    return $checkout_page_id === $queried_object->ID && $queried_object->is_main_query();
+    if ( $checkout_page_id === $queried_object->ID && is_main_query() ) {
+        return true;
+    }
+
+    return false;
 }
 
 
@@ -154,7 +158,7 @@ function flexify_checkout_only_virtual() {
  */
 function order_has_shipping_method( $order ) {
     foreach ( $order->get_items() as $order_item ) {
-        $item = wc_get_product($order_item->get_product_id());
+        $item = wc_get_product( $order_item->get_product_id() );
 
         if ( ! $item->is_virtual() ) {
             return true;
@@ -164,19 +168,22 @@ function order_has_shipping_method( $order ) {
     return false;
 }
 
-if ( ! function_exists('flexify_checkout_check_theme_active') ) {
-    /**
-     * Check if a specific theme is active.
-     *
-     * @since 3.7.0
-     * @param string $theme_name | The name of the theme to check.
-     * @return bool True if the theme is active, false otherwise.
-     */
-    function flexify_checkout_check_theme_active( $theme_name ) {
-        $current_theme = wp_get_theme();
-        $current_theme_name = $current_theme->get('Name');
-    
-        // Check if the lowercase version of both names match
-        return ( strtolower( $current_theme_name ) === strtolower( $theme_name ) );
+
+/**
+ * Gets the shipping method name of an order
+ *
+ * @since 3.9.7
+ * @param WC_Order $order | Order object
+ * @return string Shipping method name, or empty if not found
+ */
+function get_shipping_method_name( $order ) {
+    if ( $order && is_a( $order, 'WC_Order' ) ) {
+        $shipping_items = $order->get_items('shipping');
+
+        foreach ( $shipping_items as $item ) {
+            return $item->get_method_title();
+        }
     }
+
+    return '';
 }
