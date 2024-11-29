@@ -12,7 +12,7 @@ defined('ABSPATH') || exit;
  * Useful helper functions
  *
  * @since 1.0.0
- * @version 3.9.2
+ * @version 3.9.7
  * @package MeuMouse.com
  */
 class Helpers {
@@ -36,7 +36,7 @@ class Helpers {
 	 * Get billing fields used at checkout
 	 *
 	 * @since 1.0.0
-	 * @version 3.1.0
+	 * @version 3.9.7
 	 * @return array
 	 */
 	public static function get_allowed_details_fields() {
@@ -66,6 +66,7 @@ class Helpers {
 				'billing_ie',
 				'billing_birthdate',
 				'billing_sex',
+				'billing_gender',
 			);
 		}
 		

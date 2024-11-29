@@ -14,7 +14,7 @@ defined('ABSPATH') || exit;
  * Checkout core actions
  *
  * @since 1.0.0
- * @version 3.9.6
+ * @version 3.9.7
  * @package MeuMouse.com
  */
 class Core {
@@ -23,7 +23,7 @@ class Core {
 	 * Construct function
 	 * 
 	 * @since 1.0.0
-	 * @version 3.9.4
+	 * @version 3.9.7
 	 * @return void
 	 */
 	public function __construct() {
@@ -36,7 +36,7 @@ class Core {
 
 		add_action( 'body_class', array( __CLASS__, 'update_body_class' ) );
 
-		// Set priorities.
+		// Set priorities
 		add_filter( 'woocommerce_checkout_fields', array( __CLASS__, 'custom_override_checkout_fields' ), 200 );
 
 		// enable checkout fields manager
@@ -46,8 +46,8 @@ class Core {
 			add_filter( 'woocommerce_admin_billing_fields', array( __CLASS__, 'custom_admin_billing_fields' ), 10, 1 );
 			add_action( 'woocommerce_admin_order_data_after_billing_address', array( __CLASS__, 'display_custom_checkout_fields_in_admin_order_meta' ), 10, 1 );
 			add_filter( 'woocommerce_email_order_meta_fields', array( __CLASS__, 'add_custom_checkout_fields_to_order_emails' ), 10, 3 );
-			add_action( 'woocommerce_account_orders_columns', array( __CLASS__, 'add_custom_checkout_fields_to_my_account_orders' ), 10, 1 );
-			add_action( 'woocommerce_my_account_my_orders_column', array( __CLASS__, 'display_custom_checkout_fields_in_my_account_orders' ), 10, 2 );
+		//	add_action( 'woocommerce_account_orders_columns', array( __CLASS__, 'add_custom_checkout_fields_to_my_account_orders' ), 10, 1 );
+		//	add_action( 'woocommerce_my_account_my_orders_column', array( __CLASS__, 'display_custom_checkout_fields_in_my_account_orders' ), 10, 2 );
 			add_action( 'woocommerce_customer_save_address', array( __CLASS__, 'save_custom_address_fields' ), 10, 1 );
 			add_filter( 'woocommerce_billing_fields', array( __CLASS__, 'add_custom_fields_to_billing_address' ), 20, 1 );
 			add_filter( 'woocommerce_customer_meta_fields', array( __CLASS__, 'custom_fields_on_user_profile' ) );
@@ -57,10 +57,10 @@ class Core {
 		add_filter( 'woocommerce_billing_fields', array( __CLASS__, 'custom_override_billing_field_priorities' ), 100 );
 		add_filter( 'woocommerce_shipping_fields', array( __CLASS__, 'custom_override_shipping_field_priorities' ), 100 );
 
-		// Additonal JS Patterns.
+		// Additonal JS Patterns
 		add_filter( 'woocommerce_form_field_args', array( __CLASS__, 'field_args' ), 20, 3 );
 
-		// Remove placeholders.
+		// Remove placeholders
 		add_filter( 'woocommerce_default_address_fields', array( __CLASS__, 'custom_override_default_fields' ) );
 		add_filter( 'woocommerce_get_country_locale_base', array( __CLASS__, 'remove_empty_placeholders' ), 100 );
 		add_filter( 'woocommerce_form_field', array( __CLASS__, 'remove_empty_placeholders_html' ), 10, 4 );
@@ -68,7 +68,7 @@ class Core {
 		add_filter( 'woocommerce_form_field_tel', array( __CLASS__, 'modify_form_field_replace_placeholder' ) );
 		add_filter( 'woocommerce_form_field_email', array( __CLASS__, 'modify_form_field_replace_placeholder' ) );
 
-		// Locate template.
+		// Locate template
 		add_filter( 'woocommerce_locate_template', array( __CLASS__, 'woocommerce_locate_template' ), 100, 3 );
 
 		// set customer data on checkout session
@@ -134,11 +134,6 @@ class Core {
 			add_filter( 'default_checkout_billing_country', array( $this, 'get_default_checkout_country' ) );
 		}
 
-		// remove password strenght
-		if ( Init::get_setting('check_password_strenght') !== 'yes' ) {
-			add_action( 'wp_enqueue_scripts', array( $this, 'flexify_checkout_disable_password_strenght' ), 99999 );
-		}
-
 		// replace original checkout notices
 		add_filter( 'wc_get_template', array( $this, 'flexify_checkout_notices' ), 10, 5 );
 
@@ -148,6 +143,11 @@ class Core {
 
 		// add custom footer on checkout page
 		add_action( 'flexify_checkout_after_layout', array( $this, 'add_processing_purchase_animation' ) );
+
+		// allow user to ship to different address
+		if ( Init::get_setting('enable_shipping_to_different_address') !== 'yes' ) {
+			add_filter( 'woocommerce_cart_needs_shipping_address', '__return_false' );
+		}
 	}
 
 
@@ -263,7 +263,7 @@ class Core {
 	 * Override checkout fields
 	 *
 	 * @since 1.0.0
-	 * @version 3.9.6
+	 * @version 3.9.7
 	 * @param array $fields | Checkout fields
 	 * @return array
 	 */
@@ -322,6 +322,11 @@ class Core {
 				$fields['billing']['billing_address_2']['class'][] = 'row-first';
 			}
 
+			if ( isset( $fields['billing_company'] ) ) {
+			//	$fields['billing']['billing_company']['class'][] = 'validate-required required-field';
+				$fields['billing']['billing_company']['required'] = false;
+			}
+
 			// Brazilian Market on WooCommerce integration
 			if ( class_exists('Extra_Checkout_Fields_For_Brazil_Front_End') ) {
 				$wcbcf_settings = get_option('wcbcf_settings');
@@ -332,30 +337,42 @@ class Core {
 				}
 
 				if ( isset( $wcbcf_settings['neighborhood_required'] ) && '1' === $wcbcf_settings['neighborhood_required'] ) {
-					$fields['billing']['billing_neighborhood']['class'][] = 'required required-field';
-					$fields['billing']['billing_neighborhood']['class'][] = 'row-last';
+					if ( isset( $fields['billing']['billing_neighborhood'] ) ) {
+						$fields['billing']['billing_neighborhood']['class'][] = 'required required-field';
+						$fields['billing']['billing_neighborhood']['class'][] = 'row-last';
+					}
 				}
 
 				if ( 0 !== $person_type ) {
 					if ( 1 === $person_type || 2 === $person_type ) {
 						if ( isset( $wcbcf_settings['rg'] ) ) {
-							$fields['billing']['billing_cpf']['class'][] = 'validate-required required-field';
-							$fields['billing']['billing_rg']['class'][] = 'validate-required required-field';
+							if ( isset( $fields['billing']['billing_cpf'] ) ) {
+								$fields['billing']['billing_cpf']['class'][] = 'validate-required required-field';
+							}
+
+							if ( isset( $fields['billing']['billing_rg'] ) ) {
+								$fields['billing']['billing_rg']['class'][] = 'validate-required required-field';
+							}
 						} else {
-							$fields['billing']['billing_cpf']['class'][] = 'validate-required required-field';
+							if ( isset( $fields['billing']['billing_cpf'] ) ) {
+								$fields['billing']['billing_cpf']['class'][] = 'validate-required required-field';
+							}
 						}
 					}
 
 					if ( 1 === $person_type || 3 === $person_type ) {
-						if ( isset( $fields['billing_company'] ) ) {
-							$fields['billing']['billing_company']['class'][] = 'validate-required required-field';
-						}
-		
 						if ( isset( $wcbcf_settings['ie'] ) ) {
-							$fields['billing']['billing_cnpj']['class'][] = 'required required-field';
-							$fields['billing']['billing_ie']['class'][] = 'validate-required required-field';
+							if ( isset( $fields['billing']['billing_cnpj'] ) ) {
+								$fields['billing']['billing_cnpj']['class'][] = 'required required-field';
+							}
+
+							if ( isset( $fields['billing']['billing_ie'] ) ) {
+								$fields['billing']['billing_ie']['class'][] = 'validate-required required-field';
+							}
 						} else {
-							$fields['billing']['billing_cnpj']['class'][] = 'validate-required required-field';
+							if ( isset( $fields['billing']['billing_cnpj'] ) ) {
+								$fields['billing']['billing_cnpj']['class'][] = 'validate-required required-field';
+							}
 						}
 					}
 				}
@@ -898,12 +915,12 @@ class Core {
 			self::set_field_priority( $fields, 'billing_persontype', 50 );
 			self::set_field_priority( $fields, 'billing_cpf', 55 );
 			self::set_field_priority( $fields, 'billing_rg', 60 );
-			self::set_field_priority( $fields, 'billing_cnpj', 65 );
-			self::set_field_priority( $fields, 'billing_ie', 70 );
-			self::set_field_priority( $fields, 'billing_company', 75 );
-			self::set_field_priority( $fields, 'billing_birthdate', 76 );
-			self::set_field_priority( $fields, 'billing_sex', 77 );
-			self::set_field_priority( $fields, 'billing_gender', 78 );
+			self::set_field_priority( $fields, 'billing_cnpj', 62 );
+			self::set_field_priority( $fields, 'billing_ie', 63 );
+			self::set_field_priority( $fields, 'billing_company', 63 );
+			self::set_field_priority( $fields, 'billing_birthdate', 65 );
+			self::set_field_priority( $fields, 'billing_sex', 66 );
+			self::set_field_priority( $fields, 'billing_gender', 64 );
 			self::set_field_priority( $fields, 'billing_country', 80 );
 			self::set_field_priority( $fields, 'billing_postcode', 90 );
 			self::set_field_priority( $fields, 'billing_address_1', 100 );
@@ -1741,18 +1758,6 @@ class Core {
 		}
 
 		return $input_masks;
-	}
-
-
-	/**
-	 * Remove password strenght
-	 * 
-	 * @since 3.5.0
-	 * @return void
-	 */
-	public function flexify_checkout_disable_password_strenght() {
-		wp_dequeue_script('wc-password-strength-meter');
-		wp_deregister_script('wc-password-strength-meter');
 	}
 
 

@@ -16,7 +16,7 @@ defined('ABSPATH') || exit;
  * Class for Handle AJAX events
  *
  * @since 1.0.0
- * @version 3.8.0
+ * @version 3.9.7
  * @package MeuMouse.com
  */
 class Ajax {
@@ -229,7 +229,7 @@ class Ajax {
 	 * Save options in AJAX
 	 * 
 	 * @since 1.0.0
-	 * @version 3.8.0
+	 * @version 3.9.7
 	 * @return void
 	 */
 	public function ajax_save_options_callback() {
@@ -266,6 +266,9 @@ class Ajax {
 			$options['email_providers_suggestion'] = isset( $form_data['email_providers_suggestion'] ) ? 'yes' : 'no';
 			$options['display_opened_order_review_mobile'] = isset( $form_data['display_opened_order_review_mobile'] ) ? 'yes' : 'no';
 			$options['inter_bank_env_mode'] = isset( $form_data['inter_bank_env_mode'] ) ? 'yes' : 'no';
+			$options['enable_remove_quantity_select'] = isset( $form_data['enable_remove_quantity_select'] ) ? 'yes' : 'no';
+			$options['enable_animation_process_purchase'] = isset( $form_data['enable_animation_process_purchase'] ) && License::is_valid() ? 'yes' : 'no';
+			$options['enable_shipping_to_different_address'] = isset( $form_data['enable_shipping_to_different_address'] ) && License::is_valid() ? 'yes' : 'no';	
 
 			// check if form data exists "checkout_step" name and is array
 			if ( isset( $form_data['checkout_step'] ) && is_array( $form_data['checkout_step'] ) ) {
@@ -994,7 +997,6 @@ class Ajax {
 
                 $response = array(
                     'status' => 'success',
-					'teste' => 1,
                     'toast_header_title' => esc_html__( 'A licença foi desativada', 'flexify-checkout-for-woocommerce' ),
                     'toast_body_title' => esc_html__( 'Todos os recursos da versão Pro agora estão desativados!', 'flexify-checkout-for-woocommerce' ),
                 );

@@ -32,6 +32,11 @@ class Assets {
 
 		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'frontend_assets' ), $max_priority );
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_assets' ) );
+
+		// remove password strenght
+		if ( Init::get_setting('check_password_strenght') !== 'yes' ) {
+			add_action( 'wp_enqueue_scripts', array( $this, 'disable_password_strenght' ), 99999 );
+		}
 	}
 
 
@@ -298,7 +303,7 @@ class Assets {
 	 * Return list of fields for which data is persistently stored on the browser
 	 *
 	 * @since 1.0.0
-	 * @version 3.5.0
+	 * @version 3.9.7
 	 * @return array
 	 */
 	public static function get_localstorage_fields() {
@@ -314,6 +319,7 @@ class Assets {
 			'billing_cellphone',
 			'billing_birthdate',
 			'billing_sex',
+			'billing_gender',
 			'billing_company',
 			'billing_email',
 			'billing_country',
@@ -586,13 +592,25 @@ class Assets {
 				border: 1px solid <?php echo esc_attr( $settings['set_primary_color'] ); ?>;
 			}
 		<?php endif;
-		
+
 		$css = ob_get_clean();
 		$css = wp_strip_all_tags( $css );
 
 		return $css;
 	}
 
+
+	/**
+	 * Remove password strenght
+	 * 
+	 * @since 3.5.0
+	 * @version 3.9.7
+	 * @return void
+	 */
+	public function disable_password_strenght() {
+		wp_dequeue_script('wc-password-strength-meter');
+		wp_deregister_script('wc-password-strength-meter');
+	}
 }
 
 new Assets();

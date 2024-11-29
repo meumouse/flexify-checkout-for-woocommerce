@@ -157,7 +157,7 @@ class Thankyou {
 	 * Customer details box
 	 *
 	 * @since 1.0.0
-	 * @version 3.6.0
+	 * @version 3.9.7
 	 * @param object $order | Object WC_Order
 	 * @return void
 	 */
@@ -183,14 +183,14 @@ class Thankyou {
 				</div>
 			</div>
 
-			<?php if ( Init::get_setting('enable_optimize_for_digital_products') === 'no' ) : ?>
+			<?php if ( Init::get_setting('enable_optimize_for_digital_products') !== 'yes' ) : ?>
 				<div class="flexify-review-customer__row flexify-review-customer__row--address">
 					<div class='flexify-review-customer__label'>
 						<label>
 							<?php if ( $show_shipping ) :
-								esc_html_e( 'Cobrança', 'flexify-checkout-for-woocommerce' );
-							else :
 								esc_html_e( 'Entrega', 'flexify-checkout-for-woocommerce' );
+							else :
+								esc_html_e( 'Cobrança', 'flexify-checkout-for-woocommerce' );
 							endif; ?>
 						</label>
 					</div>
@@ -204,10 +204,10 @@ class Thankyou {
 
 			<?php if ( order_has_shipping_method( $order ) ) : ?>
 				<div class="flexify-review-customer__row flexify-review-customer__row--shipping-address">
-					<div class='flexify-review-customer__label'><label><?php esc_html_e( 'Envio', 'flexify-checkout-for-woocommerce' ); ?></label></div>
+					<div class='flexify-review-customer__label'><label><?php esc_html_e( 'Frete', 'flexify-checkout-for-woocommerce' ); ?></label></div>
 					<div class='flexify-review-customer__content'>
 						<address>
-							<?php echo wp_kses_post( $order->get_formatted_shipping_address() ); ?>
+							<?php echo wp_kses_post( get_shipping_method_name( $order ) ); ?>
 						<address>
 					</div>
 				</div>
