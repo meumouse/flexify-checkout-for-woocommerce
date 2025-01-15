@@ -1421,7 +1421,7 @@ class Core {
 			return $classes;
 		}
 
-		if ( ! is_user_logged_in() && 'yes' === get_option( 'woocommerce_enable_checkout_login_reminder' ) ) {
+		if ( ! is_user_logged_in() && 'yes' === get_option('woocommerce_enable_checkout_login_reminder') ) {
 			$classes[] = 'flexify-wc-allow-login';
 		}
 
