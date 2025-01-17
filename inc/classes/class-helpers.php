@@ -12,7 +12,7 @@ defined('ABSPATH') || exit;
  * Useful helper functions
  *
  * @since 1.0.0
- * @version 3.9.7
+ * @version 3.9.8
  * @package MeuMouse.com
  */
 class Helpers {
@@ -535,38 +535,36 @@ class Helpers {
 
 
 	/**
-	 * Get selected shipping method
+	 * Get selected shipping methods as a comma-separated string.
 	 * 
 	 * @since 3.6.0
-	 * @version 3.6.5
+	 * @version 3.9.8
 	 * @return string
 	 */
 	public static function get_shipping_method() {
-		if ( empty( WC() ) || empty( WC()->shipping() ) || empty( WC()->session ) || empty( WC()->session->chosen_shipping_methods[0] ) || flexify_checkout_only_virtual() ) {
-			return '';
-		}
-	
 		$packages = WC()->shipping()->get_packages();
-		$chosen_shipping_method = WC()->session->chosen_shipping_methods[0];
-	
-		if ( empty( $packages ) ) {
+		$chosen_shipping_methods = WC()->session->get('chosen_shipping_methods');
+
+		if ( empty( $packages ) || empty( $chosen_shipping_methods ) ) {
 			return '';
 		}
 
-		$selected_shipping_method = $packages[0]['rates'][$chosen_shipping_method];
-	
-		// Do not show shipping if address is empty.
-		$formatted_destination = WC()->countries->get_formatted_address( $packages[0]['destination'], ', ' );
+		$shipping_labels = array();
 
-		if ( empty( $formatted_destination ) ) {
-			return '';
+		// Iterates over packages to get shipping method names
+		foreach ( $packages as $index => $package ) {
+			if ( isset( $chosen_shipping_methods[ $index ], $package['rates'][ $chosen_shipping_methods[ $index ] ] ) ) {
+				$selected_shipping_method = $package['rates'][ $chosen_shipping_methods[ $index ] ];
+
+				// Adds the shipping method label to the array
+				if ( ! empty( $selected_shipping_method->label ) ) {
+					$shipping_labels[] = $selected_shipping_method->label;
+				}
+			}
 		}
-	
-		if ( empty( $selected_shipping_method->label ) || empty( $selected_shipping_method->cost ) ) {
-			return '';
-		}
-	
-		return $selected_shipping_method->label;
+
+		// Returns the names of the delivery methods separated by commas
+		return implode( ', ', $shipping_labels );
 	}
 
 

@@ -798,34 +798,35 @@ class Steps {
 	 * Get selected shipping method
 	 * 
 	 * @since 1.0.0
-	 * @version 3.5.1
+	 * @version 3.9.8
 	 * @return string
 	 */
 	public static function get_shipping_row() {
-		if ( empty( WC() ) || empty( WC()->shipping() ) || empty( WC()->session ) || empty( WC()->session->chosen_shipping_methods[0] ) || flexify_checkout_only_virtual() ) {
-			return '';
-		}
-	
 		$packages = WC()->shipping()->get_packages();
-		$chosen_shipping_method = WC()->session->chosen_shipping_methods[0];
-		$selected_shipping_method = $packages[0]['rates'][$chosen_shipping_method];
-	
-		if ( empty( $packages ) || empty( $selected_shipping_method ) ) {
-			return '';
-		}
-	
-		// Do not show shipping if address is empty.
-		$formatted_destination = WC()->countries->get_formatted_address( $packages[0]['destination'], ', ' );
+		$chosen_shipping_methods = WC()->session->get('chosen_shipping_methods');
 
-		if ( empty( $formatted_destination ) ) {
+		if ( empty( $packages ) || empty( $chosen_shipping_methods ) ) {
 			return '';
 		}
 	
-		if ( empty( $selected_shipping_method->label ) || empty( $selected_shipping_method->cost ) ) {
-			return '';
+		$total_shipping_cost = 0;
+	
+		// Iterate over packages to calculate total shipping cost
+		foreach ( $packages as $index => $package ) {
+			// Get the shipping method chosen for this package
+			if ( isset( $chosen_shipping_methods[ $index ] ) ) {
+				$chosen_method = $chosen_shipping_methods[ $index ];
+				$rates = $package['rates'];
+	
+				// Checks if the corresponding rate is available
+				if ( isset( $rates[ $chosen_method ] ) ) {
+					$total_shipping_cost += (float) $rates[ $chosen_method ]->cost; // Add the cost to the total
+				}
+			}
 		}
 	
-		return sprintf('<th>%s</th><td>%s</td>', esc_html( $selected_shipping_method->label ), wc_price( $selected_shipping_method->cost ) );
+		// Returns a formatted HTML line to display the total shipping cost
+		return sprintf( '<tr><th>%s</th><td>%s</td></tr>', esc_html__( 'Frete', 'flexify-checkout-for-woocommerce' ), wc_price( $total_shipping_cost ) );
 	}
 
 

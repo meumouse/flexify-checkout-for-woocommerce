@@ -298,13 +298,16 @@ class Sidebar {
 		// Filter to modify cart item quantity
 		return apply_filters( 'woocommerce_cart_item_quantity', $product_quantity, $cart_item_key, $cart_item );
 	}
+	
 
 	/**
 	 * Cart Remove Link.
 	 *
-	 * @param string $output Output of quantity.
-	 * @param array  $cart_item Cart Item.
-	 * @param string $cart_item_key Cart Item Key.
+	 * @since 1.0.0
+	 * @version 3.9.8
+	 * @param string $output | Output of quantity
+	 * @param array $cart_item | Cart Item
+	 * @param string $cart_item_key | Cart Item Key
 	 * @return string
 	 */
 	public static function cart_remove_link( $output, $cart_item, $cart_item_key ) {
@@ -335,6 +338,7 @@ class Sidebar {
 
 		return '<span class="flexify-checkout__remove-link">' . $remove_link . '</span>' . $output;
 	}
+
 
 	/**
 	 * Handle cart quantity update.

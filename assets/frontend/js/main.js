@@ -462,14 +462,36 @@ flexifyCart.runOnce = function() {
 };
 
 /**
- * Remove button.
+ * Remove button
+ * 
+ * @since 1.0.0
+ * @version 3.9.8
  */
 flexifyCart.remove_controls = function() {
-  jQuery(document).on('click', '.flexify-checkout__remove-link a.remove', function(e) {
+  jQuery(document).on('click', '.flexify-checkout__remove-link a.remove', function (e) {
     e.preventDefault();
 
-    jQuery(this).closest('.cart_item').find('input').val(0);
-    jQuery(document.body).trigger('update_checkout');
+    var btn = jQuery(this);
+    var remove_item_url = btn.attr('href');
+    var cart_item = btn.closest('.cart_item');
+
+    jQuery.ajax({
+        url: remove_item_url,
+        method: 'GET',
+        beforeSend: function() {
+          jQuery(document.body).trigger('update_checkout');
+        },
+        success: function(response) {
+          jQuery(document.body).trigger('update_checkout');
+
+          cart_item.fadeOut(300, function() {
+              jQuery(this).remove();
+          });
+        },
+        error: function(error) {
+          console.error('Error on remove item:', error);
+        },
+    });
   });
 };
 

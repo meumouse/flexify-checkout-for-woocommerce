@@ -5071,6 +5071,7 @@ label.has-condition.required-field > .optional {
   background: linear-gradient(to right, #eee 2%, #ddd 18%, #eee 33%);
   background-size: 1300px;
   border-radius: 0.375rem;
+  pointer-events: none;
 }
 
 @keyframes placeholder_animation {
@@ -5235,4 +5236,12 @@ label.has-condition.required-field > .optional {
 .ecomus-svg-icon--plus,
 .ecomus-svg-icon--minus {
 	display: none;
+}
+
+.woocommerce-shipping-contents small {
+  font-size: 1.125rem;
+}
+
+.w-100 {
+  width: 100% !important;
 }
