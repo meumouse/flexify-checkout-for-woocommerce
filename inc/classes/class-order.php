@@ -3,6 +3,7 @@
 namespace MeuMouse\Flexify_Checkout;
 
 use MeuMouse\Flexify_Checkout\Init;
+use MeuMouse\Flexify_Checkout\Helpers;
 
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
@@ -11,13 +12,15 @@ defined('ABSPATH') || exit;
  * Order class
  *
  * @since 1.0.0
- * @version 3.8.0
+ * @version 3.9.8
  * @package MeuMouse.com
  */
 class Order {
+
 	/**
-	 * Run.
+	 * Construct function
 	 *
+	 * @since 1.0.0
 	 * @return void
 	 */
 	public function __construct() {
@@ -58,9 +61,75 @@ class Order {
 			return;
 		}
 
-		// Assign the order to the existing user.
+		// Assign the order to the existing user
 		$order->set_customer_id( $user->ID );
 		$order->save();
+	}
+
+
+	/**
+	 * Get customer fragment from order based on billing fields
+	 *
+	 * @since 3.9.8
+	 * @param WC_Order $order | Order object
+	 * @return array
+	 */
+	public static function get_order_customer_fragment( $order ) {
+		if ( ! isset( $order ) ) {
+			return array();
+		}
+
+		// get all registered billing fields
+		$billing_fields = Helpers::export_all_checkout_fields();
+		$fragment_data = array();
+
+		// iterate for each billing fields
+		foreach ( $billing_fields as $field_id => $field_data ) {
+			// remove prefix 'billing_' for build the fragment key
+			$key = str_replace( 'billing_', '', $field_id );
+
+			// get the billing value saved on order
+			$fragment_data[$key] = $order->get_meta( $field_id, true ) ?: $order->{"get_$field_id"}();
+		}
+
+		/**
+		 * Filter: Customize the order customer fragment data.
+		 *
+		 * @since 3.9.8
+		 * @param array $fragment_data | Customer fragment data
+		 * @param WC_Order $order | Order object
+		 */
+		return apply_filters( 'flexify_checkout_order_customer_fragments', $fragment_data, $order );
+	}
+
+
+	/**
+	 * Get shipping method names from an order, separated by commas
+	 *
+	 * @since 3.9.8
+	 * @param WC_Order $order | Order object
+	 * @return string Comma-separated shipping method names
+	 */
+	public static function get_order_shipping_methods( $order ) {
+		if ( ! isset( $order ) ) {
+			return '';
+		}
+
+		// get all shipping methods from order
+		$shipping_methods = $order->get_shipping_methods();
+		$shipping_labels = array();
+
+		// iterate for each shipping method for get the names
+		foreach ( $shipping_methods as $shipping_method ) {
+			$label = $shipping_method->get_method_title();
+
+			if ( ! empty( $label ) ) {
+				$shipping_labels[] = $label;
+			}
+		}
+
+		// return shipping method names comma separated
+		return implode( ', ', $shipping_labels );
 	}
 }
 

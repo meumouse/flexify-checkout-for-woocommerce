@@ -5245,3 +5245,7 @@ label.has-condition.required-field > .optional {
 .w-100 {
   width: 100% !important;
 }
+
+.woocommerce-order-received .flexify-checkout .woocommerce {
+  max-width: 100%;
+}

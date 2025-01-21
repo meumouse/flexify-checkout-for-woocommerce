@@ -4,6 +4,8 @@ namespace MeuMouse\Flexify_Checkout;
 
 use MeuMouse\Flexify_Checkout\Init;
 use MeuMouse\Flexify_Checkout\Helpers;
+use MeuMouse\Flexify_Checkout\Steps;
+use MeuMouse\Flexify_Checkout\Order;
 
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
@@ -157,13 +159,13 @@ class Thankyou {
 	 * Customer details box
 	 *
 	 * @since 1.0.0
-	 * @version 3.9.7
+	 * @version 3.9.8
 	 * @param object $order | Object WC_Order
 	 * @return void
 	 */
 	public static function render_customer_details( $order ) {
 		/**
-		 * Thank you page: Before customer details.
+		 * Thank you page: Before customer details
 		 *
 		 * @since 1.0.0
 		 */
@@ -176,10 +178,9 @@ class Thankyou {
 		<div class="flexify-review-customer flexify-review-customer--ty">
 			<div class="flexify-review-customer__row flexify-review-customer__row--contact">
 				<div class='flexify-review-customer__label'><label><?php esc_html_e( 'Contato', 'flexify-checkout-for-woocommerce' ); ?></label></div>
+				
 				<div class='flexify-review-customer__content'>
-					<p class="woocommerce-customer-details--customer"><?php echo sprintf( esc_html( '%s %s' ), $order->get_billing_first_name(), $order->get_billing_last_name() ); ?></p>
-					<p class="woocommerce-customer-details--email"><?php echo esc_html( $order->get_billing_email() ); ?></p>
-					<p class="woocommerce-customer-details--phone"><?php echo esc_html( $order->get_billing_phone() ); ?></p>
+					<p><?php echo Steps::strings_to_replace( Init::get_setting('text_contact_customer_review'), Order::get_order_customer_fragment( $order ) ); ?> </p>
 				</div>
 			</div>
 
@@ -194,10 +195,9 @@ class Thankyou {
 							endif; ?>
 						</label>
 					</div>
+
 					<div class='flexify-review-customer__content'>
-						<address>
-							<?php echo wp_kses_post( $order->get_formatted_billing_address() ); ?>
-						<address>
+						<p><?php echo Steps::strings_to_replace( Init::get_setting('text_shipping_customer_review'), Order::get_order_customer_fragment( $order ) ); ?><p>
 					</div>
 				</div>
 			<?php endif; ?>
@@ -205,16 +205,16 @@ class Thankyou {
 			<?php if ( order_has_shipping_method( $order ) ) : ?>
 				<div class="flexify-review-customer__row flexify-review-customer__row--shipping-address">
 					<div class='flexify-review-customer__label'><label><?php esc_html_e( 'Frete', 'flexify-checkout-for-woocommerce' ); ?></label></div>
+					
 					<div class='flexify-review-customer__content'>
-						<address>
-							<?php echo wp_kses_post( get_shipping_method_name( $order ) ); ?>
-						<address>
+						<p><?php echo Order::get_order_shipping_methods( $order ); ?><p>
 					</div>
 				</div>
 			<?php endif; ?>
 
 			<div class="flexify-review-customer__row">
 				<div class='flexify-review-customer__label'><label><?php esc_html_e( 'Pagamento', 'flexify-checkout-for-woocommerce' ); ?></label></div>
+				
 				<div class='flexify-review-customer__content'>
 					<p> <?php echo __( $order->get_payment_method_title() ); ?> </p>
 				</div>
