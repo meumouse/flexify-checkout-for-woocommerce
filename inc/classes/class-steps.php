@@ -54,9 +54,7 @@ class Steps {
 					endif; ?>
 				</a>
 			</div>
-			<?php
-			
-			if ( $show_breadcrumps ) :
+			<?php if ( $show_breadcrumps ) :
 				self::render_stepper();
 			endif; ?>
 		</header>
@@ -67,7 +65,7 @@ class Steps {
 		 *
 		 * @since 1.0.0
 		 */
-		do_action( 'flexify_checkout_after_header' );
+		do_action('flexify_checkout_after_header');
 	}
 
 

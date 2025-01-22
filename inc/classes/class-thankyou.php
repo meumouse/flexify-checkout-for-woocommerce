@@ -184,7 +184,7 @@ class Thankyou {
 				</div>
 			</div>
 
-			<?php if ( Init::get_setting('enable_optimize_for_digital_products') !== 'yes' ) : ?>
+			<?php if ( Init::get_setting('enable_optimize_for_digital_products') !== 'yes' || order_has_shipping_method( $order ) ) : ?>
 				<div class="flexify-review-customer__row flexify-review-customer__row--address">
 					<div class='flexify-review-customer__label'>
 						<label>
@@ -204,7 +204,7 @@ class Thankyou {
 
 			<?php if ( order_has_shipping_method( $order ) ) : ?>
 				<div class="flexify-review-customer__row flexify-review-customer__row--shipping-address">
-					<div class='flexify-review-customer__label'><label><?php esc_html_e( 'Frete', 'flexify-checkout-for-woocommerce' ); ?></label></div>
+					<div class='flexify-review-customer__label'><label><?php esc_html_e( 'Entrega', 'flexify-checkout-for-woocommerce' ); ?></label></div>
 					
 					<div class='flexify-review-customer__content'>
 						<p><?php echo Order::get_order_shipping_methods( $order ); ?><p>
@@ -216,7 +216,7 @@ class Thankyou {
 				<div class='flexify-review-customer__label'><label><?php esc_html_e( 'Pagamento', 'flexify-checkout-for-woocommerce' ); ?></label></div>
 				
 				<div class='flexify-review-customer__content'>
-					<p> <?php echo __( $order->get_payment_method_title() ); ?> </p>
+					<p><?php echo __( $order->get_payment_method_title() ); ?></p>
 				</div>
 			</div>
 

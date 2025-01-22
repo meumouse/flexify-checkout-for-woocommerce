@@ -190,7 +190,7 @@ class Flexify_Checkout {
 	 * Load classes
 	 * 
 	 * @since 1.0.0
-	 * @version 3.8.7
+	 * @version 3.9.8
 	 * @return void
 	 */
 	private function setup_includes() {
@@ -206,6 +206,7 @@ class Flexify_Checkout {
 			'classes/class-compat-autoloader.php',
 			'classes/class-sidebar.php',
 			'classes/class-steps.php',
+			'classes/class-coupon.php',
 			'classes/class-order.php',
 			'classes/class-conditions.php',
 			'classes/class-thankyou.php',
