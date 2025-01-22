@@ -89,7 +89,7 @@ class Order {
 			$key = str_replace( 'billing_', '', $field_id );
 
 			// get the billing value saved on order
-			$fragment_data[$key] = $order->get_meta( $field_id, true ) ?: $order->{"get_$field_id"}();
+			$fragment_data[$key] = $order->get_meta( $field_id, true ) ?: Helpers::get_billing_field( $order, $key );
 		}
 
 		/**

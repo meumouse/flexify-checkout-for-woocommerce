@@ -11,17 +11,25 @@ defined('ABSPATH') || exit;
  * Coupon related functions
  *
  * @since 1.0.0
- * @version 3.8.0
+ * @version 3.9.8
  * @package MeuMouse.com
  */
 class Coupon {
+
 	/**
-	 * Run.
+	 * Construct function
+	 * 
+	 * @since 1.0.0
+	 * @version 3.9.8
+	 * @return void
 	 */
 	public function __construct() {
 		add_action( 'wp', array( __CLASS__, 'auto_apply_coupon' ) );
 		add_action( 'woocommerce_removed_coupon', array( __CLASS__, 'register_removed_coupon' ) );
 		add_filter( 'option_woocommerce_cart_redirect_after_add', array( __CLASS__, 'disable_add_to_cart_redirect_for_checkout' ) );
+
+		// Apply coupon via URL param on load page
+		add_action( 'template_redirect', array( __CLASS__, 'apply_coupon_via_url' ) );
 	}
 
 
@@ -111,6 +119,30 @@ class Coupon {
 		}
 
 		return false;
+	}
+
+
+	/**
+	 * Apply coupon via URL
+	 *
+	 * @since 1.0.0
+	 * @version 3.9.8
+	 * @return void
+	 */
+	public static function apply_coupon_via_url() {
+		$coupon = Init::get_setting('coupon_code_for_auto_apply') && License::is_valid() ? Init::get_setting('coupon_code_for_auto_apply') : '';
+
+		if ( empty( $coupon ) || ! is_checkout() ) {
+			return;
+		}
+
+		if ( WC()->cart->has_discount( $coupon ) ) {
+			return;
+		}
+
+		if ( Init::get_setting('enable_auto_apply_coupon_code') === 'yes' && License::is_valid() ) {
+			WC()->cart->add_discount( sanitize_text_field( $coupon ) );
+		}
 	}
 }
 

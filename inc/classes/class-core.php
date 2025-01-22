@@ -100,9 +100,6 @@ class Core {
 		// Add inline errors.
 		add_filter( 'woocommerce_form_field', array( __CLASS__, 'render_inline_errors' ), 10, 5 );
 
-		// Apply coupon via URL param on load page
-		add_action( 'template_redirect', array( __CLASS__, 'apply_coupon_via_url' ) );
-
 		add_action( 'woocommerce_checkout_order_processed', array( __CLASS__, 'replace_phone_number_on_submit' ), 10, 3 );
 
 		// set terms and conditions default if option is activated
@@ -1647,29 +1644,6 @@ class Core {
 
 
 	/**
-	 * Apply coupon via URL
-	 *
-	 * @since 1.0.0
-	 * @return void
-	 */
-	public static function apply_coupon_via_url() {
-		$coupon = Init::get_setting('coupon_code_for_auto_apply') && License::is_valid() ? Init::get_setting('coupon_code_for_auto_apply') : '';
-
-		if ( empty( $coupon ) || ! is_checkout() ) {
-			return;
-		}
-
-		if ( WC()->cart->has_discount( $coupon ) ) {
-			return;
-		}
-
-		if ( Init::get_setting('enable_auto_apply_coupon_code') === 'yes' && License::is_valid() ) {
-			WC()->cart->add_discount( sanitize_text_field( $coupon ) );
-		}
-	}
-
-
-	/**
 	 * Express checkout buttons wrap
 	 *
 	 * @since 1.0.0
@@ -1906,6 +1880,40 @@ class Core {
 				include_once $form_login_path;
 			}
 		}
+	}
+
+
+	/**
+	 * Intercept dynamic calls for custom order fields
+	 *
+	 * @since 3.9.8
+	 * @param string $name | Method name being called
+	 * @param array $arguments | Arguments passed to the method
+	 * @return mixed|null
+	 * @throws Exception If method does not exist
+	 */
+	public function __call( $name, $arguments ) {
+		// Check if the method is for a custom field
+		if ( strpos( $name, 'get_' ) === 0 ) {
+			$field_id = str_replace( 'get_', '', $name );
+
+			// Verify if it's a billing or custom meta field
+			if ( strpos( $field_id, 'billing_' ) === 0 ) {
+				$field_key = $field_id; // Billing fields should use the original key
+			} else {
+				$field_key = $field_id; // Custom fields directly from post meta
+			}
+
+			// Get the order instance
+			$order = $arguments[0] ?? null;
+
+			if ( $order instanceof \WC_Order ) {
+				return $order->get_meta( $field_key, true );
+			}
+		}
+
+		// If no custom handling, throw an exception for unknown methods
+		throw new Exception( "Call to undefined method " . __CLASS__ . "::{$name}()" );
 	}
 }
 
