@@ -1,0 +1,23 @@
+{
+	"name" : "Flexify Checkout para WooCommerce",
+	"slug" : "flexify-checkout-for-woocommerce",
+	"author" : "<a href='https://meumouse.com'>MeuMouse.com</a>",
+	"author_profile" : "https://profiles.wordpress.org/meumouse",
+	"version" : "3.9.7",
+	"download_url" : "https://github.com/meumouse/flexify-checkout-for-woocommerce/raw/main/dist/flexify-checkout-for-woocommerce.zip",
+	"requires" : "5.6",
+	"tested" : "6.7.1",
+	"requires_php" : "7.4",
+	"added" : "2023-09-18 12:00:00",
+	"last_updated" : "2024-11-28 08:09:00",
+	"homepage" : "https://meumouse.com/plugins/flexify-checkout-para-woocommerce/",
+	"sections": {
+	    "description": "Extensão que otimiza a finalização de compra em multi etapas para lojas WooCommerce.",
+	    "installation": "Instalação:<br><br><strong>Instalação via painel de administração:</strong><br>Você pode instalar um plugin WordPress de duas maneiras: via o painel de administração do WordPress ou via FTP. Aqui estão as etapas para ambos os métodos:<br><ol><li>Acesse o painel de administração do seu site WordPress.</li><li>Vá para “Plugins” e clique em “Adicionar Novo”.</li><li>Digite o nome do plugin que você deseja instalar na barra de pesquisa ou carregue o arquivo ZIP do plugin baixado.</li><li>Clique em “Instalar Agora” e espere até que o plugin seja instalado.</li><li>Clique em “Ativar Plugin”.</li></ol><br><strong>Instalação via FTP:</strong><br><ol><li>Baixe o arquivo ZIP do plugin que você deseja instalar.</li><li>Descompacte o arquivo ZIP em seu computador.</li><li>Conecte-se ao seu servidor via FTP.</li><li>Navegue até a pasta “wp-content/plugins”.</li><li>Envie a pasta do plugin descompactada para a pasta “plugins” no seu servidor.</li><li>Acesse o painel de administração do seu site WordPress.</li><li>Vá para “Plugins” e clique em “Plugins Instalados”.</li><li>Localize o plugin que você acabou de instalar e clique em “Ativar”.</li></ol><br>Após seguir essas etapas, o plugin deve estar instalado e funcionando corretamente em seu site WordPress.",
+	    "changelog": ""
+	},
+	"banners" : {
+		"low" : "",
+		"high" : ""
+	}
+}
