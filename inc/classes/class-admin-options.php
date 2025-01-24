@@ -18,119 +18,119 @@ defined('ABSPATH') || exit;
  */
 class Admin_Options extends Init {
 
-  /**
-   * Admin constructor
-   *
-   * @since 1.0.0
-   * @version 3.8.0
-   * @package MeuMouse.com
-   */
-  public function __construct() {
-    parent::__construct();
+    /**
+     * Construct function
+     *
+     * @since 1.0.0
+     * @version 3.8.0
+     * @return void
+     */
+    public function __construct() {
+        parent::__construct();
 
-    // add submenu on WooCommerce
-    add_action( 'admin_menu', array( $this, 'add_woo_submenu' ) );
+        // add submenu on WooCommerce
+        add_action( 'admin_menu', array( $this, 'add_woo_submenu' ) );
 
-    // handle for billing country admin notice
-    add_action( 'woocommerce_checkout_init', array( __CLASS__, 'check_billing_country_field' ) );
-    add_action( 'admin_notices', array( __CLASS__, 'show_billing_country_warning' ) );
-    add_action( 'admin_footer', array( __CLASS__, 'dismiss_billing_country_warning_script' ) );
+        // handle for billing country admin notice
+        add_action( 'woocommerce_checkout_init', array( __CLASS__, 'check_billing_country_field' ) );
+        add_action( 'admin_notices', array( __CLASS__, 'show_billing_country_warning' ) );
+        add_action( 'admin_footer', array( __CLASS__, 'dismiss_billing_country_warning_script' ) );
 
-    // display notice when not has [woocommerce_checkout] shortcode
-    add_action( 'admin_notices', array( __CLASS__, 'check_for_checkout_shortcode' ) );
+        // display notice when not has [woocommerce_checkout] shortcode
+        add_action( 'admin_notices', array( __CLASS__, 'check_for_checkout_shortcode' ) );
 
-    // display notice when not has PHP gd extension
-    add_action( 'admin_notices', array( __CLASS__, 'missing_gd_extension_notice' ) );
-  }
-  
-
-  /**
-   * Function for create submenu in WooCommerce
-   * 
-   * @since 1.0.0
-   * @version 3.8.0
-   * @return array
-   */
-  public function add_woo_submenu() {
-    add_submenu_page(
-      'woocommerce', // parent page slug
-      esc_html__( 'Flexify Checkout para WooCommerce', 'flexify-checkout-for-woocommerce' ), // page title
-      esc_html__( 'Flexify Checkout', 'flexify-checkout-for-woocommerce' ), // submenu title
-      'manage_woocommerce', // user capabilities
-      'flexify-checkout-for-woocommerce', // page slug
-      array( $this, 'render_settings_page' ), // public function for print content page
-    );
-  }
-
-
-  /**
-   * Plugin general setting page and save options
-   * 
-   * @since 1.0.0
-   * @return void
-   */
-  public function render_settings_page() {
-    include_once FLEXIFY_CHECKOUT_PATH . 'inc/admin/settings.php';
-  }
-
-
-  /**
-   * Check if billing country is disabled on checkout
-   * 
-   * @since 3.7.3
-   * @return void
-   */
-  public static function check_billing_country_field() {
-    $checkout_fields = WC()->checkout()->get_checkout_fields();
-    $is_disabled = empty( $checkout_fields['billing']['billing_country'] ) || $checkout_fields['billing']['billing_country']['required'] === false;
-
-    update_option( 'billing_country_field_disabled', $is_disabled );
-  }
-
-
-  /**
-  * Display admin notice when billing country field is disabled
-  * 
-  * @since 3.7.3
-  * @return void
-  */
-  public static function show_billing_country_warning() {
-    $is_disabled = get_option('billing_country_field_disabled');
-    $hide_notice = get_user_meta( get_current_user_id(), 'hide_billing_country_notice', true );
-
-    if ( $is_disabled && ! $hide_notice ) {
-        $class = 'notice notice-error is-dismissible';
-        $message = esc_html__( 'O campo País na finalização de compras está desativado, verifique se seu gateway de pagamentos depende deste campo para não receber o erro "Informe um endereço para continuar com sua compra."', 'flexify-checkout-for-woocommerce' );
-        
-        printf( '<div id="billing-country-warning" class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), $message );
+        // display notice when not has PHP gd extension
+        add_action( 'admin_notices', array( __CLASS__, 'missing_gd_extension_notice' ) );
     }
-  }
+    
+
+    /**
+     * Function for create submenu in WooCommerce
+     * 
+     * @since 1.0.0
+     * @version 3.8.0
+     * @return array
+     */
+    public function add_woo_submenu() {
+        add_submenu_page(
+            'woocommerce', // parent page slug
+            esc_html__( 'Flexify Checkout para WooCommerce', 'flexify-checkout-for-woocommerce' ), // page title
+            esc_html__( 'Flexify Checkout', 'flexify-checkout-for-woocommerce' ), // submenu title
+            'manage_woocommerce', // user capabilities
+            'flexify-checkout-for-woocommerce', // page slug
+            array( $this, 'render_settings_page' ), // public function for print content page
+        );
+    }
 
 
-  /**
-   * Send action on dismiss notice for not display
-   * 
-   * @since 3.7.3
-   * @return void
-   */
-  public static function dismiss_billing_country_warning_script() {
-    ?>
-    <script type="text/javascript">
-        jQuery(document).on('click', '#billing-country-warning .notice-dismiss', function() {
-            jQuery.ajax({
-                url: ajaxurl,
-                type: 'POST',
-                data: {
-                    action: 'dismiss_billing_country_warning',
-                }
+    /**
+     * Plugin general setting page and save options
+     * 
+     * @since 1.0.0
+     * @return void
+     */
+    public function render_settings_page() {
+        include_once FLEXIFY_CHECKOUT_PATH . 'inc/admin/settings.php';
+    }
+
+
+    /**
+     * Check if billing country is disabled on checkout
+     * 
+     * @since 3.7.3
+     * @return void
+     */
+    public static function check_billing_country_field() {
+        $checkout_fields = WC()->checkout()->get_checkout_fields();
+        $is_disabled = empty( $checkout_fields['billing']['billing_country'] ) || $checkout_fields['billing']['billing_country']['required'] === false;
+
+        update_option( 'billing_country_field_disabled', $is_disabled );
+    }
+
+
+    /**
+     * Display admin notice when billing country field is disabled
+    * 
+    * @since 3.7.3
+    * @return void
+    */
+    public static function show_billing_country_warning() {
+        $is_disabled = get_option('billing_country_field_disabled');
+        $hide_notice = get_user_meta( get_current_user_id(), 'hide_billing_country_notice', true );
+
+        if ( $is_disabled && ! $hide_notice ) {
+            $class = 'notice notice-error is-dismissible';
+            $message = esc_html__( 'O campo País na finalização de compras está desativado, verifique se seu gateway de pagamentos depende deste campo para não receber o erro "Informe um endereço para continuar com sua compra."', 'flexify-checkout-for-woocommerce' );
+            
+            printf( '<div id="billing-country-warning" class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), $message );
+        }
+    }
+
+
+    /**
+     * Send action on dismiss notice for not display
+     * 
+     * @since 3.7.3
+     * @return void
+     */
+    public static function dismiss_billing_country_warning_script() {
+        ?>
+        <script type="text/javascript">
+            jQuery(document).on('click', '#billing-country-warning .notice-dismiss', function() {
+                jQuery.ajax({
+                    url: ajaxurl,
+                    type: 'POST',
+                    data: {
+                        action: 'dismiss_billing_country_warning',
+                    }
+                });
             });
-        });
-    </script>
-    <?php
-  }
+        </script>
+        <?php
+    }
 
 
-  /**
+    /**
 	 * Display error message on WooCommerce checkout page if shortcode is missing
 	 * 
 	 * @since 4.5.0
@@ -146,7 +146,7 @@ class Admin_Options extends Init {
 	}
   
 
-  /**
+    /**
 	 * Display error message when PHP extensionn gd is missing
 	 * 
 	 * @since 4.5.0
@@ -162,73 +162,73 @@ class Admin_Options extends Init {
 	}
 
 
-  /**
-   * Render each checkout field for panel settings
-   * 
-   * @since 3.8.0
-   * @param string $index | Field ID
-   * @param array $value | Field values (ID, type, label, class, etc)
-   * @param string $step | Step for render field (1 or 2)
-   * @return void
-   */
-  public static function render_field( $index, $value, $step ) {
-    // Checks if the field belongs to the correct step
-    if ( isset( $value['step'] ) && $value['step'] !== $step ) {
-        return;
-    }
+    /**
+     * Render each checkout field for panel settings
+     * 
+     * @since 3.8.0
+     * @param string $index | Field ID
+     * @param array $value | Field values (ID, type, label, class, etc)
+     * @param string $step | Step for render field (1 or 2)
+     * @return void
+     */
+    public static function render_field( $index, $value, $step ) {
+        // Checks if the field belongs to the correct step
+        if ( isset( $value['step'] ) && $value['step'] !== $step ) {
+            return;
+        }
 
-    $current_field_step_position = $value['position'] ?? 'full';
-    $current_field_step_label = $value['label'] ?? '';
-    $current_field_step_classes = $value['classes'] ?? '';
-    $current_field_step_label_classes = $value['label_classes'] ?? '';
-    $current_field_step_country = $value['country'] ?? 'none';
-    $current_field_step_input_mask = $value['input_mask'] ?? ''; ?>
+        $current_field_step_position = $value['position'] ?? 'full';
+        $current_field_step_label = $value['label'] ?? '';
+        $current_field_step_classes = $value['classes'] ?? '';
+        $current_field_step_label_classes = $value['label_classes'] ?? '';
+        $current_field_step_country = $value['country'] ?? 'none';
+        $current_field_step_input_mask = $value['input_mask'] ?? ''; ?>
 
-    <div id="<?php echo esc_attr( $index ); ?>" class="field-item d-flex align-items-center justify-content-between <?php echo ( ! License::is_valid() ) ? 'require-pro' : ''; echo $value['enabled'] === 'no' ? 'inactive' : ''; ?>">
-        <input type="hidden" class="change-priority" name="checkout_step[<?php echo $index; ?>][priority]" value="<?php echo esc_attr( $value['priority'] ?? '' ); ?>">
-        <input type="hidden" class="change-step" name="checkout_step[<?php echo $index; ?>][step]" value="<?php echo esc_attr( $value['step'] ?? '' ); ?>">
+        <div id="<?php echo esc_attr( $index ); ?>" class="field-item d-flex align-items-center justify-content-between <?php echo ( ! License::is_valid() ) ? 'require-pro' : ''; echo $value['enabled'] === 'no' ? 'inactive' : ''; ?>">
+            <input type="hidden" class="change-priority" name="checkout_step[<?php echo $index; ?>][priority]" value="<?php echo esc_attr( $value['priority'] ?? '' ); ?>">
+            <input type="hidden" class="change-step" name="checkout_step[<?php echo $index; ?>][step]" value="<?php echo esc_attr( $value['step'] ?? '' ); ?>">
 
-        <span class="field-name"><?php echo esc_html( $value['label'] ); ?></span>
+            <span class="field-name"><?php echo esc_html( $value['label'] ); ?></span>
 
-        <div class="d-flex justify-content-end">
-            <button class="btn btn-sm btn-outline-primary ms-auto rounded-3 <?php echo ( ! License::is_valid() ) ? 'require-pro' : 'flexify-checkout-step-trigger'; ?>" data-trigger="<?php echo esc_html($index); ?>">
-                <?php echo esc_html__('Editar', 'flexify-checkout-for-woocommerce'); ?>
-            </button>
-
-            <?php if ( isset( $value['source'] ) && $value['source'] !== 'native' ) : ?>
-                <button class="btn btn-outline-danger btn-icon ms-3 rounded-3 exclude-field" data-exclude="<?php echo esc_html( $index ); ?>">
-                    <svg class="icon icon-danger" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15 2H9c-1.103 0-2 .897-2 2v2H3v2h2v12c0 1.103.897 2 2 2h10c1.103 0 2-.897 2-2V8h2V6h-4V4c0-1.103-.897-2-2-2zM9 4h6v2H9V4zm8 16H7V8h10v12z"></path></svg>
+            <div class="d-flex justify-content-end">
+                <button class="btn btn-sm btn-outline-primary ms-auto rounded-3 <?php echo ( ! License::is_valid() ) ? 'require-pro' : 'flexify-checkout-step-trigger'; ?>" data-trigger="<?php echo esc_html($index); ?>">
+                    <?php echo esc_html__('Editar', 'flexify-checkout-for-woocommerce'); ?>
                 </button>
-            <?php endif; ?>
-        </div>
 
-        <div class="flexify-checkout-step-container popup-container">
-            <div class="popup-content popup-lg">
-                <div class="popup-header">
-                    <h5 class="popup-title"><?php echo sprintf( __('Configurar campo <strong class="field-name">%s</strong>', 'flexify-checkout-for-woocommerce'), esc_html( $value['label'] ) ); ?></h5>
-                    <button class="flexify-checkout-step-close-popup btn-close fs-lg" aria-label="<?php esc_html__('Fechar', 'flexify-checkout-for-woocommerce'); ?>"></button>
-                </div>
-                <div class="popup-body">
-                    <table class="form-table">
-                        <?php self::render_field_options( $index, $value ); ?>
-                    </table>
+                <?php if ( isset( $value['source'] ) && $value['source'] !== 'native' ) : ?>
+                    <button class="btn btn-outline-danger btn-icon ms-3 rounded-3 exclude-field" data-exclude="<?php echo esc_html( $index ); ?>">
+                        <svg class="icon icon-danger" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15 2H9c-1.103 0-2 .897-2 2v2H3v2h2v12c0 1.103.897 2 2 2h10c1.103 0 2-.897 2-2V8h2V6h-4V4c0-1.103-.897-2-2-2zM9 4h6v2H9V4zm8 16H7V8h10v12z"></path></svg>
+                    </button>
+                <?php endif; ?>
+            </div>
+
+            <div class="flexify-checkout-step-container popup-container">
+                <div class="popup-content popup-lg">
+                    <div class="popup-header">
+                        <h5 class="popup-title"><?php echo sprintf( __('Configurar campo <strong class="field-name">%s</strong>', 'flexify-checkout-for-woocommerce'), esc_html( $value['label'] ) ); ?></h5>
+                        <button class="flexify-checkout-step-close-popup btn-close fs-lg" aria-label="<?php esc_html__('Fechar', 'flexify-checkout-for-woocommerce'); ?>"></button>
+                    </div>
+                    <div class="popup-body">
+                        <table class="form-table">
+                            <?php self::render_field_options( $index, $value ); ?>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <?php
-  }
+        <?php
+    }
 
 
     /**
      * Render checkout field options for settings panel
-    * 
-    * @since 3.8.0
-    * @version 3.9.8
-    * @param string $field_id | Field ID
-    * @param array $value | Field configuration array
-    * @return void
-    */
+     * 
+     * @since 3.8.0
+     * @version 3.9.8
+     * @param string $field_id | Field ID
+     * @param array $value | Field configuration array
+     * @return void
+     */
     public static function render_field_options( $field_id, $value ) {
         $field_type = $value['type'] ?? 'text'; ?>
 
@@ -363,13 +363,13 @@ class Admin_Options extends Init {
 
     /**
      * Render step container for settings panel
-    * 
-    * @since 3.8.0
-    * @version 3.8.2
-    * @param string $step | Steps - 1 or 2
-    * @param string $title | Title from step
-    * @param array $fields | 
-    */
+     * 
+     * @since 3.8.0
+     * @version 3.8.2
+     * @param string $step | Steps - 1 or 2
+     * @param string $title | Title from step
+     * @param array $fields | 
+     */
     public static function render_step( $step, $title, $fields ) {
         ?>
         <td class="step-container">

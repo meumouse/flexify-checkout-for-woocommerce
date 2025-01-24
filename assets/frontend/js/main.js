@@ -2156,7 +2156,7 @@ flexifyForm.prepareField = function($input) {
  * Update customer data to "flexify_checkout_customer_fields" session
  * 
  * @since 1.8.5
- * @version 3.7.2
+ * @version 3.9.8
  */
 jQuery(document).ready( function($) {
   var all_checkout_fields = flexify_checkout_vars.get_all_checkout_fields || [];
@@ -2167,6 +2167,7 @@ jQuery(document).ready( function($) {
   function update_customer_fields_session() {
       var fields_data = [];
       var session_form_data = new FormData();
+
       session_form_data.append('action', 'get_checkout_session_data');
 
       $(all_checkout_fields).each( function(index, fields) {
@@ -2183,6 +2184,13 @@ jQuery(document).ready( function($) {
 
       // Check if has update value on field
       session_form_data.append('fields_data', JSON.stringify(fields_data));
+
+      // check if ship to different address is active
+      if ( $('#ship-to-different-address-checkbox').is(':checked') ) {
+        session_form_data.append('ship_to_different_address', 'yes');
+      } else {
+        session_form_data.append('ship_to_different_address', 'no');
+      }
 
       $.ajax({
           url: wc_checkout_params.ajax_url,

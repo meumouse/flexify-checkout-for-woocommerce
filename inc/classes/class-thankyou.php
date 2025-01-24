@@ -169,42 +169,37 @@ class Thankyou {
 		 *
 		 * @since 1.0.0
 		 */
-		do_action( 'flexify_thankyou_before_customer_details', $order );
-
-		$billing_address = $order->get_formatted_billing_address();
-		$shipping_address = $order->get_formatted_shipping_address();
-		$show_shipping = ! wc_ship_to_billing_address_only() && $order->needs_shipping_address() && $billing_address !== $shipping_address; ?>
+		do_action( 'flexify_thankyou_before_customer_details', $order ); ?>
 
 		<div class="flexify-review-customer flexify-review-customer--ty">
 			<div class="flexify-review-customer__row flexify-review-customer__row--contact">
 				<div class='flexify-review-customer__label'><label><?php esc_html_e( 'Contato', 'flexify-checkout-for-woocommerce' ); ?></label></div>
 				
 				<div class='flexify-review-customer__content'>
-					<p><?php echo Steps::strings_to_replace( Init::get_setting('text_contact_customer_review'), Order::get_order_customer_fragment( $order ) ); ?> </p>
+					<p><?php echo Steps::replace_placeholders( Init::get_setting('text_contact_customer_review'), Order::get_order_customer_fragment( $order ), 'billing' ); ?> </p>
 				</div>
 			</div>
 
-			<?php if ( Init::get_setting('enable_optimize_for_digital_products') !== 'yes' || order_has_shipping_method( $order ) ) : ?>
+			<?php 
+			// Check if shipping address is different from billing
+			$ship_different = get_post_meta( $order->get_id(), '_flexify_ship_different_address', true ) === 'yes';
+			$address_prefix = $ship_different ? 'shipping' : 'billing';
+
+			if ( Init::get_setting('enable_optimize_for_digital_products') !== 'yes' || order_has_shipping_method( $order ) ) : ?>
 				<div class="flexify-review-customer__row flexify-review-customer__row--address">
 					<div class='flexify-review-customer__label'>
-						<label>
-							<?php if ( $show_shipping ) :
-								esc_html_e( 'Entrega', 'flexify-checkout-for-woocommerce' );
-							else :
-								esc_html_e( 'Cobrança', 'flexify-checkout-for-woocommerce' );
-							endif; ?>
-						</label>
+						<label><?php esc_html_e( 'Entrega', 'flexify-checkout-for-woocommerce' ); ?></label>
 					</div>
 
 					<div class='flexify-review-customer__content'>
-						<p><?php echo Steps::strings_to_replace( Init::get_setting('text_shipping_customer_review'), Order::get_order_customer_fragment( $order ) ); ?><p>
+						<p><?php echo Steps::replace_placeholders( Init::get_setting('text_shipping_customer_review'), Order::get_order_customer_fragment( $order ), $address_prefix ); ?><p>
 					</div>
 				</div>
 			<?php endif; ?>
 
 			<?php if ( order_has_shipping_method( $order ) ) : ?>
 				<div class="flexify-review-customer__row flexify-review-customer__row--shipping-address">
-					<div class='flexify-review-customer__label'><label><?php esc_html_e( 'Entrega', 'flexify-checkout-for-woocommerce' ); ?></label></div>
+					<div class='flexify-review-customer__label'><label><?php esc_html_e( 'Envio', 'flexify-checkout-for-woocommerce' ); ?></label></div>
 					
 					<div class='flexify-review-customer__content'>
 						<p><?php echo Order::get_order_shipping_methods( $order ); ?><p>

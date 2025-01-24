@@ -4,7 +4,7 @@ namespace MeuMouse\Flexify_Checkout;
 
 use MeuMouse\Flexify_Checkout\Init;
 use MeuMouse\Flexify_Checkout\Admin_Options;
-use MeuMouse\Flexify_Checkout\Core;
+use MeuMouse\Flexify_Checkout\Fields;
 use MeuMouse\Flexify_Checkout\Steps;
 use MeuMouse\Flexify_Checkout\Helpers;
 use MeuMouse\Flexify_Checkout\License;
@@ -13,10 +13,10 @@ use MeuMouse\Flexify_Checkout\License;
 defined('ABSPATH') || exit;
 
 /**
- * Class for Handle AJAX events
+ * Class for handle AJAX events
  *
  * @since 1.0.0
- * @version 3.9.7
+ * @version 3.9.8
  * @package MeuMouse.com
  */
 class Ajax {
@@ -25,7 +25,7 @@ class Ajax {
 	 * Construct function
 	 * 
 	 * @since 1.0.0
-	 * @version 3.8.0
+	 * @version 3.9.8
 	 * @return void
 	 */
 	public function __construct() {
@@ -106,6 +106,24 @@ class Ajax {
 
 		// add new select option live
 		add_action( 'wp_ajax_add_new_option_select_live', array( $this, 'add_new_option_select_live_callback' ) );
+
+		// set customer data on checkout session
+		add_action( 'wp_ajax_get_checkout_session_data', array( $this, 'get_checkout_session_data_callback' ) );
+		add_action( 'wp_ajax_nopriv_get_checkout_session_data', array( $this, 'get_checkout_session_data_callback' ) );
+
+		// set cart items data on checkout session
+		add_action( 'wp_ajax_get_product_cart_session_data', array( $this, 'get_product_cart_session_data_callback' ) );
+		add_action( 'wp_ajax_nopriv_get_product_cart_session_data', array( $this, 'get_product_cart_session_data_callback' ) );
+
+		// set entry time on checkout session
+		add_action( 'wp_ajax_set_checkout_entry_time', array( $this, 'set_checkout_entry_time_callback' ) );
+		add_action( 'wp_ajax_nopriv_set_checkout_entry_time', array( $this, 'set_checkout_entry_time_callback' ) );
+
+		// enable AJAX request for autofill company field on digit CNPJ
+		if ( Init::get_setting('enable_autofill_company_info') === 'yes' && License::is_valid() ) {
+			add_action( 'wp_ajax_cnpj_autofill_query', array( __CLASS__, 'cnpj_autofill_query_callback' ) );
+			add_action( 'wp_ajax_nopriv_cnpj_autofill_query', array( __CLASS__, 'cnpj_autofill_query_callback' ) );
+		}
 	}	
 
 
@@ -113,7 +131,7 @@ class Ajax {
 	 * Check for inline errors
 	 * 
 	 * @since 1.0.0
-	 * @version 3.8.0
+	 * @version 3.9.8
 	 * @return void
 	 */
 	public static function check_for_inline_errors() {
@@ -128,13 +146,15 @@ class Ajax {
 			$field_value = isset( $field['value'] ) ? $field['value'] : '';
 			$field_country = isset( $field['country'] ) ? $field['country'] : '';
 
-			$messages[$field_key] = Core::render_inline_errors( $field_id, $field_key, $field_args, $field_value, $field_country );
+			$messages[$field_key] = Fields::render_inline_errors( $field_id, $field_key, $field_args, $field_value, $field_country );
 		}
+
+		$session_key = WC()->session->get('flexify_checkout_ship_different_address') === 'yes' ? 'shipping' : 'billing';
 
 		$messages['fragments'] = array(
 			'.flexify-review-customer' => Steps::render_customer_review(),
-			'.flexify-checkout-review-customer-contact' => Steps::strings_to_replace( Init::get_setting('text_contact_customer_review'), Steps::get_review_customer_fragment() ),
-			'.flexify-checkout-review-shipping-address' => Steps::strings_to_replace( Init::get_setting('text_shipping_customer_review'), Steps::get_review_customer_fragment() ),
+			'.flexify-checkout-review-customer-contact' => Steps::replace_placeholders( Init::get_setting('text_contact_customer_review'), Steps::get_review_customer_fragment() ),
+			'.flexify-checkout-review-shipping-address' => Steps::replace_placeholders( Init::get_setting('text_shipping_customer_review'), Steps::get_review_customer_fragment(), $session_key ),
 			'.flexify-checkout-review-shipping-method' => Helpers::get_shipping_method(),
 		);
 
@@ -151,7 +171,7 @@ class Ajax {
 	 * @return void
 	 */
 	public static function check_for_inline_error() {
-		Core::render_inline_errors();
+		Fields::render_inline_errors();
 	}
 
 
@@ -1210,6 +1230,170 @@ class Ajax {
 
 				wp_send_json( $response );
 			}
+		}
+	}
+
+
+	/**
+	 * Save billing fields data in custom session
+	 * 
+	 * @since 1.8.5
+	 * @version 3.9.8
+	 * @return void
+	 */
+	public function get_checkout_session_data_callback() {
+		// Receive data from POST fields
+		$fields_data = isset( $_POST['fields_data'] ) ? json_decode( stripslashes( $_POST['fields_data'] ), true ) : [];
+		$ship_to_different_address = isset( $_POST['ship_to_different_address'] ) ? sanitize_text_field( $_POST['ship_to_different_address'] ) : '';
+		$session_data = array();
+	
+		foreach ( $fields_data as $field ) {
+			// Add field and value to array if they exist and are not empty
+			if ( isset( $field['field_id'] ) && isset( $field['value'] ) ) {
+				$field_id = $field['field_id'];
+				$field_value = sanitize_text_field( $field['value'] );
+				$session_data[$field_id] = $field_value;
+			}
+		}
+
+		WC()->session->set( 'flexify_checkout_customer_fields', $session_data );
+		WC()->session->set( 'flexify_checkout_ship_different_address', $ship_to_different_address );
+	}
+
+
+	/**
+	 * Get product cart data from checkout session in AJAX callback
+	 * 
+	 * @since 3.5.0
+	 * @version 3.9.8
+	 * @return void
+	 */
+	public function get_product_cart_session_data_callback() {
+		$cart_items = WC()->cart->get_cart();
+		$items = array();
+	
+		foreach ( $cart_items as $cart_item_key => $cart_item ) {
+			$product = $cart_item['data'];
+			$product_id = $product->get_id();
+			$quantity = $cart_item['quantity'];
+			
+			if ( $product->is_type('variable') ) {
+				$variation_id = $cart_item['variation_id'];
+				$variation_data = wc_get_product( $variation_id )->get_variation_attributes();
+				$items[] = array(
+					'product_name' => $product->get_title(),
+					'product_id' => $product_id,
+					'variation_id' => $variation_id,
+					'quantity' => $quantity,
+					'variation_data' => $variation_data,
+				);
+			} else {
+				$items[] = array(
+					'product_name' => $product->get_title(),
+					'product_id' => $product_id,
+					'quantity' => $quantity,
+				);
+			}
+		}
+	
+		// Get selected payment method
+		$payment_method = WC()->session->get('chosen_payment_method');
+		$payment_method_label = __( 'Nenhuma forma de pagamento selecionada', 'flexify-checkout-for-woocommerce' );
+
+		if ( $payment_method ) {
+			$available_gateways = WC()->payment_gateways()->get_available_payment_gateways();
+
+			if ( isset( $available_gateways[$payment_method] ) ) {
+				$payment_method_label = $available_gateways[$payment_method]->get_title();
+			}
+		}
+	
+		$session_data = array(
+			'items' => $items,
+			'shipping_method' => array(
+				'id' => WC()->session->get('chosen_shipping_methods'),
+				'label' => Helpers::get_selected_shipping_method_name(),
+			),
+			'payment_method' => array(
+				'id' => $payment_method,
+				'label' => $payment_method_label,
+			),
+			'checkout_entry_time' => WC()->session->get('checkout_entry_time'),
+		);
+	
+		WC()->session->set( 'flexify_checkout_items_cart', $session_data );
+	
+		$response = array(
+			'status' => 'success',
+			'data' => $session_data,
+		);
+	
+		wp_send_json( $response );
+	}
+	
+
+	/**
+	 * Set entry time on checkout session in AJAX callback
+	 * 
+	 * @since 3.5.0
+	 * @version 3.9.8
+	 * @return void
+	 */
+	public function set_checkout_entry_time_callback() {
+		if ( isset( $_POST['entry_time'] ) && $_POST['entry_time'] === 'yes' ) {
+			$current_time = current_time('mysql');
+			$entry_time_formatted = date_i18n( get_option('date_format') . ' ' . get_option('time_format'), strtotime( $current_time ) );
+
+			WC()->session->set('checkout_entry_time', $entry_time_formatted);
+
+			$response = array(
+				'status' => 'success',
+				'data' => $entry_time_formatted,
+			);
+		} else {
+			$response = array(
+				'status' => 'error',
+			);
+		}
+
+		wp_send_json( $response );
+	}
+
+
+	/**
+	 * Send JSON from frontend for autofill fields
+	 * 
+	 * @since 1.4.5
+	 * @version 3.9.8
+	 * @return array
+	 */
+	public static function query_cnpj_data( $cnpj ) {
+		$url = 'https://www.receitaws.com.br/v1/cnpj/' . $cnpj;
+		$response = wp_safe_remote_get( $url );
+	
+		if ( is_wp_error( $response ) ) {
+			return false;
+		}
+	
+		$body = wp_remote_retrieve_body( $response );
+
+		return json_decode( $body );
+	}
+
+
+	/**
+	 * AJAX callback function for get CNPJ data
+	 * 
+	 * @since 1.4.5
+	 * @version 3.9.8
+	 * @return void
+	 */
+	public static function cnpj_autofill_query_callback() {
+		$cnpj = sanitize_text_field( $_POST['cnpj'] );
+		$data = self::query_cnpj_data( $cnpj );
+	
+		if ( $data ) {
+			wp_send_json_success( $data );
 		}
 	}
 }

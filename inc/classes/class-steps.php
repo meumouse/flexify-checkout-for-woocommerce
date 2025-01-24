@@ -14,7 +14,7 @@ defined('ABSPATH') || exit;
  * Handle de steps
  *
  * @since 1.0.0
- * @version 3.8.0
+ * @version 3.9.8
  * @package MeuMouse.com
  */
 class Steps {
@@ -23,6 +23,7 @@ class Steps {
 	 * Render header
 	 *
 	 * @since 1.0.0
+	 * @return void
 	 */
 	public static function render_header( $show_breadcrumps = true ) {
 		/**
@@ -570,6 +571,7 @@ class Steps {
 		<?php
 	}
 
+
 	/**
 	 * Render Account Form.
 	 *
@@ -698,9 +700,13 @@ class Steps {
 			</div>
 		<?php endif;
 	}
+	
 
 	/**
-	 * Render Shipping Search.
+	 * Render shipping search
+	 * 
+	 * @since 1.0.0
+	 * @return void
 	 */
 	public static function render_shipping_address_search() {
 		$is_modern = Init::get_setting('flexify_checkout_theme') === 'modern';
@@ -922,7 +928,7 @@ class Steps {
 	 * Render customer details review section
 	 *
 	 * @since 1.0.0
-	 * @version 3.7.0
+	 * @version 3.9.8
 	 * @return void
 	 */
 	public static function render_customer_review() {
@@ -937,7 +943,7 @@ class Steps {
 			 */
 			do_action('flexify_checkout_before_contact_review'); 
 			
-			$customer_review = self::strings_to_replace( Init::get_setting('text_contact_customer_review'), self::get_review_customer_fragment() );
+			$customer_review = self::replace_placeholders( Init::get_setting('text_contact_customer_review'), self::get_review_customer_fragment(), 'billing' );
 
 			if ( ! empty( $customer_review ) ) : ?>
 				<div class="flexify-review-customer--checkout">
@@ -977,7 +983,8 @@ class Steps {
 				$has_shipping = false;
 			}
 
-			$shipping_review = self::strings_to_replace( Init::get_setting('text_shipping_customer_review'), self::get_review_customer_fragment() );
+			$session_key = WC()->session->get('flexify_checkout_ship_different_address') === 'yes' ? 'shipping' : 'billing';
+			$shipping_review = self::replace_placeholders( Init::get_setting('text_shipping_customer_review'), self::get_review_customer_fragment(), $session_key );
 
 			if ( $has_shipping && ! empty( $shipping_review ) ) : ?>
 				<div class="flexify-review-customer--checkout">
@@ -985,9 +992,11 @@ class Steps {
 						<div class="flexify-review-customer__label">
 							<label><?php esc_html_e( 'Entrega', 'flexify-checkout-for-woocommerce' ); ?></label>
 						</div>
+
 						<div class="flexify-review-customer__content flexify-review-customer__content--address">
 							<div class="flexify-checkout-review-shipping-address"><?php echo $shipping_review ?></div>
 						</div>
+
 						<div class="flexify-review-customer__buttons">
 							<a href="#address|billing_country" data-stepper-goto="2"><?php esc_html_e( 'Editar', 'flexify-checkout-for-woocommerce' ); ?></a>
 						</div>
@@ -1000,9 +1009,11 @@ class Steps {
 							<div class="flexify-review-customer__label">
 								<label><?php esc_html_e('Frete', 'flexify-checkout-for-woocommerce'); ?></label>
 							</div>
+
 							<div class="flexify-review-customer__content flexify-review-customer__content--shipping-method">
 								<div class="flexify-checkout-review-shipping-method"><?php echo esc_html( Helpers::get_shipping_method() ); ?></div>
 							</div>
+
 							<div class="flexify-review-customer__buttons">
 								<a href="#address|shipping_method" data-stepper-goto="2"><?php esc_html_e('Editar', 'flexify-checkout-for-woocommerce'); ?></a>
 							</div>
@@ -1027,25 +1038,23 @@ class Steps {
 	 * Get review customer fragment
 	 *
 	 * @since 1.0.0
-	 * @version 3.8.0
+	 * @version 3.9.8
 	 * @return array
 	 */
 	public static function get_review_customer_fragment() {
-		// get checkout session data
+		// Get checkout session data
 		$session_data = WC()->session->get('flexify_checkout_customer_fields');
 		$fragment_data = array();
-	
+
 		// Returns an empty array if session data is not loaded
 		if ( ! is_array( $session_data ) || empty( $session_data ) ) {
 			return $fragment_data;
 		}
-	
-		if ( is_array( $session_data ) ) {
-			foreach ( $session_data as $field_id => $value ) {
-				$fragment_data[str_replace( 'billing_', '', $field_id )] = isset( $value ) ? $value : '';
-			}
+
+		foreach ( $session_data as $field_id => $value ) {
+			$fragment_data[$field_id] = isset( $value ) ? $value : '';
 		}
-	
+
 		return apply_filters( 'flexify_checkout_review_customer_fragments', $fragment_data );
 	}
 
@@ -1054,55 +1063,61 @@ class Steps {
 	 * Get customer review text with placeholder values
 	 * 
 	 * @since 3.6.0
-	 * @version 3.8.0
+	 * @version 3.9.8
 	 * @param string $text | Text with placeholders
 	 * @param array $data | Data for replace on placeholders
+	 * @param string $prefix | Optional prefix to filter data (billing/shipping)
 	 * @return string
 	 */
-	public static function strings_to_replace( $text, $data ) {
-		// If data is empty, returns an empty string
+	public static function replace_placeholders( $text, $data, $prefix = 'billing' ) {
 		if ( empty( $data ) ) {
 			return '';
 		}
-	
-		$placeholders = array();
-	
-		// Map placeholders to corresponding data
-		foreach ( $data as $key => $value ) {
-			$placeholders[$key] = isset( $data[$key] ) ? esc_html( $data[$key] ) : '';
+
+		// Filter data by prefix if provided
+		if ( $prefix ) {
+			$data = array_filter( $data, function( $key ) use ( $prefix ) {
+				return strpos( $key, $prefix . '_' ) === 0;
+			}, ARRAY_FILTER_USE_KEY );
+
+			// Remove prefix from keys
+			$data = array_combine(
+				array_map( function( $key ) use ( $prefix ) {
+					return str_replace( $prefix . '_', '', $key );
+				}, array_keys( $data ) ),
+				$data
+			);
 		}
-	
-		// Split text into parts, preserving delimiters and handling <br>
-		$parts = preg_split('/(\{\{\s*\w+\s*\}\}|<br>)/', $text, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
-	
+
+		$placeholders = array_map( 'esc_html', $data );
+
+		// split text into chunks and replace placeholders
+		$parts = preg_split( '/(\{\{\s*\w+\s*\}\}|<br>)/', $text, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY );
+
 		$output = '<div class="customer-review-container">';
 		$current_paragraph = '';
-	
+
 		foreach ( $parts as $part ) {
-			// Check if part is a placeholder
 			if ( preg_match( '/\{\{\s*(\w+)\s*\}\}/', $part, $matches ) ) {
 				$key = $matches[1];
-				$value = isset( $placeholders[$key] ) ? $placeholders[$key] : $matches[0];
-				$current_paragraph .= sprintf('<span class="customer-details-info %s">%s</span>', esc_attr( $key ), $value);
+				$value = $placeholders[ $key ] ?? $matches[0];
+				$current_paragraph .= sprintf( '<span class="customer-details-info %s">%s</span>', esc_attr( $key ), $value );
 			} elseif ( $part === '<br>' ) {
-				// If part is <br>, close current paragraph and start a new one
 				if ( ! empty( $current_paragraph ) ) {
 					$output .= '<p class="customer-details-info">' . $current_paragraph . '</p>';
 					$current_paragraph = '';
 				}
 			} else {
-				// Otherwise, append the part to the current paragraph
 				$current_paragraph .= $part;
 			}
 		}
-	
-		// Close the last paragraph if any
+
 		if ( ! empty( $current_paragraph ) ) {
 			$output .= '<p class="customer-details-info">' . $current_paragraph . '</p>';
 		}
-	
+
 		$output .= '</div>';
-	
+
 		return $output;
 	}
 	

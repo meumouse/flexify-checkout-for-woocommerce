@@ -496,13 +496,20 @@ class Helpers {
 	 * Export array fields id
 	 * 
 	 * @since 3.5.0
+	 * @version 3.9.8
 	 * @return array
 	 */
 	public static function export_all_checkout_fields() {
 		$get_fields = WC()->checkout->get_checkout_fields();
 		$fields = array();
 
+		// add billing fields
 		foreach ( $get_fields['billing'] as $field_id => $value ) {
+			$fields[$field_id] = $value;
+		}
+
+		// add shipping fields
+		foreach ( $get_fields['shipping'] as $field_id => $value ) {
 			$fields[$field_id] = $value;
 		}
 		
@@ -665,29 +672,6 @@ class Helpers {
         // Check if the lowercase version of both names match
         return ( strtolower( $current_theme_name ) === strtolower( $theme_name ) );
     }
-
-
-	/**
-	 * Get custom billing field from the order
-	 *
-	 * @since 3.9.8
-	 * @param WC_Order $order | The order object
-	 * @param string $field | The billing field ID (without "billing_")
-	 * @return string|null The value of the field or null if not found
-	 */
-	public static function get_billing_field( $order, $field ) {
-		if ( ! $order instanceof \WC_Order ) {
-			return null;
-		}
-
-		// Construct the meta key for the field.
-		$meta_key = 'billing_' . $field;
-
-		// Get the meta value from the order.
-		$value = $order->get_meta( $meta_key, true );
-
-		return $value ?: null; // Return null if the value is empty.
-	}
 }
 
 if ( ! class_exists('MeuMouse\Flexify_Checkout\Helpers\Helpers') ) {

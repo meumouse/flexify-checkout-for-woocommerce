@@ -9,7 +9,7 @@
  * Author URI: 				https://meumouse.com/
  * Version: 				3.9.8
  * WC requires at least: 	6.0.0
- * WC tested up to: 		9.4.2
+ * WC tested up to: 		9.6.0
  * Requires PHP: 			7.4
  * Tested up to:      		6.7.1
  * Text Domain: 			flexify-checkout-for-woocommerce
@@ -206,6 +206,7 @@ class Flexify_Checkout {
 			'classes/class-compat-autoloader.php',
 			'classes/class-sidebar.php',
 			'classes/class-steps.php',
+			'classes/class-fields.php',
 			'classes/class-coupon.php',
 			'classes/class-order.php',
 			'classes/class-conditions.php',
