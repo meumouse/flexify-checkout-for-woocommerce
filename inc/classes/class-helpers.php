@@ -83,6 +83,7 @@ class Helpers {
 	 */
 	public static function get_shipping_fields( $checkout ) {
 		$all_fields = $checkout->checkout_fields['shipping'];
+
 		$allowed = array(
 			'shipping_phone',
 			'shipping_email',
@@ -148,28 +149,6 @@ class Helpers {
 		 * @return bool
 		 */
 		return apply_filters( 'flexify_has_prepopulated_fields', $has_prepopulated_fields, $type );
-	}
-
-
-	/**
-	 * Render address panel
-	 *
-	 * @since 1.0.0
-	 * @return void
-	 */
-	public static function render_address_panel() {
-		wc_get_template( 'flexify/form-address.php', array( 'checkout' => \WC_Checkout::instance() ) );
-	}
-
-
-	/**
-	 * Render Details Panel.
-	 *
-	 * @since 1.0.0
-	 * @return void
-	 */
-	public static function render_details_panel() {
-		wc_get_template( 'flexify/form-details.php', array( 'checkout' => \WC_Checkout::instance() ) );
 	}
 
 
@@ -274,9 +253,9 @@ class Helpers {
 
 
 	/**
-	 * Remove Class Filter.
+	 * Remove class filter
 	 *
-	 * Removes action when Object is Anonymous.
+	 * Removes action when Object is Anonymous
 	 *
 	 * @since 1.0.0
 	 * @param string $tag
@@ -352,7 +331,7 @@ class Helpers {
 
 		if ( -1 === $shop_page_id ) {
 			/**
-			 * Shop Page URL.
+			 * Shop page URL
 			 *
 			 * @since 1.0.0
 			 */
@@ -360,7 +339,7 @@ class Helpers {
 		}
 
 		/**
-		 * Shop Page URL.
+		 * Shop page URL
 		 *
 		 * @since 1.0.0
 		 */
@@ -382,7 +361,7 @@ class Helpers {
 
 
 	/**
-	 * Get Order Pay button text
+	 * Get order pay button text
 	 *
 	 * @since 1.0.0
 	 * @param WC_Order $order
@@ -496,13 +475,20 @@ class Helpers {
 	 * Export array fields id
 	 * 
 	 * @since 3.5.0
+	 * @version 3.9.8
 	 * @return array
 	 */
 	public static function export_all_checkout_fields() {
 		$get_fields = WC()->checkout->get_checkout_fields();
 		$fields = array();
 
+		// add billing fields
 		foreach ( $get_fields['billing'] as $field_id => $value ) {
+			$fields[$field_id] = $value;
+		}
+
+		// add shipping fields
+		foreach ( $get_fields['shipping'] as $field_id => $value ) {
 			$fields[$field_id] = $value;
 		}
 		

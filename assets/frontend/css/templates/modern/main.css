@@ -483,10 +483,12 @@ screen and (max-width: 800px) and (orientation: landscape) {
 }
 
 * ::-moz-placeholder {
+  opacity: 0.75;
   font-family: Inter, Helvetica, Arial, sans-serif;
 }
 
 * ::placeholder {
+  opacity: 0.75;
   font-family: Inter, Helvetica, Arial, sans-serif;
 }
 
@@ -5248,4 +5250,14 @@ label.has-condition.required-field > .optional {
 
 .woocommerce-order-received .flexify-checkout .woocommerce {
   max-width: 100%;
+}
+
+section.woocommerce-order-details {
+  margin: 3.225rem 2.115rem 6rem 2.115rem;
+}
+
+section.woocommerce-order-details table.shop_table {
+  width: 100%;
+  border-collapse: separate;
+  border-radius: 0.375rem;
 }

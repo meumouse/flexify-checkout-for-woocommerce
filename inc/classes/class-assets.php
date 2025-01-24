@@ -44,7 +44,7 @@ class Assets {
 	 * Frontend assets
 	 * 
 	 * @since 1.0.0
-	 * @version 3.9.4
+	 * @version 3.9.8
 	 * @return void
 	 */
 	public static function frontend_assets() {
@@ -175,6 +175,16 @@ class Assets {
 			wp_enqueue_script( 'lordicon-player', 'https://cdn.lordicon.com/lordicon.js', array() );
 		}
 
+		// get fields from fields manager
+		$fields = maybe_unserialize( get_option('flexify_checkout_step_fields', array()) );
+
+		// set default country for international phone
+		if ( Init::get_setting('enable_manage_fields') === 'yes' && $fields['billing_country']['country'] !== 'none' ) {
+			$base_country = $fields['billing_country']['country'] ?? '';
+		} else {
+			$base_country = WC()->countries->get_base_country();
+		}
+
 		/**
 		 * Flexify checkout script localized data
 		 *
@@ -212,7 +222,7 @@ class Assets {
 			),
 			'update_cart_nonce' => wp_create_nonce('update_cart'),
 			'shop_page' => Helpers::get_shop_page_url(),
-			'base_country' => WC()->countries->get_base_country(),
+			'base_country' => $base_country,
 			'intl_util_path' => plugins_url( 'assets/vendor/intl-tel-input/js/utils.js', FLEXIFY_CHECKOUT_FILE ),
 			'get_new_select_fields' => Helpers::get_new_select_fields(),
 			'check_password_strenght' => Init::get_setting('check_password_strenght'),

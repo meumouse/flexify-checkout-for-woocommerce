@@ -547,7 +547,7 @@
 
 			if ( $(this).val() !== '' ) {
 				// Add spinner inside button
-				$('#checkout_field_name').before('<span id="check_field_id" class="spinner-border spinner-border-sm" style="position: absolute; padding: 0.7rem; border-radius: 100% !important; right: 1rem; z-index: 2; top: 0.7rem;"></span>');
+				$('#checkout_field_name').before('<span id="check_field_id" class="spinner-border spinner-border-sm" style="position: absolute; padding: 0.3rem; border-radius: 100% !important; right: 1rem; z-index: 2; top: 0.7rem;"></span>');
 
 				$.ajax({
 					url: flexify_checkout_params.ajax_url,
