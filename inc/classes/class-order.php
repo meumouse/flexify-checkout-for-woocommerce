@@ -207,7 +207,25 @@ class Order {
 			if ( isset( $value['source'] ) && $value['source'] !== 'native' ) {
 				$field_value = get_post_meta( $order->get_id(), $index, true );
 
+				// field type select
+				if ( $value['type'] === 'select' && isset( $value['options'] ) && is_array( $value['options'] ) ) {
+					$select_options = array();
+					
+					// get select options
+					foreach ( $value['options'] as $option ) {
+						if ( is_array( $option ) ) {
+							$select_options[$option['value']] = $option['text'] ?? '';
+						}
+					}
+
+					echo '<strong>' . $value['label'] . ':</strong> ' . $select_options[$field_value] . '<br>';
+				}
+
 				if ( ! empty( $field_value ) ) {
+					if ( $value['type'] === 'select' ) {
+						continue;
+					}
+					
 					echo '<strong>' . $value['label'] . ':</strong> ' . $field_value . '<br>';
 				}
 			}
