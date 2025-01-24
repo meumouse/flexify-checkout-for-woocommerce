@@ -151,8 +151,8 @@ class Order {
 		 * Filter: Customize the order customer fragment data.
 		 *
 		 * @since 3.9.8
-		 * @param array $fragment_data | Customer fragment data.
-		 * @param \WC_Order $order | Order object.
+		 * @param array $fragment_data | Customer fragment data
+		 * @param \WC_Order $order | Order object
 		 */
 		return apply_filters( 'flexify_checkout_order_customer_fragments', $fragment_data, $order );
 	}
