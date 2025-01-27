@@ -44,7 +44,7 @@ class Assets {
 	 * Frontend assets
 	 * 
 	 * @since 1.0.0
-	 * @version 3.9.8
+	 * @version 3.9.9
 	 * @return void
 	 */
 	public static function frontend_assets() {
@@ -179,7 +179,7 @@ class Assets {
 		$fields = maybe_unserialize( get_option('flexify_checkout_step_fields', array()) );
 
 		// set default country for international phone
-		if ( Init::get_setting('enable_manage_fields') === 'yes' && $fields['billing_country']['country'] !== 'none' ) {
+		if ( Init::get_setting('enable_manage_fields') === 'yes' && isset( $fields['billing_country']['country'] ) && $fields['billing_country']['country'] !== 'none' ) {
 			$base_country = $fields['billing_country']['country'] ?? '';
 		} else {
 			$base_country = WC()->countries->get_base_country();
