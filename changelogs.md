@@ -1,3 +1,6 @@
+Versão 3.9.9 (27/01/2025)
+* Correção de bugs
+
 Versão 3.9.8 (24/01/2025)
 * Correção de bugs
 * Otimizações
