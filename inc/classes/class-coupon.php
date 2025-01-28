@@ -20,13 +20,12 @@ class Coupon {
 	 * Construct function
 	 * 
 	 * @since 1.0.0
-	 * @version 3.9.8
+	 * @version 4.0.0
 	 * @return void
 	 */
 	public function __construct() {
 		add_action( 'wp', array( __CLASS__, 'auto_apply_coupon' ) );
 		add_action( 'woocommerce_removed_coupon', array( __CLASS__, 'register_removed_coupon' ) );
-		add_filter( 'option_woocommerce_cart_redirect_after_add', array( __CLASS__, 'disable_add_to_cart_redirect_for_checkout' ) );
 
 		// Apply coupon via URL param on load page
 		add_action( 'template_redirect', array( __CLASS__, 'apply_coupon_via_url' ) );
@@ -97,29 +96,6 @@ class Coupon {
 		 * @since 1.0.0
 		 */
 		return apply_filters( 'flexify_auto_apply_coupon', Init::get_setting('coupon_code_for_auto_apply') );
-	}
-
-
-	/**
-	 * Disable Add to cart redirection for checkout.
-	 *
-	 * @since 1.0.0
-	 * @version 4.0.0
-	 * @param array $value
-	 * @return mixed
-	 */
-	public static function disable_add_to_cart_redirect_for_checkout( $value ) {
-		$add_to_cart = filter_input( INPUT_GET, 'add-to-cart' );
-
-		if ( empty( $add_to_cart ) || ! did_filter('woocommerce_add_to_cart_product_id') ) {
-			return $value;
-		}
-
-		if ( ! is_flexify_checkout( true ) ) {
-			return $value;
-		}
-
-		return false;
 	}
 
 

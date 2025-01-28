@@ -14,7 +14,7 @@ defined('ABSPATH') || exit;
  * Checkout core actions
  *
  * @since 1.0.0
- * @version 3.9.8
+ * @version 4.0.0
  * @package MeuMouse.com
  */
 class Core {
@@ -23,7 +23,7 @@ class Core {
 	 * Construct function
 	 * 
 	 * @since 1.0.0
-	 * @version 3.9.8
+	 * @version 4.0.0
 	 * @return void
 	 */
 	public function __construct() {
@@ -92,6 +92,8 @@ class Core {
 
 		// force load form login template
 		add_action( 'flexify_checkout_before_layout', array( __CLASS__, 'load_form_login_template' ) );
+
+		add_filter( 'option_woocommerce_cart_redirect_after_add', array( __CLASS__, 'disable_add_to_cart_redirect_for_checkout' ) );
 	}
 
 
@@ -633,6 +635,29 @@ class Core {
 				do_action('flexify_checkout_form_login_loaded'); // set loaded template
 			}
 		}
+	}
+
+
+	/**
+	 * Disable add to cart redirection for checkout
+	 *
+	 * @since 1.0.0
+	 * @version 4.0.0
+	 * @param array $value
+	 * @return mixed
+	 */
+	public static function disable_add_to_cart_redirect_for_checkout( $value ) {
+		$add_to_cart = filter_input( INPUT_GET, 'add-to-cart' );
+
+		if ( empty( $add_to_cart ) || ! did_filter('woocommerce_add_to_cart_product_id') ) {
+			return $value;
+		}
+
+		if ( ! is_flexify_checkout( true ) ) {
+			return $value;
+		}
+
+		return false;
 	}
 }
 
