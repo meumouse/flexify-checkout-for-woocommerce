@@ -11,7 +11,7 @@ defined('ABSPATH') || exit;
  * Coupon related functions
  *
  * @since 1.0.0
- * @version 3.9.8
+ * @version 4.0.0
  * @package MeuMouse.com
  */
 class Coupon {
@@ -104,17 +104,18 @@ class Coupon {
 	 * Disable Add to cart redirection for checkout.
 	 *
 	 * @since 1.0.0
+	 * @version 4.0.0
 	 * @param array $value
 	 * @return mixed
 	 */
 	public static function disable_add_to_cart_redirect_for_checkout( $value ) {
 		$add_to_cart = filter_input( INPUT_GET, 'add-to-cart' );
 
-		if ( empty( $add_to_cart ) || ! did_filter( 'woocommerce_add_to_cart_product_id' ) ) {
+		if ( empty( $add_to_cart ) || ! did_filter('woocommerce_add_to_cart_product_id') ) {
 			return $value;
 		}
 
-		if ( ! Core::is_checkout( true ) ) {
+		if ( ! is_flexify_checkout( true ) ) {
 			return $value;
 		}
 
