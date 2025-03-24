@@ -34,6 +34,9 @@ Você pode instalar um plugin WordPress de duas maneiras: via o painel de admini
 
 ### Registro de alterações (Changelogs):
 
+Versão 4.1.0 (24/03/2025)
+* Recurso adicionado: Módulo adicional: Flexify Checkout - Recuperação de carrinhos abandonados
+
 Versão 4.0.0 (28/01/2025)
 * Correção de bugs
 

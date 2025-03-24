@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Flexify Checkout para WooCommerce\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-04-17 01:44+0000\n"
-"PO-Revision-Date: 2025-01-24 20:26+0000\n"
+"PO-Revision-Date: 2025-03-24 19:59+0000\n"
 "Last-Translator: \n"
 "Language-Team: English (United States)\n"
 "Language: en_US\n"
@@ -196,7 +196,7 @@ msgstr "Add a new font to the library"
 msgid "Administrador"
 msgstr "Administrator"
 
-#: inc/classes/class-core.php:607
+#: inc/classes/class-core.php:609
 msgid "Aguarde alguns instantes"
 msgstr ""
 
@@ -311,7 +311,8 @@ msgstr "Activate Flexify Checkout"
 msgid "Ativar licença"
 msgstr "Activate license"
 
-#: inc/admin/tabs/integrations.php:39 inc/admin/tabs/integrations.php:68
+#: inc/admin/tabs/integrations.php:47 inc/admin/tabs/integrations.php:83
+#: inc/admin/tabs/integrations.php:112
 msgid "Ativar módulo"
 msgstr ""
 
@@ -519,7 +520,7 @@ msgstr "Specific attributes"
 msgid "Atributos específicos:"
 msgstr "Specific attributes:"
 
-#: inc/admin/tabs/integrations.php:63
+#: inc/admin/tabs/integrations.php:107
 msgid ""
 "Automatize o envio de mensagens via WhatsApp ao receber eventos no Flexify "
 "Checkout, recupere vendas de maneira mais assertiva. Deixe tudo no fluxo "
@@ -649,7 +650,7 @@ msgstr "Collaborator"
 msgid "Comece a digitar seu endereço para pesquisar."
 msgstr "Start typing your address to search."
 
-#: inc/admin/tabs/integrations.php:34
+#: inc/admin/tabs/integrations.php:42
 msgid ""
 "Comece a receber via Pix e Boleto com aprovação imediata e sem cobrança de "
 "taxas. Exclusivo para clientes Inter Empresas."
@@ -693,8 +694,8 @@ msgstr "Condition: *"
 msgid "Condições"
 msgstr "Conditions"
 
-#: flexify-checkout-for-woocommerce.php:285 inc/admin/tabs/integrations.php:37
-#: inc/admin/tabs/integrations.php:66
+#: flexify-checkout-for-woocommerce.php:285 inc/admin/tabs/integrations.php:45
+#: inc/admin/tabs/integrations.php:81 inc/admin/tabs/integrations.php:110
 msgid "Configurar"
 msgstr "Configure"
 
@@ -882,7 +883,7 @@ msgstr ""
 "Sorry, we do not have enough \"%1$s\" in stock to fulfill your order (%2$s "
 "available). We apologize for any inconvenience caused."
 
-#: inc/classes/class-core.php:237
+#: inc/classes/class-core.php:239
 msgid ""
 "Desculpe, parece que não há métodos de pagamento disponíveis para sua "
 "localização. Entre em contato conosco se precisar de assistência ou desejar "
@@ -930,7 +931,7 @@ msgstr "Editor"
 msgid "em"
 msgstr "in"
 
-#: inc/admin/tabs/integrations.php:94
+#: inc/admin/tabs/integrations.php:138
 msgid "Em breve"
 msgstr ""
 
@@ -1084,7 +1085,7 @@ msgid ""
 "WooCommerce."
 msgstr "Extension that optimizes multi-step checkout for WooCommerce stores."
 
-#: inc/admin/tabs/integrations.php:92
+#: inc/admin/tabs/integrations.php:136
 msgid ""
 "Facilite o preenchimento do endereço de entrega aos usuários, permitindo "
 "pesquisar seu endereço ou usando recursos de geolocalização com Google Maps."
@@ -1115,8 +1116,12 @@ msgstr "Filters"
 msgid "Flexify Checkout"
 msgstr "Flexify Checkout"
 
-#: inc/admin/tabs/integrations.php:26
+#: inc/admin/tabs/integrations.php:34
 msgid "Flexify Checkout - Inter addon"
+msgstr ""
+
+#: inc/admin/tabs/integrations.php:70
+msgid "Flexify Checkout - Recuperação de carrinhos abandonados"
 msgstr ""
 
 #. parent page slug
@@ -1198,7 +1203,7 @@ msgstr "Manage the fields and stages of the checkout"
 msgid "Gerente de loja"
 msgstr "Store manager"
 
-#: inc/admin/tabs/integrations.php:91
+#: inc/admin/tabs/integrations.php:135
 msgid "Google Maps"
 msgstr ""
 
@@ -1365,7 +1370,8 @@ msgstr "State Registration"
 msgid "Inserir cupom de desconto"
 msgstr "Enter discount coupon"
 
-#: inc/admin/tabs/integrations.php:41 inc/admin/tabs/integrations.php:70
+#: inc/admin/tabs/integrations.php:49 inc/admin/tabs/integrations.php:85
+#: inc/admin/tabs/integrations.php:114
 msgid "Instalar módulo"
 msgstr "Install module"
 
@@ -1381,7 +1387,7 @@ msgstr "Inter"
 msgid "Inválida"
 msgstr "Invalid"
 
-#: inc/admin/tabs/integrations.php:62
+#: inc/admin/tabs/integrations.php:106
 msgid "Joinotify"
 msgstr ""
 
@@ -1880,12 +1886,13 @@ msgstr "First renewal"
 
 #: inc/admin/settings.php:16 inc/admin/tabs/about.php:27
 #: inc/admin/tabs/about.php:161 inc/admin/tabs/fields.php:60
-#: inc/admin/tabs/fields.php:80 inc/admin/tabs/integrations.php:30
-#: inc/admin/tabs/options.php:183 inc/admin/tabs/options.php:204
-#: inc/admin/tabs/options.php:286 inc/admin/tabs/options.php:307
-#: inc/admin/tabs/options.php:327 inc/admin/tabs/options.php:347
-#: inc/admin/tabs/options.php:367 inc/admin/tabs/options.php:387
-#: inc/admin/tabs/options.php:417 inc/admin/tabs/options.php:439
+#: inc/admin/tabs/fields.php:80 inc/admin/tabs/integrations.php:38
+#: inc/admin/tabs/integrations.php:74 inc/admin/tabs/options.php:183
+#: inc/admin/tabs/options.php:204 inc/admin/tabs/options.php:286
+#: inc/admin/tabs/options.php:307 inc/admin/tabs/options.php:327
+#: inc/admin/tabs/options.php:347 inc/admin/tabs/options.php:367
+#: inc/admin/tabs/options.php:387 inc/admin/tabs/options.php:417
+#: inc/admin/tabs/options.php:439
 msgid "Pro"
 msgstr "Pro"
 
@@ -1981,6 +1988,12 @@ msgstr "Element border radius"
 #: inc/class-init.php:122
 msgid "Raleway"
 msgstr "Raleway"
+
+#: inc/admin/tabs/integrations.php:78
+msgid ""
+"Recupere carrinhos e pedidos abandonados com follow up cadenciado. Envie "
+"notificações via WhatsApp de forma automática e muito mais!"
+msgstr ""
 
 #: inc/admin/tabs/about.php:25
 msgid "Recursos:"
