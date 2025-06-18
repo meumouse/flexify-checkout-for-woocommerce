@@ -7,7 +7,7 @@
  * Requires Plugins: 		woocommerce
  * Author: 					MeuMouse.com
  * Author URI: 				https://meumouse.com/
- * Version: 				4.1.0
+ * Version: 				4.1.1
  * WC requires at least: 	6.0.0
  * WC tested up to: 		9.7.1
  * Requires PHP: 			7.4
@@ -45,7 +45,7 @@ class Flexify_Checkout {
 	 * @since 1.0.0
 	 * @var string
 	 */
-	public static $version = '4.1.0';
+	public static $version = '4.1.1';
 
 	/**
 	 * Plugin initiated
@@ -59,11 +59,11 @@ class Flexify_Checkout {
 	 * Construct the plugin
 	 * 
 	 * @since 1.0.0
-	 * @version 3.9.0
+	 * @version 4.1.1
 	 * @return void
 	 */
 	public function __construct() {
-		add_action( 'plugins_loaded', array( $this, 'init' ), 99 );
+		add_action( 'woocommerce_loaded', array( $this, 'init' ), 99 );
 	}
 
 
