@@ -34,6 +34,10 @@ Você pode instalar um plugin WordPress de duas maneiras: via o painel de admini
 
 ### Registro de alterações (Changelogs):
 
+Versão 4.1.1 (18/06/2025)
+* Otimizações
+  - Function _load_textdomain_just_in_time was called incorrectly. Translation loading for the flexify-checkout-for-woocommerce domain was triggered too early
+
 Versão 4.1.0 (24/03/2025)
 * Recurso adicionado: Módulo adicional: Flexify Checkout - Recuperação de carrinhos abandonados
 
