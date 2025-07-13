@@ -9,6 +9,32 @@ defined('ABSPATH') || exit; ?>
 <div id="about" class="nav-content">
   <table class="form-table">
 	<tr>
+		<th>
+			<?php esc_html_e( 'Ativar atualizações automáticas', 'flexify-checkout-for-woocommerce' ); ?>
+			<span class="flexify-checkout-description"><?php esc_html_e( 'Ative essa opção para que o plugin Flexify Checkout seja atualizado automaticamente sempre que possível.', 'flexify-checkout-for-woocommerce' ); ?></span>
+		</th>
+		<td>
+			<div class="form-check form-switch">
+				<input type="checkbox" class="toggle-switch" id="enable_auto_updates" name="enable_auto_updates" value="yes" <?php checked( Admin_Options::get_setting('enable_auto_updates') === 'yes' ); ?> />
+			</div>
+		</td>
+	</tr>
+
+	<tr>
+		<th>
+			<?php esc_html_e( 'Mostrar notificação de atualização disponível', 'flexify-checkout-for-woocommerce' ); ?>
+			<span class="flexify-checkout-description"><?php esc_html_e( 'Ative essa opção para que seja exibido uma notificação de atualização disponível.', 'flexify-checkout-for-woocommerce' ); ?></span>
+		</th>
+		<td>
+			<div class="form-check form-switch">
+				<input type="checkbox" class="toggle-switch" id="enable_update_notices" name="enable_update_notices" value="yes" <?php checked( Admin_Options::get_setting('enable_update_notices') === 'yes' ); ?> />
+			</div>
+		</td>
+	</tr>
+
+	<tr class="container-separator"></tr>
+
+	<tr>
 		<td class="d-grid">
 			<h3 class="mb-4"><?php esc_html_e( 'Informações sobre a licença:', 'flexify-checkout-for-woocommerce' ); ?></h3>
 
@@ -422,7 +448,6 @@ defined('ABSPATH') || exit; ?>
 		<tr>
 			<td class="d-flex">
 				<a class="btn btn-sm btn-outline-danger d-flex align-items-center" target="_blank" href="https://meumouse.com/reportar-problemas/?wpf9053_2=<?php echo urlencode( FLEXIFY_CHECKOUT_ADMIN_EMAIL ); ?>&wpf9053_5=<?php echo urlencode( 'Flexify Checkout para WooCommerce' ) ?>&wpf9053_9=<?php echo urlencode( License::is_valid() ? 'Sim' : 'Não' ) ?>&wpf9053_7=<?php echo urlencode( License::get_domain() ) ?>&wpf9053_6=<?php echo urlencode( wp_get_theme()->get('Name') ) ?>"><?php esc_html_e( 'Reportar problemas', 'flexify-checkout-for-woocommerce' ); ?></a>
-				<button class="btn btn-sm btn-outline-primary ms-2" id="flexify_checkout_clear_activation_cache"><?php esc_html_e( 'Limpar cache de ativação', 'flexify-checkout-for-woocommerce' ); ?></button>
 			</td>
 		</tr>
 	</tr>

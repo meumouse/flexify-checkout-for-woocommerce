@@ -43,6 +43,7 @@ class ComposerStaticInit178be007d0b6d0c39a4c2788c7b3977c
         'MeuMouse\\Flexify_Checkout\\Core\\Init' => __DIR__ . '/../..' . '/inc/Core/Init.php',
         'MeuMouse\\Flexify_Checkout\\Core\\Logger' => __DIR__ . '/../..' . '/inc/Core/Logger.php',
         'MeuMouse\\Flexify_Checkout\\Core\\Modules' => __DIR__ . '/../..' . '/inc/Core/Modules.php',
+        'MeuMouse\\Flexify_Checkout\\Cron\\Routines' => __DIR__ . '/../..' . '/inc/Cron/Routines.php',
         'MeuMouse\\Flexify_Checkout\\Integrations\\Advanced_Nocaptcha' => __DIR__ . '/../..' . '/inc/Integrations/Advanced_Nocaptcha.php',
         'MeuMouse\\Flexify_Checkout\\Integrations\\Astra' => __DIR__ . '/../..' . '/inc/Integrations/Astra.php',
         'MeuMouse\\Flexify_Checkout\\Integrations\\Auros' => __DIR__ . '/../..' . '/inc/Integrations/Auros.php',

@@ -136,9 +136,13 @@ class Settings_Panel {
         </div>
 
         <?php
-        // Notices hook
-        do_action( 'flexify_checkout_display_admin_notices' );
-        ?>
+        /**
+         * Render custom content in header
+         * 
+         * @since 3.8.0
+         * @version 5.0.0
+         */
+        do_action('Flexify_Checkout/Settings/Header'); ?>
 
         <div class="flexify-checkout-wrapper">
             <div class="nav-tab-wrapper flexify-checkout-tab-wrapper">

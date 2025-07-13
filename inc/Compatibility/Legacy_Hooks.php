@@ -134,9 +134,9 @@ class Legacy_Hooks {
 	 */
 	protected static function get_legacy_hooks() {
 		return array(
-			'woo_custom_installments_before_installments_container' => array(
-				'new_hook' => 'Woo_Custom_Installments/Elements/Before_Installments_Container',
-				'version'  => '5.4.0',
+			'flexify_checkout_display_admin_notices' => array(
+				'new_hook' => 'Flexify_Checkout/Settings/Header',
+				'version' => '5.0.0',
             ),
         );
 	}

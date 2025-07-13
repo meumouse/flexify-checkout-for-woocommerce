@@ -28,6 +28,7 @@ return array(
     'MeuMouse\\Flexify_Checkout\\Core\\Init' => $baseDir . '/inc/Core/Init.php',
     'MeuMouse\\Flexify_Checkout\\Core\\Logger' => $baseDir . '/inc/Core/Logger.php',
     'MeuMouse\\Flexify_Checkout\\Core\\Modules' => $baseDir . '/inc/Core/Modules.php',
+    'MeuMouse\\Flexify_Checkout\\Cron\\Routines' => $baseDir . '/inc/Cron/Routines.php',
     'MeuMouse\\Flexify_Checkout\\Integrations\\Advanced_Nocaptcha' => $baseDir . '/inc/Integrations/Advanced_Nocaptcha.php',
     'MeuMouse\\Flexify_Checkout\\Integrations\\Astra' => $baseDir . '/inc/Integrations/Astra.php',
     'MeuMouse\\Flexify_Checkout\\Integrations\\Auros' => $baseDir . '/inc/Integrations/Auros.php',

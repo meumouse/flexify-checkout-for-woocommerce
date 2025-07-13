@@ -142,6 +142,8 @@ class Default_Options {
             'text_animation_process_purchase_3' => 'Finalizando seu pedido',
             'animation_process_purchase_file_3' => FLEXIFY_CHECKOUT_ASSETS . 'frontend/json/invoice-receipt.json',
             'enable_shipping_to_different_address' => 'no',
+            'enable_auto_updates' => 'no',
+            'enable_update_notices' => 'yes',
         ));
     }
 

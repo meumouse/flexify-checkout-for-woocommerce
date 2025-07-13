@@ -70,7 +70,7 @@ class License {
         add_action( 'admin_init', array( $this, 'alternative_activation_process' ) );
 
         // display require license modal before activated
-        add_action( 'flexify_checkout_display_admin_notices', array( $this, 'display_modal_license_require' ) );
+        add_action( 'Flexify_Checkout/Settings/Header', array( $this, 'display_modal_license_require' ) );
     }
 
 
@@ -805,11 +805,11 @@ class License {
                 }
         
                 if ( isset( $_POST['flexify_checkout_active_license'] ) && self::is_valid() ) {
-                    add_action( 'flexify_checkout_display_admin_notices', array( $this, 'activated_license_notice' ) );
+                    add_action( 'Flexify_Checkout/Settings/Header', array( $this, 'activated_license_notice' ) );
                 }
             } else {
                 if ( ! empty( $license_key ) && ! empty( $this->license_message ) ) {
-                    add_action( 'flexify_checkout_display_admin_notices', array( $this, 'display_license_messages' ) );
+                    add_action( 'Flexify_Checkout/Settings/Header', array( $this, 'display_license_messages' ) );
                 }
             }
         }
@@ -839,14 +839,14 @@ class License {
 
         // stop if this site is not same from license site
         if ( $this_domain !== $license_data_array->site_domain ) {
-            add_action( 'flexify_checkout_display_admin_notices', array( $this, 'not_allowed_site_notice' ) );
+            add_action( 'Flexify_Checkout/Settings/Header', array( $this, 'not_allowed_site_notice' ) );
 
             return;
         }
 
         // stop if product license is not same this product
         if ( ! in_array( $license_data_array->selected_product, $allowed_products ) ) {
-            add_action( 'flexify_checkout_display_admin_notices', array( $this, 'not_allowed_product_notice' ) );
+            add_action( 'Flexify_Checkout/Settings/Header', array( $this, 'not_allowed_product_notice' ) );
 
             return;
         }
@@ -875,7 +875,7 @@ class License {
             update_option( 'flexify_checkout_license_status', 'valid' );
             delete_option('flexify_checkout_alternative_license_decrypted');
 
-            add_action( 'flexify_checkout_display_admin_notices', array( $this, 'activated_license_notice' ) );
+            add_action( 'Flexify_Checkout/Settings/Header', array( $this, 'activated_license_notice' ) );
         }
     }
 
