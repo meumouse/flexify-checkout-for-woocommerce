@@ -20,16 +20,34 @@ defined('ABSPATH') || exit;
  * @see https://docs.woocommerce.com/document/template-structure/
  * @package MeuMouse.com
  * @since 1.0.0
- * @version 3.8.0
+ * @version 5.0.0
  */
 
 // Exit if accessed directly.
-defined('ABSPATH') || exit; ?>
+defined('ABSPATH') || exit;
+
+if ( empty( $order ) ) {
+    // Se você estiver usando pretty permalinks
+    $order_id = absint( get_query_var( 'order-received' ) );
+
+    // Ou, se preferir, use $_GET:
+    if ( ! $order_id && isset( $_GET['order-received'] ) ) {
+        $order_id = absint( $_GET['order-received'] );
+    }
+
+    $order = $order_id ? wc_get_order( $order_id ) : false;
+}
+
+// Se ainda não tiver um WC_Order válido, aborta a renderização
+if ( ! $order instanceof WC_Order ) :
+    return;
+endif; ?>
 
 <div class="flexify-common-wrap">
 	<?php 
 		Steps::render_header();
 		Thankyou::render_status( $order );
+
 		do_action( 'woocommerce_thankyou_' . $order->get_payment_method(), $order->get_id() );
 		do_action( 'woocommerce_thankyou', $order->get_id() ); ?>
 

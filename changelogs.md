@@ -1,3 +1,9 @@
+Versão 5.0.0 (14/07/2025)
+* Correção de bugs
+* Otimizações
+* Mudança de arquitetura para MACI (Modular Autoload Class Initialization)
+* Recurso adicionado: Ativar atualizações automáticas
+
 Versão 4.1.1 (18/06/2025)
 * Otimizações
   - Function _load_textdomain_just_in_time was called incorrectly. Translation loading for the flexify-checkout-for-woocommerce domain was triggered too early

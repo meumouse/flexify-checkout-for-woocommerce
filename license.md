@@ -1,24 +1,42 @@
-GNU GENERAL PUBLIC LICENSE
-Version 2, June 1991
+End-User License Agreement (EULA)
+IMPORTANT: Please read carefully before using this software.
 
-Copyright (C) 1989, 1991 Free Software Foundation, Inc.  
-51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
+This End-User License Agreement ("Agreement") is a legal agreement between you (either an individual or an entity) and MeuMouse.com ("Licensor") for the use of the software Flexify Checkout para WooCommerce ("Software").
 
-Everyone is permitted to copy and distribute verbatim copies
-of this license document, but changing it is not allowed.
-Preamble
-The licenses for most software are designed to take away your freedom to share and change it. By contrast, the GNU General Public License is intended to guarantee your freedom to share and change free software--to make sure the software is free for all its users. This General Public License applies to most of the Free Software Foundation's software and to any other program whose authors commit to using it. (Some other Free Software Foundation software is covered by the GNU Lesser General Public License instead.) You can apply it to your programs, too.
+1. Grant of License
+The Licensor grants you a limited, non-exclusive, non-transferable, and revocable license to use the Software solely for internal purposes, in accordance with the terms of this Agreement.
 
-When we speak of free software, we are referring to freedom, not price. Our General Public Licenses are designed to make sure that you have the freedom to distribute copies of free software (and charge for this service if you wish), that you receive source code or can get it if you want it, that you can change the software or use pieces of it in new free programs; and that you know you can do these things.
+2. Restrictions
+You may not:
 
-To protect your rights, we need to make restrictions that forbid anyone to deny you these rights or to ask you to surrender the rights. These restrictions translate to certain responsibilities for you if you distribute copies of the software, or if you modify it.
+Copy, reproduce, distribute, or disclose the Software or any part of it without the express prior written consent of the Licensor.
 
-For example, if you distribute copies of such a program, whether gratis or for a fee, you must give the recipients all the rights that you have. You must make sure that they, too, receive or can get the source code. And you must show them these terms so they know their rights.
+Modify, adapt, translate, reverse engineer, decompile, or create derivative works based on the Software.
 
-We protect your rights with two steps: (1) copyright the software, and (2) offer you this license which gives you legal permission to copy, distribute and/or modify the software.
+Rent, lease, sell, sublicense, assign, or transfer any rights to the Software to any third party.
 
-Also, for each author's protection and ours, we want to make certain that everyone understands that there is no warranty for this free software. If the software is modified by someone else and passed on, we want its recipients to know that what they have is not the original, so that any problems introduced by others will not reflect on the original authors' reputations.
+Use the Software in any manner that violates applicable laws or infringes the rights of third parties.
 
-Finally, any free program is threatened constantly by software patents. We wish to avoid the danger that redistributors of a free program will individually obtain patent licenses, in effect making the program proprietary. To prevent this, we have made it clear that any patent must be licensed for everyone's free use or not licensed at all.
+3. Intellectual Property
+The Software is protected by copyright laws and international intellectual property treaties. All rights, titles, and interests in and to the Software, including its source code, interfaces, and documentation, remain exclusively with the Licensor.
 
-The precise terms and conditions for copying, distribution and modification follow.
+4. Updates
+Any updates or upgrades provided by the Licensor shall be subject to the terms of this Agreement, unless otherwise specified.
+
+5. Disclaimer of Warranties
+The Software is provided "as is," without warranties of any kind, either express or implied, including but not limited to warranties of merchantability, fitness for a particular purpose, or non-infringement.
+
+6. Limitation of Liability
+In no event shall the Licensor be liable for any direct, indirect, incidental, special, or consequential damages arising out of or related to the use or inability to use the Software.
+
+7. Termination
+This Agreement will automatically terminate if you breach any of its terms. Upon termination, you must immediately cease all use of the Software and destroy all copies in your possession.
+
+8. General Provisions
+This Agreement constitutes the entire agreement between the parties.
+
+Any dispute arising under or in connection with this Agreement shall be resolved under the laws of Brazil, in the jurisdiction of the court located in Colombo, Paraná, Brazil.
+
+9. Licensor Information
+Licensor: MeuMouse.com
+Address: Rua Leonor Dugonski, 212, Colombo, Paraná, Brazil

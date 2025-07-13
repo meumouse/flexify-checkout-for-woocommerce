@@ -1,6 +1,6 @@
 <?php
 
-use MeuMouse\Flexify_Checkout\Helpers;
+use MeuMouse\Flexify_Checkout\Core\Helpers;
 
 /**
  * Template for empty cart
