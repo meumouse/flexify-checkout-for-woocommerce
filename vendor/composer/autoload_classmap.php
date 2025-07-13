@@ -71,6 +71,8 @@ return array(
     'MeuMouse\\Flexify_Checkout\\Integrations\\Virtue' => $baseDir . '/inc/Integrations/Virtue.php',
     'MeuMouse\\Flexify_Checkout\\Integrations\\Woo_Subscriptions' => $baseDir . '/inc/Integrations/Woo_Subscriptions.php',
     'MeuMouse\\Flexify_Checkout\\Integrations\\Woodmart' => $baseDir . '/inc/Integrations/Woodmart.php',
+    'MeuMouse\\Flexify_Checkout\\Validations\\ISO3166' => $baseDir . '/inc/Validations/ISO3166.php',
     'MeuMouse\\Flexify_Checkout\\Views\\Components' => $baseDir . '/inc/Views/Components.php',
+    'MeuMouse\\Flexify_Checkout\\Views\\Settings\\Settings_Panel' => $baseDir . '/inc/Views/Settings/Settings_Panel.php',
     'MeuMouse\\Flexify_Checkout\\Views\\Styles' => $baseDir . '/inc/Views/Styles.php',
 );

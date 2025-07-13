@@ -10,7 +10,7 @@ use MeuMouse\Flexify_Checkout\Checkout\Themes;
 defined('ABSPATH') || exit;
 
 /**
- * Enqueue styles on checkout
+ * Handle with plugin styles
  *
  * @since 5.0.0
  * @package MeuMouse.com
@@ -296,5 +296,41 @@ class Styles {
 		$css = wp_strip_all_tags( $css );
 
 		return $css;
+	}
+
+
+	/**
+	 * Display badge in CSS for get pro in plugins page
+	 * 
+	 * @since 3.3.0
+	 * @version 5.0.0
+	 * @return void
+	 */
+	public static function be_pro_styles() {
+		ob_start(); ?>
+
+		#get-pro-flexify-checkout {
+			display: inline-block;
+			padding: 0.35em 0.6em;
+			font-size: 0.8125em;
+			font-weight: 600;
+			line-height: 1;
+			color: #fff;
+			text-align: center;
+			white-space: nowrap;
+			vertical-align: baseline;
+			border-radius: 0.25rem;
+			background-color: #008aff;
+			transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;
+		}
+
+		#get-pro-flexify-checkout:hover {
+			background-color: #0078ed;
+		}
+
+		<?php $css = ob_get_clean();
+		$css = wp_strip_all_tags( $css );
+
+		printf( __('<style>%s</style>'), $css );
 	}
 }

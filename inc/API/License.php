@@ -1122,9 +1122,3 @@ class License {
         <?php
     }
 }
-
-new License();
-
-if ( ! class_exists('MeuMouse\Flexify_Checkout\License\License') ) {
-    class_alias( 'MeuMouse\Flexify_Checkout\License', 'MeuMouse\Flexify_Checkout\License\License' );
-}

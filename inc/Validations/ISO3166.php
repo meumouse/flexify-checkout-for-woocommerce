@@ -1,6 +1,6 @@
 <?php
 
-namespace MeuMouse\Flexify_Checkout\Checkout;
+namespace MeuMouse\Flexify_Checkout\Validations;
 
 // Exit if accessed directly.
 defined('ABSPATH') || exit;

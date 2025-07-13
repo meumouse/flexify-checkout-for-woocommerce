@@ -1,7 +1,7 @@
 <?php
 
 use MeuMouse\Flexify_Checkout\Admin\Admin_Options;
-use MeuMouse\Flexify_Checkout\License;
+use MeuMouse\Flexify_Checkout\API\License;
 
 // Exit if accessed directly.
 defined('ABSPATH') || exit; ?>
@@ -32,9 +32,12 @@ defined('ABSPATH') || exit; ?>
 
 			<?php if ( License::is_valid() ) :
 				$license_key = get_option('flexify_checkout_license_key');
+				$object_query = get_option('flexify_checkout_license_response_object');
 
 				if ( strpos( $license_key, 'CM-' ) === 0 ) : ?>
 					<span class="mb-2"><?php echo sprintf( esc_html__( 'Assinatura: Clube M - %s', 'flexify-checkout-for-woocommerce' ), License::license_title() ) ?></span>
+				<?php elseif ( is_object( $object_query ) && ! empty( $object_query ) && isset( $object_query->expire_date ) && $object_query->expire_date !== 'No expiry' ) : ?>
+					<span class="mb-2"><?php echo sprintf( esc_html__( 'Assinatura: %s', 'flexify-checkout-for-woocommerce' ), License::license_title() ) ?></span>
 				<?php else : ?>
 					<span class="mb-2"><?php echo sprintf( esc_html__( 'Tipo da licença: %s', 'flexify-checkout-for-woocommerce' ), License::license_title() ) ?></span>
 				<?php endif; ?>
@@ -43,7 +46,7 @@ defined('ABSPATH') || exit; ?>
 				
 				<span class="mb-2"><?php esc_html_e( 'Sua chave de licença:', 'flexify-checkout-for-woocommerce' ) ?>
 					<?php if ( ! empty( $license_key ) ) :
-						echo esc_attr( substr( $license_key, 0, 9 ) . "XXXXXXXX-XXXXXXXX" . substr( $license_key, -9 ) );
+						echo esc_html( substr( $license_key, 0, 9 ) . "XXXXXXXX-XXXXXXXX" . substr( $license_key, -9 ) );
 					else :
 						esc_html_e(  'Não disponível', 'flexify-checkout-for-woocommerce' );
 					endif; ?>

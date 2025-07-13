@@ -86,7 +86,9 @@ class ComposerStaticInit178be007d0b6d0c39a4c2788c7b3977c
         'MeuMouse\\Flexify_Checkout\\Integrations\\Virtue' => __DIR__ . '/../..' . '/inc/Integrations/Virtue.php',
         'MeuMouse\\Flexify_Checkout\\Integrations\\Woo_Subscriptions' => __DIR__ . '/../..' . '/inc/Integrations/Woo_Subscriptions.php',
         'MeuMouse\\Flexify_Checkout\\Integrations\\Woodmart' => __DIR__ . '/../..' . '/inc/Integrations/Woodmart.php',
+        'MeuMouse\\Flexify_Checkout\\Validations\\ISO3166' => __DIR__ . '/../..' . '/inc/Validations/ISO3166.php',
         'MeuMouse\\Flexify_Checkout\\Views\\Components' => __DIR__ . '/../..' . '/inc/Views/Components.php',
+        'MeuMouse\\Flexify_Checkout\\Views\\Settings\\Settings_Panel' => __DIR__ . '/../..' . '/inc/Views/Settings/Settings_Panel.php',
         'MeuMouse\\Flexify_Checkout\\Views\\Styles' => __DIR__ . '/../..' . '/inc/Views/Styles.php',
     );
 

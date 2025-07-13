@@ -1,6 +1,6 @@
 <?php
 
-use MeuMouse\Flexify_Checkout\License;
+use MeuMouse\Flexify_Checkout\API\License;
 
 /**
  * Template for display integrations options

@@ -1,7 +1,7 @@
 <?php
 
 use MeuMouse\Flexify_Checkout\Admin\Admin_Options;
-use MeuMouse\Flexify_Checkout\License;
+use MeuMouse\Flexify_Checkout\API\License;
 
 // Exit if accessed directly.
 defined('ABSPATH') || exit; ?>

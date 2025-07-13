@@ -147,7 +147,7 @@ class Flexify_Checkout {
 			'FLEXIFY_CHECKOUT_ASSETS' => $base_url . 'assets/',
 			'FLEXIFY_CHECKOUT_ABSPATH' => dirname( $base_file ) . '/',
 			'FLEXIFY_CHECKOUT_TEMPLATES_DIR' => $base_dir . 'templates/',
-			'FLEXIFY_CHECKOUT_SETTINGS_TABS_DIR' => $base_url . 'inc/Views/Settings/Tabs/',
+			'FLEXIFY_CHECKOUT_SETTINGS_TABS_DIR' => $base_dir . 'inc/Views/Settings/Tabs/',
 			'FLEXIFY_CHECKOUT_SLUG' => self::$slug,
 			'FLEXIFY_CHECKOUT_VERSION' => self::$version,
 			'FLEXIFY_CHECKOUT_ADMIN_EMAIL' => get_option('admin_email'),

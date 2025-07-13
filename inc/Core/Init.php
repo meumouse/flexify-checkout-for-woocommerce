@@ -41,6 +41,9 @@ class Init {
     public function __construct() {
         load_plugin_textdomain( 'flexify-checkout-for-woocommerce', false, dirname( $this->basename ) . '/languages/' );
 
+		// load plugin functions
+		include_once( FLEXIFY_CHECKOUT_INC_PATH . 'Core/Functions.php' );
+
         // load WordPress plugin class if function is_plugin_active() is not defined
         if ( ! function_exists('is_plugin_active') ) {
             include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
@@ -103,7 +106,7 @@ class Init {
 
 			// remove Pro badge if plugin is licensed
 			if ( get_option('flexify_checkout_license_status') !== 'valid' && false !== strpos( $url, 'wp-admin/plugins.php' ) ) {
-				add_filter( 'plugin_action_links_' . $this->basename, array( $this, 'be_pro_link' ), 10, 4 );
+				add_filter( 'plugin_action_links_' . $this->basename, array( '\MeuMouse\Flexify_Checkout\Views\Styles', 'be_pro_link' ), 10, 4 );
 				add_action( 'admin_head', array( $this, 'be_pro_styles' ) );
 			}
         } else {
@@ -260,42 +263,6 @@ class Init {
 	}
 
 
-	/**
-	 * Display badge in CSS for get pro in plugins page
-	 * 
-	 * @since 3.3.0
-	 * @version 5.0.0
-	 * @return void
-	 */
-	public function be_pro_styles() {
-		ob_start(); ?>
-
-		#get-pro-flexify-checkout {
-			display: inline-block;
-			padding: 0.35em 0.6em;
-			font-size: 0.8125em;
-			font-weight: 600;
-			line-height: 1;
-			color: #fff;
-			text-align: center;
-			white-space: nowrap;
-			vertical-align: baseline;
-			border-radius: 0.25rem;
-			background-color: #008aff;
-			transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;
-		}
-
-		#get-pro-flexify-checkout:hover {
-			background-color: #0078ed;
-		}
-
-		<?php $css = ob_get_clean();
-		$css = wp_strip_all_tags( $css );
-
-		printf( __('<style>%s</style>'), $css );
-	}
-
-
     /**
      * Instance classes after load Composer
      * 
@@ -314,6 +281,7 @@ class Init {
             '\MeuMouse\Flexify_Checkout\Compatibility\Legacy_Hooks',
             '\MeuMouse\Flexify_Checkout\API\License',
             '\MeuMouse\Flexify_Checkout\Admin\Admin_Options',
+			'\MeuMouse\Flexify_Checkout\Views\Settings\Settings_Panel',
             '\MeuMouse\Flexify_Checkout\Core\Assets',
             '\MeuMouse\Flexify_Checkout\Core\Ajax',
             '\MeuMouse\Flexify_Checkout\Views\Styles',
