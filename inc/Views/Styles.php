@@ -17,6 +17,14 @@ defined('ABSPATH') || exit;
  */
 class Styles {
 
+	/**
+	 * Define assets URL directory
+	 * 
+	 * @since 5.0.0
+	 * @return string
+	 */
+	public static $assets_url = FLEXIFY_CHECKOUT_ASSETS;
+
     /**
      * Construct function
      *
@@ -281,7 +289,7 @@ class Styles {
 			<?php endif; ?>
 
 			.processing .blockUI.blockOverlay {
-  				background-image: url("<?php echo esc_attr( $this->assets_url . 'frontend/img/loader.gif' ); ?>") !important;
+  				background-image: url("<?php echo esc_attr( self::$assets_url . 'frontend/img/loader.gif' ); ?>") !important;
 			}
 		<?php endif;
 

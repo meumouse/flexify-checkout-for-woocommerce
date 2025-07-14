@@ -5,6 +5,7 @@ namespace MeuMouse\Flexify_Checkout\Core;
 use MeuMouse\Flexify_Checkout\Admin\Admin_Options;
 use MeuMouse\Flexify_Checkout\API\License;
 
+use MeuMouse\Flexify_Checkout\Checkout\Themes;
 use MeuMouse\Flexify_Checkout\Checkout\Steps;
 use MeuMouse\Flexify_Checkout\Checkout\Fields;
 use MeuMouse\Flexify_Checkout\Checkout\Conditions;
@@ -43,7 +44,7 @@ class Assets {
 
 		$max_priority = defined('PHP_INT_MAX') ? PHP_INT_MAX : 2147483647;
 
-		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'frontend_assets' ), $max_priority );
+		add_action( 'wp_enqueue_scripts', array( $this, 'frontend_assets' ), $max_priority );
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_assets' ) );
 
 		// remove password strenght
@@ -77,7 +78,7 @@ class Assets {
 	 * @version 5.0.0
 	 * @return void
 	 */
-	public static function frontend_assets() {
+	public function frontend_assets() {
 		if ( ! defined( 'IS_FLEXIFY_CHECKOUT' ) || ! IS_FLEXIFY_CHECKOUT ) {
 			return;
 		}

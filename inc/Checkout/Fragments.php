@@ -2,6 +2,9 @@
 
 namespace MeuMouse\Flexify_Checkout\Checkout;
 
+use MeuMouse\Flexify_Checkout\Admin\Admin_Options;
+use MeuMouse\Flexify_Checkout\Core\Helpers;
+
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
 

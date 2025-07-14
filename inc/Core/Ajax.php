@@ -24,7 +24,7 @@ class Ajax {
 	 * Construct function
 	 * 
 	 * @since 1.0.0
-	 * @version 3.9.8
+	 * @version 5.0.0
 	 * @return void
 	 */
 	public function __construct() {
@@ -109,14 +109,6 @@ class Ajax {
 		// set customer data on checkout session
 		add_action( 'wp_ajax_get_checkout_session_data', array( $this, 'get_checkout_session_data_callback' ) );
 		add_action( 'wp_ajax_nopriv_get_checkout_session_data', array( $this, 'get_checkout_session_data_callback' ) );
-
-		// set cart items data on checkout session
-		add_action( 'wp_ajax_get_product_cart_session_data', array( $this, 'get_product_cart_session_data_callback' ) );
-		add_action( 'wp_ajax_nopriv_get_product_cart_session_data', array( $this, 'get_product_cart_session_data_callback' ) );
-
-		// set entry time on checkout session
-		add_action( 'wp_ajax_set_checkout_entry_time', array( $this, 'set_checkout_entry_time_callback' ) );
-		add_action( 'wp_ajax_nopriv_set_checkout_entry_time', array( $this, 'set_checkout_entry_time_callback' ) );
 
 		// enable AJAX request for autofill company field on digit CNPJ
 		if ( Admin_Options::get_setting('enable_autofill_company_info') === 'yes' && License::is_valid() ) {
@@ -1259,105 +1251,6 @@ class Ajax {
 
 		WC()->session->set( 'flexify_checkout_customer_fields', $session_data );
 		WC()->session->set( 'flexify_checkout_ship_different_address', $ship_to_different_address );
-	}
-
-
-	/**
-	 * Get product cart data from checkout session in AJAX callback
-	 * 
-	 * @since 3.5.0
-	 * @version 3.9.8
-	 * @return void
-	 */
-	public function get_product_cart_session_data_callback() {
-		$cart_items = WC()->cart->get_cart();
-		$items = array();
-	
-		foreach ( $cart_items as $cart_item_key => $cart_item ) {
-			$product = $cart_item['data'];
-			$product_id = $product->get_id();
-			$quantity = $cart_item['quantity'];
-			
-			if ( $product->is_type('variable') ) {
-				$variation_id = $cart_item['variation_id'];
-				$variation_data = wc_get_product( $variation_id )->get_variation_attributes();
-				$items[] = array(
-					'product_name' => $product->get_title(),
-					'product_id' => $product_id,
-					'variation_id' => $variation_id,
-					'quantity' => $quantity,
-					'variation_data' => $variation_data,
-				);
-			} else {
-				$items[] = array(
-					'product_name' => $product->get_title(),
-					'product_id' => $product_id,
-					'quantity' => $quantity,
-				);
-			}
-		}
-	
-		// Get selected payment method
-		$payment_method = WC()->session->get('chosen_payment_method');
-		$payment_method_label = __( 'Nenhuma forma de pagamento selecionada', 'flexify-checkout-for-woocommerce' );
-
-		if ( $payment_method ) {
-			$available_gateways = WC()->payment_gateways()->get_available_payment_gateways();
-
-			if ( isset( $available_gateways[$payment_method] ) ) {
-				$payment_method_label = $available_gateways[$payment_method]->get_title();
-			}
-		}
-	
-		$session_data = array(
-			'items' => $items,
-			'shipping_method' => array(
-				'id' => WC()->session->get('chosen_shipping_methods'),
-				'label' => Helpers::get_selected_shipping_method_name(),
-			),
-			'payment_method' => array(
-				'id' => $payment_method,
-				'label' => $payment_method_label,
-			),
-			'checkout_entry_time' => WC()->session->get('checkout_entry_time'),
-		);
-	
-		WC()->session->set( 'flexify_checkout_items_cart', $session_data );
-	
-		$response = array(
-			'status' => 'success',
-			'data' => $session_data,
-		);
-	
-		wp_send_json( $response );
-	}
-	
-
-	/**
-	 * Set entry time on checkout session in AJAX callback
-	 * 
-	 * @since 3.5.0
-	 * @version 3.9.8
-	 * @return void
-	 */
-	public function set_checkout_entry_time_callback() {
-		if ( isset( $_POST['entry_time'] ) && $_POST['entry_time'] === 'yes' ) {
-			$current_time = current_time('mysql');
-			$entry_time_formatted = date_i18n( get_option('date_format') . ' ' . get_option('time_format'), strtotime( $current_time ) );
-
-			WC()->session->set('checkout_entry_time', $entry_time_formatted);
-
-			$response = array(
-				'status' => 'success',
-				'data' => $entry_time_formatted,
-			);
-		} else {
-			$response = array(
-				'status' => 'error',
-			);
-		}
-
-		wp_send_json( $response );
 	}
 
 

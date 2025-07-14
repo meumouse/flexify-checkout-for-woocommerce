@@ -288,6 +288,8 @@ class Init {
             '\MeuMouse\Flexify_Checkout\Cron\Routines',
 			'\MeuMouse\Flexify_Checkout\Checkout\Login',
 			'\MeuMouse\Flexify_Checkout\Checkout\Templates',
+            '\MeuMouse\Flexify_Checkout\Checkout\Themes',
+            '\MeuMouse\Flexify_Checkout\Checkout\Sidebar',
 			'\MeuMouse\Flexify_Checkout\Checkout\Conditions',
 			'\MeuMouse\Flexify_Checkout\Checkout\Fragments',
         	'\MeuMouse\Flexify_Checkout\API\Updater',

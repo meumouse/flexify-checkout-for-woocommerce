@@ -1,8 +1,8 @@
 <?php
 
 use MeuMouse\Flexify_Checkout\Core\Helpers;
-use MeuMouse\Flexify_Checkout\Steps;
-use MeuMouse\Flexify_Checkout\Thankyou;
+use MeuMouse\Flexify_Checkout\Checkout\Steps;
+use MeuMouse\Flexify_Checkout\Checkout\Thankyou;
 
 /**
  * Pay for order form

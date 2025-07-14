@@ -2253,50 +2253,6 @@ jQuery(document).ready( function($) {
 });
 
 /**
- * Send cart products to "flexify_checkout" session
- * 
- * @since 3.5.0
- */
-jQuery(document).ready( function($) {
-  jQuery(document.body).on('updated_checkout', function() {
-      $.ajax({
-          url: wc_checkout_params.ajax_url,
-          type: 'POST',
-          data: {
-              action: 'get_product_cart_session_data',
-          },
-          success: function(response) {
-            //  console.log('Sessão flexify_checkout atualizada com sucesso.', response);
-          },
-          error: function(error) {
-              console.log('Erro ao atualizar a sessão flexify_checkout.', error);
-          }
-      });
-  });
-});
-
-/**
- * Get entry time on checkout session
- * 
- * @since 3.5.0
- */
-jQuery(document).ready( function($) {
-  $.ajax({
-      url: wc_checkout_params.ajax_url,
-      type: 'POST',
-      data: {
-          action: 'set_checkout_entry_time',
-          entry_time: 'yes',
-      },
-      success: function(response) {
-      },
-      error: function(error) {
-          console.log('Erro ao registrar a data e hora de entrada no checkout.', error);
-      }
-  });
-});
-
-/**
  * Add class on selected shipping method
  * 
  * @since 3.5.0

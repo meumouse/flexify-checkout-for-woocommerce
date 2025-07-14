@@ -1,7 +1,7 @@
 <?php
 
-use MeuMouse\Flexify_Checkout\Sidebar;
-use MeuMouse\Flexify_Checkout\Steps;
+use MeuMouse\Flexify_Checkout\Checkout\Sidebar;
+use MeuMouse\Flexify_Checkout\Checkout\Steps;
 
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
