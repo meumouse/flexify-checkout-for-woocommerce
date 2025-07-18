@@ -122,7 +122,7 @@ class Ajax {
 	 * Check for inline errors
 	 * 
 	 * @since 1.0.0
-	 * @version 3.9.8
+	 * @version 5.0.0
 	 * @return void
 	 */
 	public static function check_for_inline_errors() {
@@ -150,8 +150,6 @@ class Ajax {
 		);
 
 		wp_send_json_success( $messages );
-		
-		exit;
 	}
 
 

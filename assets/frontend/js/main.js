@@ -478,20 +478,21 @@
 				});
 
 				// send AJAX request and return jqXHR
-				Flexify_Checkout.Helpers.ajaxRequestWoo(
+				Flexify_Checkout.Helpers.ajaxRequest(
 					{
 						action: 'flexify_check_for_inline_errors',
 						fields: inputs,
-						'email': $('#billing_email').val(),
+						email: $('#billing_email').val(),
 					},
+					null,
 					function(response) {
 						var messages = response.data;
 
-						// Update the inline validation messages for each field.
+						// Update the inline validation messages for each field
 						Object.entries(messages).forEach( function(object) {
 							var key = object[0];
 							var value = object[1];
-							var field = document.querySelector('[name="' + key + '"]');
+							var field = document.querySelector(`[name="${key}"]`);
 							
 							if ( ! field ) {
 								return;
@@ -535,10 +536,10 @@
 
 				// Check password strength if set.
 				if ( fields[0] ) {
-					var stepContainer = fields[0].closest('[data-step]');
+					var step_container = fields[0].closest('[data-step]');
 					
-					if (stepContainer) {
-						var passwords = stepContainer.querySelectorAll('#account_password');
+					if ( step_container ) {
+						var passwords = step_container.querySelectorAll('#account_password');
 
 						Array.from(passwords).forEach( function(password) {
 							var account_fields = password.closest('.woocommerce-account-fields');
@@ -599,25 +600,26 @@
 			},
 
 			/**
-			 * Validate a single intl-tel-input field
+			 * Validate a intl-tel-input field
 			 *
 			 * @since 1.0.0
 			 * @version 5.0.0
+			 * @param {object} e | Event object
 			 * @return {void}
 			 */
-			validatePhone: function() {
+			validateInternationalPhone: function(e) {
 				const input = $(this);
 				const val = input.val().trim();
 				const row = input.closest('.form-row');
 				const iti = input.data('itiInstance');
 
-				// evita validar campos sem edição
+				// prevent validate fields without changed
 				if ( ! row.hasClass('has-changed') && val.length < 4 ) {
 					row.removeClass('woocommerce-validated woocommerce-invalid');
 					return;
 				}
 
-				// aguarda o utils carregar
+				// wait load utils
 				if ( iti && iti.promise ) {
 					iti.promise.then(() => {
 						const is_valid = iti.isValidNumber();
@@ -636,9 +638,10 @@
 			 *
 			 * @since 1.0.0
 			 * @version 5.0.0
+			 * @param {object} e | Event object
 			 * @return {void}
 			 */
-			markPhoneChanged: function() {
+			markInternationalPhoneChanged: function(e) {
 				if ( $(this).val().trim() ) {
 					$(this).closest('.form-row').addClass('has-changed');
 				}
@@ -1157,6 +1160,38 @@
 			},
 
 			/**
+			 * Trigger event fired on select shipping method
+			 * 
+			 * @since 5.0.0
+			 * @return void
+			 */
+			onSelectShippingMethod: function() {
+				// Event listener for clicks on .shipping-method-item
+				$(document).on('click', '.shipping-method-item', function(e) {
+					// Prevent default action if the click target is the input or label to avoid double triggering
+					if ( $(e.target).is('input') || $(e.target).is('label') ) {
+						return;
+					}
+
+					Flexify_Checkout.Shippings.selectShippingMethod();
+
+					// Find the input radio inside the clicked .shipping-method-item and click it
+					$(this).find('input[type="radio"]').prop('checked', true).trigger('change');
+				});
+
+				// Check again when the shipping method input changes
+				$(document).on('change', 'input.shipping_method', function() {
+					Flexify_Checkout.Shippings.selectShippingMethod();
+				});
+
+				// on change shipping method
+				$(document.body).on('change', 'input.shipping_method', function() {
+					Flexify_Checkout.Shippings.selectShippingMethod();
+					Flexify_Checkout.Sidebar.updateSidebarTotal();
+				});
+			},
+
+			/**
 			 * Initialize module
 			 * 
 			 * @since 5.0.0
@@ -1165,6 +1200,10 @@
 				this.onUpdatedCheckout();
 				this.onCheckoutError();
 				this.onFragmentsUpdated();
+				this.onSelectShippingMethod();
+
+				// Trigger country to state change event on page load
+				$(document.body).trigger('country_to_state_changed');
 			},
 		},
 
@@ -1652,10 +1691,11 @@
 		localStorage: {
 
 			/**
-			 * Load data from local storage browser when page is loaded
+			 * Load data from local storage when page is loaded
 			 * 
 			 * @since 1.0.0
 			 * @version 5.0.0
+			 * @return {void}
 			 */
 			loadData: function() {
 				const json = localStorage.getItem('flexify_checkout_form_data');
@@ -1665,92 +1705,123 @@
 					return;
 				}
 
-				const single_checkbox = ['order_notes_switch', 'show_shipping'];
-				const data = JSON.parse(json);
+				let data;
 
-				if ( typeof data !== 'object' ) {
+				try {
+					data = JSON.parse(json);
+				} catch {
 					return;
 				}
 
-				data.forEach(fieldData => {
-					const field = form.querySelector('[name="' + window.CSS.escape(fieldData.name) + '"]');
+				// only fields whitelisted for localStorage
+				const fields = params.localstorage_fields || [];
+
+				Object.entries(data).forEach(([name, value]) => {
+					if ( ! fields.includes(name) ) {
+						return;
+					}
+
+					const field = form.elements[name];
 
 					if ( ! field ) {
 						return;
 					}
 
-					if ( params.localstorage_fields.includes(fieldData.name) && fieldData.value && ! field.value ) {
-						field.value = fieldData.value;
-						field.dispatchEvent( new Event('change') );
+					// skip non-primitive values
+					if ( value == null || ( typeof value !== 'string' && typeof value !== 'number' ) ) {
+						return;
 					}
 
-					if ( single_checkbox.includes(fieldData.name) && fieldData.value === 'on' ) {
-						field.checked = true;
-						field.dispatchEvent( new Event('change') );
+					// assign based on field type
+					if ( field.type === 'checkbox' ) {
+						field.checked = ( value === 'on' );
+					} else if (field.tagName === 'SELECT') {
+						// only set if the option exists
+						if ( [...field.options].some(opt => opt.value === String(value)) ) {
+							field.value = String(value);
+						}
+					} else if ( field.type === 'radio' ) {
+						const radios = form.querySelectorAll(
+							`input[name="${CSS.escape(name)}"][type="radio"]`
+						);
+						
+						radios.forEach(r => r.checked = (r.value === String(value)));
+					} else {
+						field.value = String(value);
 					}
+
+					// trigger any dependent logic
+					field.dispatchEvent( new Event('change', { bubbles: true }) );
 				});
 			},
 
 			/**
-			 * Listen changes
+			 * Listen for change events on checkout form and save to local storage
 			 * 
 			 * @since 1.0.0
 			 * @version 5.0.0
+			 * @param {Event} e | Change event
+			 * @return {void}
 			 */
-			onChange: function() {
-				// map selectors
-				const inputs = document.querySelectorAll('form.checkout input, form.checkout textarea, form.checkout select');
+			onChange: function(e) {
+				const form = e.target.closest('form.checkout');
 
-				// listen changes
-				inputs.forEach( input => {
-					input.addEventListener('change', () => {
-						const form = input.closest('form');
+				if ( ! form ) {
+					return;
+				}
 
-						if ( ! form ) {
+				const data = {};
+				const fields = params.localstorage_fields || [];
+
+				Array.from(form.elements).forEach(el => {
+					if (! el.name || ! fields.includes(el.name)) {
+						return;
+					}
+
+					let val;
+
+					if ( el.type === 'checkbox' ) {
+						val = el.checked ? 'on' : '';
+					} else if ( el.type === 'radio' ) {
+						if (! el.checked) {
 							return;
 						}
 
-						const form_data = this.serializeData(form);
-						const json = JSON.stringify(form_data);
-
-						localStorage.setItem('flexify_checkout_form_data', json);
-					});
-				});
-			},
-
-			/**
-			 * Serialize form data
-			 * 
-			 * @since 1.0.0
-			 * @version 5.0.0
-			 * @param {object} formElement | Form element object
-			 * @return {array}
-			 */
-			serializeData: function( formElement ) {
-				const values = [];
-				const inputs = formElement.elements;
-
-				for ( let i = 0; i < inputs.length; i++ ) {
-					if (inputs[i].name) {
-						values.push({
-							name: inputs[i].name,
-							value: inputs[i].type === 'checkbox' ? inputs[i].checked ? 'on' : '' : inputs[i].value,
-						});
+						val = el.value;
+					} else {
+						val = el.value;
 					}
-				}
 
-				return values;
+					// ensure primitive before saving
+					if ( val == null || ( typeof val !== 'string' && typeof val !== 'number' ) ) {
+						return;
+					}
+
+					data[el.name] = String(val);
+				});
+
+				localStorage.setItem( 'flexify_checkout_form_data', JSON.stringify(data) );
 			},
 
 			/**
-			 * Initialize module
+			 * Initialize localStorage module: bind change listener and load data
 			 * 
 			 * @since 1.0.0
 			 * @version 5.0.0
+			 * @return {void}
 			 */
 			init: function() {
+				const form = document.querySelector('form.checkout');
+
+				if ( ! form ) {
+					return;
+				}
+
+				// delegate change handler for all inputs/selects/textareas
+				form.addEventListener('change', this.onChange.bind(this));
+
+				// apply saved values on load
 				this.loadData();
-				this.onChange();
 			},
 		},
 
@@ -2150,7 +2221,7 @@
 			 */
 			onStepperClick: function() {
 				$('[data-stepper]').each( function() {
-					$(this).on('click', async function(e) {
+					$(this).on('click', function(e) {
 						e.preventDefault();
 
 						// clear error messages
@@ -2163,12 +2234,16 @@
 							return false;
 						}
 
-						// Check current step fields
-						if (step_number > 1) {
-							let fields = Flexify_Checkout.Steps.getFields( $(`[data-step="${step_number - 1}"]`) );
-							let has_errors = Flexify_Checkout.Validations.checkFieldsForErrors(fields);
+						let has_errors = false;
 
-							console.log( has_errors );
+						// Check current step fields
+						if ( step_number > 1 ) {
+							let fields = Flexify_Checkout.Steps.getFields( $(`[data-step="${step_number - 1}"]`) );
+							has_errors = Flexify_Checkout.Validations.checkFieldsForErrors(fields);
+
+							if ( has_errors ) {
+								console.log('[FLEXIFY CHECKOUT] Field errors: ', has_errors);
+							}
 						}
 
 						if ( has_errors ) {
@@ -2324,7 +2399,12 @@
 			},
 
 			/**
+			 * On hash change
 			 * 
+			 * @since 1.0.0
+			 * @version 5.0.0
+			 * @param {object} e | Event object
+			 * @return {void}
 			 */
 			onHashChange: function(e) {
 				if ( ! window.location.hash ) {
@@ -2376,8 +2456,8 @@
 				// Trigger custom event.
 				$(document.body).trigger('flexify_step_change');
 
-				if (document.getElementById("billing_phone")) {
-					document.getElementById("billing_phone").dispatchEvent(new Event('keyup'));
+				if ( document.getElementById("billing_phone") ) {
+					document.getElementById("billing_phone").dispatchEvent( new Event('keyup') );
 				}
 			},
 
@@ -2536,24 +2616,21 @@
 						});
 
 						// validate events
-						phone_element.on('blur', Flexify_Checkout.Validations.markPhoneChanged).on('blur validate flexify_validate keyup', Flexify_Checkout.Validations.validatePhone);
+						phone_element.on('blur', Flexify_Checkout.Validations.markInternationalPhoneChanged);
+						phone_element.on('blur validate flexify_validate keyup', Flexify_Checkout.Validations.validateInternationalPhone);
+						
+						// listen change billing country
+						$('#billing_country').on('change', function() {
+							const code = $(this).val().toLowerCase();
+
+							iti.setCountry(code);
+						});
+
+						$('#billing_country').on('change', Flexify_Checkout.Validations.validateInternationalPhone);
 					});
 
 					// Disable wc_checkout_form.validate_field() event listener on input event.
       				$('form.checkout').off('input', '**');
-				});
-
-				// listen change billing country
-				$('#billing_country').on('change', function() {
-					const code = $(this).val().toLowerCase();
-
-					inputs.each((_, el) => {
-						const iti = $(el).data('itiInstance');
-
-						if (iti) {
-							iti.setCountry(code);
-						}
-					});
 				});
 			},
 
@@ -2696,7 +2773,7 @@
 						},
 						success: function(response) {
 							if ( response ) {
-								this.fillAddressFields(type, response);
+								Flexify_Checkout.Fields.fillAddressFields(type, response);
 							}
 						},
 						error: function(error) {
@@ -2747,12 +2824,12 @@
 
 					// if has postcode filled and address is empty, try to autofill
 					if ( postcode.val() && ! address_1.val() ) {
-						Flexify_Checkout.Shippings.autoFillAddress( type );
+						Flexify_Checkout.Fields.autoFillAddress( type );
 					}
 
 					// on keyup event, try to autofill
 					postcode.on('keyup', () => {
-						Flexify_Checkout.Shippings.autoFillAddress( type );
+						Flexify_Checkout.Fields.autoFillAddress( type );
 					});
 				});
 			},
@@ -2765,7 +2842,7 @@
 			 * @return {void}
 			 */
 			initCnpjAutofill: function() {
-				$('#billing_cnpj').on( 'blur', this.onCnpjBlur.bind(this) );
+				$('#billing_cnpj').on( 'blur', this.getCnpjData.bind(this) );
 			},
 
 			/**
@@ -2776,12 +2853,28 @@
 			 * @param {Event} e | Blur event
 			 * @return {void}
 			 */
-			onCnpjBlur: function(e) {
+			getCnpjData: function(e) {
 				const cnpj = $(e.target).val().replace(/\D/g, '');
 
 				if ( cnpj.length !== 14 ) {
 					return;
 				}
+
+				// map fields to filll and add loading placeholder
+				const field_rows = [
+					'billing_phone',
+					'billing_company',
+					'billing_postcode',
+					'billing_address_1',
+					'billing_number',
+					'billing_neighborhood',
+					'billing_city',
+					'billing_state',
+				].map(id => {
+					const input = document.getElementById(id);
+
+					return input ? input.closest('p.form-row') : null;
+				}).filter(Boolean);
 
 				// send AJAX request
 				Flexify_Checkout.Helpers.ajaxRequest(
@@ -2789,11 +2882,9 @@
 						action: 'cnpj_autofill_query',
 						cnpj: cnpj
 					},
-
-					// beforeSend: block the checkout form
 					() => {
 						// add loading placeholders
-						Flexify_Checkout.UI.togglePlaceholder( 'fields', true );
+						Flexify_Checkout.UI.togglePlaceholder( field_rows, true );
 					},
 					response => {
 						if ( response.success && response.data ) {
@@ -2805,17 +2896,17 @@
 								$('#billing_postcode').val(fmt);
 							}
 
-							this.fillCnpjFields(response.data);
+							this.fillCnpjFields( response.data, field_rows );
 						}
 
 						// remove placeholders
-						Flexify_Checkout.UI.togglePlaceholder( 'fields', false );
+						Flexify_Checkout.UI.togglePlaceholder( field_rows, false );
 					},
 					error => {
 						console.error('CNPJ autofill error: ', error);
 
 						// remove placeholders
-						Flexify_Checkout.UI.togglePlaceholder( 'fields', false );
+						Flexify_Checkout.UI.togglePlaceholder( field_rows, false );
 					}
 				);
 			},
@@ -2826,37 +2917,39 @@
 			 * @since 1.4.5
 			 * @version 5.0.0
 			 * @param {object} data | Response data from server
+			 * @param {object} fieldRows | Fields to fill
 			 * @return {void}
 			 */
-			fillCnpjFields: function(data) {
-				if (data.telefone) {
-					$('#billing_phone').val(data.telefone);
-				}
+			fillCnpjFields: function(data, fieldRows) {
+				const map = {
+					billing_phone: 'telefone',
+					billing_company: 'nome',
+					billing_postcode: 'cep',
+					billing_address_1: 'logradouro',
+					billing_number: 'numero',
+					billing_neighborhood: 'bairro',
+					billing_city: 'municipio',
+					billing_state: 'uf',
+				};
 
-				if (data.nome) {
-					$('#billing_company').val(data.nome);
-					$('#billing_company_field').addClass('is-active');
-				}
+				// fill and animate each field
+				fieldRows.forEach(row => {
+					const input = $('input, select, textarea', row);
+					const id = input.attr('id');
+					const key = map[id];
 
-				if (data.logradouro) {
-					$('#billing_address_1').val(data.logradouro);
-				}
+					if ( ! key || ! data[key] ) {
+						return;
+					}
 
-				if (data.numero) {
-					$('#billing_number').val(data.numero);
-				}
+					const new_value = data[key];
 
-				if (data.bairro) {
-					$('#billing_neighborhood').val(data.bairro);
-				}
-
-				if (data.municipio) {
-					$('#billing_city').val(data.municipio);
-				}
-
-				if (data.uf) {
-					$('#billing_state').val(data.uf);
-				}
+					input.fadeOut(150, function() {
+						input.val(new_value).fadeIn(150);
+						input.addClass('highlight');
+						setTimeout(()=> input.removeClass('highlight'), 800);
+					});
+				});
 			},
 
 			/**
@@ -2914,7 +3007,7 @@
 				});
 
 				// check if auto fill address is enabled
-				if ( params.fill_address.enable_auto_fill_address === 'yes' && params.license_is_valid ) {
+				if ( $('#billing_country').val() === 'BR' && params.fill_address.enable_auto_fill_address === 'yes' && params.license_is_valid ) {
 					Flexify_Checkout.Fields.initAutoFillAddress();
 				}
 
@@ -3555,31 +3648,6 @@
 			 */
 			init: function() {
 				this.countryChanges();
-			
-				// Trigger country to state change event on page load
-				$(document.body).trigger('country_to_state_changed');
-
-				// Event listener for clicks on .shipping-method-item
-				$(document).on('click', '.shipping-method-item', function(event) {
-					// Prevent default action if the click target is the input or label to avoid double triggering
-					if ( $(event.target).is('input') || $(event.target).is('label') ) {
-						return;
-					}
-
-					// Find the input radio inside the clicked .shipping-method-item and click it
-					$(this).find('input[type="radio"]').prop('checked', true).trigger('change');
-				});
-
-				// Check again when the shipping method input changes
-				$(document).on('change', 'input.shipping_method', function() {
-					Flexify_Checkout.Shippings.selectShippingMethod();
-				});
-
-				// on change shipping method
-				$(document.body).on('change', 'input.shipping_method', function() {
-					Flexify_Checkout.Shippings.selectShippingMethod();
-					Flexify_Checkout.Sidebar.updateSidebarTotal();
-				});
 			},
 		},
 
@@ -3624,7 +3692,7 @@
 			 * Debounce function to limit the rate of calls
 			 *
 			 * @since 3.6.0
-			 * @version 3.9.9
+			 * @version 5.0.0
 			 * @param {Function} func  The function to debounce
 			 * @param {number}   wait  Milliseconds to wait
 			 * @return {Function}
@@ -3643,24 +3711,24 @@
 			 * Gather all checkout field values and send to session via AJAX
 			 *
 			 * @since 1.8.5
-			 * @version 3.9.9
+			 * @version 5.0.0
 			 * @return {void}
 			 */
 			update: function() {
 				const groups = params.get_all_checkout_fields || {};
-				const fieldsData = [];
+				const fields_data = [];
 
-				// percorre cada grupo (billing, shipping, etc)
+				// loop for each group (billing, shipping, etc.)
 				$.each(groups, (idx, group) => {
-					if (!group) {
+					if ( ! group ) {
 						return true; // continue
 					}
 
-					// cada group é { field_id: props, … }
-					$.each(group, (fieldId) => {
-						const val = jQuery('#' + fieldId).val();
+					$.each(group, (field_id) => {
+						const val = $('#' + field_id).val();
+
 						if (val !== undefined) {
-							fieldsData.push({ field_id: fieldId, value: val });
+							fields_data.push({ field_id: field_id, value: val });
 						}
 					});
 				});
@@ -3669,7 +3737,7 @@
 				Flexify_Checkout.Helpers.ajaxRequest(
 					{
 						action: 'get_checkout_session_data',
-						fields_data: JSON.stringify(fieldsData),
+						fields_data: JSON.stringify(fields_data),
 						ship_to_different_address: $('#ship-to-different-address-checkbox').is(':checked') ? 'yes' : 'no'
 					},
 					null,
@@ -3682,29 +3750,29 @@
 			 * Bind events and perform initial session update
 			 *
 			 * @since 1.8.5
-			 * @version 3.9.9
+			 * @version 5.0.0
 			 * @return {void}
 			 */
 			init: function() {
 				const groups = params.get_all_checkout_fields || {};
 				const debounced = this.debounce(this.update.bind(this), 500);
 
-				// primeira sincronização
-				this.update();
+				// first sync
+				Flexify_Checkout.Session.update();
 
-				// quando qualquer campo billing mudar
+				// on change inputs
 				$.each(groups, (idx, group) => {
 					if (group.billing) {
-						jQuery.each(group.billing, (fieldId) => {
-							jQuery('#' + fieldId).on('change input', debounced);
+						$.each(group.billing, (field_id) => {
+							$('#' + field_id).on('change input', debounced);
 						});
 					}
 				});
 
-				// quando clicar no botão de próximo passo
+				// sync on proceed step
 				$('.flexify-button[data-step-next]').on('click', function(e) {
 					e.preventDefault();
-					this.update();
+					Flexify_Checkout.Session.update();
 				});
 			}
 		},

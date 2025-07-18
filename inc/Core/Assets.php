@@ -266,12 +266,17 @@ class Assets {
      * @since 5.0.0
      * @return array
      */
-    protected function build_iti_i18n() {
+    public function build_iti_i18n() {
 		// Keys come in uppercase; convert to lowercase for ITI
 		$raw = \MeuMouse\Flexify_Checkout\Validations\ISO3166::country_codes();
 		$countries = array_change_key_case( $raw, CASE_LOWER );
 
-		$labels = array(
+		/**
+		 * Filter for modify i18n iti object
+		 * 
+		 * @since 5.0.0
+		 */
+		$labels = apply_filters( 'Flexify_Checkout/Assets/Iti_I18n', array(
 			'selectedCountryAriaLabel'  => __( 'País selecionado', 'flexify-checkout-for-woocommerce' ),
 			'noCountrySelected'         => __( 'Nenhum país selecionado', 'flexify-checkout-for-woocommerce' ),
 			'countryListAriaLabel'      => __( 'Lista de países', 'flexify-checkout-for-woocommerce' ),
@@ -279,7 +284,7 @@ class Assets {
 			'zeroSearchResults'         => __( 'Nenhum resultado encontrado', 'flexify-checkout-for-woocommerce' ),
 			'oneSearchResult'           => __( '1 resultado encontrado', 'flexify-checkout-for-woocommerce' ),
 			'multipleSearchResults'     => __( '${count} resultados encontrados', 'flexify-checkout-for-woocommerce' ),
-		);
+		));
 
 		// Merge into one flat i18n object
 		return array_merge( $countries, $labels );

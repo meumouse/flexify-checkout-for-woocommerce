@@ -376,15 +376,15 @@ class Helpers {
 	 * Get new select fields for init Select2 on frontend
 	 * 
 	 * @since 3.2.0
+	 * @version 5.0.0
 	 * @return array
 	 */
 	public static function get_new_select_fields() {
-		$fields = get_option('flexify_checkout_step_fields', array());
-		$fields = maybe_unserialize( $fields );
+		$fields = maybe_unserialize( get_option( 'flexify_checkout_step_fields', array() ) );
 		$selects = array();
 
 		foreach ( $fields as $index => $value ) {
-			if ( isset( $value['source'] ) && $value['source'] === 'added' && isset( $value['type'] ) && $value['type'] === 'select' ) {
+			if ( isset( $value['type'] ) && $value['type'] === 'select' ) {
 				$selects[] = $index;
 			}
 		}

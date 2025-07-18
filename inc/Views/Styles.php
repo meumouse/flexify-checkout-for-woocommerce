@@ -116,6 +116,7 @@ class Styles {
 				height: 24px !important;
 				width: 32px !important;
 				border-radius: 0.225rem !important;
+				margin-left: 0.5rem;
 			}
 
 			.iti__flag-box {
