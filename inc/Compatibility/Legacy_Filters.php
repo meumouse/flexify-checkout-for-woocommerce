@@ -152,7 +152,15 @@ class Legacy_Filters {
 			'flexify_auto_apply_coupon' => array(
 				'new_filter' => 'Flexify_Checkout/Coupons/Auto_Apply_Coupon',
 				'version' => '5.0.0',
-			)
+			),
+			'flexify_checkout_auto_fill_address' => array(
+				'new_filter' => 'Flexify_Checkout/Checkout/Auto_Fill_Address',
+				'version' => '5.0.0',
+			),
+			'flexify_checkout_script_data' => array(
+				'new_filter' => 'Flexify_Checkout/Assets/Script_Data',
+				'version' => '5.0.0',
+			),
 		);
 	}
 }

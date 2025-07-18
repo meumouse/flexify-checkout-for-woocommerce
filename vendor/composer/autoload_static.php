@@ -26,6 +26,7 @@ class ComposerStaticInit178be007d0b6d0c39a4c2788c7b3977c
         'MeuMouse\\Flexify_Checkout\\API\\Updater' => __DIR__ . '/../..' . '/inc/API/Updater.php',
         'MeuMouse\\Flexify_Checkout\\Admin\\Admin_Options' => __DIR__ . '/../..' . '/inc/Admin/Admin_Options.php',
         'MeuMouse\\Flexify_Checkout\\Admin\\Default_Options' => __DIR__ . '/../..' . '/inc/Admin/Default_Options.php',
+        'MeuMouse\\Flexify_Checkout\\Admin\\Orders' => __DIR__ . '/../..' . '/inc/Admin/Orders.php',
         'MeuMouse\\Flexify_Checkout\\Checkout\\Common' => __DIR__ . '/../..' . '/inc/Checkout/Common.php',
         'MeuMouse\\Flexify_Checkout\\Checkout\\Conditions' => __DIR__ . '/../..' . '/inc/Checkout/Conditions.php',
         'MeuMouse\\Flexify_Checkout\\Checkout\\Fields' => __DIR__ . '/../..' . '/inc/Checkout/Fields.php',

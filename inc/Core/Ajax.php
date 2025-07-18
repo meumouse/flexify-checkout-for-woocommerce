@@ -41,10 +41,10 @@ class Ajax {
 		add_action( 'wp_ajax_nopriv_flexify_check_for_inline_errors', array( __CLASS__, 'check_for_inline_errors' ) );
 
 		// get AJAX call on login event
-		add_action( 'wp_ajax_flexify_login', array( __CLASS__, 'login' ) );
+		add_action( 'wp_ajax_flexify_checkout_login', array( $this, 'checkout_login_callback' ) );
 
 		// get AJAX call on login event for not logged users
-		add_action( 'wp_ajax_nopriv_flexify_login', array( __CLASS__, 'login' ) );
+		add_action( 'wp_ajax_nopriv_flexify_checkout_login', array( $this, 'checkout_login_callback' ) );
 
 		// get AJAX calls on change options
 		add_action( 'wp_ajax_admin_ajax_save_options', array( $this, 'ajax_save_options_callback' ) );
@@ -167,12 +167,12 @@ class Ajax {
 
 
 	/**
-	 * Login
+	 * Handle with login form on checkout
 	 *
 	 * @since 1.0.0
 	 * @throws Exception On login error.
 	 */
-	public static function login() {
+	public function checkout_login_callback() {
 		check_admin_referer('woocommerce-login');
 
 		try {

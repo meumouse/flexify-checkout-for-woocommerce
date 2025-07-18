@@ -19,18 +19,26 @@ defined('ABSPATH') || exit;
  * Register/enqueue frontend and backend scripts
  *
  * @since 1.0.0
- * @version 3.9.6
+ * @version 5.0.0
  * @package MeuMouse.com
  */
 class Assets {
 
 	/**
-	 * Define assets URL directory
+	 * Get assets URL directory
 	 * 
 	 * @since 5.0.0
 	 * @return string
 	 */
 	public $assets_url = FLEXIFY_CHECKOUT_ASSETS;
+
+	/**
+	 * Get plugin version
+	 * 
+	 * @since 5.0.0
+	 * @return string
+	 */
+	public $version = FLEXIFY_CHECKOUT_VERSION;
 
 	/**
 	 * Construct function
@@ -113,95 +121,47 @@ class Assets {
 			}
 		}
 
-		wp_dequeue_style( 'global-styles' );
+		// Remove theme global styles
+		wp_dequeue_style('global-styles');
 
-		wp_enqueue_style( 'flexify-checkout-theme', $this->assets_url . 'frontend/css/templates/' . $theme . '/main.css', array(), FLEXIFY_CHECKOUT_VERSION, false );
+		// enqueue checkout theme styles
+		wp_enqueue_style( 'flexify-checkout-theme', $this->assets_url . 'frontend/css/templates/' . $theme . '/main.css', array(), $this->version, false );
 
+		// render dynamic styles
 		if ( is_flexify_checkout() || Helpers::is_thankyou_page() ) {
 			$settings = get_option('flexify_checkout_settings');
-			wp_add_inline_style( 'flexify-checkout-theme', Styles::render_checkout_styles( $settings ) );
+			wp_add_inline_style( 'flexify-checkout-theme', Styles::render_dynamic_styles( $settings ) );
 		}
 
+		// set dependencies for scripts
 		$deps = array(
 			'jquery',
-			'jquery-blockui',
 			'select2',
 			'wc-checkout',
 			'wc-country-select',
 			'wc-address-i18n',
-			'wp-hooks',
 		);
 
 		// international phone number selector
 		if ( Admin_Options::get_setting('enable_ddi_phone_field') === 'yes' && is_flexify_checkout() && License::is_valid() ) {
-			wp_enqueue_script( 'flexify-international-phone-js', $this->assets_url . 'vendor/intl-tel-input/js/intlTelInput-jquery.min.js', array('jquery'), '17.0.19', false );
-			wp_enqueue_style( 'flexify-international-phone-css', $this->assets_url . 'vendor/intl-tel-input/css/intlTelInput.min.css', array(), '17.0.19' );
+			// load intl-tel-input library
+			wp_enqueue_script( 'flexify-international-phone-js', $this->assets_url . 'vendor/intl-tel-input/js/intlTelInput.min.js', array('jquery'), '24.6.0', false );
+			wp_enqueue_style( 'flexify-international-phone-css', $this->assets_url . 'vendor/intl-tel-input/css/intlTelInput.min.css', array(), '24.6.0' );
+			wp_enqueue_style( 'flexify-international-phone-flag-offset-2x', $this->assets_url . 'vendor/intl-tel-input/css/flag-offset-2x.min.css', array(), $this->version );
+			
 			$deps[] = 'flexify-international-phone-js';
 		}
 
 		$timestamp = time();
 
-		// Add the timestamp as a query parameter to the main.js file URL
-		$script = $this->assets_url . 'frontend/js/main.js?version=' . $timestamp;
-
 		// Set script version to null to avoid version-based caching
 		$version = null;
 
-		wp_enqueue_script('flexify-checkout-for-woocommerce', $script, $deps, $version, true);
-
-		// autofill address to enter postcode (just valid for Brazil)
-		if ( Admin_Options::get_setting('enable_fill_address') === 'yes' && is_flexify_checkout() && License::is_valid() ) {
-			wp_enqueue_script( 'flexify-checkout-autofill-address-js', $this->assets_url . 'frontend/js/autofill-address.js', array('jquery'), FLEXIFY_CHECKOUT_VERSION, false );
-
-			// send params from JS
-			$auto_fill_address_api_params = apply_filters( 'flexify_checkout_auto_fill_address', array(
-				'api_service' => Admin_Options::get_setting('get_address_api_service'),
-				'address_param' => Admin_Options::get_setting('api_auto_fill_address_param'),
-				'neightborhood_param' => Admin_Options::get_setting('api_auto_fill_address_neightborhood_param'),
-				'city_param' => Admin_Options::get_setting('api_auto_fill_address_city_param'),
-				'state_param' => Admin_Options::get_setting('api_auto_fill_address_state_param'),
-			));
-			
-			wp_localize_script( 'flexify-checkout-autofill-address-js', 'fcw_auto_fill_address_api_params', $auto_fill_address_api_params );
-		}
-
-		// autofill field on enter CNPJ (just valid for Brazil)
-		if ( Admin_Options::get_setting('enable_autofill_company_info') === 'yes' && is_flexify_checkout() && License::is_valid() ) {
-			wp_enqueue_script( 'flexify-checkout-autofill-cnpj-js', $this->assets_url . 'frontend/js/autofill-cnpj.js', array('jquery'), FLEXIFY_CHECKOUT_VERSION, false );
-		}
-
-		// remove brazilian market fields if is not Brazil country
-		if ( Admin_Options::get_setting('enable_unset_wcbcf_fields_not_brazil') === 'yes' && is_flexify_checkout() && License::is_valid() ) {
-			wp_enqueue_script( 'flexify-checkout-remove-wcbcf-fields', $this->assets_url . 'frontend/js/remove-wcbcf-fields.js', array('jquery'), FLEXIFY_CHECKOUT_VERSION );
-		}
-
 		// enable field masks
-		if ( Admin_Options::get_setting('enable_field_masks') === 'yes' && is_flexify_checkout() && License::is_valid() ) {
+		if ( Admin_Options::get_setting('enable_field_masks')  === 'yes' && is_flexify_checkout() && License::is_valid() ) {
 			wp_enqueue_script( 'jquery-mask-lib', $this->assets_url . 'vendor/jquery-mask/jquery.mask.min.js', array('jquery'), '1.14.16' );
-			wp_enqueue_script( 'flexify-checkout-field-masks', $this->assets_url . 'frontend/js/field-masks.js', array('jquery'), FLEXIFY_CHECKOUT_VERSION );
-			wp_localize_script( 'flexify-checkout-field-masks', 'fcw_field_masks', array( 'get_input_masks' => Fields::get_fields_with_mask() ) );
-		}
 
-		// add email suggestions
-		if ( Admin_Options::get_setting('email_providers_suggestion') === 'yes' ) {
-			wp_enqueue_script( 'flexify-checkout-email-suggestions', $this->assets_url . 'frontend/js/email-suggestions.js', array('jquery'), FLEXIFY_CHECKOUT_VERSION );
-
-			$emails_suggestions_params = apply_filters( 'flexify_checkout_emails_suggestions', array(
-				'get_providers' => Admin_Options::get_setting('set_email_providers'),
-			));
-
-			wp_localize_script( 'flexify-checkout-email-suggestions', 'fcw_emails_suggestions_params', $emails_suggestions_params );
-		}
-
-		// add frontend conditions
-		if ( ! empty( get_option('flexify_checkout_conditions') ) ) {
-			wp_enqueue_script( 'flexify-checkout-conditions', $this->assets_url . 'frontend/js/conditions.js', array('jquery'), FLEXIFY_CHECKOUT_VERSION );
-
-			$conditions_params = apply_filters( 'flexify_checkout_front_conditions', array(
-				'field_condition' => Conditions::filter_component_type('field'),
-			));
-
-			wp_localize_script( 'flexify-checkout-conditions', 'fcw_condition_param', $conditions_params );
+			$deps[] = 'jquery-mask-lib';
 		}
 
 		// process animation purchase
@@ -219,19 +179,24 @@ class Assets {
 			$base_country = WC()->countries->get_base_country();
 		}
 
+		// enqueue plugin scripts
+		wp_enqueue_script( 'flexify-checkout-for-woocommerce', $this->assets_url . 'frontend/js/main.js?version=' . $timestamp, $deps, $version, true );
+
 		/**
 		 * Flexify checkout script localized data
 		 *
 		 * @since 1.0.0
-		 * @version 3.9.4
+		 * @version 5.0.0
 		 * @return array
 		 */
-		$flexify_script_data = apply_filters( 'flexify_checkout_script_data', array(
+		$params = apply_filters( 'Flexify_Checkout/Assets/Script_Data', array(
 			'allowed_countries' => array_map( 'strtolower', array_keys( WC()->countries->get_allowed_countries() ) ),
 			'ajax_url' => admin_url('admin-ajax.php'),
+			'debug_mode' => FLEXIFY_CHECKOUT_DEBUG_MODE,
+			'license_is_valid' => License::is_valid(),
 			'is_user_logged_in' => is_user_logged_in(),
 			'localstorage_fields' => Fields::get_localstorage_fields(),
-			'international_phone' => Admin_Options::get_setting('enable_ddi_phone_field') ? Admin_Options::get_setting('enable_ddi_phone_field') : '',
+			'international_phone' => Admin_Options::get_setting('enable_ddi_phone_field'),
 			'allow_login_existing_user' => 'inline_popup',
 			'steps' => Steps::get_steps_hashes(),
 			'i18n' => array(
@@ -243,6 +208,7 @@ class Assets {
 				'account_exists' => __( 'Uma conta já está registrada com este endereço de e-mail. Gostaria de entrar nela?', 'flexify-checkout-for-woocommerce' ),
 				'login_successful' => __( 'Bem vindo de volta!', 'flexify-checkout-for-woocommerce' ),
 				'error_occured' => __( 'Ocorreu um erro', 'flexify-checkout-for-woocommerce' ),
+				'intl_search_input_placeholder' => __( 'Pesquisar', 'flexify-checkout-for-woocommerce' ),
 				'phone' => array(
 					'invalid' => __( 'Por favor, insira um número de telefone válido.', 'flexify-checkout-for-woocommerce' ),
 				),
@@ -257,22 +223,36 @@ class Assets {
 			'update_cart_nonce' => wp_create_nonce('update_cart'),
 			'shop_page' => Helpers::get_shop_page_url(),
 			'base_country' => $base_country,
-			'intl_util_path' => plugins_url( 'assets/vendor/intl-tel-input/js/utils.js', FLEXIFY_CHECKOUT_FILE ),
+			'path_to_utils' => $this->assets_url . 'vendor/intl-tel-input/js/utils.js',
 			'get_new_select_fields' => Helpers::get_new_select_fields(),
 			'check_password_strenght' => Admin_Options::get_setting('check_password_strenght'),
 			'get_all_checkout_fields' => Helpers::export_all_checkout_fields(),
 			'opened_default_order_summary' => Admin_Options::get_setting('display_opened_order_review_mobile'),
 			'enable_animation_process_purchase' => Admin_Options::get_setting('enable_animation_process_purchase'),
+			'field_condition' => Conditions::filter_component_type('field'),
+			'enable_emails_suggestions' => Admin_Options::get_setting('email_providers_suggestion'),
+			'get_email_providers' => Admin_Options::get_setting('set_email_providers'),
+			'enable_field_masks' => Admin_Options::get_setting('enable_field_masks'),
+			'get_input_masks' => Fields::get_fields_with_mask(),
+			'fill_address' => array(
+				'enable_auto_fill_address' => Admin_Options::get_setting('enable_fill_address'),
+				'api_service' => Admin_Options::get_setting('get_address_api_service'),
+				'address_param' => Admin_Options::get_setting('api_auto_fill_address_param'),
+				'neightborhood_param' => Admin_Options::get_setting('api_auto_fill_address_neightborhood_param'),
+				'city_param' => Admin_Options::get_setting('api_auto_fill_address_city_param'),
+				'state_param' => Admin_Options::get_setting('api_auto_fill_address_state_param'),
+			),
+			'enable_autofill_company_info' => Admin_Options::get_setting('enable_autofill_company_info'),
+			'enable_hide_brazilian_market_fields' => Admin_Options::get_setting('enable_unset_wcbcf_fields_not_brazil'),
 		));
-
-		wp_localize_script( 'flexify-checkout-for-woocommerce', 'flexify_checkout_vars', $flexify_script_data );
 
 		/**
 		 * Modify script data
 		 *
 		 * @since 1.0.0
+		 * @version 5.0.0
 		 */
-		$params = apply_filters( 'woocommerce_get_script_data', array(
+		$wc_params = apply_filters( 'woocommerce_get_script_data', array(
 			'ajax_url' => admin_url('admin-ajax.php'),
 			'wc_ajax_url' => \WC_AJAX::get_endpoint( '%%endpoint%%' ),
 			'update_order_review_nonce' => wp_create_nonce('update-order-review'),
@@ -280,11 +260,13 @@ class Assets {
 			'remove_coupon_nonce' => wp_create_nonce('remove-coupon'),
 			'checkout_url' => \WC_AJAX::get_endpoint('checkout'),
 			'is_checkout' => is_checkout() && empty( $wp->query_vars['order-pay'] ) && ! isset( $wp->query_vars['order-received'] ) ? 1 : 0,
-			'debug_mode' => defined('WP_DEBUG') && WP_DEBUG,
 			'i18n_checkout_error' => esc_attr__( 'Erro ao processar a finalização da compra. Por favor, tente novamente.', 'woocommerce' ),
 		), 'wc-checkout', );
 
-		wp_localize_script( 'flexify-checkout-for-woocommerce', 'wc_checkout_params', $params );
+		$params = array_merge( $params, $wc_params );
+
+		// send params to frontend
+		wp_localize_script( 'flexify-checkout-for-woocommerce', 'flexify_checkout_params', $params );
 	}
 
 
@@ -302,16 +284,16 @@ class Assets {
 		if ( is_flexify_checkout_admin_settings() ) {
 			wp_enqueue_media();
 			
-			wp_enqueue_script( 'flexify-checkout-modal', $this->assets_url . 'components/modal/modal'. $min_file .'.js', array('jquery'), FLEXIFY_CHECKOUT_VERSION );
-			wp_enqueue_style( 'flexify-checkout-modal-styles', $this->assets_url . 'components/modal/modal'. $min_file .'.css', array(), FLEXIFY_CHECKOUT_VERSION );
-			wp_enqueue_script( 'flexify-checkout-visibility-controller', $this->assets_url . 'components/visibility-controller/visibility-controller'. $min_file .'.js', array('jquery'), FLEXIFY_CHECKOUT_VERSION );
+			wp_enqueue_script( 'flexify-checkout-modal', $this->assets_url . 'components/modal/modal'. $min_file .'.js', array('jquery'), $this->version );
+			wp_enqueue_style( 'flexify-checkout-modal-styles', $this->assets_url . 'components/modal/modal'. $min_file .'.css', array(), $this->version );
+			wp_enqueue_script( 'flexify-checkout-visibility-controller', $this->assets_url . 'components/visibility-controller/visibility-controller'. $min_file .'.js', array('jquery'), $this->version );
 			
-			wp_enqueue_style( 'bootstrap-datepicker-styles', $this->assets_url . 'vendor/bootstrap-datepicker/bootstrap-datepicker'. $min_file .'.css', array(), FLEXIFY_CHECKOUT_VERSION );
+			wp_enqueue_style( 'bootstrap-datepicker-styles', $this->assets_url . 'vendor/bootstrap-datepicker/bootstrap-datepicker'. $min_file .'.css', array(), $this->version );
 			wp_enqueue_script( 'bootstrap-datepicker', 'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js', array('jquery'), '1.9.0' );
-			wp_enqueue_script( 'bootstrap-datepicker-translate-pt-br', $this->assets_url . 'vendor/bootstrap-datepicker/bootstrap-datepicker.pt-BR.min.js', array('jquery'), FLEXIFY_CHECKOUT_VERSION );
+			wp_enqueue_script( 'bootstrap-datepicker-translate-pt-br', $this->assets_url . 'vendor/bootstrap-datepicker/bootstrap-datepicker.pt-BR.min.js', array('jquery'), $this->version );
 
-			wp_enqueue_script( 'flexify-checkout-admin-scripts', $this->assets_url . 'admin/js/flexify-checkout-admin-scripts'. $min_file .'.js', array('jquery', 'media-upload'), FLEXIFY_CHECKOUT_VERSION );
-			wp_enqueue_style( 'flexify-checkout-admin-styles', $this->assets_url . 'admin/css/flexify-checkout-admin-styles'. $min_file .'.css', array(), FLEXIFY_CHECKOUT_VERSION );
+			wp_enqueue_script( 'flexify-checkout-admin-scripts', $this->assets_url . 'admin/js/flexify-checkout-admin-scripts'. $min_file .'.js', array('jquery', 'media-upload'), $this->version );
+			wp_enqueue_style( 'flexify-checkout-admin-styles', $this->assets_url . 'admin/css/flexify-checkout-admin-styles'. $min_file .'.css', array(), $this->version );
 
 			if ( ! class_exists('Flexify_Dashboard') ) {
                 wp_enqueue_style( 'bootstrap-grid', $this->assets_url . 'vendor/bootstrap/bootstrap-grid.min.css', array(), '5.3.3' );

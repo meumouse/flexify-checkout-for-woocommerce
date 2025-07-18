@@ -1,6 +1,6 @@
 <?php
 
-namespace MeuMouse\Flexify_Checkout;
+namespace MeuMouse\Flexify_Checkout\Admin;
 
 use MeuMouse\Flexify_Checkout\Admin\Admin_Options;
 use MeuMouse\Flexify_Checkout\Core\Helpers;
@@ -91,6 +91,7 @@ class Orders {
 	 * Get customer fragment from order based on billing fields
 	 *
 	 * @since 3.9.8
+	 * @version 5.0.0
 	 * @param WC_Order $order | Order object
 	 * @return array
 	 */

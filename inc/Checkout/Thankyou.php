@@ -178,7 +178,7 @@ class Thankyou {
 				<div class='flexify-review-customer__label'><label><?php esc_html_e( 'Contato', 'flexify-checkout-for-woocommerce' ); ?></label></div>
 				
 				<div class='flexify-review-customer__content'>
-					<p><?php echo Steps::replace_placeholders( Admin_Options::get_setting('text_contact_customer_review'), Order::get_order_customer_fragment( $order ), 'billing' ); ?> </p>
+					<p><?php echo Steps::replace_placeholders( Admin_Options::get_setting('text_contact_customer_review'), Orders::get_order_customer_fragment( $order ), 'billing' ); ?> </p>
 				</div>
 			</div>
 
@@ -194,7 +194,7 @@ class Thankyou {
 					</div>
 
 					<div class='flexify-review-customer__content'>
-						<p><?php echo Steps::replace_placeholders( Admin_Options::get_setting('text_shipping_customer_review'), Order::get_order_customer_fragment( $order ), $address_prefix ); ?><p>
+						<p><?php echo Steps::replace_placeholders( Admin_Options::get_setting('text_shipping_customer_review'), Orders::get_order_customer_fragment( $order ), $address_prefix ); ?><p>
 					</div>
 				</div>
 			<?php endif; ?>
@@ -204,7 +204,7 @@ class Thankyou {
 					<div class='flexify-review-customer__label'><label><?php esc_html_e( 'Envio', 'flexify-checkout-for-woocommerce' ); ?></label></div>
 					
 					<div class='flexify-review-customer__content'>
-						<p><?php echo Order::get_order_shipping_methods( $order ); ?><p>
+						<p><?php echo Orders::get_order_shipping_methods( $order ); ?><p>
 					</div>
 				</div>
 			<?php endif; ?>

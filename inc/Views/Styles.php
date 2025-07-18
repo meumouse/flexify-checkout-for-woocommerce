@@ -80,7 +80,7 @@ class Styles {
 	 * @param array $settings | Get plugin settings
 	 * @return string
 	 */
-	public static function render_checkout_styles( $settings ) {
+	public static function render_dynamic_styles( $settings ) {
 		$theme = Themes::get_theme();
 		$settings = get_option('flexify_checkout_settings', array());
 		$primary = Admin_Options::get_setting('set_primary_color');
