@@ -145,8 +145,8 @@ class Assets {
 		// international phone number selector
 		if ( Admin_Options::get_setting('enable_ddi_phone_field') === 'yes' && is_flexify_checkout() && License::is_valid() ) {
 			// load intl-tel-input library
-			wp_enqueue_script( 'flexify-international-phone-js', $this->assets_url . 'vendor/intl-tel-input/js/intlTelInput.min.js', array('jquery'), '24.6.0', false );
-			wp_enqueue_style( 'flexify-international-phone-css', $this->assets_url . 'vendor/intl-tel-input/css/intlTelInput.min.css', array(), '24.6.0' );
+			wp_enqueue_script( 'flexify-international-phone-js', $this->assets_url . 'vendor/intl-tel-input/js/intlTelInput.min.js', array(), '25.3.1', false );
+			wp_enqueue_style( 'flexify-international-phone-css', $this->assets_url . 'vendor/intl-tel-input/css/intlTelInput.min.css', array(), '25.3.1' );
 			wp_enqueue_style( 'flexify-international-phone-flag-offset-2x', $this->assets_url . 'vendor/intl-tel-input/css/flag-offset-2x.min.css', array(), $this->version );
 			
 			$deps[] = 'flexify-international-phone-js';
@@ -167,16 +167,6 @@ class Assets {
 		// process animation purchase
 		if ( Admin_Options::get_setting('enable_animation_process_purchase') === 'yes' ) {
 			wp_enqueue_script( 'lordicon-player', 'https://cdn.lordicon.com/lordicon.js', array() );
-		}
-
-		// get fields from fields manager
-		$fields = maybe_unserialize( get_option('flexify_checkout_step_fields', array()) );
-
-		// set default country for international phone
-		if ( Admin_Options::get_setting('enable_manage_fields') === 'yes' && isset( $fields['billing_country']['country'] ) && $fields['billing_country']['country'] !== 'none' ) {
-			$base_country = $fields['billing_country']['country'] ?? '';
-		} else {
-			$base_country = WC()->countries->get_base_country();
 		}
 
 		// enqueue plugin scripts
@@ -200,6 +190,7 @@ class Assets {
 			'allow_login_existing_user' => 'inline_popup',
 			'steps' => Steps::get_steps_hashes(),
 			'i18n' => array(
+				'iti_i18n' => $this->build_iti_i18n(),
 				'error' => __( 'Corrija todos os erros e tente novamente.', 'flexify-checkout-for-woocommerce' ),
 				'errorAddressSearch' => __( 'Procure um endereço e tente novamente.', 'flexify-checkout-for-woocommerce' ),
 				'login' => __( 'Entrar', 'flexify-checkout-for-woocommerce' ),
@@ -208,7 +199,6 @@ class Assets {
 				'account_exists' => __( 'Uma conta já está registrada com este endereço de e-mail. Gostaria de entrar nela?', 'flexify-checkout-for-woocommerce' ),
 				'login_successful' => __( 'Bem vindo de volta!', 'flexify-checkout-for-woocommerce' ),
 				'error_occured' => __( 'Ocorreu um erro', 'flexify-checkout-for-woocommerce' ),
-				'intl_search_input_placeholder' => __( 'Pesquisar', 'flexify-checkout-for-woocommerce' ),
 				'phone' => array(
 					'invalid' => __( 'Por favor, insira um número de telefone válido.', 'flexify-checkout-for-woocommerce' ),
 				),
@@ -222,7 +212,7 @@ class Assets {
 			),
 			'update_cart_nonce' => wp_create_nonce('update_cart'),
 			'shop_page' => Helpers::get_shop_page_url(),
-			'base_country' => $base_country,
+			'base_country' => Fields::get_base_country(),
 			'path_to_utils' => $this->assets_url . 'vendor/intl-tel-input/js/utils.js',
 			'get_new_select_fields' => Helpers::get_new_select_fields(),
 			'check_password_strenght' => Admin_Options::get_setting('check_password_strenght'),
@@ -268,6 +258,32 @@ class Assets {
 		// send params to frontend
 		wp_localize_script( 'flexify-checkout-for-woocommerce', 'flexify_checkout_params', $params );
 	}
+
+
+	/**
+     * Enqueue all intl-tel-input i18n based on countries sold
+     *
+     * @since 5.0.0
+     * @return array
+     */
+    protected function build_iti_i18n() {
+		// Keys come in uppercase; convert to lowercase for ITI
+		$raw = \MeuMouse\Flexify_Checkout\Validations\ISO3166::country_codes();
+		$countries = array_change_key_case( $raw, CASE_LOWER );
+
+		$labels = array(
+			'selectedCountryAriaLabel'  => __( 'País selecionado', 'flexify-checkout-for-woocommerce' ),
+			'noCountrySelected'         => __( 'Nenhum país selecionado', 'flexify-checkout-for-woocommerce' ),
+			'countryListAriaLabel'      => __( 'Lista de países', 'flexify-checkout-for-woocommerce' ),
+			'searchPlaceholder'         => __( 'Pesquisar', 'flexify-checkout-for-woocommerce' ),
+			'zeroSearchResults'         => __( 'Nenhum resultado encontrado', 'flexify-checkout-for-woocommerce' ),
+			'oneSearchResult'           => __( '1 resultado encontrado', 'flexify-checkout-for-woocommerce' ),
+			'multipleSearchResults'     => __( '${count} resultados encontrados', 'flexify-checkout-for-woocommerce' ),
+		);
+
+		// Merge into one flat i18n object
+		return array_merge( $countries, $labels );
+    }
 
 
 	/**

@@ -98,6 +98,39 @@ class Styles {
 		}
 
 		<?php
+
+		// international phone is active
+		if ( Admin_Options::get_setting('enable_ddi_phone_field') === 'yes' ) : ?>
+			:root {
+				--fc-iti-path-flags-2x: url("<?php echo esc_url( self::$assets_url . 'vendor/intl-tel-input/img/flags@2x.webp' ) ?>");
+			}
+
+			button.iti__selected-country:hover {
+				background-color: transparent !important;
+			}
+
+			.iti__flag {
+				background-image: var(--fc-iti-path-flags-2x) !important;
+				background-size: cover !important;
+				background-position: var(--iti-flag-offset) 0 !important;
+				height: 24px !important;
+				width: 32px !important;
+				border-radius: 0.225rem !important;
+			}
+
+			.iti__flag-box {
+				margin-right: 1.525rem;
+			}
+
+			.flexify-checkout .flexify-intl-phone--init input:not(.iti__search-input) {
+				padding-left: 9rem !important;
+			}
+
+			ul.iti__country-list .iti__dial-code {
+				margin-right: 1rem;
+			}
+		<?php endif;
+
 		/**
 		 * We are using a style sheet tag so we have nice markup,
 		 * but we are not rendering it, output buffer comes after

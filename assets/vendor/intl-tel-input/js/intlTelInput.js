@@ -1,5 +1,5 @@
 /*
- * International Telephone Input v24.6.0
+ * International Telephone Input v25.3.1
  * https://github.com/jackocnr/intl-tel-input.git
  * Licensed under the MIT license
  */
@@ -50,8 +50,7 @@ var factoryOutput = (() => {
       "ax",
       // Åland Islands
       "358",
-      1,
-      ["18"]
+      1
     ],
     [
       "al",
@@ -118,7 +117,9 @@ var factoryOutput = (() => {
       "au",
       // Australia
       "61",
-      0
+      0,
+      null,
+      "0"
     ],
     [
       "at",
@@ -299,14 +300,16 @@ var factoryOutput = (() => {
       // Christmas Island
       "61",
       2,
-      ["89164"]
+      ["89164"],
+      "0"
     ],
     [
       "cc",
       // Cocos (Keeling) Islands
       "61",
       1,
-      ["89162"]
+      ["89162"],
+      "0"
     ],
     [
       "co",
@@ -539,7 +542,8 @@ var factoryOutput = (() => {
       // Guernsey
       "44",
       1,
-      ["1481", "7781", "7839", "7911"]
+      ["1481", "7781", "7839", "7911"],
+      "0"
     ],
     [
       "gn",
@@ -611,7 +615,8 @@ var factoryOutput = (() => {
       // Isle of Man
       "44",
       2,
-      ["1624", "74576", "7524", "7924", "7624"]
+      ["1624", "74576", "7524", "7924", "7624"],
+      "0"
     ],
     [
       "il",
@@ -641,7 +646,8 @@ var factoryOutput = (() => {
       // Jersey
       "44",
       3,
-      ["1534", "7509", "7700", "7797", "7829", "7937"]
+      ["1534", "7509", "7700", "7797", "7829", "7937"],
+      "0"
     ],
     [
       "jo",
@@ -653,7 +659,8 @@ var factoryOutput = (() => {
       // Kazakhstan
       "7",
       1,
-      ["33", "7"]
+      ["33", "7"],
+      "8"
     ],
     [
       "ke",
@@ -785,7 +792,8 @@ var factoryOutput = (() => {
       // Mayotte
       "262",
       1,
-      ["269", "639"]
+      ["269", "639"],
+      "0"
     ],
     [
       "mx",
@@ -828,7 +836,9 @@ var factoryOutput = (() => {
       "ma",
       // Morocco
       "212",
-      0
+      0,
+      null,
+      "0"
     ],
     [
       "mz",
@@ -989,7 +999,9 @@ var factoryOutput = (() => {
       "re",
       // Réunion
       "262",
-      0
+      0,
+      null,
+      "0"
     ],
     [
       "ro",
@@ -1000,7 +1012,9 @@ var factoryOutput = (() => {
       "ru",
       // Russia
       "7",
-      0
+      0,
+      null,
+      "8"
     ],
     [
       "rw",
@@ -1272,7 +1286,9 @@ var factoryOutput = (() => {
       "gb",
       // United Kingdom
       "44",
-      0
+      0,
+      null,
+      "0"
     ],
     [
       "us",
@@ -1329,7 +1345,8 @@ var factoryOutput = (() => {
       // Western Sahara
       "212",
       1,
-      ["5288", "5289"]
+      ["5288", "5289"],
+      "0"
     ],
     [
       "ye",
@@ -1357,7 +1374,8 @@ var factoryOutput = (() => {
       dialCode: c[1],
       priority: c[2] || 0,
       areaCodes: c[3] || null,
-      nodeById: {}
+      nodeById: {},
+      nationalPrefix: c[4] || null
     };
   }
   var data_default = allCountries;
@@ -1664,8 +1682,8 @@ var factoryOutput = (() => {
     i18n: {},
     //* Initial country.
     initialCountry: "",
-    //* Specify the path to the libphonenumber script to enable validation/formatting.
-    loadUtilsOnInit: "",
+    //* A function to load the utils script.
+    loadUtils: null,
     //* National vs international formatting for numbers e.g. placeholders and displaying existing numbers.
     nationalMode: true,
     //* Display only these countries.
@@ -1686,10 +1704,8 @@ var factoryOutput = (() => {
         navigator.userAgent
       ) || window.innerWidth <= 500
     ) : false,
-    //* Deprecated! Use `loadUtilsOnInit` instead.
-    utilsScript: "",
     //* The number type to enforce during validation.
-    validationNumberType: "MOBILE"
+    validationNumberTypes: ["MOBILE"]
   };
   var regionlessNanpNumbers = [
     "800",
@@ -1716,7 +1732,7 @@ var factoryOutput = (() => {
     const numeric = getNumeric(number);
     if (numeric.charAt(0) === "1") {
       const areaCode = numeric.substr(1, 3);
-      return regionlessNanpNumbers.indexOf(areaCode) !== -1;
+      return regionlessNanpNumbers.includes(areaCode);
     }
     return false;
   };
@@ -1861,14 +1877,14 @@ var factoryOutput = (() => {
           (country) => country.toLowerCase()
         );
         this.countries = data_default.filter(
-          (country) => lowerCaseOnlyCountries.indexOf(country.iso2) > -1
+          (country) => lowerCaseOnlyCountries.includes(country.iso2)
         );
       } else if (excludeCountries.length) {
         const lowerCaseExcludeCountries = excludeCountries.map(
           (country) => country.toLowerCase()
         );
         this.countries = data_default.filter(
-          (country) => lowerCaseExcludeCountries.indexOf(country.iso2) === -1
+          (country) => !lowerCaseExcludeCountries.includes(country.iso2)
         );
       } else {
         this.countries = data_default;
@@ -1902,7 +1918,8 @@ var factoryOutput = (() => {
           for (let j = 0; j < c.areaCodes.length; j++) {
             const areaCode = c.areaCodes[j];
             for (let k = 1; k < areaCode.length; k++) {
-              const partialDialCode = c.dialCode + areaCode.substr(0, k);
+              const partialAreaCode = areaCode.substr(0, k);
+              const partialDialCode = c.dialCode + partialAreaCode;
               this._addToDialCodeMap(rootIso2Code, partialDialCode);
               this._addToDialCodeMap(c.iso2, partialDialCode);
             }
@@ -2062,18 +2079,28 @@ var factoryOutput = (() => {
         const telInputName = this.telInput.getAttribute("name") || "";
         const names = hiddenInput(telInputName);
         if (names.phone) {
-          this.hiddenInput = createEl("input", {
-            type: "hidden",
-            name: names.phone
-          });
-          wrapper.appendChild(this.hiddenInput);
+          const existingInput = this.telInput.form?.querySelector(`input[name="${names.phone}"]`);
+          if (existingInput) {
+            this.hiddenInput = existingInput;
+          } else {
+            this.hiddenInput = createEl("input", {
+              type: "hidden",
+              name: names.phone
+            });
+            wrapper.appendChild(this.hiddenInput);
+          }
         }
         if (names.country) {
-          this.hiddenInputCountry = createEl("input", {
-            type: "hidden",
-            name: names.country
-          });
-          wrapper.appendChild(this.hiddenInputCountry);
+          const existingInput = this.telInput.form?.querySelector(`input[name="${names.country}"]`);
+          if (existingInput) {
+            this.hiddenInputCountry = existingInput;
+          } else {
+            this.hiddenInputCountry = createEl("input", {
+              type: "hidden",
+              name: names.country
+            });
+            wrapper.appendChild(this.hiddenInputCountry);
+          }
         }
       }
     }
@@ -2198,15 +2225,11 @@ var factoryOutput = (() => {
     }
     //* Init many requests: utils script / geo ip lookup.
     _initRequests() {
-      let { loadUtilsOnInit, utilsScript, initialCountry, geoIpLookup } = this.options;
-      if (!loadUtilsOnInit && utilsScript) {
-        console.warn("intl-tel-input: The `utilsScript` option is deprecated and will be removed in a future release! Please use the `loadUtilsOnInit` option instead.");
-        loadUtilsOnInit = utilsScript;
-      }
-      if (loadUtilsOnInit && !intlTelInput.utils) {
+      let { loadUtils, initialCountry, geoIpLookup } = this.options;
+      if (loadUtils && !intlTelInput.utils) {
         this._handlePageLoad = () => {
           window.removeEventListener("load", this._handlePageLoad);
-          intlTelInput.loadUtils(loadUtilsOnInit)?.catch(() => {
+          intlTelInput.attachUtils(loadUtils)?.catch(() => {
           });
         };
         if (intlTelInput.documentReady()) {
@@ -2556,25 +2579,31 @@ var factoryOutput = (() => {
       }
       return false;
     }
+    _ensureHasDialCode(number) {
+      const { dialCode, nationalPrefix } = this.selectedCountryData;
+      const alreadyHasPlus = number.charAt(0) === "+";
+      if (alreadyHasPlus || !dialCode) {
+        return number;
+      }
+      const hasPrefix = nationalPrefix && number.charAt(0) === nationalPrefix && !this.options.separateDialCode;
+      const cleanNumber = hasPrefix ? number.substring(1) : number;
+      return `+${dialCode}${cleanNumber}`;
+    }
     _getCountryFromNumber(fullNumber) {
       const plusIndex = fullNumber.indexOf("+");
       let number = plusIndex ? fullNumber.substring(plusIndex) : fullNumber;
+      const selectedIso2 = this.selectedCountryData.iso2;
       const selectedDialCode = this.selectedCountryData.dialCode;
-      const isNanp = selectedDialCode === "1";
-      if (number && isNanp && number.charAt(0) !== "+") {
-        if (number.charAt(0) !== "1") {
-          number = `1${number}`;
-        }
-        number = `+${number}`;
-      }
-      if (this.options.separateDialCode && selectedDialCode && number.charAt(0) !== "+") {
-        number = `+${selectedDialCode}${number}`;
-      }
-      const dialCode = this._getDialCode(number, true);
+      number = this._ensureHasDialCode(number);
+      const dialCodeMatch = this._getDialCode(number, true);
       const numeric = getNumeric(number);
-      if (dialCode) {
-        const iso2Codes = this.dialCodeToIso2Map[getNumeric(dialCode)];
-        const alreadySelected = iso2Codes.indexOf(this.selectedCountryData.iso2) !== -1 && numeric.length <= dialCode.length - 1;
+      if (dialCodeMatch) {
+        const dialCodeMatchNumeric = getNumeric(dialCodeMatch);
+        const iso2Codes = this.dialCodeToIso2Map[dialCodeMatchNumeric];
+        if (!selectedIso2 && this.defaultCountry && iso2Codes.includes(this.defaultCountry)) {
+          return this.defaultCountry;
+        }
+        const alreadySelected = selectedIso2 && iso2Codes.includes(selectedIso2) && (numeric.length === dialCodeMatchNumeric.length || !this.selectedCountryData.areaCodes);
         const isRegionlessNanpNumber = selectedDialCode === "1" && isRegionlessNanp(numeric);
         if (!isRegionlessNanpNumber && !alreadySelected) {
           for (let j = 0; j < iso2Codes.length; j++) {
@@ -2670,7 +2699,7 @@ var factoryOutput = (() => {
     }
     //* Update the maximum valid number length for the currently selected country.
     _updateMaxLength() {
-      const { strictMode, placeholderNumberType, validationNumberType } = this.options;
+      const { strictMode, placeholderNumberType, validationNumberTypes } = this.options;
       const { iso2 } = this.selectedCountryData;
       if (strictMode && intlTelInput.utils) {
         if (iso2) {
@@ -2682,7 +2711,7 @@ var factoryOutput = (() => {
             true
           );
           let validNumber = exampleNumber;
-          while (intlTelInput.utils.isPossibleNumber(exampleNumber, iso2, validationNumberType)) {
+          while (intlTelInput.utils.isPossibleNumber(exampleNumber, iso2, validationNumberTypes)) {
             validNumber = exampleNumber;
             exampleNumber += "0";
           }
@@ -3034,7 +3063,7 @@ var factoryOutput = (() => {
       return this._utilsIsPossibleNumber(val);
     }
     _utilsIsPossibleNumber(val) {
-      return intlTelInput.utils ? intlTelInput.utils.isPossibleNumber(val, this.selectedCountryData.iso2, this.options.validationNumberType) : null;
+      return intlTelInput.utils ? intlTelInput.utils.isPossibleNumber(val, this.selectedCountryData.iso2, this.options.validationNumberTypes) : null;
     }
     //* Validate the input val (precise)
     isValidNumberPrecise() {
@@ -3052,7 +3081,7 @@ var factoryOutput = (() => {
       return this._utilsIsValidNumber(val);
     }
     _utilsIsValidNumber(val) {
-      return intlTelInput.utils ? intlTelInput.utils.isValidNumber(val, this.selectedCountryData.iso2) : null;
+      return intlTelInput.utils ? intlTelInput.utils.isValidNumber(val, this.selectedCountryData.iso2, this.options.validationNumberTypes) : null;
     }
     //* Update the selected country, and update the input val accordingly.
     setCountry(iso2) {
@@ -3088,36 +3117,23 @@ var factoryOutput = (() => {
       }
     }
   };
-  var loadUtils = (source) => {
+  var attachUtils = (source) => {
     if (!intlTelInput.utils && !intlTelInput.startedLoadingUtilsScript) {
       let loadCall;
-      if (typeof source === "string") {
-        loadCall = import(
-          /* webpackIgnore: true */
-          /* @vite-ignore */
-          source
-        );
-      } else if (typeof source === "function") {
+      if (typeof source === "function") {
         try {
-          loadCall = source();
-          if (!(loadCall instanceof Promise)) {
-            throw new TypeError(`The function passed to loadUtils must return a promise for the utilities module, not ${typeof loadCall}`);
-          }
+          loadCall = Promise.resolve(source());
         } catch (error) {
           return Promise.reject(error);
         }
       } else {
-        return Promise.reject(new TypeError(`The argument passed to loadUtils must be a URL string or a function that returns a promise for the utilities module, not ${typeof source}`));
+        return Promise.reject(new TypeError(`The argument passed to attachUtils must be a function that returns a promise for the utilities module, not ${typeof source}`));
       }
       intlTelInput.startedLoadingUtilsScript = true;
       return loadCall.then((module) => {
         const utils = module?.default;
         if (!utils || typeof utils !== "object") {
-          if (typeof source === "string") {
-            throw new TypeError(`The module loaded from ${source} did not set utils as its default export.`);
-          } else {
-            throw new TypeError("The loader function passed to loadUtils did not resolve to a module object with utils as its default export.");
-          }
+          throw new TypeError("The loader function passed to attachUtils did not resolve to a module object with utils as its default export.");
         }
         intlTelInput.utils = utils;
         forEachInstance("handleUtils");
@@ -3150,10 +3166,10 @@ var factoryOutput = (() => {
       },
       //* A map from instance ID to instance object.
       instances: {},
-      loadUtils,
+      attachUtils,
       startedLoadingUtilsScript: false,
       startedLoadingAutoCountry: false,
-      version: "24.6.0"
+      version: "25.3.1"
     }
   );
   var intl_tel_input_default = intlTelInput;

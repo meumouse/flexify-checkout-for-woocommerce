@@ -359,7 +359,7 @@ defined('ABSPATH') || exit; ?>
 
       <tr>
          <th>
-            <?php esc_html_e( 'Ativar seletor de país em número de telefone', 'flexify-checkout-for-woocommerce' );
+            <?php esc_html_e( 'Ativar telefone internacional', 'flexify-checkout-for-woocommerce' );
             
             if ( ! License::is_valid() ) : ?>
                   <span class="badge pro bg-primary rounded-pill ms-2">

@@ -611,24 +611,23 @@
 				const row = input.closest('.form-row');
 				const iti = input.data('itiInstance');
 
-				// if empty and already invalid for being required, do nothing
-				if ( ! val && row.hasClass('woocommerce-invalid-required-field') ) {
-					return;
-				}
-
-				// this is to avoid validation on empty fields or fields with less than 4 characters
+				// evita validar campos sem edição
 				if ( ! row.hasClass('has-changed') && val.length < 4 ) {
 					row.removeClass('woocommerce-validated woocommerce-invalid');
 					return;
 				}
 
-				// check if phone is valid
-				const is_valid = iti && iti.isValidNumber();
+				// aguarda o utils carregar
+				if ( iti && iti.promise ) {
+					iti.promise.then(() => {
+						const is_valid = iti.isValidNumber();
 
-				if ( ! is_valid ) {
-					row.removeClass('woocommerce-validated').addClass('woocommerce-invalid woocommerce-invalid-phone').find('.error').text( params.i18n.phone.invalid );
-				} else {
-					row.removeClass('woocommerce-invalid woocommerce-invalid-phone');
+						if ( ! is_valid ) {
+							row.removeClass('woocommerce-validated').addClass('woocommerce-invalid woocommerce-invalid-phone').find('.error').text( params.i18n.phone.invalid );
+						} else {
+							row.removeClass('woocommerce-invalid woocommerce-invalid-phone');
+						}
+					});
 				}
 			},
 
@@ -2511,33 +2510,34 @@
 				}
 
 				inputs.each((_, el) => {
-					const $el = $(el);
+					const phone_element = $(el);
+					
 					const iti = window.intlTelInput(el, {
-						utilsScript: params.path_to_utils,
+						loadUtils: () => import( params.path_to_utils ),
 						autoPlaceholder: 'polite',
 						containerClass: 'flexify-intl-phone--init',
 						nationalMode: true,
 						separateDialCode: true,
-						initialCountry: params.base_country || 'BR',
-						onlyCountries: params.allowed_countries || ['BR'],
-						i18n: {
-							searchPlaceholder: params.i18n.intl_search_input_placeholder,
-						}
+						initialCountry: params.base_country || 'br',
+						onlyCountries: params.allowed_countries || ['br'],
+						i18n: params.i18n.iti_i18n || {},
 					});
 
 					// storage the instance in the input element for later use
-					$el.data('itiInstance', iti);
+					phone_element.data('itiInstance', iti);
 
 					// add init class to the row
-					$el.closest('.form-row').addClass('flexify-intl-phone--init');
+					phone_element.closest('.form-row').addClass('flexify-intl-phone--init');
 
-					// update the hidden full-number field when country changes
-					el.addEventListener('countrychange', () => {
-						Flexify_Checkout.Fields.updateInternationalPhoneHiddenField( iti.getNumber() );
+					iti.promise.then(() => {
+					  	// update the hidden full-number field when country changes
+						el.addEventListener('countrychange', () => {
+							Flexify_Checkout.Fields.updateInternationalPhoneHiddenField( iti.getNumber() );
+						});
+
+						// validate events
+						phone_element.on('blur', Flexify_Checkout.Validations.markPhoneChanged).on('blur validate flexify_validate keyup', Flexify_Checkout.Validations.validatePhone);
 					});
-
-					// validate events
-					$el.on('blur', Flexify_Checkout.Validations.markPhoneChanged).on('blur validate flexify_validate keyup', Flexify_Checkout.Validations.validatePhone);
 
 					// Disable wc_checkout_form.validate_field() event listener on input event.
       				$('form.checkout').off('input', '**');
@@ -2549,7 +2549,10 @@
 
 					inputs.each((_, el) => {
 						const iti = $(el).data('itiInstance');
-						if (iti) iti.setCountry(code);
+
+						if (iti) {
+							iti.setCountry(code);
+						}
 					});
 				});
 			},
@@ -2930,7 +2933,7 @@
 				}
 
 				// Initialize international phone input
-				if ( params.enable_international_phone === 'yes' && params.license_is_valid ) {
+				if ( params.international_phone === 'yes' && params.license_is_valid ) {
 					Flexify_Checkout.Fields.internationalPhone();
 				}
 			},
@@ -3916,6 +3919,10 @@
 		 * @since 5.0.0
 		 */
 		init: function() {
+			if ( params.debug_mode ) {
+				console.log( '[FLEXIFY CHECKOUT] Loaded params: ', params );
+			}
+
 			// initialize local storage
 			this.localStorage.init();
 

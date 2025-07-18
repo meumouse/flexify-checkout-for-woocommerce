@@ -1368,6 +1368,25 @@ class Fields {
 
 		return $locale_base;
 	}
+
+
+	/**
+	 * Get base country
+	 * 
+	 * @since 5.0.0
+	 * @return string
+	 */
+	public static function get_base_country() {
+		// get fields from fields manager
+		$fields = maybe_unserialize( get_option('flexify_checkout_step_fields', array()) );
+
+		// set default country for international phone
+		if ( Admin_Options::get_setting('enable_manage_fields') === 'yes' && isset( $fields['billing_country']['country'] ) && $fields['billing_country']['country'] !== 'none' ) {
+			return $fields['billing_country']['country'];
+		}
+
+		return WC()->countries->get_base_country();
+	}
 }
 
 if ( Admin_Options::get_setting('enable_flexify_checkout') === 'yes' ) {
