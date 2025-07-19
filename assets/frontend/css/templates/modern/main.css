@@ -4618,7 +4618,6 @@ label.has-condition.required-field > .optional {
 
 .flexify-checkout-loading-placeholder {
 	width: 100%;
-	display: inline-flex;
 	position: relative;
 	-webkit-animation-duration: 1.7s;
 	animation-duration: 1.7s;

@@ -477,15 +477,18 @@
 					};
 				});
 
-				// send AJAX request and return jqXHR
-				Flexify_Checkout.Helpers.ajaxRequest(
-					{
+				// send AJAX request
+				$.ajax({
+					type: 'POST',
+					url: params.ajax_url,
+					data: {
 						action: 'flexify_check_for_inline_errors',
 						fields: inputs,
 						email: $('#billing_email').val(),
 					},
-					null,
-					function(response) {
+					contentType: 'application/json',
+					dataType: 'json',
+					success: function(response) {
 						var messages = response.data;
 
 						// Update the inline validation messages for each field
@@ -529,8 +532,11 @@
 
 						// update fragments on update checkout
 						Flexify_Checkout.Components.updateFragments( messages.fragments );
-					}
-				);
+					},
+					error: function(error) {
+						console.error('Session update error:', error);
+					},
+				});
 
 				Flexify_Checkout.Validations.clearErrorMessages('data-flexify-error');
 
@@ -760,7 +766,7 @@
                         url: remove_item_url,
                         method: 'GET',
                         beforeSend: function() {
-                            $(document.body).trigger('update_checkout');
+                            btn.prop('disabled', true);
                         },
                         success: function(response) {
                             $(document.body).trigger('update_checkout');
@@ -769,9 +775,12 @@
                                 $(this).remove();
                             });
                         },
-                        error: function(error) {
-                            console.error('Error on remove item:', error);
-                        },
+						error: function(jqXHR, textStatus, errorThrown) {
+							console.error('[FLEXIFY CHECKOUT] AJAX error on remove product item:', textStatus, errorThrown);
+						},
+						complete: function() {
+							btn.prop('disabled', fale);
+						},
                     });
                 });
             },
@@ -787,7 +796,7 @@
              * @returns void
              */
             moveShippingRow: function() {
-                var is_modern = document.querySelectorAll('.flexify-checkout--modern').length;
+                var is_modern = Flexify_Checkout.Helpers.isModernCheckout();
 
                 // No need to run this code for classic theme
                 if ( ! is_modern ) {
@@ -834,6 +843,7 @@
              * 
              * @since 1.0.0
              * @version 5.0.0
+			 * @return void
              */
             updateSidebarTotal: function() {
                 const total = $('.order-total td:last-of-type').html();
@@ -846,6 +856,7 @@
              * 
              * @since 3.5.0
              * @version 5.0.0
+			 * @return void
              */
             autoToggleOrderSummary: function() {
                 var header = document.querySelector('.flexify-checkout__sidebar-header');
@@ -856,12 +867,15 @@
             },
 
             /**
-             * Hide Show Order Summary.
-             * Toggle for the checkout summary on mobile view.
+             * Hide show order summary
+             * Toggle for the checkout summary on mobile view
              * 
              * @since 1.0.0
+			 * @version 5.0.0
+			 * @param {boolean} first | Check if is mobile
+			 * @return void
              */
-            orderSummaryToggle: function(first) {
+            orderSummaryToggle: function( first ) {
                 if ( ! Flexify_Checkout.Helpers.isMobile() ) {
                     return;
                 }
@@ -885,21 +899,21 @@
                     linkHide.style.display = 'block';
                     linkShow.style.display = 'none';
 
-                    if (true === first) {
+                    if ( true === first ) {
                         sidebar.style.display = 'block';
                     } else {
-                        Flexify_Checkout.UI.slideDown(sidebar);
+                        Flexify_Checkout.UI.slideDown( sidebar );
                     }
 
-                    Flexify_Checkout.UI.slideDown(sidebar);
+                    Flexify_Checkout.UI.slideDown( sidebar );
                 } else {
                     linkHide.style.display = 'none';
                     linkShow.style.display = 'block';
 
-                    if (true === first) {
+                    if ( true === first ) {
                         sidebar.style.display = 'none';
                     } else {
-                        Flexify_Checkout.UI.slideUp(sidebar);
+                        Flexify_Checkout.UI.slideUp( sidebar );
                     }
                 }
             },
@@ -914,7 +928,7 @@
             orderSummaryResize: function() {
                 const $linkHide = $('.flexify-checkout__sidebar-header-link--hide');
                 const $linkShow = $('.flexify-checkout__sidebar-header-link--show');
-                const sidebar = $('.flexify-checkout__order-review');
+                var sidebar = $('.flexify-checkout__order-review');
 
                 if ( Flexify_Checkout.Helpers.isModernCheckout() ) {
                     sidebar = $('.flexify-checkout__content-right');
@@ -1260,45 +1274,45 @@
 					var btn = $(this);
 					var btn_state = Flexify_Checkout.Helpers.keepButtonState(btn);
 
-					// clear messages
+					// clear coupon messages
 					$('.woocommerce-form-coupon__wrapper').find('.error, .success').remove();
 
-					// send AJAX request and return jqXHR
-					Flexify_Checkout.Helpers.ajaxRequestWoo(
-						{
+					// send AJAX request
+					$.ajax({
+						type: 'POST',
+						url: wc_checkout_params.wc_ajax_url.toString().replace('%%endpoint%%', 'apply_coupon'),
+						data: {
 							action: 'apply_coupon',
 							coupon_code: form.find('input[name="coupon_code"]').val(),
-							security: wc_checkout_params.apply_coupon_nonce
+							security: wc_checkout_params.apply_coupon_nonce,
 						},
-						function(jqXHR, settings) {
+						contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+						dataType: 'html',
+						beforeSend: function() {
 							btn.prop('disabled', true).html('<span class="flexify-btn-processing-inline"></span>');
 						},
-						function(response) {
-							var message = response.replace(/(<([^>]+)>)/gi, '');
+						success: function(response) {
+							var wrapper = $('<div>').html(response);
+							var message = wrapper.find('.wc-block-components-notice-banner__content').text().trim();
 
-							if ( response.includes('woocommerce-error') ) {
-								row.addClass('woocommerce-invalid').eq(0).append(`<div class="error" aria-live="polite">${message}</div>`);
+							if ( wrapper.find('.is-error').length || wrapper.find('.woocommerce-error').length ) {
+								row.addClass('woocommerce-invalid').append(
+									`<div class="error" aria-live="polite">${message}</div>`
+								);
 							} else {
 								$(document.body).trigger('update_checkout', {
 									update_shipping_method: false
 								});
-
-								$(document.body).one('updated_checkout', function() {
-									$('.woocommerce-form-coupon__inner .form-row-first').append(`<div class="success" aria-live="polite">${message}</div>`);
-								});
 							}
 						},
-						function(jqXHR, textStatus, errorThrown) {
-							console.error('Error applying coupon:', errorThrown);
-						}
-					).always( function() {
-						btn.html(btn_state.html).prop('disabled', false);
-
-						// remove button animation
-						Flexify_Checkout.Components.removeSpinner();
+						error: function(jqXHR, textStatus, errorThrown) {
+							console.error('[FLEXIFY CHECKOUT] AJAX error on applying coupon:', textStatus, errorThrown);
+						},
+						complete: function() {
+							btn.html(btn_state.html).prop('disabled', false);
+							Flexify_Checkout.Components.removeSpinner();
+						},
 					});
-
-					return false;
 				});
 			},
 
@@ -1365,11 +1379,9 @@
                                 $('form.checkout_coupon').find('input[name="coupon_code"]').val('');
                             }
                         },
-                        error: function(jqXHR) {
-                            if (params.debug_mode) {
-                                console.log(jqXHR.responseText);
-                            }
-                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+							console.error('[FLEXIFY CHECKOUT] AJAX error on remove coupon:', textStatus, errorThrown);
+						},
                     });
                 });
             },
@@ -1466,32 +1478,6 @@
 			},
 
 			/**
-			 * Serialize data
-			 * 
-			 * Transform a JavaScript object into a serialized string so it can be passed
-			 * into PHP and decoded as an array
-			 *
-			 * @since 1.0.0
-			 * @version 5.0.0
-			 * @param {object} object | Object
-			 * @param {string} prefix | Key prefix
-			 * @return {string} | Serialized string
-			 */
-			serializeData: function(object, prefix) {
-				var string = [];
-
-				for ( var p in object ) {
-					if ( object.hasOwnProperty( p ) ) {
-						var key = prefix ? prefix + '[' + p + ']' : p, value = object[p];
-
-						string.push( typeof value === 'object' ? Flexify_Checkout.Helpers.serializeData( value, key ) : encodeURIComponent( key ) + '=' + encodeURIComponent( value ) );
-					}
-				}
-
-				return string.join('&');
-			},
-
-			/**
 			 * Get field value
 			 * 
 			 * Get the value of a field, depending on its type
@@ -1505,79 +1491,6 @@
 				var value = field.value; // @todo account for other field types here.
 
 				return value;
-			},
-
-			/**
-			 * Do AJAX
-			 * A simple AJAX function using $
-			 * 
-			 * @since 1.0.0
-			 * @version 5.0.0
-			 * @param {object} data | Data
-			 * @param {function} beforeSend | Before send ajax function
-			 * @param {function} onSuccess | Success function
-			 * @param {function} onError | Error function
-			 */
-			ajaxRequest: function( data, beforeSend, onSuccess, onError ) {
-				// send AJAX request
-				$.ajax({
-					type: 'POST',
-					url: params.ajax_url,
-					data: Flexify_Checkout.Helpers.serializeData(data),
-					contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
-					dataType: 'json',
-					beforeSend: function(jqXHR, settings) {
-						if ( typeof beforeSend === 'function' ) {
-							beforeSend( jqXHR, settings );
-						}
-					},
-				}).done( function(response) {
-					if (typeof onSuccess === 'function') {
-						onSuccess(response);
-					}
-				}).fail( function(jqXHR, textStatus, errorThrown) {
-					if (typeof onError === 'function') {
-						onError(errorThrown);
-					} else {
-						console.error('AJAX Error:', errorThrown);
-					}
-				});
-			},
-
-			/**
-			 * AJAX request to WooCommerce endpoint via jQuery
-			 * 
-			 * @since 1.0.0
-			 * @version 5.0.0
-			 * @param {object} data | Data
-			 * @param {function} beforeSend | Before send ajax function
-			 * @param {function} onSuccess | Success function
-			 * @param {function} onError | Error function
-			 */
-			ajaxRequestWoo: function( data, beforeSend, onSuccess, onError ) {
-				// send AJAX request
-				$.ajax({
-					type: 'POST',
-					url: wc_checkout_params.wc_ajax_url.toString().replace('%%endpoint%%', data.action),
-					data: Flexify_Checkout.Helpers.serializeData(data),
-					contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
-					dataType: 'json',
-					beforeSend: function(jqXHR, settings) {
-						if ( typeof beforeSend === 'function' ) {
-							beforeSend( jqXHR, settings );
-						}
-					},
-				}).done( function(response) {
-					if (typeof onSuccess === 'function') {
-						onSuccess(response);
-					}
-				}).fail( function(jqXHR, textStatus, errorThrown) {
-					if (typeof onError === 'function') {
-						onError(errorThrown);
-					} else {
-						console.error('AJAX Error:', errorThrown);
-					}
-				});
 			},
 
 			/**
@@ -1744,7 +1657,7 @@
 						const radios = form.querySelectorAll(
 							`input[name="${CSS.escape(name)}"][type="radio"]`
 						);
-						
+
 						radios.forEach(r => r.checked = (r.value === String(value)));
 					} else {
 						field.value = String(value);
@@ -1941,24 +1854,26 @@
 
 				const form = $('.woocommerce-form-login');
 
-				const data = {
-					action: 'flexify_checkout_login',
-					username: form.find('#username').val(),
-					password: form.find('#password').val(),
-					remember: form.find('#rememberme').val(),
-					_wpnonce: form.find('#woocommerce-login-nonce').val(),
-				};
-				
 				let btn = $('.flexify-button.woocommerce-button.button.woocommerce-form-login__submit');
 				let btn_state = Flexify_Checkout.Helpers.keepButtonState( btn );
 
-				// send ajax request
-				Flexify_Checkout.Helpers.ajaxRequest(
-					data,
-					function beforeSend() {
+				// send AJAX request
+				$.ajax({
+					type: 'POST',
+					url: params.ajax_url,
+					data: {
+						action: 'flexify_checkout_login',
+						username: form.find('#username').val(),
+						password: form.find('#password').val(),
+						remember: form.find('#rememberme').val(),
+						_wpnonce: form.find('#woocommerce-login-nonce').val(),
+					},
+					contentType: 'application/json',
+					dataType: 'json',
+					beforeSend: function() {
 						btn.prop('disabled', true).html('<span class="flexify-btn-processing-inline"></span>');
 					},
-					function onSuccess(response) {
+					success: function(response) {
 						if ( response.success ) {
 							Flexify_Checkout.loginForm.showNotice( params.i18n.login_successful, 'success' );
 
@@ -1969,12 +1884,13 @@
 							Flexify_Checkout.loginForm.showNotice( response.data.error, 'error' );
 						}
 					},
-					function onError(error) {
-						console.error( 'Error on try login user: ', error );
+					error: function(jqXHR, textStatus, errorThrown) {
+						console.error('[FLEXIFY CHECKOUT] AJAX error on try login user:', textStatus, errorThrown);
 						Flexify_Checkout.loginForm.showNotice( params.i18n.error, 'error' );
 					},
-				).always( function() {
-					btn.html(btn_state.html).prop('disabled', false);
+					complete: function() {
+						btn.html(btn_state.html).prop('disabled', true);
+					},
 				});
 			},
 
@@ -2239,7 +2155,7 @@
 						// Check current step fields
 						if ( step_number > 1 ) {
 							let fields = Flexify_Checkout.Steps.getFields( $(`[data-step="${step_number - 1}"]`) );
-							has_errors = Flexify_Checkout.Validations.checkFieldsForErrors(fields);
+							has_errors = Flexify_Checkout.Validations.checkFieldsForErrors( fields );
 
 							if ( has_errors ) {
 								console.log('[FLEXIFY CHECKOUT] Field errors: ', has_errors);
@@ -2776,9 +2692,9 @@
 								Flexify_Checkout.Fields.fillAddressFields(type, response);
 							}
 						},
-						error: function(error) {
-							console.error('Auto fill address error: ', error);
-
+						error: function(jqXHR, textStatus, errorThrown) {
+							console.error('[FLEXIFY CHECKOUT] AJAX error on try fill address:', textStatus, errorThrown);
+							
 							// remove loading placeholder
 							Flexify_Checkout.UI.togglePlaceholder( fields, false );
 						},
@@ -2877,38 +2793,35 @@
 				}).filter(Boolean);
 
 				// send AJAX request
-				Flexify_Checkout.Helpers.ajaxRequest(
-					{
+				$.ajax({
+					type: 'POST',
+					url: params.ajax_url,
+					data: {
 						action: 'cnpj_autofill_query',
 						cnpj: cnpj
 					},
-					() => {
+					contentType: 'application/json',
+					dataType: 'json',
+					beforeSend: function() {
 						// add loading placeholders
 						Flexify_Checkout.UI.togglePlaceholder( field_rows, true );
 					},
-					response => {
+					success: function(response) {
 						if ( response.success && response.data ) {
-							// auto‐fill postcode if returned
-							if ( response.data.cep ) {
-								const raw = response.data.cep.replace(/\D/g, '');
-								const fmt = raw.replace(/^(\d{5})(\d{3})/, '$1-$2');
-
-								$('#billing_postcode').val(fmt);
-							}
-
-							this.fillCnpjFields( response.data, field_rows );
+							Flexify_Checkout.Fields.fillCnpjFields( response.data, field_rows );
 						}
-
+					},
+					error: function(jqXHR, textStatus, errorThrown) {
+						console.error('[FLEXIFY CHECKOUT] AJAX error on try fill CNPJ data:', textStatus, errorThrown);
+						
+						// remove loading placeholder
+						Flexify_Checkout.UI.togglePlaceholder( field_rows, false );
+					},
+					complete: function() {
 						// remove placeholders
 						Flexify_Checkout.UI.togglePlaceholder( field_rows, false );
 					},
-					error => {
-						console.error('CNPJ autofill error: ', error);
-
-						// remove placeholders
-						Flexify_Checkout.UI.togglePlaceholder( field_rows, false );
-					}
-				);
+				});
 			},
 
 			/**
@@ -3080,12 +2993,12 @@
                     let password = $(this).val();
                     let password_strenght_element = $('.woocommerce-password-strength');
                     let meter_bar = $('.create-account').find('.password-strength-meter');
-                    let next_step_button = $('.flexify-button');
+                    let btn = $('.flexify-button');
 
                     // reset classes
                     meter_bar.removeClass('short bad good strong');
 
-                    if ( password !== '') {
+                    if ( password !== '' ) {
                         $('.password-meter').addClass('active');
 
                         // Check if the class is present before accessing its properties
@@ -3094,16 +3007,16 @@
 
                             if ( password_strenght.includes('short') ) {
                                 meter_bar.addClass('short');
-                                next_step_button.prop('disabled', true);
+                                btn.prop('disabled', true);
                             } else if ( password_strenght.includes('bad') ) {
                                 meter_bar.addClass('bad');
-                                next_step_button.prop('disabled', true);
+                                btn.prop('disabled', true);
                             } else if ( password_strenght.includes('good') ) {
                                 meter_bar.addClass('good');
-                                next_step_button.prop('disabled', false);
+                                btn.prop('disabled', false);
                             } else if ( password_strenght.includes('strong') ) {
                                 meter_bar.addClass('strong');
-                                next_step_button.prop('disabled', false);
+                                btn.prop('disabled', false);
                             }
                         }
                     } else {
@@ -3727,23 +3640,32 @@
 					$.each(group, (field_id) => {
 						const val = $('#' + field_id).val();
 
-						if (val !== undefined) {
+						if ( val !== undefined ) {
 							fields_data.push({ field_id: field_id, value: val });
 						}
 					});
 				});
 
-				// send request
-				Flexify_Checkout.Helpers.ajaxRequest(
-					{
+				// send AJAX request
+				$.ajax({
+					type: 'POST',
+					url: params.ajax_url,
+					data: {
 						action: 'get_checkout_session_data',
 						fields_data: JSON.stringify(fields_data),
 						ship_to_different_address: $('#ship-to-different-address-checkbox').is(':checked') ? 'yes' : 'no'
 					},
-					null,
-					null,
-					error => console.error('Session update error:', error)
-				);
+					contentType: 'application/json',
+					dataType: 'json',
+					success: function(response) {
+						if ( response.success && response.data ) {
+							Flexify_Checkout.Fields.fillCnpjFields( response.data, field_rows );
+						}
+					},
+					error: function(jqXHR, textStatus, errorThrown) {
+						console.error('[FLEXIFY CHECKOUT] AJAX error on try session update data:', textStatus, errorThrown);
+					},
+				});
 			},
 
 			/**
@@ -4011,6 +3933,9 @@
 
 			// initialize payment functions
 			this.Payments.init();
+
+			// initialize coupons functions
+			this.Coupons.init();
 
             // initialize sidebar functions
             this.Sidebar.init();
