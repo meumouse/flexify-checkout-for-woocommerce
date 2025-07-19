@@ -3,8 +3,11 @@
 namespace MeuMouse\Flexify_Checkout\Core;
 
 use MeuMouse\Flexify_Checkout\Admin\Admin_Options;
+
 use MeuMouse\Flexify_Checkout\Checkout\Fields;
 use MeuMouse\Flexify_Checkout\Checkout\Steps;
+use MeuMouse\Flexify_Checkout\Checkout\Inline_Errors;
+
 use MeuMouse\Flexify_Checkout\API\License;
 use MeuMouse\Flexify_Checkout\Views\Components;
 
@@ -29,16 +32,16 @@ class Ajax {
 	 */
 	public function __construct() {
 		// get AJAX call on check inline errors
-		add_action( 'wp_ajax_flexify_check_for_inline_error', array( __CLASS__, 'check_for_inline_error' ) );
+	//	add_action( 'wp_ajax_flexify_check_for_inline_error', array( __CLASS__, 'check_for_inline_error' ) );
 	
 		// get AJAX call on check inline errors for not logged users
-		add_action( 'wp_ajax_nopriv_flexify_check_for_inline_error', array( __CLASS__, 'check_for_inline_error' ) );
+	//	add_action( 'wp_ajax_nopriv_flexify_check_for_inline_error', array( __CLASS__, 'check_for_inline_error' ) );
 
 		// get AJAX call on check error on proceed step
-		add_action( 'wp_ajax_flexify_check_for_inline_errors', array( __CLASS__, 'check_for_inline_errors' ) );
+		add_action( 'wp_ajax_flexify_check_for_inline_errors', array( __CLASS__, 'check_for_inline_errors_callback' ) );
 
 		// get AJAX call on check error on proceed step for not logged users
-		add_action( 'wp_ajax_nopriv_flexify_check_for_inline_errors', array( __CLASS__, 'check_for_inline_errors' ) );
+		add_action( 'wp_ajax_nopriv_flexify_check_for_inline_errors', array( __CLASS__, 'check_for_inline_errors_callback' ) );
 
 		// get AJAX call on login event
 		add_action( 'wp_ajax_flexify_checkout_login', array( $this, 'checkout_login_callback' ) );
@@ -125,30 +128,37 @@ class Ajax {
 	 * @version 5.0.0
 	 * @return void
 	 */
-	public static function check_for_inline_errors() {
-		// filter and sanitize array fields from frontend
-		$fields = filter_input( INPUT_POST, 'fields', FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_REQUIRE_ARRAY );
+	public static function check_for_inline_errors_callback() {
+		if ( ! isset( $_POST['action'] ) || $_POST['action'] !== 'flexify_check_for_inline_errors' ) {
+			wp_die();
+		}
+
+		// treat field cleaning
+		$raw_fields = isset( $_POST['fields'] ) ? wp_unslash( $_POST['fields'] ) : array();
+		$fields = is_array( $raw_fields ) ? $raw_fields : array();
 		$messages = array();
 
 		foreach ( $fields as $field ) {
-			$field_id = isset( $field['id'] ) ? $field['id'] : '';
-			$field_key = isset( $field['key'] ) ? $field['key'] : '';
-			$field_args = isset( $field['args'] ) ? $field['args'] : array();
-			$field_value = isset( $field['value'] ) ? $field['value'] : '';
-			$field_country = isset( $field['country'] ) ? $field['country'] : '';
+			$key = isset( $field['key'] ) ? sanitize_key( $field['key'] ) : '';
+			$args = isset( $field['args'] ) ? ( array ) $field['args'] : array();
+			$value = isset( $field['value'] ) ? sanitize_text_field( $field['value'] ) : '';
+			$country = isset( $field['country'] ) ? sanitize_text_field( $field['country'] ) : '';
+			$id = isset( $field['id'] ) ? sanitize_text_field( $field['id'] ) : '';
 
-			$messages[$field_key] = Fields::render_inline_errors( $field_id, $field_key, $field_args, $field_value, $field_country );
+			$messages[ $key ] = Inline_Errors::render_field_error( $id, $key, $args, $value, $country );
 		}
 
-		$session_key = WC()->session->get('flexify_checkout_ship_different_address') === 'yes' ? 'shipping' : 'billing';
-
+		// check if shipping to different address
+		$shipping = WC()->session->get('flexify_checkout_ship_different_address') === 'yes' ? 'shipping' : 'billing';
+		
 		$messages['fragments'] = array(
 			'.flexify-review-customer' => Steps::render_customer_review(),
 			'.flexify-checkout-review-customer-contact' => Steps::replace_placeholders( Admin_Options::get_setting('text_contact_customer_review'), Steps::get_review_customer_fragment() ),
-			'.flexify-checkout-review-shipping-address' => Steps::replace_placeholders( Admin_Options::get_setting('text_shipping_customer_review'), Steps::get_review_customer_fragment(), $session_key ),
+			'.flexify-checkout-review-shipping-address' => Steps::replace_placeholders( Admin_Options::get_setting('text_shipping_customer_review'), Steps::get_review_customer_fragment(), $shipping ),
 			'.flexify-checkout-review-shipping-method' => Helpers::get_shipping_method(),
 		);
 
+		// send response to frontend
 		wp_send_json_success( $messages );
 	}
 
@@ -1253,38 +1263,34 @@ class Ajax {
 
 
 	/**
-	 * Send JSON from frontend for autofill fields
-	 * 
-	 * @since 1.4.5
-	 * @version 3.9.8
-	 * @return array
-	 */
-	public static function query_cnpj_data( $cnpj ) {
-		$url = 'https://www.receitaws.com.br/v1/cnpj/' . $cnpj;
-		$response = wp_safe_remote_get( $url );
-	
-		if ( is_wp_error( $response ) ) {
-			return false;
-		}
-	
-		$body = wp_remote_retrieve_body( $response );
-
-		return json_decode( $body );
-	}
-
-
-	/**
 	 * AJAX callback function for get CNPJ data
 	 * 
 	 * @since 1.4.5
-	 * @version 3.9.8
+	 * @version 5.0.0
 	 * @return void
 	 */
 	public static function cnpj_autofill_query_callback() {
-		$cnpj = sanitize_text_field( $_POST['cnpj'] );
-		$data = self::query_cnpj_data( $cnpj );
-	
-		if ( $data ) {
+		if ( isset( $_POST['action'] ) && $_POST['action'] === 'cnpj_autofill_query' ) {
+			$cnpj = sanitize_text_field( $_POST['cnpj'] );
+			$url = 'https://www.receitaws.com.br/v1/cnpj/' . $cnpj;
+			$response = wp_safe_remote_get( $url );
+		
+			if ( is_wp_error( $response ) ) {
+				return false;
+			}
+		
+			$body = wp_remote_retrieve_body( $response );
+
+			if ( empty( $body ) ) {
+				wp_send_json_error( 'Empty response from API.' );
+			}
+		
+			$data = json_decode( $body, true );
+
+			if ( null === $data ) {
+				wp_send_json_error( 'Fail on decode JSON.' );
+			}
+
 			wp_send_json_success( $data );
 		}
 	}

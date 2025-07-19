@@ -298,6 +298,11 @@ class Fields {
 				$fields['billing'][$index]['class'][] = 'has-mask';
 			}
 
+			// clear default position classes
+			if ( isset( $fields['billing'][ $index ]['class'] ) && is_array( $fields['billing'][ $index ]['class'] ) ) {
+				$fields['billing'][ $index ]['class'] = array_diff( $fields['billing'][ $index ]['class'], ['form-row-first', 'form-row-last', 'form-row-wide'] );
+			}
+
 			// change array key for valid class
 			$field_class = array(
 				'left' => 'row-first',

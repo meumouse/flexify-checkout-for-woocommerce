@@ -425,7 +425,7 @@
 			 * @param {array} fields | Checkout fields
 			 * @returns bool
 			 */
-			checkFieldsForErrors: function( fields, hasErrors = false ) {
+			checkFieldsForErrors: function( fields ) {
 				var inputs = {};
 				var error_fields = [];
 
@@ -463,15 +463,13 @@
 
 					let value = Flexify_Checkout.Helpers.getFieldValue( field );
 					
-					const billing_country = document.getElementById('billing_country');
-
 					inputs[field.attributes.name.value] = {
 						args: {
 							label: row.attributes['data-label'].value,
 							required: row.classList.contains('required'),
 							type: row.attributes['data-type'].value
 						},
-						country: billing_country ? billing_country.value : '',
+						country: $('#billing_country').val() ?? '',
 						key: field.attributes.name.value,
 						value: value,
 					};
@@ -486,8 +484,6 @@
 						fields: inputs,
 						email: $('#billing_email').val(),
 					},
-					contentType: 'application/json',
-					dataType: 'json',
 					success: function(response) {
 						var messages = response.data;
 
@@ -533,8 +529,8 @@
 						// update fragments on update checkout
 						Flexify_Checkout.Components.updateFragments( messages.fragments );
 					},
-					error: function(error) {
-						console.error('Session update error:', error);
+					error: function(jqXHR, textStatus, errorThrown) {
+						console.error('[FLEXIFY CHECKOUT] AJAX error on try get field errors:', textStatus, errorThrown);
 					},
 				});
 
@@ -559,10 +555,6 @@
 
 								if ( ! password.value ) {
 									return;
-								}
-
-								if ( ! password.closest('.form-row').querySelectorAll('.woocommerce-password-strength.good, .woocommerce-password-strength.strong').length ) {
-									hasErrors = true;
 								}
 							}
 						});
@@ -1868,8 +1860,6 @@
 						remember: form.find('#rememberme').val(),
 						_wpnonce: form.find('#woocommerce-login-nonce').val(),
 					},
-					contentType: 'application/json',
-					dataType: 'json',
 					beforeSend: function() {
 						btn.prop('disabled', true).html('<span class="flexify-btn-processing-inline"></span>');
 					},
@@ -2118,8 +2108,8 @@
 						return;
 					}
 
-					// Don't validate this field.
-					if ( 'billing_phone_full_number' === field.attr('name') ) {
+					// Don't validate this field
+					if ( field.attr('name') === 'billing_phone_full_number' ) {
 						return;
 					}
 
@@ -2197,7 +2187,7 @@
 						Flexify_Checkout.Validations.clearErrorMessages();;
 
 						var fields = Flexify_Checkout.Steps.getFields( $(this).closest('[data-step]') );
-						var error_fields = Flexify_Checkout.Validations.checkFieldsForErrors(fields);
+						var error_fields = Flexify_Checkout.Validations.checkFieldsForErrors( fields );
 
 						if ( error_fields ) {
 							return false;
@@ -2482,10 +2472,12 @@
 			 * @returns {void}
 			 */
 			updateInternationalPhoneHiddenField: function( inputValue ) {
-				let hidden_name = $(this).attr('name') + '_full_number';
-				let hidden_field = $(`[name=${hidden_name}]`);
+				let hidden_field = $('input[name="billing_phone_full_number"]');
 
 				if ( hidden_field.length ) {
+					hidden_field.val( inputValue );
+				} else {
+					$('#billing_phone').after('<input type="hidden" name="billing_phone_full_number">');
 					hidden_field.val( inputValue );
 				}
 			},
@@ -2534,12 +2526,19 @@
 						// validate events
 						phone_element.on('blur', Flexify_Checkout.Validations.markInternationalPhoneChanged);
 						phone_element.on('blur validate flexify_validate keyup', Flexify_Checkout.Validations.validateInternationalPhone);
+
+						phone_element.on('blur validate flexify_validate keyup', function() {
+							Flexify_Checkout.Fields.updateInternationalPhoneHiddenField( iti.getNumber() );
+						});
 						
 						// listen change billing country
 						$('#billing_country').on('change', function() {
 							const code = $(this).val().toLowerCase();
 
 							iti.setCountry(code);
+
+							// validate default phone value
+							$('#billing_phone').change();
 						});
 
 						$('#billing_country').on('change', Flexify_Checkout.Validations.validateInternationalPhone);
@@ -2798,10 +2797,8 @@
 					url: params.ajax_url,
 					data: {
 						action: 'cnpj_autofill_query',
-						cnpj: cnpj
+						cnpj: cnpj,
 					},
-					contentType: 'application/json',
-					dataType: 'json',
 					beforeSend: function() {
 						// add loading placeholders
 						Flexify_Checkout.UI.togglePlaceholder( field_rows, true );
@@ -2857,11 +2854,7 @@
 
 					const new_value = data[key];
 
-					input.fadeOut(150, function() {
-						input.val(new_value).fadeIn(150);
-						input.addClass('highlight');
-						setTimeout(()=> input.removeClass('highlight'), 800);
-					});
+					input.val(new_value).change();
 				});
 			},
 
@@ -3655,8 +3648,6 @@
 						fields_data: JSON.stringify(fields_data),
 						ship_to_different_address: $('#ship-to-different-address-checkbox').is(':checked') ? 'yes' : 'no'
 					},
-					contentType: 'application/json',
-					dataType: 'json',
 					success: function(response) {
 						if ( response.success && response.data ) {
 							Flexify_Checkout.Fields.fillCnpjFields( response.data, field_rows );
