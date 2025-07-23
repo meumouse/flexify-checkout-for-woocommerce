@@ -5,6 +5,7 @@ namespace MeuMouse\Flexify_Checkout\Checkout;
 use MeuMouse\Flexify_Checkout\Admin\Admin_Options;
 use MeuMouse\Flexify_Checkout\API\License;
 use MeuMouse\Flexify_Checkout\Core\Helpers;
+use MeuMouse\Flexify_Checkout\Validations\Utils;
 
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
@@ -1116,13 +1117,13 @@ class Fields {
 			}
 
 			// add compatibility with multiple cpf fields
-			if ( strpos( $key, 'billing_cpf' ) !== false && ! Helpers::validate_cpf( $value ) || ( isset( $args['class'] ) && 'validate-cpf-field' === $args['class'] && ! Helpers::validate_cpf( $value ) ) ) {
+			if ( strpos( $key, 'billing_cpf' ) !== false && ! Utils::validate_cpf( $value ) || ( isset( $args['class'] ) && 'validate-cpf-field' === $args['class'] && ! Utils::validate_cpf( $value ) ) ) {
 				$message = sprintf( __('O %s informado não é válido.', 'flexify-checkout-for-woocommerce'), esc_html( $args['label'] ) );
 				$custom  = true;
 			}
 
 			// add compatibility with multiple cnpj fields
-			if ( strpos( $key, 'billing_cnpj' ) !== false && ! Helpers::validate_cnpj( $value ) || ( isset( $args['class'] ) && 'validate-cnpj-field' === $args['class'] && ! Helpers::validate_cnpj( $value ) ) ) {
+			if ( strpos( $key, 'billing_cnpj' ) !== false && ! Utils::validate_cnpj( $value ) || ( isset( $args['class'] ) && 'validate-cnpj-field' === $args['class'] && ! Utils::validate_cnpj( $value ) ) ) {
 				$message = sprintf(__('O %s informado não é válido.', 'flexify-checkout-for-woocommerce'), esc_html( $args['label'] ) );
 				$custom  = true;
 			}

@@ -323,6 +323,11 @@ class Styles {
 			<?php endif; ?>
 
 			.processing .blockUI.blockOverlay {
+				opacity: 0.75 !important;
+				background-position: center 50% !important;
+				background-size: 8rem !important;
+				background-repeat: no-repeat !important;
+				position: fixed !important;
   				background-image: url("<?php echo esc_attr( self::$assets_url . 'frontend/img/loader.gif' ); ?>") !important;
 			}
 		<?php endif;

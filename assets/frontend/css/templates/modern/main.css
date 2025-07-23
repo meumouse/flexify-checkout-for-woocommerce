@@ -613,10 +613,6 @@ form.woocommerce-checkout>.woocommerce-NoticeGroup.woocommerce-NoticeGroup-check
   	display: none;
 }
 
-.woocommerce-notices-wrapper svg {
-  	display: none;
-}
-
 .woocommerce-notices-wrapper>div,
 .woocommerce-notices-wrapper>ul {
   margin-bottom: 30px;
@@ -851,13 +847,13 @@ form.woocommerce-checkout>.woocommerce-NoticeGroup.woocommerce-NoticeGroup-check
 .form-row select:hover,
 .form-row textarea:focus,
 .form-row textarea:hover {
-  outline: unset;
-  border-color: var(--flexify-checkout-primary);
+	outline: unset;
+	border-color: var(--flexify-checkout-primary);
 }
 
 .form-row .select2-selection {
-  height: 54px;
-  transition: none;
+	height: 54px;
+	transition: none;
 }
 
 .form-row .select2-container--open .select2-selection--single {
@@ -4462,14 +4458,6 @@ li.flexify-stepper__step.complete .icon--checkmark__circle {
     -webkit-box-shadow: inset 0 0 0 100px #c3cdd7;
     box-shadow: inset 0 0 0 100px #c3cdd7;
   }
-}
-
-.processing .blockUI.blockOverlay {
-	opacity: 0.75 !important;
-	background-position: center 50% !important;
-	background-size: 8rem !important;
-	background-repeat: no-repeat !important;
-	position: fixed !important;
 }
 
 #assas-cc-expiration-label_field {

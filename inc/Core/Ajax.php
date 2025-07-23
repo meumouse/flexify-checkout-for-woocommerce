@@ -3,11 +3,8 @@
 namespace MeuMouse\Flexify_Checkout\Core;
 
 use MeuMouse\Flexify_Checkout\Admin\Admin_Options;
-
 use MeuMouse\Flexify_Checkout\Checkout\Fields;
 use MeuMouse\Flexify_Checkout\Checkout\Steps;
-use MeuMouse\Flexify_Checkout\Checkout\Inline_Errors;
-
 use MeuMouse\Flexify_Checkout\API\License;
 use MeuMouse\Flexify_Checkout\Views\Components;
 
@@ -32,16 +29,16 @@ class Ajax {
 	 */
 	public function __construct() {
 		// get AJAX call on check inline errors
-	//	add_action( 'wp_ajax_flexify_check_for_inline_error', array( __CLASS__, 'check_for_inline_error' ) );
+		add_action( 'wp_ajax_flexify_check_for_inline_error', array( __CLASS__, 'check_for_inline_error' ) );
 	
 		// get AJAX call on check inline errors for not logged users
-	//	add_action( 'wp_ajax_nopriv_flexify_check_for_inline_error', array( __CLASS__, 'check_for_inline_error' ) );
+		add_action( 'wp_ajax_nopriv_flexify_check_for_inline_error', array( __CLASS__, 'check_for_inline_error' ) );
 
 		// get AJAX call on check error on proceed step
-		add_action( 'wp_ajax_flexify_check_for_inline_errors', array( __CLASS__, 'check_for_inline_errors_callback' ) );
+		add_action( 'wp_ajax_flexify_check_for_inline_errors', array( __CLASS__, 'check_for_inline_errors' ) );
 
 		// get AJAX call on check error on proceed step for not logged users
-		add_action( 'wp_ajax_nopriv_flexify_check_for_inline_errors', array( __CLASS__, 'check_for_inline_errors_callback' ) );
+		add_action( 'wp_ajax_nopriv_flexify_check_for_inline_errors', array( __CLASS__, 'check_for_inline_errors' ) );
 
 		// get AJAX call on login event
 		add_action( 'wp_ajax_flexify_checkout_login', array( $this, 'checkout_login_callback' ) );
@@ -128,37 +125,30 @@ class Ajax {
 	 * @version 5.0.0
 	 * @return void
 	 */
-	public static function check_for_inline_errors_callback() {
-		if ( ! isset( $_POST['action'] ) || $_POST['action'] !== 'flexify_check_for_inline_errors' ) {
-			wp_die();
-		}
-
-		// treat field cleaning
-		$raw_fields = isset( $_POST['fields'] ) ? wp_unslash( $_POST['fields'] ) : array();
-		$fields = is_array( $raw_fields ) ? $raw_fields : array();
+	public static function check_for_inline_errors() {
+		// filter and sanitize array fields from frontend
+		$fields = filter_input( INPUT_POST, 'fields', FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_REQUIRE_ARRAY );
 		$messages = array();
 
 		foreach ( $fields as $field ) {
-			$key = isset( $field['key'] ) ? sanitize_key( $field['key'] ) : '';
-			$args = isset( $field['args'] ) ? ( array ) $field['args'] : array();
-			$value = isset( $field['value'] ) ? sanitize_text_field( $field['value'] ) : '';
-			$country = isset( $field['country'] ) ? sanitize_text_field( $field['country'] ) : '';
-			$id = isset( $field['id'] ) ? sanitize_text_field( $field['id'] ) : '';
+			$field_id = isset( $field['id'] ) ? $field['id'] : '';
+			$field_key = isset( $field['key'] ) ? $field['key'] : '';
+			$field_args = isset( $field['args'] ) ? $field['args'] : array();
+			$field_value = isset( $field['value'] ) ? $field['value'] : '';
+			$field_country = isset( $field['country'] ) ? $field['country'] : '';
 
-			$messages[ $key ] = Inline_Errors::render_field_error( $id, $key, $args, $value, $country );
+			$messages[$field_key] = Fields::render_inline_errors( $field_id, $field_key, $field_args, $field_value, $field_country );
 		}
 
-		// check if shipping to different address
-		$shipping = WC()->session->get('flexify_checkout_ship_different_address') === 'yes' ? 'shipping' : 'billing';
-		
+		$session_key = WC()->session->get('flexify_checkout_ship_different_address') === 'yes' ? 'shipping' : 'billing';
+
 		$messages['fragments'] = array(
 			'.flexify-review-customer' => Steps::render_customer_review(),
 			'.flexify-checkout-review-customer-contact' => Steps::replace_placeholders( Admin_Options::get_setting('text_contact_customer_review'), Steps::get_review_customer_fragment() ),
-			'.flexify-checkout-review-shipping-address' => Steps::replace_placeholders( Admin_Options::get_setting('text_shipping_customer_review'), Steps::get_review_customer_fragment(), $shipping ),
+			'.flexify-checkout-review-shipping-address' => Steps::replace_placeholders( Admin_Options::get_setting('text_shipping_customer_review'), Steps::get_review_customer_fragment(), $session_key ),
 			'.flexify-checkout-review-shipping-method' => Helpers::get_shipping_method(),
 		);
 
-		// send response to frontend
 		wp_send_json_success( $messages );
 	}
 
@@ -178,7 +168,8 @@ class Ajax {
 	 * Handle with login form on checkout
 	 *
 	 * @since 1.0.0
-	 * @throws Exception On login error.
+	 * @version 5.0.0
+	 * @throws Exception On login error
 	 */
 	public function checkout_login_callback() {
 		check_admin_referer('woocommerce-login');
@@ -188,7 +179,7 @@ class Ajax {
 			$password = filter_input( INPUT_POST, 'password' );
 			$rememberme = filter_input( INPUT_POST, 'rememberme' );
 
-			$creds = array(
+			$credentials = array(
 				'user_login' => trim( $username ),
 				'user_password' => $password,
 				'remember' => ! empty( $rememberme ),
@@ -201,19 +192,19 @@ class Ajax {
 			 *
 			 * @since 1.0.0
 			 */
-			$validation_error = apply_filters( 'woocommerce_process_login_errors', $validation_error, $creds['user_login'], $creds['user_password'] );
+			$validation_error = apply_filters( 'woocommerce_process_login_errors', $validation_error, $credentials['user_login'], $credentials['user_password'] );
 
 			if ( $validation_error->get_error_code() ) {
 				throw new \Exception( '<strong>' . __( 'Erro:', 'woocommerce' ) . '</strong> ' . $validation_error->get_error_message() );
 			}
 
-			if ( empty( $creds['user_login'] ) ) {
+			if ( empty( $credentials['user_login'] ) ) {
 				throw new \Exception( '<strong>' . __( 'Erro:', 'woocommerce' ) . '</strong> ' . __( 'Usuário é obrigatório.', 'woocommerce' ) );
 			}
 
 			// On multisite, ensure user exists on current site, if not add them before allowing login.
 			if ( is_multisite() ) {
-				$user_data = get_user_by( is_email( $creds['user_login'] ) ? 'email' : 'login', $creds['user_login'] );
+				$user_data = get_user_by( is_email( $credentials['user_login'] ) ? 'email' : 'login', $credentials['user_login'] );
 
 				if ( $user_data && ! is_user_member_of_blog( $user_data->ID, get_current_blog_id() ) ) {
 					add_user_to_blog( get_current_blog_id(), $user_data->ID, 'customer' );
@@ -227,7 +218,7 @@ class Ajax {
 			 *
 			 * @since 1.0.0
 			 */
-			$user = wp_signon( apply_filters( 'woocommerce_login_credentials', $creds ), is_ssl() );
+			$user = wp_signon( apply_filters( 'woocommerce_login_credentials', $credentials ), is_ssl() );
 
 			if ( is_wp_error( $user ) ) {
 				throw new \Exception( $user->get_error_message() );
@@ -1239,26 +1230,30 @@ class Ajax {
 	 * Save billing fields data in custom session
 	 * 
 	 * @since 1.8.5
-	 * @version 3.9.8
+	 * @version 5.0.0
 	 * @return void
 	 */
 	public function get_checkout_session_data_callback() {
-		// Receive data from POST fields
-		$fields_data = isset( $_POST['fields_data'] ) ? json_decode( stripslashes( $_POST['fields_data'] ), true ) : [];
-		$ship_to_different_address = isset( $_POST['ship_to_different_address'] ) ? sanitize_text_field( $_POST['ship_to_different_address'] ) : '';
-		$session_data = array();
-	
-		foreach ( $fields_data as $field ) {
-			// Add field and value to array if they exist and are not empty
-			if ( isset( $field['field_id'] ) && isset( $field['value'] ) ) {
-				$field_id = $field['field_id'];
-				$field_value = sanitize_text_field( $field['value'] );
-				$session_data[$field_id] = $field_value;
+		if ( isset( $_POST['action'] ) && $_POST['action'] === 'get_checkout_session_data' ) {
+			// Receive data from POST fields
+			$fields_data = isset( $_POST['fields_data'] ) ? json_decode( stripslashes( $_POST['fields_data'] ), true ) : array();
+			$ship_to_different_address = isset( $_POST['ship_to_different_address'] ) ? sanitize_text_field( $_POST['ship_to_different_address'] ) : '';
+			$session_data = array();
+		
+			foreach ( $fields_data as $field ) {
+				// Add field and value to array if they exist and are not empty
+				if ( isset( $field['field_id'] ) && isset( $field['value'] ) ) {
+					$field_id = $field['field_id'];
+					$field_value = sanitize_text_field( $field['value'] );
+					$session_data[$field_id] = $field_value;
+				}
 			}
-		}
 
-		WC()->session->set( 'flexify_checkout_customer_fields', $session_data );
-		WC()->session->set( 'flexify_checkout_ship_different_address', $ship_to_different_address );
+			WC()->session->set( 'flexify_checkout_customer_fields', $session_data );
+			WC()->session->set( 'flexify_checkout_ship_different_address', $ship_to_different_address );
+
+			wp_send_json_success( $session_data );
+		}
 	}
 
 
