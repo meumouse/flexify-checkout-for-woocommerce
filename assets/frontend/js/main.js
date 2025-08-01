@@ -160,74 +160,6 @@
 			},*/
 
 			/**
-			 * Display checkout errors
-			 * 
-			 * @since 1.0.0
-			 * @version 5.0.0
-			 * @param {string} message | Error message
-			 * @return void
-			 */
-			displayErrors: function( message ) {
-				if ( Flexify_Checkout.Helpers.isModernCheckout() && message ) {
-					let messages = message.split('</div>');
-
-					messages.forEach( function(msg) {
-						msg = msg.trim();
-
-						if ( msg ) {
-							const final_message = msg + '</div>';
-
-							Flexify_Checkout.Validations.insertError( final_message );
-						}
-					});
-				}
-			},
-
-			/**
-			 * Insert notice error on wrapper
-			 * 
-			 * @since 5.0.0
-			 * @param {string} htmlMessage | Error message from checkout validation
-			 * @return void
-			 */
-			insertError: function( htmlMessage ) {
-				const container = $('.woocommerce-notices-wrapper');
-
-				if ( container.length ) {
-					container.append( htmlMessage );
-				}
-			},
-
-			/**
-			 * Remove checkout notices on click button
-			 * 
-			 * @since 3.5.0
-			 * @version 5.0.0
-			 */
-			closeNotices: function() {
-				$(document).on('click', '.close-notice', function(e) {
-					e.preventDefault();
-
-					let btn = $(this);
-					var notice_wrap = btn.closest('.flexify-checkout-notice');
-					
-					if ( notice_wrap.length >= 1 ) {
-						notice_wrap.addClass('removing-notice').fadeOut('fast');
-
-						setTimeout( function() {
-							$('.flexify-checkout-notice.removing-notice').remove();
-						}, 500);
-					} else {
-						btn.parent('li').parent('ul.woocommerce-error').addClass('removing-notice').fadeOut('fast');
-						
-						setTimeout( function() {
-							$('.woocommerce-error.removing-notice').remove();
-						}, 500);
-					}
-				});
-			},
-
-			/**
 			 * Clear error messages
 			 * 
 			 * @since 1.0.0
@@ -607,7 +539,6 @@
 			 */
 			init: function() {
 				this.onChange();
-				this.closeNotices();
 
 				let billing_email = $('#billing_email').val();
 
@@ -1087,6 +1018,7 @@
 			 * @return void
 			 */
 			onCheckoutError: function() {
+
 				/**
 				 * Checkout error trigger
 				 * 
@@ -1099,7 +1031,7 @@
 					$('#place_order').removeClass('flexify-checkout-btn-loading');
 
 					Flexify_Checkout.Helpers.removeDomElements();
-					Flexify_Checkout.Validations.displayErrors( error );
+					Flexify_Checkout.Components.addNotice( error );
 
 					// Stop all ongoing animations and reset state
 					Flexify_Checkout.Animations.purchaseAnimation.stop();
@@ -1534,7 +1466,7 @@
 			repositionNotices: function() {
 				const is_modern = Flexify_Checkout.Helpers.isModernCheckout();
 				const form_notice = document.querySelector('form.woocommerce-checkout > .woocommerce-NoticeGroup.woocommerce-NoticeGroup-checkout');
-				const notice_wrapper = document.querySelector('.woocommerce-notices-wrapper');
+				const notices_wrapper = $('.woocommerce-notices-wrapper');
 				
 				if ( is_modern && form_notice ) {
 					var error = form_notice.querySelector('.woocommerce-error');
@@ -1543,14 +1475,12 @@
 						return;
 					}
 
-					var error_container = document.querySelector('.woocommerce > .woocommerce-notices-wrapper');
-
-					error_container.append(error);
+					notices_wrapper.append(error);
 					form_notice.remove();
 				}
 
-				if ( is_modern && notice_wrapper ) {
-					$('.woocommerce-notices-wrapper').prependTo('.flexify-checkout__steps');
+				if ( is_modern && notices_wrapper ) {
+					notices_wrapper.prependTo('.flexify-checkout__steps');
 				}
 			},
 		},
@@ -1892,12 +1822,14 @@
              * @return void
              */
             preparePlaceOrderButton: function() {
-                if ( $("#place_order").find('.flexify-submit-dots').length ) {
+                if ( $('#place_order').find('.flexify-submit-dots').length ) {
                     return;
                 }
 
+				let btn_html = $('#place_order').html();
+
                 // add dots to the button
-                $("#place_order").html( $("#place_order").html() + `<span class="flexify-submit-dots">
+                $('#place_order').html( btn_html + `<span class="flexify-submit-dots">
                     <i class="flexify-submit-dot flexify-submit-dot__1"></i>
                     <i class="flexify-submit-dot flexify-submit-dot__1"></i>
                     <i class="flexify-submit-dot flexify-submit-dot__1"></i>
@@ -3336,6 +3268,47 @@
 				}, 3000);
 			},
 
+			/**
+			 * Render a new notice on wrapper
+			 * 
+			 * @since 1.0.0
+			 * @version 5.0.0
+			 * @param {string} notice | Notice HTML
+			 * @return void
+			 */
+			addNotice: function( notice ) {
+				$('.woocommerce-notices-wrapper').append( notice );
+			},
+
+			/**
+			 * Remove checkout notices on click button
+			 * 
+			 * @since 3.5.0
+			 * @version 5.0.0
+			 */
+			removeNotice: function() {
+				$(document).on('click', '.close-notice', function(e) {
+					e.preventDefault();
+
+					let btn = $(this);
+					var notice_wrap = btn.closest('.flexify-checkout-notice');
+					
+					if ( notice_wrap.length >= 1 ) {
+						notice_wrap.addClass('removing-notice').fadeOut('fast');
+
+						setTimeout( function() {
+							$('.flexify-checkout-notice.removing-notice').remove();
+						}, 500);
+					} else {
+						btn.parent('li').parent('ul.woocommerce-error').addClass('removing-notice').fadeOut('fast');
+						
+						setTimeout( function() {
+							$('.woocommerce-error.removing-notice').remove();
+						}, 500);
+					}
+				});
+			},
+
             /**
              * Initialize module
              * 
@@ -3351,6 +3324,7 @@
 				this.updateReviewData();
 				this.relocateExpressButtons();
 				this.stripeHideEmptyElement();
+				this.removeNotice();
 
 				// Remove no-js class from HTML element
 				$('html').removeClass('no-js');
@@ -3921,6 +3895,9 @@
 
 			// initialize session functions
 			this.Session.init();
+
+			// initialize process checkout functions
+			this.processCheckout.init();
 		},
 	};
 

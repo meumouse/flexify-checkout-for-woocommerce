@@ -15,9 +15,10 @@ defined('ABSPATH') || exit;
  * the readme will list any important changes.
  *
  * @see https://woocommerce.com/document/template-structure/
- * @package MeuMouse.com
+ * 
  * @since 3.5.0
- * @version 1.0.0
+ * @version 5.0.0
+ * @package MeuMouse.com
  */
 
 if ( ! $notices ) {

@@ -24,7 +24,7 @@ class Templates {
 		add_filter( 'woocommerce_locate_template', array( $this, 'load_templates' ), 10, 3 );
 
         // replace original checkout notices
-		add_filter( 'wc_get_template', array( $this, 'flexify_checkout_notices' ), 10, 5 );
+		add_filter( 'wc_get_template', array( $this, 'flexify_checkout_notices' ), 99, 5 );
 
 		// add wrap for express gateways
 		add_filter( 'woocommerce_checkout_before_customer_details', array( $this, 'express_checkout_button_wrap' ) );

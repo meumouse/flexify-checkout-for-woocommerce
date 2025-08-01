@@ -66,7 +66,7 @@ class Sidebar {
 		remove_action( 'woocommerce_before_checkout_form', 'woocommerce_checkout_coupon_form', 10 );
 		add_action( 'woocommerce_review_order_before_subtotal', array( __CLASS__, 'checkout_add_coupon_form' ), 9 );
 
-		// Add image to checkout.
+		// Add image to checkout
 		add_filter( 'woocommerce_cart_item_name', array( __CLASS__, 'add_image_to_cart' ), 10, 3 );
 		add_filter( 'woocommerce_cart_item_class', array( __CLASS__, 'cart_item_class' ), 10, 3 );
 

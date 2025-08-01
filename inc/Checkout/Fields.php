@@ -1045,7 +1045,7 @@ class Fields {
 	 * Render inline errors for validate fields
 	 *
 	 * @since 1.0.0
-	 * @version 3.9.8
+	 * @version 5.0.0
 	 * @param string $field | Checkout field
 	 * @param string $key | Field name and ID
 	 * @param array $args | Array of field parameters (type, country, label, description, placeholder, maxlenght, required, autocomplete, id, class, label_class, input_class, return, options, custom_attributes, validate, default, autofocus)
@@ -1061,7 +1061,7 @@ class Fields {
 		}
 
 		// If we are doing AJAX, get the parameters from POST request.
-		if ( defined( 'DOING_AJAX' ) && DOING_AJAX && ! $called_inline ) {
+		if ( defined('DOING_AJAX') && DOING_AJAX && ! $called_inline ) {
 			$key = filter_input( INPUT_POST, 'key', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 			$args = filter_input( INPUT_POST, 'args', FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_REQUIRE_ARRAY );
 			$value = filter_input( INPUT_POST, 'value', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
@@ -1111,7 +1111,12 @@ class Fields {
 				}
 			}
 
-			if ( 'phone' === $args['type'] && ! \WC_Validation::is_phone( $value ) || strpos( $key, 'billing_phone') !== false && ! \WC_Validation::is_phone( $value ) ) {
+			error_log( 'Key: ' . print_r( $key, true ) );
+			error_log( 'Value: ' . print_r( $value, true ) );
+			error_log( 'Args: ' . print_r( $args, true ) );
+			error_log( 'Validate phone: ' . print_r( \WC_Validation::is_phone( $value ), true ) );
+
+			if ( 'tel' === $args['type'] && ! \WC_Validation::is_phone( $value ) || strpos( $key, 'billing_phone') !== false && ! \WC_Validation::is_phone( $value ) ) {
 				$message = sprintf( __( '%s não é um número de telefone válido.', 'flexify-checkout-for-woocommerce' ), esc_html( $args['label'] ) );
 				$custom  = true;
 			}

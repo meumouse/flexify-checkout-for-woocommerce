@@ -1,8 +1,9 @@
-Versão 5.0.0 (14/07/2025)
+Versão 5.0.0 (01/08/2025)
 * Correção de bugs
 * Otimizações
 * Mudança de arquitetura para MACI (Modular Autoload Class Initialization)
 * Recurso adicionado: Ativar atualizações automáticas
+* Recurso modificado: Variáveis de texto agora retornam vazio se o valor não for recuperado
 
 Versão 4.1.1 (18/06/2025)
 * Otimizações
