@@ -1,6 +1,7 @@
 Versão 5.0.0 (01/08/2025)
 * Correção de bugs
 * Otimizações
+  - Validação de telefones em formato internacional
 * Mudança de arquitetura para MACI (Modular Autoload Class Initialization)
 * Recurso adicionado: Ativar atualizações automáticas
 * Recurso modificado: Variáveis de texto agora retornam vazio se o valor não for recuperado

@@ -1111,14 +1111,12 @@ class Fields {
 				}
 			}
 
-			error_log( 'Key: ' . print_r( $key, true ) );
-			error_log( 'Value: ' . print_r( $value, true ) );
-			error_log( 'Args: ' . print_r( $args, true ) );
-			error_log( 'Validate phone: ' . print_r( \WC_Validation::is_phone( $value ), true ) );
-
-			if ( 'tel' === $args['type'] && ! \WC_Validation::is_phone( $value ) || strpos( $key, 'billing_phone') !== false && ! \WC_Validation::is_phone( $value ) ) {
-				$message = sprintf( __( '%s não é um número de telefone válido.', 'flexify-checkout-for-woocommerce' ), esc_html( $args['label'] ) );
-				$custom  = true;
+			// validate if phone is valid
+			if ( strpos( $key, 'phone' ) !== false ) {
+				if ( ! \WC_Validation::is_phone( $value ) || Admin_Options::get_setting('enable_ddi_phone_field') && ! Utils::is_valid_phone( $value ) ) {
+					$message = sprintf( __( '%s não é um número de telefone válido.', 'flexify-checkout-for-woocommerce' ), esc_html( $args['label'] ) );
+					$custom  = true;
+				}
 			}
 
 			// add compatibility with multiple cpf fields

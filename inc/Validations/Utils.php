@@ -2,6 +2,9 @@
 
 namespace MeuMouse\Flexify_Checkout\Validations;
 
+use libphonenumber\PhoneNumberUtil;
+use libphonenumber\NumberParseException;
+
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
 
@@ -73,5 +76,25 @@ class Utils {
 		}
 
 		return true;
+	}
+
+
+	/**
+	 * Automatically validate an international phone number
+	 * 
+	 * @since 5.0.0
+	 * @param string $phone | Phone number in E.164 format (e.g., +5541998765432)
+	 * @return bool
+	 */
+	public static function is_valid_phone( $phone ) {
+		try {
+			$phoneUtil = PhoneNumberUtil::getInstance();
+			// Pass null as region — only works if phone has country code (e.g., starts with +)
+			$numberProto = $phoneUtil->parse( $phone, null );
+
+			return $phoneUtil->isValidNumber( $numberProto );
+		} catch ( NumberParseException $e ) {
+			return false;
+		}
 	}
 }
