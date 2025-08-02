@@ -112,7 +112,7 @@ class Fields {
 	 * Override checkout fields
 	 *
 	 * @since 1.0.0
-	 * @version 3.9.7
+	 * @version 5.0.0
 	 * @param array $fields | Checkout fields
 	 * @return array
 	 */
@@ -252,7 +252,14 @@ class Fields {
 					}
 				}
 			} else {
-				$shipping_fields = apply_filters( 'flexify_checkout_remove_fields_for_digital_products', array(
+				/**
+				 * Filter for remove fields for digital products
+				 * 
+				 * @since 1.0.0
+				 * @version 5.0.0
+				 * @return array
+				 */
+				$shipping_fields = apply_filters( 'Flexify_Checkout/Checkout/Fields/Remove_Fields_For_Digital_Products', array(
 					'billing_postcode',
 					'billing_address_1',
 					'billing_number',

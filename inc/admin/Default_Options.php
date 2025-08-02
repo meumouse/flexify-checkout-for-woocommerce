@@ -146,6 +146,7 @@ class Default_Options {
             'enable_update_notices' => 'yes',
             'render_coupon_field_hook' => 'sidebar',
             'hide_header_stepper_buttons' => 'no',
+            'auto_display_login_modal' => 'yes',
         ));
     }
 

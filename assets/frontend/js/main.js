@@ -72,8 +72,6 @@
 			 * @returns bool
 			 */
 			getFieldErrors: async function( field ) {
-				console.log('getFieldErrors called: ', field);
-
 				var row = field.closest('.form-row');
 
 				if ( ! row || ! row.attributes['data-label'] || ! row.attributes['data-type'] ) {
@@ -128,22 +126,21 @@
 							row.classList.add('woocommerce-invalid');
 						}
 
-						// Info message (e.g. prompt login)
-						if ( 'dont_offer' !== params.allow_login_existing_user ) {
-							if ( 'info' === value.messageType ) {
-								if ( ! row.querySelector('.info') ) {
-									row.insertAdjacentHTML('beforeend', '<span class="info" style="display:none"></span>');
-								}
-
-								const $span = $(row).find('.info');
-								$span.html(value.message).slideDown();
-
-								if ( 'inline_popup' === params.allow_login_existing_user ) {
-									_loginButtons__WEBPACK_IMPORTED_MODULE_2__["default"].openPopup(true);
-								}
-							} else {
-								$(row).find('.info').slideUp();
+						// display login message
+						if ( 'info' === value.messageType ) {
+							if ( ! row.querySelector('.info') ) {
+								row.insertAdjacentHTML('beforeend', '<span class="info" style="display:none"></span>');
 							}
+
+							const $span = $(row).find('.info');
+							$span.html(value.message).slideDown();
+
+							// display modal automatically if enabled
+							if ( params.auto_display_login_modal === 'yes' ) {
+								Flexify_Checkout.loginForm.openModal( true );
+							}
+						} else {
+							$(row).find('.info').slideUp();
 						}
 					} else {
 						// Trigger Woo validation if not handled via AJAX
@@ -1690,14 +1687,6 @@
 				}, 300);
 				
 				// open login modal
-			/*	$('.carprog-open-modal').magnificPopup({
-					items: {
-						src: '#carprog-defect-modal',
-						type: 'inline',
-					},
-					closeBtnInside: true,
-				});*/
-
 				$.magnificPopup.open({
 					items: {
 						src: '.woocommerce-form-login',
@@ -3913,6 +3902,9 @@
 
 			// initialize session functions
 			this.Session.init();
+
+			// initialize validations functions
+			this.Validations.init();
 
 			// initialize process checkout functions
 			this.processCheckout.init();

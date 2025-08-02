@@ -240,7 +240,7 @@ class Ajax {
 	 * Save options in AJAX
 	 * 
 	 * @since 1.0.0
-	 * @version 3.9.7
+	 * @version 5.0.0
 	 * @return void
 	 */
 	public function ajax_save_options_callback() {
@@ -279,7 +279,9 @@ class Ajax {
 			$options['inter_bank_env_mode'] = isset( $form_data['inter_bank_env_mode'] ) ? 'yes' : 'no';
 			$options['enable_remove_quantity_select'] = isset( $form_data['enable_remove_quantity_select'] ) ? 'yes' : 'no';
 			$options['enable_animation_process_purchase'] = isset( $form_data['enable_animation_process_purchase'] ) && License::is_valid() ? 'yes' : 'no';
-			$options['enable_shipping_to_different_address'] = isset( $form_data['enable_shipping_to_different_address'] ) && License::is_valid() ? 'yes' : 'no';	
+			$options['enable_shipping_to_different_address'] = isset( $form_data['enable_shipping_to_different_address'] ) && License::is_valid() ? 'yes' : 'no';
+			$options['hide_header_stepper_buttons']	= isset( $form_data['hide_header_stepper_buttons'] ) && License::is_valid() ? 'yes' : 'no';
+			$options['auto_display_login_modal']	= isset( $form_data['auto_display_login_modal'] ) && License::is_valid() ? 'yes' : 'no';
 
 			// check if form data exists "checkout_step" name and is array
 			if ( isset( $form_data['checkout_step'] ) && is_array( $form_data['checkout_step'] ) ) {
@@ -356,9 +358,17 @@ class Ajax {
 					'toast_body_title' => esc_html__( 'As configurações foram atualizadas!', 'flexify-checkout-for-woocommerce' ),
 					'options' => $updated_options,
 				);
-
-				wp_send_json( $response ); // Send JSON response
+			} else {
+				$response = array(
+					'status' => 'error',
+					'toast_header_title' => esc_html__( 'Ops! Ocorreu um erro.', 'flexify-checkout-for-woocommerce' ),
+					'toast_body_title' => esc_html__( 'Não foi possível salvar as configurações.', 'flexify-checkout-for-woocommerce' ),
+					'options' => $updated_options,
+				);
 			}
+
+			// Send JSON response
+			wp_send_json( $response );
 		}
 	}
 

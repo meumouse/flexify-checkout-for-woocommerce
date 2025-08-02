@@ -192,7 +192,7 @@ class Assets {
 			'is_user_logged_in' => is_user_logged_in(),
 			'localstorage_fields' => Fields::get_localstorage_fields(),
 			'international_phone' => Admin_Options::get_setting('enable_ddi_phone_field'),
-			'allow_login_existing_user' => 'inline_popup',
+			'auto_display_login_modal' => Admin_Options::get_setting('auto_display_login_modal'),
 			'steps' => Steps::get_steps_hashes(),
 			'i18n' => array(
 				'iti_i18n' => $this->build_iti_i18n(),

@@ -165,6 +165,10 @@ class Legacy_Filters {
 				'new_filter' => 'Flexify_Checkout/Checkout/Fields/Email_Exists_Message',
 				'version' => '5.0.0',
 			),
+			'flexify_checkout_remove_fields_for_digital_products' => array(
+				'new_filter' => 'Flexify_Checkout/Checkout/Fields/Remove_Fields_For_Digital_Products',
+				'version' => '5.0.0',
+			),
 		);
 	}
 }

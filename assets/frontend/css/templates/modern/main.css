@@ -935,10 +935,22 @@ p#billing_cnpj_field.form-row[data-type="tel"]:before {
 
 .form-row[data-type="country"]:before,
 .form-row[data-type="select"]:before,
-.form-row[data-type="state"]:before {
+.form-row[data-type="state"]:before,
+#billing_state_field:before {
     -webkit-mask-image: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOCIgaGVpZ2h0PSIxMyIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNNCAuNWwtNCA0aDhsLTQtNHpNNCAxMi41bC00LTRoOGwtNCA0eiIgZmlsbD0iIzAwMCIvPjwvc3ZnPg==");
     mask-image: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOCIgaGVpZ2h0PSIxMyIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNNCAuNWwtNCA0aDhsLTQtNHpNNCAxMi41bC00LTRoOGwtNCA0eiIgZmlsbD0iIzAwMCIvPjwvc3ZnPg==");
-    z-index: -1;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+    background-color: #afafb1;
+    content: "";
+    height: 54px;
+    position: absolute;
+    right: 16px;
+    top: 0;
+    width: 24px;
+    transition: all 0.2s ease;
 }
 
 .form-row select {
