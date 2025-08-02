@@ -2,9 +2,6 @@
 
 namespace MeuMouse\Flexify_Checkout\Validations;
 
-use libphonenumber\PhoneNumberUtil;
-use libphonenumber\NumberParseException;
-
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
 
@@ -87,14 +84,25 @@ class Utils {
 	 * @return bool
 	 */
 	public static function is_valid_phone( $phone ) {
-		try {
-			$phoneUtil = PhoneNumberUtil::getInstance();
-			// Pass null as region — only works if phone has country code (e.g., starts with +)
-			$numberProto = $phoneUtil->parse( $phone, null );
+		// Remove spaces, hyphens, parentheses, and dots
+		$cleaned = preg_replace( '/[\s\-\(\)\.]/', '', $phone );
 
-			return $phoneUtil->isValidNumber( $numberProto );
-		} catch ( NumberParseException $e ) {
-			return false;
+		// Validate international format (E.164): + followed by 7 to 15 digits
+		if ( preg_match( '/^\+\d{7,15}$/', $cleaned ) ) {
+			return true;
 		}
+
+		// Validate national Brazilian format: 10 or 11 digits (with DDD)
+		if ( preg_match( '/^\d{10,11}$/', $cleaned ) ) {
+			// Get the DDD (first 2 digits) and validate range
+			$ddd = substr( $cleaned, 0, 2 );
+
+			// Brazilian DDDs range from 11 to 99
+			if ( intval( $ddd ) >= 11 && intval( $ddd ) <= 99 ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 }
