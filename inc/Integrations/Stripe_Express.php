@@ -72,5 +72,3 @@ class Stripe_Express {
         return $fields;
     }
 }
-
-new Stripe_Express();

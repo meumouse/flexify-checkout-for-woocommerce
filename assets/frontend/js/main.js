@@ -104,7 +104,7 @@
 								},
 								error: function(xhr, status, error) {
 									reject(error);
-								}
+								},
 							});
 						});
 

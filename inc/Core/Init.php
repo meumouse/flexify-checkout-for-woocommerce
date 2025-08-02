@@ -270,36 +270,78 @@ class Init {
      * @return void
      */
     public static function instance_classes() {
+        $base_namespace = 'MeuMouse\\Flexify_Checkout';
+        $base_path = FLEXIFY_CHECKOUT_INC_PATH;
+
         /**
          * Filter to add new classes
          * 
          * @since 5.0.0
          * @param array $classes | Array with classes to instance
          */
-        $classes = apply_filters( 'Flexify_Checkout/Init/Instance_Classes', array(
-            '\MeuMouse\Flexify_Checkout\Compatibility\Legacy_Filters',
-            '\MeuMouse\Flexify_Checkout\Compatibility\Legacy_Hooks',
-            '\MeuMouse\Flexify_Checkout\API\License',
-            '\MeuMouse\Flexify_Checkout\Admin\Admin_Options',
-			'\MeuMouse\Flexify_Checkout\Views\Settings\Settings_Panel',
-            '\MeuMouse\Flexify_Checkout\Core\Assets',
-            '\MeuMouse\Flexify_Checkout\Core\Ajax',
-            '\MeuMouse\Flexify_Checkout\Views\Styles',
-            '\MeuMouse\Flexify_Checkout\Cron\Routines',
-			'\MeuMouse\Flexify_Checkout\Checkout\Login',
-			'\MeuMouse\Flexify_Checkout\Checkout\Templates',
-            '\MeuMouse\Flexify_Checkout\Checkout\Themes',
-            '\MeuMouse\Flexify_Checkout\Checkout\Sidebar',
-            '\MeuMouse\Flexify_Checkout\Checkout\Coupons',
-			'\MeuMouse\Flexify_Checkout\Checkout\Conditions',
-			'\MeuMouse\Flexify_Checkout\Checkout\Fragments',
-        	'\MeuMouse\Flexify_Checkout\API\Updater',
-        ));
+        $manual_classes = apply_filters( 'Flexify_Checkout/Init/Instance_Classes', array() );
 
-        // iterate for each class and instance it
-        foreach ( $classes as $class ) {
+        foreach ( $manual_classes as $class ) {
             if ( class_exists( $class ) ) {
-                new $class();
+                $instance = new $class();
+
+                if ( method_exists( $instance, 'init' ) ) {
+                    $instance->init();
+                }
+            }
+        }
+
+        // walk recursivily all that classes on /inc directory
+        $rii = new \RecursiveIteratorIterator( new \RecursiveDirectoryIterator( $base_path ) );
+
+        foreach ( $rii as $file ) {
+            if ( $file->isDir() || $file->getExtension() !== 'php' ) {
+                continue;
+            }
+
+            // Skip plain function files
+            if ( strpos( file_get_contents( $file->getPathname() ), 'class ' ) === false ) {
+                continue;
+            }
+
+            // relative path from inc/
+            $relative_path = substr( $file->getPathname(), strlen( $base_path ) );
+
+            // convert path to PSR-4 class name
+            $class_path = str_replace( ['/', '\\', '.php'], ['\\', '\\', '' ], $relative_path );
+            $class_name = $base_namespace . '\\' . $class_path;
+
+            // sanitize class name
+		    $class_name = trim( $class_name, '\\' );
+
+            // skip if class already declared
+            if ( class_exists( $class_name, false ) ) {
+                continue;
+            }
+
+            // try to load class
+            if ( ! class_exists( $class_name ) ) {
+                continue;
+            }
+
+            $reflection = new \ReflectionClass( $class_name );
+
+            // skip if not instantiable
+            if ( ! $reflection->isInstantiable() ) {
+                continue;
+            }
+
+            // skip if requires parameters
+            if ( $reflection->getConstructor() && $reflection->getConstructor()->getNumberOfRequiredParameters() > 0 ) {
+                continue;
+            }
+            
+            // safe instance
+            $instance = $reflection->newInstance();
+
+            // optional instance method
+            if ( method_exists( $instance, 'init' ) ) {
+                $instance->init();
             }
         }
     }
