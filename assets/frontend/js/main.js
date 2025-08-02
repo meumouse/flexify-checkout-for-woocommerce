@@ -36,14 +36,13 @@
 			 * @return void
 			 */
 			onChange: function() {
-				var fields = document.querySelectorAll('input, select, textarea');
+				var fields = document.querySelectorAll('.form-row input, .form-row select, .form-row textarea');
 
 				Array.from(fields).forEach( function(field) {
 					field.addEventListener('change input', function(e) {
 						e.preventDefault();
 
-						// @TODO
-					//	await Flexify_Checkout.Validations.getFieldErrors(field);
+						Flexify_Checkout.Validations.getFieldErrors( field );
 
 						return false;
 					});
@@ -72,92 +71,100 @@
 			 * @param {array} fields | Fields
 			 * @returns bool
 			 */
-		/*	getFieldErrors: async function( field ) {
+			getFieldErrors: async function( field ) {
+				console.log('getFieldErrors called: ', field);
+
 				var row = field.closest('.form-row');
 
-				if ( ! row ) {
+				if ( ! row || ! row.attributes['data-label'] || ! row.attributes['data-type'] ) {
 					return false;
 				}
 
-				if ( ! row.attributes['data-label'] || ! row.attributes['data-type'] ) {
-					return false;
-				}
-
-				var value = Flexify_Checkout.Helpers.get_field_value(field);
 				var type = row.attributes['data-type'].value;
 				var get_country_element = document.getElementById('billing_country');
 
-				var data = {
-					action: 'flexify_check_for_inline_error',
-					args: {
-						label: row.attributes['data-label'].value,
-						required: row.classList.contains('required'),
-						type: type,
-					},
-					country: get_country_element ? get_country_element.value : '',
-					key: field.attributes.name.value,
-					value: value,
-				};
+				try {
+					// Only use AJAX for certain field types
+					if ( ['country', 'postcode', 'phone', 'email', 'text'].includes(type) ) {
+						const response = await new Promise( ( resolve, reject ) => {
+							$.ajax({
+								type: 'POST',
+								url: params.ajax_url,
+								data: {
+									action: 'flexify_check_for_inline_error',
+									args: {
+										label: row.attributes['data-label'].value,
+										required: row.classList.contains('required'),
+										type: type,
+									},
+									country: get_country_element ? get_country_element.value : '',
+									key: field.attributes.name.value,
+									value: Flexify_Checkout.Helpers.getFieldValue( field ),
+								},
+								success: function(response) {
+									resolve(response);
+								},
+								error: function(xhr, status, error) {
+									reject(error);
+								}
+							});
+						});
 
-				// Its too slow to trigger every field, so check the more advanced fields with ajax.
-				if ('country' === type || 'postcode' === type || 'phone' === type || 'email' === type || 'text' === type ) {
-					await Flexify_Checkout.Helpers.ajaxRequest(data, function(response) {
-					var value = JSON.parse(response).data;
-					var row = $(field).closest('.form-row');
-					var update_element_text = value.input_id.replace('billing_', '');
+						const value = response.data;
+						const update_element_text = value.input_id.replace('billing_', '');
 
-					$('.flexify-review-customer__content').find('.customer-details-info.' + update_element_text).text(value.input_value);
+						// Update review box
+						$('.flexify-review-customer__content').find('.customer-details-info.' + update_element_text).text( value.input_value );
 
-					// Update the inline validation messages for the field.
-					field.closest('.form-row').querySelector('.error').innerHTML = value.message;
-					field.closest('.form-row').classList.remove('woocommerce-invalid');
+						// Update field error
+						row.querySelector('.error').innerHTML = value.message;
+						row.classList.remove('woocommerce-invalid');
 
-					// Trigger Woo Validation.
-					if (field.closest('.form-row').classList.contains('validate-required')) {
-						$(field).trigger('validate');
-					}
+						if ( row.classList.contains('validate-required') ) {
+							$(field).trigger('validate');
+						}
 
-					// If a custom message has been returned, mark the row as invalid.
-					if (value.isCustom) {
-						field.closest('.form-row').classList.add('woocommerce-invalid');
-					}
+						if ( value.isCustom ) {
+							row.classList.add('woocommerce-invalid');
+						}
 
-					if ('dont_offer' !== params.allow_login_existing_user) {
-						if ('info' === value.messageType) {
-                            if (!row.find('.info').length) {
-                                row.append('<span class="info" style="display:none"></span>');
-                            }
+						// Info message (e.g. prompt login)
+						if ( 'dont_offer' !== params.allow_login_existing_user ) {
+							if ( 'info' === value.messageType ) {
+								if ( ! row.querySelector('.info') ) {
+									row.insertAdjacentHTML('beforeend', '<span class="info" style="display:none"></span>');
+								}
 
-                            let $span = row.find('.info');
-                            $span.slideDown();
-                            $span.html(value.message);
+								const $span = $(row).find('.info');
+								$span.html(value.message).slideDown();
 
-                            if ('inline_popup' === params.allow_login_existing_user) {
-                                _loginButtons__WEBPACK_IMPORTED_MODULE_2__["default"].openPopup(true);
-                            }
-						} else {
-                            let $span = row.find('.info');
-                            $span.slideUp();
+								if ( 'inline_popup' === params.allow_login_existing_user ) {
+									_loginButtons__WEBPACK_IMPORTED_MODULE_2__["default"].openPopup(true);
+								}
+							} else {
+								$(row).find('.info').slideUp();
+							}
+						}
+					} else {
+						// Trigger Woo validation if not handled via AJAX
+						if ( row.classList.contains('validate-required') ) {
+							$(field).trigger('validate');
 						}
 					}
-					});
-				} else {
-					// Trigger Woo Validation.
-					if (field.closest('.form-row').classList.contains('validate-required')) {
-					    $(field).trigger('validate');
-					}
+				} catch (e) {
+					console.error('[FLEXIFY CHECKOUT] Error validating field:', e);
 				}
 
-				var hasError = field.closest('.form-row').classList.contains('woocommerce-invalid');
+				const hasError = row.classList.contains('woocommerce-invalid');
 
-				if (hasError) {
-					Flexify_Checkout.Steps.disableNextSteppers(field.closest('[data-step]').attributes['data-step'].value);
+				if ( hasError ) {
+					Flexify_Checkout.Steps.disableNextSteppers(row.getAttribute('data-step'));
 				}
 
 				Flexify_Checkout.Validations.accessibleErrors();
 
 				return hasError;
-			},*/
+			},
 
 			/**
 			 * Clear error messages
@@ -210,7 +217,7 @@
 			 * @return void
 			 */
 			accessibleErrors: function() {
-				let fields = document.querySelectorAll('input, select, textarea');
+				let fields = document.querySelectorAll('.form-row input, .form-row select, .form-row textarea');
 
 				Array.from(fields).forEach( function(field) {
 					const row = field.closest('.form-row');
@@ -308,10 +315,14 @@
 				if ( format === 'list' ) {
 					noticeContainer.classList.add('woocommerce-NoticeGroup');
 					noticeContainer.classList.add('woocommerce-NoticeGroup-checkout');
+
 					var noticeContainerList = document.createElement('ul');
+
 					noticeContainerList.setAttribute('role', 'alert');
 					noticeContainerList.classList.add(noticeType);
+
 					var noticeListItem = document.createElement('li');
+
 					noticeListItem.innerHTML = message;
 					noticeContainerList.append(noticeListItem);
 					noticeContainer.append(noticeContainerList);
@@ -544,8 +555,7 @@
 
 				// Offer to login if a user a user already exits with the matching email
 				if ( billing_email && Flexify_Checkout.Validations.isValidEmail( billing_email ) ) {
-					// @ TODO
-				//	Flexify_Checkout.Validations.getFieldErrors( document.getElementById('billing_email') );
+					Flexify_Checkout.Validations.getFieldErrors( document.getElementById('billing_email') );
 				}
 
 				// Add mask for each field with input mask defined
@@ -1680,6 +1690,14 @@
 				}, 300);
 				
 				// open login modal
+			/*	$('.carprog-open-modal').magnificPopup({
+					items: {
+						src: '#carprog-defect-modal',
+						type: 'inline',
+					},
+					closeBtnInside: true,
+				});*/
+
 				$.magnificPopup.open({
 					items: {
 						src: '.woocommerce-form-login',
@@ -3132,7 +3150,7 @@
 			 * @return void
 			 */
 			updateReviewData: function() {
-				const fields = document.querySelectorAll('input, select, textarea');
+				const fields = document.querySelectorAll('.form-row input, .form-row select, .form-row textarea');
   
 				fields.forEach( function(field) {
 					$(field).on('change input keyup', function() {

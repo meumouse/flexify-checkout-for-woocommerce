@@ -21,9 +21,15 @@ class Steps {
 	 * Render header
 	 *
 	 * @since 1.0.0
+	 * @version 5.0.0
 	 * @return void
 	 */
 	public static function render_header( $show_breadcrumps = true ) {
+		// hidden stepper
+		if ( Admin_Options::get_setting('hide_header_stepper_buttons') === 'yes' ) {
+			$show_breadcrumps = false;
+		}
+
 		/**
 		 * Hook before header
 		 *
@@ -53,6 +59,7 @@ class Steps {
 					endif; ?>
 				</a>
 			</div>
+
 			<?php if ( $show_breadcrumps ) :
 				self::render_stepper();
 			endif; ?>

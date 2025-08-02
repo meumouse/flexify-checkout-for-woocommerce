@@ -157,6 +157,7 @@ class Ajax {
 	 * Check for inline error for the given field
 	 *
 	 * @since 1.0.0
+	 * @version 5.0.0
 	 * @return void
 	 */
 	public static function check_for_inline_error() {

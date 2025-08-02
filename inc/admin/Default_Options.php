@@ -145,6 +145,7 @@ class Default_Options {
             'enable_auto_updates' => 'no',
             'enable_update_notices' => 'yes',
             'render_coupon_field_hook' => 'sidebar',
+            'hide_header_stepper_buttons' => 'no',
         ));
     }
 

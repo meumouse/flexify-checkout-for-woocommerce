@@ -142,6 +142,11 @@ class Assets {
 			'wc-address-i18n',
 		);
 
+		// load magnific popup library
+		wp_enqueue_script( 'flexify-magnific-popup-js', $this->assets_url . 'vendor/magnific-popup/jquery.magnific-popup.min.js', array('jquery'), '1.2.0', false );
+		wp_enqueue_style( 'flexify-magnific-popup-css', $this->assets_url . 'vendor/magnific-popup/magnific-popup.css', array(), '1.2.0' );
+		$deps[] = 'flexify-magnific-popup-js';
+
 		// international phone number selector
 		if ( Admin_Options::get_setting('enable_ddi_phone_field') === 'yes' && is_flexify_checkout() && License::is_valid() ) {
 			// load intl-tel-input library

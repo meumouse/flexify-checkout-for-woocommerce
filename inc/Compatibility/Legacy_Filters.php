@@ -161,6 +161,10 @@ class Legacy_Filters {
 				'new_filter' => 'Flexify_Checkout/Assets/Script_Data',
 				'version' => '5.0.0',
 			),
+			'flexify_woocommerce_registration_error_email_exists' => array(
+				'new_filter' => 'Flexify_Checkout/Checkout/Fields/Email_Exists_Message',
+				'version' => '5.0.0',
+			),
 		);
 	}
 }

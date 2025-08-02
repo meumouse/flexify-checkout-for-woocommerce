@@ -1138,13 +1138,13 @@ class Fields {
 
 			if ( 'email' === $args['type'] && ! is_user_logged_in() && email_exists( $value ) ) {
 				/**
-				 * Filter text displayed during registration when an email already exists.
+				 * Filter text displayed during registration when an email already exists
 				 *
 				 * @since 1.0.0
-				 * @param string $email | Email address.
+				 * @version 5.0.0
 				 * @return string
 				 */
-				$message = apply_filters( 'flexify_woocommerce_registration_error_email_exists', sprintf( __( 'Uma conta já está registrada com este endereço de e-mail. <a href="#" data-login>Deseja entrar na sua conta?</a>', 'flexify-checkout-for-woocommerce' ), '' ) );
+				$message = apply_filters( 'Flexify_Checkout/Checkout/Fields/Email_Exists_Message', sprintf( __( 'Uma conta já está registrada com este endereço de e-mail. <a href="#" data-login>Deseja entrar na sua conta?</a>', 'flexify-checkout-for-woocommerce' ), '' ) );
 				$message_type = 'info';
 			}
 		}
