@@ -144,6 +144,7 @@ class Default_Options {
             'enable_shipping_to_different_address' => 'no',
             'enable_auto_updates' => 'no',
             'enable_update_notices' => 'yes',
+            'render_coupon_field_hook' => 'sidebar',
         ));
     }
 

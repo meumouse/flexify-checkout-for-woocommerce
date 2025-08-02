@@ -555,18 +555,18 @@ defined('ABSPATH') || exit; ?>
          </td>
       </tr>
       <tr>
-         <th>
-            <?php esc_html_e( 'Página de contato', 'flexify-checkout-for-woocommerce' ) ?>
-            <span class="flexify-checkout-description"><?php esc_html_e( 'Selecione a página de contato que será exibida aos clientes na finalização de compra.', 'flexify-checkout-for-woocommerce' ) ?></span>
-         </th>
-         <td>
-         <select name="contact_page_thankyou" class="form-select">
-            <?php foreach ( get_pages() as $page ) :
-               $selected = ( Admin_Options::get_setting( 'contact_page_thankyou' ) === esc_attr( $page->ID ) ) ? 'selected="selected"' : '';
-               echo '<option value="'. esc_attr( $page->ID ) .'" ' . $selected . '>' . esc_html( $page->post_title ) . '</option>';
-            endforeach; ?>
-         </select>
-         </td>
+			<th>
+				<?php esc_html_e( 'Página de contato', 'flexify-checkout-for-woocommerce' ) ?>
+				<span class="flexify-checkout-description"><?php esc_html_e( 'Selecione a página de contato que será exibida aos clientes na finalização de compra.', 'flexify-checkout-for-woocommerce' ) ?></span>
+			</th>
+			<td>
+				<select name="contact_page_thankyou" class="form-select">
+					<?php foreach ( get_pages() as $page ) :
+						$selected = ( Admin_Options::get_setting( 'contact_page_thankyou' ) === esc_attr( $page->ID ) ) ? 'selected="selected"' : '';
+						echo '<option value="'. esc_attr( $page->ID ) .'" ' . $selected . '>' . esc_html( $page->post_title ) . '</option>';
+					endforeach; ?>
+				</select>
+			</td>
       </tr>
 
       <?php

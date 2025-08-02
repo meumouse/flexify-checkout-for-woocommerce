@@ -64,7 +64,6 @@ class Sidebar {
 
 		// Change the coupon form position.
 		remove_action( 'woocommerce_before_checkout_form', 'woocommerce_checkout_coupon_form', 10 );
-		add_action( 'woocommerce_review_order_before_subtotal', array( __CLASS__, 'checkout_add_coupon_form' ), 9 );
 
 		// Add image to checkout
 		add_filter( 'woocommerce_cart_item_name', array( __CLASS__, 'add_image_to_cart' ), 10, 3 );
@@ -188,27 +187,6 @@ class Sidebar {
 		wp_safe_redirect( wc_get_checkout_url() );
 
 		exit;
-	}
-
-	
-	/**
-	 * Add coupon form inside order summary section
-	 * 
-	 * @since 1.0.0
-	 * @return void
-	 */
-	public static function checkout_add_coupon_form() {
-		if ( ! Helpers::is_coupon_enabled() ) {
-			return;
-		}
-
-		?>
-			<tr class="coupon-form">
-				<td colspan="2">
-					<?php Steps::render_coupon_form(); ?>
-				</td>
-			</tr>
-		<?php
 	}
 
 

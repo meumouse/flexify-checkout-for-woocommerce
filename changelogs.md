@@ -1,10 +1,11 @@
-Versão 5.0.0 (01/08/2025)
+Versão 5.0.0 (04/08/2025)
 * Correção de bugs
 * Otimizações
   - Validação de telefones em formato internacional
 * Mudança de arquitetura para MACI (Modular Autoload Class Initialization)
 * Recurso adicionado: Ativar atualizações automáticas
 * Recurso modificado: Variáveis de texto agora retornam vazio se o valor não for recuperado
+* Recurso adicionado: Posição do campo de cupom de desconto
 
 Versão 4.1.1 (18/06/2025)
 * Otimizações

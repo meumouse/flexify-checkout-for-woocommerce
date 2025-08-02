@@ -15,6 +15,7 @@ return array(
     'MeuMouse\\Flexify_Checkout\\Admin\\Orders' => $baseDir . '/inc/Admin/Orders.php',
     'MeuMouse\\Flexify_Checkout\\Checkout\\Common' => $baseDir . '/inc/Checkout/Common.php',
     'MeuMouse\\Flexify_Checkout\\Checkout\\Conditions' => $baseDir . '/inc/Checkout/Conditions.php',
+    'MeuMouse\\Flexify_Checkout\\Checkout\\Coupons' => $baseDir . '/inc/Checkout/Coupons.php',
     'MeuMouse\\Flexify_Checkout\\Checkout\\Fields' => $baseDir . '/inc/Checkout/Fields.php',
     'MeuMouse\\Flexify_Checkout\\Checkout\\Fragments' => $baseDir . '/inc/Checkout/Fragments.php',
     'MeuMouse\\Flexify_Checkout\\Checkout\\Login' => $baseDir . '/inc/Checkout/Login.php',

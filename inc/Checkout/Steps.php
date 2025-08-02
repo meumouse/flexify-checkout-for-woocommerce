@@ -481,7 +481,7 @@ class Steps {
 	 * Get the payment details when page has not been defined
 	 *
 	 * @since 1.0.0
-	 * @version 3.6.0
+	 * @version 5.0.0
 	 * @return void
 	 */
 	public static function render_payment_details() {
@@ -490,7 +490,7 @@ class Steps {
 		 *
 		 * @since 1.0.0
 		 */
-		do_action( 'woocommerce_checkout_before_order_review_heading' );
+		do_action('woocommerce_checkout_before_order_review_heading');
 
 		if ( Helpers::is_modern_theme() ) {
 			echo self::render_customer_review();
@@ -500,11 +500,20 @@ class Steps {
 			<?php endif;
 		}
 
-		if ( ! Sidebar::is_sidebar_enabled() ) {
+		$sidebar_enabled = Sidebar::is_sidebar_enabled();
+
+		if ( ! $sidebar_enabled ) {
 			self::render_coupon_form();
 		}
 
-		$heading_class = Sidebar::is_sidebar_enabled() ? '' : 'flexify-heading--order-review'; ?>
+		/**
+		 * Render custom content before payment title
+		 *
+		 * @since 5.0.0
+		 */
+		do_action('Flexify_Checkout/Steps/Payment/Before_Title');
+
+		$heading_class = $sidebar_enabled ? '' : 'flexify-heading--order-review'; ?>
 
 		<h2 class="flexify-heading <?php echo esc_attr( $heading_class ); ?>" id="order_review_heading">
 			<?php esc_html_e( 'Pagamento', 'flexify-checkout-for-woocommerce' ); ?>
@@ -751,7 +760,7 @@ class Steps {
 	 */
 	public static function render_coupon_form() {
 		if ( wc_coupons_enabled() ) {
-			do_action( 'flexify_checkout_before_coupon_form' ); ?>
+			do_action('flexify_checkout_before_coupon_form'); ?>
 
 			<div class="woocommerce-form-coupon__wrapper">
 				<?php if ( ! Helpers::is_modern_theme() ) : ?>
@@ -762,9 +771,10 @@ class Steps {
 					</p>
 				<?php endif;
 				
-				woocommerce_checkout_coupon_form(); ?>
+				\woocommerce_checkout_coupon_form(); ?>
 			</div>
-			<?php do_action( 'flexify_checkout_after_coupon_form' );
+
+			<?php do_action('flexify_checkout_after_coupon_form');
 		}
 	}
 	

@@ -290,6 +290,7 @@ class Init {
 			'\MeuMouse\Flexify_Checkout\Checkout\Templates',
             '\MeuMouse\Flexify_Checkout\Checkout\Themes',
             '\MeuMouse\Flexify_Checkout\Checkout\Sidebar',
+            '\MeuMouse\Flexify_Checkout\Checkout\Coupons',
 			'\MeuMouse\Flexify_Checkout\Checkout\Conditions',
 			'\MeuMouse\Flexify_Checkout\Checkout\Fragments',
         	'\MeuMouse\Flexify_Checkout\API\Updater',

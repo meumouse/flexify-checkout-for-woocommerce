@@ -1,6 +1,7 @@
 <?php
 
 use MeuMouse\Flexify_Checkout\Views\Components;
+use MeuMouse\Flexify_Checkout\Checkout\Coupons;
 use MeuMouse\Flexify_Checkout\Admin\Admin_Options;
 use MeuMouse\Flexify_Checkout\API\License;
 
@@ -29,6 +30,7 @@ defined('ABSPATH') || exit; ?>
                 </div>
             </td>
         </tr>
+
         <tr>
             <th>
                 <?php esc_html_e( 'Ocultar campo de cupom de desconto', 'flexify-checkout-for-woocommerce' ) ?>
@@ -41,6 +43,23 @@ defined('ABSPATH') || exit; ?>
                 </div>
             </td>
         </tr>
+
+        <tr class="coupon-position-wrapper">
+            <th>
+                <?php esc_html_e( 'Posição do campo de cupom de desconto', 'flexify-checkout-for-woocommerce' ) ?>
+                <span class="flexify-checkout-description"><?php esc_html_e( 'Permite alterar a posição do campo de cupom de desconto.', 'flexify-checkout-for-woocommerce' ) ?></span>
+            </th>
+
+            <td>
+                <select name="render_coupon_field_hook" class="form-select">
+					<?php foreach ( Coupons::get_coupon_field_position() as $position => $value ) :
+						$selected = ( Admin_Options::get_setting('render_coupon_field_hook') === esc_attr( $position ) ) ? 'selected="selected"' : '';
+						echo '<option value="'. esc_attr( $position ) .'" ' . $selected . '>' . esc_html( $value['title'] ) . '</option>';
+					endforeach; ?>
+				</select>
+            </td>
+        </tr>
+        
         <tr>
             <th>
                 <?php esc_html_e( 'Adicionar máscaras para campos', 'flexify-checkout-for-woocommerce' ) ?>
@@ -53,6 +72,7 @@ defined('ABSPATH') || exit; ?>
                 </div>
             </td>
         </tr>
+
         <tr>
             <th>
                 <?php esc_html_e( 'Otimizar para produtos digitais', 'flexify-checkout-for-woocommerce' );
