@@ -504,6 +504,11 @@
 					if ( typeof $field.mask === 'function' ) {
 						$field.mask(maskPattern);
 					}
+
+					// prevent conflict with intl-tel-input
+					if ( params.international_phone === 'yes' ) {
+						$('#billing_phone').unmask();
+					}
 				});
 			},
 
