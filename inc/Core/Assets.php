@@ -163,10 +163,13 @@ class Assets {
 		$version = null;
 
 		// enable field masks
-		if ( Admin_Options::get_setting('enable_field_masks')  === 'yes' && is_flexify_checkout() && License::is_valid() ) {
-			wp_enqueue_script( 'jquery-mask-lib', $this->assets_url . 'vendor/jquery-mask/jquery.mask.min.js', array('jquery'), '1.14.16' );
+		if ( Admin_Options::get_setting('enable_field_masks') === 'yes' && is_flexify_checkout() && License::is_valid() ) {
+			// try to prevent conflicts with Brazilian Market on WooCommerce plugin
+			if ( ! wp_script_is( 'jquery-mask', 'enqueued' ) ) {
+				wp_enqueue_script( 'jquery-mask-lib', $this->assets_url . 'vendor/jquery-mask/jquery.mask.min.js', array('jquery'), '1.14.16' );
 
-			$deps[] = 'jquery-mask-lib';
+				$deps[] = 'jquery-mask-lib';
+			}
 		}
 
 		// process animation purchase

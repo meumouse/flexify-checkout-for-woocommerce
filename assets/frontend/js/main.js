@@ -482,12 +482,28 @@
 			 * @return void
 			 */
 			addMaskOnFields: function() {
-				const get_field_masks = params.get_input_masks;
+				if ( params.enable_field_masks !== 'yes' ) {
+					return;
+				}
 
-				$.each(get_field_masks, function(id, value) {
-					var field_id = $('#' + id);
+				const field_masks = params.get_input_masks || {};
 
-					$(field_id).mask(value);
+				$.each(field_masks, function(id, maskPattern) {
+					const $field = $('#' + id);
+
+					if ( $field.length === 0 ) {
+						return; // skip if field doesn't exist
+					}
+
+					// Remove any previous mask to prevent conflicts
+					if ( typeof $field.unmask === 'function' ) {
+						$field.unmask();
+					}
+
+					// Apply new mask pattern
+					if ( typeof $field.mask === 'function' ) {
+						$field.mask(maskPattern);
+					}
 				});
 			},
 
@@ -556,9 +572,7 @@
 				}
 
 				// Add mask for each field with input mask defined
-				if ( params.enable_field_masks === 'yes' ) {
-					Flexify_Checkout.Validations.addMaskOnFields();
-				}
+				Flexify_Checkout.Validations.addMaskOnFields();
 			},
 		},
 

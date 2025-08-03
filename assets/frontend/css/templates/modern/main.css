@@ -5101,3 +5101,8 @@ input[type="checkbox"]:hover {
 p.form-row.flexify-checkout-loading-placeholder > label {
     background-color: transparent;
 }
+
+.product-backorder-info {
+    font-weight: 400;
+    color: #6C757D;
+}

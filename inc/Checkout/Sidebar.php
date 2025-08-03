@@ -44,7 +44,7 @@ class Sidebar {
 		remove_action( 'woocommerce_before_checkout_form', 'woocommerce_checkout_coupon_form', 10 );
 
 		// Add image to checkout
-		add_filter( 'woocommerce_cart_item_name', array( __CLASS__, 'add_image_to_cart' ), 10, 3 );
+		add_filter( 'woocommerce_cart_item_name', array( __CLASS__, 'modify_product_name' ), 10, 3 );
 		add_filter( 'woocommerce_cart_item_class', array( __CLASS__, 'cart_item_class' ), 10, 3 );
 
 		// Change product quantity
@@ -151,18 +151,24 @@ class Sidebar {
 	 * Add image to cart
 	 *
 	 * @since 1.0.0
-	 * @version 1.6.2
-	 * @param string $name
-	 * @param array $cart_item
-	 * @param int $cart_item_key
+	 * @version 5.0.0
+	 * @param string $name | Product name
+	 * @param array $cart_item | Cart item data
+	 * @param int $cart_item_key | Cart item key
 	 * @return string
 	 */
-	public static function add_image_to_cart( $name, $cart_item, $cart_item_key ) {
+	public static function modify_product_name( $name, $cart_item, $cart_item_key ) {
 		if ( ! is_checkout() ) {
 			return $name;
 		}
 
-		if ( ! $cart_item['data']->get_image_id() ) {
+		$product = $cart_item['data'];
+
+		if ( $product->is_on_backorder( 1 ) ) {
+			$name .= '<br><small class="product-backorder-info">' . esc_html__( 'Disponibilidade: Sob encomenda', 'flexify-checkout-for-woocommerce' ) . '</small>';
+		}
+
+		if ( ! $product->get_image_id() ) {
 			return $name;
 		}
 
