@@ -9,7 +9,7 @@
  * Author URI: 				https://meumouse.com/?utm_source=wordpress&utm_medium=plugins_list&utm_campaign=flexify_checkout
  * Version: 				5.0.0
  * WC requires at least: 	6.0.0
- * WC tested up to: 		9.9.5
+ * WC tested up to: 		10.0.4
  * Requires PHP: 			7.4
  * Tested up to:      		6.8.1
  * Text Domain: 			flexify-checkout-for-woocommerce
@@ -78,8 +78,11 @@ class Flexify_Checkout {
 		// hook before plugin init
 		do_action('Flexify_Checkout/Before_Init');
 
-		// load plugin after wooocommerce is loaded
-		add_action( 'woocommerce_loaded', array( $this, 'init' ), 99 );
+		// initialize plugin
+		add_action( 'init', array( $this, 'init' ), 99 );
+
+		// set compatibility with HPOS
+		add_action( 'before_woocommerce_init', array( $this, 'declare_woo_compatibility' ) );
 
 		// hook after plugin init
 		do_action('Flexify_Checkout/Init');
@@ -87,18 +90,33 @@ class Flexify_Checkout {
 
 
 	/**
-	 * Ensures only one instance of Flexify_Checkout class is loaded or can be loaded
-	 *
-	 * @since 5.0.0
-	 * @return object | Flexify_Checkout instance
-	 */
-	public static function run() {
-		if ( is_null( self::$instance ) ) {
-			self::$instance = new self();
+     * Setup WooCommerce High-Performance Order Storage (HPOS) compatibility
+     * 
+     * @since 1.0.0
+     * @version 5.0.0
+     * @return void
+     */
+    public function declare_woo_compatibility() {
+        if ( defined('WC_VERSION') && version_compare( WC_VERSION, '7.1', '>' ) ) {
+			/**
+			 * Setup compatibility with HPOS/Custom order table feature of WooCommerce
+			 * 
+			 * @since 1.0.0
+			 */
+			if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
+				\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
+			}
+
+			/**
+			 * Display incompatible notice with WooCommerce checkout blocks
+			 * 
+			 * @since 3.8.0
+			 */
+			if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
+				\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'cart_checkout_blocks', __FILE__, false );
+			}
 		}
-		
-		return self::$instance;
-	}
+    }
 
 
 	/**
@@ -109,12 +127,6 @@ class Flexify_Checkout {
 	 * @return void
 	 */
 	public function init() {
-		// Display notice if PHP version is bottom 7.4
-		if ( version_compare( phpversion(), '7.4', '<' ) ) {
-			add_action( 'admin_notices', array( $this, 'php_version_notice' ) );
-			return;
-		}
-		
 		// define constants
 		$this->setup_constants();
 
@@ -165,21 +177,6 @@ class Flexify_Checkout {
 
 
 	/**
-	 * PHP version notice
-	 * 
-	 * @since 1.0.0
-	 * @version 5.0.0
-	 * @return void
-	 */
-	public function php_version_notice() {
-		$class = 'notice notice-error is-dismissible';
-		$message = __( '<strong>Flexify Checkout</strong> requer a versão do PHP 7.4 ou maior. Contate o suporte da sua hospedagem para realizar a atualização.', 'flexify-checkout-for-woocommerce' );
-
-		printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), $message );
-	}
-
-
-	/**
 	 * Cloning is forbidden
 	 *
 	 * @since 1.0.0
@@ -198,6 +195,21 @@ class Flexify_Checkout {
 	 */
 	public function __wakeup() {
 		_doing_it_wrong( __FUNCTION__, esc_html__( 'Trapaceando?', 'flexify-checkout-for-woocommerce' ), '1.0.0' );
+	}
+
+
+	/**
+	 * Ensures only one instance of Flexify_Checkout class is loaded or can be loaded
+	 *
+	 * @since 5.0.0
+	 * @return object | Flexify_Checkout instance
+	 */
+	public static function run() {
+		if ( is_null( self::$instance ) ) {
+			self::$instance = new self();
+		}
+		
+		return self::$instance;
 	}
 }
 

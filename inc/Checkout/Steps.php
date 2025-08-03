@@ -18,6 +18,42 @@ defined('ABSPATH') || exit;
 class Steps {
 
 	/**
+	 * Construct function
+	 * 
+	 * @since 5.0.0
+	 * @return void
+	 */
+	public function __construct() {
+		add_filter( 'woocommerce_order_button_html', array( __CLASS__, 'place_order_button' ) );
+	}
+
+
+	/**
+	 * Replace place order button
+	 * 
+	 * @since 3.2.0
+	 * @version 5.0.0
+	 * @param string $html | Button HTML
+	 * @return string
+	 */
+	public static function place_order_button( $html ) {
+		if ( ! Helpers::is_modern_theme() ) {
+			return $html;
+		}
+
+		ob_start(); ?>
+
+		<footer class="flexify-footer">
+			<?php
+			self::back_button('payment');
+			echo wp_kses_post( $html ); ?>
+		</footer>
+
+		<?php return ob_get_clean();
+	}
+
+
+	/**
 	 * Render header
 	 *
 	 * @since 1.0.0
@@ -77,6 +113,10 @@ class Steps {
 
 	/**
 	 * Render Stepper
+	 * 
+	 * @since 1.0.0
+	 * @version 5.0.0
+	 * @return void
 	 */
 	public static function render_stepper() {
 		if ( Helpers::is_thankyou_page() ) {
@@ -92,8 +132,7 @@ class Steps {
 		?>
 		<nav class="flexify-stepper">
 			<ul>
-				<?php
-				foreach ( $steps as $key => $step ) {
+				<?php foreach ( $steps as $key => $step ) :
 					$enabled = 0 !== $key ? ' disabled' : ' selected'; ?>
 
 					<li data-stepper-li="<?php echo esc_attr( $key + 1 ); ?>" class="flexify-stepper__step flexify-stepper__step--<?php echo esc_attr( $key + 1 ); ?> stepper__step--<?php echo esc_attr( $step['slug'] ); ?> <?php echo esc_attr( $enabled ); ?>">
@@ -102,17 +141,17 @@ class Steps {
 								<circle class="icon--checkmark__circle <?php echo esc_attr( $enabled ); ?>" cx="26" cy="26" r="25" fill="none"/>
 								<path class="icon--checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
 							</svg>
+
 							<span class="flexify-stepper__indicator">
 								<?php echo esc_html( $key + 1 ); ?>
 							</span>
+
 							<span class="flexify-stepper__title">
 								<?php echo esc_html( $step['title'] ); ?>
 							</span>
 						</button>
 					</li>
-					<?php
-				}
-				?>
+				<?php endforeach; ?>
 			</ul>
 		</nav>
 		<?php

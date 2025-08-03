@@ -21,34 +21,12 @@ class Sidebar {
 	 * Construct function
 	 * 
 	 * @since 1.0.0
-	 * @version 3.9.4
+	 * @version 5.0.0
 	 * @return void
 	 */
 	public function __construct() {
 		// cart page redirect
 		add_action( 'template_redirect', array( __CLASS__, 'redirect_template_to_checkout' ) );
-
-		// sidebar actions
-		add_action( 'init', array( __CLASS__, 'sidebar_actions' ) );
-
-		// remove quantity controls on individual products sold
-		if ( Admin_Options::get_setting('enable_remove_quantity_select') === 'yes' ) {
-			add_filter( 'woocommerce_quantity_input_args', array( __CLASS__, 'remove_quantity_selector' ), 10, 2 );
-		}
-	}
-
-
-	/**
-	 * Sidebar Actions.
-	 *
-	 * @since 1.0.0
-	 * @version 3.6.0
-	 * @return void
-	 */
-	public static function sidebar_actions() {
-		if ( ! self::is_sidebar_enabled() ) {
-			return;
-		}
 
 		// Remove the cart buttons if option is enabled
 		if ( Admin_Options::get_setting('enable_skip_cart_page') === 'yes' ) {
@@ -81,31 +59,10 @@ class Sidebar {
 
 		add_action( 'woocommerce_checkout_update_order_review', array( __CLASS__, 'handle_cart_qty_update' ) );
 
-		add_filter( 'woocommerce_order_button_html', array( __CLASS__, 'place_order_button' ) );
-	}
-
-
-	/**
-	 * Replace place order button
-	 * 
-	 * @since 3.2.0
-	 * @param string $html 
-	 * @return string
-	 */
-	public static function place_order_button( $html ) {
-		if ( ! Helpers::is_modern_theme() ) {
-			return $html;
+		// remove quantity controls on individual products sold
+		if ( Admin_Options::get_setting('enable_remove_quantity_select') === 'yes' ) {
+			add_filter( 'woocommerce_quantity_input_args', array( __CLASS__, 'remove_quantity_selector' ), 10, 2 );
 		}
-
-		ob_start(); ?>
-
-		<footer class="flexify-footer">
-			<?php
-			Steps::back_button('payment');
-			echo wp_kses_post( $html ); ?>
-		</footer>
-
-		<?php return ob_get_clean();
 	}
 
 
@@ -178,7 +135,7 @@ class Sidebar {
 		 *
 		 * @since 2.1.0
 		 */
-		do_action( 'woocommerce_check_cart_items' );
+		do_action('woocommerce_check_cart_items');
 
 		if ( wc_notice_count( 'error' ) > 0 ) {
 			return;
@@ -362,6 +319,7 @@ class Sidebar {
 		});
 	}
 
+	
 	/**
 	 * Update product item quantity.
 	 *

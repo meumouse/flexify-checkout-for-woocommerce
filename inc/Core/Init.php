@@ -2,8 +2,6 @@
 
 namespace MeuMouse\Flexify_Checkout\Core;
 
-use MeuMouse\Flexify_Checkout\Checkout\Themes;
-
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
 
@@ -39,6 +37,13 @@ class Init {
      * @return void
      */
     public function __construct() {
+        // Display notice if PHP version is bottom 7.4
+		if ( version_compare( phpversion(), '7.4', '<' ) ) {
+			add_action( 'admin_notices', array( $this, 'php_version_notice' ) );
+			return;
+		}
+
+        // load text domain
         load_plugin_textdomain( 'flexify-checkout-for-woocommerce', false, dirname( $this->basename ) . '/languages/' );
 
 		// load plugin functions
@@ -89,9 +94,6 @@ class Init {
         // check if WooCommerce is active
         if ( is_plugin_active('woocommerce/woocommerce.php') && defined('WC_VERSION') && version_compare( WC_VERSION, '6.0', '>' ) ) {
             self::instance_classes();
-            
-            // set compatibility with HPOS
-            add_action( 'before_woocommerce_init', array( $this, 'declare_woo_compatibility' ) );
 
             // register activation and deactivation hooks
             add_action( 'Flexify_Checkout/Init', array( $this, 'register_hooks' ) );
@@ -118,33 +120,18 @@ class Init {
 
 
     /**
-     * Setup WooCommerce High-Performance Order Storage (HPOS) compatibility
-     * 
-     * @since 1.0.0
-     * @version 5.0.0
-     * @return void
-     */
-    public function declare_woo_compatibility() {
-        if ( defined('WC_VERSION') && version_compare( WC_VERSION, '7.1', '>' ) ) {
-			/**
-			 * Setup compatibility with HPOS/Custom order table feature of WooCommerce
-			 * 
-			 * @since 1.0.0
-			 */
-			if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
-				\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', $this->plugin_file, true );
-			}
+	 * PHP version notice
+	 * 
+	 * @since 1.0.0
+	 * @version 5.0.0
+	 * @return void
+	 */
+	public function php_version_notice() {
+		$class = 'notice notice-error is-dismissible';
+		$message = __( '<strong>Flexify Checkout</strong> requer a versão do PHP 7.4 ou maior. Contate o suporte da sua hospedagem para realizar a atualização.', 'flexify-checkout-for-woocommerce' );
 
-			/**
-			 * Display incompatible notice with WooCommerce checkout blocks
-			 * 
-			 * @since 3.8.0
-			 */
-			if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
-				\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'cart_checkout_blocks', $this->plugin_file, false );
-			}
-		}
-    }
+		printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), $message );
+	}
 
 
     /**
@@ -279,7 +266,9 @@ class Init {
          * @since 5.0.0
          * @param array $classes | Array with classes to instance
          */
-        $manual_classes = apply_filters( 'Flexify_Checkout/Init/Instance_Classes', array() );
+        $manual_classes = apply_filters( 'Flexify_Checkout/Init/Instance_Classes', array(
+            '\MeuMouse\Flexify_Checkout\Compatibility\Backward_Compatibility',
+        ));
 
         foreach ( $manual_classes as $class ) {
             if ( class_exists( $class ) ) {
