@@ -31,6 +31,9 @@ class Templates {
 
 		// add purchase animation
 		add_action( 'flexify_checkout_after_layout', array( '\MeuMouse\Flexify_Checkout\Views\Components', 'add_processing_purchase_animation' ) );
+
+		// disable block editor for checkout
+		add_filter( 'woocommerce_checkout_is_block_editor_enabled', '__return_false' );
     }
 
 

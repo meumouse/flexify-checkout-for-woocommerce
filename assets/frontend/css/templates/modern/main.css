@@ -616,10 +616,6 @@ form.woocommerce-checkout
     display: none;
 }
 
-.flexify-checkout__steps .woocommerce-notices-wrapper div[role="alert"] {
-    display: none;
-}
-
 .woocommerce-notices-wrapper > div,
 .woocommerce-notices-wrapper > ul {
     margin-bottom: 30px;

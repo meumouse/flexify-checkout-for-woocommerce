@@ -240,10 +240,10 @@ class Sidebar {
 	
 
 	/**
-	 * Cart Remove Link.
+	 * Cart remove link
 	 *
 	 * @since 1.0.0
-	 * @version 3.9.8
+	 * @version 5.0.0
 	 * @param string $output | Output of quantity
 	 * @param array $cart_item | Cart Item
 	 * @param string $cart_item_key | Cart Item Key
@@ -257,20 +257,23 @@ class Sidebar {
 		$product = wc_get_product( $cart_item['product_id'] );
 
 		/**
-		 * Filter remove from cart link HTML
+		 * Filter remove from cart link HTML (via AJAX)
 		 *
-		 * @since 1.0.0
+		 * @since 5.0.0
 		 * @param string $link
 		 * @param string $cart_item_key
 		 */
 		$remove_link = apply_filters( 'woocommerce_cart_item_remove_link',
 			sprintf(
-				'<a href="%s" class="remove" aria-label="%s" title="%s" data-product_id="%s" data-product_sku="%s">&times;</a>',
-				esc_url( wc_get_cart_remove_url( $cart_item_key ) ),
+				'<a href="#" class="remove flexify-remove-item" aria-label="%s" title="%s"
+					data-cart_item_key="%s"
+					data-product_id="%s"
+					data-product_sku="%s">&times;</a>',
 				esc_html__( 'Remover este item', 'flexify-checkout-for-woocommerce' ),
 				esc_html__( 'Remover este item', 'flexify-checkout-for-woocommerce' ),
+				esc_attr( $cart_item_key ),
 				esc_attr( $cart_item['product_id'] ),
-				esc_attr( $product->get_sku() )
+				esc_attr( $product ? $product->get_sku() : '' )
 			),
 			$cart_item_key
 		);

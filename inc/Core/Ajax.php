@@ -115,6 +115,14 @@ class Ajax {
 			add_action( 'wp_ajax_cnpj_autofill_query', array( __CLASS__, 'cnpj_autofill_query_callback' ) );
 			add_action( 'wp_ajax_nopriv_cnpj_autofill_query', array( __CLASS__, 'cnpj_autofill_query_callback' ) );
 		}
+
+		// remove product from checkout
+		add_action( 'wp_ajax_flexify_checkout_remove_product', array( $this, 'remove_product_callback' ) );
+		add_action( 'wp_ajax_nopriv_flexify_checkout_remove_product', array( $this, 'remove_product_callback' ) );
+
+		// undo remove product from checkout
+		add_action( 'wp_ajax_flexify_checkout_undo_remove_product', array( $this, 'undo_remove_product_callback' ) );
+		add_action( 'wp_ajax_nopriv_flexify_checkout_undo_remove_product', array( $this, 'undo_remove_product_callback' ) );
 	}	
 
 
@@ -1298,6 +1306,73 @@ class Ajax {
 			}
 
 			wp_send_json_success( $data );
+		}
+	}
+
+
+	/**
+	 * Remove product from cart via AJAX
+	 * 
+	 * @since 5.0.0
+	 * @return void
+	 */
+	public function remove_product_callback() {
+		if ( isset( $_POST['action'] ) && $_POST['action'] === 'flexify_checkout_remove_product' ) {
+			check_ajax_referer( 'flexify_checkout_remove_product', 'nonce' );
+
+			$product_id = absint( $_POST['product_id'] ?? 0 );
+			$cart_item_key = sanitize_text_field( $_POST['cart_item_key'] ?? '' );
+
+			if ( ! $cart_item_key || ! WC()->cart->get_cart_item( $cart_item_key ) ) {
+				wp_send_json_error( [ 'message' => 'Produto não encontrado no carrinho.' ] );
+			}
+
+			// get product object
+			$product = wc_get_product( $product_id );
+
+			// remove product item from cart
+			WC()->cart->remove_cart_item( $cart_item_key );
+
+			$message = sprintf(
+				__( '<strong>%s</strong> removido do carrinho. <strong><a class="undo-remove-product" data-product_id="%d" href="#">Desfazer</a></strong>', 'flexify-checkout-for-woocommerce' ),
+				esc_html( $product->get_name() ),
+				$product->get_id()
+			);
+
+			// send response
+			wp_send_json_success([
+				'message' => 'Produto removido com sucesso.',
+				'cart_item_key' => $cart_item_key,
+				'notice_html' => Components::render_notice( $message, 'success' ),
+			]);
+		}
+	}
+
+
+	/**
+	 * Undo remove product from cart via AJAX
+	 * 
+	 * @since 5.0.0
+	 * @return void
+	 */
+	public function undo_remove_product_callback() {
+		if ( isset( $_POST['action'] ) && $_POST['action'] === 'flexify_checkout_undo_remove_product' ) {
+			check_ajax_referer( 'flexify_checkout_undo_remove_product', 'nonce' );
+
+			$product_id = absint( $_POST['product_id'] ?? 0 );
+			$quantity = 1;
+
+			if ( ! $product_id || ! $quantity ) {
+				wp_send_json_error( [ 'message' => 'Invalid product data' ] );
+			}
+
+			$added = WC()->cart->add_to_cart( $product_id, $quantity );
+
+			if ( $added ) {
+				wp_send_json_success( [ 'message' => 'Product re-added.' ] );
+			}
+
+			wp_send_json_error( [ 'message' => 'Fail on re-add product.' ] );
 		}
 	}
 }

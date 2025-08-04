@@ -488,6 +488,15 @@
 
 				const field_masks = params.get_input_masks || {};
 
+				/**
+				 * Loop through each field mask and apply it
+				 * 
+				 * @since 3.5.0
+				 * @version 5.0.0
+				 * @param {object} field_masks | Field masks object
+				 * @param {string} id | Field ID
+				 * @param {string} maskPattern | Mask pattern
+				 */
 				$.each(field_masks, function(id, maskPattern) {
 					const $field = $('#' + id);
 
@@ -646,45 +655,6 @@
 
                 $('.quantity input[type="number"]').on('focusout', function() {
                     $(this).closest('.quantity').removeClass('quantity--on-focus');
-                });
-            },
-            
-            /**
-             * Remove button
-             * 
-             * @since 1.0.0
-             * @version 5.0.0
-             * @return void
-             */
-            removeQuantityControls: function() {
-                $(document).on('click', '.flexify-checkout__remove-link a.remove', function(e) {
-                    e.preventDefault();
-
-                    let btn = $(this);
-                    let remove_item_url = btn.attr('href');
-                    let cart_item = btn.closest('.cart_item');
-
-                    // send ajax request
-                    $.ajax({
-                        url: remove_item_url,
-                        method: 'GET',
-                        beforeSend: function() {
-                            btn.prop('disabled', true);
-                        },
-                        success: function(response) {
-                            $(document.body).trigger('update_checkout');
-
-                            cart_item.fadeOut(300, function() {
-                                $(this).remove();
-                            });
-                        },
-						error: function(jqXHR, textStatus, errorThrown) {
-							console.error('[FLEXIFY CHECKOUT] AJAX error on remove product item:', textStatus, errorThrown);
-						},
-						complete: function() {
-							btn.prop('disabled', fale);
-						},
-                    });
                 });
             },
 
@@ -852,7 +822,6 @@
 			 */
 			init: function() {
                 this.addQuantityControls();
-                this.removeQuantityControls();
                 this.moveShippingRow();
 
                 Flexify_Checkout.Sidebar.orderSummaryToggle(true);
@@ -1115,15 +1084,128 @@
 			},
 
 			/**
+             * Remove product item button
+             * 
+             * @since 1.0.0
+             * @version 5.0.0
+             * @return void
+             */
+            removeProductItem: function() {
+				$(document).on('click', '.flexify-remove-item', function(e) {
+					e.preventDefault();
+
+					const btn = $(this);
+					const cart_item = btn.closest('.cart_item');
+					const product_id = btn.data('product_id');
+					const cart_item_key = btn.data('cart_item_key');
+
+					if ( ! cart_item_key ) {
+						return;
+					}
+
+					// send ajax request
+					$.ajax({
+						url: params.ajax_url,
+						method: 'POST',
+						data: {
+							action: 'flexify_checkout_remove_product',
+							product_id: product_id,
+							cart_item_key: cart_item_key,
+							nonce: params.nonces.remove_product,
+						},
+						beforeSend: function() {
+							Flexify_Checkout.UI.togglePlaceholder( cart_item, true );
+							btn.prop('disabled', true);
+						},
+						success: function(response) {
+							if ( ! response.success ) {
+								console.warn(response.data?.message || 'Error on remove product.');
+								return;
+							}
+
+							cart_item.fadeOut(300, function() {
+								$(this).remove();
+							});
+
+							if ( response.data.notice_html ) {
+								Flexify_Checkout.Components.addNotice( response.data.notice_html );
+							}
+
+							$(document.body).trigger('update_checkout');
+						},
+						error: function(jqXHR, textStatus, errorThrown) {
+							console.error('[FLEXIFY CHECKOUT] AJAX error on try remove product item:', textStatus, errorThrown);
+						},
+						complete: function() {
+							Flexify_Checkout.UI.togglePlaceholder( cart_item, false );
+							btn.prop('disabled', false);
+						},
+					});
+				});
+            },
+
+			/**
+			 * Undo remove product item
+			 * 
+			 * @since 5.0.0
+			 * @return void
+			 */
+			undoRemoveProduct: function() {
+				$(document).on('click', '.undo-remove-product', function(e) {
+					e.preventDefault();
+
+					const btn = $(this);
+					const product_id = btn.data('product_id');
+					const notice = btn.closest('.flexify-checkout-notice');
+
+					notice.fadeOut(300, function() {
+						$(this).remove();
+					});
+
+					// send ajax request
+					$.ajax({
+						url: params.ajax_url,
+						method: 'POST',
+						data: {
+							action: 'flexify_checkout_undo_remove_product',
+							product_id: product_id,
+							nonce: params.nonces.undo_remove_product,
+						},
+						beforeSend: function() {
+							$('.woocommerce-checkout-review-order-table').block({
+								message: null,
+								overlayCSS: {
+									background: '#fff',
+									opacity: 0.6,
+								},
+							});
+						},
+						success: function(response) {
+							if ( response.success ) {
+								$('.woocommerce-checkout-review-order-table').unblock();
+								$(document.body).trigger('update_checkout');
+							}
+						},
+						error: function(jqXHR, textStatus, errorThrown) {
+							console.error('[FLEXIFY CHECKOUT] AJAX error on try undo remove product item:', textStatus, errorThrown);
+						},
+					});
+				});
+			},
+
+			/**
 			 * Initialize module
 			 * 
 			 * @since 5.0.0
 			 */
 			init: function() {
+				Flexify_Checkout.Helpers.removeDomElements();
 				this.onUpdatedCheckout();
 				this.onCheckoutError();
 				this.onFragmentsUpdated();
 				this.onSelectShippingMethod();
+				this.removeProductItem();
+				this.undoRemoveProduct();
 
 				// Trigger country to state change event on page load
 				$(document.body).trigger('country_to_state_changed');

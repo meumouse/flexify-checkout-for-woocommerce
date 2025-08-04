@@ -8,6 +8,7 @@ Versão 5.0.0 (04/08/2025)
 * Recurso adicionado: Ocultar indicador de etapas
 * Recurso adicionado: Abrir popup de login automaticamente
 * Recurso adicionado: Informação de disponibilidade sob encomenda
+* Recurso adicionado: Contagem regressiva
 
 Versão 4.1.1 (18/06/2025)
 * Otimizações

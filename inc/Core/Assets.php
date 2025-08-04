@@ -136,6 +136,7 @@ class Assets {
 		// set dependencies for scripts
 		$deps = array(
 			'jquery',
+			'jquery-blockui',
 			'select2',
 			'wc-checkout',
 			'wc-country-select',
@@ -218,7 +219,10 @@ class Assets {
 				),
 				'required_field' => __( 'obrigatório', 'flexify-checkout-for-woocommerce' ),
 			),
-			'update_cart_nonce' => wp_create_nonce('update_cart'),
+			'nonces' => array(
+				'remove_product' => wp_create_nonce('flexify_checkout_remove_product'),
+				'undo_remove_product' => wp_create_nonce('flexify_checkout_undo_remove_product'),
+			),
 			'shop_page' => Helpers::get_shop_page_url(),
 			'base_country' => Fields::get_base_country(),
 			'path_to_utils' => $this->assets_url . 'vendor/intl-tel-input/js/utils.js',

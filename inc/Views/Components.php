@@ -484,4 +484,32 @@ class Components {
 
 		<?php return ob_get_clean();
 	}
+
+
+	/**
+	 * Render notice message
+	 *
+	 * @since 5.0.0
+	 * @param string $message | Notice message
+	 * @param string $type | Type of notice (success, error, etc.)
+	 * @return string
+	 */
+	public static function render_notice( $message, $type = 'success' ) {
+		$notice = array(
+			'notice' => $message,
+			'type' => $type,
+		);
+
+		$attrs = wc_get_notice_data_attr( $notice );
+
+		// start buffer
+		ob_start(); ?>
+
+		<div class="woocommerce-message flexify-checkout-notice <?php echo esc_attr( $type ) ?>" <?php echo $attrs; ?> role="alert">
+			<?php echo wc_kses_notice( $message ); ?>
+			<button class="close-notice btn-close btn-close-white"></button>
+		</div>
+
+		<?php return ob_get_clean();
+	}
 }

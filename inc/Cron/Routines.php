@@ -44,6 +44,6 @@ class Routines {
         }
 
         // check daily updates
-        add_action( 'Flexify_Checkout/Updates/Check_Daily_Updates', array( '\MeuMouse\Flexify_Checkout\Core\Updater', 'check_daily_updates' ) );
+        add_action( 'Flexify_Checkout/Updates/Check_Daily_Updates', array( '\MeuMouse\Flexify_Checkout\API\Updater', 'check_daily_updates' ) );
 	}
 }
