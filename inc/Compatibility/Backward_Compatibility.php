@@ -22,7 +22,7 @@ class Backward_Compatibility {
 	 * @return void
 	 */
 	public function __construct() {
-		add_action( 'plugins_loaded', array( $this, 'handle_module_conflicts' ), 11 );
+		add_action( 'plugins_loaded', array( $this, 'handle_module_conflicts' ), 999 );
 		add_action( 'admin_init', array( $this, 'maybe_reinstall_inter_bank_module' ) );
 	}
 
@@ -34,8 +34,12 @@ class Backward_Compatibility {
 	 * @return void
 	 */
 	public function handle_module_conflicts() {
-		$main_plugin = 'flexify-checkout-for-woocommerce/flexify-checkout-for-woocommerce.php';
+		$main_plugin  = 'flexify-checkout-for-woocommerce/flexify-checkout-for-woocommerce.php';
 		$addon_plugin = 'module-inter-bank-for-flexify-checkout/module-inter-bank-for-flexify-checkout.php';
+
+		if ( get_option('flexify_reinstall_inter_bank_module') ) {
+			return;
+		}
 
 		if ( ! function_exists('get_plugins') ) {
 			require_once ABSPATH . 'wp-admin/includes/plugin.php';
@@ -47,7 +51,15 @@ class Backward_Compatibility {
 			$flexify_version = $all_plugins[ $main_plugin ]['Version'];
 			$addon_version = $all_plugins[ $addon_plugin ]['Version'];
 
-			if ( version_compare( $flexify_version, '5.0.0', '>=' ) && version_compare( $addon_version, '1.3.0', '<' ) ) {
+			if ( empty( $addon_version ) || ! is_string( $addon_version ) ) {
+				return;
+			}
+
+			if (
+				version_compare( $flexify_version, '5.0.0', '>=' ) &&
+				version_compare( $addon_version, '1.3.0', '<' ) &&
+				is_plugin_active( $addon_plugin )
+			) {
 				deactivate_plugins( $addon_plugin );
 				delete_plugins( [ $addon_plugin ] );
 
