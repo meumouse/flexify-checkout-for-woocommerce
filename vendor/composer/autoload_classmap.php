@@ -25,6 +25,7 @@ return array(
     'MeuMouse\\Flexify_Checkout\\Checkout\\Themes' => $baseDir . '/inc/Checkout/Themes.php',
     'MeuMouse\\Flexify_Checkout\\Compatibility\\Backward_Compatibility' => $baseDir . '/inc/Compatibility/Backward_Compatibility.php',
     'MeuMouse\\Flexify_Checkout\\Compatibility\\Legacy_Filters' => $baseDir . '/inc/Compatibility/Legacy_Filters.php',
+    'MeuMouse\\Flexify_Checkout\\Compatibility\\Legacy_Hooks' => $baseDir . '/inc/Compatibility/Legacy_Hooks.php',
     'MeuMouse\\Flexify_Checkout\\Core\\Ajax' => $baseDir . '/inc/Core/Ajax.php',
     'MeuMouse\\Flexify_Checkout\\Core\\Assets' => $baseDir . '/inc/Core/Assets.php',
     'MeuMouse\\Flexify_Checkout\\Core\\Helpers' => $baseDir . '/inc/Core/Helpers.php',

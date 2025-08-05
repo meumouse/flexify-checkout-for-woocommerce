@@ -40,6 +40,7 @@ class ComposerStaticInit178be007d0b6d0c39a4c2788c7b3977c
         'MeuMouse\\Flexify_Checkout\\Checkout\\Themes' => __DIR__ . '/../..' . '/inc/Checkout/Themes.php',
         'MeuMouse\\Flexify_Checkout\\Compatibility\\Backward_Compatibility' => __DIR__ . '/../..' . '/inc/Compatibility/Backward_Compatibility.php',
         'MeuMouse\\Flexify_Checkout\\Compatibility\\Legacy_Filters' => __DIR__ . '/../..' . '/inc/Compatibility/Legacy_Filters.php',
+        'MeuMouse\\Flexify_Checkout\\Compatibility\\Legacy_Hooks' => __DIR__ . '/../..' . '/inc/Compatibility/Legacy_Hooks.php',
         'MeuMouse\\Flexify_Checkout\\Core\\Ajax' => __DIR__ . '/../..' . '/inc/Core/Ajax.php',
         'MeuMouse\\Flexify_Checkout\\Core\\Assets' => __DIR__ . '/../..' . '/inc/Core/Assets.php',
         'MeuMouse\\Flexify_Checkout\\Core\\Helpers' => __DIR__ . '/../..' . '/inc/Core/Helpers.php',

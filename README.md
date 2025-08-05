@@ -34,7 +34,7 @@ Você pode instalar um plugin WordPress de duas maneiras: via o painel de admini
 
 ### Registro de alterações (Changelogs):
 
-Versão 5.0.0 (05/08/2025)
+Versão 5.0.1 (05/08/2025)
 * Correção de bugs
 * Otimizações
 * Mudança de arquitetura para MACI (Modular Autoload Class Initialization)
