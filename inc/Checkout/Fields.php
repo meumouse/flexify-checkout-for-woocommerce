@@ -792,6 +792,7 @@ class Fields {
 	 * Add new custom fields to user profile on WordPress user meta fields
 	 * 
 	 * @since 3.8.0
+	 * @version 5.0.0
 	 * @param array $fields | Current fields
 	 * @return array
 	 */
@@ -810,7 +811,15 @@ class Fields {
 			}
 		}
 	
-		$new_fields = apply_filters( 'flexify_customer_user_meta_fields', $new_fields );
+		/**
+		 * Filter to add custom user meta fields
+		 * 
+		 * @since 3.8.0
+		 * @version 5.0.0
+		 * @param array $new_fields | New fields to be added
+		 * @return array
+		 */
+		$new_fields = apply_filters( 'Flexify_Checkout/Checkout/Fields/User_Meta_Fields', $new_fields );
 	
 		return array_merge( $fields, $new_fields );
 	}
@@ -1081,15 +1090,15 @@ class Fields {
 			$message = sprintf( __( '%s é um campo obrigatório.', 'flexify-checkout-for-woocommerce' ), esc_html( $args['label'] ) );
 
 			/**
-			 * Filters the required field error message.
+			 * Filters the required field error message
 			 *
 			 * @since 1.0.0
-			 * @param string $message Message.
-			 * @param string $key Key.
-			 * @param array $args Arguments.
+			 * @param string $message | Message
+			 * @param string $key | Key
+			 * @param array $args | Arguments
 			 * @return string
 			 */
-			$message = apply_filters( 'flexify_required_field_error_msg', $message, $key, $args );
+			$message = apply_filters( 'Flexify_Checkout/Checkout/Fields/Required_Field_Error_Message', $message, $key, $args );
 		}
 
 		// is required field
@@ -1155,23 +1164,25 @@ class Fields {
 
 
 		/**
-		 * Filters the Inline Error Message.
+		 * Filters the inline error message
 		 *
 		 * @since 1.0.0
-		 * @param string $message Message.
-		 * @param string $field Field.
-		 * @param string $key Key.
-		 * @param array $args Arguments.
-		 * @param string $value Value.
-		 * @param string $country Country.
+		 * @version 5.0.0
+		 * @param string $message | Message
+		 * @param string $field | Field
+		 * @param string $key | Key
+		 * @param array $args | Arguments
+		 * @param string $value | Value
+		 * @param string $country | Country
 		 * @return string
 		 */
-		$message = apply_filters( 'flexify_custom_inline_message', $message, $field, $key, $args, $value, $country );
+		$message = apply_filters( 'Flexify_Checkout/Checkout/Fields/Custom_Inline_Message', $message, $field, $key, $args, $value, $country );
 
 		/**
 		 * Filters the Global Error Message.
 		 *
 		 * @since 1.0.0
+		 * @version 5.0.0
 		 * @param string $message Message.
 		 * @param string $field Field.
 		 * @param string $key Key.
@@ -1180,7 +1191,7 @@ class Fields {
 		 * @param string $country Country.
 		 * @return string
 		 */
-		$global_message = apply_filters( 'flexify_custom_global_message', $global_message, $field, $key, $args, $value, $country );
+		$global_message = apply_filters( 'Flexify_Checkout/Checkout/Fields/Custom_Global_Message', $global_message, $field, $key, $args, $value, $country );
 
 		// If we are doing AJAX, just return the message.
 		$action = filter_input( INPUT_POST, 'action' );
@@ -1213,8 +1224,15 @@ class Fields {
 			$target_fields[] = $index;
 		}
 
-		// filter for add check errors on custom conditions
-		$target_fields = apply_filters( 'flexify_checkout_target_fields_for_check_errors', $target_fields );
+		/**
+		 * Filters the target fields for check errors
+		 * 
+		 * @since 1.0.0
+		 * @version 5.0.0
+		 * @param array $target_fields | List of target fields
+		 * @return array
+		 */
+		$target_fields = apply_filters( 'Flexify_Checkout/Checkout/Fields/Target_Fields_For_Check_Errors', $target_fields );
 
 		$data_attributes = '<p ';
 		$data_attributes .= sprintf( 'data-type="%s"', esc_attr( $args['type'] ) ) . ' ';

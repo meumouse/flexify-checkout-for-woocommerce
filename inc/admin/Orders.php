@@ -51,7 +51,7 @@ class Orders {
 	 * If it does then assign this order to the user
 	 *
 	 * @since 1.0.0
-	 * @version 3.7.0
+	 * @version 5.0.0
 	 * @param int $order_id | Order ID
 	 * @return void
 	 */
@@ -66,7 +66,7 @@ class Orders {
 			return;
 		}
 
-		if ( 0 !== $order->get_user_id() ) {
+		if ( 0 === $order->get_user_id() ) {
 			return;
 		}
 
@@ -152,10 +152,11 @@ class Orders {
 		 * Filter: Customize the order customer fragment data.
 		 *
 		 * @since 3.9.8
+		 * @version 5.0.0
 		 * @param array $fragment_data | Customer fragment data
 		 * @param \WC_Order $order | Order object
 		 */
-		return apply_filters( 'flexify_checkout_order_customer_fragments', $fragment_data, $order );
+		return apply_filters( 'Flexify_Checkout/Orders/Customer_Fragments', $fragment_data, $order );
 	}
 
 
@@ -271,6 +272,7 @@ class Orders {
 	 * Custom shop order billing fields
 	 *
 	 * @since 3.9.8
+	 * @version 5.0.0
 	 * @param array $data | Default order billing fields
 	 * @return array Custom order billing fields
 	 */
@@ -281,7 +283,15 @@ class Orders {
 		$billing_data['email'] = $data['email'];
 		$billing_data['email']['show'] = false;
 
-		return apply_filters( 'flexify_checkout_admin_billing_fields', $billing_data );
+		/**
+		 * Filter: Customize the admin order billing fields.
+		 * 
+		 * @since 3.9.8
+		 * @version 5.0.0
+		 * @param array $billing_data | Billing fields data
+		 * @return array
+		 */
+		return apply_filters( 'Flexify_Checkout/Orders/Admin_Billing_Fields', $billing_data );
 	}
 
 

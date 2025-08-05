@@ -19,7 +19,7 @@ defined('ABSPATH') || exit;
  *
  * @see https://docs.woocommerce.com/document/template-structure/
  * @since 1.0.0
- * @version 3.8.0
+ * @version 5.0.0
  * @package MeuMouse.com
  */
 
@@ -27,8 +27,11 @@ defined('ABSPATH') || exit;
  * Allow changing the default status of the order summary on mobile.
  *
  * @since 1.0.0
+ * @version 5.0.0
+ * @param bool $mobile_show_summary | Whether to show the order summary on mobile by default
+ * @return bool
  */
-$mobile_show_summary = apply_filters( 'flexify_checkout_mobile_order_summary_open', false );
+$mobile_show_summary = apply_filters( 'Flexify_Checkout/Checkout/Mobile_Order_Summary_Open', false );
 
 /**
  * Before the checkout form.

@@ -159,7 +159,7 @@ class Default_Options {
      * @return array
      */
     public function get_native_checkout_fields() {
-        return apply_filters( 'flexify_checkout_get_fields', array(
+        return apply_filters( 'Flexify_Checkout/Checkout/Get_Native_Fields', array(
             'billing_email' => array(
                 'id' => 'billing_email',
                 'type' => 'email',

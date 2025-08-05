@@ -82,8 +82,11 @@ class Steps {
 				 * Allows you to override the hyperlink on the header logo
 				 *
 				 * @since 1.0.0
+				 * @version 5.0.0
+				 * @param string $back_url | URL to redirect when clicking on the logo
+				 * @return string
 				 */
-				$back_url = apply_filters( 'flexify_checkout_logo_href', esc_url( Admin_Options::get_setting('logo_header_link') ) ); ?>
+				$back_url = apply_filters( 'Flexify_Checkout/Steps/Logo_Href', esc_url( Admin_Options::get_setting('logo_header_link') ) ); ?>
 
 				<a class="header__link" href="<?php echo esc_url( $back_url ); ?>">
 					<?php if ( Admin_Options::get_setting('checkout_header_type') === 'text' ) : ?>
@@ -820,7 +823,7 @@ class Steps {
 	 * Print back button
 	 *
 	 * @since 1.0.0
-	 * @version 3.8.0
+	 * @version 5.0.0
 	 * @param array $step | Step slug
 	 * @return void
 	 */
@@ -831,9 +834,11 @@ class Steps {
 				 * Filter to modify the URL for the back button
 				 *
 				 * @since 2.0.0
+				 * @version 5.0.0
 				 * @param string $url | Back button URL
+				 * @return string
 				 */
-				$button_url = apply_filters( 'flexify_checkout_back_button_href', get_permalink( wc_get_page_id('shop') ) ); ?>
+				$button_url = apply_filters( 'Flexify_Checkout/Steps/Back_Button_Href', get_permalink( wc_get_page_id('shop') ) ); ?>
 
 				<a class="flexify-step__back flexify-step__back--back-shop" href="<?php echo esc_url( $button_url ); ?>"><?php echo esc_html__( 'Voltar à loja', 'flexify-checkout-for-woocommerce' ); ?></a>
 			<?php endif;
@@ -1087,7 +1092,7 @@ class Steps {
 	 * Get review customer fragment
 	 *
 	 * @since 1.0.0
-	 * @version 3.9.8
+	 * @version 5.0.0
 	 * @return array
 	 */
 	public static function get_review_customer_fragment() {
@@ -1104,7 +1109,15 @@ class Steps {
 			$fragment_data[$field_id] = isset( $value ) ? $value : '';
 		}
 
-		return apply_filters( 'flexify_checkout_review_customer_fragments', $fragment_data );
+		/**
+		 * Filter to modify the customer review fragment data
+		 * 
+		 * @since 1.0.0
+		 * @version 5.0.0
+		 * @param array $fragment_data | Data for customer review fragment
+		 * @return array
+		 */
+		return apply_filters( 'Flexify_Checkout/Steps/Review_Customer_Fragment', $fragment_data );
 	}
 
 

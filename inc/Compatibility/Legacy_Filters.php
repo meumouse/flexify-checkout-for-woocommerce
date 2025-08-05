@@ -169,6 +169,54 @@ class Legacy_Filters {
 				'new_filter' => 'Flexify_Checkout/Checkout/Fields/Remove_Fields_For_Digital_Products',
 				'version' => '5.0.0',
 			),
+			'flexify_checkout_order_customer_fragments' => array(
+				'new_filter' => 'Flexify_Checkout/Orders/Customer_Fragments',
+				'version' => '5.0.0',
+			),
+			'flexify_checkout_admin_billing_fields' => array(
+				'new_filter' => 'Flexify_Checkout/Orders/Admin_Billing_Fields',
+				'version' => '5.0.0',
+			),
+			'flexify_checkout_get_fields' => array(
+				'new_filter' => 'Flexify_Checkout/Checkout/Get_Native_Fields',
+				'version' => '5.0.0',
+			),
+			'flexify_customer_user_meta_fields' => array(
+				'new_filter' => 'Flexify_Checkout/Checkout/Fields/User_Meta_Fields',
+				'version' => '5.0.0',
+			),
+			'flexify_required_field_error_msg' => array(
+				'new_filter' => 'Flexify_Checkout/Checkout/Fields/Required_Field_Error_Message',
+				'version' => '5.0.0',
+			),
+			'flexify_custom_inline_message' => array(
+				'new_filter' => 'Flexify_Checkout/Checkout/Fields/Custom_Inline_Message',
+				'version' => '5.0.0',
+			),
+			'flexify_custom_global_message' => array(
+				'new_filter' => 'Flexify_Checkout/Checkout/Fields/Custom_Global_Message',
+				'version' => '5.0.0',
+			),
+			'flexify_checkout_target_fields_for_check_errors' => array(
+				'new_filter' => 'Flexify_Checkout/Checkout/Fields/Target_Fields_For_Check_Errors',
+				'version' => '5.0.0',
+			),
+			'flexify_checkout_logo_href' => array(
+				'new_filter' => 'Flexify_Checkout/Steps/Logo_Href',
+				'version' => '5.0.0',
+			),
+			'flexify_checkout_back_button_href' => array(
+				'new_filter' => 'Flexify_Checkout/Steps/Back_Button_Href',
+				'version' => '5.0.0',
+			),
+			'flexify_checkout_review_customer_fragments' => array(
+				'new_filter' => 'Flexify_Checkout/Steps/Review_Customer_Fragment',
+				'version' => '5.0.0',
+			),
+			'flexify_checkout_mobile_order_summary_open' => array(
+				'new_filter' => 'Flexify_Checkout/Checkout/Mobile_Order_Summary_Open',
+				'version' => '5.0.0',
+			),
 		);
 	}
 }
