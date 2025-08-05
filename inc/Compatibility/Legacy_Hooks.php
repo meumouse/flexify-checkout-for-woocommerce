@@ -1,6 +1,6 @@
 <?php
 
-namespace MeuMouse\Woo_Custom_Installments\Compatibility;
+namespace MeuMouse\Flexify_Checkout\Compatibility;
 
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
