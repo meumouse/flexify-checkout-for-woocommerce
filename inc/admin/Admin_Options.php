@@ -85,8 +85,7 @@ class Admin_Options {
     public function set_checkout_step_fields() {
         $default_options = new Default_Options();
         $get_fields = $default_options->get_native_checkout_fields();
-        $get_field_options = get_option('flexify_checkout_step_fields', array());
-        $get_field_options = maybe_unserialize( $get_field_options );
+        $get_field_options = maybe_unserialize( get_option('flexify_checkout_step_fields', array()) );
 
         // create options if array is empty
         if ( empty( $get_field_options ) ) {

@@ -6,9 +6,9 @@ Versão 5.0.0 (04/08/2025)
 * Recurso modificado: Variáveis de texto agora retornam vazio se o valor não for recuperado
 * Recurso adicionado: Posição do campo de cupom de desconto
 * Recurso adicionado: Ocultar indicador de etapas
-* Recurso adicionado: Abrir popup de login automaticamente
+* Recurso adicionado: Ativar/Desativar Abertura do popup de login automaticamente
 * Recurso adicionado: Informação de disponibilidade sob encomenda
-* Recurso adicionado: Contagem regressiva
+* Recurso adicionado: Tema escuro
 
 Versão 4.1.1 (18/06/2025)
 * Otimizações

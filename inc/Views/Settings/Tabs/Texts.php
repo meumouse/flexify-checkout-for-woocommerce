@@ -121,7 +121,7 @@ defined('ABSPATH') || exit; ?>
         <tr>
             <th>
                 <?php esc_html_e( 'Texto do resumo de informações de contato', 'flexify-checkout-for-woocommerce' ) ?>
-                <span class="flexify-checkout-description mb-3"><?php esc_html_e( 'Utilize as variáveis abaixo para recuperar as informações de campos, use <br> para quebrar uma linha. Ou deixe em branco para não exibir.', 'flexify-checkout-for-woocommerce' ) ?></span>
+                <span class="flexify-checkout-description mb-3"><?php esc_html_e( 'Utilize as variáveis abaixo para recuperar as informações de campos. Ou deixe em branco para não exibir.', 'flexify-checkout-for-woocommerce' ) ?></span>
 
                 <?php foreach ( Helpers::get_placeholder_input_values() as $field_id => $value ) : ?>
                     <div class="d-flex mb-1">
@@ -130,15 +130,16 @@ defined('ABSPATH') || exit; ?>
                     </div>
                 <?php endforeach; ?>
             </th>
-            <td>
-               <input type="text" class="form-control input-control-wd-20" id="text_contact_customer_review" name="text_contact_customer_review" value="<?php echo Admin_Options::get_setting('text_contact_customer_review') ?>"/>
+
+            <td class="w-50">
+               <textarea class="form-control" id="text_contact_customer_review" name="text_contact_customer_review"><?php echo esc_textarea( Admin_Options::get_setting('text_contact_customer_review') ) ?></textarea>
             </td>
         </tr>
 
         <tr>
             <th>
                 <?php esc_html_e( 'Texto do resumo de informações de entrega', 'flexify-checkout-for-woocommerce' ) ?>
-                <span class="flexify-checkout-description mb-3"><?php esc_html_e( 'Utilize as variáveis abaixo para recuperar as informações de campos, use <br> para quebrar uma linha. Ou deixe em branco para não exibir.', 'flexify-checkout-for-woocommerce' ) ?></span>
+                <span class="flexify-checkout-description mb-3"><?php esc_html_e( 'Utilize as variáveis abaixo para recuperar as informações de campos. Ou deixe em branco para não exibir.', 'flexify-checkout-for-woocommerce' ) ?></span>
 
                 <?php foreach ( Helpers::get_placeholder_input_values() as $field_id => $value ) : ?>
                     <div class="d-flex mb-1">
@@ -147,8 +148,9 @@ defined('ABSPATH') || exit; ?>
                     </div>
                 <?php endforeach; ?>
             </th>
-            <td>
-               <input type="text" class="form-control input-control-wd-20" id="text_shipping_customer_review" name="text_shipping_customer_review" value="<?php echo Admin_Options::get_setting('text_shipping_customer_review') ?>"/>
+
+            <td class="w-50">
+               <textarea class="form-control" id="text_shipping_customer_review" name="text_shipping_customer_review"><?php echo esc_textarea( Admin_Options::get_setting('text_shipping_customer_review') ) ?></textarea>
             </td>
         </tr>
         

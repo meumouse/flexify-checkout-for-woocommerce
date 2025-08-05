@@ -1249,6 +1249,25 @@
                 });
             },
 
+			/**
+             * On change coupon code input
+             * 
+             * @since 1.0.0
+             * @version 5.0.0
+             * @return void
+             */
+            onChange: function() {
+                $(document).on('keyup', '#coupon_code', function() {
+                    const btn = $(this).closest('.checkout_coupon').find('.flexify-coupon-button');
+                    
+                    if ( $(this).val().trim() ) {
+                        btn.removeClass('flexify-coupon-button--disabled');
+                    } else {
+                        btn.addClass('flexify-coupon-button--disabled');
+                    }
+                });
+            },
+
             /**
              * Send coupon code to WooCommerce
 			 * 
@@ -1256,14 +1275,13 @@
 			 * @version 5.0.0
 			 * @return void
              */
-            onSubmit: function() {
+            applyCoupon: function() {
 				$(document).on('click', 'button[name=apply_coupon]', function(e) {
 					e.preventDefault();
 
 					let btn = $(this);
 					let btn_state = Flexify_Checkout.Helpers.keepButtonState( btn );
 					const form = btn.closest('.woocommerce-form-coupon__wrapper');
-					const row = form.find('.form-row.form-row-first');
 
 					// clear coupon messages
 					$('.woocommerce-form-coupon__wrapper').find('.error, .success').remove();
@@ -1283,18 +1301,14 @@
 							btn.prop('disabled', true).html('<span class="flexify-btn-processing-inline"></span>');
 						},
 						success: function(response) {
-							var wrapper = $('<div>').html(response);
-							var message = wrapper.find('.wc-block-components-notice-banner__content').text().trim();
+							const wrapper = $('<div>').html(response);
+							const message = wrapper.find('.wc-block-components-notice-banner__content').text().trim();
 
-							if ( wrapper.find('.is-error').length || wrapper.find('.woocommerce-error').length ) {
-								row.addClass('woocommerce-invalid').append(
-									`<div class="error" aria-live="polite">${message}</div>`
-								);
-							} else {
-								$(document.body).trigger('update_checkout', {
-									update_shipping_method: false
-								});
-							}
+							$(document.body).trigger('update_checkout');
+
+							$(document.body).one('updated_checkout', function() {
+								$('.woocommerce-form-coupon__inner .form-row-first').append(`<div class="success" aria-hidden="false" aria-live="polite">${message}</div>`);
+							});
 						},
 						error: function(jqXHR, textStatus, errorThrown) {
 							console.error('[FLEXIFY CHECKOUT] AJAX error on applying coupon:', textStatus, errorThrown);
@@ -1308,25 +1322,6 @@
 					});
 				});
 			},
-
-            /**
-             * On change coupon code input
-             * 
-             * @since 1.0.0
-             * @version 5.0.0
-             * @return void
-             */
-            onChange: function() {
-                $(document).on('keyup', '#coupon_code', function() {
-                    const btn = $(this).closest('.checkout_coupon').find('.flexify-coupon-button');
-                    
-                    if ( $(this).val().trim() ) {
-                        btn.removeClass('flexify-coupon-button--disabled');
-                    } else {
-                        btn.addClass('flexify-coupon-button--disabled');
-                    }
-                });
-            },
 
             /**
              * Remove coupon code
@@ -1360,9 +1355,7 @@
                             if (code) {
                                 $(document.body).trigger('removed_coupon_in_checkout', [coupon]);
 
-                                $(document.body).trigger('update_checkout', {
-                                    update_shipping_method: false,
-                                });
+                                $(document.body).trigger('update_checkout');
 
                                 $(document.body).one('updated_checkout', function() {
                                     $('.woocommerce-form-coupon__inner .form-row-first').append(`<div class="success" aria-hidden="false" aria-live="polite">${params.i18n.coupon_success}</div>`);
@@ -1387,7 +1380,7 @@
              */
             init: function() {
                 this.onClick();
-                this.onSubmit();
+                this.applyCoupon();
                 this.onChange();
                 this.removeCoupon();
 

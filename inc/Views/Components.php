@@ -512,4 +512,53 @@ class Components {
 
 		<?php return ob_get_clean();
 	}
+
+
+	/**
+	 * Renders the theme selection field
+	 *
+	 * @since 5.0.0
+	 * @return string
+	 */
+	public static function render_theme_options() {
+		$themes = \MeuMouse\Flexify_Checkout\Views\Settings\Settings_Panel::get_registered_themes();
+		$current = Admin_Options::get_setting('flexify_checkout_theme');
+
+		// Start output buffering
+		ob_start(); ?>
+
+		<tr class="theme-wrapper">
+			<input type="hidden" name="flexify_checkout_theme" value="<?php echo esc_attr( $current ) ?>"/>
+
+			<?php foreach ( $themes as $id => $theme ) :
+				$is_active = $current === $id ? 'active' : '';
+				$is_soon = isset( $theme['status'] ) && $theme['status'] === 'soon'; ?>
+
+				<td>
+					<div class="card card-theme-item <?php echo esc_attr( $theme['classes'] ?? '' ) . esc_attr( $id ) . ' ' . ( $is_soon ? 'coming-soon' : $is_active ); ?>" data-theme="<?php echo esc_attr( $id ) ?>">
+
+					<?php if ( $is_soon ) : ?>
+						<div class="coming-soon-message">
+							<svg class="flexify-checkout-coming-soon-theme" viewBox="0 0 512 512"  xml:space="preserve"><style type="text/css">.st0{fill:#000000;}</style><g><path class="st0" d="M315.883,231.15l82.752-115.13c7.152-9.942,11.039-21.784,11.039-33.93V46.13h23.911V0H78.415v46.13h23.912 v35.96c0,12.145,3.886,23.988,11.039,33.93l82.752,115.13c2.963,4.136,4.472,8.857,4.483,13.665v22.36 c-0.011,4.808-1.52,9.53-4.483,13.665l-82.752,115.141c-7.154,9.942-11.039,21.783-11.039,33.918v35.971H78.415V512h355.169 v-46.129h-23.911V429.9c0-12.135-3.887-23.976-11.039-33.918L315.883,280.84c-2.963-4.136-4.482-8.857-4.482-13.665v-22.36 C311.401,240.007,312.92,235.286,315.883,231.15z M386.609,461.257H125.393V429.9c0-7.229,2.291-14.317,6.696-20.46l82.753-115.141 c5.708-7.934,8.824-17.41,8.824-27.124v-22.36c0-9.714-3.115-19.202-8.824-27.124L132.1,102.561  c-4.417-6.155-6.708-13.232-6.708-20.471V50.743h261.216V82.09c-0.011,7.239-2.291,14.316-6.709,20.471l-82.752,115.13 c-5.698,7.922-8.813,17.41-8.813,27.124v22.36c0,9.714,3.114,19.19,8.813,27.124l82.763,115.141 c4.407,6.143,6.686,13.231,6.698,20.46V461.257z"/><path class="st0" d="M236.268,232.929h39.466c1.672-8.314,5.091-16.237,10.181-23.314l59.491-82.774H166.595l59.492,82.774 C231.177,216.692,234.585,224.616,236.268,232.929z"/><path class="st0" d="M246.753,381.588l-65.82,65.831h150.134l-65.82-65.831C260.137,376.487,251.865,376.487,246.753,381.588z"/><path class="st0" d="M255.632,247.995c-5.688,0-10.301,4.614-10.301,10.312c0,5.688,4.614,10.3,10.301,10.3 c5.687,0,10.311-4.612,10.311-10.3C265.943,252.609,261.319,247.995,255.632,247.995z"/><path class="st0" d="M255.632,289.513c-5.688,0-10.301,4.613-10.301,10.3c0,5.698,4.614,10.312,10.301,10.312 c5.687,0,10.311-4.614,10.311-10.312C265.943,294.126,261.319,289.513,255.632,289.513z"/><path class="st0" d="M255.632,332.245c-5.688,0-10.301,4.613-10.301,10.311c0,5.687,4.614,10.312,10.301,10.312 c5.687,0,10.311-4.625,10.311-10.312C265.943,336.858,261.319,332.245,255.632,332.245z"/> </g></svg>
+							<span class="coming-soon-title"><?php esc_html_e( 'Em breve...', 'flexify-checkout-for-woocommerce' ) ?></span>
+						</div>
+					<?php endif;
+
+					if ( ! empty( $theme['icon'] ) ) :
+						echo $theme['icon'];
+					endif; ?>
+
+					<div class="card-body">
+						<h5 class="card-title"><?php echo esc_html( $theme['label'] ) ?></h5>
+					</div>
+
+					</div>
+				</td>
+			<?php endforeach; ?>
+
+		</tr>
+
+		<?php return ob_get_clean();
+	}
+
 }

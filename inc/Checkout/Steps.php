@@ -37,10 +37,6 @@ class Steps {
 	 * @return string
 	 */
 	public static function place_order_button( $html ) {
-		if ( ! Helpers::is_modern_theme() ) {
-			return $html;
-		}
-
 		ob_start(); ?>
 
 		<footer class="flexify-footer">
@@ -802,6 +798,7 @@ class Steps {
 	 * Render coupon form
 	 * 
 	 * @since 1.0.0
+	 * @version 5.0.0
 	 * @return void
 	 */
 	public static function render_coupon_form() {
@@ -809,15 +806,7 @@ class Steps {
 			do_action('flexify_checkout_before_coupon_form'); ?>
 
 			<div class="woocommerce-form-coupon__wrapper">
-				<?php if ( ! Helpers::is_modern_theme() ) : ?>
-					<p class="enter-coupon woocommerce-form-coupon-toggle">
-						<button class="enter-coupon__button showcoupon" id="enter_coupon_button" data-show-coupon>
-							<?php esc_attr_e( 'Inserir cupom de desconto', 'flexify-checkout-for-woocommerce' ); ?>
-						</button>
-					</p>
-				<?php endif;
-				
-				\woocommerce_checkout_coupon_form(); ?>
+				<?php woocommerce_checkout_coupon_form(); ?>
 			</div>
 
 			<?php do_action('flexify_checkout_after_coupon_form');

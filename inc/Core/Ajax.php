@@ -461,6 +461,7 @@ class Ajax {
 					ob_start();
 
 					Components::render_field( $field_id, $new_field[$field_id], $new_field[$field_id]['step'] );
+					
 					$field_html = ob_get_clean();
 
 					$response = array(
@@ -1324,7 +1325,9 @@ class Ajax {
 			$cart_item_key = sanitize_text_field( $_POST['cart_item_key'] ?? '' );
 
 			if ( ! $cart_item_key || ! WC()->cart->get_cart_item( $cart_item_key ) ) {
-				wp_send_json_error( [ 'message' => 'Produto não encontrado no carrinho.' ] );
+				wp_send_json_error( array(
+					'message' => 'Produto não encontrado no carrinho.',
+				));
 			}
 
 			// get product object
@@ -1340,11 +1343,11 @@ class Ajax {
 			);
 
 			// send response
-			wp_send_json_success([
-				'message' => 'Produto removido com sucesso.',
+			wp_send_json_success( array(
+				'message' => 'Product removed successfully.',
 				'cart_item_key' => $cart_item_key,
 				'notice_html' => Components::render_notice( $message, 'success' ),
-			]);
+			));
 		}
 	}
 
@@ -1363,16 +1366,22 @@ class Ajax {
 			$quantity = 1;
 
 			if ( ! $product_id || ! $quantity ) {
-				wp_send_json_error( [ 'message' => 'Invalid product data' ] );
+				wp_send_json_error( array(
+					'message' => 'Invalid product data',
+				));
 			}
 
 			$added = WC()->cart->add_to_cart( $product_id, $quantity );
 
 			if ( $added ) {
-				wp_send_json_success( [ 'message' => 'Product re-added.' ] );
+				wp_send_json_success( array(
+					'message' => 'Product re-added.',
+				));
 			}
 
-			wp_send_json_error( [ 'message' => 'Fail on re-add product.' ] );
+			wp_send_json_error( array(
+				'message' => 'Fail on re-add product.',
+			));
 		}
 	}
 }

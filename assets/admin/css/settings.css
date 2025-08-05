@@ -507,8 +507,8 @@ table.insert-license tr {
 }
 
 input.form-control:focus {
-    border-color: var(--meumouse-primary) !important;
-    box-shadow: none !important;
+    border-color: rgba( var(--meumouse-primary-rgb), 0.35 ) !important;
+    box-shadow: 0 0 0 0.25rem rgba( var(--meumouse-primary-rgb), 0.25 );
     outline: none !important;
 }
 
@@ -524,8 +524,8 @@ input.form-control:disabled {
 }
 
 input.form-control-color:focus {
-    border-color: var(--meumouse-primary) !important;
-    box-shadow: none !important;
+    border-color: rgba( var(--meumouse-primary-rgb), 0.35 ) !important;
+    box-shadow: 0 0 0 0.25rem rgba( var(--meumouse-primary-rgb), 0.25 );
     outline: none !important;
 }
 
@@ -555,8 +555,15 @@ input[type="color"] {
 }
 
 textarea.form-control {
-    min-height: calc(1.6em + 1.25rem + 2px);
+    min-height: 5rem;
 }
+
+textarea.form-control:focus {
+    border-color: rgba( var(--meumouse-primary-rgb), 0.35 ) !important;
+    box-shadow: 0 0 0 0.25rem rgba( var(--meumouse-primary-rgb), 0.25 );
+    outline: none !important;
+}
+
 
 .form-select {
     display: block;
@@ -920,6 +927,9 @@ a.btn-primary:focus {
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
     min-width: 0;
     word-wrap: break-word;
     background-color: #fff;
@@ -941,7 +951,6 @@ a.btn-primary:focus {
 .card-title {
     margin-bottom: 0.75rem;
     margin-top: 0;
-    border-top: 1px solid #e2e5f1;
     padding-top: 1rem;
 }
 
@@ -977,11 +986,13 @@ a.btn-primary:focus {
 }
 
 .card-theme-item  {
-    width: 400px;
-    max-height: 350px;
+    width: 25rem;
+    height: 35vh;
+    margin-right: 0.5rem;
 }
 
 .card-theme-item svg {
+    padding: 0.5rem 1rem;
     border-bottom: 1px solid #e2e5f1;
 }
 
@@ -1001,6 +1012,18 @@ a.btn-primary:focus {
 
 .card-theme-item.coming-soon svg, .card-theme-item.coming-soon .card-body {
     opacity: 0.25;
+}
+
+.card-theme-item.dark {
+    background-color: #1a222c;
+}
+
+.card-theme-item.dark svg {
+    border-color: #2e3a47;
+}
+
+.card-theme-item.dark .card-title {
+    color: #fff;
 }
 
 .flexify-checkout-coming-soon-theme {

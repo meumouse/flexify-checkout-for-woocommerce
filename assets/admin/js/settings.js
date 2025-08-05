@@ -2355,4 +2355,25 @@
 		});
 	});
 
+	/**
+	 * Update the checkout theme when a card is clicked
+	 * 
+	 * @since 5.0.0
+	 */
+	jQuery(document).ready( function($) {
+		$(document).on('click', '.card-theme-item', function(e) {
+			let card = $(this);
+			let theme = card.data('theme');
+
+			if ( card.hasClass('coming-soon') ) {
+				return;
+			}
+
+			$('.card-theme-item').removeClass('active');
+			card.addClass('active');
+
+			$('input[name="flexify_checkout_theme"]').val(theme).change();
+		});
+	});
+
 })(jQuery);

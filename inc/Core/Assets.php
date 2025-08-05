@@ -41,6 +41,14 @@ class Assets {
 	public $version = FLEXIFY_CHECKOUT_VERSION;
 
 	/**
+	 * Set min file extension
+	 * 
+	 * @since 5.0.0
+	 * @return string
+	 */
+	public $min_file = WP_DEBUG ? '' : '.min';
+
+	/**
 	 * Construct function
 	 * 
 	 * @since 1.0.0
@@ -125,7 +133,7 @@ class Assets {
 		wp_dequeue_style('global-styles');
 
 		// enqueue checkout theme styles
-		wp_enqueue_style( 'flexify-checkout-theme', $this->assets_url . 'frontend/css/templates/' . $theme . '/main.css', array(), $this->version, false );
+		wp_enqueue_style( 'flexify-checkout-theme', $this->assets_url . 'frontend/css/templates/' . $theme . '/main'. $this->min_file .'.css', array(), $this->version, false );
 
 		// render dynamic styles
 		if ( is_flexify_checkout() || Helpers::is_thankyou_page() ) {
@@ -307,26 +315,24 @@ class Assets {
 	 * Enqueue admin scripts in page settings only
 	 * 
 	 * @since 1.0.0
-	 * @version 3.8.0
+	 * @version 5.0.0
 	 * @return void
 	 */
 	public function admin_assets() {
-		$min_file = WP_DEBUG ? '' : '.min';
-
 		// check if is admin settings
 		if ( is_flexify_checkout_admin_settings() ) {
 			wp_enqueue_media();
 			
-			wp_enqueue_script( 'flexify-checkout-modal', $this->assets_url . 'components/modal/modal'. $min_file .'.js', array('jquery'), $this->version );
-			wp_enqueue_style( 'flexify-checkout-modal-styles', $this->assets_url . 'components/modal/modal'. $min_file .'.css', array(), $this->version );
-			wp_enqueue_script( 'flexify-checkout-visibility-controller', $this->assets_url . 'components/visibility-controller/visibility-controller'. $min_file .'.js', array('jquery'), $this->version );
+			wp_enqueue_script( 'flexify-checkout-modal', $this->assets_url . 'components/modal/modal'. $this->min_file .'.js', array('jquery'), $this->version );
+			wp_enqueue_style( 'flexify-checkout-modal-styles', $this->assets_url . 'components/modal/modal'. $this->min_file .'.css', array(), $this->version );
+			wp_enqueue_script( 'flexify-checkout-visibility-controller', $this->assets_url . 'components/visibility-controller/visibility-controller'. $this->min_file .'.js', array('jquery'), $this->version );
 			
-			wp_enqueue_style( 'bootstrap-datepicker-styles', $this->assets_url . 'vendor/bootstrap-datepicker/bootstrap-datepicker'. $min_file .'.css', array(), $this->version );
+			wp_enqueue_style( 'bootstrap-datepicker-styles', $this->assets_url . 'vendor/bootstrap-datepicker/bootstrap-datepicker'. $this->min_file .'.css', array(), $this->version );
 			wp_enqueue_script( 'bootstrap-datepicker', 'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js', array('jquery'), '1.9.0' );
 			wp_enqueue_script( 'bootstrap-datepicker-translate-pt-br', $this->assets_url . 'vendor/bootstrap-datepicker/bootstrap-datepicker.pt-BR.min.js', array('jquery'), $this->version );
 
-			wp_enqueue_script( 'flexify-checkout-admin-scripts', $this->assets_url . 'admin/js/flexify-checkout-admin-scripts'. $min_file .'.js', array('jquery', 'media-upload'), $this->version );
-			wp_enqueue_style( 'flexify-checkout-admin-styles', $this->assets_url . 'admin/css/flexify-checkout-admin-styles'. $min_file .'.css', array(), $this->version );
+			wp_enqueue_script( 'flexify-checkout-admin-scripts', $this->assets_url . 'admin/js/settings'. $this->min_file .'.js', array('jquery', 'media-upload'), $this->version );
+			wp_enqueue_style( 'flexify-checkout-admin-styles', $this->assets_url . 'admin/css/settings'. $this->min_file .'.css', array(), $this->version );
 
 			if ( ! class_exists('Flexify_Dashboard') ) {
                 wp_enqueue_style( 'bootstrap-grid', $this->assets_url . 'vendor/bootstrap/bootstrap-grid.min.css', array(), '5.3.3' );

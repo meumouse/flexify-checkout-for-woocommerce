@@ -130,7 +130,7 @@ class Default_Options {
                 'icloud.com',
             ),
             'display_opened_order_review_mobile' => 'no',
-            'text_contact_customer_review' => '{{ first_name }} {{ last_name }} <br> {{ phone }} <br> {{ email }}',
+            'text_contact_customer_review' => "{{ first_name }} {{ last_name }} \n {{ phone }} \n {{ email }}",
             'text_shipping_customer_review' => '{{ address_1 }}, {{ number }}, {{ city }} - {{ state }} (CEP: {{ postcode }})',
             'text_view_shop_thankyou' => 'Ver mais produtos',
             'enable_remove_quantity_select' => 'yes',
