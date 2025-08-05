@@ -14,10 +14,10 @@ defined('ABSPATH') || exit;
  * happen. When this occurs the version of the template file will be bumped and
  * the readme will list any important changes.
  *
+ * @version 1.0.0
+ * @since 5.0.0
  * @see https://woocommerce.com/document/template-structure/
  * @package MeuMouse.com
- * @since 3.5.0
- * @version 1.0.0
  */
 
 if ( ! $notices ) {

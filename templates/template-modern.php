@@ -31,8 +31,6 @@
              * @since 1.0.0
              */
             do_action('flexify_checkout_after_content'); ?>
-
-            <div class="flexify-checkout__spinner"><img src="<?php echo esc_url( FLEXIFY_CHECKOUT_ASSETS . 'frontend/img/loader.gif' ) ?>"/></div>
         </div>
 
         <?php

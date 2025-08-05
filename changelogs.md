@@ -1,3 +1,15 @@
+Versão 5.0.0 (05/08/2025)
+* Correção de bugs
+* Otimizações
+* Mudança de arquitetura para MACI (Modular Autoload Class Initialization)
+* Recurso adicionado: Ativar atualizações automáticas
+* Recurso modificado: Variáveis de texto agora retornam vazio se o valor não for recuperado
+* Recurso adicionado: Posição do campo de cupom de desconto
+* Recurso adicionado: Ocultar indicador de etapas
+* Recurso adicionado: Ativar/Desativar Abertura do popup de login automaticamente
+* Recurso adicionado: Informação de disponibilidade sob encomenda
+* Recurso adicionado: Tema escuro
+
 Versão 4.1.1 (18/06/2025)
 * Otimizações
   - Function _load_textdomain_just_in_time was called incorrectly. Translation loading for the flexify-checkout-for-woocommerce domain was triggered too early

@@ -17,7 +17,7 @@
  * @version 3.5.0
  */
 
-defined( 'ABSPATH' ) || exit; ?>
+defined('ABSPATH') || exit; ?>
 
 <table class="shop_table woocommerce-checkout-review-order-table">
 	<thead>
