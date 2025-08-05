@@ -462,7 +462,7 @@ form.woocommerce-checkout
 .woocommerce-info,
 .woocommerce-message,
 .woocommerce-noreviews {
-    background-color: #0f834d;
+    background-color: #22c55e;
     border-left: 8px solid rgba(0, 0, 0, 0.15);
     border-radius: 4px;
     color: #fff;
@@ -4161,7 +4161,7 @@ body .pac-container .pac-item .pac-icon.pac-icon-marker {
     left: 0;
     width: 100%;
     height: 100%;
-    background: hsla(0, 0%, 100%, 0.98);
+    background-color: var(--flexify-checkout-primary-dark);
     z-index: 1000;
 }
 
@@ -4179,7 +4179,7 @@ body .pac-container .pac-item .pac-icon.pac-icon-marker {
     font-size: 16px;
     line-height: 19px;
     text-align: center;
-    color: var(--flexify-checkout-primary);
+    color: #fff;
     margin-top: 0;
     margin-bottom: 0;
 }
@@ -4198,6 +4198,7 @@ body .pac-container .pac-item .pac-icon.pac-icon-marker {
     background-position: 50%;
     position: relative;
     box-sizing: border-box;
+    filter: invert(1);
 }
 
 .flexify-empty-cart__icon {
@@ -4954,7 +4955,7 @@ label.has-condition.required-field > .optional {
     animation-timing-function: linear;
     -webkit-animation-name: placeholder_animation;
     animation-name: placeholder_animation;
-    background: linear-gradient(to right, #eee 2%, #ddd 18%, #eee 33%);
+    background: linear-gradient(to right, #2e3c4c 2%, #1a222c 18%, #2e3c4c 33%);
     background-size: 1300px;
     border-radius: 0.375rem;
     pointer-events: none;

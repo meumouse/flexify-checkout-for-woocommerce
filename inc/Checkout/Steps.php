@@ -4,6 +4,7 @@ namespace MeuMouse\Flexify_Checkout\Checkout;
 
 use MeuMouse\Flexify_Checkout\Admin\Admin_Options;
 use MeuMouse\Flexify_Checkout\Core\Helpers;
+use MeuMouse\Flexify_Checkout\API\License;
 
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
@@ -24,6 +25,11 @@ class Steps {
 	 * @return void
 	 */
 	public function __construct() {
+		// maybe remove address step
+		if ( Admin_Options::get_setting('enable_optimize_for_digital_products') === 'yes' && License::is_valid() ) {
+			add_filter( 'Flexify_Checkout/Steps/Set_Custom_Steps', array( __CLASS__, 'disable_address_step' ) );
+		}
+
 		add_filter( 'woocommerce_order_button_html', array( __CLASS__, 'place_order_button' ) );
 	}
 

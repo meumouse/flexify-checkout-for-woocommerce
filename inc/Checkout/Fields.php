@@ -82,9 +82,6 @@ class Fields {
 			add_filter( 'woocommerce_cart_needs_shipping_address', '__return_false' );
 		}
 
-		// remove shipping fields for digital products
-		add_action( 'init', array( $this, 'maybe_optimize_for_digital' ) );
-
 		// remove empty placeholders
 		add_filter( 'woocommerce_get_country_locale_base', array( $this, 'remove_empty_placeholders' ), 100 );
 
@@ -1344,20 +1341,6 @@ class Fields {
 		$country = isset( $fields['billing_country']['country'] ) ? $fields['billing_country']['country'] : '';
 
 		return $country;
-	}
-
-
-	/**
-	 * Maybe optimize for digital products
-	 *
-	 * @since 1.0.0
-	 * @version 5.0.0
-	 * @return bool
-	 */
-	public function maybe_optimize_for_digital() {
-		if ( Admin_Options::get_setting('enable_optimize_for_digital_products') === 'yes' && License::is_valid() ) {
-			add_filter( 'Flexify_Checkout/Steps/Set_Custom_Steps', array( '\MeuMouse\Flexify_Checkout\Checkout\Steps', 'disable_address_step' ) );
-		}
 	}
 
 

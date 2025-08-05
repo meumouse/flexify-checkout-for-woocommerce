@@ -23,6 +23,7 @@ return array(
     'MeuMouse\\Flexify_Checkout\\Checkout\\Templates' => $baseDir . '/inc/Checkout/Templates.php',
     'MeuMouse\\Flexify_Checkout\\Checkout\\Thankyou' => $baseDir . '/inc/Checkout/Thankyou.php',
     'MeuMouse\\Flexify_Checkout\\Checkout\\Themes' => $baseDir . '/inc/Checkout/Themes.php',
+    'MeuMouse\\Flexify_Checkout\\Compatibility\\Backward_Compatibility' => $baseDir . '/inc/Compatibility/Backward_Compatibility.php',
     'MeuMouse\\Flexify_Checkout\\Compatibility\\Legacy_Filters' => $baseDir . '/inc/Compatibility/Legacy_Filters.php',
     'MeuMouse\\Flexify_Checkout\\Core\\Ajax' => $baseDir . '/inc/Core/Ajax.php',
     'MeuMouse\\Flexify_Checkout\\Core\\Assets' => $baseDir . '/inc/Core/Assets.php',
