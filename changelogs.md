@@ -1,4 +1,4 @@
-Versão 5.0.0 (04/08/2025)
+Versão 5.0.0 (05/08/2025)
 * Correção de bugs
 * Otimizações
 * Mudança de arquitetura para MACI (Modular Autoload Class Initialization)

@@ -3185,8 +3185,10 @@ body .pac-container .pac-item .pac-icon.pac-icon-marker {
     }
 }
 
-.flexify-footer.flexify-footer--no-back-shop {
-    justify-content: flex-end;
+@media screen and (min-width: 992px) {
+    .flexify-footer.flexify-footer--no-back-shop {
+        justify-content: flex-end;
+    }
 }
 
 .flexify-footer a.flexify-step__back {
