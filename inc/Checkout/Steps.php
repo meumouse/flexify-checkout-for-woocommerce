@@ -359,13 +359,11 @@ class Steps {
 	 * Get the billing address when page has not been defined
 	 *
 	 * @since 1.0.0
-	 * @version 3.7.0
+	 * @version 5.0.0
 	 * @return void
 	 */
 	public static function render_default_billing_address() {
-		if ( Helpers::is_modern_theme() ) {
-			echo self::render_customer_review();
-		}
+		echo self::render_customer_review();
 
 		/**
 		 * Display custom content before shipping title
@@ -540,13 +538,11 @@ class Steps {
 		 */
 		do_action('woocommerce_checkout_before_order_review_heading');
 
-		if ( Helpers::is_modern_theme() ) {
-			echo self::render_customer_review();
+		echo self::render_customer_review();
 
-			if ( Admin_Options::get_setting('text_header_step_3') ) : ?>
-				<h2 class="flexify-heading flexify-heading--payment"><?php echo Admin_Options::get_setting('text_header_step_3') ?></h2>
-			<?php endif;
-		}
+		if ( Admin_Options::get_setting('text_header_step_3') ) : ?>
+			<h2 class="flexify-heading flexify-heading--payment"><?php echo Admin_Options::get_setting('text_header_step_3') ?></h2>
+		<?php endif;
 
 		$sidebar_enabled = Sidebar::is_sidebar_enabled();
 
@@ -1116,7 +1112,7 @@ class Steps {
 	 * Get customer review text with placeholder values
 	 * 
 	 * @since 3.6.0
-	 * @version 3.9.8
+	 * @version 5.0.0
 	 * @param string $text | Text with placeholders
 	 * @param array $data | Data for replace on placeholders
 	 * @param string $prefix | Optional prefix to filter data (billing/shipping)
@@ -1144,7 +1140,10 @@ class Steps {
 
 		$placeholders = array_map( 'esc_html', $data );
 
-		// split text into chunks and replace placeholders
+		// Handle \n as <br>
+		$text = str_replace( "\n", '<br>', $text );
+
+		// Split text into parts: placeholders or <br>
 		$parts = preg_split( '/(\{\{\s*\w+\s*\}\}|<br>)/', $text, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY );
 
 		$output = '<div class="customer-review-container">';
@@ -1153,7 +1152,7 @@ class Steps {
 		foreach ( $parts as $part ) {
 			if ( preg_match( '/\{\{\s*(\w+)\s*\}\}/', $part, $matches ) ) {
 				$key = $matches[1];
-				$value = $placeholders[ $key ] ?? $matches[0];
+				$value = $placeholders[ $key ] ?? '';
 				$current_paragraph .= sprintf( '<span class="customer-details-info %s">%s</span>', esc_attr( $key ), $value );
 			} elseif ( $part === '<br>' ) {
 				if ( ! empty( $current_paragraph ) ) {

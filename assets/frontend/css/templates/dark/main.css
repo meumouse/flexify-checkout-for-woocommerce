@@ -3888,11 +3888,11 @@ body .pac-container .pac-item .pac-icon.pac-icon-marker {
     font-weight: 700;
     font-size: 14px;
     line-height: 22px;
-    color: var(--flexify-checkout-primary);
+    color: #DEE2E6;
 }
 
 .flexify-review-customer__buttons a[data-stepper-goto]:hover {
-    color: var(--flexify-checkout-primary);
+    color: #fff;
     text-decoration: underline;
 }
 
