@@ -83,9 +83,6 @@ class Flexify_Checkout {
 
 		// set compatibility with HPOS
 		add_action( 'before_woocommerce_init', array( $this, 'declare_woo_compatibility' ) );
-
-		// hook after plugin init
-		do_action('Flexify_Checkout/Init');
 	}
 
 

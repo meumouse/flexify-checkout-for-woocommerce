@@ -326,6 +326,7 @@ body.woocommerce-checkout {
     top: 52%;
     transform: translateY(-50%);
     right: 0;
+    filter: invert(1);
 }
 
 .flexify-checkout__sidebar-header-link--hide:after {

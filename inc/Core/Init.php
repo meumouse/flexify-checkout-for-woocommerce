@@ -117,6 +117,9 @@ class Init {
 			deactivate_plugins('flexify-checkout-for-woocommerce/flexify-checkout-for-woocommerce.php');
 			add_action( 'admin_notices', array( $this, 'deactivate_flexify_checkout_notice' ) );
         }
+
+        // hook after plugin init
+		do_action('Flexify_Checkout/Init');
     }
 
 
