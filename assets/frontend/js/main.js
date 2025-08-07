@@ -478,7 +478,7 @@
 			 * Add mask for each field with input mask defined
 			 * 
 			 * @since 3.5.0
-			 * @version 5.0.0
+			 * @version 5.0.2
 			 * @return void
 			 */
 			addMaskOnFields: function() {
@@ -492,7 +492,7 @@
 				 * Loop through each field mask and apply it
 				 * 
 				 * @since 3.5.0
-				 * @version 5.0.0
+				 * @version 5.0.2
 				 * @param {object} field_masks | Field masks object
 				 * @param {string} id | Field ID
 				 * @param {string} maskPattern | Mask pattern
@@ -501,22 +501,29 @@
 					const $field = $('#' + id);
 
 					if ( $field.length === 0 ) {
-						return; // skip if field doesn't exist
+						return;
 					}
 
-					// Remove any previous mask to prevent conflicts
+					// Skip if already masked
+					if ( $field.data('mask-applied') ) {
+						return;
+					}
+
+					// Remove any previous mask
 					if ( typeof $field.unmask === 'function' ) {
 						$field.unmask();
 					}
 
-					// Apply new mask pattern
+					// Apply mask and mark as applied
 					if ( typeof $field.mask === 'function' ) {
 						$field.mask(maskPattern);
+						$field.data('mask-applied', true);
 					}
 
-					// prevent conflict with intl-tel-input
-					if ( params.international_phone === 'yes' ) {
-						$('#billing_phone').unmask();
+					// Prevent conflict with intl-tel-input
+					if ( params.international_phone === 'yes' && id === 'billing_phone' ) {
+						$field.unmask();
+						$field.removeData('mask-applied');
 					}
 				});
 			},
