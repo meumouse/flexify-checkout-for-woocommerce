@@ -1,3 +1,8 @@
+Versão 5.0.2 (07/08/2025)
+* Correção de bugs
+  - Compatibilidade com tema Woodmart
+  - Resumo do pedido fica aberto por padrão mesmo quando desativado
+
 Versão 5.0.1 (05/08/2025)
 * Correção de bugs
 * Otimizações

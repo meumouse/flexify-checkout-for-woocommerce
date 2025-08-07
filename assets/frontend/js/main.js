@@ -478,7 +478,7 @@
 			 * Add mask for each field with input mask defined
 			 * 
 			 * @since 3.5.0
-			 * @version 5.0.0
+			 * @version 5.0.2
 			 * @return void
 			 */
 			addMaskOnFields: function() {
@@ -492,7 +492,7 @@
 				 * Loop through each field mask and apply it
 				 * 
 				 * @since 3.5.0
-				 * @version 5.0.0
+				 * @version 5.0.2
 				 * @param {object} field_masks | Field masks object
 				 * @param {string} id | Field ID
 				 * @param {string} maskPattern | Mask pattern
@@ -501,22 +501,29 @@
 					const $field = $('#' + id);
 
 					if ( $field.length === 0 ) {
-						return; // skip if field doesn't exist
+						return;
 					}
 
-					// Remove any previous mask to prevent conflicts
+					// Skip if already masked
+					if ( $field.data('mask-applied') ) {
+						return;
+					}
+
+					// Remove any previous mask
 					if ( typeof $field.unmask === 'function' ) {
 						$field.unmask();
 					}
 
-					// Apply new mask pattern
+					// Apply mask and mark as applied
 					if ( typeof $field.mask === 'function' ) {
 						$field.mask(maskPattern);
+						$field.data('mask-applied', true);
 					}
 
-					// prevent conflict with intl-tel-input
-					if ( params.international_phone === 'yes' ) {
-						$('#billing_phone').unmask();
+					// Prevent conflict with intl-tel-input
+					if ( params.international_phone === 'yes' && id === 'billing_phone' ) {
+						$field.unmask();
+						$field.removeData('mask-applied');
 					}
 				});
 			},
@@ -744,7 +751,7 @@
              * Toggle for the checkout summary on mobile view
              * 
              * @since 1.0.0
-			 * @version 5.0.0
+			 * @version 5.0.2
 			 * @param {boolean} first | Check if is mobile
 			 * @return void
              */
@@ -753,24 +760,23 @@
                     return;
                 }
                 
-                var isModern = document.querySelectorAll('.flexify-checkout--modern').length;
-                var linkHide = document.querySelector('.flexify-checkout__sidebar-header-link--hide');
-                var linkShow = document.querySelector('.flexify-checkout__sidebar-header-link--show');
+                var link_hide = document.querySelector('.flexify-checkout__sidebar-header-link--hide');
+                var link_show = document.querySelector('.flexify-checkout__sidebar-header-link--show');
                 var sidebar = document.querySelector('.flexify-checkout__order-review');
 
-                if ( isModern ) {
+                if ( Flexify_Checkout.Helpers.isModernCheckout() ) {
                     sidebar = document.querySelector('.flexify-checkout__content-right');
                 }
 
-                if ( ! linkHide || ! sidebar ) {
+                if ( ! link_hide || ! sidebar ) {
                     return;
                 }
 
-                var style = window.getComputedStyle(linkHide);
+                var selector = window.getComputedStyle( link_hide );
 
-                if ( style.display === 'none' ) {
-                    linkHide.style.display = 'block';
-                    linkShow.style.display = 'none';
+                if ( selector.display === 'none' ) {
+                    link_hide.style.display = 'block';
+                    link_show.style.display = 'none';
 
                     if ( true === first ) {
                         sidebar.style.display = 'block';
@@ -780,8 +786,8 @@
 
                     Flexify_Checkout.UI.slideDown( sidebar );
                 } else {
-                    linkHide.style.display = 'none';
-                    linkShow.style.display = 'block';
+                    link_hide.style.display = 'none';
+                    link_show.style.display = 'block';
 
                     if ( true === first ) {
                         sidebar.style.display = 'none';
@@ -795,12 +801,10 @@
              * Resize order summary
 			 * 
 			 * @since 1.0.0
-			 * @version 5.0.0
+			 * @version 5.0.2
              * @return void
              */
             orderSummaryResize: function() {
-                const $linkHide = $('.flexify-checkout__sidebar-header-link--hide');
-                const $linkShow = $('.flexify-checkout__sidebar-header-link--show');
                 var sidebar = $('.flexify-checkout__order-review');
 
                 if ( Flexify_Checkout.Helpers.isModernCheckout() ) {
@@ -819,12 +823,12 @@
 			 * Initialize process checkout module
 			 * 
 			 * @since 5.0.0
+			 * @version 5.0.2
 			 */
 			init: function() {
                 this.addQuantityControls();
                 this.moveShippingRow();
 
-                Flexify_Checkout.Sidebar.orderSummaryToggle(true);
                 var header = document.querySelector('.flexify-checkout__sidebar-header');
 
                 if ( header ) {
@@ -835,6 +839,7 @@
 
                 // Adds check to open order summary automatically
                 if ( params.opened_default_order_summary === 'yes' ) {
+					Flexify_Checkout.Sidebar.orderSummaryToggle(true);
                     Flexify_Checkout.Sidebar.autoToggleOrderSummary();
                 }
 
@@ -2964,7 +2969,7 @@
          * Components object helper
          * 
          * @since 1.0.0
-         * @version 5.0.0
+         * @version 5.0.2
          */
         Components: {
 
@@ -3044,15 +3049,19 @@
              * Init Select2 for new select fields
              * 
              * @since 3.2.0
-             * @version 5.0.0
+             * @version 5.0.2
              */
             initSelect2Fields: function() {
-                const get_selects = params.get_new_select_fields || [];
+				const get_selects = params.get_new_select_fields || [];
 
-                $(get_selects).each( function() {
-                    $('#' + this).select2();
-                });
-            },
+				$(get_selects).each( function() {
+					if ( this === 'billing_country' || this === 'shipping_country' ) {
+						return;
+					}
+
+					$('#' + this).select2();
+				});
+			},
 
             /**
 			 * Get fragments on updated checkout and replace HTML
@@ -3751,7 +3760,7 @@
 		 * Conditions object helper
 		 * 
 		 * @since 3.5.0
-		 * @version 5.0.0
+		 * @version 5.0.2
 		 */
 		Conditions: {
 
@@ -3785,19 +3794,19 @@
 			 * Show or hide fields based on conditions
 			 * 
 			 * @since 3.5.0
-			 * @version 5.0.0
+			 * @version 5.0.2
 			 * @return {void}
 			 */
 			checkFieldVisibility: function() {
-				const field_conditions = params.field_condition || [];
+				const field_conditions = Object.values( params.field_condition || {} );
 
-				field_conditions.forEach( cond => {
-					const $comp = $( '#' + cond.component_field );
+				field_conditions.forEach( item => {
+					const $comp = $('#' + item.component_field);
 					const row = $comp.closest('.form-row');
-					const val = $( '#' + cond.verification_condition_field ).val();
-					const passed = this.checkCondition( cond.condition, val, cond.condition_value );
+					const val = $('#' + item.verification_condition_field).val();
+					const passed = this.checkCondition( item.condition, val, item.condition_value );
 
-					if ( cond.type_rule === 'show' && cond.verification_condition === 'field' ) {
+					if ( item.type_rule === 'show' && item.verification_condition === 'field' ) {
 						if ( passed ) {
 							$comp.prop('required', true);
 							row.removeClass('temp-hidden').addClass('validate-required required-field').show();
@@ -3805,7 +3814,7 @@
 							$comp.prop('required', false);
 							row.removeClass('required-field woocommerce-invalid validate-required').addClass('temp-hidden').hide();
 						}
-					} else if ( cond.type_rule === 'hide' ) {
+					} else if ( item.type_rule === 'hide' ) {
 						if ( passed ) {
 							$comp.prop('required', false);
 							row.removeClass('required required-field woocommerce-invalid validate-required').addClass('temp-hidden').hide();
@@ -3816,12 +3825,12 @@
 					}
 				});
 
-				// adiciona o asterisco nos labels que forem required
+				// add the asterisk on labels that are required
 				$('label.has-condition.required-field > span.optional').remove();
 
 				$('label.has-condition.required-field').each( function() {
 					if ( ! $(this).find('abbr.required').length ) {
-						$(this).append('<abbr class="required" title="' + params.i18n.required_field + '">*</abbr>');
+						$(this).append(`<abbr class="required" title="${params.i18n.required_field}">*</abbr>`);
 					}
 				});
 			},
@@ -3834,8 +3843,8 @@
 			init: function() {
 				const field_conditions = params.field_condition || [];
 
-				field_conditions.forEach( cond => {
-					const selector = '#' + cond.verification_condition_field;
+				field_conditions.forEach( item => {
+					const selector = '#' + item.verification_condition_field;
 
 					$( document ).on('change input keyup', selector, () => {
 						this.checkFieldVisibility();

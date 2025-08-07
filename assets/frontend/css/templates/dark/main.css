@@ -326,6 +326,7 @@ body.woocommerce-checkout {
     top: 52%;
     transform: translateY(-50%);
     right: 0;
+    filter: invert(1);
 }
 
 .flexify-checkout__sidebar-header-link--hide:after {
@@ -5169,4 +5170,22 @@ p.form-row.flexify-checkout-loading-placeholder > label {
 
 .flexify-button.flexify-button--ty {
     background-color: #DEE2E6;
+}
+
+.mp-checkout-custom-container,
+.mp-checkout-pix-container,
+.mp-pix-template-container {
+    background-color: transparent !important;
+}
+
+.mp-checkout-container .mp-wallet-button-container .mp-wallet-button-title span,
+.mp-checkout-container .mp-pix-template-title,
+.mp-checkout-container .mp-input-label {
+    color: #fff !important
+}
+
+.mp-checkout-container .mp-wallet-button-container .mp-wallet-button-description,
+.mp-checkout-container .mp-pix-template-subtitle,
+.mp-terms-and-conditions-text {
+    color: #E9ECEF !important;
 }

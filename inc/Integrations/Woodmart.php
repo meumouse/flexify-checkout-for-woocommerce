@@ -5,7 +5,7 @@ namespace MeuMouse\Flexify_Checkout\Integrations;
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
 
-if ( defined('WOODMART_VERSION') || function_exists('woodmart_theme_setup') || function_exists('woodmart_child_enqueue_styles') ) {
+if ( defined('WOODMART_THEME_DIR') || function_exists('woodmart_theme_setup') || function_exists('woodmart_child_enqueue_styles') ) {
 	/**
 	 * Compatibility with Woodmart theme
 	 *
@@ -36,7 +36,7 @@ if ( defined('WOODMART_VERSION') || function_exists('woodmart_theme_setup') || f
 		 * @return void
 		 */
 		public function remove_actions() {
-			if ( ! is_flexify_template() || ! defined('WOODMART_VERSION') || ! function_exists('woodmart_theme_setup') || ! function_exists('woodmart_child_enqueue_styles') ) {
+			if ( ! is_flexify_template() ) {
 				return;
 			}
 			

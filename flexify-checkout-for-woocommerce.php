@@ -7,11 +7,11 @@
  * Requires Plugins: 		woocommerce
  * Author: 					MeuMouse.com
  * Author URI: 				https://meumouse.com/?utm_source=wordpress&utm_medium=plugins_list&utm_campaign=flexify_checkout
- * Version: 				5.0.1
+ * Version: 				5.0.2
  * WC requires at least: 	6.0.0
  * WC tested up to: 		10.0.4
  * Requires PHP: 			7.4
- * Tested up to:      		6.8.1
+ * Tested up to:      		6.8.2
  * Text Domain: 			flexify-checkout-for-woocommerce
  * Domain Path: 			/languages
  * 
@@ -57,7 +57,7 @@ class Flexify_Checkout {
 	 * @since 1.0.0
 	 * @var string
 	 */
-	public static $version = '5.0.1';
+	public static $version = '5.0.2';
 
 	/**
 	 * Plugin initiated
@@ -83,9 +83,6 @@ class Flexify_Checkout {
 
 		// set compatibility with HPOS
 		add_action( 'before_woocommerce_init', array( $this, 'declare_woo_compatibility' ) );
-
-		// hook after plugin init
-		do_action('Flexify_Checkout/Init');
 	}
 
 

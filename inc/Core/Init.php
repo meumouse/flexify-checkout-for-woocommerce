@@ -9,6 +9,7 @@ defined('ABSPATH') || exit;
  * Init class plugin
  * 
  * @since 5.0.0
+ * @version 5.0.2
  * @package MeuMouse.com
  */
 class Init {
@@ -33,7 +34,7 @@ class Init {
      * Construct function
      * 
      * @since 1.0.0
-     * @version 5.4.5
+     * @version 5.0.2
      * @return void
      */
     public function __construct() {
@@ -108,14 +109,17 @@ class Init {
 
 			// remove Pro badge if plugin is licensed
 			if ( get_option('flexify_checkout_license_status') !== 'valid' && false !== strpos( $url, 'wp-admin/plugins.php' ) ) {
-				add_filter( 'plugin_action_links_' . $this->basename, array( '\MeuMouse\Flexify_Checkout\Views\Styles', 'be_pro_link' ), 10, 4 );
-				add_action( 'admin_head', array( $this, 'be_pro_styles' ) );
+				add_filter( 'plugin_action_links_' . $this->basename, array( $this, 'be_pro_link' ), 10, 4 );
+				add_action( 'admin_head', array( '\MeuMouse\Flexify_Checkout\Views\Styles', 'be_pro_styles' ) );
 			}
         } else {
             add_action( 'admin_notices', array( $this, 'woocommerce_version_notice' ) );
 			deactivate_plugins('flexify-checkout-for-woocommerce/flexify-checkout-for-woocommerce.php');
 			add_action( 'admin_notices', array( $this, 'deactivate_flexify_checkout_notice' ) );
         }
+
+        // hook after plugin init
+		do_action('Flexify_Checkout/Init');
     }
 
 
@@ -237,11 +241,11 @@ class Init {
 	 * Plugin action links Pro version
 	 * 
 	 * @since 3.3.0
-	 * @version 5.0.0
+	 * @version 5.0.2
      * @param array $action_links | Current action links
 	 * @return array
 	 */
-	public static function be_pro_link( $action_links ) {
+	public function be_pro_link( $action_links ) {
 		$plugins_links = array(
 			'<a id="get-pro-flexify-checkout" target="_blank" href="https://meumouse.com/plugins/flexify-checkout-para-woocommerce/?utm_source=wordpress&utm_medium=plugins-list&utm_campaign=flexify-checkout">' . __( 'Seja PRO', 'flexify-checkout-for-woocommerce' ) . '</a>'
 		);
