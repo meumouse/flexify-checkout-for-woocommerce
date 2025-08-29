@@ -1,3 +1,7 @@
+Versão 5.1.0 (29/08/2025)
+* Correção de bugs
+* Otimizações
+
 Versão 5.0.2 (07/08/2025)
 * Correção de bugs
   - Compatibilidade com tema Woodmart
