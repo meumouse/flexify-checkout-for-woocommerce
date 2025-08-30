@@ -45,41 +45,39 @@
          * @param {string} body 
          */
         displayToast: function(type, header, body) {
-            if ( type === 'error' ) {
-                type = 'danger';
-            }
+			let icon = '';
+
+			if ( type === 'success' ) {
+				icon = '<svg class="icon icon-white me-2" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(255, 255, 255, 1);"><path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8z"></path><path d="M9.999 13.587 7.7 11.292l-1.412 1.416 3.713 3.705 6.706-6.706-1.414-1.414z"></path></svg>';
+			} else {
+				icon = '<svg class="icon icon-white me-2" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(255, 255, 255, 1);transform: ;msFilter:;"><path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8z"></path><path d="M11 11h2v6h-2zm0-4h2v2h-2z"></path></svg>';
+			}
+
+			if ( type === 'error' ) {
+				type = 'danger';
+			}
 
             const toast = `<div class="toast toast-${type} show">
                 <div class="toast-header bg-${type} text-white">
-                    <svg class="icon icon-white me-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="#fff" d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2z"/><path fill="#fff" d="M10 13.6 7.7 11.3l-1.4 1.4L10 16.7l6.7-6.7-1.4-1.4z"/></svg>
-                    <span class="me-auto">${header || ''}</span>
-                    <button class="btn-close btn-close-white ms-2 hide-toast" type="button" aria-label="${params.close_aria_label_notice || 'Close'}"></button>
+					${icon}
+					<span class="me-auto">${header || ''}</span>
+                    <button class="btn-close btn-close-white ms-2" type="button" aria-label="${params.close_aria_label_notice || 'Close'}"></button>
                 </div>
                 <div class="toast-body">${body || ''}</div>
             </div>`;
 
             $('.flexify-checkout-wrapper').before(toast);
 
+			// Hide toasts on click
+			$(document).on('click', '.toast .btn-close', function() {
+                $('.toast.show').fadeOut('fast');
+            });
+
+			// Hide toast after 3 seconds
             setTimeout( function() {
                 $(`.toast-${type}`).fadeOut('fast', function() {
                     $(this).remove();
                 });
-            }, 3000);
-        },
-
-        /**
-         * Hide toasts on click or auto
-         * 
-         * @since 1.0.0
-         * @version 5.1.0
-         */
-        hideToasts: function() {
-            $(document).on('click', '.hide-toast', function() {
-                $('.updated-option-success, .update-notice-flexify-checkout, .toast').fadeOut('fast');
-            });
-
-            setTimeout( function() {
-                $('.update-notice-flexify-checkout').fadeOut('fast');
             }, 3000);
         },
 
@@ -159,7 +157,9 @@
                                 original_values = settings_form.serialize();
 
 								Flexify_Checkout_Admin.displayToast( 'success', response.toast_header_title, response.toast_body_title );
-                            }
+                            } else {
+								Flexify_Checkout_Admin.displayToast( 'danger', response.toast_header_title, response.toast_body_title );
+							}
                         } catch (err) {
                             console.log(err);
                         }
@@ -168,50 +168,81 @@
                         console.error("AJAX request failed:", textStatus, errorThrown);
                     },
                     complete: function() {
-                        btn.html(state.html).prop('disabled', false);
+                        btn.html(state.html);
                     },
                 });
             });
         },
 
         /**
-		 * Visibility controllers for toggles/switches
+		 * Generic visibility controllers (checkboxes, selects, arrays, maps)
 		 * 
 		 * @since 1.0.0
-		 * @version 5.1.1
+		 * @version 5.1.0
 		 */
 		setupVisibilityControllers: function() {
-			/**
-			 * Attach a simple visibility controller:
-			 * show/hide a container based on a trigger value.
-			 * 
-			 * @since 5.1.1
-			 * @param {string} triggerSel
-			 * @param {string} targetSel
-			 */
-			const attach = (triggerSel, targetSel) => {
-				const apply = () => {
-					const $trigger = $(triggerSel);
-					let on = false;
 
+			/**
+			 * Attach a generic visibility controller
+			 * 
+			 * - Checkbox: show/hide target if checked
+			 * - Select + string target: show if value !== "no"/"false"/""
+			 * - Select + array target: show container if value in array
+			 * - Select + object target: show container for matching option
+			 * 
+			 * @since 5.1.0
+			 * @param {string|jQuery} triggerSel | Trigger element selector
+			 * @param {string|Array|Object} target | Target selector, array of allowed values, or map of options→containers
+			 * @param {string} [containerSel] | Optional container when using array mode
+			 */
+			const attach = (triggerSel, target, containerSel = null) => {
+				const $trigger = $(triggerSel);
+
+				const apply = () => {
+					const val = $trigger.val();
+
+					// Checkbox
 					if ( $trigger.is(':checkbox') ) {
-						on = $trigger.is(':checked');
-					} else {
-						const val = $trigger.val();
-						on = ( val !== 'no' && val !== 'false' && val !== '' );
+						const on = $trigger.is(':checked');
+						
+						if ( typeof target === 'string' ) {
+							$(target).toggleClass('d-none', ! on);
+						}
+
+						return;
 					}
 
-					$(targetSel).toggleClass('d-none', ! on);
+					// Map of options → containers
+					if ( typeof target === 'object' && ! Array.isArray(target) ) {
+						$.each(target, function(option, container) {
+							$(container).toggleClass('d-none', val !== option);
+						});
+
+						return;
+					}
+
+					// Array of allowed values
+					if ( Array.isArray(target) && containerSel ) {
+						const on = target.includes(val);
+						$(containerSel).toggleClass('d-none', ! on);
+						return;
+					}
+
+					// Simple case (string target)
+					if ( typeof target === 'string' ) {
+						const on = ( val !== 'no' && val !== 'false' && val !== '' );
+						$(target).toggleClass('d-none', ! on);
+					}
 				};
 
-				// Bind events
-				$(document).on('change', triggerSel, apply);
+				// Bind event
+				$(document).off('change', triggerSel).on('change', triggerSel, apply);
 
-				// Run on load
+				// Initial state
 				apply();
 			};
 
-			// Map original calls
+			// Simple checkboxes
 			attach('#enable_auto_apply_coupon_code', '.show-coupon-code-enabled');
 			attach('#enable_inter_bank_pix_api', '.inter-bank-pix');
 			attach('#enable_inter_bank_ticket_api', '.inter-bank-slip');
@@ -222,6 +253,39 @@
 			attach('#enable_inter_bank_pix_api', '.require-enabled-inter-pix');
 			attach('#enable_inter_bank_ticket_api', '.require-enabled-inter-slip-bank');
 			attach('#enable_animation_process_purchase', '.require-process-animations-enabled');
+
+			// Select with option map
+			attach('#add_new_condition_component', {
+				'field': '.specific-component-fields',
+				'payment': '.specific-component-payment',
+				'shipping': '.specific-component-shipping',
+			});
+
+			attach('#add_new_condition_user_function', {
+				'specific_user': '.specific-users-container',
+				'specific_role': '.specific-roles-container',
+			});
+
+			attach('#add_new_condition_product_filter', {
+				'specific_products': '.specific-products',
+				'specific_categories': '.specific-categories',
+				'specific_attributes': '.specific-attributes',
+			});
+
+			attach('#add_new_condition_component_verification', {
+				'field': '.specific-checkout-fields',
+			});
+
+			attach('#checkout_header_type', {
+				'logo': '.header-styles-option-logo',
+				'text': '.header-styles-option-text',
+			});
+
+			// Select with array of allowed values
+			attach('#add_new_condition_component_type', [
+				'is', 'is_not', 'contains', 'not_contain', 
+				'start_with', 'finish_with', 'bigger_then', 'less_than'
+			], '.condition-value');
 		},
 
         /**
@@ -1055,7 +1119,6 @@
          * @since 5.1.0
          */
         init: function() {
-            this.hideToasts();
             this.initTabs();
             this.saveOptions();
             this.setupVisibilityControllers();

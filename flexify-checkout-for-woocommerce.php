@@ -23,6 +23,8 @@
 
 namespace MeuMouse\Flexify_Checkout;
 
+use Automattic\WooCommerce\Utilities\FeaturesUtil;
+
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
 
@@ -90,27 +92,25 @@ class Flexify_Checkout {
      * Setup WooCommerce High-Performance Order Storage (HPOS) compatibility
      * 
      * @since 1.0.0
-     * @version 5.0.0
+     * @version 5.1.0
      * @return void
      */
     public function declare_woo_compatibility() {
         if ( defined('WC_VERSION') && version_compare( WC_VERSION, '7.1', '>' ) ) {
-			/**
-			 * Setup compatibility with HPOS/Custom order table feature of WooCommerce
-			 * 
-			 * @since 1.0.0
-			 */
 			if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
-				\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
-			}
+				/**
+				 * Setup compatibility with HPOS/Custom order table feature of WooCommerce
+				 * 
+				 * @since 1.0.0
+				 */
+				FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
 
-			/**
-			 * Display incompatible notice with WooCommerce checkout blocks
-			 * 
-			 * @since 3.8.0
-			 */
-			if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
-				\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'cart_checkout_blocks', __FILE__, false );
+				/**
+				 * Display incompatible notice with WooCommerce checkout blocks
+				 * 
+				 * @since 3.8.0
+				 */
+				FeaturesUtil::declare_compatibility( 'cart_checkout_blocks', __FILE__, false );
 			}
 		}
     }
