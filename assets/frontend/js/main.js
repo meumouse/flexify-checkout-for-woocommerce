@@ -1014,7 +1014,7 @@
 			 * Process actions when checkout has errors
 			 * 
 			 * @since 1.0.0
-			 * @version 5.0.0
+			 * @version 5.1.0
 			 * @return void
 			 */
 			onCheckoutError: function() {
@@ -1023,7 +1023,7 @@
 				 * Checkout error trigger
 				 * 
 				 * @since 1.0.0
-				 * @version 5.0.0
+				 * @version 5.1.0
 				 * @param {object} e | Event object
 				 * @param {string} error | Error message in HTML format
 				 */
@@ -1031,7 +1031,7 @@
 					$('#place_order').removeClass('flexify-checkout-btn-loading');
 
 					Flexify_Checkout.Helpers.removeDomElements();
-					Flexify_Checkout.Components.addNotice( error );
+				//	Flexify_Checkout.Components.addNotice( error );
 
 					// Stop all ongoing animations and reset state
 					Flexify_Checkout.Animations.purchaseAnimation.stop();

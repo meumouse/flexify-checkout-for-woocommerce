@@ -1136,7 +1136,6 @@
             });
         },
 
-
 		/**
 		 * Update the checkout theme when a card is clicked
 		 * 
@@ -1160,6 +1159,389 @@
 		},
 
         /**
+         * Handle checkout conditions
+         * 
+         * @since 3.5.0
+         * @version 5.1.0
+         */
+        handleConditions: function() {
+            /**
+             * Simple debounce
+             *
+             * @since 5.1.0
+             * @param {Function} fn
+             * @param {number} wait
+             * @returns {Function}
+             */
+            const debounce = (fn, wait = 250) => {
+                let t;
+                return function(...args) {
+                    clearTimeout(t);
+                    t = setTimeout(() => fn.apply(this, args), wait);
+                };
+            };
+
+            /**
+             * Get value safely from a select/input
+             *
+             * @since 5.1.0
+             * @param {string} sel
+             * @returns {string}
+             */
+            const val = (sel) => $(sel).val() || 'none';
+
+            /**
+             * Build FormData fresh from DOM
+             *
+             * @since 5.1.0
+             * @returns {FormData}
+             */
+            const buildPayload = () => {
+                const fd = new FormData();
+                fd.set('action', 'add_new_checkout_condition');
+
+                // base selects/inputs
+                fd.set('type_rule', val(S.type_rule));
+                fd.set('component', val(S.component));
+                fd.set('component_field', val(S.component_field));
+                fd.set('verification_condition', val(S.verification_condition));
+                fd.set('verification_condition_field', val(S.verification_condition_field));
+                fd.set('condition', val(S.condition));
+                fd.set('condition_value', $(S.condition_value).val() || '');
+
+                // specifics
+                fd.set('payment_method', val(S.payment));
+                fd.set('shipping_method', val(S.shipping));
+
+                // user filter
+                const userFunc = val(S.user_function);
+                fd.set('filter_user', val(S.user_role));
+
+                if ( userFunc === 'specific_user' ) {
+                    fd.set('specific_user', JSON.stringify([...specificUsers]));
+                } else if ( userFunc === 'specific_role' ) {
+                    fd.set('specific_role', val(S.user_role));
+                }
+
+                // product filter
+                const pf = val(S.product_filter);
+                fd.set('product_filter', pf);
+
+                if ( pf === 'specific_products' ) {
+                    fd.set('specific_products', JSON.stringify([...specificProducts]));
+                }
+
+                if ( pf === 'specific_categories' ) {
+                    fd.set('specific_categories', JSON.stringify([...specificCategories]));
+                }
+
+                if ( pf === 'specific_attributes' ) {
+                    fd.set('specific_attributes', JSON.stringify([...specificAttributes]));
+                }
+
+                return fd;
+            };
+
+            /**
+             * Enable/disable submit based on current UI state
+             *
+             * @since 5.1.0
+             */
+            const toggleSubmit = () => {
+                const typeRule = val(S.type_rule);
+                const component = val(S.component);
+                const compField = val(S.component_field);
+                const compPay = val(S.payment);
+                const compShip = val(S.shipping);
+                const verifyCond = val(S.verification_condition);
+                const verifyFld = val(S.verification_condition_field);
+                const condType = val(S.condition);
+                const condVal = $(S.condition_value).val() || '';
+
+                const needsValue = ['is', 'is_not', 'contains', 'not_contain', 'start_with', 'finish_with', 'bigger_then', 'less_than'];
+
+                let ok = typeRule !== 'none' && component !== 'none' && condType !== 'none';
+
+                if ( component === 'field' && compField === 'none' ) {
+                    ok = false;
+                }
+
+                if ( component === 'payment' && compPay   === 'none' ) {
+                    ok = false;
+                }
+
+                if ( component === 'shipping'&& compShip  === 'none' ) {
+                    ok = false;
+                }
+
+                if ( verifyCond === 'field'  && verifyFld === 'none' ) {
+                    ok = false;
+                }
+
+                if ( needsValue.includes(condType) && condVal.trim() === '' ) {
+                    ok = false;
+                }
+
+                $(S.submit).prop('disabled', ! ok);
+            };
+
+            /**
+            * Reset all selects/inputs inside a container
+            *
+            * @since 5.1.1
+            * @param {string} container
+            */
+            const resetForm = (container) => {
+                const $c = $(container);
+
+                $c.find('select').each( function() {
+                    const first = $(this).find('option:first').val();
+                    $(this).val(first).trigger('change');
+                });
+
+                $c.find('input[type="text"], input[type="search"], input[type="number"]').val('');
+
+                // also limpa listas de seleção
+                $(S.products_box).empty().removeClass('has-items');
+                $(S.categories_box).empty().removeClass('has-items');
+                $(S.attributes_box).empty().removeClass('has-items');
+                $(S.users_box).empty().removeClass('has-items');
+                specificProducts.clear();
+                specificCategories.clear();
+                specificAttributes.clear();
+                specificUsers.clear();
+                toggleSubmit();
+            };
+
+            /**
+            * Live search (AJAX) with delegation + debouce
+            *
+            * @since 5.1.1
+            * @param {string} inputSel
+            * @param {string} boxSel
+            * @param {string} action
+            * @param {"product-id"|"category-id"|"attribute-id"|"user-id"} dataKey
+            * @param {Set} setRef
+            */
+            const bindSearch = (inputSel, boxSel, action, dataKey, setRef) => {
+                const run = debounce(function(e) {
+                    const query = $(e.target).val().trim();
+                    const $box = $(boxSel);
+
+                    if (query.length < 3) {
+                        $box.empty().removeClass('has-items');
+                        return;
+                    }
+
+                    if (!$box.next('.specific-search-spinner').length) {
+                        $(e.target).after('<i class="spinner-border specific-search-spinner"></i>');
+                    }
+
+                    $.ajax({
+                        url: flexify_checkout_params.ajax_url,
+                        type: 'POST',
+                        dataType: 'html',
+                        data: {
+                            action,
+                            search_query: query,
+                        },
+                    })
+                    .done((html) => {
+                        $(inputSel).parent('div').find('.specific-search-spinner').remove();
+                        $box.html(html).addClass('has-items');
+                    })
+                    .fail((xhr, t, err) => {
+                        console.error('AJAX search failed:', t, err);
+                        $(inputSel).parent('div').find('.specific-search-spinner').remove();
+                    });
+                }, 300);
+
+                $(document).off('keyup', inputSel).on('keyup', inputSel, run);
+
+                // toggle selection
+                $(document).off('click', `${boxSel} li.list-group-item`).on('click', `${boxSel} li.list-group-item`, function() {
+                    const id = $(this).data(dataKey);
+
+                    if ( ! id && id !== 0 ) {
+                        return;
+                    }
+
+                    if ( $(this).toggleClass('selected').hasClass('selected') ) {
+                        setRef.add(id);
+                    } else {
+                        setRef.delete(id);
+                    }
+                });
+            };
+
+            const S = {
+                container: '#add_new_condition_container_master',
+                submit: '#add_new_condition_submit',
+
+                // base controls
+                type_rule: '#add_new_condition_type_rule',
+                component: '#add_new_condition_component',
+                component_field: '#add_new_condition_specific_field_component',
+                verification_condition: '#add_new_condition_component_verification',
+                verification_condition_field: '#add_new_condition_specific_field',
+                condition: '#add_new_condition_component_type',
+                condition_value: '#add_new_condition_get_condition_value',
+                payment: '#add_new_condition_specific_payment_component',
+                shipping: '#add_new_condition_specific_shipping_component',
+
+                // user
+                user_function: '#add_new_condition_user_function',
+                user_role: '#add_new_condition_specific_user_role',
+
+                // products
+                product_filter: '#add_new_condition_product_filter',
+
+                // search inputs
+                product_input: '.product-search',
+                category_input: '.category-search',
+                attribute_input: '.attribute-search',
+                user_input: '.user-search',
+
+                // search result boxes
+                products_box: '#get_specific_products',
+                categories_box: '#get_specific_categories',
+                attributes_box: '#get_specific_attribute',
+                users_box: '#get_specific_users',
+
+                // close
+                close_modal_btn: '#close_add_new_checkout_condition',
+            };
+
+            const specificProducts = new Set();
+            const specificCategories = new Set();
+            const specificAttributes = new Set();
+            const specificUsers = new Set();
+
+            // listener for any change in selects/inputs to toggle submit button
+            $(document).off('change keyup', `${S.container} select, ${S.container} input`).on('change keyup', `${S.container} select, ${S.container} input`, toggleSubmit);
+
+            // when changing the product filter, update the button state
+            $(document).off('change', S.product_filter).on('change', S.product_filter, toggleSubmit);
+
+            // searching with debounce
+            bindSearch( S.product_input, S.products_box, 'get_woo_products_ajax', 'product-id', specificProducts );
+            bindSearch( S.category_input, S.categories_box, 'get_woo_categories_ajax', 'category-id', specificCategories );
+            bindSearch( S.attribute_input, S.attributes_box, 'get_woo_attributes_ajax', 'attribute-id', specificAttributes );
+            bindSearch( S.user_input, S.users_box, 'search_users_ajax', 'user-id', specificUsers);
+
+            $(document).off('click', S.submit).on('click', S.submit, (e) => {
+                e.preventDefault();
+
+                const $btn = $(e.currentTarget);
+                const state  = this.keepButtonState($btn);
+
+                $btn.html('<span class="spinner-border spinner-border-sm"></span>');
+
+                const fd = buildPayload();
+
+                $.ajax({
+                    url:  flexify_checkout_params.ajax_url,
+                    type: 'POST',
+                    data: fd,
+                    processData: false,
+                    contentType: false,
+                    dataType: 'json',
+                })
+                .done((res) => {
+                    if (res && res.status === 'success') {
+                        this.displayToast('success', res.toast_header_title, res.toast_body_title);
+
+                        const $wrap = $('#display_conditions');
+                        const item  = `<li class="list-group-item d-flex align-items-center justify-content-between">
+                            <div class="d-grid">
+                                <div class="mb-2">${res.condition_line_1 || ''}</div>
+                                <div>${res.condition_line_2 || ''}</div>
+                            </div>
+                            <button class="exclude-condition btn btn-icon btn-sm btn-outline-danger rounded-3 ms-3">
+                                <svg class="icon icon-sm icon-danger" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15 2H9c-1.103 0-2 .897-2 2v2H3v2h2v12c0 1.103.897 2 2 2h10c1.103 0 2-.897 2-2V8h2V6h-4V4c0-1.103-.897-2-2-2zM9 4h6v2H9V4zm8 16H7V8h10v12z"></path></svg>
+                            </button>
+                        </li>`;
+
+                        if ( res[0] && res[0].empty_conditions === 'yes' ) {
+                            const $td = $('#empty_conditions').parent('td');
+                            $('#empty_conditions').remove();
+                            $td.append(`<div id="display_conditions" class="mb-3"><ul class="list-group">${item}</ul></div>`);
+                        } else {
+                            if ($wrap.length) {
+                                $wrap.find('ul.list-group').append(item);
+                            }
+                        }
+
+                        // close modal and reset form
+                        setTimeout(() => {
+                            $(S.close_modal_btn).trigger('click');
+                            resetForm(S.container);
+                        }, 300);
+
+                    } else {
+                        this.displayToast('danger', res?.toast_header_title || 'Erro', res?.toast_body_title || (res?.error_message || 'Falha ao adicionar condição.'));
+                    }
+                })
+                .fail((xhr, t, err) => {
+                    console.error('AJAX failed:', t, err);
+                    this.displayToast('danger', 'Erro', 'Não foi possível enviar a condição.');
+                })
+                .always(() => {
+                    $btn.html(state.html).width(state.width).height(state.height);
+                });
+            });
+
+            // remove condition item
+            $(document).off('click', '.exclude-condition').on('click', '.exclude-condition', (e) => {
+                e.preventDefault();
+
+                const $btn = $(e.currentTarget);
+                const $li = $btn.closest('.list-group-item');
+                const idx = $li.data('condition');
+                const state = this.keepButtonState($btn);
+
+                $btn.html('<span class="spinner-border spinner-border-sm"></span>');
+
+                $.ajax({
+                    url:  flexify_checkout_params.ajax_url,
+                    type: 'POST',
+                    dataType: 'json',
+                    data: { action: 'exclude_condition_item', condition_index: idx },
+                })
+                .done((res) => {
+                    if (res && res.status === 'success') {
+                        this.displayToast('success', res.toast_header_title, res.toast_body_title);
+
+                        $li.fadeOut(150, function() {
+                            $(this).remove();
+
+                            if (res[0] && res[0].empty_conditions === 'yes') {
+                                const $td = $('#display_conditions').parent('td');
+                                $('#display_conditions').remove();
+                                $td.append(`<div id="empty_conditions" class="alert alert-info d-flex align-items-center">
+                                    <svg class="icon icon-info me-2" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8z"></path><path d="M11 11h2v6h-2zm0-4h2v2h-2z"></path></svg>
+                                    <span>${res[0].empty_conditions_message || ''}</span>
+                                </div>`);
+                            }
+                        });
+                    } else {
+                        this.displayToast('danger', res?.toast_header_title || 'Erro', res?.toast_body_title || 'Falha ao excluir condição.');
+                    }
+                })
+                .fail((xhr, t, err) => {
+                    console.error('AJAX failed:', t, err);
+                    this.displayToast('danger', 'Erro', 'Não foi possível excluir a condição.');
+                })
+                .always(() => {
+                    $btn.html(state.html).width(state.width).height(state.height);
+                });
+            });
+
+            // initial state
+            toggleSubmit();
+        },
+
+        /**
          * Initialize all modules
          * 
          * @since 5.1.0
@@ -1179,6 +1561,7 @@
             this.altLicenseUpload();
             this.resetSettings();
 			this.themeSelector();
+            this.handleConditions();
         },
     };
 
