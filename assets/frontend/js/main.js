@@ -1277,7 +1277,7 @@
              * Send coupon code to WooCommerce
 			 * 
 			 * @since 1.0.0
-			 * @version 5.0.0
+			 * @version 5.1.0
 			 * @return void
              */
             applyCoupon: function() {
@@ -1307,12 +1307,27 @@
 						},
 						success: function(response) {
 							const wrapper = $('<div>').html(response);
-							const message = wrapper.find('.wc-block-components-notice-banner__content').text().trim();
 
+							let message = '';
+							let type = 'success'; // default
+
+							// check error
+							if ( wrapper.find('.woocommerce-error li').length ) {
+								message = wrapper.find('.woocommerce-error li').text().trim();
+								type = 'error';
+							} else if ( wrapper.find('.woocommerce-message li').length ) {
+								message = wrapper.find('.woocommerce-message li').text().trim();
+								type = 'success';
+							}
+
+							// send trigger to update checkout
 							$(document.body).trigger('update_checkout');
 
+							// add message after checkout is updated
 							$(document.body).one('updated_checkout', function() {
-								$('.woocommerce-form-coupon__inner .form-row-first').append(`<div class="success" aria-hidden="false" aria-live="polite">${message}</div>`);
+								if ( message ) {
+									$('.woocommerce-form-coupon__inner').append(`<div class="flexify-coupon-notice ${type}" aria-hidden="false" aria-live="polite">${message}</div>`);
+								}
 							});
 						},
 						error: function(jqXHR, textStatus, errorThrown) {
