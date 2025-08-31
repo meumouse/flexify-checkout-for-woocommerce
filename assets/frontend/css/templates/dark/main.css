@@ -2748,6 +2748,7 @@ input[type="checkbox"]:checked:focus:before {
 #shipping_method .shipping-method-details .amount {
     font-size: 1.075rem !important;
     line-height: 1.5;
+    color: #fff;
 }
 
 #shipping_method .shipping-method-details > p {
