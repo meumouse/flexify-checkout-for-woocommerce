@@ -1014,7 +1014,7 @@
 			 * Process actions when checkout has errors
 			 * 
 			 * @since 1.0.0
-			 * @version 5.1.0
+			 * @version 5.0.0
 			 * @return void
 			 */
 			onCheckoutError: function() {
@@ -1023,7 +1023,7 @@
 				 * Checkout error trigger
 				 * 
 				 * @since 1.0.0
-				 * @version 5.1.0
+				 * @version 5.0.0
 				 * @param {object} e | Event object
 				 * @param {string} error | Error message in HTML format
 				 */
@@ -1031,7 +1031,8 @@
 					$('#place_order').removeClass('flexify-checkout-btn-loading');
 
 					Flexify_Checkout.Helpers.removeDomElements();
-				//	Flexify_Checkout.Components.addNotice( error );
+					$('.woocommerce-notices-wrapper').html(''); // Clear previous notices
+					Flexify_Checkout.Components.addNotice( error );
 
 					// Stop all ongoing animations and reset state
 					Flexify_Checkout.Animations.purchaseAnimation.stop();
@@ -1568,6 +1569,7 @@
 
 				const notices_wrapper = $('.flexify-checkout__steps .woocommerce-notices-wrapper');
 
+				// prevent duplicate notices wrapper
 				if ( notices_wrapper.length > 1 ) {
 					// Remove all after the first
 					notices_wrapper.slice(1).remove();
