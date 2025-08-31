@@ -15,7 +15,7 @@ defined('ABSPATH') || exit;
  * Class for handle AJAX events
  *
  * @since 1.0.0
- * @version 5.0.0
+ * @version 5.1.0
  * @package MeuMouse.com
  */
 class Ajax {
@@ -24,106 +24,63 @@ class Ajax {
 	 * Construct function
 	 * 
 	 * @since 1.0.0
-	 * @version 5.0.0
+	 * @version 5.1.0
 	 * @return void
 	 */
 	public function __construct() {
-		// get AJAX call on check inline errors
-		add_action( 'wp_ajax_flexify_check_for_inline_error', array( __CLASS__, 'check_for_inline_error' ) );
-	
-		// get AJAX call on check inline errors for not logged users
-		add_action( 'wp_ajax_nopriv_flexify_check_for_inline_error', array( __CLASS__, 'check_for_inline_error' ) );
+		$actions = array(
+			// action => callback
+			'flexify_check_for_inline_error'        => array( __CLASS__, 'check_for_inline_error' ),
+			'flexify_check_for_inline_errors'       => array( __CLASS__, 'check_for_inline_errors' ),
+			'flexify_checkout_login'                => array( $this, 'checkout_login_callback' ),
+			'admin_ajax_save_options'               => array( $this, 'ajax_save_options_callback' ),
+			'remove_checkout_fields'                => array( $this, 'remove_checkout_fields_callback' ),
+			'add_new_field_to_checkout'             => array( $this, 'add_new_field_to_checkout_callback' ),
+			'alternative_activation_license'        => array( $this, 'alternative_activation_license_callback' ),
+			'add_new_font_action'                   => array( $this, 'add_new_font_action_callback' ),
+			'get_woo_products_ajax'                 => array( $this, 'get_woo_products_callback' ),
+			'get_woo_categories_ajax'               => array( $this, 'get_woo_categories_callback' ),
+			'get_woo_attributes_ajax'               => array( $this, 'get_woo_attributes_callback' ),
+			'search_users_ajax'                     => array( $this, 'search_users_ajax_callback' ),
+			'add_new_checkout_condition'            => array( $this, 'add_new_checkout_condition_callback' ),
+			'exclude_condition_item'                => array( $this, 'exclude_condition_item_callback' ),
+			'add_new_email_provider'                => array( $this, 'add_new_email_provider_callback' ),
+			'remove_email_provider'                 => array( $this, 'remove_email_provider_callback' ),
+			'dismiss_billing_country_warning'       => array( __CLASS__, 'dismiss_billing_country_warning' ),
+			'deactive_license_action'               => array( $this, 'deactive_license_callback' ),
+			'clear_activation_cache_action'         => array( $this, 'clear_activation_cache_callback' ),
+			'flexify_checkout_reset_plugin_action'  => array( $this, 'reset_plugin_callback' ),
+			'check_field_availability'              => array( $this, 'check_field_availability_callback' ),
+			'remove_select_option'                  => array( $this, 'remove_select_option_callback' ),
+			'add_new_option_select_live'            => array( $this, 'add_new_option_select_live_callback' ),
+			'get_checkout_session_data'             => array( $this, 'get_checkout_session_data_callback' ),
+			'flexify_checkout_remove_product'       => array( $this, 'remove_product_callback' ),
+			'flexify_checkout_undo_remove_product'  => array( $this, 'undo_remove_product_callback' ),
+		);
 
-		// get AJAX call on check error on proceed step
-		add_action( 'wp_ajax_flexify_check_for_inline_errors', array( __CLASS__, 'check_for_inline_errors' ) );
+		// needs to be called by non-logged users
+		$nopriv_actions = array(
+			'flexify_check_for_inline_error',
+			'flexify_check_for_inline_errors',
+			'flexify_checkout_login',
+			'get_checkout_session_data',
+			'flexify_checkout_remove_product',
+			'flexify_checkout_undo_remove_product',
+		);
 
-		// get AJAX call on check error on proceed step for not logged users
-		add_action( 'wp_ajax_nopriv_flexify_check_for_inline_errors', array( __CLASS__, 'check_for_inline_errors' ) );
+		foreach ( $actions as $action => $callback ) {
+			add_action( "wp_ajax_{$action}", $callback );
 
-		// get AJAX call on login event
-		add_action( 'wp_ajax_flexify_checkout_login', array( $this, 'checkout_login_callback' ) );
+			if ( in_array( $action, $nopriv_actions, true ) ) {
+				add_action( "wp_ajax_nopriv_{$action}", $callback );
+			}
+		}
 
-		// get AJAX call on login event for not logged users
-		add_action( 'wp_ajax_nopriv_flexify_checkout_login', array( $this, 'checkout_login_callback' ) );
-
-		// get AJAX calls on change options
-		add_action( 'wp_ajax_admin_ajax_save_options', array( $this, 'ajax_save_options_callback' ) );
-	
-		// remove checkout fields on click delete button
-		add_action( 'wp_ajax_remove_checkout_fields', array( $this, 'remove_checkout_fields_callback' ) );
-	
-		// processing new field
-		add_action( 'wp_ajax_add_new_field_to_checkout', array( $this, 'add_new_field_to_checkout_callback' ) );
-	
-		// get AJAX call from upload files from alternative activation license
-		add_action( 'wp_ajax_alternative_activation_license', array( $this, 'alternative_activation_license_callback' ) );
-	
-		// get AJAX call from add new font
-		add_action( 'wp_ajax_add_new_font_action', array( $this, 'add_new_font_action_callback' ) );
-	
-		// get AJAX call for query products search
-		add_action( 'wp_ajax_get_woo_products_ajax', array( $this, 'get_woo_products_callback' ) );
-	
-		// get AJAX call for query products categories
-		add_action( 'wp_ajax_get_woo_categories_ajax', array( $this, 'get_woo_categories_callback' ) );
-		
-		// get AJAX call for query products categories
-		add_action( 'wp_ajax_get_woo_attributes_ajax', array( $this, 'get_woo_attributes_callback' ) );
-	
-		// get AJAX call for query WP users
-		add_action( 'wp_ajax_search_users_ajax', array( $this, 'search_users_ajax_callback' ) );
-	
-		// get AJAX call from add new condition
-		add_action( 'wp_ajax_add_new_checkout_condition', array( $this, 'add_new_checkout_condition_callback' ) );
-	
-		// get AJAX call from exclude condition item
-		add_action( 'wp_ajax_exclude_condition_item', array( $this, 'exclude_condition_item_callback' ) );
-	
-		// get AJAX call from add new email provider
-		add_action( 'wp_ajax_add_new_email_provider', array( $this, 'add_new_email_provider_callback' ) );
-	
-		// get AJAX call from remove email provider item
-		add_action( 'wp_ajax_remove_email_provider', array( $this, 'remove_email_provider_callback' ) );
-
-		// dismiss billing country notice
-		add_action( 'wp_ajax_dismiss_billing_country_warning', array( __CLASS__, 'dismiss_billing_country_warning' ) );
-
-		// on deactive license process
-		add_action( 'wp_ajax_deactive_license_action', array( $this, 'deactive_license_callback' ) );
-
-		// clear activation cache
-		add_action( 'wp_ajax_clear_activation_cache_action', array( $this, 'clear_activation_cache_callback' ) );
-
-		// reset settings to default
-		add_action( 'wp_ajax_flexify_checkout_reset_plugin_action', array( $this, 'reset_plugin_callback' ) );
-
-		// check field available on create new field
-		add_action( 'wp_ajax_check_field_availability', array( $this, 'check_field_availability_callback' ) );
-
-		// remove option from select
-		add_action( 'wp_ajax_remove_select_option', array( $this, 'remove_select_option_callback' ) );
-
-		// add new select option live
-		add_action( 'wp_ajax_add_new_option_select_live', array( $this, 'add_new_option_select_live_callback' ) );
-
-		// set customer data on checkout session
-		add_action( 'wp_ajax_get_checkout_session_data', array( $this, 'get_checkout_session_data_callback' ) );
-		add_action( 'wp_ajax_nopriv_get_checkout_session_data', array( $this, 'get_checkout_session_data_callback' ) );
-
-		// enable AJAX request for autofill company field on digit CNPJ
-		if ( Admin_Options::get_setting('enable_autofill_company_info') === 'yes' && License::is_valid() ) {
+		if ( Admin_Options::get_setting( 'enable_autofill_company_info' ) === 'yes' && License::is_valid() ) {
 			add_action( 'wp_ajax_cnpj_autofill_query', array( __CLASS__, 'cnpj_autofill_query_callback' ) );
 			add_action( 'wp_ajax_nopriv_cnpj_autofill_query', array( __CLASS__, 'cnpj_autofill_query_callback' ) );
 		}
-
-		// remove product from checkout
-		add_action( 'wp_ajax_flexify_checkout_remove_product', array( $this, 'remove_product_callback' ) );
-		add_action( 'wp_ajax_nopriv_flexify_checkout_remove_product', array( $this, 'remove_product_callback' ) );
-
-		// undo remove product from checkout
-		add_action( 'wp_ajax_flexify_checkout_undo_remove_product', array( $this, 'undo_remove_product_callback' ) );
-		add_action( 'wp_ajax_nopriv_flexify_checkout_undo_remove_product', array( $this, 'undo_remove_product_callback' ) );
-	}	
+	}
 
 
 	/**
