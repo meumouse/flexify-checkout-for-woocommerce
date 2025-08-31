@@ -1,5 +1,7 @@
-Versão 5.1.0 (30/08/2025)
+Versão 5.1.0 (31/08/2025)
 * Correção de bugs
+  - Loop infinito no checkout com plugin Virtuaria Correios
+  - Conflito de máscara no campo de CEP com plugin Brazilian Market on WooCommerce
 * Otimizações
 
 Versão 5.0.2 (07/08/2025)

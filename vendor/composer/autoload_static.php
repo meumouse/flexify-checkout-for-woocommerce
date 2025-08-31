@@ -88,6 +88,7 @@ class ComposerStaticInit178be007d0b6d0c39a4c2788c7b3977c
         'MeuMouse\\Flexify_Checkout\\Integrations\\Tokoo' => __DIR__ . '/../..' . '/inc/Integrations/Tokoo.php',
         'MeuMouse\\Flexify_Checkout\\Integrations\\Tooldic' => __DIR__ . '/../..' . '/inc/Integrations/Tooldic.php',
         'MeuMouse\\Flexify_Checkout\\Integrations\\Tutorstarter' => __DIR__ . '/../..' . '/inc/Integrations/Tutorstarter.php',
+        'MeuMouse\\Flexify_Checkout\\Integrations\\Virtuaria_Correios' => __DIR__ . '/../..' . '/inc/Integrations/Virtuaria_Correios.php',
         'MeuMouse\\Flexify_Checkout\\Integrations\\Virtue' => __DIR__ . '/../..' . '/inc/Integrations/Virtue.php',
         'MeuMouse\\Flexify_Checkout\\Integrations\\Woo_Subscriptions' => __DIR__ . '/../..' . '/inc/Integrations/Woo_Subscriptions.php',
         'MeuMouse\\Flexify_Checkout\\Integrations\\Woodmart' => __DIR__ . '/../..' . '/inc/Integrations/Woodmart.php',
