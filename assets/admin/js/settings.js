@@ -1091,6 +1091,52 @@
             }
         },
 
+        /**
+         * Reset settings
+         * 
+         * @since 3.8.0
+         * @version 5.1.0
+         */
+        resetSettings: function() {
+            $(document).on('click', '#confirm_reset_settings', function(e) {
+                e.preventDefault();
+                
+                let btn = $(this);
+                let state = Flexify_Checkout_Admin.keepButtonState(btn);
+                
+                $.ajax({
+                    url: flexify_checkout_params.ajax_url,
+                    type: 'POST',
+                    data: {
+                        action: 'flexify_checkout_reset_plugin_action',
+                    },
+                    beforeSend: function() {
+                        btn.html('<span class="spinner-border spinner-border-sm"></span>');
+                    },
+                    success: function(response) {
+                        try {
+                            if ( response.status === 'success' ) {
+                                btn.html(state.html);
+
+                                $('#fcw_close_reset').click();
+
+                                Flexify_Checkout_Admin.displayToast( 'success', response.toast_header_title, response.toast_body_title );
+
+                                setTimeout( function() {
+                                    location.reload();
+                                }, 1000);
+                            } else {
+                                Flexify_Checkout_Admin.displayToast( 'error', response.toast_header_title, response.toast_body_title );
+                            }
+                        } catch (error) {
+                            console.log(error);
+                        }
+                    }
+                });
+            });
+        },
+
+
 		/**
 		 * Update the checkout theme when a card is clicked
 		 * 
@@ -1131,6 +1177,7 @@
             this.fieldsManager();
             this.preLicenseActions();
             this.altLicenseUpload();
+            this.resetSettings();
 			this.themeSelector();
         },
     };
