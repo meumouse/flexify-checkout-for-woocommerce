@@ -12,7 +12,7 @@ defined('ABSPATH') || exit;
  * Class to handle plugin admin panel objects and functions
  * 
  * @since 1.0.0
- * @version 5.0.0
+ * @version 5.1.0
  * @package MeuMouse.com
  */
 class Admin_Options {
@@ -21,16 +21,10 @@ class Admin_Options {
      * Construct function
      *
      * @since 1.0.0
-     * @version 5.0.0
+     * @version 5.1.0
      * @return void
      */
     public function __construct() {
-        // set default options
-        add_action( 'admin_init', array( $this, 'set_default_options' ) );
-
-        // set default checkout fields options
-        add_action( 'admin_init', array( $this, 'set_checkout_step_fields' ) );
-
         // handle for billing country admin notice
         add_action( 'woocommerce_checkout_init', array( __CLASS__, 'check_billing_country_field' ) );
         add_action( 'admin_notices', array( __CLASS__, 'show_billing_country_warning' ) );
@@ -49,28 +43,19 @@ class Admin_Options {
      * or adds new items with default value to the option
      * 
      * @since 2.3.0
-     * @version 5.0.0
+     * @version 5.1.0
      * @return void
      */
     public function set_default_options() {
         $default_options = ( new Default_Options() )->set_default_data_options();
         $get_options = get_option('flexify_checkout_settings', array());
 
-        // if empty settings
-        if ( empty( $get_options ) ) {
-            update_option( 'flexify_checkout_settings', $default_options );
-        } else {
-            // iterate for each plugin settings
-            foreach ( $get_options as $option => $value ) {
-                // iterate for each default settings
-                foreach ( $default_options as $index => $option_value ) {
-                    if ( ! isset( $get_options[$index] ) ) {
-                        $get_options[$index] = $option_value;
-                    }
-                }
-            }
+        // Complement missing settings without overwriting existing ones.
+        $merged_options = wp_parse_args( $get_options, $default_options );
 
-            update_option( 'flexify_checkout_settings', $get_options );
+        // Only save if the merged result differs from the stored options to avoid unnecessary writes.
+        if ( $get_options !== $merged_options ) {
+            update_option( 'flexify_checkout_settings', $merged_options );
         }
     }
 
@@ -79,7 +64,7 @@ class Admin_Options {
      * Set default options checkout fields
      * 
      * @since 3.0.0
-     * @version 5.0.0
+     * @version 5.1.0
      * @return void
      */
     public function set_checkout_step_fields() {
@@ -87,38 +72,23 @@ class Admin_Options {
         $get_fields = $default_options->get_native_checkout_fields();
         $get_field_options = maybe_unserialize( get_option('flexify_checkout_step_fields', array()) );
 
-        // create options if array is empty
-        if ( empty( $get_field_options ) ) {
-            $fields = array();
-
-            foreach ( $get_fields as $key => $value ) {
-                $fields[$key] = $value;
-            }
-
-            update_option('flexify_checkout_step_fields', maybe_serialize( $fields ) );
-        } else {
-            foreach ( $get_fields as $key => $value ) {
-                if ( ! isset( $get_field_options[$key] ) ) {
-                    $get_field_options[$key] = $value;
-                }
-            }
-
-            update_option( 'flexify_checkout_step_fields', maybe_serialize( $get_field_options ) );
-        }
+        // Merge existing field options with defaults to fill in missing entries.
+        $merged_fields = wp_parse_args( $get_field_options, $get_fields );
 
         /**
          * Add integration with Brazilian Market on WooCommerce plugin
          * 
          * @since 1.0.0
          */
-        if ( class_exists('Extra_Checkout_Fields_For_Brazil') && ! isset( $get_field_options['billing_cpf'] ) ) {
-            $get_field_options = maybe_unserialize( $get_field_options );
-
-            // Add Brazilian Market on WooCommerce fields to existing options
+        if ( class_exists('Extra_Checkout_Fields_For_Brazil') && ! isset( $merged_fields['billing_cpf'] ) ) {
+            // Add Brazilian Market on WooCommerce fields to existing options.
             $wcbcf_fields = $default_options->get_brazilian_checkout_fields();
-            $get_field_options = array_merge( $get_field_options, $wcbcf_fields );
+            $merged_fields = array_merge( $merged_fields, $wcbcf_fields );
+        }
 
-            update_option( 'flexify_checkout_step_fields', maybe_serialize( $get_field_options ) );
+        // Update only when the final array differs from what is stored to avoid unnecessary writes.
+        if ( $get_field_options !== $merged_fields ) {
+            update_option( 'flexify_checkout_step_fields', maybe_serialize( $merged_fields ) );
         }
     }
 
@@ -127,16 +97,18 @@ class Admin_Options {
      * Checks if the option exists and returns the indicated array item
      * 
      * @since 1.0.0
-     * @version 5.0.0
+     * @version 5.1.0
      * @param $key | Array key
      * @return mixed | string or false
      */
     public static function get_setting( $key ) {
-        $default_options = get_option( 'flexify_checkout_settings', array() );
+        $options  = get_option( 'flexify_checkout_settings', array() );
+        $defaults = ( new Default_Options() )->set_default_data_options();
+        $options  = wp_parse_args( $options, $defaults );
 
         // check if array key exists and return key
-        if ( isset( $default_options[$key] ) ) {
-            return $default_options[$key];
+        if ( isset( $options[$key] ) ) {
+            return $options[$key];
         }
 
         return false;

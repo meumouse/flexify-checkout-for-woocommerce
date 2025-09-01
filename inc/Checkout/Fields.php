@@ -14,6 +14,7 @@ defined('ABSPATH') || exit;
  * Class for handle checkout fields
  *
  * @since 5.0.0
+ * @version 5.1.0
  * @package MeuMouse.com
  */
 class Fields {
@@ -109,7 +110,7 @@ class Fields {
 	 * Override checkout fields
 	 *
 	 * @since 1.0.0
-	 * @version 5.0.0
+	 * @version 5.1.0
 	 * @param array $fields | Checkout fields
 	 * @return array
 	 */
@@ -168,8 +169,7 @@ class Fields {
 				$fields['billing']['billing_address_2']['class'][] = 'row-first';
 			}
 
-			if ( isset( $fields['billing_company'] ) ) {
-			//	$fields['billing']['billing_company']['class'][] = 'validate-required required-field';
+			if ( isset( $fields['billing']['billing_company'] ) ) {
 				$fields['billing']['billing_company']['required'] = false;
 			}
 
@@ -1058,7 +1058,7 @@ class Fields {
 	 * Render inline errors for validate fields
 	 *
 	 * @since 1.0.0
-	 * @version 5.0.0
+	 * @version 5.1.0
 	 * @param string $field | Checkout field
 	 * @param string $key | Field name and ID
 	 * @param array $args | Array of field parameters (type, country, label, description, placeholder, maxlenght, required, autocomplete, id, class, label_class, input_class, return, options, custom_attributes, validate, default, autofocus)

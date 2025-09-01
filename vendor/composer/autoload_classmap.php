@@ -73,6 +73,7 @@ return array(
     'MeuMouse\\Flexify_Checkout\\Integrations\\Tokoo' => $baseDir . '/inc/Integrations/Tokoo.php',
     'MeuMouse\\Flexify_Checkout\\Integrations\\Tooldic' => $baseDir . '/inc/Integrations/Tooldic.php',
     'MeuMouse\\Flexify_Checkout\\Integrations\\Tutorstarter' => $baseDir . '/inc/Integrations/Tutorstarter.php',
+    'MeuMouse\\Flexify_Checkout\\Integrations\\Virtuaria_Correios' => $baseDir . '/inc/Integrations/Virtuaria_Correios.php',
     'MeuMouse\\Flexify_Checkout\\Integrations\\Virtue' => $baseDir . '/inc/Integrations/Virtue.php',
     'MeuMouse\\Flexify_Checkout\\Integrations\\Woo_Subscriptions' => $baseDir . '/inc/Integrations/Woo_Subscriptions.php',
     'MeuMouse\\Flexify_Checkout\\Integrations\\Woodmart' => $baseDir . '/inc/Integrations/Woodmart.php',

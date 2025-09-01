@@ -4,13 +4,12 @@ namespace MeuMouse\Flexify_Checkout\Core;
 
 use MeuMouse\Flexify_Checkout\Admin\Admin_Options;
 use MeuMouse\Flexify_Checkout\API\License;
-
 use MeuMouse\Flexify_Checkout\Checkout\Themes;
 use MeuMouse\Flexify_Checkout\Checkout\Steps;
 use MeuMouse\Flexify_Checkout\Checkout\Fields;
 use MeuMouse\Flexify_Checkout\Checkout\Conditions;
-
 use MeuMouse\Flexify_Checkout\Views\Styles;
+use MeuMouse\Flexify_Checkout\Validations\ISO3166;
 
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
@@ -19,7 +18,7 @@ defined('ABSPATH') || exit;
  * Register/enqueue frontend and backend scripts
  *
  * @since 1.0.0
- * @version 5.0.0
+ * @version 5.1.0
  * @package MeuMouse.com
  */
 class Assets {
@@ -284,11 +283,12 @@ class Assets {
      * Enqueue all intl-tel-input i18n based on countries sold
      *
      * @since 5.0.0
+	 * @version 5.1.0
      * @return array
      */
     public function build_iti_i18n() {
 		// Keys come in uppercase; convert to lowercase for ITI
-		$raw = \MeuMouse\Flexify_Checkout\Validations\ISO3166::country_codes();
+		$raw = ISO3166::country_codes();
 		$countries = array_change_key_case( $raw, CASE_LOWER );
 
 		/**
@@ -315,17 +315,13 @@ class Assets {
 	 * Enqueue admin scripts in page settings only
 	 * 
 	 * @since 1.0.0
-	 * @version 5.0.0
+	 * @version 5.1.0
 	 * @return void
 	 */
 	public function admin_assets() {
 		// check if is admin settings
 		if ( is_flexify_checkout_admin_settings() ) {
 			wp_enqueue_media();
-			
-			wp_enqueue_script( 'flexify-checkout-modal', $this->assets_url . 'components/modal/modal'. $this->min_file .'.js', array('jquery'), $this->version );
-			wp_enqueue_style( 'flexify-checkout-modal-styles', $this->assets_url . 'components/modal/modal'. $this->min_file .'.css', array(), $this->version );
-			wp_enqueue_script( 'flexify-checkout-visibility-controller', $this->assets_url . 'components/visibility-controller/visibility-controller'. $this->min_file .'.js', array('jquery'), $this->version );
 			
 			wp_enqueue_style( 'bootstrap-datepicker-styles', $this->assets_url . 'vendor/bootstrap-datepicker/bootstrap-datepicker'. $this->min_file .'.css', array(), $this->version );
 			wp_enqueue_script( 'bootstrap-datepicker', 'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js', array('jquery'), '1.9.0' );

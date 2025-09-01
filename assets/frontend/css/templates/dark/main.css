@@ -471,6 +471,7 @@ form.woocommerce-checkout
     padding: 1rem 1.225rem;
     position: relative;
     line-height: 2;
+    outline: none;
 }
 
 .woocommerce-error:after,
@@ -1028,6 +1029,25 @@ p#billing_cnpj_field.form-row[data-type="tel"]:before {
     width: fit-content;
     border-radius: 0.5rem;
     line-height: 1.65;
+}
+
+.flexify-coupon-notice {
+    display: block;
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    width: fit-content;
+    border-radius: 0.5rem;
+    line-height: 1.65;
+}
+
+.flexify-coupon-notice.error {
+    color: #d73d3d;
+    background-color: #fdecec;
+}
+
+.flexify-coupon-notice.success {
+    color: #22c55e;
+    background-color: rgba(34, 197, 94, 0.1);
 }
 
 .form-row.woocommerce-invalid .error {
@@ -2729,6 +2749,7 @@ input[type="checkbox"]:checked:focus:before {
 #shipping_method .shipping-method-details .amount {
     font-size: 1.075rem !important;
     line-height: 1.5;
+    color: #fff;
 }
 
 #shipping_method .shipping-method-details > p {

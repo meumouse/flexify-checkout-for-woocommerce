@@ -2,6 +2,8 @@
 
 namespace MeuMouse\Flexify_Checkout\Core;
 
+use MeuMouse\Flexify_Checkout\Admin\Admin_Options;
+
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
 
@@ -9,7 +11,7 @@ defined('ABSPATH') || exit;
  * Init class plugin
  * 
  * @since 5.0.0
- * @version 5.0.2
+ * @version 5.1.0
  * @package MeuMouse.com
  */
 class Init {
@@ -145,8 +147,23 @@ class Init {
      * @return void
      */
     public function register_hooks() {
-        register_activation_hook( $this->plugin_file, array( $this, 'clear_wc_template_cache' ) );
-	    register_deactivation_hook( $this->plugin_file, array( $this, 'clear_wc_template_cache' ) );
+        register_activation_hook( $this->plugin_file, array( $this, 'activate_plugin' ) );
+        register_deactivation_hook( $this->plugin_file, array( $this, 'clear_wc_template_cache' ) );
+    }
+
+
+    /**
+     * Run tasks on plugin activation
+     *
+     * @since 5.1.0
+     * @return void
+     */
+    public function activate_plugin() {
+        $admin_options = new Admin_Options();
+        $admin_options->set_default_options();
+        $admin_options->set_checkout_step_fields();
+
+        $this->clear_wc_template_cache();
     }
 
 
