@@ -9,7 +9,7 @@ defined('ABSPATH') || exit;
  * Create conditions for checkout components
  *
  * @since 3.5.0
- * @version 5.0.0
+ * @version 5.1.0
  * @package MeuMouse.com
  */
 class Conditions {
@@ -18,6 +18,7 @@ class Conditions {
      * Construct function
      * 
      * @since 3.5.0
+     * @version 5.1.0
      * @return void
      */
     public function __construct() {
@@ -29,6 +30,9 @@ class Conditions {
 
         // Conditions for shipping methods
         add_filter( 'woocommerce_package_rates', array( $this, 'shipping_methods_conditions' ), 10, 2 );
+
+        // Validate fields with conditions
+        add_action( 'woocommerce_after_checkout_validation', array( $this, 'validate_fields' ), 10, 2 );
     }
 
 
@@ -541,5 +545,46 @@ class Conditions {
         }
 
         return false;
+    }
+
+
+    /**
+     * Validate checkout fields based on conditions
+     *
+     * @since 5.1.0
+     * @param array $data | Posted checkout data
+     * @param object $errors | Validation errors
+     * @return void
+     */
+    public function validate_fields( $data, $errors ) {
+        $field_conditions = self::filter_component_type('field');
+
+        if ( ! is_flexify_checkout() || empty( $field_conditions ) ) {
+            return;
+        }
+
+        error_log( 'Data: ' . print_r( $data, true ) );
+        error_log( 'Conditions: ' . print_r( $field_conditions, true ) );
+
+        foreach ( $field_conditions as $condition_value ) {
+            $field_key = $condition_value['component_field'];
+            $rules = isset( $condition_value['rules'] ) ? $condition_value['rules'] : array();
+
+            foreach ( $rules as $rule ) {
+                $condition = isset( $rule['condition'] ) ? $rule['condition'] : '';
+                $field_id = isset( $rule['verification_condition_field'] ) ? $rule['verification_condition_field'] : '';
+                $value = isset( $rule['condition_value'] ) ? $rule['condition_value'] : '';
+
+                if ( $condition_value['type_rule'] === 'show' ) {
+                    if ( ! self::check_fields_conditions( $condition, $field_id, $value ) ) {
+                        $errors->remove( "{$field_key}_required" );
+                    }
+                } elseif ( $condition_value['type_rule'] === 'hide' ) {
+                    if ( self::check_fields_conditions( $condition, $field_id, $value ) ) {
+                        $errors->remove( "{$field_key}_required" );
+                    }
+                }
+            }
+        }
     }
 }
