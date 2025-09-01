@@ -488,28 +488,20 @@ class Conditions {
      * Check checkout fields conditions
      * 
      * @since 3.5.0
+     * @version 5.1.0
      * @param string $condition | Get condition type
      * @param string $field | Field ID to check condition
      * @param string $value | Field value to check
      * @return bool
      */
     public static function check_fields_conditions( $condition, $field, $value ) {
-        // Get fields from the session and ensure it is an array
-        $get_fields = WC()->session->get('flexify_checkout_customer_fields');
+        $field_value = filter_input( INPUT_POST, $field, FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 
-        // Ensure $get_fields is an array
-        if ( ! is_array( $get_fields ) ) {
-            return false;
+        if ( is_null( $field_value ) ) {
+            $field_value = '';
         }
 
-        // iterate for each billing field from target session
-        foreach ( $get_fields as $field_id => $field_value ) {
-            if ( $field_id === $field && self::check_condition( $condition, $field_value, $value ) ) {
-                return true;
-            }
-        }
-
-        return false;
+        return self::check_condition( $condition, $field_value, $value );
     }
 
 
@@ -563,26 +555,44 @@ class Conditions {
             return;
         }
 
-        error_log( 'Data: ' . print_r( $data, true ) );
-        error_log( 'Conditions: ' . print_r( $field_conditions, true ) );
+        // helper to remove any errors associated with a field_id, regardless of the code
+        $remove_field_errors = function( $errors_obj, $field_id ) {
+            $errors_obj->remove("{$field_id}_required");
 
-        foreach ( $field_conditions as $condition_value ) {
-            $field_key = $condition_value['component_field'];
-            $rules = isset( $condition_value['rules'] ) ? $condition_value['rules'] : array();
+            foreach ( (array) $errors_obj->get_error_codes() as $code ) {
+                $data_arg = $errors_obj->get_error_data( $code );
+                
+                if ( is_array( $data_arg ) && isset( $data_arg['id'] ) && $data_arg['id'] === $field_id ) {
+                    $errors_obj->remove( $code );
+                }
+            }
+        };
 
-            foreach ( $rules as $rule ) {
-                $condition = isset( $rule['condition'] ) ? $rule['condition'] : '';
-                $field_id = isset( $rule['verification_condition_field'] ) ? $rule['verification_condition_field'] : '';
-                $value = isset( $rule['condition_value'] ) ? $rule['condition_value'] : '';
+        foreach ( $field_conditions as $cond ) {
+            $field_key = isset( $cond['component_field'] ) ? $cond['component_field'] : '';
+            $type_rule = isset( $cond['type_rule'] ) ? $cond['type_rule'] : 'none';
+            $check_type = isset( $cond['verification_condition'] ) ? $cond['verification_condition'] : 'none'; // ex.: 'field'
+            $check_field = isset( $cond['verification_condition_field'] ) ? $cond['verification_condition_field'] : '';
+            $operator = isset( $cond['condition'] ) ? $cond['condition'] : '';
+            $expected = isset( $cond['condition_value'] ) ? $cond['condition_value'] : '';
 
-                if ( $condition_value['type_rule'] === 'show' ) {
-                    if ( ! self::check_fields_conditions( $condition, $field_id, $value ) ) {
-                        $errors->remove( "{$field_key}_required" );
-                    }
-                } elseif ( $condition_value['type_rule'] === 'hide' ) {
-                    if ( self::check_fields_conditions( $condition, $field_id, $value ) ) {
-                        $errors->remove( "{$field_key}_required" );
-                    }
+            if ( ! $field_key || $check_type !== 'field' || ! $check_field ) {
+                continue;
+            }
+
+            // current value from the conditional field (from the received POST)
+            $posted_value = isset( $data[ $check_field ] ) ? (string) $data[ $check_field ] : '';
+            $condition_met = self::check_condition( $operator, $posted_value, (string) $expected );
+
+            // - type_rule = 'show' => field is only valid when condition_met = true; if false, we treat it as hidden -> do not require
+            // - type_rule = 'hide' => field is valid when condition_met = false; if true, it is hidden -> do not require
+            $should_hide = ( $type_rule === 'show' && ! $condition_met ) || ( $type_rule === 'hide' && $condition_met );
+
+            if ( $should_hide ) {
+                $remove_field_errors( $errors, $field_key );
+
+                if ( isset( $data[ $field_key ] ) ) {
+                    $data[ $field_key ] = '';
                 }
             }
         }
