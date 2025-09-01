@@ -161,7 +161,7 @@ class Flexify_Checkout {
 			'FLEXIFY_CHECKOUT_VERSION' => self::$version,
 			'FLEXIFY_CHECKOUT_ADMIN_EMAIL' => get_option('admin_email'),
 			'FLEXIFY_CHECKOUT_DOCS_LINK' => 'https://ajuda.meumouse.com/docs/flexify-checkout-for-woocommerce/overview',
-			'FLEXIFY_CHECKOUT_DEBUG_MODE' => true,
+			'FLEXIFY_CHECKOUT_DEBUG_MODE' => false,
 		);
 
 		// iterate for each constant item

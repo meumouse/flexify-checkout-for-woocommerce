@@ -14,6 +14,7 @@ defined('ABSPATH') || exit;
  * Class for handle checkout fields
  *
  * @since 5.0.0
+ * @version 5.1.0
  * @package MeuMouse.com
  */
 class Fields {
@@ -1078,13 +1079,6 @@ class Fields {
 			$args = filter_input( INPUT_POST, 'args', FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_REQUIRE_ARRAY );
 			$value = filter_input( INPUT_POST, 'value', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 			$country = filter_input( INPUT_POST, 'country', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
-
-			$session_data = WC()->session->get( 'flexify_checkout_customer_fields', array() );
-			
-			if ( $key ) {
-				$session_data[ $key ] = $value;
-				WC()->session->set( 'flexify_checkout_customer_fields', $session_data );
-			}
 		}
 
 		$message = '';
@@ -1092,28 +1086,7 @@ class Fields {
 		$global_message = false;
 		$custom = false;
 
-		$classes = isset( $args['class'] ) && is_array( $args['class'] ) ? $args['class'] : array_filter( explode( ' ', (string) $args['class'] ) );
-		$is_required = in_array( 'required-field', $classes, true ) && (bool) $args['required'];
-
-		if ( in_array( 'has-condition', $classes, true ) ) {
-			$field_conditions = Conditions::filter_component_type('field');
-
-			if ( ! empty( $field_conditions ) ) {
-				foreach ( $field_conditions as $condition_value ) {
-					if ( isset( $condition_value['component_field'] ) && $condition_value['component_field'] === $key ) {
-						$condition_compare = isset( $condition_value['condition_value'] ) ? $condition_value['condition_value'] : '';
-						$condition_met = Conditions::check_fields_conditions( $condition_value['condition'], $condition_value['verification_condition_field'], $condition_compare );
-						$should_hide = ( 'hide' === $condition_value['type_rule'] && $condition_met ) || ( 'show' === $condition_value['type_rule'] && ! $condition_met );
-
-						if ( $should_hide ) {
-							$is_required = false;
-						}
-					}
-				}
-			}
-		}
-
-		if ( $is_required ) {
+		if ( (bool) $args['required'] || $args['class'] === 'required-field' ) {
 			$message = sprintf( __( '%s é um campo obrigatório.', 'flexify-checkout-for-woocommerce' ), esc_html( $args['label'] ) );
 
 			/**
@@ -1129,7 +1102,7 @@ class Fields {
 		}
 
 		// is required field
-		if ( $is_required && $value ) {
+		if ( (bool) $args['required'] && $value ) {
 			if ( 'country' === $args['type'] && property_exists( WC()->countries, 'country_exists' ) && WC()->countries && ! WC()->countries->country_exists( $value ) ) {
 				/* translators: ISO 3166-1 alpha-2 country code */
 				$message = sprintf( __( "'%s' não é um código de país válido.", 'flexify-checkout-for-woocommerce' ), esc_html( $args['label'] ) );

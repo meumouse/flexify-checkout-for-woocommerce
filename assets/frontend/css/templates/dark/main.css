@@ -471,6 +471,7 @@ form.woocommerce-checkout
     padding: 1rem 1.225rem;
     position: relative;
     line-height: 2;
+    outline: none;
 }
 
 .woocommerce-error:after,
