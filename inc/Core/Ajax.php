@@ -15,7 +15,7 @@ defined('ABSPATH') || exit;
  * Class for handle AJAX events
  *
  * @since 1.0.0
- * @version 5.1.0
+ * @version 5.1.1
  * @package MeuMouse.com
  */
 class Ajax {
@@ -1047,7 +1047,7 @@ class Ajax {
      * Reset plugin options to default on AJAX callback
      * 
      * @since 3.8.0
-	 * @version 5.1.0
+	 * @version 5.1.1
      * @return void
      */
     public function reset_plugin_callback() {
@@ -1061,6 +1061,10 @@ class Ajax {
 				delete_transient('flexify_checkout_api_request_cache');
 				delete_transient('flexify_checkout_api_response_cache');
 				delete_transient('flexify_checkout_license_status_cached');
+
+				// set default options again
+				( new Admin_Options() )->set_default_options();
+				( new Admin_Options() )->set_checkout_step_fields();
 
                 $response = array(
                     'status' => 'success',

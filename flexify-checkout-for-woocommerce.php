@@ -7,7 +7,7 @@
  * Requires Plugins: 		woocommerce
  * Author: 					MeuMouse.com
  * Author URI: 				https://meumouse.com/?utm_source=wordpress&utm_medium=plugins_list&utm_campaign=flexify_checkout
- * Version: 				5.1.0
+ * Version: 				5.1.1
  * WC requires at least: 	6.0.0
  * WC tested up to: 		10.1.2
  * Requires PHP: 			7.4
@@ -59,7 +59,7 @@ class Flexify_Checkout {
 	 * @since 1.0.0
 	 * @var string
 	 */
-	public static $version = '5.1.0';
+	public static $version = '5.1.1';
 
 	/**
 	 * Plugin initiated
@@ -92,12 +92,12 @@ class Flexify_Checkout {
      * Setup WooCommerce High-Performance Order Storage (HPOS) compatibility
      * 
      * @since 1.0.0
-     * @version 5.1.0
+     * @version 5.1.1
      * @return void
      */
     public function declare_woo_compatibility() {
         if ( defined('WC_VERSION') && version_compare( WC_VERSION, '7.1', '>' ) ) {
-			if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
+			if ( class_exists( FeaturesUtil::class ) ) {
 				/**
 				 * Setup compatibility with HPOS/Custom order table feature of WooCommerce
 				 * 
@@ -161,7 +161,7 @@ class Flexify_Checkout {
 			'FLEXIFY_CHECKOUT_VERSION' => self::$version,
 			'FLEXIFY_CHECKOUT_ADMIN_EMAIL' => get_option('admin_email'),
 			'FLEXIFY_CHECKOUT_DOCS_LINK' => 'https://ajuda.meumouse.com/docs/flexify-checkout-for-woocommerce/overview',
-			'FLEXIFY_CHECKOUT_DEBUG_MODE' => false,
+			'FLEXIFY_CHECKOUT_DEBUG_MODE' => true,
 		);
 
 		// iterate for each constant item
