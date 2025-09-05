@@ -205,7 +205,7 @@ class Ajax {
 	 * Save options in AJAX
 	 * 
 	 * @since 1.0.0
-	 * @version 5.1.0
+	 * @version 5.1.1
 	 * @return void
 	 */
 	public function ajax_save_options_callback() {
@@ -213,7 +213,11 @@ class Ajax {
 			// Convert serialized data into an array
 			parse_str( $_POST['form_data'], $form_data );
 
-			$options = get_option('flexify_checkout_settings');
+			$options = get_option( 'flexify_checkout_settings', array() );
+
+			if ( ! is_array( $options ) ) {
+				$options = array();
+			}
 			
 			$basic_fields = array(
 				'enable_flexify_checkout',

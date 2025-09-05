@@ -5124,3 +5124,7 @@ p.form-row.flexify-checkout-loading-placeholder > label {
     font-weight: 400;
     color: #6C757D;
 }
+
+#order_comments {
+    resize: vertical;
+}

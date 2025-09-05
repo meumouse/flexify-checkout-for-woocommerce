@@ -1,3 +1,8 @@
+Versão 5.1.1 (05/09/2025)
+* Correção de bugs
+* Otimizações
+* Recurso adicionado: Modo depuração
+
 Versão 5.1.0 (31/08/2025)
 * Correção de bugs
   - Loop infinito no checkout com plugin Virtuaria Correios

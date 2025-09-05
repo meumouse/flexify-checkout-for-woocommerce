@@ -5210,3 +5210,7 @@ p.form-row.flexify-checkout-loading-placeholder > label {
 .mp-terms-and-conditions-text {
     color: #E9ECEF !important;
 }
+
+#order_comments {
+    resize: vertical;
+}
