@@ -9,6 +9,7 @@ defined('ABSPATH') || exit;
  * Set default options
  * 
  * @since 5.0.0
+ * @version 5.1.1
  * @package MeuMouse.com
  */
 class Default_Options {
@@ -17,7 +18,7 @@ class Default_Options {
      * Set default options
      * 
      * @since 1.0.0
-     * @version 5.0.0
+     * @version 5.1.1
      * @return array
      */
     public function set_default_data_options() {
@@ -147,6 +148,7 @@ class Default_Options {
             'render_coupon_field_hook' => 'sidebar',
             'hide_header_stepper_buttons' => 'no',
             'auto_display_login_modal' => 'yes',
+            'enable_debug_mode' => 'no',
         ));
     }
 

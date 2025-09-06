@@ -57,6 +57,9 @@ class Init {
         // load text domain
         load_plugin_textdomain( 'flexify-checkout-for-woocommerce', false, dirname( $this->basename ) . '/languages/' );
 
+        // enable debug mode
+        define( 'FLEXIFY_CHECKOUT_DEBUG_MODE', Admin_Options::get_setting('enable_debug_mode') === 'yes' ? true : false );
+
 		// load plugin functions
 		include_once( FLEXIFY_CHECKOUT_INC_PATH . 'Core/Functions.php' );
 

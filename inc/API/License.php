@@ -9,7 +9,7 @@ defined('ABSPATH') || exit;
  * Connect to license authentication server
  * 
  * @since 1.0.0
- * @version 5.0.0
+ * @version 5.1.1
  * @package MeuMouse.com
  */
 class License {
@@ -37,7 +37,7 @@ class License {
      * Construct function
      * 
      * @since 1.0.0
-     * @since 3.8.0
+     * @since 5.1.1
      * @param string $plugin_base_file
      * @return void
      */
@@ -68,6 +68,21 @@ class License {
 
         // alternative activation process
         add_action( 'admin_init', array( $this, 'alternative_activation_process' ) );
+
+        // deactive license on expire time
+        add_action( 'Flexify_Checkout/License/Check_Expires_Time', array( $this, 'check_license_expires_time' ) );
+
+        // register schedule event first time
+        if ( ! get_option('flexify_checkout_schedule_expiration_check_runned') ) {
+            add_action( 'admin_init', array( __CLASS__, 'schedule_license_expiration_check' ) );
+        }
+
+        // set logger source
+    //    Logger::set_logger_source( 'woo-custom-installments-license', false );
+
+        if ( get_option('flexify_checkout_license_expired') ) {
+            add_action( 'admin_notices', array( $this, 'license_expired_notice' ) );
+        }
 
         // display require license modal before activated
         add_action( 'Flexify_Checkout/Settings/Header', array( $this, 'display_modal_license_require' ) );
@@ -1010,6 +1025,22 @@ class License {
 
 
     /**
+	 * Display admin notice when license is expired
+	 * 
+	 * @since 5.1.1
+	 * @return void
+	 */
+    public function license_expired_notice() {
+        if ( self::expired_license() ) {
+			$class = 'notice notice-error is-dismissible';
+			$message = __( 'Sua licença do <strong>Flexify Checkout</strong> expirou, realize a renovação para continuar aproveitando os recursos Pro.', 'flexify-checkout-for-woocommerce' );
+
+			printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), $message );
+		}
+    }
+
+
+    /**
      * Display modal for require license when is not Pro
      * 
      * @since 3.8.0
@@ -1040,6 +1071,117 @@ class License {
                 </div>
             </div>
         <?php endif;
+    }
+
+
+    /**
+     * Check expiration license on schedule event
+     * 
+     * @since 5.1.1
+     * @return void
+     */
+    public static function schedule_license_expiration_check( $expiration_timestamp = 0 ) {
+        // Cancel any previous bookings to avoid duplication
+        wp_clear_scheduled_hook('Flexify_Checkout/License/Check_Expires_Time');
+
+        if ( $expiration_timestamp > 0 ) {
+            if ( $expiration_timestamp > time() ) {
+                // Add 3 days to timestamp
+                $expiration_timestamp += 3 * DAY_IN_SECONDS;
+
+                // Schedule event to expire at exactly the right time
+                wp_schedule_single_event( $expiration_timestamp, 'Flexify_Checkout/License/Check_Expires_Time' );
+            }
+        } else {
+            $info = get_option('flexify_checkout_license_info');
+
+            if ( is_object( $info ) && ! empty( $info->expiry_time ) ) {
+                $expiration_timestamp = strtotime( $info->expiry_time );
+            } else {
+                $object_query = get_option('flexify_checkout_license_response_object');
+
+                if ( is_object( $object_query ) && ! empty( $object_query->expire_date ) ) {
+                    $expiration_timestamp = strtotime( $object_query->expire_date );
+                }
+            }
+
+            if ( ! empty( $expiration_timestamp ) && $expiration_timestamp > time() ) {
+                // Add 3 days to timestamp
+                $expiration_timestamp += 3 * DAY_IN_SECONDS;
+
+                // Schedule event to expire at exactly the right time
+                wp_schedule_single_event( $expiration_timestamp, 'Flexify_Checkout/License/Check_Expires_Time' );
+            }
+        }
+
+        // register runned event
+        update_option( 'flexify_checkout_schedule_expiration_check_runned', true );
+    }
+
+
+    /**
+     * Deactivate license on scheduled event
+     * 
+     * @since 5.1.1
+     * @return void
+     */
+    public function check_license_expires_time() {
+        $license_key = get_option('flexify_checkout_license_key');
+        $api_expiry_time = $this->get_expires_time( $license_key );
+
+        if ( $api_expiry_time ) {
+            $expiration_timestamp = strtotime( $api_expiry_time );
+
+            // license expired
+            if ( $expiration_timestamp < time() ) {
+                update_option( 'flexify_checkout_license_expired', true );
+                $message = '';
+
+                self::deactive_license( FLEXIFY_CHECKOUT_FILE, $message );
+            } else {
+                self::schedule_license_expiration_check( $expiration_timestamp );
+            }
+        }
+    }
+
+
+    /**
+     * Get license expires time
+     * 
+     * @since 5.1.1
+     * @param string $license_key | License key
+     * @return array
+     */
+    public function get_expires_time( $license_key ) {
+        $api_url = $this->server_host . 'license/view';
+
+        $response = wp_remote_post( $api_url, array(
+            'headers' => array(
+                'Content-Type' => 'application/x-www-form-urlencoded',
+            ),
+            'body' => array(
+                'api_key' => '41391199-FE02BDAA-3E8E3920-CDACDE2F',
+                'license_code' => $license_key
+            ),
+            'timeout' => 30,
+        ));
+
+        if ( is_wp_error( $response ) ) {
+            Logger::register_log( 'Error getting license expiration time: ' . $response->get_error_message(), 'ERROR' );
+
+            return false;
+        }
+
+        $response_body = wp_remote_retrieve_body( $response );
+        $decoded_response = json_decode( $response_body, true );
+
+        // check if response is valid
+        if ( ! is_array( $decoded_response ) || empty( $decoded_response['data']['expiry_time'] ) ) {
+            Logger::register_log( 'Invalid response from license API: ' . print_r( $decoded_response, true ), 'ERROR' );
+            return false;
+        }
+
+        return $decoded_response['data']['expiry_time'];
     }
 
 
