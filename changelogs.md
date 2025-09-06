@@ -1,4 +1,4 @@
-Versão 5.1.1 (05/09/2025)
+Versão 5.1.1 (06/09/2025)
 * Correção de bugs
 * Otimizações
 * Recurso adicionado: Ativar modo depuração

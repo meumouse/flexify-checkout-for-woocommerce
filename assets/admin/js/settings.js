@@ -984,7 +984,7 @@
          * Pre-license actions: disable .pro-version and redirect to About
          * 
          * @since 3.0.0
-         * @version 5.1.0
+         * @version 5.1.1
          */
         preLicenseActions: function() {
             $('.pro-version').prop('disabled', true);
@@ -992,7 +992,11 @@
             $(document).on('click', '#active_license_form', function() {
                 $('#popup-pro-notice').removeClass('show');
                 $('.flexify-checkout-wrapper a.nav-tab[href="#about"]').click();
-                window.scrollTo(0, 0);
+                
+                // scroll at the license form view
+				$('html, body').animate({
+					scrollTop: $('#enable_auto_updates').offset().top
+				}, 300);
             });
         },
 
@@ -1624,13 +1628,14 @@
 					success: function(response) {
 						try {
 							if ( response.status === 'success' ) {
-                                License.displayToast( 'success', response.toast_header_title, response.toast_body_title );
+                                btn.prop('disabled', true).html(btn_state.html);
+                                Flexify_Checkout_Admin.displayToast( 'success', response.toast_header_title, response.toast_body_title );
 
                                 setTimeout( function() {
                                     location.reload();
                                 }, 1000);
 							} else {
-                                License.displayToast( 'error', response.toast_header_title, response.toast_body_title );
+                                Flexify_Checkout_Admin.displayToast( 'error', response.toast_header_title, response.toast_body_title );
 							}
 						} catch (error) {
 							console.log(error);
@@ -1677,6 +1682,7 @@
                     success: function(response) {
                         try {
                             if ( response.status === 'success' ) {
+                                btn.prop('disabled', true).html(btn_state.html);
                                 Flexify_Checkout_Admin.displayToast( 'success', response.toast_header_title, response.toast_body_title );
 
                                 setTimeout( function() {
@@ -1689,7 +1695,7 @@
                             console.log(error);
                         }
                     },
-                    complete: function() {
+                    error: function() {
                         btn.prop('disabled', false).html(btn_state.html);
                     },
                 });

@@ -1461,7 +1461,7 @@ class Ajax {
             update_option( 'flexify_checkout_temp_license_key', $license_key ) || add_option('flexify_checkout_temp_license_key', $license_key );
     
             // Check on the server if the license is valid and update responses and options
-            if ( License::check_license( $license_key, $this->license_message, $this->response_obj, $this->plugin_file ) ) {
+            if ( License::check_license( $license_key, $this->license_message, $this->response_obj, FLEXIFY_CHECKOUT_FILE ) ) {
                 if ( $this->response_obj && $this->response_obj->is_valid ) {
                     update_option( 'flexify_checkout_license_status', 'valid' );
                     delete_option('flexify_checkout_temp_license_key');
