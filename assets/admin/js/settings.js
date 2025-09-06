@@ -1171,7 +1171,7 @@
          * Handle checkout conditions
          * 
          * @since 3.5.0
-         * @version 5.1.0
+         * @version 5.1.1
          */
         handleConditions: function() {
             /**
@@ -1203,6 +1203,7 @@
              * Build FormData fresh from DOM
              *
              * @since 5.1.0
+             * @version 5.1.1
              * @returns {FormData}
              */
             const buildPayload = () => {
@@ -1215,8 +1216,15 @@
                 fd.set('component_field', val(S.component_field));
                 fd.set('verification_condition', val(S.verification_condition));
                 fd.set('verification_condition_field', val(S.verification_condition_field));
-                fd.set('condition', val(S.condition));
-                fd.set('condition_value', $(S.condition_value).val() || '');
+
+                const condType = val(S.condition);
+                fd.set('condition', condType);
+
+                if ( ['checked', 'not_checked'].includes(condType) ) {
+                    fd.set('condition_value', '' );
+                } else {
+                    fd.set('condition_value', $(S.condition_value).val() || '' );
+                }
 
                 // specifics
                 fd.set('payment_method', val(S.payment));
@@ -1431,6 +1439,33 @@
 
             // when changing the product filter, update the button state
             $(document).off('change', S.product_filter).on('change', S.product_filter, toggleSubmit);
+
+            const allConditionOptions = $(S.condition).find('option').clone();
+
+            $(document).on('change', S.verification_condition_field, function() {
+                const type = $(this).find('option:selected').data('type');
+                const $cond = $(S.condition);
+                $cond.html(allConditionOptions.clone());
+
+                if ( type === 'checkbox' ) {
+                    $cond.find('option').each(function() {
+                        const val = $(this).val();
+                        if ( ! ['none', 'checked', 'not_checked'].includes(val) ) {
+                            $(this).remove();
+                        }
+                    });
+                }
+
+                $cond.val('none').trigger('change');
+            });
+
+            $(document).on('change', S.verification_condition, function() {
+                if ( $(this).val() !== 'field' ) {
+                    $(S.condition).html(allConditionOptions.clone()).val('none').trigger('change');
+                } else {
+                    $(S.verification_condition_field).trigger('change');
+                }
+            });
 
             // searching with debounce
             bindSearch( S.product_input, S.products_box, 'get_woo_products_ajax', 'product-id', specificProducts );

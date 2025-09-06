@@ -77,6 +77,8 @@ defined('ABSPATH') || exit; ?>
                                         'finish_with' => esc_html__( 'Termina com', 'flexify-checkout-for-woocommerce' ),
                                         'bigger_then' => esc_html__( 'Maior que', 'flexify-checkout-for-woocommerce' ),
                                         'less_than' => esc_html__( 'Menor que', 'flexify-checkout-for-woocommerce' ),
+                                        'checked' => esc_html__( 'Marcado', 'flexify-checkout-for-woocommerce' ),
+                                        'not_checked' => esc_html__( 'Desmarcado', 'flexify-checkout-for-woocommerce' ),
                                     );
                                     
                                     $condition_value = isset( $value['condition_value'] ) ? $value['condition_value'] : ''; ?>
@@ -152,7 +154,7 @@ defined('ABSPATH') || exit; ?>
                                             <option value="none"><?php esc_html_e( 'Selecione um campo do checkout', 'flexify-checkout-for-woocommerce' ) ?></option>
                                             
                                             <?php foreach ( $get_fields['billing'] as $field => $value ) : ?>
-                                                <option value="<?php echo esc_attr( $field ) ?>"><?php echo isset( $value['label'] ) ? esc_html( $value['label'] ) : '' ?></option>
+                                                <option value="<?php echo esc_attr( $field ) ?>" data-type="<?php echo isset( $value['type'] ) ? esc_attr( $value['type'] ) : '' ?>"><?php echo isset( $value['label'] ) ? esc_html( $value['label'] ) : '' ?></option>
                                             <?php endforeach; ?>
                                         </select>
                                     </div>
@@ -207,7 +209,7 @@ defined('ABSPATH') || exit; ?>
                                             <option value="none"><?php esc_html_e( 'Selecione um campo do checkout', 'flexify-checkout-for-woocommerce' ) ?></option>
                                             
                                             <?php foreach ( $get_fields['billing'] as $field => $value ) : ?>
-                                                <option value="<?php echo esc_attr( $field ) ?>"><?php echo isset( $value['label'] ) ? esc_html( $value['label'] ) : '' ?></option>
+                                                <option value="<?php echo esc_attr( $field ) ?>" data-type="<?php echo isset( $value['type'] ) ? esc_attr( $value['type'] ) : '' ?>"><?php echo isset( $value['label'] ) ? esc_html( $value['label'] ) : '' ?></option>
                                             <?php endforeach; ?>
                                         </select>
                                     </div>
@@ -227,6 +229,8 @@ defined('ABSPATH') || exit; ?>
                                             <option value="finish_with"><?php esc_html_e( 'Termina com', 'flexify-checkout-for-woocommerce' ) ?></option>
                                             <option value="bigger_then"><?php esc_html_e( 'Maior que', 'flexify-checkout-for-woocommerce' ) ?></option>
                                             <option value="less_than"><?php esc_html_e( 'Menor que', 'flexify-checkout-for-woocommerce' ) ?></option>
+                                            <option value="checked"><?php esc_html_e( 'Marcado', 'flexify-checkout-for-woocommerce' ) ?></option>
+                                            <option value="not_checked"><?php esc_html_e( 'Desmarcado', 'flexify-checkout-for-woocommerce' ) ?></option>
                                         </select>
                                     </div>
 

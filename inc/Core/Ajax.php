@@ -735,7 +735,7 @@ class Ajax {
 	 * Add new condition AJAX callback
 	 * 
 	 * @since 3.5.0
-	 * @version 3.8.0
+	 * @version 5.1.1
 	 * @return void
 	 */
 	public function add_new_checkout_condition_callback() {
@@ -823,6 +823,8 @@ class Ajax {
 					'finish_with' => esc_html__( 'Termina com', 'flexify-checkout-for-woocommerce' ),
 					'bigger_then' => esc_html__( 'Maior que', 'flexify-checkout-for-woocommerce' ),
 					'less_than' => esc_html__( 'Menor que', 'flexify-checkout-for-woocommerce' ),
+					'checked' => esc_html__( 'Marcado', 'flexify-checkout-for-woocommerce' ),
+					'not_checked' => esc_html__( 'Desmarcado', 'flexify-checkout-for-woocommerce' ),
 				);
 				
 				$condition_value = isset( $form_condition['condition_value'] ) ? $form_condition['condition_value'] : '';
