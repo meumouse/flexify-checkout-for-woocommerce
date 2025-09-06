@@ -569,6 +569,7 @@ textarea.form-control:focus {
     display: block;
     width: 100%;
     min-width: 20rem;
+    max-width: -webkit-fill-available !important;
     padding: 0.825rem 3rem 0.825rem 1rem !important;
     -moz-padding-start: calc(1rem - 3px);
     font-size: 0.875rem !important;

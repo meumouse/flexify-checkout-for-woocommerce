@@ -334,8 +334,14 @@ class Default_Options {
                 'enabled' => 'yes',
                 'step' => '1',
                 'options' => array(
-                    '1' => esc_html__( 'Pessoa Física (CPF)', 'flexify-checkout-for-woocommerce' ),
-                    '2' => esc_html__( 'Pessoa Jurífica (CNPJ)', 'flexify-checkout-for-woocommerce' ),
+                    array(
+                        'value' => '1',
+                        'text' => esc_html__( 'Pessoa Física (CPF)', 'flexify-checkout-for-woocommerce' ),
+                    ),
+                    array(
+                        'value' => '2',
+                        'text' => esc_html__( 'Pessoa Jurífica (CNPJ)', 'flexify-checkout-for-woocommerce' ),
+                    ),
                 ),
             ),
             'billing_cpf' => array(
