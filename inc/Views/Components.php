@@ -300,7 +300,7 @@ class Components {
 	 * Render new fields table form
 	 * 
 	 * @since 3.0.0
-	 * @version 5.0.0
+	 * @version 5.1.1
 	 * @return string
 	 */
 	public static function add_new_fields_form() {
@@ -341,6 +341,7 @@ class Components {
 							<option value="phone"><?php echo esc_html__( 'Telefone', 'flexify-checkout-for-woocommerce' ) ?></option>
 							<option value="url"><?php echo esc_html__( 'URL', 'flexify-checkout-for-woocommerce' ) ?></option>
 							<option value="select"><?php echo esc_html__( 'Seletor/Lista suspensa', 'flexify-checkout-for-woocommerce' ) ?></option>
+							<option value="checkbox"><?php echo esc_html__( 'Caixa de seleção', 'flexify-checkout-for-woocommerce' ) ?></option>
 						</select>
 					</td>
 				</tr>

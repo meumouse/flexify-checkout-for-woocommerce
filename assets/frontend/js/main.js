@@ -2659,6 +2659,7 @@
 			 * Toggle visibility and validation classes on a field row
 			 *
 			 * @since 5.0.0
+			 * @version 5.1.1
 			 * @param {string} selector | jQuery selector for the input
 			 * @param {boolean} show | true to show, false to hide
 			 * @param {boolean} required | true to set required attr, false to unset
@@ -2675,13 +2676,21 @@
 					row.removeClass('temp-hidden');
 
 					if ( addValidation ) {
-						row.addClass('validate-required required-field');
+						row.addClass('validate-required');
+					}
+
+					if ( required ) {
+						row.addClass('required-field');
 					}
 
 					row.show();
 				} else {
 					if ( addValidation ) {
-						row.removeClass('validate-required required-field');
+						row.removeClass('validate-required');
+					}
+
+					if ( required ) {
+						row.addClass('required-field');
 					}
 
 					row.addClass('temp-hidden').hide();
@@ -2906,15 +2915,10 @@
 			 * Hide Brazilian Market fields if billing country is not Brazil
 			 * 
 			 * @since 3.0.0
-			 * @version 5.1.1
+			 * @version 5.1.0
 			 * @return {void}
 			 */
 			toggleBrazilianMarketFields: function() {
-				// keep Brazilian Market on WooCommerce compatibility
-				if ( params.bmw_active === 'yes' ) {
-					return;
-				}
-
 				const country = $('#billing_country').val();
 				const selectors = [
 					'#billing_persontype_field',
@@ -3883,7 +3887,7 @@
          * Compatibility functions
          * 
          * @since 1.0.0
-         * @version 5.0.0
+         * @version 5.1.1
          */
         Compatibility: {
 
@@ -3929,37 +3933,89 @@
 			 * @return {void}
 			 */
 			updatePersonTypeFields: function() {
-				// keep Brazilian Market on WooCommerce compatibility
-				if ( params.bmw_active === 'yes' ) {
-					return;
-				}
-
 				const persontype = $('#billing_persontype');
+				let country = ($('#billing_country').val() || '').toString().toUpperCase();
 
 				// check if has person type selector
 				if ( ! persontype.length ) {
 					return;
 				}
 
-				const type = parseInt( persontype.val(), 10 );
+				// normalize person type (default to 1 if NaN)
+				const type = (function(v){
+					const n = parseInt(v, 10);
 
-				// individual (1): show CPF, hide CNPJ, IE, Company
-				Flexify_Checkout.Fields.toggleField( '#billing_cpf', type === 1, true,  true );
-				Flexify_Checkout.Fields.toggleField( '#billing_cnpj', type === 1 ? false : true, false, true ); // hide for 1, show for 2
-				Flexify_Checkout.Fields.toggleField( '#billing_ie', type === 1 ? false : true, false, true );
-				Flexify_Checkout.Fields.toggleField( '#billing_company', type === 1 ? false : true, type === 2, false );
+					return Number.isNaN(n) ? 1 : n;
+				})( persontype.val() );
+
+				const fc_fields = params.get_all_checkout_fields || {};
+
+				// normalize "only_brazil" coming from BMW settings or Flexify fallback
+				// could be "1"/1/"yes"/true. Make it boolean.
+				const only_brazil = (function(s){
+					if ( ! params.bmw_settings ) {
+						return false;
+					}
+
+					const v = params.bmw_settings.only_brazil;
+
+					return v === '1' || v === 1 || v === 'yes' || v === true;
+				})();
+
+				const isBR = country === 'BR';
+
+				/**
+				 * Determine "required" flags following BMW rules:
+				 * - if only_brazil = true  => required only when country is BR
+				 * - if only_brazil = false => required regardless of country
+				 * Also OR with the field's own "required" from field config.
+				 */
+				const requiredWhenBROrAlways = function(fieldKey) {
+					const cfgRequired = !! ( fc_fields[fieldKey]?.required === true );
+					const bmwRequired = only_brazil ? isBR : true;
+
+					return bmwRequired || cfgRequired;
+				};
+
+				// CPF / RG (PF, type === 1)
+				const required_cpf = ( type === 1 ) ? requiredWhenBROrAlways('billing_cpf') : false;
+				const required_rg = requiredWhenBROrAlways('billing_rg') || false;
+
+				// CNPJ / IE / company (PJ, type === 2)
+				const required_cnpj = ( type === 2 ) ? requiredWhenBROrAlways('billing_cnpj') : false;
+				const required_ie = requiredWhenBROrAlways('billing_ie') || false;
+				const required_company = ( type === 2 ) ? requiredWhenBROrAlways('billing_company') : false;
+
+				/**
+				 * toggleField() function:
+				 * 
+				 * First param {string} selector | jQuery selector for the input
+				 * Second param {boolean} show | true to show, false to hide
+				 * Third param {boolean} required | true to set required attr, false to unset
+				 * Fourth param {boolean} addValidation | true to add validate-required/required-field on show
+				 */
+
+				// PF
+				Flexify_Checkout.Fields.toggleField( '#billing_cpf', type === 1, required_cpf, true );
+				Flexify_Checkout.Fields.toggleField( '#billing_rg', type === 1, required_rg, false );
+
+				// PJ
+				Flexify_Checkout.Fields.toggleField( '#billing_cnpj', type === 2, required_cnpj, true );
+				Flexify_Checkout.Fields.toggleField( '#billing_ie', type === 2, required_ie, false );
+				Flexify_Checkout.Fields.toggleField( '#billing_company', type === 2, required_company, false );
 			},
 
 			/**
 			 * Bind change event and perform initial toggle on page load
 			 *
 			 * @since 5.0.0
+			 * @version 5.1.1
 			 * @return {void}
 			 */
 			initPersonTypeFields: function() {
 				const fn = this.updatePersonTypeFields.bind(this);
 
-				$(document).on('change', '#billing_persontype', fn);
+				$(document).on('change', '#billing_persontype, #billing_country', fn);
 
 				// initial state
 				fn();

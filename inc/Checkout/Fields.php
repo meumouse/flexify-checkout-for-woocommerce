@@ -110,11 +110,13 @@ class Fields {
 	 * Override checkout fields
 	 *
 	 * @since 1.0.0
-	 * @version 5.1.0
+	 * @version 5.1.1
 	 * @param array $fields | Checkout fields
 	 * @return array
 	 */
 	public static function custom_override_checkout_fields( $fields ) {
+		$fields_manager = maybe_unserialize( get_option('flexify_checkout_step_fields', array()) );
+
 		if ( empty( $fields['shipping']['shipping_address_2']['label'] ) ) {
 			$fields['shipping']['shipping_address_2']['label'] = __( 'Apartamento, suíte, unidade etc.', 'flexify-checkout-for-woocommerce' );
 		}
@@ -190,14 +192,12 @@ class Fields {
 				}
 
 				if ( 0 !== $person_type ) {
+					// 1 = PF and PJ
+					// 2 = PF only
 					if ( 1 === $person_type || 2 === $person_type ) {
 						if ( isset( $wcbcf_settings['rg'] ) ) {
 							if ( isset( $fields['billing']['billing_cpf'] ) ) {
 								$fields['billing']['billing_cpf']['class'][] = 'validate-required required-field';
-							}
-
-							if ( isset( $fields['billing']['billing_rg'] ) ) {
-								$fields['billing']['billing_rg']['class'][] = 'validate-required required-field';
 							}
 						} else {
 							if ( isset( $fields['billing']['billing_cpf'] ) ) {
@@ -206,19 +206,11 @@ class Fields {
 						}
 					}
 
+					// 1 = PF and PJ
+					// 3 = PJ only
 					if ( 1 === $person_type || 3 === $person_type ) {
-						if ( isset( $wcbcf_settings['ie'] ) ) {
-							if ( isset( $fields['billing']['billing_cnpj'] ) ) {
-								$fields['billing']['billing_cnpj']['class'][] = 'required required-field';
-							}
-
-							if ( isset( $fields['billing']['billing_ie'] ) ) {
-								$fields['billing']['billing_ie']['class'][] = 'validate-required required-field';
-							}
-						} else {
-							if ( isset( $fields['billing']['billing_cnpj'] ) ) {
-								$fields['billing']['billing_cnpj']['class'][] = 'validate-required required-field';
-							}
+						if ( isset( $fields['billing']['billing_cnpj'] ) ) {
+							$fields['billing']['billing_cnpj']['class'][] = 'validate-required required-field';
 						}
 					}
 				}
@@ -239,9 +231,7 @@ class Fields {
 
 			// if manager fields is enabled
 			if ( Admin_Options::get_setting('enable_manage_fields') === 'yes' ) {
-				$get_fields = maybe_unserialize( get_option('flexify_checkout_step_fields', array()) );
-
-				foreach ( $get_fields as $index => $value ) {
+				foreach ( $fields_manager as $index => $value ) {
 					// prevent removing country field as it may cause address error on gateways that require this field
 					if ( isset( $value['step'] ) && $value['step'] === '2' ) {
 						$fields['billing'][$index]['required'] = false;
@@ -283,7 +273,7 @@ class Fields {
 	 * Add new fields, reorder positions, and manage fields from WooCommerce checkout
 	 * 
 	 * @since 3.0.0
-	 * @version 3.9.8
+	 * @version 5.1.1
 	 * @param array $fields | Checkout fields
 	 * @return array
 	 */
@@ -460,6 +450,23 @@ class Fields {
 					$fields['billing'][$index] = array(
 						'type' => 'select',
 						'options' => $index_option,
+						'label' => $value['label'],
+						'class' => array( $value['classes'] ),
+						'clear' => true,
+						'required' => $value['required'] === 'yes' ? true : false,
+						'priority' => $value['priority'],
+					);
+
+					// field position
+					if ( isset( $value['position'] ) ) {
+						$fields['billing'][$index]['class'][] = $field_class[$value['position']];
+					}
+				}
+
+				// add new field type checkbox
+				if ( $value['type'] === 'checkbox' ) {
+					$fields['billing'][$index] = array(
+						'type' => 'checkbox',
 						'label' => $value['label'],
 						'class' => array( $value['classes'] ),
 						'clear' => true,
