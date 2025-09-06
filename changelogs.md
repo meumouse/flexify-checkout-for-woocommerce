@@ -4,6 +4,7 @@ Versão 5.1.1 (06/09/2025)
 * Otimizações
 * Recurso adicionado: Ativar modo depuração
 * Recurso removido: Ativar Flexify Checkout
+* Recurso modificado: Página de contato - Adicionado campo para definir link personalizado
 
 Versão 5.1.0 (31/08/2025)
 * Correção de bugs

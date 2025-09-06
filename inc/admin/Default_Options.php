@@ -148,6 +148,8 @@ class Default_Options {
             'hide_header_stepper_buttons' => 'no',
             'auto_display_login_modal' => 'yes',
             'enable_debug_mode' => 'no',
+            'contact_page_thankyou' => 'custom_link',
+            'contact_page_thankyou_custom_link' => home_url('/contato'),
         ));
     }
 

@@ -9,6 +9,7 @@ defined('ABSPATH') || exit;
  * Handles legacy filters for backward compatibility
  *
  * @since 5.0.0
+ * @version 5.1.1
  * @package MeuMouse.com
  */
 class Legacy_Filters {
@@ -133,6 +134,7 @@ class Legacy_Filters {
 	 * Return legacy filters to their new equivalents
 	 *
 	 * @since 5.0.0
+	 * @version 5.1.1
 	 * @return array
 	 */
 	protected static function get_legacy_filters() {
@@ -216,6 +218,10 @@ class Legacy_Filters {
 			'flexify_checkout_mobile_order_summary_open' => array(
 				'new_filter' => 'Flexify_Checkout/Checkout/Mobile_Order_Summary_Open',
 				'version' => '5.0.0',
+			),
+			'flexify_checkout_contact_permalink_thankyou' => array(
+				'new_filter' => 'Flexify_Checkout/Thankyou/Contact_Link',
+				'version' => '5.1.1',
 			),
 		);
 	}

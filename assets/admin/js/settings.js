@@ -178,7 +178,7 @@
 		 * Generic visibility controllers (checkboxes, selects, arrays, maps)
 		 * 
 		 * @since 1.0.0
-		 * @version 5.1.0
+		 * @version 5.1.1
 		 */
 		setupVisibilityControllers: function() {
 
@@ -286,6 +286,11 @@
 				'is', 'is_not', 'contains', 'not_contain', 
 				'start_with', 'finish_with', 'bigger_then', 'less_than'
 			], '.condition-value');
+
+            // display input for custom link on contact page for thankyou page
+            attach('#contact_page_thankyou', {
+				'custom_link': '.require-custom-link-enabled',
+			});
 		},
 
         /**
