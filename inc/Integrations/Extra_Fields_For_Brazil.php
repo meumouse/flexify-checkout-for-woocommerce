@@ -59,6 +59,8 @@ if ( class_exists('Extra_Checkout_Fields_For_Brazil') ) {
         public function bmw_param_settings( $params ) {
             $params['bmw_active'] = class_exists('Extra_Checkout_Fields_For_Brazil') ? 'yes' : 'no';
             $params['bmw_settings'] = get_option('wcbcf_settings');
+
+            return $params;
         }
     }
 }

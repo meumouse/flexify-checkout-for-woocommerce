@@ -2906,10 +2906,15 @@
 			 * Hide Brazilian Market fields if billing country is not Brazil
 			 * 
 			 * @since 3.0.0
-			 * @version 5.0.0
+			 * @version 5.1.1
 			 * @return {void}
 			 */
 			toggleBrazilianMarketFields: function() {
+				// keep Brazilian Market on WooCommerce compatibility
+				if ( params.bmw_active === 'yes' ) {
+					return;
+				}
+
 				const country = $('#billing_country').val();
 				const selectors = [
 					'#billing_persontype_field',
@@ -3924,6 +3929,11 @@
 			 * @return {void}
 			 */
 			updatePersonTypeFields: function() {
+				// keep Brazilian Market on WooCommerce compatibility
+				if ( params.bmw_active === 'yes' ) {
+					return;
+				}
+
 				const persontype = $('#billing_persontype');
 
 				// check if has person type selector
@@ -3981,53 +3991,59 @@
 		 * Initialize main object
 		 * 
 		 * @since 5.0.0
+		 * @version 5.1.1
 		 */
-		init: function() {
-			if ( params.debug_mode ) {
-				console.log( '[FLEXIFY CHECKOUT] Loaded params: ', params );
+		init: function () {
+			// prevent multiple inits
+			if ( this.__inited ) {
+				return;
 			}
 
-			// initialize local storage
-			this.localStorage.init();
+			// set flag
+			this.__inited = true;
 
-			// initialize compatibility functions
-            this.Compatibility.init();
+			const dbg = !!( window.flexify_checkout_params && window.flexify_checkout_params.debug_mode );
+			const log = dbg ? (...a) => console.log('[Flexify Checkout]', ...a) : () => {};
 
-			// initialize listen trigger functions
-			this.Triggers.init();
+			if (dbg) {
+				console.log('[Flexify Checkout] Loaded params:', window.flexify_checkout_params || {});
+			}
 
-			// initialize login functions
-			this.loginForm.init();
-		
-			// initialize steps functions
-			this.Steps.init();
+			const run = (name, mod) => {
+				try {
+					if (mod && typeof mod.init === 'function') {
+						mod.init();
+						log('init:', name);
+					}
+				} catch (err) {
+					console.error(`[Flexify] ${name}.init() falhou:`, err);
+				}
+			};
 
-			// initialize fields functions
-			this.Fields.init();
+			// run critical modules first
+			const critical = [
+				['localStorage', this.localStorage],
+				['Compatibility', this.Compatibility],
+				['Triggers', this.Triggers],
+				['loginForm', this.loginForm],
+				['Steps', this.Steps],
+				['Fields', this.Fields],
+				['Payments', this.Payments],
+				['Coupons', this.Coupons],
+			];
 
-			// initialize payment functions
-			this.Payments.init();
+			// not critical: can go on the next tick
+			const later = [
+				['Sidebar', this.Sidebar],
+				['Components', this.Components],
+				['Conditions', this.Conditions],
+				['Session', this.Session],
+				['Validations', this.Validations],
+				['processCheckout', this.processCheckout],
+			];
 
-			// initialize coupons functions
-			this.Coupons.init();
-
-            // initialize sidebar functions
-            this.Sidebar.init();
-
-            // initialize components functions
-            this.Components.init();
-
-			// initialize conditions functions
-			this.Conditions.init();
-
-			// initialize session functions
-			this.Session.init();
-
-			// initialize validations functions
-			this.Validations.init();
-
-			// initialize process checkout functions
-			this.processCheckout.init();
+			critical.forEach(([n, m]) => run(n, m));
+			setTimeout(() => later.forEach(([n, m]) => run(n, m)), 0);
 		},
 	};
 
