@@ -18,17 +18,6 @@ defined('ABSPATH') || exit; ?>
 
       <tr>
          <th>
-            <?php esc_html_e( 'Ativar Flexify Checkout', 'flexify-checkout-for-woocommerce' ) ?>
-            <span class="flexify-checkout-description"><?php esc_html_e( 'Ative esta opção para que o Flexify Checkout possa ser instanciado.', 'flexify-checkout-for-woocommerce' ) ?></span>
-         </th>
-         <td>
-            <div class="form-check form-switch">
-               <input type="checkbox" class="toggle-switch" id="enable_flexify_checkout" name="enable_flexify_checkout" value="yes" <?php checked( Admin_Options::get_setting( 'enable_flexify_checkout') === 'yes' ); ?> />
-            </div>
-         </td>
-      </tr>
-      <tr>
-         <th>
             <?php esc_html_e( 'Mostrar botão Voltar à loja', 'flexify-checkout-for-woocommerce' ) ?>
             <span class="flexify-checkout-description"><?php esc_html_e( 'Ative esta opção para exibir o botão "Voltar à loja" na primeira etapa de finalização de compra.', 'flexify-checkout-for-woocommerce' ) ?></span>
          </th>

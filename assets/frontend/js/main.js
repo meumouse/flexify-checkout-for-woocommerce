@@ -3913,7 +3913,7 @@
                 // setTimeOut because we want our event listener to run after wc_checkout_form::validate_field().
                 window.setTimeout( function() {
                     $('#jckwds-delivery-date, #jckwds-delivery-time').on('validate', function(e) {
-                        if ('1' === $('[name=flexify-wds-fields-hidden]').val()) {
+                        if ( '1' === $('[name=flexify-wds-fields-hidden]').val() ) {
                             $(e.target).closest('.form-row').removeClass('woocommerce-invalid');
                             e.stopPropagation();
                         }
@@ -4011,7 +4011,7 @@
 
 			const run = (name, mod) => {
 				try {
-					if (mod && typeof mod.init === 'function') {
+					if ( mod && typeof mod.init === 'function' ) {
 						mod.init();
 						log('init:', name);
 					}
@@ -4051,4 +4051,18 @@
 	$(document).ready( function() {
 		Flexify_Checkout.init();
 	});
+
+	/**
+     * Export API to global scope
+     * 
+     * @since 5.1.1
+     */
+    window.Flexify_Checkout = Flexify_Checkout;
+
+    /**
+     * Fire trigger when admin module is ready
+     * 
+     * @since 5.1.1
+     */
+    $(document).trigger('flexify_checkout_ready');
 })(jQuery);

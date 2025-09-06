@@ -23,7 +23,6 @@ class Default_Options {
      */
     public function set_default_data_options() {
         return apply_filters( 'Flexify_Checkout/Admin/Set_Default_Options', array(
-            'enable_flexify_checkout' => 'yes',
             'enable_autofill_company_info' => 'no',
             'enable_street_number_field' => 'yes',
             'enable_back_to_shop_button' => 'no',

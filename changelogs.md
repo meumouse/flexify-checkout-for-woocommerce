@@ -1,7 +1,9 @@
 Versão 5.1.1 (06/09/2025)
 * Correção de bugs
+  - Conflito de exibição de campos de CPF e CNPJ com plugin Brazilian Market on WooCommerce
 * Otimizações
 * Recurso adicionado: Ativar modo depuração
+* Recurso removido: Ativar Flexify Checkout
 
 Versão 5.1.0 (31/08/2025)
 * Correção de bugs

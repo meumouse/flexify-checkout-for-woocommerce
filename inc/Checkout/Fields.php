@@ -1405,7 +1405,3 @@ class Fields {
 		return WC()->countries->get_base_country();
 	}
 }
-
-if ( Admin_Options::get_setting('enable_flexify_checkout') === 'yes' ) {
-    new Fields();
-}

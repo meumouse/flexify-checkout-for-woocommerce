@@ -5,6 +5,7 @@ namespace MeuMouse\Flexify_Checkout\Views;
 use MeuMouse\Flexify_Checkout\Admin\Admin_Options;
 use MeuMouse\Flexify_Checkout\API\License;
 use MeuMouse\Flexify_Checkout\Validations\ISO3166;
+use MeuMouse\Flexify_Checkout\Checkout\Fields;
 
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
@@ -13,6 +14,7 @@ defined('ABSPATH') || exit;
  * Render components
  *
  * @since 5.0.0
+ * @version 5.1.1
  * @package MeuMouse.com
  */
 class Components {
@@ -21,7 +23,7 @@ class Components {
      * Render each checkout field for panel settings
      * 
      * @since 3.8.0
-	 * @version 5.0.0
+	 * @version 5.1.1
      * @param string $index | Field ID
      * @param array $value | Field values (ID, type, label, class, etc)
      * @param string $step | Step for render field (1 or 2)
@@ -37,7 +39,7 @@ class Components {
         $current_field_step_label = $value['label'] ?? '';
         $current_field_step_classes = $value['classes'] ?? '';
         $current_field_step_label_classes = $value['label_classes'] ?? '';
-        $current_field_step_country = $value['country'] ?? 'none';
+        $current_field_step_country = $value['country'] ?? ( Fields::get_base_country() === 'BR' ? 'BR' : 'none' );
         $current_field_step_input_mask = $value['input_mask'] ?? ''; ?>
 
         <div id="<?php echo esc_attr( $index ); ?>" class="field-item d-flex align-items-center justify-content-between <?php echo ( ! License::is_valid() ) ? 'require-pro' : ''; echo $value['enabled'] === 'no' ? 'inactive' : ''; ?>">

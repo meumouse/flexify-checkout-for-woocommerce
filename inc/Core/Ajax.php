@@ -225,7 +225,6 @@ class Ajax {
 			}
 			
 			$basic_fields = array(
-				'enable_flexify_checkout',
 				'enable_back_to_shop_button',
 				'enable_skip_cart_page',
 				'enable_aditional_notes',
