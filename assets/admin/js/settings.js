@@ -145,7 +145,7 @@
                     url: params.ajax_url,
                     type: 'POST',
                     data: {
-                        action: 'admin_ajax_save_options',
+                        action: 'flexify_checkout_save_settings',
                         form_data: settings_form.serialize(),
                     },
                     beforeSend: function() {

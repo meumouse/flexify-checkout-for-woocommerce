@@ -36,7 +36,7 @@ class Ajax {
 			'flexify_check_for_inline_error'        => array( __CLASS__, 'check_for_inline_error' ),
 			'flexify_check_for_inline_errors'       => array( __CLASS__, 'check_for_inline_errors' ),
 			'flexify_checkout_login'                => array( $this, 'checkout_login_callback' ),
-			'admin_ajax_save_options'               => array( $this, 'ajax_save_options_callback' ),
+			'flexify_checkout_save_settings'        => array( $this, 'ajax_save_options_callback' ),
 			'remove_checkout_fields'                => array( $this, 'remove_checkout_fields_callback' ),
 			'add_new_field_to_checkout'             => array( $this, 'add_new_field_to_checkout_callback' ),
 			'alternative_activation_license'        => array( $this, 'alternative_activation_license_callback' ),
@@ -214,7 +214,7 @@ class Ajax {
 	 * @return void
 	 */
 	public function ajax_save_options_callback() {
-		if ( isset( $_POST['action'] ) && $_POST['action'] === 'admin_ajax_save_options' ) {
+		if ( isset( $_POST['action'] ) && $_POST['action'] === 'flexify_checkout_save_settings' ) {
 			// Convert serialized data into an array
 			parse_str( $_POST['form_data'], $form_data );
 
