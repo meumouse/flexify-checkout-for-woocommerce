@@ -122,9 +122,7 @@ defined('ABSPATH') || exit; ?>
 				
 				<div class="input-group" style="width: 550px;">
 					<input class="form-control" type="text" placeholder="XXXXXXXX-XXXXXXXX-XXXXXXXX-XXXXXXXX" id="flexify_checkout_license_key" name="flexify_checkout_license_key" size="50" value="<?php echo get_option( 'flexify_checkout_license_key' ) ?>" />
-					<button id="flexify_checkout_active_license" name="flexify_checkout_active_license" class="btn btn-primary button-loading" type="submit">
-						<span class="span-inside-button-loader"><?php esc_attr_e( 'Ativar licença', 'flexify-checkout-for-woocommerce' ); ?></span>
-					</button>
+					<button id="flexify_checkout_active_license" name="flexify_checkout_active_license" class="btn btn-primary"><?php esc_html_e( 'Ativar licença', 'flexify-checkout-for-woocommerce' ); ?></button>
 				</div>
 			</td>
 		</tr>
