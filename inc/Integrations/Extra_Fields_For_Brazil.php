@@ -33,7 +33,7 @@ if ( class_exists('Extra_Checkout_Fields_For_Brazil') ) {
          * Add compatibility with scripts on checkout
          * 
          * @since 3.8.0
-         * @version 5.1.0
+         * @version 5.1.1
          * @return void
          */
         public function compat_scripts() {
@@ -43,8 +43,17 @@ if ( class_exists('Extra_Checkout_Fields_For_Brazil') ) {
             
             // prevent conflict between jQuery Mask of both plugins
             if ( Admin_Options::get_setting('enable_field_masks') === 'yes' ) {
+                $settings = get_option('wcbcf_settings');
+
                 wp_localize_script( 'woocommerce-extra-checkout-fields-for-brazil-front', 'bmwPublicParams', array(
                     'maskedinput' => 'no', // prevent conflict with Flexify Checkout
+                    'state'        => esc_js( __( 'State', 'woocommerce-extra-checkout-fields-for-brazil' ) ),
+                    'required'     => esc_js( __( 'required', 'woocommerce-extra-checkout-fields-for-brazil' ) ),
+                    'mailcheck'    => isset( $settings['mailcheck'] ) ? 'yes' : 'no',
+                    'person_type'  => isset( $settings['person_type'] ) ? absint( $settings['person_type'] ) : 0,
+                    'only_brazil'  => isset( $settings['only_brazil'] ) ? 'yes' : 'no',
+                    /* translators: %hint%: email hint */
+                    'suggest_text' => esc_js( __( 'Did you mean: %hint%?', 'woocommerce-extra-checkout-fields-for-brazil' ) ),
                 ));
             }
         }
