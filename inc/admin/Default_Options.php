@@ -315,7 +315,7 @@ class Default_Options {
      * Get fields from Brazilian Market on WooCommerce plugin
      * 
      * @since 3.0.0
-     * @version 5.0.0
+     * @version 5.1.1
      * @return array
      */
     public static function get_brazilian_checkout_fields() {
@@ -414,7 +414,7 @@ class Default_Options {
                 'position' => 'full',
                 'classes' => '',
                 'label_classes' => '',
-                'input_mask' => '',
+                'input_mask' => '00/00/0000',
                 'required' => 'no',
                 'priority' => '12',
                 'source' => 'plugin',

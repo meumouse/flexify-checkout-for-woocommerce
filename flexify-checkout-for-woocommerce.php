@@ -139,7 +139,7 @@ class Flexify_Checkout {
 	 * Define constants
 	 * 
 	 * @since 1.0.0
-	 * @version 5.0.0
+	 * @version 5.1.1
 	 * @return void
 	 */
 	public function setup_constants() {

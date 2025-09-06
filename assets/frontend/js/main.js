@@ -3920,7 +3920,7 @@
 			 * Show/hide Brazilian-market checkout fields based on person type
 			 *
 			 * @since 3.9.6
-			 * @version 5.0.0
+			 * @version 5.1.1
 			 * @return {void}
 			 */
 			updatePersonTypeFields: function() {
