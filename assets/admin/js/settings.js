@@ -1448,7 +1448,7 @@
                 $cond.html(allConditionOptions.clone());
 
                 if ( type === 'checkbox' ) {
-                    $cond.find('option').each(function() {
+                    $cond.find('option').each( function() {
                         const val = $(this).val();
                         if ( ! ['none', 'checked', 'not_checked'].includes(val) ) {
                             $(this).remove();

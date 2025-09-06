@@ -3794,7 +3794,7 @@
 			 * Check condition
 			 * 
 			 * @since 3.5.0
-			 * @version 5.0.0
+			 * @version 5.1.1
 			 * @param {string} condition - Check condition
 			 * @param {string} value - Get condition value
 			 * @param {string} value_compare - Optional value for compare with value
@@ -3812,6 +3812,8 @@
 					case 'finish_with':  return value.endsWith( value_compare );
 					case 'bigger_then':  return parseFloat( value ) > parseFloat( value_compare );
 					case 'less_than':    return parseFloat( value ) < parseFloat( value_compare );
+					case 'checked':      return typeof value === 'object' ? !! value.checked : !! value;
+					case 'not_checked':  return typeof value === 'object' ? ! value.checked : ! value;
 					default:             return false;
 				}
 			},
@@ -3820,7 +3822,7 @@
 			 * Show or hide fields based on conditions
 			 * 
 			 * @since 3.5.0
-			 * @version 5.0.2
+			 * @version 5.1.1
 			 * @return {void}
 			 */
 			checkFieldVisibility: function() {
@@ -3829,7 +3831,8 @@
 				field_conditions.forEach( item => {
 					const $comp = $('#' + item.component_field);
 					const row = $comp.closest('.form-row');
-					const val = $('#' + item.verification_condition_field).val();
+					const $field = $('#' + item.verification_condition_field);
+					const val = $field.is(':checkbox') ? $field.is(':checked') : $field.val();
 					const passed = this.checkCondition( item.condition, val, item.condition_value );
 
 					if ( item.type_rule === 'show' && item.verification_condition === 'field' ) {
