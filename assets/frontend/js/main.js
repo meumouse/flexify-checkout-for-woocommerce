@@ -4059,26 +4059,46 @@
 			element: null,
 			action: '',
 			storageKey: 'flexify_checkout_countdown_expire_at',
+			isThankYou: function() {
+				if ( document.body.classList.contains('woocommerce-order-received') ) {
+					return true;
+				}
+
+				var href = window.location.href;
+
+				if ( /(?:\/|-)order-received(?:\/|-)/i.test(href) ) {
+					return true;
+				}
+
+				if ( /[?&]key=wc_order_/i.test(href) ) {
+					return true;
+				}
+
+				if ( typeof params !== 'undefined' && params.is_thankyou === 'yes' ) {
+					return true;
+				}
+
+				return false;
+			},
 			init: function() {
 				if ( params.countdown_enabled !== 'yes' ) {
 					return;
 				}
 
-				var targetSelector = params.countdown_target_selector || '#flexify-checkout-countdown .time';
+				var target_selector = '#flexify-checkout-countdown .time';
 
-				// if targetSelector is not found, create a default container above the checkout content
-				if ( ! $(targetSelector).length ) {
-					var html ='<div id="flexify-checkout-countdown" class="flexify-checkout-countdown" aria-live="polite">' +
-						'<span class="title">' + (params.countdown_title || 'Sua sessão termina em:') + ' </span>' +
-						'<strong class="time">00:00</strong>' +
-						'</div>';
-					$('.flexify-checkout__content').first().before(html);
+				// if target_selector is not found, create a default container above the checkout content
+				if ( ! $(target_selector).length ) {
+					$('.flexify-checkout__content').first().before(`<div id="flexify-checkout-countdown" class="flexify-checkout-countdown" aria-live="polite">
+						<span class="title">${params.countdown_title}</span>
+						<strong class="time">00:00</strong>
+					</div>`);
 				}
 
-				this.element = $(targetSelector);
+				this.element = $(target_selector);
 
 				var value = parseInt(params.countdown_value, 10) || 0;
-				var unit = String( params.countdown_unit || 'seconds' ).toLowerCase();
+				var unit = String( params.countdown_unit || 'minutes' ).toLowerCase();
 
 				var toSeconds = function(v, u) {
 					switch (u) {
@@ -4092,7 +4112,7 @@
 
 				this.initial = toSeconds(value, unit);
 				this.remaining = this.initial;
-				this.action = params.countdown_action || 'hide'; // hide | restart | destroy_session
+				this.action = params.countdown_action || 'hide'; // hide | restart | logout
 
 				// retrieve saved timestamp (if any)
 				var expireAt = parseInt(localStorage.getItem(this.storageKey), 10) || 0;
@@ -4144,6 +4164,10 @@
 				this.start();
 			},
 			onExpire: function() {
+				if ( this.isThankYou() ) {
+					return;
+				}
+				
 				// clear storage when expires
     			localStorage.removeItem(this.storageKey);
 
@@ -4158,23 +4182,30 @@
 				switch ( this.action ) {
 					case 'hide':
 						if ( this.element && this.element.length ) {
-							this.element.hide();
+							$('#flexify-checkout-countdown').hide();
 						}
 
 						break;
 					case 'restart':
 						this.reset();
+
 						break;
-					case 'destroy_session':
-						$.post(
-							params.ajax_url,
-							{
-								action: 'flexify_checkout_destroy_session'
-							}
-						).always( () => {
-							if ( this.redirectUrl ) {
-								window.location.href = this.redirectUrl;
-							}
+					case 'logout':
+						// send AJAX request
+						$.ajax({
+							type: 'POST',
+							url: params.ajax_url,
+							data: {
+								action: 'flexify_checkout_destroy_session',
+							},
+							success: function(response) {
+								if ( response.redirect_url ) {
+									window.location.href = response.redirect_url;
+								}
+							},
+							error: function(jqXHR, textStatus, errorThrown) {
+								console.error('[FLEXIFY CHECKOUT] AJAX error on try destroy session:', textStatus, errorThrown);
+							},
 						});
 
 						break;

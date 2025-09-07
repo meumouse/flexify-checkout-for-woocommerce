@@ -170,7 +170,7 @@ defined('ABSPATH') || exit; ?>
             </th>
 
             <td>
-                <div class="form-check form-switch mb-3">
+                <div class="form-check form-switch">
                     <input type="checkbox" class="toggle-switch" id="enable_checkout_countdown" name="enable_checkout_countdown" value="yes" <?php checked( Admin_Options::get_setting('enable_checkout_countdown') === 'yes' ); ?> />
                 </div>
             </td>
@@ -187,53 +187,66 @@ defined('ABSPATH') || exit; ?>
 
                         <div class="popup-body">
                             <table class="form-table">
-                                <tr>
-                                    <th class="w-50">
-                                        <?php esc_html_e( 'Duração total', 'flexify-checkout-for-woocommerce' ) ?>
-                                        <span class="flexify-checkout-description"><?php esc_html_e( 'Permite definir o tempo limite da contagem regressiva.', 'flexify-checkout-for-woocommerce' ) ?></span>
-                                    </th>
+                                <tbody>
+                                    <tr>
+                                        <th class="w-50">
+                                            <?php esc_html_e( 'Título da contagem regressiva', 'flexify-checkout-for-woocommerce' ) ?>
+                                            <span class="flexify-checkout-description"><?php esc_html_e( 'Permite definir um titulo a ser exibido ao lado da contagem regressiva.', 'flexify-checkout-for-woocommerce' ) ?></span>
+                                        </th>
 
-                                    <td class="w-50">
-                                        <div class="input-group">
-                                            <input type="number" min="1" class="form-control" id="checkout_countdown_value" name="checkout_countdown_value" value="<?php echo esc_attr( Admin_Options::get_setting('checkout_countdown_value') ); ?>" />
-                                            
-                                            <select class="form-select" id="checkout_countdown_unit" name="checkout_countdown_unit">
-                                                <option value="minutes" <?php selected( Admin_Options::get_setting('checkout_countdown_unit'), 'minutes' ); ?>><?php esc_html_e( 'Minutos', 'flexify-checkout-for-woocommerce' ) ?></option>
-                                                <option value="days" <?php selected( Admin_Options::get_setting('checkout_countdown_unit'), 'days' ); ?>><?php esc_html_e( 'Dias', 'flexify-checkout-for-woocommerce' ) ?></option>
-                                            </select>
-                                        </div>
-                                    </td>
-                                </tr>
+                                        <td class="w-50">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" id="checkout_countdown_title" name="checkout_countdown_title" value="<?php echo Admin_Options::get_setting( 'checkout_countdown_title') ?>"/>
+                                            </div>
+                                        </td>
+                                    </tr>
 
-                                <tr>
-                                    <th class="w-50">
-                                        <?php esc_html_e( 'Ação após expirar', 'flexify-checkout-for-woocommerce' ) ?>
-                                        <span class="flexify-checkout-description"><?php esc_html_e( 'Permite definir o tipo de ação a ser executado após a expiração da contagem regressiva.', 'flexify-checkout-for-woocommerce' ) ?></span>
-                                    </th>
+                                    <tr>
+                                        <th class="w-50">
+                                            <?php esc_html_e( 'Duração total', 'flexify-checkout-for-woocommerce' ) ?>
+                                            <span class="flexify-checkout-description"><?php esc_html_e( 'Permite definir o tempo limite da contagem regressiva.', 'flexify-checkout-for-woocommerce' ) ?></span>
+                                        </th>
 
-                                    <td class="w-50">
-                                        <div class="input-group">
-                                            <select class="form-select" id="checkout_countdown_action" name="checkout_countdown_action">
-                                                <option value="hide" <?php selected( Admin_Options::get_setting('checkout_countdown_action'), 'hide' ); ?>><?php esc_html_e( 'Ocultar', 'flexify-checkout-for-woocommerce' ) ?></option>
-                                                <option value="restart" <?php selected( Admin_Options::get_setting('checkout_countdown_action'), 'restart' ); ?>><?php esc_html_e( 'Reiniciar contagem', 'flexify-checkout-for-woocommerce' ) ?></option>
-                                                <option value="logout" <?php selected( Admin_Options::get_setting('checkout_countdown_action'), 'logout' ); ?>><?php esc_html_e( 'Encerrar sessão do checkout', 'flexify-checkout-for-woocommerce' ) ?></option>
-                                            </select>
-                                        </div>
-                                    </td>
-                                </tr>
+                                        <td class="w-50">
+                                            <div class="input-group">
+                                                <input type="number" min="1" class="form-control" id="checkout_countdown_value" name="checkout_countdown_value" value="<?php echo esc_attr( Admin_Options::get_setting('checkout_countdown_value') ); ?>" />
+                                                
+                                                <select class="form-select" id="checkout_countdown_unit" name="checkout_countdown_unit">
+                                                    <option value="minutes" <?php selected( Admin_Options::get_setting('checkout_countdown_unit'), 'minutes' ); ?>><?php esc_html_e( 'Minutos', 'flexify-checkout-for-woocommerce' ) ?></option>
+                                                    <option value="days" <?php selected( Admin_Options::get_setting('checkout_countdown_unit'), 'days' ); ?>><?php esc_html_e( 'Dias', 'flexify-checkout-for-woocommerce' ) ?></option>
+                                                </select>
+                                            </div>
+                                        </td>
+                                    </tr>
 
-                                <tr>
-                                    <th class="w-50">
-                                        <?php esc_html_e( 'Título da contagem regressiva', 'flexify-checkout-for-woocommerce' ) ?>
-                                        <span class="flexify-checkout-description"><?php esc_html_e( 'Permite definir um titulo a ser exibido ao lado da contagem regressiva.', 'flexify-checkout-for-woocommerce' ) ?></span>
-                                    </th>
+                                    <tr>
+                                        <th class="w-50">
+                                            <?php esc_html_e( 'Ação após expirar', 'flexify-checkout-for-woocommerce' ) ?>
+                                            <span class="flexify-checkout-description"><?php esc_html_e( 'Permite definir o tipo de ação a ser executado após a expiração da contagem regressiva.', 'flexify-checkout-for-woocommerce' ) ?></span>
+                                        </th>
 
-                                    <td class="w-50">
-                                        <div class="input-group">
-                                            <input type="text" class="form-control" id="checkout_countdown_title" name="checkout_countdown_title" value="<?php echo Admin_Options::get_setting( 'checkout_countdown_title') ?>"/>
-                                        </div>
-                                    </td>
-                                </tr>
+                                        <td class="w-50">
+                                            <div class="input-group">
+                                                <select class="form-select" id="checkout_countdown_action" name="checkout_countdown_action">
+                                                    <option value="hide" <?php selected( Admin_Options::get_setting('checkout_countdown_action'), 'hide' ); ?>><?php esc_html_e( 'Ocultar', 'flexify-checkout-for-woocommerce' ) ?></option>
+                                                    <option value="restart" <?php selected( Admin_Options::get_setting('checkout_countdown_action'), 'restart' ); ?>><?php esc_html_e( 'Reiniciar contagem', 'flexify-checkout-for-woocommerce' ) ?></option>
+                                                    <option value="logout" <?php selected( Admin_Options::get_setting('checkout_countdown_action'), 'logout' ); ?>><?php esc_html_e( 'Encerrar sessão do checkout', 'flexify-checkout-for-woocommerce' ) ?></option>
+                                                </select>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                    <tr class="require-countdown-action-logout">
+                                        <th class="w-50">
+                                            <?php esc_html_e( 'URL de redirecionamento', 'flexify-checkout-for-woocommerce' ) ?>
+                                            <span class="flexify-checkout-description"><?php esc_html_e( 'Permite definir para qual endereço o usuário será redirecionado após a sessão ser encerrada.', 'flexify-checkout-for-woocommerce' ) ?></span>
+                                        </th>
+
+                                        <td class="w-50">
+                                            <input type="text" class="form-control" id="checkout_countdown_redirect_url" name="checkout_countdown_redirect_url" value="<?php echo Admin_Options::get_setting( 'checkout_countdown_redirect_url') ?>" placeholder="<?php echo esc_attr( home_url() ); ?>"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
                             </table>
                         </div>
                     </div>

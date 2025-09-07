@@ -155,6 +155,7 @@ class Default_Options {
             'checkout_countdown_unit' => 'minutes',
             'checkout_countdown_action' => 'hide',
             'checkout_countdown_title' => esc_html__( 'Sua sessão termina em:', 'flexify-checkout-for-woocommerce' ),
+            'checkout_countdown_redirect_url' => home_url('/'),
         ));
     }
 

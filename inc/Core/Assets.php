@@ -258,6 +258,7 @@ class Assets {
 			'countdown_unit' => Admin_Options::get_setting('checkout_countdown_unit'),
 			'countdown_action' => Admin_Options::get_setting('checkout_countdown_action'),
 			'countdown_title' => Admin_Options::get_setting('checkout_countdown_title'),
+			'is_thankyou' => is_order_received_page() ? 'yes' : 'no',
 		));
 
 		/**

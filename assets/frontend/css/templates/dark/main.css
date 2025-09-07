@@ -5215,3 +5215,23 @@ p.form-row.flexify-checkout-loading-placeholder > label {
 #order_comments {
     resize: vertical;
 }
+
+#flexify-checkout-countdown {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 1rem;
+    background-color: var(--flexify-checkout-primary);
+    color: #fff;
+}
+
+#flexify-checkout-countdown .title {
+    font-size: 1.225rem;
+}
+
+#flexify-checkout-countdown .time {
+    font-size: 1.325rem;
+    font-weight: 700;
+    margin-left: 0.5rem;
+}

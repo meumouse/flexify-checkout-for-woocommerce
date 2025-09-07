@@ -61,7 +61,7 @@ class Ajax {
 			'flexify_checkout_sync_license'       	=> array( $this, 'sync_license_callback' ),
 			'flexify_checkout_active_license'       => array( $this, 'active_license_callback' ),
 			'flexify_checkout_alternative_activation' => array( $this, 'alternative_activation_callback' ),
-			'flexify_checkout_destroy_session'           => array( $this, 'end_session_callback' ),
+			'flexify_checkout_destroy_session'      => array( $this, 'destroy_session_callback' ),
 		);
 
 		// needs to be called by non-logged users
@@ -1619,15 +1619,78 @@ class Ajax {
 	 * @return void
 	 */
 	public function destroy_session_callback() {
-		if ( WC()->session ) {
-            WC()->session->cleanup_sessions();
-            WC()->session->destroy_session();
-        }
+		if ( isset( $_POST['action'] ) && $_POST['action'] === 'flexify_checkout_destroy_session' ) {
+			$cart_items = array();
 
-		wp_send_json( array(
-			'status' => 'success',
-			'toast_header' => __( 'Sessão destruída', 'flexify-checkout-for-woocommerce' ),
-			'toast_body' => __( 'A sessão do WooCommerce foi destruída com sucesso!', 'flexify-checkout-for-woocommerce' ),
-		));
+			if ( WC()->cart ) {
+				foreach ( WC()->cart->get_cart() as $cart_item_key => $item ) {
+					$product        = $item['data'] ?? null;
+					$product_id     = $item['product_id'] ?? 0;
+					$variation_id   = $item['variation_id'] ?? 0;
+					$qty            = isset( $item['quantity'] ) ? (int) $item['quantity'] : 0;
+					$line_subtotal  = isset( $item['line_subtotal'] ) ? (float) $item['line_subtotal'] : 0.0;
+					$line_total     = isset( $item['line_total'] ) ? (float) $item['line_total'] : 0.0;
+					$name           = $product ? $product->get_name() : get_the_title( $product_id );
+
+					$cart_items[] = array(
+						'key'           => $cart_item_key,
+						'product_id'    => $product_id,
+						'variation_id'  => $variation_id,
+						'name'          => $name,
+						'quantity'      => $qty,
+						'line_subtotal' => $line_subtotal,
+						'line_total'    => $line_total,
+						'variation'     => isset( $item['variation'] ) ? $item['variation'] : array(),
+						'meta'          => isset( $item['addons'] ) ? $item['addons'] : array(),
+					);
+				}
+			}
+
+			$cart_totals = array();
+
+			if ( WC()->cart ) {
+				$cart_totals = array(
+					'subtotal'        => (float) WC()->cart->get_subtotal(),
+					'discount_total'  => (float) WC()->cart->get_discount_total(),
+					'fee_total'       => (float) WC()->cart->get_fee_total(),
+					'shipping_total'  => (float) WC()->cart->get_shipping_total(),
+					'total'           => (float) WC()->cart->get_total( 'edit' ),
+					'tax_total'       => (float) WC()->cart->get_total_tax(),
+					'items_count'     => (int)   WC()->cart->get_cart_contents_count(),
+				);
+			}
+
+			$session_data = WC()->session->get('flexify_checkout_customer_fields');
+			$applied_coupons = WC()->cart ? WC()->cart->get_applied_coupons() : array();
+			$redirect_url = Admin_Options::get_setting('checkout_countdown_redirect_url');
+
+			/**
+			 * Fired hook after destroy session
+			 * 
+			 * @since 5.1.1
+			 * @param array $session_data | Array with session data before destroy
+			 * @param array $cart_items | Array with cart items data before destroy
+			 * @param array $applied_coupons | Array with applied coupons before destroy
+			 * @param array $cart_totals | Array with cart totals data before destroy
+			 * @param string $redirect_url | Redirect URL after destroy session
+			 */
+			do_action( 'Flexify_Checkout/Countdown/Session_Destroyed', $session_data, $cart_items, $applied_coupons, $cart_totals, $redirect_url );
+
+			// clear cart
+			if ( WC()->cart ) {
+				WC()->cart->empty_cart( true );
+			}
+
+			if ( WC()->session ) {
+				WC()->session->cleanup_sessions();
+				WC()->session->destroy_session();
+			}
+
+			// send response
+			wp_send_json( array(
+				'status' => 'success',
+				'redirect_url' => $redirect_url,
+			));
+		}
 	}
 }

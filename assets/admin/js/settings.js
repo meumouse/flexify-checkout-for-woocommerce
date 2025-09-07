@@ -294,6 +294,11 @@
 
             // display modal for set checkout countdown
             attach('#enable_checkout_countdown', '.require-countdown-enabled');
+
+            // display redirect input for countdown action logout
+            attach('#checkout_countdown_action', {
+				'logout': '.require-countdown-action-logout',
+			});
 		},
 
         /**
