@@ -38,7 +38,7 @@ Você pode instalar um plugin WordPress de duas maneiras: via o painel de admini
 
 ### Registro de alterações (Changelogs):
 
-Versão 5.1.1 (06/09/2025)
+Versão 5.2.0 (07/09/2025)
 * Correção de bugs
   - Conflito de exibição de campos de CPF e CNPJ com plugin Brazilian Market on WooCommerce
 * Otimizações

@@ -90,7 +90,7 @@ class Assets {
 	 * Frontend assets
 	 * 
 	 * @since 1.0.0
-	 * @version 5.1.1
+	 * @version 5.2.0
 	 * @return void
 	 */
 	public function frontend_assets() {

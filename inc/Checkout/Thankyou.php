@@ -13,7 +13,7 @@ defined('ABSPATH') || exit;
  * Functions related to the Thank you page
  *
  * @since 1.0.0
- * @version 5.1.1
+ * @version 5.2.0
  * @package MeuMouse.com
  */
 class Thankyou {
@@ -405,7 +405,7 @@ class Thankyou {
 	 * Show Contact Us at the footer
 	 *
 	 * @since 1.0.0
-	 * @version 5.1.1
+	 * @version 5.2.0
 	 * @param WC_Order $order | Order object
 	 * @return void
 	 */
@@ -438,7 +438,7 @@ class Thankyou {
 	 * Display downloads table
 	 *
 	 * @since 1.0.0
-	 * @version 5.1.1
+	 * @version 5.2.0
 	 * @param WC_Order $order | Order object
 	 * @return void
 	 */

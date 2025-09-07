@@ -9,7 +9,7 @@ defined('ABSPATH') || exit;
  * Connect to license authentication server
  * 
  * @since 1.0.0
- * @version 5.1.1
+ * @version 5.2.0
  * @package MeuMouse.com
  */
 class License {
@@ -37,7 +37,7 @@ class License {
      * Construct function
      * 
      * @since 1.0.0
-     * @since 5.1.1
+     * @since 5.2.0
      * @param string $plugin_base_file
      * @return void
      */
@@ -912,7 +912,7 @@ class License {
     /**
 	 * Display admin notice when license is expired
 	 * 
-	 * @since 5.1.1
+	 * @since 5.2.0
 	 * @return void
 	 */
     public function license_expired_notice() {
@@ -962,7 +962,7 @@ class License {
     /**
      * Check expiration license on schedule event
      * 
-     * @since 5.1.1
+     * @since 5.2.0
      * @return void
      */
     public static function schedule_license_expiration_check( $expiration_timestamp = 0 ) {
@@ -1007,7 +1007,7 @@ class License {
     /**
      * Deactivate license on scheduled event
      * 
-     * @since 5.1.1
+     * @since 5.2.0
      * @return void
      */
     public function check_license_expires_time() {
@@ -1033,7 +1033,7 @@ class License {
     /**
      * Get license expires time
      * 
-     * @since 5.1.1
+     * @since 5.2.0
      * @param string $license_key | License key
      * @return array
      */

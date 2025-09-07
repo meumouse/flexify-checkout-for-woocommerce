@@ -15,7 +15,7 @@ defined('ABSPATH') || exit;
  * Class for handle AJAX events
  *
  * @since 1.0.0
- * @version 5.1.1
+ * @version 5.2.0
  * @package MeuMouse.com
  */
 class Ajax {
@@ -27,7 +27,7 @@ class Ajax {
 	 * Construct function
 	 * 
 	 * @since 1.0.0
-	 * @version 5.1.1
+	 * @version 5.2.0
 	 * @return void
 	 */
 	public function __construct() {
@@ -212,7 +212,7 @@ class Ajax {
 	 * Save options in AJAX
 	 * 
 	 * @since 1.0.0
-	 * @version 5.1.1
+	 * @version 5.2.0
 	 * @return void
 	 */
 	public function ajax_save_options_callback() {
@@ -738,7 +738,7 @@ class Ajax {
 	 * Add new condition AJAX callback
 	 * 
 	 * @since 3.5.0
-	 * @version 5.1.1
+	 * @version 5.2.0
 	 * @return void
 	 */
 	public function add_new_checkout_condition_callback() {
@@ -1036,7 +1036,7 @@ class Ajax {
      * Reset plugin options to default on AJAX callback
      * 
      * @since 3.8.0
-	 * @version 5.1.1
+	 * @version 5.2.0
      * @return void
      */
     public function reset_plugin_callback() {
@@ -1356,7 +1356,7 @@ class Ajax {
 	/**
      * Sync license on AJAX callback
      * 
-     * @since 5.1.1
+     * @since 5.2.0
      * @return void
      */
 	public function sync_license_callback() {
@@ -1447,7 +1447,7 @@ class Ajax {
 	/**
      * Active license process on AJAX callback
      * 
-     * @since 5.1.1
+     * @since 5.2.0
      * @return void
      */
     public function active_license_callback() {
@@ -1501,7 +1501,7 @@ class Ajax {
     /**
      * Handle alternative activation license file .key
      * 
-     * @since 5.1.1
+     * @since 5.2.0
      * @return void
      */
     public function alternative_activation_callback() {
@@ -1615,7 +1615,7 @@ class Ajax {
 	/**
 	 * Destroy WooCommerce session
 	 *
-	 * @since 5.1.1
+	 * @since 5.2.0
 	 * @return void
 	 */
 	public function destroy_session_callback() {
@@ -1667,7 +1667,7 @@ class Ajax {
 			/**
 			 * Fired hook after destroy session
 			 * 
-			 * @since 5.1.1
+			 * @since 5.2.0
 			 * @param array $session_data | Array with session data before destroy
 			 * @param array $cart_items | Array with cart items data before destroy
 			 * @param array $applied_coupons | Array with applied coupons before destroy

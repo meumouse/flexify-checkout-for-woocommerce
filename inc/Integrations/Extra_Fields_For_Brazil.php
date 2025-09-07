@@ -12,7 +12,7 @@ if ( class_exists('Extra_Checkout_Fields_For_Brazil') ) {
      * Compatibility with Brazilian Market on WooCommerce plugin
      *
      * @since 3.8.0
-     * @version 5.1.1
+     * @version 5.2.0
      * @package MeuMouse.com
      */
     class Extra_Fields_For_Brazil {
@@ -21,7 +21,7 @@ if ( class_exists('Extra_Checkout_Fields_For_Brazil') ) {
          * Construct function
          *
          * @since 3.8.0
-         * @version 5.1.1
+         * @version 5.2.0
          * @return void
          */
         public function __construct() {
@@ -33,7 +33,7 @@ if ( class_exists('Extra_Checkout_Fields_For_Brazil') ) {
          * Add compatibility with scripts on checkout
          * 
          * @since 3.8.0
-         * @version 5.1.1
+         * @version 5.2.0
          * @return void
          */
         public function compat_scripts() {
@@ -61,7 +61,7 @@ if ( class_exists('Extra_Checkout_Fields_For_Brazil') ) {
         /**
          * Add Extra Checkout Fields for Brazil settings to Flexify Checkout script data
          * 
-         * @since 5.1.1
+         * @since 5.2.0
          * @param array $params | Current script parameters
          * @return array
          */

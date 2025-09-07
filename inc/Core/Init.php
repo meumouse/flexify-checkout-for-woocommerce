@@ -11,7 +11,7 @@ defined('ABSPATH') || exit;
  * Init class plugin
  * 
  * @since 5.0.0
- * @version 5.1.1
+ * @version 5.2.0
  * @package MeuMouse.com
  */
 class Init {
@@ -35,7 +35,7 @@ class Init {
     /**
      * Plugin directory path
      * 
-     * @since 5.1.1
+     * @since 5.2.0
      * @return string
      */
     public $directory = FLEXIFY_CHECKOUT_PATH;
@@ -44,7 +44,7 @@ class Init {
      * Construct function
      * 
      * @since 1.0.0
-     * @version 5.1.1
+     * @version 5.2.0
      * @return void
      */
     public function __construct() {
@@ -286,7 +286,7 @@ class Init {
      * Instance classes after load Composer
      * 
      * @since 5.0.0
-     * @version 5.1.1
+     * @version 5.2.0
      * @return void
      */
     public function instance_classes() {

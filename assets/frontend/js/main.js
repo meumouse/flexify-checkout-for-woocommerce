@@ -1203,7 +1203,7 @@
 			 * Initialize module
 			 * 
 			 * @since 5.0.0
-			 * @version 5.1.1
+			 * @version 5.2.0
 			 */
 			init: function() {
 				Flexify_Checkout.Helpers.removeDomElements();
@@ -2660,7 +2660,7 @@
 			 * Toggle visibility and validation classes on a field row
 			 *
 			 * @since 5.0.0
-			 * @version 5.1.1
+			 * @version 5.2.0
 			 * @param {string} selector | jQuery selector for the input
 			 * @param {boolean} show | true to show, false to hide
 			 * @param {boolean} required | true to set required attr, false to unset
@@ -3795,7 +3795,7 @@
 			 * Check condition
 			 * 
 			 * @since 3.5.0
-			 * @version 5.1.1
+			 * @version 5.2.0
 			 * @param {string} condition - Check condition
 			 * @param {string} value - Get condition value
 			 * @param {string} value_compare - Optional value for compare with value
@@ -3823,7 +3823,7 @@
 			 * Show or hide fields based on conditions
 			 * 
 			 * @since 3.5.0
-			 * @version 5.1.1
+			 * @version 5.2.0
 			 * @return {void}
 			 */
 			checkFieldVisibility: function() {
@@ -3891,7 +3891,7 @@
          * Compatibility functions
          * 
          * @since 1.0.0
-         * @version 5.1.1
+         * @version 5.2.0
          */
         Compatibility: {
 
@@ -3933,7 +3933,7 @@
 			 * Show/hide Brazilian-market checkout fields based on person type
 			 *
 			 * @since 3.9.6
-			 * @version 5.1.1
+			 * @version 5.2.0
 			 * @return {void}
 			 */
 			updatePersonTypeFields: function() {
@@ -4013,7 +4013,7 @@
 			 * Bind change event and perform initial toggle on page load
 			 *
 			 * @since 5.0.0
-			 * @version 5.1.1
+			 * @version 5.2.0
 			 * @return {void}
 			 */
 			initPersonTypeFields: function() {
@@ -4050,7 +4050,7 @@
 		/**
 		 * Countdown timer object
 		 * 
-		 * @since 5.1.1
+		 * @since 5.2.0
 		 */
 		Countdown: {
 			timer: null,
@@ -4060,6 +4060,11 @@
 			action: '',
 			storageKey: 'flexify_checkout_countdown_expire_at',
 			isThankYou: function() {
+				// first check param if current page is thank you
+				if ( params.is_thankyou === 'yes' ) {
+					return true;
+				}
+
 				if ( document.body.classList.contains('woocommerce-order-received') ) {
 					return true;
 				}
@@ -4074,13 +4079,15 @@
 					return true;
 				}
 
-				if ( typeof params !== 'undefined' && params.is_thankyou === 'yes' ) {
-					return true;
-				}
-
 				return false;
 			},
 			init: function() {
+				// not render on thankyou page
+				if ( this.isThankYou() ) {
+					localStorage.removeItem(this.storageKey);
+					return;
+				}
+
 				if ( params.countdown_enabled !== 'yes' ) {
 					return;
 				}
@@ -4174,7 +4181,7 @@
 				/**
 				 * Trigger when countdown expires
 				 * 
-				 * @since 5.1.1
+				 * @since 5.2.0
 				 * @param {string} action The action configured to be performed on expiry (hide, restart, destroy_session)
 				 */
 				$(document).trigger( 'flexify_checkout_countdown_expired', this.action );
@@ -4217,7 +4224,7 @@
 		 * Initialize main object
 		 * 
 		 * @since 5.0.0
-		 * @version 5.1.1
+		 * @version 5.2.0
 		 */
 		init: function () {
 			// prevent multiple inits
@@ -4282,14 +4289,14 @@
 	/**
      * Export API to global scope
      * 
-     * @since 5.1.1
+     * @since 5.2.0
      */
     window.Flexify_Checkout = Flexify_Checkout;
 
     /**
      * Fire trigger when admin module is ready
      * 
-     * @since 5.1.1
+     * @since 5.2.0
      */
     $(document).trigger('flexify_checkout_ready');
 })(jQuery);

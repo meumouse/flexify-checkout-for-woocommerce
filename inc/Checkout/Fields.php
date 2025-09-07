@@ -110,7 +110,7 @@ class Fields {
 	 * Override checkout fields
 	 *
 	 * @since 1.0.0
-	 * @version 5.1.1
+	 * @version 5.2.0
 	 * @param array $fields | Checkout fields
 	 * @return array
 	 */
@@ -273,7 +273,7 @@ class Fields {
 	 * Add new fields, reorder positions, and manage fields from WooCommerce checkout
 	 * 
 	 * @since 3.0.0
-	 * @version 5.1.1
+	 * @version 5.2.0
 	 * @param array $fields | Checkout fields
 	 * @return array
 	 */

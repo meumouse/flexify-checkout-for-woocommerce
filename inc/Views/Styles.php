@@ -76,7 +76,7 @@ class Styles {
 	 * Get dynamic styles
 	 *
 	 * @since 1.0.0
-	 * @version 5.1.1
+	 * @version 5.2.0
 	 * @param array $settings | Get plugin settings
 	 * @return string
 	 */

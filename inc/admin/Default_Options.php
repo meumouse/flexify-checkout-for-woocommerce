@@ -9,7 +9,7 @@ defined('ABSPATH') || exit;
  * Set default options
  * 
  * @since 5.0.0
- * @version 5.1.1
+ * @version 5.2.0
  * @package MeuMouse.com
  */
 class Default_Options {
@@ -18,7 +18,7 @@ class Default_Options {
      * Set default options
      * 
      * @since 1.0.0
-     * @version 5.1.1
+     * @version 5.2.0
      * @return array
      */
     public function set_default_data_options() {
@@ -322,7 +322,7 @@ class Default_Options {
      * Get fields from Brazilian Market on WooCommerce plugin
      * 
      * @since 3.0.0
-     * @version 5.1.1
+     * @version 5.2.0
      * @return array
      */
     public static function get_brazilian_checkout_fields() {

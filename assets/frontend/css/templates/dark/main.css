@@ -5222,8 +5222,8 @@ p.form-row.flexify-checkout-loading-placeholder > label {
     justify-content: center;
     position: relative;
     padding: 1rem;
-    background-color: var(--flexify-checkout-primary);
-    color: #fff;
+    background-color: #fff700;
+    color: var(--flexify-checkout-primary-dark);
 }
 
 #flexify-checkout-countdown .title {

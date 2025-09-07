@@ -9,7 +9,7 @@ defined('ABSPATH') || exit;
  * Create conditions for checkout components
  *
  * @since 3.5.0
- * @version 5.1.1
+ * @version 5.2.0
  * @package MeuMouse.com
  */
 class Conditions {
@@ -428,7 +428,7 @@ class Conditions {
      * Check condition
      * 
      * @since 3.5.0
-     * @version 5.1.1
+     * @version 5.2.0
      * @param string $condition | Check condition
      * @param string $value | Get condition value
      * @param string $value_compare | Optional value for compare with $value
@@ -557,7 +557,7 @@ class Conditions {
      * Validate checkout fields based on conditions
      *
      * @since 5.1.0
-     * @version 5.1.1
+     * @version 5.2.0
      * @param array $data | Posted checkout data
      * @param object $errors | Validation errors
      * @return void

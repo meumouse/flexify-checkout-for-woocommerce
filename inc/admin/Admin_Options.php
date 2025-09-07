@@ -13,7 +13,7 @@ defined('ABSPATH') || exit;
  * Class to handle plugin admin panel objects and functions
  * 
  * @since 1.0.0
- * @version 5.1.1
+ * @version 5.2.0
  * @package MeuMouse.com
  */
 class Admin_Options {
@@ -65,7 +65,7 @@ class Admin_Options {
      * Set default options checkout fields
      * 
      * @since 3.0.0
-     * @version 5.1.1
+     * @version 5.2.0
      * @return void
      */
     public function set_checkout_step_fields() {

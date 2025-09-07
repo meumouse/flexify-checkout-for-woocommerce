@@ -107,7 +107,7 @@ defined('ABSPATH') || exit; ?>
                <p class="card-text fs-sm mb-4"><?php esc_html_e( 'Automatize o envio de mensagens via WhatsApp ao receber eventos no Flexify Checkout, recupere vendas de maneira mais assertiva. Deixe tudo no fluxo certo sem esforço!', 'flexify-checkout-for-woocommerce' ) ?></p>
 
                <?php if ( is_plugin_active('joinotify/joinotify.php') ) : ?>
-                  <button id="require_inter_bank_module_trigger" class="btn btn-sm btn-outline-primary <?php echo ( ! License::is_valid() ) ? 'pro-version' : ''; ?>"><?php esc_html_e( 'Configurar', 'flexify-checkout-for-woocommerce' ) ?></button>
+                  <a class="btn btn-sm btn-outline-primary <?php echo ( ! License::is_valid() ) ? 'pro-version' : ''; ?>" href="<?php echo admin_url('admin.php?page=joinotify-settings') ?>"><?php esc_html_e( 'Configurar', 'flexify-checkout-for-woocommerce' ) ?></a>
                <?php elseif ( array_key_exists( 'joinotify/joinotify.php', get_plugins() ) ) : ?>
                   <button class="btn btn-sm btn-primary activate-plugin <?php echo ( ! License::is_valid() ) ? 'pro-version' : ''; ?>" data-plugin-slug="<?php echo esc_attr('joinotify/joinotify.php'); ?>"><?php esc_html_e( 'Ativar módulo', 'flexify-checkout-for-woocommerce' ) ?></button>
                <?php else : ?>

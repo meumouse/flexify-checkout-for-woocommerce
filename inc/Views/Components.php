@@ -14,7 +14,7 @@ defined('ABSPATH') || exit;
  * Render components
  *
  * @since 5.0.0
- * @version 5.1.1
+ * @version 5.2.0
  * @package MeuMouse.com
  */
 class Components {
@@ -23,7 +23,7 @@ class Components {
      * Render each checkout field for panel settings
      * 
      * @since 3.8.0
-	 * @version 5.1.1
+	 * @version 5.2.0
      * @param string $index | Field ID
      * @param array $value | Field values (ID, type, label, class, etc)
      * @param string $step | Step for render field (1 or 2)
@@ -300,7 +300,7 @@ class Components {
 	 * Render new fields table form
 	 * 
 	 * @since 3.0.0
-	 * @version 5.1.1
+	 * @version 5.2.0
 	 * @return string
 	 */
 	public static function add_new_fields_form() {

@@ -170,7 +170,7 @@ defined('ABSPATH') || exit; ?>
             /**
              * Display custom fields container
              * 
-             * @since 5.1.1
+             * @since 5.2.0
              * @param array $fields
              */
             do_action( 'Flexify_Checkout/Settings/Fields_Container', $fields ); ?>
