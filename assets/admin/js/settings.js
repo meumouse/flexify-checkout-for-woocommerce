@@ -291,6 +291,9 @@
             attach('#contact_page_thankyou', {
 				'custom_link': '.require-custom-link-enabled',
 			});
+
+            // display modal for set checkout countdown
+            attach('#enable_checkout_countdown', '.require-countdown-enabled');
 		},
 
         /**
@@ -424,7 +427,7 @@
          * Register all popups needed by the admin
          * 
          * @since 2.3.0
-         * @version 5.1.0
+         * @version 5.1.1
          */
         popups: function() {
             this.displayModal('#inter_bank_credencials_settings', '#inter_bank_credendials_container', '#inter_bank_credendials_close');
@@ -440,6 +443,7 @@
             this.displayModal('#add_new_checkout_condition_trigger', '#add_new_checkout_condition_container', '#close_add_new_checkout_condition');
             this.displayModal('#set_email_providers_trigger', '#set_email_providers_container', '#close_set_email_providers');
             this.displayModal('#set_process_purchase_animation_trigger', '#set_process_purchase_animation_container', '#close_set_process_purchase_animation');
+            this.displayModal('#set_countdown_trigger', '#set_countdown_container', '#close_set_countdown');
         },
 
         /**

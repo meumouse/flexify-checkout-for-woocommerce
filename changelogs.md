@@ -6,6 +6,7 @@ Versão 5.1.1 (06/09/2025)
 * Recurso removido: Ativar Flexify Checkout
 * Recurso modificado: Página de contato - Link personalizado
 * Recurso adicionado: Adicionar novo campo do tipo Caixa de seleção
+* Recurso adicionado: Contagem regressiva
 
 Versão 5.1.0 (31/08/2025)
 * Correção de bugs

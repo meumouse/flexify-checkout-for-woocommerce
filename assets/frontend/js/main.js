@@ -1203,6 +1203,7 @@
 			 * Initialize module
 			 * 
 			 * @since 5.0.0
+			 * @version 5.1.1
 			 */
 			init: function() {
 				Flexify_Checkout.Helpers.removeDomElements();
@@ -4047,6 +4048,141 @@
         },
 
 		/**
+		 * Countdown timer object
+		 * 
+		 * @since 5.1.1
+		 */
+		Countdown: {
+			timer: null,
+			initial: 0,
+			remaining: 0,
+			element: null,
+			action: '',
+			storageKey: 'flexify_checkout_countdown_expire_at',
+			init: function() {
+				if ( params.countdown_enabled !== 'yes' ) {
+					return;
+				}
+
+				var targetSelector = params.countdown_target_selector || '#flexify-checkout-countdown .time';
+
+				// if targetSelector is not found, create a default container above the checkout content
+				if ( ! $(targetSelector).length ) {
+					var html ='<div id="flexify-checkout-countdown" class="flexify-checkout-countdown" aria-live="polite">' +
+						'<span class="title">' + (params.countdown_title || 'Sua sessão termina em:') + ' </span>' +
+						'<strong class="time">00:00</strong>' +
+						'</div>';
+					$('.flexify-checkout__content').first().before(html);
+				}
+
+				this.element = $(targetSelector);
+
+				var value = parseInt(params.countdown_value, 10) || 0;
+				var unit = String( params.countdown_unit || 'seconds' ).toLowerCase();
+
+				var toSeconds = function(v, u) {
+					switch (u) {
+						case 'minute':
+						case 'minutes': return v * 60;
+						case 'hour':
+						case 'hours': return v * 3600;
+						default: return v; // 'seconds'
+					}
+				};
+
+				this.initial = toSeconds(value, unit);
+				this.remaining = this.initial;
+				this.action = params.countdown_action || 'hide'; // hide | restart | destroy_session
+
+				// retrieve saved timestamp (if any)
+				var expireAt = parseInt(localStorage.getItem(this.storageKey), 10) || 0;
+				var now = Math.floor(Date.now() / 1000);
+
+				if ( expireAt > now ) {
+					// event not expired, calculate remaining
+					this.remaining = expireAt - now;
+				} else {
+					// expired or not exists, start new cycle
+					this.remaining = this.initial;
+					expireAt = now + this.initial;
+					localStorage.setItem(this.storageKey, expireAt);
+				}
+
+				if ( this.initial > 0 ) {
+					this.start();
+				}
+			},
+			start: function() {
+				const self = this;
+				clearInterval( this.timer );
+				this.display();
+
+				this.timer = setInterval( function() {
+					self.remaining--;
+					self.display();
+
+					if ( self.remaining <= 0 ) {
+						clearInterval( self.timer );
+						self.onExpire();
+					}
+				}, 1000 );
+			},
+			display: function() {
+				if ( ! this.element || ! this.element.length ) {
+					return;
+				}
+
+				var mm = Math.floor(this.remaining / 60);
+				var ss = this.remaining % 60;
+				var fmt = function(n){ return String(n).padStart(2, '0'); };
+				var text = fmt(mm) + ':' + fmt(ss);
+
+				this.element.text(text);
+			},
+			reset: function() {
+				this.remaining = this.initial;
+				this.start();
+			},
+			onExpire: function() {
+				// clear storage when expires
+    			localStorage.removeItem(this.storageKey);
+
+				/**
+				 * Trigger when countdown expires
+				 * 
+				 * @since 5.1.1
+				 * @param {string} action The action configured to be performed on expiry (hide, restart, destroy_session)
+				 */
+				$(document).trigger( 'flexify_checkout_countdown_expired', this.action );
+
+				switch ( this.action ) {
+					case 'hide':
+						if ( this.element && this.element.length ) {
+							this.element.hide();
+						}
+
+						break;
+					case 'restart':
+						this.reset();
+						break;
+					case 'destroy_session':
+						$.post(
+							params.ajax_url,
+							{
+								action: 'flexify_checkout_destroy_session'
+							}
+						).always( () => {
+							if ( this.redirectUrl ) {
+								window.location.href = this.redirectUrl;
+							}
+						});
+
+						break;
+				}
+			},
+		},
+
+		/**
 		 * Initialize main object
 		 * 
 		 * @since 5.0.0
@@ -4098,6 +4234,7 @@
 				['Conditions', this.Conditions],
 				['Session', this.Session],
 				['Validations', this.Validations],
+				['Countdown', this.Countdown],
 				['processCheckout', this.processCheckout],
 			];
 

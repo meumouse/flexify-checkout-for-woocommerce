@@ -150,6 +150,11 @@ class Default_Options {
             'enable_debug_mode' => 'no',
             'contact_page_thankyou' => 'custom_link',
             'contact_page_thankyou_custom_link' => home_url('/contato'),
+            'enable_checkout_countdown' => 'no',
+            'checkout_countdown_value' => '15',
+            'checkout_countdown_unit' => 'minutes',
+            'checkout_countdown_action' => 'hide',
+            'checkout_countdown_title' => esc_html__( 'Sua sessão termina em:', 'flexify-checkout-for-woocommerce' ),
         ));
     }
 

@@ -61,6 +61,7 @@ class Ajax {
 			'flexify_checkout_sync_license'       	=> array( $this, 'sync_license_callback' ),
 			'flexify_checkout_active_license'       => array( $this, 'active_license_callback' ),
 			'flexify_checkout_alternative_activation' => array( $this, 'alternative_activation_callback' ),
+			'flexify_checkout_destroy_session'           => array( $this, 'end_session_callback' ),
 		);
 
 		// needs to be called by non-logged users
@@ -71,6 +72,7 @@ class Ajax {
 			'get_checkout_session_data',
 			'flexify_checkout_remove_product',
 			'flexify_checkout_undo_remove_product',
+			'flexify_checkout_destroy_session',
 		);
 
 		foreach ( $actions as $action => $callback ) {
@@ -244,6 +246,7 @@ class Ajax {
 				'enable_auto_updates',
 				'enable_update_notices',
 				'enable_debug_mode',
+				'enable_checkout_countdown',
 			);
 
 			$license_fields = array(
@@ -1607,4 +1610,24 @@ class Ajax {
             'dropfile_message' => __( 'Licença processada com sucesso!', 'flexify-checkout-for-woocommerce' ),
 		));
     }
+
+
+	/**
+	 * Destroy WooCommerce session
+	 *
+	 * @since 5.1.1
+	 * @return void
+	 */
+	public function destroy_session_callback() {
+		if ( WC()->session ) {
+            WC()->session->cleanup_sessions();
+            WC()->session->destroy_session();
+        }
+
+		wp_send_json( array(
+			'status' => 'success',
+			'toast_header' => __( 'Sessão destruída', 'flexify-checkout-for-woocommerce' ),
+			'toast_body' => __( 'A sessão do WooCommerce foi destruída com sucesso!', 'flexify-checkout-for-woocommerce' ),
+		));
+	}
 }

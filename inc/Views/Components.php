@@ -563,5 +563,4 @@ class Components {
 
 		<?php return ob_get_clean();
 	}
-
 }
