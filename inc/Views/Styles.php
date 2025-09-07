@@ -76,7 +76,7 @@ class Styles {
 	 * Get dynamic styles
 	 *
 	 * @since 1.0.0
-	 * @version 5.0.0
+	 * @version 5.2.0
 	 * @param array $settings | Get plugin settings
 	 * @return string
 	 */
@@ -95,6 +95,10 @@ class Styles {
 
 		* {
 			font-family: <?php echo esc_attr( $settings['font_family'][$font]['font_name'] ); ?>, Inter, Helvetica, Arial, sans-serif;
+		}
+
+		:root {
+			--flexify-checkout-primary: <?php echo esc_attr( $primary ); ?>;
 		}
 
 		<?php

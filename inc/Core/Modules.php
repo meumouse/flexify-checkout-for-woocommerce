@@ -11,7 +11,7 @@ defined('ABSPATH') || exit;
  * Class for handling the installation of external modules (plugins)
  * 
  * @since 3.8.0
- * @version 5.0.0
+ * @version 5.2.0
  * @package MeuMouse.com
  */
 class Modules {
@@ -29,7 +29,7 @@ class Modules {
      * Construct function
      * 
      * @since 3.8.0
-     * @version 3.8.6
+     * @version 5.2.0
      * @return void
      */
     public function __construct() {
@@ -39,10 +39,10 @@ class Modules {
         $this->logging_enabled = false;
 
         // Handle AJAX requests for installing external modules.
-        add_action( 'wp_ajax_install_modules_action', array( $this, 'install_modules_ajax_callback' ) );
+        add_action( 'wp_ajax_flexify_checkout_install_modules', array( $this, 'install_modules_ajax_callback' ) );
 
         // Activate plugin
-        add_action( 'wp_ajax_activate_plugin_action', array( $this, 'activate_plugin_callback' ) );
+        add_action( 'wp_ajax_flexify_checkout_activate_plugin', array( $this, 'activate_plugin_callback' ) );
     }
 
 
@@ -102,27 +102,27 @@ class Modules {
                     $this->log('plugin_installation', "Plugin ativado com sucesso: $plugin_slug");
                     
                     $response = array(
-                        'status'  => 'success',
-                        'toast_header' => esc_html__( 'Plugin instalado e ativado.', 'flexify-checkout-for-woocommerce' ),
-                        'toast_body' => esc_html__( 'Plugin instalado e ativado com sucesso.', 'flexify-checkout-for-woocommerce' ),
+                        'status' => 'success',
+                        'toast_header_title' => esc_html__( 'Plugin instalado e ativado.', 'flexify-checkout-for-woocommerce' ),
+                        'toast_body_title' => esc_html__( 'Plugin instalado e ativado com sucesso.', 'flexify-checkout-for-woocommerce' ),
                     );
                 } else {
                     $this->log('plugin_installation', "Erro na ativação do plugin: $plugin_slug - " . $activate->get_error_message());
                     $this->log('plugin_installation', "Detalhes do erro na ativação: " . print_r( $activate, true ) );
 
                     $response = array(
-                        'status'  => 'error',
-                        'toast_header' => esc_html__( 'Falha ao ativar o plugin.', 'flexify-checkout-for-woocommerce' ),
-                        'toast_body' => esc_html__( 'O plugin foi instalado, mas não pôde ser ativado.', 'flexify-checkout-for-woocommerce' ),
+                        'status' => 'error',
+                        'toast_header_title' => esc_html__( 'Falha ao ativar o plugin.', 'flexify-checkout-for-woocommerce' ),
+                        'toast_body_title' => esc_html__( 'O plugin foi instalado, mas não pôde ser ativado.', 'flexify-checkout-for-woocommerce' ),
                     );
                 }
             } else {
                 $this->log('plugin_installation', "Falha na instalação/atualização do plugin: $plugin_slug");
 
                 $response = array(
-                    'status'  => 'error',
-                    'toast_header' => esc_html__( 'Falha ao instalar/atualizar o plugin.', 'flexify-checkout-for-woocommerce' ),
-                    'toast_body' => esc_html__( 'Ocorreu um erro ao tentar instalar ou atualizar o plugin.', 'flexify-checkout-for-woocommerce' ),
+                    'status' => 'error',
+                    'toast_header_title' => esc_html__( 'Falha ao instalar/atualizar o plugin.', 'flexify-checkout-for-woocommerce' ),
+                    'toast_body_title' => esc_html__( 'Ocorreu um erro ao tentar instalar ou atualizar o plugin.', 'flexify-checkout-for-woocommerce' ),
                 );
             }
 
@@ -212,14 +212,14 @@ class Modules {
             if ( is_wp_error( $activate ) ) {
                 $response = array(
                     'status'  => 'error',
-                    'toast_header' => esc_html__( 'Ops! Ocorreu um erro.', 'flexify-checkout-for-woocommerce' ),
-                    'toast_body' => $activate->get_error_message(),
+                    'toast_header_title' => esc_html__( 'Ops! Ocorreu um erro.', 'flexify-checkout-for-woocommerce' ),
+                    'toast_body_title' => $activate->get_error_message(),
                 );
             } else {
                 $response = array(
                     'status'  => 'success',
-                    'toast_header' => esc_html__( 'Plugin ativado com sucesso.', 'flexify-checkout-for-woocommerce' ),
-                    'toast_body' => esc_html__( 'Novo recurso adicionado!', 'flexify-checkout-for-woocommerce' ),
+                    'toast_header_title' => esc_html__( 'Plugin ativado com sucesso.', 'flexify-checkout-for-woocommerce' ),
+                    'toast_body_title' => esc_html__( 'Novo recurso adicionado!', 'flexify-checkout-for-woocommerce' ),
                 );
             }
 

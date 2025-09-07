@@ -90,7 +90,7 @@ class Assets {
 	 * Frontend assets
 	 * 
 	 * @since 1.0.0
-	 * @version 5.0.0
+	 * @version 5.2.0
 	 * @return void
 	 */
 	public function frontend_assets() {
@@ -253,6 +253,12 @@ class Assets {
 			),
 			'enable_autofill_company_info' => Admin_Options::get_setting('enable_autofill_company_info'),
 			'enable_hide_brazilian_market_fields' => Admin_Options::get_setting('enable_unset_wcbcf_fields_not_brazil'),
+			'countdown_enabled' => Admin_Options::get_setting('enable_checkout_countdown'),
+			'countdown_value' => Admin_Options::get_setting('checkout_countdown_value'),
+			'countdown_unit' => Admin_Options::get_setting('checkout_countdown_unit'),
+			'countdown_action' => Admin_Options::get_setting('checkout_countdown_action'),
+			'countdown_title' => Admin_Options::get_setting('checkout_countdown_title'),
+			'is_thankyou' => is_order_received_page() ? 'yes' : 'no',
 		));
 
 		/**

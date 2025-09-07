@@ -9,6 +9,7 @@ defined('ABSPATH') || exit;
  * Set default options
  * 
  * @since 5.0.0
+ * @version 5.2.0
  * @package MeuMouse.com
  */
 class Default_Options {
@@ -17,12 +18,11 @@ class Default_Options {
      * Set default options
      * 
      * @since 1.0.0
-     * @version 5.0.0
+     * @version 5.2.0
      * @return array
      */
     public function set_default_data_options() {
         return apply_filters( 'Flexify_Checkout/Admin/Set_Default_Options', array(
-            'enable_flexify_checkout' => 'yes',
             'enable_autofill_company_info' => 'no',
             'enable_street_number_field' => 'yes',
             'enable_back_to_shop_button' => 'no',
@@ -147,6 +147,15 @@ class Default_Options {
             'render_coupon_field_hook' => 'sidebar',
             'hide_header_stepper_buttons' => 'no',
             'auto_display_login_modal' => 'yes',
+            'enable_debug_mode' => 'no',
+            'contact_page_thankyou' => 'custom_link',
+            'contact_page_thankyou_custom_link' => home_url('/contato'),
+            'enable_checkout_countdown' => 'no',
+            'checkout_countdown_value' => '15',
+            'checkout_countdown_unit' => 'minutes',
+            'checkout_countdown_action' => 'hide',
+            'checkout_countdown_title' => esc_html__( 'Sua sessão termina em:', 'flexify-checkout-for-woocommerce' ),
+            'checkout_countdown_redirect_url' => home_url('/'),
         ));
     }
 
@@ -313,7 +322,7 @@ class Default_Options {
      * Get fields from Brazilian Market on WooCommerce plugin
      * 
      * @since 3.0.0
-     * @version 5.0.0
+     * @version 5.2.0
      * @return array
      */
     public static function get_brazilian_checkout_fields() {
@@ -331,8 +340,14 @@ class Default_Options {
                 'enabled' => 'yes',
                 'step' => '1',
                 'options' => array(
-                    '1' => esc_html__( 'Pessoa Física (CPF)', 'flexify-checkout-for-woocommerce' ),
-                    '2' => esc_html__( 'Pessoa Jurífica (CNPJ)', 'flexify-checkout-for-woocommerce' ),
+                    array(
+                        'value' => '1',
+                        'text' => esc_html__( 'Pessoa Física (CPF)', 'flexify-checkout-for-woocommerce' ),
+                    ),
+                    array(
+                        'value' => '2',
+                        'text' => esc_html__( 'Pessoa Jurífica (CNPJ)', 'flexify-checkout-for-woocommerce' ),
+                    ),
                 ),
             ),
             'billing_cpf' => array(
@@ -412,7 +427,7 @@ class Default_Options {
                 'position' => 'full',
                 'classes' => '',
                 'label_classes' => '',
-                'input_mask' => '',
+                'input_mask' => '00/00/0000',
                 'required' => 'no',
                 'priority' => '12',
                 'source' => 'plugin',

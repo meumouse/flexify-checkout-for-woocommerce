@@ -4,6 +4,7 @@ namespace MeuMouse\Flexify_Checkout\Admin;
 
 use MeuMouse\Flexify_Checkout\Core\Helpers;
 use MeuMouse\Flexify_Checkout\API\License;
+use MeuMouse\Flexify_Checkout\Checkout\Fields;
 
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
@@ -12,7 +13,7 @@ defined('ABSPATH') || exit;
  * Class to handle plugin admin panel objects and functions
  * 
  * @since 1.0.0
- * @version 5.1.0
+ * @version 5.2.0
  * @package MeuMouse.com
  */
 class Admin_Options {
@@ -64,7 +65,7 @@ class Admin_Options {
      * Set default options checkout fields
      * 
      * @since 3.0.0
-     * @version 5.1.0
+     * @version 5.2.0
      * @return void
      */
     public function set_checkout_step_fields() {
@@ -75,12 +76,8 @@ class Admin_Options {
         // Merge existing field options with defaults to fill in missing entries.
         $merged_fields = wp_parse_args( $get_field_options, $get_fields );
 
-        /**
-         * Add integration with Brazilian Market on WooCommerce plugin
-         * 
-         * @since 1.0.0
-         */
-        if ( class_exists('Extra_Checkout_Fields_For_Brazil') && ! isset( $merged_fields['billing_cpf'] ) ) {
+        // add brazilian market fields if base country is Brazil
+        if ( class_exists('Extra_Checkout_Fields_For_Brazil') || Fields::get_base_country() === 'BR' ) {
             // Add Brazilian Market on WooCommerce fields to existing options.
             $wcbcf_fields = $default_options->get_brazilian_checkout_fields();
             $merged_fields = array_merge( $merged_fields, $wcbcf_fields );

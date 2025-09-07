@@ -15,16 +15,19 @@ defined('ABSPATH') || exit;
  * Class for handle AJAX events
  *
  * @since 1.0.0
- * @version 5.1.0
+ * @version 5.2.0
  * @package MeuMouse.com
  */
 class Ajax {
+
+	public $response_obj;
+    public $license_message;
 
 	/**
 	 * Construct function
 	 * 
 	 * @since 1.0.0
-	 * @version 5.1.0
+	 * @version 5.2.0
 	 * @return void
 	 */
 	public function __construct() {
@@ -33,7 +36,7 @@ class Ajax {
 			'flexify_check_for_inline_error'        => array( __CLASS__, 'check_for_inline_error' ),
 			'flexify_check_for_inline_errors'       => array( __CLASS__, 'check_for_inline_errors' ),
 			'flexify_checkout_login'                => array( $this, 'checkout_login_callback' ),
-			'admin_ajax_save_options'               => array( $this, 'ajax_save_options_callback' ),
+			'flexify_checkout_save_settings'        => array( $this, 'ajax_save_options_callback' ),
 			'remove_checkout_fields'                => array( $this, 'remove_checkout_fields_callback' ),
 			'add_new_field_to_checkout'             => array( $this, 'add_new_field_to_checkout_callback' ),
 			'alternative_activation_license'        => array( $this, 'alternative_activation_license_callback' ),
@@ -47,8 +50,7 @@ class Ajax {
 			'add_new_email_provider'                => array( $this, 'add_new_email_provider_callback' ),
 			'remove_email_provider'                 => array( $this, 'remove_email_provider_callback' ),
 			'dismiss_billing_country_warning'       => array( __CLASS__, 'dismiss_billing_country_warning' ),
-			'deactive_license_action'               => array( $this, 'deactive_license_callback' ),
-			'clear_activation_cache_action'         => array( $this, 'clear_activation_cache_callback' ),
+			'flexify_checkout_deactive_license'     => array( $this, 'deactive_license_callback' ),
 			'flexify_checkout_reset_plugin_action'  => array( $this, 'reset_plugin_callback' ),
 			'check_field_availability'              => array( $this, 'check_field_availability_callback' ),
 			'remove_select_option'                  => array( $this, 'remove_select_option_callback' ),
@@ -56,6 +58,10 @@ class Ajax {
 			'get_checkout_session_data'             => array( $this, 'get_checkout_session_data_callback' ),
 			'flexify_checkout_remove_product'       => array( $this, 'remove_product_callback' ),
 			'flexify_checkout_undo_remove_product'  => array( $this, 'undo_remove_product_callback' ),
+			'flexify_checkout_sync_license'       	=> array( $this, 'sync_license_callback' ),
+			'flexify_checkout_active_license'       => array( $this, 'active_license_callback' ),
+			'flexify_checkout_alternative_activation' => array( $this, 'alternative_activation_callback' ),
+			'flexify_checkout_destroy_session'      => array( $this, 'destroy_session_callback' ),
 		);
 
 		// needs to be called by non-logged users
@@ -66,6 +72,7 @@ class Ajax {
 			'get_checkout_session_data',
 			'flexify_checkout_remove_product',
 			'flexify_checkout_undo_remove_product',
+			'flexify_checkout_destroy_session',
 		);
 
 		foreach ( $actions as $action => $callback ) {
@@ -205,18 +212,21 @@ class Ajax {
 	 * Save options in AJAX
 	 * 
 	 * @since 1.0.0
-	 * @version 5.1.0
+	 * @version 5.2.0
 	 * @return void
 	 */
 	public function ajax_save_options_callback() {
-		if ( isset( $_POST['action'] ) && $_POST['action'] === 'admin_ajax_save_options' ) {
+		if ( isset( $_POST['action'] ) && $_POST['action'] === 'flexify_checkout_save_settings' ) {
 			// Convert serialized data into an array
 			parse_str( $_POST['form_data'], $form_data );
 
-			$options = get_option('flexify_checkout_settings');
+			$options = get_option( 'flexify_checkout_settings', array() );
+
+			if ( ! is_array( $options ) ) {
+				$options = array();
+			}
 			
 			$basic_fields = array(
-				'enable_flexify_checkout',
 				'enable_back_to_shop_button',
 				'enable_skip_cart_page',
 				'enable_aditional_notes',
@@ -235,6 +245,8 @@ class Ajax {
 				'enable_remove_quantity_select',
 				'enable_auto_updates',
 				'enable_update_notices',
+				'enable_debug_mode',
+				'enable_checkout_countdown',
 			);
 
 			$license_fields = array(
@@ -726,7 +738,7 @@ class Ajax {
 	 * Add new condition AJAX callback
 	 * 
 	 * @since 3.5.0
-	 * @version 3.8.0
+	 * @version 5.2.0
 	 * @return void
 	 */
 	public function add_new_checkout_condition_callback() {
@@ -814,6 +826,8 @@ class Ajax {
 					'finish_with' => esc_html__( 'Termina com', 'flexify-checkout-for-woocommerce' ),
 					'bigger_then' => esc_html__( 'Maior que', 'flexify-checkout-for-woocommerce' ),
 					'less_than' => esc_html__( 'Menor que', 'flexify-checkout-for-woocommerce' ),
+					'checked' => esc_html__( 'Marcado', 'flexify-checkout-for-woocommerce' ),
+					'not_checked' => esc_html__( 'Desmarcado', 'flexify-checkout-for-woocommerce' ),
 				);
 				
 				$condition_value = isset( $form_condition['condition_value'] ) ? $form_condition['condition_value'] : '';
@@ -985,7 +999,7 @@ class Ajax {
      * @return void
      */
     public function deactive_license_callback() {
-        if ( isset( $_POST['action'] ) && $_POST['action'] === 'deactive_license_action' ) {
+        if ( isset( $_POST['action'] ) && $_POST['action'] === 'flexify_checkout_deactive_license' ) {
             $message = '';
             $deactivation = License::deactive_license( FLEXIFY_CHECKOUT_FILE, $message );
 
@@ -1019,35 +1033,10 @@ class Ajax {
 
 
 	/**
-     * Clear activation cache on AJAX callback
-     * 
-     * @since 3.8.0
-     * @return void
-     */
-    public function clear_activation_cache_callback() {
-        if ( isset( $_POST['action'] ) && $_POST['action'] === 'clear_activation_cache_action' ) {
-            delete_transient('flexify_checkout_api_request_cache');
-            delete_transient('flexify_checkout_api_response_cache');
-            delete_transient('flexify_checkout_license_status_cached');
-            delete_option('flexify_checkout_alternative_license');
-            delete_option('flexify_checkout_alternative_license_activation');
-
-            $response = array(
-                'status' => 'success',
-                'toast_header_title' => esc_html__( 'Cache de ativação limpo', 'flexify-checkout-for-woocommerce' ),
-                'toast_body_title' => esc_html__( 'O cache de ativação foi limpo com sucesso!', 'flexify-checkout-for-woocommerce' ),
-            );
-
-            wp_send_json( $response );
-        }
-    }
-
-
-	/**
      * Reset plugin options to default on AJAX callback
      * 
      * @since 3.8.0
-	 * @version 5.1.0
+	 * @version 5.2.0
      * @return void
      */
     public function reset_plugin_callback() {
@@ -1061,6 +1050,10 @@ class Ajax {
 				delete_transient('flexify_checkout_api_request_cache');
 				delete_transient('flexify_checkout_api_response_cache');
 				delete_transient('flexify_checkout_license_status_cached');
+
+				// set default options again
+				( new Admin_Options() )->set_default_options();
+				( new Admin_Options() )->set_checkout_step_fields();
 
                 $response = array(
                     'status' => 'success',
@@ -1355,6 +1348,348 @@ class Ajax {
 
 			wp_send_json_error( array(
 				'message' => 'Fail on re-add product.',
+			));
+		}
+	}
+
+
+	/**
+     * Sync license on AJAX callback
+     * 
+     * @since 5.2.0
+     * @return void
+     */
+	public function sync_license_callback() {
+		if ( isset( $_POST['action'] ) && $_POST['action'] === 'flexify_checkout_sync_license' ) {
+			$api_url = 'https://api.meumouse.com/wp-json/license/license/view';
+            
+            // send request
+            $response = wp_remote_post( $api_url, array(
+                'body' => array(
+                    'api_key' => '315D36C6-0C80F95B-3CAC4C7C-6BE7D8E0',
+                    'license_code' => get_option( 'flexify_checkout_license_key', '' ),
+                ),
+                'timeout' => 30,
+            ));
+
+            if ( is_wp_error( $response ) ) {
+                error_log( '[FLEXIFY CHECKOUT] Error on sync licence: ' . print_r( $response, true ) );
+            }
+
+            $response_body = wp_remote_retrieve_body( $response );
+            $response_code = wp_remote_retrieve_response_code( $response );
+            $details = json_decode( $response_body );
+
+            if ( $response_code === 200 ) {
+                if ( $details ) {
+                    update_option( 'flexify_checkout_license_info', $details );
+
+                    $data = $details->data;
+
+                    $obj = new \stdClass();
+                    $obj->is_valid = ( $data->status === 'A' );
+                    $obj->expire_date  = isset( $data->expiry_time ) ? $data->expiry_time : '';
+                    $obj->license_title= isset( $data->license_title ) ? $data->license_title : '';
+                    $obj->license_key = isset( $data->purchase_key ) ? $data->purchase_key : '';
+                    $obj->app_version = FLEXIFY_CHECKOUT_VERSION;
+                    $obj->domain = License::get_domain();
+                    $obj->license_key = $data->purchase_key;
+                    $obj->product_id = $data->product_id;
+                    $obj->product_base_name = $data->product_base_name;
+
+                    update_option( 'flexify_checkout_license_response_object', $obj );
+                    update_option( 'flexify_checkout_license_status', $obj->is_valid ? 'valid' : 'invalid' );
+
+                    if ( ! empty( $obj->expire_date ) && $obj->expire_date !== 'No expiry' ) {
+                        License::schedule_license_expiration_check( strtotime( $obj->expire_date ) );
+                    }
+                }
+
+                $date_format = get_option('date_format');
+                $status_html = '<span class="badge bg-translucent-danger rounded-pill">' . esc_html__( 'Inválida', 'flexify-checkout-for-woocommerce' ) . '</span>';
+                $features_html = '<span class="badge bg-translucent-warning rounded-pill">' . esc_html__( 'Básicos', 'flexify-checkout-for-woocommerce' ) . '</span>';
+                $type_text = '';
+                $expire_text = '';
+
+                if ( $obj->is_valid ) {
+                    $status_html = '<span class="badge bg-translucent-success rounded-pill">' . esc_html__( 'Válida', 'flexify-checkout-for-woocommerce' ) . '</span>';
+                    $features_html = '<span class="badge bg-translucent-primary rounded-pill">' . esc_html__( 'Pro', 'flexify-checkout-for-woocommerce' ) . '</span>';
+
+                    $expire_format = ( $obj->expire_date === 'No expiry' ) ? esc_html__( 'Nunca expira', 'flexify-checkout-for-woocommerce' ) : date( $date_format, strtotime( $obj->expire_date ) );
+                    $type_text = ( strpos( $obj->license_key, 'CM-' ) === 0 ) ? sprintf( esc_html__( 'Assinatura: Clube M - %s', 'flexify-checkout-for-woocommerce' ), $data->license_title ) : sprintf( esc_html__( 'Tipo da licença: %s', 'flexify-checkout-for-woocommerce' ), $data->license_title );
+                    $expire_text = sprintf( esc_html__( 'Licença expira em: %s', 'flexify-checkout-for-woocommerce' ), $expire_format );
+                }
+
+                $response = array(
+                    'status' => 'success',
+                    'toast_header_title' => esc_html__( 'Informações atualizadas', 'flexify-checkout-for-woocommerce' ),
+                    'toast_body_title' => esc_html__( 'A licença foi sincronizada com sucesso!', 'flexify-checkout-for-woocommerce' ),
+                    'license' => array(
+                        'status_html' => $status_html,
+                        'features_html' => $features_html,
+                        'type_html' => $type_text,
+                        'expire_html' => $expire_text,
+                    ),
+                );
+            } else {
+                $response = array(
+                    'status' => 'error',
+                    'toast_header_title' => esc_html__( 'Ops! Ocorreu um erro.', 'flexify-checkout-for-woocommerce' ),
+                    'toast_body_title' => esc_html__( 'Não foi possível sincronizar as informações da licença.', 'flexify-checkout-for-woocommerce' ),
+                );
+            }
+
+            wp_send_json( $response );
+		}
+	}
+
+
+	/**
+     * Active license process on AJAX callback
+     * 
+     * @since 5.2.0
+     * @return void
+     */
+    public function active_license_callback() {
+        if ( isset( $_POST['action'] ) && $_POST['action'] === 'flexify_checkout_active_license' ) {
+            $this->response_obj = new \stdClass();
+            $message = '';
+            $license_key = isset( $_POST['license_key'] ) ? sanitize_text_field( $_POST['license_key'] ) : '';
+        
+            // clear response cache first
+            delete_transient('flexify_checkout_api_request_cache');
+            delete_transient('flexify_checkout_api_response_cache');
+            delete_transient('flexify_checkout_license_status_cached');
+
+            update_option( 'flexify_checkout_license_key', $license_key ) || add_option('flexify_checkout_license_key', $license_key );
+            update_option( 'flexify_checkout_temp_license_key', $license_key ) || add_option('flexify_checkout_temp_license_key', $license_key );
+    
+            // Check on the server if the license is valid and update responses and options
+            if ( License::check_license( $license_key, $this->license_message, $this->response_obj, FLEXIFY_CHECKOUT_FILE ) ) {
+                if ( $this->response_obj && $this->response_obj->is_valid ) {
+                    update_option( 'flexify_checkout_license_status', 'valid' );
+                    delete_option('flexify_checkout_temp_license_key');
+                    delete_option('flexify_checkout_license_expired');
+                    delete_option('flexify_checkout_alternative_license_activation');
+                } else {
+                    update_option( 'flexify_checkout_license_status', 'invalid' );
+                }
+        
+                if ( License::is_valid() ) {
+                    $response = array(
+                        'status' => 'success',
+                        'toast_header_title' => __( 'Licença ativada com sucesso.', 'flexify-checkout-for-woocommerce' ),
+                        'toast_body_title' => __( 'Agora todos os recursos estão ativos!', 'flexify-checkout-for-woocommerce' ),
+                    );
+                }
+            } else {
+                if ( ! empty( $license_key ) && ! empty( $this->license_message ) ) {
+                    $response = array(
+                        'status' => 'error',
+                        'toast_header_title' => __( 'Ops! Ocorreu um erro.', 'flexify-checkout-for-woocommerce' ),
+                        'toast_body_title' => $this->license_message,
+                    );
+                }
+            }
+
+            // send response for frontend
+            wp_send_json( $response );
+        }
+    }
+
+
+    /**
+     * Handle alternative activation license file .key
+     * 
+     * @since 5.2.0
+     * @return void
+     */
+    public function alternative_activation_callback() {
+        if ( ! isset( $_POST['action'] ) || $_POST['action'] !== 'flexify_checkout_alternative_activation' ) {
+            wp_send_json( array(
+                'status' => 'error',
+                'toast_header' => __( 'Ops! Ocorreu um erro.', 'flexify-checkout-for-woocommerce' ),
+                'toast_body' => __( 'Erro ao carregar o arquivo. A ação não foi acionada corretamente.', 'flexify-checkout-for-woocommerce' ),
+			));
+        }
+
+        // Check if the file was uploaded
+        if ( empty( $_FILES['file'] ) ) {
+            wp_send_json( array(
+                'status' => 'error',
+                'toast_header' => __( 'Ops! Ocorreu um erro.', 'flexify-checkout-for-woocommerce' ),
+                'toast_body' => __( 'Erro ao carregar o arquivo. O arquivo não foi enviado.', 'flexify-checkout-for-woocommerce' ),
+			));
+        }
+
+        $file = $_FILES['file'];
+
+        // Check if it is a .key file
+        if ( pathinfo( $file['name'], PATHINFO_EXTENSION ) !== 'key' ) {
+            wp_send_json( array(
+                'status' => 'invalid_file',
+                'toast_header' => __( 'Ops! Ocorreu um erro.', 'flexify-checkout-for-woocommerce' ),
+                'toast_body' => __( 'Arquivo inválido. O arquivo deve ser extensão .key', 'flexify-checkout-for-woocommerce' ),
+            ));
+        }
+
+        $file_content = file_get_contents( $file['tmp_name'] );
+
+        $decrypt_keys = array(
+            '49D52DA9137137C0', // original product key
+            'B729F2659393EE27', // Clube M
+        );
+
+        // Decrypt the file content
+        $decrypted_data = License::decrypt_alternative_license( $file_content, $decrypt_keys );
+
+        if ( $decrypted_data === null ) {
+            wp_send_json( array(
+                'status' => 'error',
+                'toast_header' => __( 'Ops! Ocorreu um erro.', 'flexify-checkout-for-woocommerce' ),
+                'toast_body' => __( 'Não foi possível descriptografar o arquivo de licença.', 'flexify-checkout-for-woocommerce' ),
+			));
+        }
+
+        $license_data_array = json_decode( stripslashes( $decrypted_data ) );
+        $this_domain = License::get_domain();
+
+        if ( ! $license_data_array ) {
+            wp_send_json( array(
+                'status' => 'error',
+                'toast_header' => __( 'Ops! Ocorreu um erro.', 'flexify-checkout-for-woocommerce' ),
+                'toast_body' => __( 'O arquivo de licença não contém dados válidos.', 'flexify-checkout-for-woocommerce' ),
+            ));
+        }
+
+        if ( $this_domain !== $license_data_array->site_domain ) {
+            wp_send_json( array(
+                'status' => 'error',
+                'toast_header' => __( 'Ops! Ocorreu um erro.', 'flexify-checkout-for-woocommerce' ),
+                'toast_body' => __( 'O domínio de ativação não é permitido.', 'flexify-checkout-for-woocommerce' ),
+			));
+        }
+
+        if ( ! in_array( $license_data_array->selected_product, array( '1', '7' ), true ) ) {
+            wp_send_json( array(
+                'status' => 'error',
+                'toast_header' => __( 'Ops! Ocorreu um erro.', 'flexify-checkout-for-woocommerce' ),
+                'toast_body' => __( 'A licença informada não é permitida para este produto', 'flexify-checkout-for-woocommerce' ),
+            ));
+        }
+
+        delete_transient('flexify_checkout_api_request_cache');
+		delete_transient('flexify_checkout_api_response_cache');
+		delete_transient('flexify_checkout_license_status_cached');
+
+        $license_object = $license_data_array->license_object;
+
+        // build object
+        $obj = (object) array(
+            'license_key' => $license_data_array->license_code,
+            'email' => $license_data_array->user_email,
+            'domain' => $this_domain,
+            'app_version' => FLEXIFY_CHECKOUT_VERSION,
+            'product_id' => $license_data_array->selected_product,
+            'product_base' => $license_data_array->product_base,
+            'is_valid' => $license_object->is_valid,
+            'license_title'=> $license_object->license_title,
+            'expire_date' => $license_object->expire_date,
+        );
+
+        update_option( 'flexify_checkout_alternative_license', 'active' );
+        update_option( 'flexify_checkout_license_response_object', $obj );
+        update_option( 'flexify_checkout_license_key', $obj->license_key );
+        update_option( 'flexify_checkout_license_status', 'valid' );
+
+        // send response
+        wp_send_json( array(
+            'status' => 'success',
+            'toast_header' => __( 'Licença ativa', 'flexify-checkout-for-woocommerce' ),
+            'toast_body' => __( 'A licença foi ativada com sucesso!', 'flexify-checkout-for-woocommerce' ),
+            'dropfile_message' => __( 'Licença processada com sucesso!', 'flexify-checkout-for-woocommerce' ),
+		));
+    }
+
+
+	/**
+	 * Destroy WooCommerce session
+	 *
+	 * @since 5.2.0
+	 * @return void
+	 */
+	public function destroy_session_callback() {
+		if ( isset( $_POST['action'] ) && $_POST['action'] === 'flexify_checkout_destroy_session' ) {
+			$cart_items = array();
+
+			if ( WC()->cart ) {
+				foreach ( WC()->cart->get_cart() as $cart_item_key => $item ) {
+					$product        = $item['data'] ?? null;
+					$product_id     = $item['product_id'] ?? 0;
+					$variation_id   = $item['variation_id'] ?? 0;
+					$qty            = isset( $item['quantity'] ) ? (int) $item['quantity'] : 0;
+					$line_subtotal  = isset( $item['line_subtotal'] ) ? (float) $item['line_subtotal'] : 0.0;
+					$line_total     = isset( $item['line_total'] ) ? (float) $item['line_total'] : 0.0;
+					$name           = $product ? $product->get_name() : get_the_title( $product_id );
+
+					$cart_items[] = array(
+						'key'           => $cart_item_key,
+						'product_id'    => $product_id,
+						'variation_id'  => $variation_id,
+						'name'          => $name,
+						'quantity'      => $qty,
+						'line_subtotal' => $line_subtotal,
+						'line_total'    => $line_total,
+						'variation'     => isset( $item['variation'] ) ? $item['variation'] : array(),
+						'meta'          => isset( $item['addons'] ) ? $item['addons'] : array(),
+					);
+				}
+			}
+
+			$cart_totals = array();
+
+			if ( WC()->cart ) {
+				$cart_totals = array(
+					'subtotal'        => (float) WC()->cart->get_subtotal(),
+					'discount_total'  => (float) WC()->cart->get_discount_total(),
+					'fee_total'       => (float) WC()->cart->get_fee_total(),
+					'shipping_total'  => (float) WC()->cart->get_shipping_total(),
+					'total'           => (float) WC()->cart->get_total( 'edit' ),
+					'tax_total'       => (float) WC()->cart->get_total_tax(),
+					'items_count'     => (int)   WC()->cart->get_cart_contents_count(),
+				);
+			}
+
+			$session_data = WC()->session->get('flexify_checkout_customer_fields');
+			$applied_coupons = WC()->cart ? WC()->cart->get_applied_coupons() : array();
+			$redirect_url = Admin_Options::get_setting('checkout_countdown_redirect_url');
+
+			/**
+			 * Fired hook after destroy session
+			 * 
+			 * @since 5.2.0
+			 * @param array $session_data | Array with session data before destroy
+			 * @param array $cart_items | Array with cart items data before destroy
+			 * @param array $applied_coupons | Array with applied coupons before destroy
+			 * @param array $cart_totals | Array with cart totals data before destroy
+			 * @param string $redirect_url | Redirect URL after destroy session
+			 */
+			do_action( 'Flexify_Checkout/Countdown/Session_Destroyed', $session_data, $cart_items, $applied_coupons, $cart_totals, $redirect_url );
+
+			// clear cart
+			if ( WC()->cart ) {
+				WC()->cart->empty_cart( true );
+			}
+
+			if ( WC()->session ) {
+				WC()->session->cleanup_sessions();
+				WC()->session->destroy_session();
+			}
+
+			// send response
+			wp_send_json( array(
+				'status' => 'success',
+				'redirect_url' => $redirect_url,
 			));
 		}
 	}

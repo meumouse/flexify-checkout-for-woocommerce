@@ -39,12 +39,13 @@
          * Display toast messages in the wrapper
          * 
          * @since 3.8.0
-         * @version 5.1.0
+         * @version 5.2.0
          * @param {'success'|'danger'|'warning'|'error'} type 
-         * @param {string} header 
-         * @param {string} body 
+         * @param {string} header | Header title
+         * @param {string} body | Body title
+         * @param {string} [customClass] | Additional custom class for the toast
          */
-        displayToast: function(type, header, body) {
+        displayToast: function( type, header, body, customClass = '' ) {
 			let icon = '';
 
 			if ( type === 'success' ) {
@@ -57,7 +58,7 @@
 				type = 'danger';
 			}
 
-            const toast = `<div class="toast toast-${type} show">
+            const toast = `<div class="toast toast-${type} ${customClass} show">
                 <div class="toast-header bg-${type} text-white">
 					${icon}
 					<span class="me-auto">${header || ''}</span>
@@ -145,7 +146,7 @@
                     url: params.ajax_url,
                     type: 'POST',
                     data: {
-                        action: 'admin_ajax_save_options',
+                        action: 'flexify_checkout_save_settings',
                         form_data: settings_form.serialize(),
                     },
                     beforeSend: function() {
@@ -178,7 +179,7 @@
 		 * Generic visibility controllers (checkboxes, selects, arrays, maps)
 		 * 
 		 * @since 1.0.0
-		 * @version 5.1.0
+		 * @version 5.2.0
 		 */
 		setupVisibilityControllers: function() {
 
@@ -286,6 +287,19 @@
 				'is', 'is_not', 'contains', 'not_contain', 
 				'start_with', 'finish_with', 'bigger_then', 'less_than'
 			], '.condition-value');
+
+            // display input for custom link on contact page for thankyou page
+            attach('#contact_page_thankyou', {
+				'custom_link': '.require-custom-link-enabled',
+			});
+
+            // display modal for set checkout countdown
+            attach('#enable_checkout_countdown', '.require-countdown-enabled');
+
+            // display redirect input for countdown action logout
+            attach('#checkout_countdown_action', {
+				'logout': '.require-countdown-action-logout',
+			});
 		},
 
         /**
@@ -419,7 +433,7 @@
          * Register all popups needed by the admin
          * 
          * @since 2.3.0
-         * @version 5.1.0
+         * @version 5.2.0
          */
         popups: function() {
             this.displayModal('#inter_bank_credencials_settings', '#inter_bank_credendials_container', '#inter_bank_credendials_close');
@@ -435,6 +449,7 @@
             this.displayModal('#add_new_checkout_condition_trigger', '#add_new_checkout_condition_container', '#close_add_new_checkout_condition');
             this.displayModal('#set_email_providers_trigger', '#set_email_providers_container', '#close_set_email_providers');
             this.displayModal('#set_process_purchase_animation_trigger', '#set_process_purchase_animation_container', '#close_set_process_purchase_animation');
+            this.displayModal('#set_countdown_trigger', '#set_countdown_container', '#close_set_countdown');
         },
 
         /**
@@ -981,117 +996,6 @@
         },
 
         /**
-         * Pre-license actions: disable .pro-version and redirect to About
-         * 
-         * @since 3.0.0
-         * @version 5.1.0
-         */
-        preLicenseActions: function() {
-            $('.pro-version').prop('disabled', true);
-
-            $(document).on('click', '#active_license_form', function() {
-                $('#popup-pro-notice').removeClass('show');
-                $('.flexify-checkout-wrapper a.nav-tab[href="#about"]').click();
-                window.scrollTo(0, 0);
-            });
-        },
-
-        /**
-         * Alternative license upload (drag & drop + file input)
-         * 
-         * @since 3.3.0
-         * @version 5.1.0
-         */
-        altLicenseUpload: function() {
-            const dropSel = '#license_key_zone';
-            const fileSel = '#upload_license_key';
-
-            // dragover / dragleave
-            $(document).on('dragover dragleave', dropSel, function(e) {
-                e.preventDefault();
-                $(this).toggleClass('drag-over', e.type === 'dragover');
-            });
-
-            // drop
-            $(document).on('drop', dropSel, (e) => {
-                e.preventDefault();
-                var file = e.originalEvent.dataTransfer.files[0];
-                if ( ! $(e.currentTarget).hasClass('file-uploaded') ) {
-                    handle_file(file, $(e.currentTarget));
-                }
-            });
-
-            // input change
-            $(document).on('change', fileSel, function(e) {
-                e.preventDefault();
-                var file = e.target.files[0];
-                handle_file(file, $(this).parents('.dropzone'));
-            });
-
-            /**
-             * Handle file upload logic
-             * 
-             * @since 3.3.0
-             * @version 5.1.0
-             * @param {File} file 
-             * @param {jQuery} dropzone 
-             */
-            function handle_file(file, dropzone) {
-                if ( ! file ) return;
-
-                var filename = file.name;
-
-                // UI state
-                dropzone.children('.file-list').removeClass('d-none').text(filename);
-                dropzone.addClass('file-processing');
-                dropzone.append('<div class="spinner-border"></div>');
-                dropzone.children('.drag-text, .drag-and-drop-file, .form-inter-bank-files').addClass('d-none');
-
-                // Prepare form
-                var form_data = new FormData();
-                form_data.append('action', 'alternative_activation_license');
-                form_data.append('file', file);
-
-                $.ajax({
-                    url: params.ajax_url,
-                    type: 'POST',
-                    data: form_data,
-                    processData: false,
-                    contentType: false,
-                    success: function(response) {
-                        try {
-                            if ( response.status === 'success' ) {
-                                dropzone.addClass('file-uploaded').removeClass('file-processing');
-                                dropzone.children('.spinner-border').remove();
-                                dropzone.append('<div class="upload-notice d-flex flex-column align-items-center"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="#22c55e" d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8z"></path><path fill="#22c55e" d="M9.999 13.587 7.7 11.292l-1.412 1.416 3.713 3.705 6.706-6.706-1.414-1.414z"></path></svg><span>' + (response.dropfile_message || '') + '</span></div>');
-                                dropzone.children('.file-list').addClass('d-none');
-
-                                setTimeout( function() { location.reload(); }, 1000 );
-                            } else {
-                                // invalid file
-                                dropzone.addClass('invalid-file').removeClass('file-processing');
-                                dropzone.children('.spinner-border').remove();
-                                dropzone.children('.drag-text, .drag-and-drop-file, .form-inter-bank-files').removeClass('d-none');
-                                dropzone.children('.file-list').addClass('d-none');
-
-                                // feedback toast if available
-                                if ( response.toast_header || response.toast_body ) {
-                                    Flexify_Checkout_Admin.displayToast('danger', response.toast_header, response.toast_body);
-                                }
-                            }
-                        } catch (err) {
-                            console.log(err);
-                        }
-                    },
-                    error: function(jqXHR, textStatus, errorThrown) {
-                        dropzone.addClass('fail-upload').removeClass('file-processing');
-                        console.error('AJAX Error:', textStatus, errorThrown);
-                    },
-                });
-            }
-        },
-
-        /**
          * Reset settings
          * 
          * @since 3.8.0
@@ -1162,7 +1066,7 @@
          * Handle checkout conditions
          * 
          * @since 3.5.0
-         * @version 5.1.0
+         * @version 5.2.0
          */
         handleConditions: function() {
             /**
@@ -1194,6 +1098,7 @@
              * Build FormData fresh from DOM
              *
              * @since 5.1.0
+             * @version 5.2.0
              * @returns {FormData}
              */
             const buildPayload = () => {
@@ -1206,8 +1111,15 @@
                 fd.set('component_field', val(S.component_field));
                 fd.set('verification_condition', val(S.verification_condition));
                 fd.set('verification_condition_field', val(S.verification_condition_field));
-                fd.set('condition', val(S.condition));
-                fd.set('condition_value', $(S.condition_value).val() || '');
+
+                const condType = val(S.condition);
+                fd.set('condition', condType);
+
+                if ( ['checked', 'not_checked'].includes(condType) ) {
+                    fd.set('condition_value', '' );
+                } else {
+                    fd.set('condition_value', $(S.condition_value).val() || '' );
+                }
 
                 // specifics
                 fd.set('payment_method', val(S.payment));
@@ -1288,7 +1200,7 @@
             /**
             * Reset all selects/inputs inside a container
             *
-            * @since 5.1.1
+            * @since 5.2.0
             * @param {string} container
             */
             const resetForm = (container) => {
@@ -1316,7 +1228,7 @@
             /**
             * Live search (AJAX) with delegation + debouce
             *
-            * @since 5.1.1
+            * @since 5.2.0
             * @param {string} inputSel
             * @param {string} boxSel
             * @param {string} action
@@ -1423,6 +1335,33 @@
             // when changing the product filter, update the button state
             $(document).off('change', S.product_filter).on('change', S.product_filter, toggleSubmit);
 
+            const allConditionOptions = $(S.condition).find('option').clone();
+
+            $(document).on('change', S.verification_condition_field, function() {
+                const type = $(this).find('option:selected').data('type');
+                const $cond = $(S.condition);
+                $cond.html(allConditionOptions.clone());
+
+                if ( type === 'checkbox' ) {
+                    $cond.find('option').each( function() {
+                        const val = $(this).val();
+                        if ( ! ['none', 'checked', 'not_checked'].includes(val) ) {
+                            $(this).remove();
+                        }
+                    });
+                }
+
+                $cond.val('none').trigger('change');
+            });
+
+            $(document).on('change', S.verification_condition, function() {
+                if ( $(this).val() !== 'field' ) {
+                    $(S.condition).html(allConditionOptions.clone()).val('none').trigger('change');
+                } else {
+                    $(S.verification_condition_field).trigger('change');
+                }
+            });
+
             // searching with debounce
             bindSearch( S.product_input, S.products_box, 'get_woo_products_ajax', 'product-id', specificProducts );
             bindSearch( S.category_input, S.categories_box, 'get_woo_categories_ajax', 'category-id', specificCategories );
@@ -1433,7 +1372,7 @@
                 e.preventDefault();
 
                 const $btn = $(e.currentTarget);
-                const state  = this.keepButtonState($btn);
+                const state  = Flexify_Checkout_Admin.keepButtonState($btn);
 
                 $btn.html('<span class="spinner-border spinner-border-sm"></span>');
 
@@ -1449,7 +1388,7 @@
                 })
                 .done((res) => {
                     if (res && res.status === 'success') {
-                        this.displayToast('success', res.toast_header_title, res.toast_body_title);
+                        Flexify_Checkout_Admin.displayToast('success', res.toast_header_title, res.toast_body_title);
 
                         const $wrap = $('#display_conditions');
                         const item  = `<li class="list-group-item d-flex align-items-center justify-content-between">
@@ -1479,12 +1418,12 @@
                         }, 300);
 
                     } else {
-                        this.displayToast('danger', res?.toast_header_title || 'Erro', res?.toast_body_title || (res?.error_message || 'Falha ao adicionar condição.'));
+                        Flexify_Checkout_Admin.displayToast('danger', res?.toast_header_title || 'Erro', res?.toast_body_title || (res?.error_message || 'Falha ao adicionar condição.'));
                     }
                 })
                 .fail((xhr, t, err) => {
                     console.error('AJAX failed:', t, err);
-                    this.displayToast('danger', 'Erro', 'Não foi possível enviar a condição.');
+                    Flexify_Checkout_Admin.displayToast('danger', 'Erro', 'Não foi possível enviar a condição.');
                 })
                 .always(() => {
                     $btn.html(state.html).width(state.width).height(state.height);
@@ -1498,7 +1437,7 @@
                 const $btn = $(e.currentTarget);
                 const $li = $btn.closest('.list-group-item');
                 const idx = $li.data('condition');
-                const state = this.keepButtonState($btn);
+                const state = Flexify_Checkout_Admin.keepButtonState($btn);
 
                 $btn.html('<span class="spinner-border spinner-border-sm"></span>');
 
@@ -1510,7 +1449,7 @@
                 })
                 .done((res) => {
                     if (res && res.status === 'success') {
-                        this.displayToast('success', res.toast_header_title, res.toast_body_title);
+                        Flexify_Checkout_Admin.displayToast('success', res.toast_header_title, res.toast_body_title);
 
                         $li.fadeOut(150, function() {
                             $(this).remove();
@@ -1525,12 +1464,12 @@
                             }
                         });
                     } else {
-                        this.displayToast('danger', res?.toast_header_title || 'Erro', res?.toast_body_title || 'Falha ao excluir condição.');
+                        Flexify_Checkout_Admin.displayToast('danger', res?.toast_header_title || 'Erro', res?.toast_body_title || 'Falha ao excluir condição.');
                     }
                 })
                 .fail((xhr, t, err) => {
                     console.error('AJAX failed:', t, err);
-                    this.displayToast('danger', 'Erro', 'Não foi possível excluir a condição.');
+                    Flexify_Checkout_Admin.displayToast('danger', 'Erro', 'Não foi possível excluir a condição.');
                 })
                 .always(() => {
                     $btn.html(state.html).width(state.width).height(state.height);
@@ -1542,9 +1481,458 @@
         },
 
         /**
+         * 
+         */
+        License: {
+
+            /**
+             * Active license process
+             * 
+             * @since 1.0.0
+             * @version 5.2.0
+             */
+            activate: function() {
+                $('#flexify_checkout_active_license').on('click', function(e) {
+                    e.preventDefault();
+
+                    let btn = $(this);
+                    let btn_state = Flexify_Checkout_Admin.keepButtonState(btn);
+
+                    // send ajax request
+                    $.ajax({
+                        url: params.ajax_url,
+                        method: 'POST',
+                        data: {
+                            action: 'flexify_checkout_active_license',
+                            license_key: $('#flexify_checkout_license_key').val(),
+                        },
+                        beforeSend: function() {
+                            btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span>');
+                        },
+                        success: function(response) {
+                            try {
+                                if ( response.status === 'success' ) {
+                                    btn.prop('disabled', true).html(btn_state.html);
+                                    Flexify_Checkout_Admin.displayToast( 'success', response.toast_header_title, response.toast_body_title );
+
+                                    setTimeout( function() {
+                                        location.reload();
+                                    }, 1000);
+                                } else {
+                                    Flexify_Checkout_Admin.displayToast( 'error', response.toast_header_title, response.toast_body_title );
+                                }
+                            } catch (error) {
+                                console.log(error);
+                            }
+                        },
+                        complete: function() {
+                            btn.prop('disabled', false).html(btn_state.html);
+                        },
+                        error: function(xhr, status, error) {
+                            alert('AJAX error: ' + error);
+                        },
+                    });
+                });
+            },
+
+            /**
+             * Pre-license actions: disable .pro-version and redirect to About
+             * 
+             * @since 3.0.0
+             * @version 5.2.0
+             */
+            preLicenseActions: function() {
+                $('.pro-version').prop('disabled', true);
+
+                $(document).on('click', '#active_license_form', function() {
+                    $('#popup-pro-notice').removeClass('show');
+                    $('.flexify-checkout-wrapper a.nav-tab[href="#about"]').click();
+                    
+                    // scroll at the license form view
+                    $('html, body').animate({
+                        scrollTop: $('#enable_auto_updates').offset().top
+                    }, 300);
+                });
+            },
+
+            /**
+             * Alternative license upload (drag & drop + file input)
+             * 
+             * @since 3.3.0
+             * @version 5.1.0
+             */
+            altLicenseUpload: function() {
+                const dropSel = '#license_key_zone';
+                const fileSel = '#upload_license_key';
+
+                // dragover / dragleave
+                $(document).on('dragover dragleave', dropSel, function(e) {
+                    e.preventDefault();
+                    $(this).toggleClass('drag-over', e.type === 'dragover');
+                });
+
+                // drop
+                $(document).on('drop', dropSel, (e) => {
+                    e.preventDefault();
+                    var file = e.originalEvent.dataTransfer.files[0];
+                    if ( ! $(e.currentTarget).hasClass('file-uploaded') ) {
+                        handle_file(file, $(e.currentTarget));
+                    }
+                });
+
+                // input change
+                $(document).on('change', fileSel, function(e) {
+                    e.preventDefault();
+                    var file = e.target.files[0];
+                    handle_file(file, $(this).parents('.dropzone'));
+                });
+
+                /**
+                 * Handle file upload logic
+                 * 
+                 * @since 3.3.0
+                 * @version 5.1.0
+                 * @param {File} file 
+                 * @param {jQuery} dropzone 
+                 */
+                function handle_file(file, dropzone) {
+                    if ( ! file ) return;
+
+                    var filename = file.name;
+
+                    // UI state
+                    dropzone.children('.file-list').removeClass('d-none').text(filename);
+                    dropzone.addClass('file-processing');
+                    dropzone.append('<div class="spinner-border"></div>');
+                    dropzone.children('.drag-text, .drag-and-drop-file, .form-inter-bank-files').addClass('d-none');
+
+                    // Prepare form
+                    var form_data = new FormData();
+                    form_data.append('action', 'flexify_checkout_alternative_activation');
+                    form_data.append('file', file);
+
+                    $.ajax({
+                        url: params.ajax_url,
+                        type: 'POST',
+                        data: form_data,
+                        processData: false,
+                        contentType: false,
+                        success: function(response) {
+                            try {
+                                if ( response.status === 'success' ) {
+                                    dropzone.addClass('file-uploaded').removeClass('file-processing');
+                                    dropzone.children('.spinner-border').remove();
+                                    dropzone.append('<div class="upload-notice d-flex flex-column align-items-center"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="#22c55e" d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8z"></path><path fill="#22c55e" d="M9.999 13.587 7.7 11.292l-1.412 1.416 3.713 3.705 6.706-6.706-1.414-1.414z"></path></svg><span>' + (response.dropfile_message || '') + '</span></div>');
+                                    dropzone.children('.file-list').addClass('d-none');
+
+                                    setTimeout( function() { location.reload(); }, 1000 );
+                                } else {
+                                    // invalid file
+                                    dropzone.addClass('invalid-file').removeClass('file-processing');
+                                    dropzone.children('.spinner-border').remove();
+                                    dropzone.children('.drag-text, .drag-and-drop-file, .form-inter-bank-files').removeClass('d-none');
+                                    dropzone.children('.file-list').addClass('d-none');
+
+                                    // feedback toast if available
+                                    if ( response.toast_header || response.toast_body ) {
+                                        Flexify_Checkout_Admin.displayToast('danger', response.toast_header, response.toast_body);
+                                    }
+                                }
+                            } catch (err) {
+                                console.log(err);
+                            }
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+                            dropzone.addClass('fail-upload').removeClass('file-processing');
+                            console.error('AJAX Error:', textStatus, errorThrown);
+                        },
+                    });
+                }
+            },
+
+            /**
+             * Deactivation license process
+             * 
+             * @since 1.0.0
+             * @version 5.2.0
+             */
+            deactivate: function() {
+                $('#flexify_checkout_deactive_license').on('click', function(e) {
+                    e.preventDefault();
+
+                    var confirm_deactivate_license = confirm(flexify_checkout_params.confirm_deactivate_license);
+
+                    if ( ! confirm_deactivate_license ) {
+                        return;
+                    }
+
+                    let btn = $(this);
+                    let btn_state = Flexify_Checkout_Admin.keepButtonState(btn);
+
+                    // send ajax request
+                    $.ajax({
+                        url: params.ajax_url,
+                        type: 'POST',
+                        data: {
+                            action: 'flexify_checkout_deactive_license',
+                        },
+                        beforeSend: function() {
+                            btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span>');
+                        },
+                        success: function(response) {
+                            try {
+                                if ( response.status === 'success' ) {
+                                    btn.prop('disabled', true).html(btn_state.html);
+                                    Flexify_Checkout_Admin.displayToast( 'success', response.toast_header_title, response.toast_body_title );
+
+                                    setTimeout( function() {
+                                        location.reload();
+                                    }, 1000);
+                                } else {
+                                    Flexify_Checkout_Admin.displayToast( 'error', response.toast_header_title, response.toast_body_title );
+                                }
+                            } catch (error) {
+                                console.log(error);
+                            }
+                        },
+                        error: function() {
+                            btn.prop('disabled', false).html(btn_state.html);
+                        },
+                    });
+                });
+            },
+
+            /**
+             * Sync license information
+             * 
+             * @since 5.2.0
+             */
+            sync: function() {
+                $(document).on('click', '#flexify_checkout_sync_license', function(e) {
+                    e.preventDefault();
+
+                    let btn = $(this);
+                    let btn_state = Flexify_Checkout_Admin.keepButtonState(btn);
+
+                    // send AJAX request
+                    $.ajax({
+                        url: params.ajax_url,
+                        type: 'POST',
+                        data: {
+                            action: 'flexify_checkout_sync_license',
+                        },
+                        beforeSend: function() {
+                            btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span>');
+
+                            // add placeholder animation on each license details item
+                            $('.license-details-item').each( function() {
+                                $(this).addClass('placeholder-content');
+                            });
+                        },
+                        success: function(response) {
+                            try {
+                                if ( response.status === 'success' ) {
+                                    // display notice
+                                    Flexify_Checkout_Admin.displayToast( 'success', response.toast_header_title, response.toast_body_title );
+
+                                    if ( response.license ) {
+                                        $('#fcw-license-status').html(response.license.status_html);
+                                        $('#fcw-license-features').html(response.license.features_html);
+                                        $('#fcw-license-type').html(response.license.type_html);
+                                        $('#fcw-license-expiry').html(response.license.expire_html);
+                                    }
+                                } else {
+                                    Flexify_Checkout_Admin.displayToast( 'error', response.toast_header_title, response.toast_body_title );
+                                }
+                            } catch (error) {
+                                console.log(error);
+                            }
+                        },
+                        complete: function() {
+                            btn.prop('disabled', false).html(btn_state.html);
+                            $('.license-details-item').removeClass('placeholder-content');
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+                            console.error('AJAX Error:', textStatus, errorThrown);
+                        },
+                    });
+                });
+            },
+
+            /**
+             * Initialize license module
+             * 
+             * @since 5.2.0
+             */
+            init: function() {
+                this.activate();
+                this.preLicenseActions();
+                this.altLicenseUpload();
+                this.deactivate();
+                this.sync();
+            },
+        },
+
+        /**
+         * Handle integration modules settings
+         * 
+         * @since 3.8.2
+         * @version 5.2.0
+         */
+        integrationModules: {
+            /**
+             * Install a module integration
+             * 
+             * @since 3.8.2
+             * @version 5.2.0
+             */
+            install: function() {
+                $('.install-module').on('click', function(e) {
+                    e.preventDefault();
+            
+                    let btn = $(this);
+				    let btn_state = Flexify_Checkout_Admin.keepButtonState(btn);
+                    let plugin_url = btn.data('plugin-url');
+                    let plugin_slug = btn.data('plugin-slug');
+            
+                    // ajax request
+                    $.ajax({
+                        type: 'POST',
+                        url: params.ajax_url,
+                        data: {
+                            action: 'flexify_checkout_install_modules',
+                            plugin_url: plugin_url,
+                            plugin_slug: plugin_slug,
+                        },
+                        beforeSend: function() {
+                            btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span>');
+                        },
+                        success: function(response) {
+                            if ( response.status === 'success' ) {
+                                btn.prop('disabled', false).html(btn_state.html);
+                                Flexify_Checkout_Admin.displayToast( 'success', response.toast_header_title, response.toast_body_title );
+
+                                setTimeout( function() {
+                                    location.reload();
+                                }, 500);
+                            } else {
+                                Flexify_Checkout_Admin.displayToast( 'error', response.toast_header_title, response.toast_body_title );
+                            }
+                        },
+                        error: function(response) {
+                            btn.prop('disabled', false).html(btn_state.html);
+                            alert('Error installing the plugin: ' + response.responseText);
+                        }
+                    });
+                });
+            },
+
+            /**
+             * Activate plugin when installed
+             * 
+             * @since 3.8.2
+             * @version 5.2.0
+             */
+            activation: function() {
+                $('.activate-plugin').on('click', function(e) {
+                    e.preventDefault();
+            
+                    let btn = $(this);
+				    let btn_state = Flexify_Checkout_Admin.keepButtonState(btn);
+                    let plugin_slug = btn.data('plugin-slug');
+            
+                    // ajax request
+                    $.ajax({
+                        type: 'POST',
+                        url: params.ajax_url,
+                        data: {
+                            action: 'flexify_checkout_activate_plugin',
+                            plugin_slug: plugin_slug,
+                        },
+                        beforeSend: function() {
+                            btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span>');
+                        },
+                        success: function(response) {
+                            if ( response.status === 'success' ) {
+                                btn.prop('disabled', false).html(btn_state.html);
+                                Flexify_Checkout_Admin.displayToast( 'success', response.toast_header_title, response.toast_body_title );
+
+                                setTimeout( function() {
+                                    location.reload();
+                                }, 500);
+                            } else {
+                                Flexify_Checkout_Admin.displayToast( 'error', response.toast_header_title, response.toast_body_title );
+                            }
+                        },
+                        error: function() {
+                            btn.prop('disabled', false).html(btn_state.html);
+                            alert('Erro ao ativar o plugin.');
+                        }
+                    });
+                });
+            },
+
+            /**
+             * Initialize module
+             * 
+             * @since 3.8.2
+             * @version 5.2.0
+             */
+            init: function() {
+                this.install();
+                this.activation();
+            },
+        },
+
+        /**
+         * Display toast on offline connection
+         * 
+         * @since 4.5.0
+         * @version 5.2.0
+         */
+        connectionListener: {
+            /**
+             * Show or remove toast based on connection status
+             * 
+             * @since 4.5.0
+             * @version 5.2.0
+             */
+            toast: function() {
+                if (navigator.onLine) {
+                    $('.toast.toast-offline-connection').remove();
+                } else {
+                    Flexify_Checkout_Admin.displayToast( 'warning', params.offline_toast_header, params.offline_toast_body, 'toast-offline-connection' );
+                }
+            },
+
+            /**
+             * Listener for online/offline events
+             * 
+             * @since 4.5.0
+             * @version 5.2.0
+             */
+            listener: function() {
+                // listener connectivity changes
+                window.addEventListener('online', Flexify_Checkout_Admin.connectionListener.toast);
+                window.addEventListener('offline', Flexify_Checkout_Admin.connectionListener.toast);
+            },
+
+            /**
+             * Init connection listener
+             * 
+             * @since 5.2.0
+             */
+            init: function() {
+                this.listener();
+                Flexify_Checkout_Admin.connectionListener.toast();
+            },
+        },
+
+        /**
          * Initialize all modules
          * 
          * @since 5.1.0
+         * @version 5.2.0
          */
         init: function() {
             this.initTabs();
@@ -1557,11 +1945,12 @@
             this.colorHelpers();
             this.datepicker();
             this.fieldsManager();
-            this.preLicenseActions();
-            this.altLicenseUpload();
             this.resetSettings();
 			this.themeSelector();
             this.handleConditions();
+            this.License.init();
+            this.integrationModules.init();
+            this.connectionListener.init();
         },
     };
 

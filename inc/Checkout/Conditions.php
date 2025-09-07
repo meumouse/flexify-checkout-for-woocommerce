@@ -9,7 +9,7 @@ defined('ABSPATH') || exit;
  * Create conditions for checkout components
  *
  * @since 3.5.0
- * @version 5.1.0
+ * @version 5.2.0
  * @package MeuMouse.com
  */
 class Conditions {
@@ -428,6 +428,7 @@ class Conditions {
      * Check condition
      * 
      * @since 3.5.0
+     * @version 5.2.0
      * @param string $condition | Check condition
      * @param string $value | Get condition value
      * @param string $value_compare | Optional value for compare with $value
@@ -473,6 +474,14 @@ class Conditions {
                 
             case 'less_than':
                 return $value < $value_compare;
+
+            case 'checked':
+                $checked_values = array( '1', 1, 'on', 'yes', 'true', true );
+                return in_array( $value, $checked_values, true );
+
+            case 'not_checked':
+                $checked_values = array( '1', 1, 'on', 'yes', 'true', true );
+                return ! in_array( $value, $checked_values, true );
                 
             case '':
                 return false;
@@ -499,6 +508,10 @@ class Conditions {
 
         if ( is_null( $field_value ) ) {
             $field_value = '';
+        }
+
+        if ( in_array( $condition, array( 'checked', 'not_checked' ), true ) ) {
+            return self::check_condition( $condition, $field_value );
         }
 
         return self::check_condition( $condition, $field_value, $value );
@@ -544,6 +557,7 @@ class Conditions {
      * Validate checkout fields based on conditions
      *
      * @since 5.1.0
+     * @version 5.2.0
      * @param array $data | Posted checkout data
      * @param object $errors | Validation errors
      * @return void
@@ -575,6 +589,10 @@ class Conditions {
             $check_field = isset( $cond['verification_condition_field'] ) ? $cond['verification_condition_field'] : '';
             $operator = isset( $cond['condition'] ) ? $cond['condition'] : '';
             $expected = isset( $cond['condition_value'] ) ? $cond['condition_value'] : '';
+
+            if ( in_array( $operator, array( 'checked', 'not_checked' ), true ) ) {
+                $expected = '';
+            }
 
             if ( ! $field_key || $check_type !== 'field' || ! $check_field ) {
                 continue;

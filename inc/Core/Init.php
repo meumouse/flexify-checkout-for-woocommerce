@@ -11,7 +11,7 @@ defined('ABSPATH') || exit;
  * Init class plugin
  * 
  * @since 5.0.0
- * @version 5.1.0
+ * @version 5.2.0
  * @package MeuMouse.com
  */
 class Init {
@@ -33,10 +33,18 @@ class Init {
     public $plugin_file = FLEXIFY_CHECKOUT_FILE;
 
     /**
+     * Plugin directory path
+     * 
+     * @since 5.2.0
+     * @return string
+     */
+    public $directory = FLEXIFY_CHECKOUT_PATH;
+
+    /**
      * Construct function
      * 
      * @since 1.0.0
-     * @version 5.0.2
+     * @version 5.2.0
      * @return void
      */
     public function __construct() {
@@ -48,6 +56,9 @@ class Init {
 
         // load text domain
         load_plugin_textdomain( 'flexify-checkout-for-woocommerce', false, dirname( $this->basename ) . '/languages/' );
+
+        // enable debug mode
+        define( 'FLEXIFY_CHECKOUT_DEBUG_MODE', Admin_Options::get_setting('enable_debug_mode') === 'yes' ? true : false );
 
 		// load plugin functions
 		include_once( FLEXIFY_CHECKOUT_INC_PATH . 'Core/Functions.php' );
@@ -96,7 +107,7 @@ class Init {
     
         // check if WooCommerce is active
         if ( is_plugin_active('woocommerce/woocommerce.php') && defined('WC_VERSION') && version_compare( WC_VERSION, '6.0', '>' ) ) {
-            self::instance_classes();
+            $this->instance_classes();
 
             // register activation and deactivation hooks
             add_action( 'Flexify_Checkout/Init', array( $this, 'register_hooks' ) );
@@ -275,12 +286,10 @@ class Init {
      * Instance classes after load Composer
      * 
      * @since 5.0.0
+     * @version 5.2.0
      * @return void
      */
-    public static function instance_classes() {
-        $base_namespace = 'MeuMouse\\Flexify_Checkout';
-        $base_path = FLEXIFY_CHECKOUT_INC_PATH;
-
+    public function instance_classes() {
         /**
          * Filter to add new classes
          * 
@@ -291,6 +300,7 @@ class Init {
             '\MeuMouse\Flexify_Checkout\Compatibility\Backward_Compatibility',
         ));
 
+        // iterate through manual classes and instance them
         foreach ( $manual_classes as $class ) {
             if ( class_exists( $class ) ) {
                 $instance = new $class();
@@ -301,55 +311,56 @@ class Init {
             }
         }
 
-        // walk recursivily all that classes on /inc directory
-        $rii = new \RecursiveIteratorIterator( new \RecursiveDirectoryIterator( $base_path ) );
+        // get classmap from Composer
+        $classmap = include_once $this->directory . 'vendor/composer/autoload_classmap.php';
 
-        foreach ( $rii as $file ) {
-            if ( $file->isDir() || $file->getExtension() !== 'php' ) {
+        // ensure classmap is an array
+        if ( ! is_array( $classmap ) ) {
+            $classmap = array();
+        }
+
+        // iterate through classmap and instance classes
+        foreach ( $classmap as $class => $path ) {
+            // skip classes not in the plugin namespace
+            if ( strpos( $class, 'MeuMouse\\Flexify_Checkout\\' ) !== 0 ) {
                 continue;
             }
 
-            // Skip plain function files
-            if ( strpos( file_get_contents( $file->getPathname() ), 'class ' ) === false ) {
+            // skip the Init class to prevent duplicate instances
+            if ( strpos( $class, 'MeuMouse\\Flexify_Checkout\\Core\\Init' ) !== false ) {
                 continue;
             }
 
-            // relative path from inc/
-            $relative_path = substr( $file->getPathname(), strlen( $base_path ) );
-
-            // convert path to PSR-4 class name
-            $class_path = str_replace( ['/', '\\', '.php'], ['\\', '\\', '' ], $relative_path );
-            $class_name = $base_namespace . '\\' . $class_path;
-
-            // sanitize class name
-		    $class_name = trim( $class_name, '\\' );
-
-            // skip if class already declared
-            if ( class_exists( $class_name, false ) ) {
+            // skip specific utility classes
+            if ( $class === 'Composer\\InstalledVersions' ) {
                 continue;
             }
 
-            // try to load class
-            if ( ! class_exists( $class_name ) ) {
+            // check if class exists
+            if ( ! class_exists( $class ) ) {
                 continue;
             }
 
-            $reflection = new \ReflectionClass( $class_name );
+            // use ReflectionClass to check if class is instantiable
+            $reflection = new \ReflectionClass( $class );
 
-            // skip if not instantiable
+            // instance only if class is not abstract, trait or interface
             if ( ! $reflection->isInstantiable() ) {
                 continue;
             }
 
-            // skip if requires parameters
-            if ( $reflection->getConstructor() && $reflection->getConstructor()->getNumberOfRequiredParameters() > 0 ) {
+            // check if class has a constructor
+            $constructor = $reflection->getConstructor();
+
+            // skip classes that require mandatory arguments in __construct
+            if ( $constructor && $constructor->getNumberOfRequiredParameters() > 0 ) {
                 continue;
             }
-            
-            // safe instance
-            $instance = $reflection->newInstance();
 
-            // optional instance method
+            // safe instance
+            $instance = new $class();
+
+            // this is useful for classes that need to run some initialization code
             if ( method_exists( $instance, 'init' ) ) {
                 $instance->init();
             }

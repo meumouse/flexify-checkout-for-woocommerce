@@ -13,7 +13,7 @@ defined('ABSPATH') || exit;
  * Functions related to the Thank you page
  *
  * @since 1.0.0
- * @version 5.0.0
+ * @version 5.2.0
  * @package MeuMouse.com
  */
 class Thankyou {
@@ -405,17 +405,17 @@ class Thankyou {
 	 * Show Contact Us at the footer
 	 *
 	 * @since 1.0.0
-	 * @version 3.8.0
+	 * @version 5.2.0
 	 * @param WC_Order $order | Order object
 	 * @return void
 	 */
 	public static function contact_us( $order ) {
-		$contact_page = apply_filters( 'flexify_checkout_contact_permalink_thankyou', Admin_Options::get_setting('contact_page_thankyou') ); ?>
+		$contact_page = apply_filters( 'Flexify_Checkout/Thankyou/Contact_Link', Admin_Options::get_setting('contact_page_thankyou') ); ?>
 		
 		<div class="flexify-ty-footer">
 			<span class="flexify-ty-footer__contact">
 				<?php if ( ! empty( $contact_page ) ) :
-					$contact_page_url = get_permalink( $contact_page );
+					$contact_page_url = Admin_Options::get_setting('contact_page_thankyou') !== 'custom_link' ? get_permalink( $contact_page ) : Admin_Options::get_setting('contact_page_thankyou_custom_link');
 					
 					echo '<span class="flexift-ty-footer-contact-container">';
 						echo '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="M12 2C6.486 2 2 6.486 2 12v4.143C2 17.167 2.897 18 4 18h1a1 1 0 0 0 1-1v-5.143a1 1 0 0 0-1-1h-.908C4.648 6.987 7.978 4 12 4s7.352 2.987 7.908 6.857H19a1 1 0 0 0-1 1V18c0 1.103-.897 2-2 2h-2v-1h-4v3h6c2.206 0 4-1.794 4-4 1.103 0 2-.833 2-1.857V12c0-5.514-4.486-10-10-10z"></path></svg>';
@@ -438,28 +438,24 @@ class Thankyou {
 	 * Display downloads table
 	 *
 	 * @since 1.0.0
-	 * @param WC_Order $order
+	 * @version 5.2.0
+	 * @param WC_Order $order | Order object
 	 * @return void
 	 */
 	public static function downloads( $order ) {
 		$downloads = $order->get_downloadable_items();
 		$show_downloads = $order->has_downloadable_item() && $order->is_download_permitted();
 
-		if ( ! $show_downloads ) {
+		if ( ! $show_downloads ) :
 			return;
-		}
+		endif; ?>
 
-		?>
 		<div class="flexify-ty-downloads">
 			<div class="flexify-ty-box">
-				<?php
-				wc_get_template( 'order/order-downloads.php',
-					array(
-						'downloads' => $downloads,
-						'show_title' => true,
-					)
-				);
-				?>
+				<?php wc_get_template( 'order/order-downloads.php', array(
+					'downloads' => $downloads,
+					'show_title' => true,
+				)); ?>
 			</div>
 		</div>
 		<?php

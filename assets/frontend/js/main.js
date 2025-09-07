@@ -1203,6 +1203,7 @@
 			 * Initialize module
 			 * 
 			 * @since 5.0.0
+			 * @version 5.2.0
 			 */
 			init: function() {
 				Flexify_Checkout.Helpers.removeDomElements();
@@ -2659,6 +2660,7 @@
 			 * Toggle visibility and validation classes on a field row
 			 *
 			 * @since 5.0.0
+			 * @version 5.2.0
 			 * @param {string} selector | jQuery selector for the input
 			 * @param {boolean} show | true to show, false to hide
 			 * @param {boolean} required | true to set required attr, false to unset
@@ -2675,13 +2677,21 @@
 					row.removeClass('temp-hidden');
 
 					if ( addValidation ) {
-						row.addClass('validate-required required-field');
+						row.addClass('validate-required');
+					}
+
+					if ( required ) {
+						row.addClass('required-field');
 					}
 
 					row.show();
 				} else {
 					if ( addValidation ) {
-						row.removeClass('validate-required required-field');
+						row.removeClass('validate-required');
+					}
+
+					if ( required ) {
+						row.addClass('required-field');
 					}
 
 					row.addClass('temp-hidden').hide();
@@ -2906,7 +2916,7 @@
 			 * Hide Brazilian Market fields if billing country is not Brazil
 			 * 
 			 * @since 3.0.0
-			 * @version 5.0.0
+			 * @version 5.1.0
 			 * @return {void}
 			 */
 			toggleBrazilianMarketFields: function() {
@@ -3785,7 +3795,7 @@
 			 * Check condition
 			 * 
 			 * @since 3.5.0
-			 * @version 5.0.0
+			 * @version 5.2.0
 			 * @param {string} condition - Check condition
 			 * @param {string} value - Get condition value
 			 * @param {string} value_compare - Optional value for compare with value
@@ -3803,6 +3813,8 @@
 					case 'finish_with':  return value.endsWith( value_compare );
 					case 'bigger_then':  return parseFloat( value ) > parseFloat( value_compare );
 					case 'less_than':    return parseFloat( value ) < parseFloat( value_compare );
+					case 'checked':      return typeof value === 'object' ? !! value.checked : !! value;
+					case 'not_checked':  return typeof value === 'object' ? ! value.checked : ! value;
 					default:             return false;
 				}
 			},
@@ -3811,7 +3823,7 @@
 			 * Show or hide fields based on conditions
 			 * 
 			 * @since 3.5.0
-			 * @version 5.0.2
+			 * @version 5.2.0
 			 * @return {void}
 			 */
 			checkFieldVisibility: function() {
@@ -3820,7 +3832,8 @@
 				field_conditions.forEach( item => {
 					const $comp = $('#' + item.component_field);
 					const row = $comp.closest('.form-row');
-					const val = $('#' + item.verification_condition_field).val();
+					const $field = $('#' + item.verification_condition_field);
+					const val = $field.is(':checkbox') ? $field.is(':checked') : $field.val();
 					const passed = this.checkCondition( item.condition, val, item.condition_value );
 
 					if ( item.type_rule === 'show' && item.verification_condition === 'field' ) {
@@ -3878,7 +3891,7 @@
          * Compatibility functions
          * 
          * @since 1.0.0
-         * @version 5.0.0
+         * @version 5.2.0
          */
         Compatibility: {
 
@@ -3908,7 +3921,7 @@
                 // setTimeOut because we want our event listener to run after wc_checkout_form::validate_field().
                 window.setTimeout( function() {
                     $('#jckwds-delivery-date, #jckwds-delivery-time').on('validate', function(e) {
-                        if ('1' === $('[name=flexify-wds-fields-hidden]').val()) {
+                        if ( '1' === $('[name=flexify-wds-fields-hidden]').val() ) {
                             $(e.target).closest('.form-row').removeClass('woocommerce-invalid');
                             e.stopPropagation();
                         }
@@ -3920,36 +3933,93 @@
 			 * Show/hide Brazilian-market checkout fields based on person type
 			 *
 			 * @since 3.9.6
-			 * @version 5.0.0
+			 * @version 5.2.0
 			 * @return {void}
 			 */
 			updatePersonTypeFields: function() {
 				const persontype = $('#billing_persontype');
+				let country = ($('#billing_country').val() || '').toString().toUpperCase();
 
 				// check if has person type selector
 				if ( ! persontype.length ) {
 					return;
 				}
 
-				const type = parseInt( persontype.val(), 10 );
+				// normalize person type (default to 1 if NaN)
+				const type = (function(v){
+					const n = parseInt(v, 10);
 
-				// individual (1): show CPF, hide CNPJ, IE, Company
-				Flexify_Checkout.Fields.toggleField( '#billing_cpf', type === 1, true,  true );
-				Flexify_Checkout.Fields.toggleField( '#billing_cnpj', type === 1 ? false : true, false, true ); // hide for 1, show for 2
-				Flexify_Checkout.Fields.toggleField( '#billing_ie', type === 1 ? false : true, false, true );
-				Flexify_Checkout.Fields.toggleField( '#billing_company', type === 1 ? false : true, type === 2, false );
+					return Number.isNaN(n) ? 1 : n;
+				})( persontype.val() );
+
+				const fc_fields = params.get_all_checkout_fields || {};
+
+				// normalize "only_brazil" coming from BMW settings or Flexify fallback
+				// could be "1"/1/"yes"/true. Make it boolean.
+				const only_brazil = (function(s){
+					if ( ! params.bmw_settings ) {
+						return false;
+					}
+
+					const v = params.bmw_settings.only_brazil;
+
+					return v === '1' || v === 1 || v === 'yes' || v === true;
+				})();
+
+				const isBR = country === 'BR';
+
+				/**
+				 * Determine "required" flags following BMW rules:
+				 * - if only_brazil = true  => required only when country is BR
+				 * - if only_brazil = false => required regardless of country
+				 * Also OR with the field's own "required" from field config.
+				 */
+				const requiredWhenBROrAlways = function(fieldKey) {
+					const cfgRequired = !! ( fc_fields[fieldKey]?.required === true );
+					const bmwRequired = only_brazil ? isBR : true;
+
+					return bmwRequired || cfgRequired;
+				};
+
+				// CPF / RG (PF, type === 1)
+				const required_cpf = ( type === 1 ) ? requiredWhenBROrAlways('billing_cpf') : false;
+				const required_rg = requiredWhenBROrAlways('billing_rg') || false;
+
+				// CNPJ / IE / company (PJ, type === 2)
+				const required_cnpj = ( type === 2 ) ? requiredWhenBROrAlways('billing_cnpj') : false;
+				const required_ie = requiredWhenBROrAlways('billing_ie') || false;
+				const required_company = ( type === 2 ) ? requiredWhenBROrAlways('billing_company') : false;
+
+				/**
+				 * toggleField() function:
+				 * 
+				 * First param {string} selector | jQuery selector for the input
+				 * Second param {boolean} show | true to show, false to hide
+				 * Third param {boolean} required | true to set required attr, false to unset
+				 * Fourth param {boolean} addValidation | true to add validate-required/required-field on show
+				 */
+
+				// PF
+				Flexify_Checkout.Fields.toggleField( '#billing_cpf', type === 1, required_cpf, true );
+				Flexify_Checkout.Fields.toggleField( '#billing_rg', type === 1, required_rg, false );
+
+				// PJ
+				Flexify_Checkout.Fields.toggleField( '#billing_cnpj', type === 2, required_cnpj, true );
+				Flexify_Checkout.Fields.toggleField( '#billing_ie', type === 2, required_ie, false );
+				Flexify_Checkout.Fields.toggleField( '#billing_company', type === 2, required_company, false );
 			},
 
 			/**
 			 * Bind change event and perform initial toggle on page load
 			 *
 			 * @since 5.0.0
+			 * @version 5.2.0
 			 * @return {void}
 			 */
 			initPersonTypeFields: function() {
 				const fn = this.updatePersonTypeFields.bind(this);
 
-				$(document).on('change', '#billing_persontype', fn);
+				$(document).on('change', '#billing_persontype, #billing_country', fn);
 
 				// initial state
 				fn();
@@ -3978,56 +4048,236 @@
         },
 
 		/**
+		 * Countdown timer object
+		 * 
+		 * @since 5.2.0
+		 */
+		Countdown: {
+			timer: null,
+			initial: 0,
+			remaining: 0,
+			element: null,
+			action: '',
+			storageKey: 'flexify_checkout_countdown_expire_at',
+			isThankYou: function() {
+				// first check param if current page is thank you
+				if ( params.is_thankyou === 'yes' ) {
+					return true;
+				}
+
+				if ( document.body.classList.contains('woocommerce-order-received') ) {
+					return true;
+				}
+
+				var href = window.location.href;
+
+				if ( /(?:\/|-)order-received(?:\/|-)/i.test(href) ) {
+					return true;
+				}
+
+				if ( /[?&]key=wc_order_/i.test(href) ) {
+					return true;
+				}
+
+				return false;
+			},
+			init: function() {
+				// not render on thankyou page
+				if ( this.isThankYou() ) {
+					localStorage.removeItem(this.storageKey);
+					return;
+				}
+
+				if ( params.countdown_enabled !== 'yes' ) {
+					return;
+				}
+
+				var target_selector = '#flexify-checkout-countdown .time';
+
+				// if target_selector is not found, create a default container above the checkout content
+				if ( ! $(target_selector).length ) {
+					$('.flexify-checkout__content').first().before(`<div id="flexify-checkout-countdown" class="flexify-checkout-countdown" aria-live="polite">
+						<span class="title">${params.countdown_title}</span>
+						<strong class="time">00:00</strong>
+					</div>`);
+				}
+
+				this.element = $(target_selector);
+
+				var value = parseInt(params.countdown_value, 10) || 0;
+				var unit = String( params.countdown_unit || 'minutes' ).toLowerCase();
+
+				var toSeconds = function(v, u) {
+					switch (u) {
+						case 'minute':
+						case 'minutes': return v * 60;
+						case 'hour':
+						case 'hours': return v * 3600;
+						default: return v; // 'seconds'
+					}
+				};
+
+				this.initial = toSeconds(value, unit);
+				this.remaining = this.initial;
+				this.action = params.countdown_action || 'hide'; // hide | restart | logout
+
+				// retrieve saved timestamp (if any)
+				var expireAt = parseInt(localStorage.getItem(this.storageKey), 10) || 0;
+				var now = Math.floor(Date.now() / 1000);
+
+				if ( expireAt > now ) {
+					// event not expired, calculate remaining
+					this.remaining = expireAt - now;
+				} else {
+					// expired or not exists, start new cycle
+					this.remaining = this.initial;
+					expireAt = now + this.initial;
+					localStorage.setItem(this.storageKey, expireAt);
+				}
+
+				if ( this.initial > 0 ) {
+					this.start();
+				}
+			},
+			start: function() {
+				const self = this;
+				clearInterval( this.timer );
+				this.display();
+
+				this.timer = setInterval( function() {
+					self.remaining--;
+					self.display();
+
+					if ( self.remaining <= 0 ) {
+						clearInterval( self.timer );
+						self.onExpire();
+					}
+				}, 1000 );
+			},
+			display: function() {
+				if ( ! this.element || ! this.element.length ) {
+					return;
+				}
+
+				var mm = Math.floor(this.remaining / 60);
+				var ss = this.remaining % 60;
+				var fmt = function(n){ return String(n).padStart(2, '0'); };
+				var text = fmt(mm) + ':' + fmt(ss);
+
+				this.element.text(text);
+			},
+			reset: function() {
+				this.remaining = this.initial;
+				this.start();
+			},
+			onExpire: function() {
+				if ( this.isThankYou() ) {
+					return;
+				}
+				
+				// clear storage when expires
+    			localStorage.removeItem(this.storageKey);
+
+				/**
+				 * Trigger when countdown expires
+				 * 
+				 * @since 5.2.0
+				 * @param {string} action The action configured to be performed on expiry (hide, restart, destroy_session)
+				 */
+				$(document).trigger( 'flexify_checkout_countdown_expired', this.action );
+
+				switch ( this.action ) {
+					case 'hide':
+						if ( this.element && this.element.length ) {
+							$('#flexify-checkout-countdown').hide();
+						}
+
+						break;
+					case 'restart':
+						this.reset();
+
+						break;
+					case 'logout':
+						// send AJAX request
+						$.ajax({
+							type: 'POST',
+							url: params.ajax_url,
+							data: {
+								action: 'flexify_checkout_destroy_session',
+							},
+							success: function(response) {
+								if ( response.redirect_url ) {
+									window.location.href = response.redirect_url;
+								}
+							},
+							error: function(jqXHR, textStatus, errorThrown) {
+								console.error('[FLEXIFY CHECKOUT] AJAX error on try destroy session:', textStatus, errorThrown);
+							},
+						});
+
+						break;
+				}
+			},
+		},
+
+		/**
 		 * Initialize main object
 		 * 
 		 * @since 5.0.0
+		 * @version 5.2.0
 		 */
-		init: function() {
-			if ( params.debug_mode ) {
-				console.log( '[FLEXIFY CHECKOUT] Loaded params: ', params );
+		init: function () {
+			// prevent multiple inits
+			if ( this.__inited ) {
+				return;
 			}
 
-			// initialize local storage
-			this.localStorage.init();
+			// set flag
+			this.__inited = true;
 
-			// initialize compatibility functions
-            this.Compatibility.init();
+			const dbg = !!( window.flexify_checkout_params && window.flexify_checkout_params.debug_mode );
+			const log = dbg ? (...a) => console.log('[Flexify Checkout]', ...a) : () => {};
 
-			// initialize listen trigger functions
-			this.Triggers.init();
+			if (dbg) {
+				console.log('[Flexify Checkout] Loaded params:', window.flexify_checkout_params || {});
+			}
 
-			// initialize login functions
-			this.loginForm.init();
-		
-			// initialize steps functions
-			this.Steps.init();
+			const run = (name, mod) => {
+				try {
+					if ( mod && typeof mod.init === 'function' ) {
+						mod.init();
+						log('init:', name);
+					}
+				} catch (err) {
+					console.error(`[Flexify] ${name}.init() falhou:`, err);
+				}
+			};
 
-			// initialize fields functions
-			this.Fields.init();
+			// run critical modules first
+			const critical = [
+				['localStorage', this.localStorage],
+				['Compatibility', this.Compatibility],
+				['Triggers', this.Triggers],
+				['loginForm', this.loginForm],
+				['Steps', this.Steps],
+				['Fields', this.Fields],
+				['Payments', this.Payments],
+				['Coupons', this.Coupons],
+			];
 
-			// initialize payment functions
-			this.Payments.init();
+			// not critical: can go on the next tick
+			const later = [
+				['Sidebar', this.Sidebar],
+				['Components', this.Components],
+				['Conditions', this.Conditions],
+				['Session', this.Session],
+				['Validations', this.Validations],
+				['Countdown', this.Countdown],
+				['processCheckout', this.processCheckout],
+			];
 
-			// initialize coupons functions
-			this.Coupons.init();
-
-            // initialize sidebar functions
-            this.Sidebar.init();
-
-            // initialize components functions
-            this.Components.init();
-
-			// initialize conditions functions
-			this.Conditions.init();
-
-			// initialize session functions
-			this.Session.init();
-
-			// initialize validations functions
-			this.Validations.init();
-
-			// initialize process checkout functions
-			this.processCheckout.init();
+			critical.forEach(([n, m]) => run(n, m));
+			setTimeout(() => later.forEach(([n, m]) => run(n, m)), 0);
 		},
 	};
 
@@ -4035,4 +4285,18 @@
 	$(document).ready( function() {
 		Flexify_Checkout.init();
 	});
+
+	/**
+     * Export API to global scope
+     * 
+     * @since 5.2.0
+     */
+    window.Flexify_Checkout = Flexify_Checkout;
+
+    /**
+     * Fire trigger when admin module is ready
+     * 
+     * @since 5.2.0
+     */
+    $(document).trigger('flexify_checkout_ready');
 })(jQuery);

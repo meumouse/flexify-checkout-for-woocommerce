@@ -165,7 +165,15 @@ defined('ABSPATH') || exit; ?>
             <?php $fields = maybe_unserialize( get_option('flexify_checkout_step_fields', array()) );
 
             echo Components::render_step( '1', esc_html__( 'Etapa 1 (Contato)', 'flexify-checkout-for-woocommerce' ), $fields );
-            echo Components::render_step( '2', esc_html__( 'Etapa 2 (Entrega)', 'flexify-checkout-for-woocommerce' ), $fields ); ?>
+            echo Components::render_step( '2', esc_html__( 'Etapa 2 (Entrega)', 'flexify-checkout-for-woocommerce' ), $fields );
+            
+            /**
+             * Display custom fields container
+             * 
+             * @since 5.2.0
+             * @param array $fields
+             */
+            do_action( 'Flexify_Checkout/Settings/Fields_Container', $fields ); ?>
         </tr>
 
         <tr class="mt-4 step-checkout-fields-container">

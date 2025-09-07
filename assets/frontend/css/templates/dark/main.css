@@ -921,8 +921,9 @@ form.woocommerce-checkout
     mask-image: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTEgM2EyIDIgMCAwMTItMmgzLjI4YTEgMSAwIDAxLjk0OC42ODRsMS40OTggNC40OTNhMSAxIDAgMDEtLjUwMiAxLjIxbC0yLjI1NyAxLjEzYTExLjA0MiAxMS4wNDIgMCAwMDUuNTE2IDUuNTE2bDEuMTMtMi4yNTdhMSAxIDAgMDExLjIxLS41MDJsNC40OTMgMS40OThhMSAxIDAgMDEuNjg0Ljk0OVYxN2EyIDIgMCAwMS0yIDJoLTFDNy43MTYgMTkgMSAxMi4yODQgMSA0VjN6IiBzdHJva2U9IiMwMDAiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PC9zdmc+");
 }
 
-p#billing_cpf_field.form-row[data-type="tel"]:before,
-p#billing_cnpj_field.form-row[data-type="tel"]:before {
+#billing_cpf_field.form-row[data-type="tel"]:before,
+#billing_cnpj_field.form-row[data-type="tel"]:before,
+#billing_ie_field.form-row[data-type="tel"]:before {
     display: none;
 }
 
@@ -5209,4 +5210,28 @@ p.form-row.flexify-checkout-loading-placeholder > label {
 .mp-checkout-container .mp-pix-template-subtitle,
 .mp-terms-and-conditions-text {
     color: #E9ECEF !important;
+}
+
+#order_comments {
+    resize: vertical;
+}
+
+#flexify-checkout-countdown {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 1rem;
+    background-color: #fff700;
+    color: var(--flexify-checkout-primary-dark);
+}
+
+#flexify-checkout-countdown .title {
+    font-size: 1.225rem;
+}
+
+#flexify-checkout-countdown .time {
+    font-size: 1.325rem;
+    font-weight: 700;
+    margin-left: 0.5rem;
 }

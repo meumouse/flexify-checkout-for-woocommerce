@@ -9,7 +9,7 @@ defined('ABSPATH') || exit;
  * Connect to license authentication server
  * 
  * @since 1.0.0
- * @version 5.0.0
+ * @version 5.2.0
  * @package MeuMouse.com
  */
 class License {
@@ -37,7 +37,7 @@ class License {
      * Construct function
      * 
      * @since 1.0.0
-     * @since 3.8.0
+     * @since 5.2.0
      * @param string $plugin_base_file
      * @return void
      */
@@ -63,11 +63,20 @@ class License {
             $this->is_theme = true;
         }
 
-        // connect with API server for authenticate license  
-        add_action( 'admin_init', array( $this, 'licenses_api_connection' ) );
+        // deactive license on expire time
+        add_action( 'Flexify_Checkout/License/Check_Expires_Time', array( $this, 'check_license_expires_time' ) );
 
-        // alternative activation process
-        add_action( 'admin_init', array( $this, 'alternative_activation_process' ) );
+        // register schedule event first time
+        if ( ! get_option('flexify_checkout_schedule_expiration_check_runned') ) {
+            add_action( 'admin_init', array( __CLASS__, 'schedule_license_expiration_check' ) );
+        }
+
+        // set logger source
+    //    Logger::set_logger_source( 'woo-custom-installments-license', false );
+
+        if ( get_option('flexify_checkout_license_expired') ) {
+            add_action( 'admin_notices', array( $this, 'license_expired_notice' ) );
+        }
 
         // display require license modal before activated
         add_action( 'Flexify_Checkout/Settings/Header', array( $this, 'display_modal_license_require' ) );
@@ -772,115 +781,6 @@ class License {
 
 
     /**
-     * Load API settings
-     * 
-     * @since 1.0.0
-     * @version 3.8.3
-     * @return void
-     */
-    public function licenses_api_connection() {
-        $this->response_obj = new \stdClass();
-        $message = '';
-        $license_key = get_option('flexify_checkout_license_key', '');
-    
-        // active license action
-        if ( isset( $_POST['flexify_checkout_active_license'] ) ) {
-            // clear response cache first
-            delete_transient('flexify_checkout_api_request_cache');
-            delete_transient('flexify_checkout_api_response_cache');
-            delete_transient('flexify_checkout_license_status_cached');
-    
-            $license_key = ! empty( $_POST['flexify_checkout_license_key'] ) ? $_POST['flexify_checkout_license_key'] : '';
-            update_option( 'flexify_checkout_license_key', $license_key ) || add_option('flexify_checkout_license_key', $license_key );
-            update_option( 'flexify_checkout_temp_license_key', $license_key ) || add_option('flexify_checkout_temp_license_key', $license_key );
-    
-            // Check on the server if the license is valid and update responses and options
-            if ( self::check_license( $license_key, $this->license_message, $this->response_obj, FLEXIFY_CHECKOUT_FILE ) ) {
-                if ( $this->response_obj && $this->response_obj->is_valid ) {
-                    update_option( 'flexify_checkout_license_status', 'valid' );
-                    delete_option('flexify_checkout_temp_license_key');
-                    delete_option('flexify_checkout_alternative_license_activation');
-                } else {
-                    update_option( 'flexify_checkout_license_status', 'invalid' );
-                }
-        
-                if ( isset( $_POST['flexify_checkout_active_license'] ) && self::is_valid() ) {
-                    add_action( 'Flexify_Checkout/Settings/Header', array( $this, 'activated_license_notice' ) );
-                }
-            } else {
-                if ( ! empty( $license_key ) && ! empty( $this->license_message ) ) {
-                    add_action( 'Flexify_Checkout/Settings/Header', array( $this, 'display_license_messages' ) );
-                }
-            }
-        }
-    }
-
-
-    /**
-     * Generate alternative activation object from decrypted license
-     * 
-     * @since 3.3.0
-     * @version 3.8.0
-     * @return void
-     */
-    public function alternative_activation_process() {
-        $decrypted_license_data = get_option('flexify_checkout_alternative_license_decrypted');
-        $license_data_array = json_decode( stripslashes( $decrypted_license_data ) );
-        $this_domain = self::get_domain();
-
-        $allowed_products = array(
-            $this->fcw_product_id,
-            $this->clube_m_produt_id,
-        );
-
-        if ( $license_data_array === null ) {
-            return;
-        }
-
-        // stop if this site is not same from license site
-        if ( $this_domain !== $license_data_array->site_domain ) {
-            add_action( 'Flexify_Checkout/Settings/Header', array( $this, 'not_allowed_site_notice' ) );
-
-            return;
-        }
-
-        // stop if product license is not same this product
-        if ( ! in_array( $license_data_array->selected_product, $allowed_products ) ) {
-            add_action( 'Flexify_Checkout/Settings/Header', array( $this, 'not_allowed_product_notice' ) );
-
-            return;
-        }
-
-        $license_object = $license_data_array->license_object;
-
-        if ( $this_domain === $license_data_array->site_domain ) {
-            delete_transient('flexify_checkout_api_request_cache');
-            delete_transient('flexify_checkout_api_response_cache');
-            delete_transient('flexify_checkout_license_status_cached');
-
-            $obj = new \stdClass();
-            $obj->license_key = $license_data_array->license_code;
-            $obj->email = $license_data_array->user_email;
-            $obj->domain = $this_domain;
-            $obj->app_version = FLEXIFY_CHECKOUT_VERSION;
-            $obj->product_id = $license_data_array->selected_product;
-            $obj->product_base = $license_data_array->product_base;
-            $obj->is_valid = $license_object->is_valid;
-            $obj->license_title = $license_object->license_title;
-            $obj->expire_date = $license_object->expire_date;
-
-            update_option( 'flexify_checkout_alternative_license', 'active' );
-            update_option( 'flexify_checkout_license_response_object', $obj );
-            update_option( 'flexify_checkout_license_key', $obj->license_key );
-            update_option( 'flexify_checkout_license_status', 'valid' );
-            delete_option('flexify_checkout_alternative_license_decrypted');
-
-            add_action( 'Flexify_Checkout/Settings/Header', array( $this, 'activated_license_notice' ) );
-        }
-    }
-
-
-    /**
      * Check if license is valid
      * 
      * @since 1.2.5
@@ -1010,6 +910,22 @@ class License {
 
 
     /**
+	 * Display admin notice when license is expired
+	 * 
+	 * @since 5.2.0
+	 * @return void
+	 */
+    public function license_expired_notice() {
+        if ( self::expired_license() ) {
+			$class = 'notice notice-error is-dismissible';
+			$message = __( 'Sua licença do <strong>Flexify Checkout</strong> expirou, realize a renovação para continuar aproveitando os recursos Pro.', 'flexify-checkout-for-woocommerce' );
+
+			printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), $message );
+		}
+    }
+
+
+    /**
      * Display modal for require license when is not Pro
      * 
      * @since 3.8.0
@@ -1044,81 +960,112 @@ class License {
 
 
     /**
-     * Display notice for activated Pro license
+     * Check expiration license on schedule event
      * 
-     * @since 3.8.0
+     * @since 5.2.0
      * @return void
      */
-    public function activated_license_notice() {
-        ?>
-        <div class="toast update-notice-wci show">
-            <div class="toast-header bg-success text-white">
-                <svg class="icon icon-white me-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff"><g stroke-width="0"/><g stroke-linecap="round" stroke-linejoin="round"/><g><path d="M10.5 15.25C10.307 15.2353 10.1276 15.1455 9.99998 15L6.99998 12C6.93314 11.8601 6.91133 11.7029 6.93756 11.55C6.96379 11.3971 7.03676 11.2562 7.14643 11.1465C7.2561 11.0368 7.39707 10.9638 7.54993 10.9376C7.70279 10.9114 7.86003 10.9332 7.99998 11L10.47 13.47L19 5.00004C19.1399 4.9332 19.2972 4.91139 19.45 4.93762C19.6029 4.96385 19.7439 5.03682 19.8535 5.14649C19.9632 5.25616 20.0362 5.39713 20.0624 5.54999C20.0886 5.70286 20.0668 5.86009 20 6.00004L11 15C10.8724 15.1455 10.6929 15.2353 10.5 15.25Z" fill="#ffffff"/> <path d="M12 21C10.3915 20.9974 8.813 20.5638 7.42891 19.7443C6.04481 18.9247 4.90566 17.7492 4.12999 16.34C3.54037 15.29 3.17596 14.1287 3.05999 12.93C2.87697 11.1721 3.2156 9.39921 4.03363 7.83249C4.85167 6.26578 6.1129 4.9746 7.65999 4.12003C8.71001 3.53041 9.87134 3.166 11.07 3.05003C12.2641 2.92157 13.4719 3.03725 14.62 3.39003C14.7224 3.4105 14.8195 3.45215 14.9049 3.51232C14.9903 3.57248 15.0622 3.64983 15.116 3.73941C15.1698 3.82898 15.2043 3.92881 15.2173 4.03249C15.2302 4.13616 15.2214 4.2414 15.1913 4.34146C15.1612 4.44152 15.1105 4.53419 15.0425 4.61352C14.9745 4.69286 14.8907 4.75712 14.7965 4.80217C14.7022 4.84723 14.5995 4.87209 14.4951 4.87516C14.3907 4.87824 14.2867 4.85946 14.19 4.82003C13.2186 4.52795 12.1987 4.43275 11.19 4.54003C10.193 4.64212 9.22694 4.94485 8.34999 5.43003C7.50512 5.89613 6.75813 6.52088 6.14999 7.27003C5.52385 8.03319 5.05628 8.91361 4.77467 9.85974C4.49307 10.8059 4.40308 11.7987 4.50999 12.78C4.61208 13.777 4.91482 14.7431 5.39999 15.62C5.86609 16.4649 6.49084 17.2119 7.23999 17.82C8.00315 18.4462 8.88357 18.9137 9.8297 19.1953C10.7758 19.4769 11.7686 19.5669 12.75 19.46C13.747 19.3579 14.713 19.0552 15.59 18.57C16.4349 18.1039 17.1818 17.4792 17.79 16.73C18.4161 15.9669 18.8837 15.0864 19.1653 14.1403C19.4469 13.1942 19.5369 12.2014 19.43 11.22C19.4201 11.1169 19.4307 11.0129 19.461 10.9139C19.4914 10.8149 19.5409 10.7228 19.6069 10.643C19.6728 10.5631 19.7538 10.497 19.8453 10.4485C19.9368 10.3999 20.0369 10.3699 20.14 10.36C20.2431 10.3502 20.3471 10.3607 20.4461 10.3911C20.5451 10.4214 20.6372 10.471 20.717 10.5369C20.7969 10.6028 20.863 10.6839 20.9115 10.7753C20.9601 10.8668 20.9901 10.9669 21 11.07C21.1821 12.829 20.842 14.6026 20.0221 16.1695C19.2022 17.7363 17.9389 19.0269 16.39 19.88C15.3288 20.4938 14.1495 20.8755 12.93 21C12.62 21 12.3 21 12 21Z" fill="#ffffff"/></g></svg>
-                <span class="me-auto"><?php echo esc_html__( 'Licença ativada com sucesso!', 'flexify-checkout-for-woocommerce' ); ?></span>
-                <button class="btn-close btn-close-white ms-2 hide-toast" type="button" data-bs-dismiss="toast" aria-label="Close"></button>
-            </div>
-            <div class="toast-body"><?php echo esc_html__( 'Todos os recursos da versão Pro agora estão ativos!', 'flexify-checkout-for-woocommerce' ); ?></div>
-        </div>
-        <?php
+    public static function schedule_license_expiration_check( $expiration_timestamp = 0 ) {
+        // Cancel any previous bookings to avoid duplication
+        wp_clear_scheduled_hook('Flexify_Checkout/License/Check_Expires_Time');
+
+        if ( $expiration_timestamp > 0 ) {
+            if ( $expiration_timestamp > time() ) {
+                // Add 3 days to timestamp
+                $expiration_timestamp += 3 * DAY_IN_SECONDS;
+
+                // Schedule event to expire at exactly the right time
+                wp_schedule_single_event( $expiration_timestamp, 'Flexify_Checkout/License/Check_Expires_Time' );
+            }
+        } else {
+            $info = get_option('flexify_checkout_license_info');
+
+            if ( is_object( $info ) && ! empty( $info->expiry_time ) ) {
+                $expiration_timestamp = strtotime( $info->expiry_time );
+            } else {
+                $object_query = get_option('flexify_checkout_license_response_object');
+
+                if ( is_object( $object_query ) && ! empty( $object_query->expire_date ) ) {
+                    $expiration_timestamp = strtotime( $object_query->expire_date );
+                }
+            }
+
+            if ( ! empty( $expiration_timestamp ) && $expiration_timestamp > time() ) {
+                // Add 3 days to timestamp
+                $expiration_timestamp += 3 * DAY_IN_SECONDS;
+
+                // Schedule event to expire at exactly the right time
+                wp_schedule_single_event( $expiration_timestamp, 'Flexify_Checkout/License/Check_Expires_Time' );
+            }
+        }
+
+        // register runned event
+        update_option( 'flexify_checkout_schedule_expiration_check_runned', true );
     }
 
 
     /**
-     * Display admin notices for license messages
+     * Deactivate license on scheduled event
      * 
-     * @since 3.8.0
+     * @since 5.2.0
      * @return void
      */
-    public function display_license_messages() {
-        if ( ! empty( $this->license_message ) ) : ?>
-            <div class="toast toast-danger show">
-                <div class="toast-header bg-danger text-white">
-                    <svg class="icon icon-white me-2" viewBox="0 0 24 24" style="fill: rgba(255, 255, 255, 1);transform: ;msFilter:;"><path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8z"></path><path d="M11 11h2v6h-2zm0-4h2v2h-2z"></path></svg>
-                    <span class="me-auto"><?php echo esc_html__( 'Ops! Ocorreu um erro.', 'flexify-checkout-for-woocommerce' ); ?></span>
-                    <button class="btn-close btn-close-white ms-2 hide-toast" type="button" data-bs-dismiss="toast" aria-label="Close"></button>
-                </div>
-                <div class="toast-body"><?php echo esc_html__( $this->license_message, 'flexify-checkout-for-woocommerce' ); ?></div>
-            </div>
-        <?php endif;
+    public function check_license_expires_time() {
+        $license_key = get_option('flexify_checkout_license_key');
+        $api_expiry_time = $this->get_expires_time( $license_key );
+
+        if ( $api_expiry_time ) {
+            $expiration_timestamp = strtotime( $api_expiry_time );
+
+            // license expired
+            if ( $expiration_timestamp < time() ) {
+                update_option( 'flexify_checkout_license_expired', true );
+                $message = '';
+
+                self::deactive_license( FLEXIFY_CHECKOUT_FILE, $message );
+            } else {
+                self::schedule_license_expiration_check( $expiration_timestamp );
+            }
+        }
     }
 
 
     /**
-     * Display not allowed site notice
+     * Get license expires time
      * 
-     * @since 3.8.0
-     * @return void
+     * @since 5.2.0
+     * @param string $license_key | License key
+     * @return array
      */
-    public function not_allowed_site_notice() {
-        ?>
-        <div class="toast toast-danger show">
-            <div class="toast-header bg-danger text-white">
-                <svg class="icon icon-white me-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff"><g stroke-width="0"/><g stroke-linecap="round" stroke-linejoin="round"/><g><path d="M10.5 15.25C10.307 15.2353 10.1276 15.1455 9.99998 15L6.99998 12C6.93314 11.8601 6.91133 11.7029 6.93756 11.55C6.96379 11.3971 7.03676 11.2562 7.14643 11.1465C7.2561 11.0368 7.39707 10.9638 7.54993 10.9376C7.70279 10.9114 7.86003 10.9332 7.99998 11L10.47 13.47L19 5.00004C19.1399 4.9332 19.2972 4.91139 19.45 4.93762C19.6029 4.96385 19.7439 5.03682 19.8535 5.14649C19.9632 5.25616 20.0362 5.39713 20.0624 5.54999C20.0886 5.70286 20.0668 5.86009 20 6.00004L11 15C10.8724 15.1455 10.6929 15.2353 10.5 15.25Z" fill="#ffffff"/> <path d="M12 21C10.3915 20.9974 8.813 20.5638 7.42891 19.7443C6.04481 18.9247 4.90566 17.7492 4.12999 16.34C3.54037 15.29 3.17596 14.1287 3.05999 12.93C2.87697 11.1721 3.2156 9.39921 4.03363 7.83249C4.85167 6.26578 6.1129 4.9746 7.65999 4.12003C8.71001 3.53041 9.87134 3.166 11.07 3.05003C12.2641 2.92157 13.4719 3.03725 14.62 3.39003C14.7224 3.4105 14.8195 3.45215 14.9049 3.51232C14.9903 3.57248 15.0622 3.64983 15.116 3.73941C15.1698 3.82898 15.2043 3.92881 15.2173 4.03249C15.2302 4.13616 15.2214 4.2414 15.1913 4.34146C15.1612 4.44152 15.1105 4.53419 15.0425 4.61352C14.9745 4.69286 14.8907 4.75712 14.7965 4.80217C14.7022 4.84723 14.5995 4.87209 14.4951 4.87516C14.3907 4.87824 14.2867 4.85946 14.19 4.82003C13.2186 4.52795 12.1987 4.43275 11.19 4.54003C10.193 4.64212 9.22694 4.94485 8.34999 5.43003C7.50512 5.89613 6.75813 6.52088 6.14999 7.27003C5.52385 8.03319 5.05628 8.91361 4.77467 9.85974C4.49307 10.8059 4.40308 11.7987 4.50999 12.78C4.61208 13.777 4.91482 14.7431 5.39999 15.62C5.86609 16.4649 6.49084 17.2119 7.23999 17.82C8.00315 18.4462 8.88357 18.9137 9.8297 19.1953C10.7758 19.4769 11.7686 19.5669 12.75 19.46C13.747 19.3579 14.713 19.0552 15.59 18.57C16.4349 18.1039 17.1818 17.4792 17.79 16.73C18.4161 15.9669 18.8837 15.0864 19.1653 14.1403C19.4469 13.1942 19.5369 12.2014 19.43 11.22C19.4201 11.1169 19.4307 11.0129 19.461 10.9139C19.4914 10.8149 19.5409 10.7228 19.6069 10.643C19.6728 10.5631 19.7538 10.497 19.8453 10.4485C19.9368 10.3999 20.0369 10.3699 20.14 10.36C20.2431 10.3502 20.3471 10.3607 20.4461 10.3911C20.5451 10.4214 20.6372 10.471 20.717 10.5369C20.7969 10.6028 20.863 10.6839 20.9115 10.7753C20.9601 10.8668 20.9901 10.9669 21 11.07C21.1821 12.829 20.842 14.6026 20.0221 16.1695C19.2022 17.7363 17.9389 19.0269 16.39 19.88C15.3288 20.4938 14.1495 20.8755 12.93 21C12.62 21 12.3 21 12 21Z" fill="#ffffff"/></g></svg>
-                <span class="me-auto"><?php echo esc_html__( 'Ops! Ocorreu um erro.', 'flexify-checkout-for-woocommerce' ) ?></span>
-                <button class="btn-close btn-close-white ms-2 hide-toast" type="button" aria-label="Fechar"></button>
-            </div>
-            <div class="toast-body"><?php echo esc_html__( 'O domínio de ativação não é permitido.', 'flexify-checkout-for-woocommerce' ) ?></div>
-        </div>
-        <?php
-    }
+    public function get_expires_time( $license_key ) {
+        $api_url = $this->server_host . 'license/view';
 
+        $response = wp_remote_post( $api_url, array(
+            'headers' => array(
+                'Content-Type' => 'application/x-www-form-urlencoded',
+            ),
+            'body' => array(
+                'api_key' => '41391199-FE02BDAA-3E8E3920-CDACDE2F',
+                'license_code' => $license_key
+            ),
+            'timeout' => 30,
+        ));
 
-    /**
-     * Display not allowed product notice
-     * 
-     * @since 3.8.0
-     * @return void
-     */
-    public function not_allowed_product_notice() {
-        ?>
-        <div class="toast toast-danger show">
-            <div class="toast-header bg-danger text-white">
-                <svg class="icon icon-white me-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff"><g stroke-width="0"/><g stroke-linecap="round" stroke-linejoin="round"/><g><path d="M10.5 15.25C10.307 15.2353 10.1276 15.1455 9.99998 15L6.99998 12C6.93314 11.8601 6.91133 11.7029 6.93756 11.55C6.96379 11.3971 7.03676 11.2562 7.14643 11.1465C7.2561 11.0368 7.39707 10.9638 7.54993 10.9376C7.70279 10.9114 7.86003 10.9332 7.99998 11L10.47 13.47L19 5.00004C19.1399 4.9332 19.2972 4.91139 19.45 4.93762C19.6029 4.96385 19.7439 5.03682 19.8535 5.14649C19.9632 5.25616 20.0362 5.39713 20.0624 5.54999C20.0886 5.70286 20.0668 5.86009 20 6.00004L11 15C10.8724 15.1455 10.6929 15.2353 10.5 15.25Z" fill="#ffffff"/> <path d="M12 21C10.3915 20.9974 8.813 20.5638 7.42891 19.7443C6.04481 18.9247 4.90566 17.7492 4.12999 16.34C3.54037 15.29 3.17596 14.1287 3.05999 12.93C2.87697 11.1721 3.2156 9.39921 4.03363 7.83249C4.85167 6.26578 6.1129 4.9746 7.65999 4.12003C8.71001 3.53041 9.87134 3.166 11.07 3.05003C12.2641 2.92157 13.4719 3.03725 14.62 3.39003C14.7224 3.4105 14.8195 3.45215 14.9049 3.51232C14.9903 3.57248 15.0622 3.64983 15.116 3.73941C15.1698 3.82898 15.2043 3.92881 15.2173 4.03249C15.2302 4.13616 15.2214 4.2414 15.1913 4.34146C15.1612 4.44152 15.1105 4.53419 15.0425 4.61352C14.9745 4.69286 14.8907 4.75712 14.7965 4.80217C14.7022 4.84723 14.5995 4.87209 14.4951 4.87516C14.3907 4.87824 14.2867 4.85946 14.19 4.82003C13.2186 4.52795 12.1987 4.43275 11.19 4.54003C10.193 4.64212 9.22694 4.94485 8.34999 5.43003C7.50512 5.89613 6.75813 6.52088 6.14999 7.27003C5.52385 8.03319 5.05628 8.91361 4.77467 9.85974C4.49307 10.8059 4.40308 11.7987 4.50999 12.78C4.61208 13.777 4.91482 14.7431 5.39999 15.62C5.86609 16.4649 6.49084 17.2119 7.23999 17.82C8.00315 18.4462 8.88357 18.9137 9.8297 19.1953C10.7758 19.4769 11.7686 19.5669 12.75 19.46C13.747 19.3579 14.713 19.0552 15.59 18.57C16.4349 18.1039 17.1818 17.4792 17.79 16.73C18.4161 15.9669 18.8837 15.0864 19.1653 14.1403C19.4469 13.1942 19.5369 12.2014 19.43 11.22C19.4201 11.1169 19.4307 11.0129 19.461 10.9139C19.4914 10.8149 19.5409 10.7228 19.6069 10.643C19.6728 10.5631 19.7538 10.497 19.8453 10.4485C19.9368 10.3999 20.0369 10.3699 20.14 10.36C20.2431 10.3502 20.3471 10.3607 20.4461 10.3911C20.5451 10.4214 20.6372 10.471 20.717 10.5369C20.7969 10.6028 20.863 10.6839 20.9115 10.7753C20.9601 10.8668 20.9901 10.9669 21 11.07C21.1821 12.829 20.842 14.6026 20.0221 16.1695C19.2022 17.7363 17.9389 19.0269 16.39 19.88C15.3288 20.4938 14.1495 20.8755 12.93 21C12.62 21 12.3 21 12 21Z" fill="#ffffff"/></g></svg>
-                <span class="me-auto"><?php echo esc_html__( 'Ops! Ocorreu um erro.', 'flexify-checkout-for-woocommerce' ) ?></span>
-                <button class="btn-close btn-close-white ms-2 hide-toast" type="button" aria-label="Fechar"></button>
-            </div>
-            <div class="toast-body"><?php echo esc_html__( 'A licença informada não é permitida para este produto.', 'flexify-checkout-for-woocommerce' ) ?></div>
-        </div>
-        <?php
+        if ( is_wp_error( $response ) ) {
+            Logger::register_log( 'Error getting license expiration time: ' . $response->get_error_message(), 'ERROR' );
+
+            return false;
+        }
+
+        $response_body = wp_remote_retrieve_body( $response );
+        $decoded_response = json_decode( $response_body, true );
+
+        // check if response is valid
+        if ( ! is_array( $decoded_response ) || empty( $decoded_response['data']['expiry_time'] ) ) {
+            Logger::register_log( 'Invalid response from license API: ' . print_r( $decoded_response, true ), 'ERROR' );
+            return false;
+        }
+
+        return $decoded_response['data']['expiry_time'];
     }
 }

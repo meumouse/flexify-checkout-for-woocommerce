@@ -569,6 +569,7 @@ textarea.form-control:focus {
     display: block;
     width: 100%;
     min-width: 20rem;
+    max-width: -webkit-fill-available !important;
     padding: 0.825rem 3rem 0.825rem 1rem !important;
     -moz-padding-start: calc(1rem - 3px);
     font-size: 0.875rem !important;
@@ -594,8 +595,8 @@ textarea.form-control:focus {
 }
 
 .form-select:focus {
-    border-color: var(--meumouse-primary) !important;
-    box-shadow: none !important;
+    border-color: rgba( var(--meumouse-primary-rgb), 0.35 ) !important;
+    box-shadow: 0 0 0 0.25rem rgba( var(--meumouse-primary-rgb), 0.25 ) !important;
     outline: none !important;
 }
 
@@ -1862,4 +1863,33 @@ table.popup-table td {
 table.popup-table th {
     padding-right: 1rem;
     font-weight: 600;
+}
+
+.placeholder-content {
+    width: fit-content;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+    -webkit-animation-duration: 1.7s;
+    animation-duration: 1.7s;
+    -webkit-animation-fill-mode: forwards;
+    animation-fill-mode: forwards;
+    -webkit-animation-iteration-count: infinite;
+    animation-iteration-count: infinite;
+    -webkit-animation-timing-function: linear;
+    animation-timing-function: linear;
+    -webkit-animation-name: placeholder_animation;
+    animation-name: placeholder_animation;
+    background: linear-gradient(to right, #eee 2%, #ddd 18%, #eee 33%);
+    background-size: 1300px;
+    border-radius: 0.375rem;
+}
+
+@keyframes placeholder_animation {
+    0% {
+        background-position: -650px 0;
+    }
+    100% {
+        background-position: 650px 0;
+    }
 }
