@@ -13,7 +13,7 @@ defined('ABSPATH') || exit;
  * Orders class
  *
  * @since 1.0.0
- * @version 5.0.0
+ * @version 5.2.1
  * @package MeuMouse.com
  */
 class Orders {
@@ -91,7 +91,7 @@ class Orders {
 	 * Get customer fragment from order based on billing fields
 	 *
 	 * @since 3.9.8
-	 * @version 5.0.0
+	 * @version 5.2.1
 	 * @param WC_Order $order | Order object
 	 * @return array
 	 */
@@ -147,7 +147,26 @@ class Orders {
 				$fragment_data[ $field_id ] = $meta_value;
 			}
 		}
-	
+
+		// Fallback to populate missing standard address fields
+		$billing_address = $order->get_address('billing');
+
+		foreach ( $billing_address as $key => $value ) {
+			if ( ! isset( $fragment_data[ "billing_{$key}" ] ) && ! empty( $value ) ) {
+				$fragment_data[ "billing_{$key}" ] = $value;
+			}
+		}
+
+		if ( $ship_different ) {
+			$shipping_address = $order->get_address('shipping');
+
+			foreach ( $shipping_address as $key => $value ) {
+				if ( ! isset( $fragment_data[ "shipping_{$key}" ] ) && ! empty( $value ) ) {
+					$fragment_data[ "shipping_{$key}" ] = $value;
+				}
+			}
+		}
+
 		/**
 		 * Filter: Customize the order customer fragment data.
 		 *

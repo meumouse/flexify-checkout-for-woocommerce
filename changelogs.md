@@ -1,3 +1,9 @@
+Versão 5.2.1 (08/09/2025)
+* Correção de bugs
+  - Cor primária sendo usada demasiadamente em elementos do checkout com o tema moderno claro
+  - Endereço de entrega não é no exibido no resumo da página de agradecimento
+* Recurso adicionado: Cor de fundo da contagem regressiva
+
 Versão 5.2.0 (07/09/2025)
 * Correção de bugs
   - Conflito de exibição de campos de CPF e CNPJ com plugin Brazilian Market on WooCommerce
