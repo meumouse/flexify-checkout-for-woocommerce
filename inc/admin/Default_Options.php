@@ -9,7 +9,7 @@ defined('ABSPATH') || exit;
  * Set default options
  * 
  * @since 5.0.0
- * @version 5.2.0
+ * @version 5.2.1
  * @package MeuMouse.com
  */
 class Default_Options {
@@ -18,7 +18,7 @@ class Default_Options {
      * Set default options
      * 
      * @since 1.0.0
-     * @version 5.2.0
+     * @version 5.2.1
      * @return array
      */
     public function set_default_data_options() {
@@ -156,6 +156,8 @@ class Default_Options {
             'checkout_countdown_action' => 'hide',
             'checkout_countdown_title' => esc_html__( 'Sua sessão termina em:', 'flexify-checkout-for-woocommerce' ),
             'checkout_countdown_redirect_url' => home_url('/'),
+            'countdown_background_type' => 'primary',
+            'countdown_background_color' => '#141D26',
         ));
     }
 

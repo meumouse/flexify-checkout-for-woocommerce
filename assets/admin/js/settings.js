@@ -300,6 +300,11 @@
             attach('#checkout_countdown_action', {
 				'logout': '.require-countdown-action-logout',
 			});
+
+            // display custom background color for countdown
+            attach('#countdown_background_type', {
+				'custom': '.require-custom-background-color',
+			});
 		},
 
         /**
