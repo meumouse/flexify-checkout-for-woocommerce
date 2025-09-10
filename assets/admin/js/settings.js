@@ -8,6 +8,11 @@
      */
     const params = window.flexify_checkout_params || {};
 
+    if ( params.debug_mode === 'yes' ) {
+        console.log( '[FLEXIFY CHECKOUT VERSION]: ', params.plugin_version );
+        console.log( '[FLEXIFY CHECKOUT] Admin params: ', params );
+    }
+
     /**
      * Admin controller for Flexify Checkout
      * 
@@ -179,7 +184,7 @@
 		 * Generic visibility controllers (checkboxes, selects, arrays, maps)
 		 * 
 		 * @since 1.0.0
-		 * @version 5.2.0
+		 * @version 5.2.2
 		 */
 		setupVisibilityControllers: function() {
 
@@ -304,6 +309,11 @@
             // display custom background color for countdown
             attach('#countdown_background_type', {
 				'custom': '.require-custom-background-color',
+			});
+
+            // display custom font color for countdown
+            attach('#countdown_font_color_type', {
+				'custom': '.require-custom-font-color',
 			});
 		},
 

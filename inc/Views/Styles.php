@@ -13,7 +13,7 @@ defined('ABSPATH') || exit;
  * Handle with plugin styles
  *
  * @since 5.0.0
- * @version 5.2.1
+ * @version 5.2.2
  * @package MeuMouse.com
  */
 class Styles {
@@ -77,7 +77,7 @@ class Styles {
 	 * Get dynamic styles
 	 *
 	 * @since 1.0.0
-	 * @version 5.2.1
+	 * @version 5.2.2
 	 * @param array $settings | Get plugin settings
 	 * @return string
 	 */
@@ -264,13 +264,6 @@ class Styles {
 					background-color: <?php echo esc_attr( $settings['set_primary_color'] ); ?> !important;
 					border-color: <?php echo esc_attr( $settings['set_primary_color'] ); ?> !important;
 				}
-
-				<?php if ( Admin_Options::get_setting('countdown_background_type') !== 'primary' ) : ?>
-					#flexify-checkout-countdown {
-						background-color: <?php echo esc_attr( Admin_Options::get_setting('countdown_background_color') ); ?>;
-					}
-				<?php endif; ?>
-
 			<?php endif;
 
 			if ( $settings['set_primary_color_on_hover'] ) : ?>
@@ -332,6 +325,18 @@ class Styles {
 				background-repeat: no-repeat !important;
 				position: fixed !important;
   				background-image: url("<?php echo esc_attr( self::$assets_url . 'frontend/img/loader.gif' ); ?>") !important;
+			}
+		<?php endif;
+
+		if ( Admin_Options::get_setting('countdown_background_type') !== 'primary' ) : ?>
+			#flexify-checkout-countdown {
+				background-color: <?php echo esc_attr( Admin_Options::get_setting('countdown_background_color') ); ?>;
+			}
+		<?php endif;
+
+		if ( Admin_Options::get_setting('countdown_font_color_type') !== 'default' ) : ?>
+			#flexify-checkout-countdown {
+				color: <?php echo esc_attr( Admin_Options::get_setting('countdown_font_color') ); ?>;
 			}
 		<?php endif;
 

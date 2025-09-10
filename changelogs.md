@@ -1,3 +1,8 @@
+Versão 5.2.2 (10/09/2025)
+* Correção de bugs
+  - Cor de fundo da contagem regressiva só era aplicado no tema Moderno claro
+* Recurso adicionado: Cor do texto da contagem regressiva
+
 Versão 5.2.1 (08/09/2025)
 * Correção de bugs
   - Cor primária sendo usada demasiadamente em elementos do checkout com o tema moderno claro
