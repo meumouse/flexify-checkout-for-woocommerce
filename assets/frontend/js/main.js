@@ -4224,7 +4224,7 @@
 		 * Initialize main object
 		 * 
 		 * @since 5.0.0
-		 * @version 5.2.0
+		 * @version 5.2.2
 		 */
 		init: function () {
 			// prevent multiple inits
@@ -4239,7 +4239,8 @@
 			const log = dbg ? (...a) => console.log('[Flexify Checkout]', ...a) : () => {};
 
 			if (dbg) {
-				console.log('[Flexify Checkout] Loaded params:', window.flexify_checkout_params || {});
+				console.log( '[FLEXIFY CHECKOUT VERSION]: ', params.plugin_version );
+				console.log( '[FLEXIFY CHECKOUT] Frontend params: ', window.flexify_checkout_params || {} );
 			}
 
 			const run = (name, mod) => {

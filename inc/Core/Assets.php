@@ -18,7 +18,7 @@ defined('ABSPATH') || exit;
  * Register/enqueue frontend and backend scripts
  *
  * @since 1.0.0
- * @version 5.1.0
+ * @version 5.2.2
  * @package MeuMouse.com
  */
 class Assets {
@@ -90,7 +90,7 @@ class Assets {
 	 * Frontend assets
 	 * 
 	 * @since 1.0.0
-	 * @version 5.2.0
+	 * @version 5.2.2
 	 * @return void
 	 */
 	public function frontend_assets() {
@@ -259,6 +259,8 @@ class Assets {
 			'countdown_action' => Admin_Options::get_setting('checkout_countdown_action'),
 			'countdown_title' => Admin_Options::get_setting('checkout_countdown_title'),
 			'is_thankyou' => is_order_received_page() ? 'yes' : 'no',
+			'plugin_version' => $this->version,
+			'debug_mode' => defined('FLEXIFY_CHECKOUT_DEBUG_MODE') && FLEXIFY_CHECKOUT_DEBUG_MODE === true ? 'yes' : 'no',
 		));
 
 		/**
@@ -321,7 +323,7 @@ class Assets {
 	 * Enqueue admin scripts in page settings only
 	 * 
 	 * @since 1.0.0
-	 * @version 5.1.0
+	 * @version 5.2.2
 	 * @return void
 	 */
 	public function admin_assets() {
@@ -361,6 +363,8 @@ class Assets {
 				'close_aria_label_notice' => esc_attr__( 'Fechar', 'flexify-checkout-for-woocommerce' ),
 				'set_animation_modal_title' => esc_html__( 'Escolher animação', 'flexify-checkout-for-woocommerce' ),
 				'set_animation_button_title' => esc_html__( 'Usar este arquivo', 'flexify-checkout-for-woocommerce' ),
+				'plugin_version' => $this->version,
+				'debug_mode' => defined('FLEXIFY_CHECKOUT_DEBUG_MODE') && FLEXIFY_CHECKOUT_DEBUG_MODE === true ? 'yes' : 'no',
 			));
 		}
 	}
