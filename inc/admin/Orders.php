@@ -13,7 +13,7 @@ defined('ABSPATH') || exit;
  * Orders class
  *
  * @since 1.0.0
- * @version 5.2.1
+ * @version 5.2.3
  * @package MeuMouse.com
  */
 class Orders {
@@ -22,7 +22,7 @@ class Orders {
 	 * Construct function
 	 *
 	 * @since 1.0.0
-	 * @version 3.9.8
+	 * @version 5.2.3
 	 * @return void
 	 */
 	public function __construct() {
@@ -31,7 +31,6 @@ class Orders {
 		if ( Admin_Options::get_setting('enable_manage_fields') === 'yes' && License::is_valid() ) {
 			add_action( 'woocommerce_admin_order_data_after_billing_address', array( __CLASS__, 'display_custom_fields_in_admin_order' ), 10, 1 );
 			add_filter( 'woocommerce_email_order_meta_fields', array( __CLASS__, 'add_custom_fields_to_order_emails' ), 10, 3 );
-			add_filter( 'woocommerce_admin_billing_fields', array( $this, 'shop_order_billing_fields' ) );
 			add_action( 'woocommerce_checkout_update_order_meta', array( __CLASS__, 'save_custom_checkout_fields' ), 10, 2 );
 		}
 
@@ -284,33 +283,6 @@ class Orders {
 		}
 	
 		return $fields;
-	}
-
-
-	/**
-	 * Custom shop order billing fields
-	 *
-	 * @since 3.9.8
-	 * @version 5.0.0
-	 * @param array $data | Default order billing fields
-	 * @return array Custom order billing fields
-	 */
-	public function shop_order_billing_fields( $data ) {
-		$billing_data['phone'] = $data['phone'];
-		$billing_data['phone']['show'] = false;
-
-		$billing_data['email'] = $data['email'];
-		$billing_data['email']['show'] = false;
-
-		/**
-		 * Filter: Customize the admin order billing fields.
-		 * 
-		 * @since 3.9.8
-		 * @version 5.0.0
-		 * @param array $billing_data | Billing fields data
-		 * @return array
-		 */
-		return apply_filters( 'Flexify_Checkout/Orders/Admin_Billing_Fields', $billing_data );
 	}
 
 
