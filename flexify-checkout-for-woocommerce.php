@@ -7,11 +7,11 @@
  * Requires Plugins: 		woocommerce
  * Author: 					MeuMouse.com
  * Author URI: 				https://meumouse.com/?utm_source=wordpress&utm_medium=plugins_list&utm_campaign=flexify_checkout
- * Version: 				5.2.2
+ * Version: 				5.2.3
  * WC requires at least: 	6.0.0
- * WC tested up to: 		10.1.2
+ * WC tested up to: 		10.2.2
  * Requires PHP: 			7.4
- * Tested up to:      		6.8.2
+ * Tested up to:      		6.8.3
  * Text Domain: 			flexify-checkout-for-woocommerce
  * Domain Path: 			/languages
  * 
@@ -59,7 +59,7 @@ class Flexify_Checkout {
 	 * @since 1.0.0
 	 * @var string
 	 */
-	public static $version = '5.2.2';
+	public static $version = '5.2.3';
 
 	/**
 	 * Plugin initiated
@@ -161,7 +161,7 @@ class Flexify_Checkout {
 			'FLEXIFY_CHECKOUT_VERSION' => self::$version,
 			'FLEXIFY_CHECKOUT_ADMIN_EMAIL' => get_option('admin_email'),
 			'FLEXIFY_CHECKOUT_DOCS_LINK' => 'https://ajuda.meumouse.com/docs/flexify-checkout-for-woocommerce/overview',
-			'FLEXIFY_CHECKOUT_DEV_MODE' => false,
+			'FLEXIFY_CHECKOUT_DEV_MODE' => true,
 		);
 
 		// iterate for each constant item

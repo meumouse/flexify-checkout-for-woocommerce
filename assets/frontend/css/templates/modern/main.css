@@ -2408,7 +2408,6 @@ label.checkbox {
 
 label.checkbox span {
     font-size: 1.115rem;
-    line-height: 0;
 }
 
 input[type="checkbox"] {

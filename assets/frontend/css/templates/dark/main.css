@@ -2419,7 +2419,6 @@ label.checkbox {
 
 label.checkbox span {
     font-size: 1.115rem;
-    line-height: 0;
 }
 
 input[type="checkbox"] {
@@ -5208,7 +5207,8 @@ p.form-row.flexify-checkout-loading-placeholder > label {
 
 .mp-checkout-container .mp-wallet-button-container .mp-wallet-button-description,
 .mp-checkout-container .mp-pix-template-subtitle,
-.mp-terms-and-conditions-text {
+.mp-terms-and-conditions-text,
+.mp-details-pix-qr-subtitle {
     color: #E9ECEF !important;
 }
 
