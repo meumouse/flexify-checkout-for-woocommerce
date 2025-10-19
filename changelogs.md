@@ -1,6 +1,7 @@
 Versão 5.2.3 (19/10/2025)
 * Correção de bugs
   - Ausência de campos nativos no editor do pedido
+* Otimizações
 
 Versão 5.2.2 (10/09/2025)
 * Correção de bugs
