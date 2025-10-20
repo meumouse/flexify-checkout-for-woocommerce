@@ -262,7 +262,7 @@ defined('ABSPATH') || exit; ?>
 
 <!-- Fonts manager modal -->
 <div id="fcw_manage_fonts_container" class="popup-container">
-	<div class="popup-content popup-lg">
+	<div class="popup-content popup-xg">
 		<div class="popup-header">
 			<h5 class="popup-title"><?php esc_html_e('Gerenciar biblioteca de fontes', 'flexify-checkout-for-woocommerce') ?></h5>
 			<button id="fcw_close_fonts_manager" class="btn-close" aria-label="<?php esc_html_e( 'Fechar', 'flexify-checkout-for-woocommerce' ); ?>"></button>
@@ -271,43 +271,43 @@ defined('ABSPATH') || exit; ?>
 		<div class="popup-body">
 			<div class="fcw-fonts-manager">
 				<div class="fcw-fonts-form">
-					<h6 class="fw-semibold mb-3" id="fcw-font-form-title"><?php esc_html_e( 'Adicionar nova fonte', 'flexify-checkout-for-woocommerce' ) ?></h6>
+					<h3 class="fw-semibold mb-3" id="fcw-font-form-title"><?php esc_html_e( 'Adicionar nova fonte', 'flexify-checkout-for-woocommerce' ) ?></h3>
 
 					<form id="fcw-fonts-form" enctype="multipart/form-data">
 						<input type="hidden" name="font_id" id="fcw-font-id" value="" />
 						<input type="hidden" name="is_new" id="fcw-font-is-new" value="yes" />
 
 						<div class="mb-3">
-							<label for="fcw-font-name" class="form-label"><?php esc_html_e( 'Nome da fonte', 'flexify-checkout-for-woocommerce' ) ?></label>
+							<label for="fcw-font-name" class="form-label text-left"><?php esc_html_e( 'Nome da fonte', 'flexify-checkout-for-woocommerce' ) ?></label>
 							<input type="text" class="form-control" id="fcw-font-name" name="font_name" value="" required />
-							<span class="flexify-checkout-description"><?php esc_html_e( 'Este nome será exibido na lista de seleção de fontes.', 'flexify-checkout-for-woocommerce' ) ?></span>
+							<span class="flexify-checkout-description text-left"><?php esc_html_e( 'Este nome será exibido na lista de seleção de fontes.', 'flexify-checkout-for-woocommerce' ) ?></span>
 						</div>
 
 						<div class="mb-3">
-							<label for="fcw-font-type" class="form-label"><?php esc_html_e( 'Origem da fonte', 'flexify-checkout-for-woocommerce' ) ?></label>
+							<label for="fcw-font-type" class="form-label text-left"><?php esc_html_e( 'Origem da fonte', 'flexify-checkout-for-woocommerce' ) ?></label>
 							<select id="fcw-font-type" name="font_type" class="form-select">
 								<option value="google"><?php esc_html_e( 'Google Fonts', 'flexify-checkout-for-woocommerce' ) ?></option>
-								<option value="upload"><?php esc_html_e( 'Arquivo enviado', 'flexify-checkout-for-woocommerce' ) ?></option>
+								<option value="upload"><?php esc_html_e( 'Fonte personalizada', 'flexify-checkout-for-woocommerce' ) ?></option>
 							</select>
 						</div>
 
 						<div class="fcw-font-google-fields">
 							<div class="mb-3">
-								<label for="fcw-font-url" class="form-label"><?php esc_html_e( 'URL de incorporação do Google Fonts', 'flexify-checkout-for-woocommerce' ) ?></label>
+								<label for="fcw-font-url" class="form-label text-left"><?php esc_html_e( 'URL de incorporação do Google Fonts', 'flexify-checkout-for-woocommerce' ) ?></label>
 								<input type="text" class="form-control" id="fcw-font-url" name="font_url" placeholder="https://fonts.googleapis.com/css2?family=..." />
-								<span class="flexify-checkout-description"><?php esc_html_e( 'Cole a URL gerada pelo Google Fonts para incluir a família desejada.', 'flexify-checkout-for-woocommerce' ) ?></span>
+								<span class="flexify-checkout-description text-left"><?php esc_html_e( 'Cole a URL gerada pelo Google Fonts para incluir a família desejada.', 'flexify-checkout-for-woocommerce' ) ?></span>
 							</div>
 						</div>
 
 						<div class="fcw-font-upload-fields d-none">
 							<div class="row g-3">
-								<div class="col-md-6">
-									<label for="fcw-font-weight" class="form-label"><?php esc_html_e( 'Peso da fonte', 'flexify-checkout-for-woocommerce' ) ?></label>
+								<div class="col-md-4">
+									<label for="fcw-font-weight" class="form-label text-left"><?php esc_html_e( 'Peso da fonte', 'flexify-checkout-for-woocommerce' ) ?></label>
 									<input type="text" class="form-control" id="fcw-font-weight" name="font_weight" value="400" />
 								</div>
 
-								<div class="col-md-6">
-									<label for="fcw-font-style" class="form-label"><?php esc_html_e( 'Estilo da fonte', 'flexify-checkout-for-woocommerce' ) ?></label>
+								<div class="col-md-8">
+									<label for="fcw-font-style" class="form-label text-left"><?php esc_html_e( 'Estilo da fonte', 'flexify-checkout-for-woocommerce' ) ?></label>
 									<select class="form-select" id="fcw-font-style" name="font_style">
 										<option value="normal"><?php esc_html_e( 'Normal', 'flexify-checkout-for-woocommerce' ) ?></option>
 										<option value="italic"><?php esc_html_e( 'Itálico', 'flexify-checkout-for-woocommerce' ) ?></option>
@@ -316,13 +316,13 @@ defined('ABSPATH') || exit; ?>
 							</div>
 
 							<div class="mb-3 mt-3">
-								<label for="fcw-font-file-woff2" class="form-label"><?php esc_html_e( 'Arquivo WOFF2', 'flexify-checkout-for-woocommerce' ) ?></label>
+								<label for="fcw-font-file-woff2" class="form-label text-left"><?php esc_html_e( 'Arquivo WOFF2', 'flexify-checkout-for-woocommerce' ) ?></label>
 								<input type="file" class="form-control" id="fcw-font-file-woff2" name="font_file_woff2" accept=".woff2" />
 								<div class="form-text" id="fcw-font-file-woff2-current"></div>
 							</div>
 
 							<div class="mb-3">
-								<label for="fcw-font-file-woff" class="form-label"><?php esc_html_e( 'Arquivo WOFF', 'flexify-checkout-for-woocommerce' ) ?></label>
+								<label for="fcw-font-file-woff" class="form-label text-left"><?php esc_html_e( 'Arquivo WOFF', 'flexify-checkout-for-woocommerce' ) ?></label>
 								<input type="file" class="form-control" id="fcw-font-file-woff" name="font_file_woff" accept=".woff" />
 								<div class="form-text" id="fcw-font-file-woff-current"></div>
 							</div>
@@ -341,7 +341,7 @@ defined('ABSPATH') || exit; ?>
 				</div>
 
 				<div class="fcw-fonts-list">
-					<h6 class="fw-semibold mb-3"><?php esc_html_e( 'Fontes registradas', 'flexify-checkout-for-woocommerce' ) ?></h6>
+					<h3 class="fw-semibold mb-3"><?php esc_html_e( 'Fontes registradas', 'flexify-checkout-for-woocommerce' ) ?></h3>
 
 					<ul id="fcw-fonts-list" class="list-group">
 						<?php foreach ( $fonts_library as $font_key => $font_value ) :

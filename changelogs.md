@@ -3,6 +3,9 @@ Versão 5.2.3 (19/10/2025)
   - Ausência de campos nativos no editor do pedido
 * Otimizações
 * Recurso modificado: Família de fontes
+* Recurso adicionado: Fonte personalizada -> Familía de fontes
+* Compatibilidade com tema Avanam
+* Correção de compatibilidade com tema TutorStarter
 
 Versão 5.2.2 (10/09/2025)
 * Correção de bugs
