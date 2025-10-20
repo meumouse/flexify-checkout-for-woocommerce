@@ -67,7 +67,7 @@
                 <div class="toast-header bg-${type} text-white">
 					${icon}
 					<span class="me-auto">${header || ''}</span>
-                    <button class="btn-close btn-close-white ms-2" type="button" aria-label="${params.close_aria_label_notice || 'Close'}"></button>
+                    <button class="btn-close btn-close-white ms-2" type="button" aria-label="${params.i18n.close_aria_label_notice || 'Close'}"></button>
                 </div>
                 <div class="toast-body">${body || ''}</div>
             </div>`;
@@ -404,14 +404,14 @@
             setup_media_selector(
                 '#flexify-checkout-search-header-logo',
                 'input[name="search_image_header_checkout"]',
-                params.set_logo_modal_title,
-                params.use_this_image_title
+                params.i18n.set_logo_modal_title,
+                params.i18n.use_this_image_title
             );
 
             // Process animations
-            setup_media_selector('#animation_process_purchase_file_1_trigger','input[name="animation_process_purchase_file_1"]', params.set_animation_modal_title, params.set_animation_button_title);
-            setup_media_selector('#animation_process_purchase_file_2_trigger','input[name="animation_process_purchase_file_2"]', params.set_animation_modal_title, params.set_animation_button_title);
-            setup_media_selector('#animation_process_purchase_file_3_trigger','input[name="animation_process_purchase_file_3"]', params.set_animation_modal_title, params.set_animation_button_title);
+            setup_media_selector('#animation_process_purchase_file_1_trigger','input[name="animation_process_purchase_file_1"]', params.i18n.set_animation_modal_title, params.i18n.set_animation_button_title);
+            setup_media_selector('#animation_process_purchase_file_2_trigger','input[name="animation_process_purchase_file_2"]', params.i18n.set_animation_modal_title, params.i18n.set_animation_button_title);
+            setup_media_selector('#animation_process_purchase_file_3_trigger','input[name="animation_process_purchase_file_3"]', params.i18n.set_animation_modal_title, params.i18n.set_animation_button_title);
         },
 
         /**
@@ -631,7 +631,7 @@
             $(document).on('click', '.exclude-field', (e) => {
                 e.preventDefault();
 
-                if ( ! confirm(params.confirm_exclude_field) ) {
+                if ( ! confirm(params.i18n.confirm_exclude_field) ) {
                     return;
                 }
 
@@ -892,7 +892,7 @@
             $(document).on('click', '.exclude-option-select-live', (e) => {
                 e.preventDefault();
 
-                if ( ! confirm(params.confirm_remove_option) ) {
+                if ( ! confirm(params.i18n.confirm_remove_option) ) {
                     return;
                 }
 
@@ -937,12 +937,12 @@
                 const template = `<div id="new_select_option_live_preview" class="d-flex align-items-center justify-content-between mb-4">
                     <div class="d-grid me-3">
                         <div class="input-group mb-3">
-                            <span class="input-group-text w-fit">${params.new_option_value}</span>
-                            <input type="text" id="add_new_field_select_option_value_live" class="form-control input-control-wd-12" value="" placeholder="${params.placeholder_new_option_value}">
+                            <span class="input-group-text w-fit">${params.i18n.new_option_value}</span>
+                            <input type="text" id="add_new_field_select_option_value_live" class="form-control input-control-wd-12" value="" placeholder="${params.i18n.placeholder_new_option_value}">
                         </div>
                         <div class="input-group">
-                            <span class="input-group-text w-fit">${params.new_option_title}</span>
-                            <input type="text" id="add_new_field_select_option_title_live" class="form-control input-control-wd-12" value="" placeholder="${params.placeholder_new_option_title}">
+                            <span class="input-group-text w-fit">${params.i18n.new_option_title}</span>
+                            <input type="text" id="add_new_field_select_option_title_live" class="form-control input-control-wd-12" value="" placeholder="${params.i18n.placeholder_new_option_title}">
                         </div>
                     </div>
                     <button id="add_new_options_to_select_live" class="btn btn-icon btn-icon-lg btn-outline-secondary">
@@ -1932,8 +1932,8 @@
 
                         Flexify_Checkout_Admin.displayToast('success', response.toast_header_title, response.toast_body_title);
                     } else {
-                        if ( response && response.font_exists && params.font_exists ) {
-                            Flexify_Checkout_Admin.displayToast('danger', response.toast_header_title || 'Erro', params.font_exists);
+                        if ( response && response.i18n.fonts.font_exists && params.i18n.fonts.font_exists ) {
+                            Flexify_Checkout_Admin.displayToast('danger', response.toast_header_title || 'Erro', params.i18n.fonts.font_exists);
                         } else {
                             Flexify_Checkout_Admin.displayToast('danger', response?.toast_header_title || 'Erro', response?.toast_body_title || 'Não foi possível salvar a fonte.');
                         }
@@ -2184,15 +2184,13 @@
              * Deactivation license process
              * 
              * @since 1.0.0
-             * @version 5.2.0
+             * @version 5.2.3
              */
             deactivate: function() {
                 $('#flexify_checkout_deactive_license').on('click', function(e) {
                     e.preventDefault();
 
-                    var confirm_deactivate_license = confirm(flexify_checkout_params.confirm_deactivate_license);
-
-                    if ( ! confirm_deactivate_license ) {
+                    if ( ! confirm(flexify_checkout_params.i18n.confirm_deactivate_license) ) {
                         return;
                     }
 
@@ -2418,7 +2416,7 @@
          * Display toast on offline connection
          * 
          * @since 4.5.0
-         * @version 5.2.0
+         * @version 5.2.3
          */
         connectionListener: {
             /**
@@ -2431,7 +2429,7 @@
                 if (navigator.onLine) {
                     $('.toast.toast-offline-connection').remove();
                 } else {
-                    Flexify_Checkout_Admin.displayToast( 'warning', params.offline_toast_header, params.offline_toast_body, 'toast-offline-connection' );
+                    Flexify_Checkout_Admin.displayToast( 'warning', params.i18n.offline_toast_header, params.i18n.offline_toast_body, 'toast-offline-connection' );
                 }
             },
 

@@ -212,7 +212,7 @@ defined('ABSPATH') || exit; ?>
 
 		<tr>
 			<th>
-				<?php esc_html_e( 'Fontes disponíveis', 'flexify-checkout-for-woocommerce' ) ?>
+				<?php esc_html_e( 'Família de fontes', 'flexify-checkout-for-woocommerce' ) ?>
 				<span class="flexify-checkout-description"><?php esc_html_e( 'Defina qual fonte será aplicada na finalização de compra. Você pode adicionar novas fontes personalizadas ou do Google Fonts.', 'flexify-checkout-for-woocommerce' ) ?></span>
 			</th>
 

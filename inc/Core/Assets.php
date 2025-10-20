@@ -226,24 +226,10 @@ class Assets {
 					'invalid' => __( 'Por favor, insira um CNPJ válido.', 'flexify-checkout-for-woocommerce' ),
 				),
 				'required_field' => __( 'obrigatório', 'flexify-checkout-for-woocommerce' ),
-				'fonts' => array(
-					'type_google' => __( 'Google Fonts', 'flexify-checkout-for-woocommerce' ),
-					'type_upload' => __( 'Arquivo enviado', 'flexify-checkout-for-woocommerce' ),
-					'badge_default' => __( 'Padrão', 'flexify-checkout-for-woocommerce' ),
-					'badge_custom' => __( 'Personalizada', 'flexify-checkout-for-woocommerce' ),
-					'empty' => __( 'Ainda não há fontes personalizadas cadastradas.', 'flexify-checkout-for-woocommerce' ),
-					'edit' => __( 'Editar', 'flexify-checkout-for-woocommerce' ),
-					'delete' => __( 'Excluir', 'flexify-checkout-for-woocommerce' ),
-					'confirm_delete' => __( 'Tem certeza que deseja excluir esta fonte?', 'flexify-checkout-for-woocommerce' ),
-					'upload_keep_file' => __( 'Mantendo arquivo atual', 'flexify-checkout-for-woocommerce' ),
-					'form_title_add' => __( 'Adicionar nova fonte', 'flexify-checkout-for-woocommerce' ),
-					'form_title_edit' => __( 'Editar fonte', 'flexify-checkout-for-woocommerce' ),
-				),
 			),
 			'nonces' => array(
 				'remove_product' => wp_create_nonce('flexify_checkout_remove_product'),
 				'undo_remove_product' => wp_create_nonce('flexify_checkout_undo_remove_product'),
-				'fonts' => wp_create_nonce('flexify_checkout_fonts'),
 			),
 			'shop_page' => Helpers::get_shop_page_url(),
 			'base_country' => Fields::get_base_country(),
@@ -256,7 +242,6 @@ class Assets {
 			'field_condition' => Conditions::filter_component_type('field'),
 			'enable_emails_suggestions' => Admin_Options::get_setting('email_providers_suggestion'),
 			'get_email_providers' => Admin_Options::get_setting('set_email_providers'),
-			'fonts_library' => Fonts_Manager::get_fonts(),
 			'enable_field_masks' => Admin_Options::get_setting('enable_field_masks'),
 			'get_input_masks' => Fields::get_fields_with_mask(),
 			'fill_address' => array(
@@ -339,7 +324,7 @@ class Assets {
 	 * Enqueue admin scripts in page settings only
 	 * 
 	 * @since 1.0.0
-	 * @version 5.2.2
+	 * @version 5.2.3
 	 * @return void
 	 */
 	public function admin_assets() {
@@ -361,26 +346,43 @@ class Assets {
 		
 			wp_localize_script( 'flexify-checkout-admin-scripts', 'flexify_checkout_params', array(
 				'ajax_url' => admin_url( 'admin-ajax.php' ),
-				'set_logo_modal_title' => esc_html__( 'Escolher Imagem de cabeçalho', 'flexify-checkout-for-woocommerce' ),
-				'use_this_image_title' => esc_html__( 'Usar esta imagem', 'flexify-checkout-for-woocommerce' ),
-				'upload_success' => esc_html__( 'Arquivo enviado com sucesso', 'flexify-checkout-for-woocommerce' ),
-				'invalid_file' => esc_html__( 'O arquivo enviado não é permitido.', 'flexify-checkout-for-woocommerce' ),
-				'font_exists' => esc_html__( 'Ops! Essa fonte já existe.', 'flexify-checkout-for-woocommerce' ),
-				'confirm_deactivate_license' => esc_html__( 'Tem certeza que deseja desativar sua licença?', 'flexify-checkout-for-woocommerce' ),
-				'offline_toast_header' => esc_html__( 'Ops! Não há conexão com a internet', 'flexify-checkout-for-woocommerce' ),
-                'offline_toast_body' => esc_html__( 'As alterações não serão salvas.', 'flexify-checkout-for-woocommerce' ),
-				'confirm_exclude_field' => esc_html__( 'Tem certeza que deseja excluir este campo?', 'flexify-checkout-for-woocommerce' ),
-				'get_array_checkout_fields' => Helpers::get_array_index_checkout_fields(),
-				'confirm_remove_option' => esc_html__( 'Tem certeza que deseja excluir esta opção?', 'flexify-checkout-for-woocommerce' ),
-				'new_option_value' => esc_html__( 'Valor da opção', 'flexify-checkout-for-woocommerce' ),
-				'new_option_title' => esc_html__( 'Título da opção', 'flexify-checkout-for-woocommerce' ),
-				'placeholder_new_option_value' => esc_attr__( 'BR', 'flexify-checkout-for-woocommerce' ),
-				'placeholder_new_option_title' => esc_attr__( 'Brasil', 'flexify-checkout-for-woocommerce' ),
-				'close_aria_label_notice' => esc_attr__( 'Fechar', 'flexify-checkout-for-woocommerce' ),
-				'set_animation_modal_title' => esc_html__( 'Escolher animação', 'flexify-checkout-for-woocommerce' ),
-				'set_animation_button_title' => esc_html__( 'Usar este arquivo', 'flexify-checkout-for-woocommerce' ),
 				'plugin_version' => $this->version,
 				'debug_mode' => defined('FLEXIFY_CHECKOUT_DEBUG_MODE') && FLEXIFY_CHECKOUT_DEBUG_MODE === true ? 'yes' : 'no',
+				'get_array_checkout_fields' => Helpers::get_array_index_checkout_fields(),
+				'i18n' => array(
+					'confirm_deactivate_license' => esc_html__( 'Tem certeza que deseja desativar sua licença?', 'flexify-checkout-for-woocommerce' ),
+					'set_logo_modal_title' => esc_html__( 'Escolher Imagem de cabeçalho', 'flexify-checkout-for-woocommerce' ),
+					'use_this_image_title' => esc_html__( 'Usar esta imagem', 'flexify-checkout-for-woocommerce' ),
+					'offline_toast_header' => esc_html__( 'Ops! Não há conexão com a internet', 'flexify-checkout-for-woocommerce' ),
+                	'offline_toast_body' => esc_html__( 'As alterações não serão salvas.', 'flexify-checkout-for-woocommerce' ),
+					'confirm_exclude_field' => esc_html__( 'Tem certeza que deseja excluir este campo?', 'flexify-checkout-for-woocommerce' ),
+					'confirm_remove_option' => esc_html__( 'Tem certeza que deseja excluir esta opção?', 'flexify-checkout-for-woocommerce' ),
+					'new_option_value' => esc_html__( 'Valor da opção', 'flexify-checkout-for-woocommerce' ),
+					'new_option_title' => esc_html__( 'Título da opção', 'flexify-checkout-for-woocommerce' ),
+					'placeholder_new_option_value' => esc_attr__( 'BR', 'flexify-checkout-for-woocommerce' ),
+					'placeholder_new_option_title' => esc_attr__( 'Brasil', 'flexify-checkout-for-woocommerce' ),
+					'close_aria_label_notice' => esc_attr__( 'Fechar', 'flexify-checkout-for-woocommerce' ),
+					'set_animation_modal_title' => esc_html__( 'Escolher animação', 'flexify-checkout-for-woocommerce' ),
+					'set_animation_button_title' => esc_html__( 'Usar este arquivo', 'flexify-checkout-for-woocommerce' ),
+					'fonts' => array(
+						'font_exists' => esc_html__( 'Ops! Essa fonte já existe.', 'flexify-checkout-for-woocommerce' ),
+						'type_google' => __( 'Google Fonts', 'flexify-checkout-for-woocommerce' ),
+						'type_upload' => __( 'Arquivo enviado', 'flexify-checkout-for-woocommerce' ),
+						'badge_default' => __( 'Padrão', 'flexify-checkout-for-woocommerce' ),
+						'badge_custom' => __( 'Personalizada', 'flexify-checkout-for-woocommerce' ),
+						'empty' => __( 'Ainda não há fontes personalizadas cadastradas.', 'flexify-checkout-for-woocommerce' ),
+						'edit' => __( 'Editar', 'flexify-checkout-for-woocommerce' ),
+						'delete' => __( 'Excluir', 'flexify-checkout-for-woocommerce' ),
+						'confirm_delete' => __( 'Tem certeza que deseja excluir esta fonte?', 'flexify-checkout-for-woocommerce' ),
+						'upload_keep_file' => __( 'Mantendo arquivo atual', 'flexify-checkout-for-woocommerce' ),
+						'form_title_add' => __( 'Adicionar nova fonte', 'flexify-checkout-for-woocommerce' ),
+						'form_title_edit' => __( 'Editar fonte', 'flexify-checkout-for-woocommerce' ),
+					),
+				),
+				'nonces' => array(
+					'fonts' => wp_create_nonce('flexify_checkout_fonts'),
+				),
+				'fonts_library' => Fonts_Manager::get_fonts(),
 			));
 		}
 	}
