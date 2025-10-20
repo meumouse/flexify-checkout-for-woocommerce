@@ -3,6 +3,7 @@
 namespace MeuMouse\Flexify_Checkout\Core;
 
 use MeuMouse\Flexify_Checkout\Admin\Admin_Options;
+use MeuMouse\Flexify_Checkout\Admin\Fonts_Manager;
 use MeuMouse\Flexify_Checkout\Checkout\Fields;
 use MeuMouse\Flexify_Checkout\Checkout\Steps;
 use MeuMouse\Flexify_Checkout\API\License;
@@ -15,7 +16,7 @@ defined('ABSPATH') || exit;
  * Class for handle AJAX events
  *
  * @since 1.0.0
- * @version 5.2.0
+ * @version 5.2.3
  * @package MeuMouse.com
  */
 class Ajax {
@@ -27,7 +28,7 @@ class Ajax {
 	 * Construct function
 	 * 
 	 * @since 1.0.0
-	 * @version 5.2.0
+	 * @version 5.2.3
 	 * @return void
 	 */
 	public function __construct() {
@@ -41,6 +42,8 @@ class Ajax {
 			'add_new_field_to_checkout'             => array( $this, 'add_new_field_to_checkout_callback' ),
 			'alternative_activation_license'        => array( $this, 'alternative_activation_license_callback' ),
 			'add_new_font_action'                   => array( $this, 'add_new_font_action_callback' ),
+			'flexify_checkout_save_font'            => array( $this, 'save_font_callback' ),
+			'flexify_checkout_delete_font'          => array( $this, 'delete_font_callback' ),
 			'get_woo_products_ajax'                 => array( $this, 'get_woo_products_callback' ),
 			'get_woo_categories_ajax'               => array( $this, 'get_woo_categories_callback' ),
 			'get_woo_attributes_ajax'               => array( $this, 'get_woo_attributes_callback' ),
@@ -540,7 +543,7 @@ class Ajax {
 	 * Add new font to library on AJAX callback
 	 * 
 	 * @since 3.5.0
-	 * @version 3.8.0
+	 * @version 5.2.3
 	 * @return void
 	 */
 	public function add_new_font_action_callback() {
@@ -582,6 +585,222 @@ class Ajax {
 			// send response to frontend
 			wp_send_json( $response );
 		}
+	}
+
+
+	/**
+	 * Save font configuration via AJAX.
+	 *
+	 * @since 5.2.3
+	 * @return void
+	 */
+	public function save_font_callback() {
+		check_ajax_referer( 'flexify_checkout_fonts', 'nonce' );
+
+		if ( ! current_user_can('manage_options') ) {
+			wp_send_json( array(
+				'status' => 'error',
+				'toast_header_title' => esc_html__( 'Ação não permitida', 'flexify-checkout-for-woocommerce' ),
+				'toast_body_title' => esc_html__( 'Você não tem permissão para gerenciar fontes.', 'flexify-checkout-for-woocommerce' ),
+			));
+		}
+
+		$font_id = isset( $_POST['font_id'] ) ? sanitize_key( wp_unslash( $_POST['font_id'] ) ) : '';
+		$font_name = isset( $_POST['font_name'] ) ? sanitize_text_field( wp_unslash( $_POST['font_name'] ) ) : '';
+		$font_type = isset( $_POST['font_type'] ) ? sanitize_key( wp_unslash( $_POST['font_type'] ) ) : 'google';
+
+		if ( empty( $font_id ) || empty( $font_name ) ) {
+			wp_send_json( array(
+				'status' => 'error',
+				'toast_header_title' => esc_html__( 'Erro ao salvar fonte', 'flexify-checkout-for-woocommerce' ),
+				'toast_body_title' => esc_html__( 'Informe um identificador e um nome válidos para a fonte.', 'flexify-checkout-for-woocommerce' ),
+			));
+		}
+
+		$fonts = Fonts_Manager::get_fonts();
+		$is_new = ! isset( $fonts[ $font_id ] );
+		$request_is_new = isset( $_POST['is_new'] ) ? sanitize_text_field( wp_unslash( $_POST['is_new'] ) ) === 'yes' : $is_new;
+
+		if ( $is_new && Fonts_Manager::is_builtin_font( $font_id ) ) {
+			wp_send_json( array(
+				'status' => 'error',
+				'toast_header_title' => esc_html__( 'Erro ao salvar fonte', 'flexify-checkout-for-woocommerce' ),
+				'toast_body_title' => esc_html__( 'Este identificador é reservado para as fontes padrão.', 'flexify-checkout-for-woocommerce' ),
+			));
+		}
+
+		if ( $request_is_new && isset( $fonts[ $font_id ] ) ) {
+			wp_send_json( array(
+				'status' => 'error',
+				'font_exists' => true,
+				'toast_header_title' => esc_html__( 'Erro ao salvar fonte', 'flexify-checkout-for-woocommerce' ),
+				'toast_body_title' => esc_html__( 'Ops! Essa fonte já existe.', 'flexify-checkout-for-woocommerce' ),
+			));
+		}
+
+		$font_data = array(
+			'font_name' => $font_name,
+			'type' => ( 'upload' === $font_type ) ? 'upload' : 'google',
+		);
+
+		if ( 'google' === $font_data['type'] ) {
+			$font_url = isset( $_POST['font_url'] ) ? esc_url_raw( wp_unslash( $_POST['font_url'] ) ) : '';
+
+			if ( empty( $font_url ) ) {
+				wp_send_json( array(
+					'status' => 'error',
+					'toast_header_title' => esc_html__( 'Erro ao salvar fonte', 'flexify-checkout-for-woocommerce' ),
+					'toast_body_title' => esc_html__( 'Informe a URL de incorporação do Google Fonts.', 'flexify-checkout-for-woocommerce' ),
+				));
+			}
+
+			$font_data['font_url'] = $font_url;
+		} else {
+			$font_weight = isset( $_POST['font_weight'] ) ? sanitize_text_field( wp_unslash( $_POST['font_weight'] ) ) : '400';
+			$font_style = isset( $_POST['font_style'] ) ? sanitize_text_field( wp_unslash( $_POST['font_style'] ) ) : 'normal';
+			$existing = isset( $_POST['existing_files'] ) ? (array) wp_unslash( $_POST['existing_files'] ) : array();
+
+			$font_files = array(
+				'woff2' => isset( $existing['woff2'] ) ? esc_url_raw( $existing['woff2'] ) : '',
+				'woff' => isset( $existing['woff'] ) ? esc_url_raw( $existing['woff'] ) : '',
+			);
+
+			foreach ( array( 'woff2', 'woff' ) as $format ) {
+				$input_key = 'font_file_' . $format;
+
+				if ( empty( $_FILES[ $input_key ] ) || empty( $_FILES[ $input_key ]['name'] ) ) {
+					continue;
+				}
+
+				$upload = Fonts_Manager::handle_font_upload( $_FILES[ $input_key ], $font_id, $font_weight, $font_style, $format );
+
+				if ( is_wp_error( $upload ) ) {
+					wp_send_json( array(
+						'status' => 'error',
+						'toast_header_title' => esc_html__( 'Erro ao salvar fonte', 'flexify-checkout-for-woocommerce' ),
+						'toast_body_title' => $upload->get_error_message(),
+					));
+				}
+
+				if ( ! empty( $font_files[ $format ] ) && $font_files[ $format ] !== $upload ) {
+					Fonts_Manager::delete_file_by_url( $font_files[ $format ] );
+				}
+
+				$font_files[ $format ] = $upload;
+			}
+
+			if ( empty( $font_files['woff2'] ) && empty( $font_files['woff'] ) ) {
+				wp_send_json( array(
+					'status' => 'error',
+					'toast_header_title' => esc_html__( 'Erro ao salvar fonte', 'flexify-checkout-for-woocommerce' ),
+					'toast_body_title' => esc_html__( 'Envie ao menos um arquivo de fonte (WOFF ou WOFF2).', 'flexify-checkout-for-woocommerce' ),
+				));
+			}
+
+			$font_data['font_weight'] = $font_weight;
+			$font_data['font_style'] = $font_style;
+			$font_data['font_files'] = array_filter( $font_files );
+		}
+
+		if ( Fonts_Manager::is_builtin_font( $font_id ) ) {
+			$font_data['source'] = 'default';
+		} elseif ( isset( $fonts[ $font_id ]['source'] ) ) {
+			$font_data['source'] = $fonts[ $font_id ]['source'];
+		} else {
+			$font_data['source'] = 'custom';
+		}
+
+		$saved = Fonts_Manager::save_font( $font_id, $font_data );
+
+		if ( $saved ) {
+			$fonts_updated = Fonts_Manager::get_fonts();
+
+			wp_send_json( array(
+				'status' => 'success',
+				'font_id' => $font_id,
+				'font' => $fonts_updated[ $font_id ],
+				'fonts' => $fonts_updated,
+				'toast_header_title' => esc_html__( 'Fonte salva', 'flexify-checkout-for-woocommerce' ),
+				'toast_body_title' => esc_html__( 'As configurações da fonte foram salvas com sucesso!', 'flexify-checkout-for-woocommerce' ),
+				'current_font' => Admin_Options::get_setting( 'set_font_family' ),
+				'is_new' => $request_is_new ? 'yes' : 'no',
+			));
+		}
+
+		wp_send_json( array(
+			'status' => 'error',
+			'toast_header_title' => esc_html__( 'Erro ao salvar fonte', 'flexify-checkout-for-woocommerce' ),
+			'toast_body_title' => esc_html__( 'Ops! Não foi possível salvar a fonte.', 'flexify-checkout-for-woocommerce' ),
+		));
+	}
+
+
+	/**
+	 * Delete font configuration via AJAX.
+	 *
+	 * @since 5.2.3
+	 * @return void
+	 */
+	public function delete_font_callback() {
+		check_ajax_referer( 'flexify_checkout_fonts', 'nonce' );
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json( array(
+				'status' => 'error',
+				'toast_header_title' => esc_html__( 'Ação não permitida', 'flexify-checkout-for-woocommerce' ),
+				'toast_body_title' => esc_html__( 'Você não tem permissão para gerenciar fontes.', 'flexify-checkout-for-woocommerce' ),
+			));
+		}
+
+		$font_id = isset( $_POST['font_id'] ) ? sanitize_key( wp_unslash( $_POST['font_id'] ) ) : '';
+
+		if ( empty( $font_id ) ) {
+			wp_send_json( array(
+				'status' => 'error',
+				'toast_header_title' => esc_html__( 'Erro ao remover fonte', 'flexify-checkout-for-woocommerce' ),
+				'toast_body_title' => esc_html__( 'Fonte inválida informada.', 'flexify-checkout-for-woocommerce' ),
+			));
+		}
+
+		if ( Fonts_Manager::is_builtin_font( $font_id ) ) {
+			wp_send_json( array(
+				'status' => 'error',
+				'toast_header_title' => esc_html__( 'Erro ao remover fonte', 'flexify-checkout-for-woocommerce' ),
+				'toast_body_title' => esc_html__( 'Fontes padrão não podem ser excluídas.', 'flexify-checkout-for-woocommerce' ),
+			));
+		}
+
+		$fonts = Fonts_Manager::get_fonts();
+
+		if ( ! isset( $fonts[ $font_id ] ) ) {
+			wp_send_json( array(
+				'status' => 'error',
+				'toast_header_title' => esc_html__( 'Erro ao remover fonte', 'flexify-checkout-for-woocommerce' ),
+				'toast_body_title' => esc_html__( 'Fonte não encontrada.', 'flexify-checkout-for-woocommerce' ),
+			));
+		}
+
+		$deleted = Fonts_Manager::delete_font( $font_id );
+
+		if ( $deleted ) {
+			Fonts_Manager::maybe_reset_selected_font( $font_id );
+			$fonts_updated = Fonts_Manager::get_fonts();
+
+			wp_send_json( array(
+				'status' => 'success',
+				'font_id' => $font_id,
+				'fonts' => $fonts_updated,
+				'toast_header_title' => esc_html__( 'Fonte removida', 'flexify-checkout-for-woocommerce' ),
+				'toast_body_title' => esc_html__( 'A fonte foi removida da biblioteca.', 'flexify-checkout-for-woocommerce' ),
+				'current_font' => Admin_Options::get_setting( 'set_font_family' ),
+			));
+		}
+
+		wp_send_json( array(
+			'status' => 'error',
+			'toast_header_title' => esc_html__( 'Erro ao remover fonte', 'flexify-checkout-for-woocommerce' ),
+			'toast_body_title' => esc_html__( 'Ops! Não foi possível remover a fonte.', 'flexify-checkout-for-woocommerce' ),
+		));
 	}
 
 

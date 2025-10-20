@@ -2217,7 +2217,7 @@
 							await Flexify_Checkout.Session.update();
 						} catch (error) {
 							if ( params.debug_mode ) {
-								console.warn('[FLEXIFY CHECKOUT] Session.update() falhou antes da validação: ', error);
+								console.warn('[FLEXIFY CHECKOUT] Session.update() failed before verification: ', error);
 							}
 						}
 

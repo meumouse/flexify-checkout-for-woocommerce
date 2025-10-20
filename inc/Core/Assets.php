@@ -3,6 +3,7 @@
 namespace MeuMouse\Flexify_Checkout\Core;
 
 use MeuMouse\Flexify_Checkout\Admin\Admin_Options;
+use MeuMouse\Flexify_Checkout\Admin\Fonts_Manager;
 use MeuMouse\Flexify_Checkout\API\License;
 use MeuMouse\Flexify_Checkout\Checkout\Themes;
 use MeuMouse\Flexify_Checkout\Checkout\Steps;
@@ -18,7 +19,7 @@ defined('ABSPATH') || exit;
  * Register/enqueue frontend and backend scripts
  *
  * @since 1.0.0
- * @version 5.2.2
+ * @version 5.2.3
  * @package MeuMouse.com
  */
 class Assets {
@@ -225,10 +226,24 @@ class Assets {
 					'invalid' => __( 'Por favor, insira um CNPJ válido.', 'flexify-checkout-for-woocommerce' ),
 				),
 				'required_field' => __( 'obrigatório', 'flexify-checkout-for-woocommerce' ),
+				'fonts' => array(
+					'type_google' => __( 'Google Fonts', 'flexify-checkout-for-woocommerce' ),
+					'type_upload' => __( 'Arquivo enviado', 'flexify-checkout-for-woocommerce' ),
+					'badge_default' => __( 'Padrão', 'flexify-checkout-for-woocommerce' ),
+					'badge_custom' => __( 'Personalizada', 'flexify-checkout-for-woocommerce' ),
+					'empty' => __( 'Ainda não há fontes personalizadas cadastradas.', 'flexify-checkout-for-woocommerce' ),
+					'edit' => __( 'Editar', 'flexify-checkout-for-woocommerce' ),
+					'delete' => __( 'Excluir', 'flexify-checkout-for-woocommerce' ),
+					'confirm_delete' => __( 'Tem certeza que deseja excluir esta fonte?', 'flexify-checkout-for-woocommerce' ),
+					'upload_keep_file' => __( 'Mantendo arquivo atual', 'flexify-checkout-for-woocommerce' ),
+					'form_title_add' => __( 'Adicionar nova fonte', 'flexify-checkout-for-woocommerce' ),
+					'form_title_edit' => __( 'Editar fonte', 'flexify-checkout-for-woocommerce' ),
+				),
 			),
 			'nonces' => array(
 				'remove_product' => wp_create_nonce('flexify_checkout_remove_product'),
 				'undo_remove_product' => wp_create_nonce('flexify_checkout_undo_remove_product'),
+				'fonts' => wp_create_nonce('flexify_checkout_fonts'),
 			),
 			'shop_page' => Helpers::get_shop_page_url(),
 			'base_country' => Fields::get_base_country(),
@@ -241,6 +256,7 @@ class Assets {
 			'field_condition' => Conditions::filter_component_type('field'),
 			'enable_emails_suggestions' => Admin_Options::get_setting('email_providers_suggestion'),
 			'get_email_providers' => Admin_Options::get_setting('set_email_providers'),
+			'fonts_library' => Fonts_Manager::get_fonts(),
 			'enable_field_masks' => Admin_Options::get_setting('enable_field_masks'),
 			'get_input_masks' => Fields::get_fields_with_mask(),
 			'fill_address' => array(

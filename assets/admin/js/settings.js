@@ -448,7 +448,7 @@
          * Register all popups needed by the admin
          * 
          * @since 2.3.0
-         * @version 5.2.0
+         * @version 5.2.3
          */
         popups: function() {
             this.displayModal('#inter_bank_credencials_settings', '#inter_bank_credendials_container', '#inter_bank_credendials_close');
@@ -459,7 +459,7 @@
             this.displayModal('#set_ip_api_service_trigger', '.set-api-service-container', '.set-api-service-close');
             this.displayModal('#add_new_checkout_fields_trigger', '.add-new-checkout-fields-container', '.add-new-checkout-fields-close');
             this.displayModal('#auto_fill_address_api_trigger', '.auto-fill-address-api-container', '.auto-fill-address-api-close');
-            this.displayModal('#set_new_font_family_trigger', '#set_new_font_family_container', '#close_new_font_family');
+            this.displayModal('#fcw_manage_fonts_trigger', '#fcw_manage_fonts_container', '#fcw_close_fonts_manager');
             this.displayModal('#fcw_reset_settings_trigger', '#fcw_reset_settings_container', '#fcw_close_reset');
             this.displayModal('#add_new_checkout_condition_trigger', '#add_new_checkout_condition_container', '#close_add_new_checkout_condition');
             this.displayModal('#set_email_providers_trigger', '#set_email_providers_container', '#close_set_email_providers');
@@ -1496,7 +1496,522 @@
         },
 
         /**
+         * Handle fonts manager
+         *
+         * @since 3.9.0
+         * @version 5.2.3
+         */
+        fontsManager: {
+            selectors: {
+                form: '#fcw-fonts-form',
+                name: '#fcw-font-name',
+                type: '#fcw-font-type',
+                url: '#fcw-font-url',
+                weight: '#fcw-font-weight',
+                style: '#fcw-font-style',
+                fontId: '#fcw-font-id',
+                isNew: '#fcw-font-is-new',
+                cancelEdit: '#fcw-cancel-font-edit',
+                uploadFields: '.fcw-font-upload-fields',
+                googleFields: '.fcw-font-google-fields',
+                woff2Current: '#fcw-font-file-woff2-current',
+                woffCurrent: '#fcw-font-file-woff-current',
+                existingWoff2: '#fcw-existing-woff2',
+                existingWoff: '#fcw-existing-woff',
+                fontsList: '#fcw-fonts-list',
+                emptyState: '#fcw-fonts-empty',
+                select: '#set_font_family',
+                saveButton: '#fcw-save-font',
+                formTitle: '#fcw-font-form-title',
+            },
+
+            fonts: $.extend(true, {}, params.fonts_library || {}),
+
+            /**
+             * Cache selectors
+             * 
+             * @since 5.2.3
+             * @return {void}
+             */
+            cache: function() {
+                this.$form = $(this.selectors.form);
+                this.$name = $(this.selectors.name);
+                this.$type = $(this.selectors.type);
+                this.$url = $(this.selectors.url);
+                this.$weight = $(this.selectors.weight);
+                this.$style = $(this.selectors.style);
+                this.$fontId = $(this.selectors.fontId);
+                this.$isNew = $(this.selectors.isNew);
+                this.$cancelEdit = $(this.selectors.cancelEdit);
+                this.$uploadFields = $(this.selectors.uploadFields);
+                this.$googleFields = $(this.selectors.googleFields);
+                this.$woff2Current = $(this.selectors.woff2Current);
+                this.$woffCurrent = $(this.selectors.woffCurrent);
+                this.$existingWoff2 = $(this.selectors.existingWoff2);
+                this.$existingWoff = $(this.selectors.existingWoff);
+                this.$fontsList = $(this.selectors.fontsList);
+                this.$emptyState = $(this.selectors.emptyState);
+                this.$select = $(this.selectors.select);
+                this.$saveButton = $(this.selectors.saveButton);
+                this.$formTitle = $(this.selectors.formTitle);
+
+                const i18n = this.getI18n();
+                this.addTitle = i18n.form_title_add || this.$formTitle.text();
+                this.editTitle = i18n.form_title_edit || this.$formTitle.text();
+            },
+
+            /**
+             * Get i18n string for fonts manager
+             * 
+             * @since 5.2.3
+             * @returns {Object}
+             */
+            getI18n: function() {
+                return (params.i18n && params.i18n.fonts) ? params.i18n.fonts : {};
+            },
+
+            /**
+             * Initialize fonts manager
+             * 
+             * @since 5.2.3
+             * @returns {void}
+             */
+            init: function() {
+                this.cache();
+
+                if ( ! this.$form.length ) {
+                    return;
+                }
+
+                this.renderList();
+                this.resetForm();
+                this.bindEvents();
+            },
+
+            /**
+             * Bind events
+             * 
+             * @since 5.2.3
+             * @returns {void}
+             */
+            bindEvents: function() {
+                const self = this;
+
+                this.$type.on('change', function() {
+                    self.toggleFields( $(this).val() );
+                });
+
+                this.$cancelEdit.on('click', function(e) {
+                    e.preventDefault();
+                    self.resetForm();
+                });
+
+                this.$form.on('submit', function(e) {
+                    e.preventDefault();
+                    self.save();
+                });
+
+                $(document).on('click', '.fcw-font-edit', function(e) {
+                    e.preventDefault();
+                    const fontId = $(this).data('font-id');
+                    self.fillForm(fontId);
+                });
+
+                $(document).on('click', '.fcw-font-delete', function(e) {
+                    e.preventDefault();
+                    const fontId = $(this).data('font-id');
+                    self.delete(fontId, $(this));
+                });
+            },
+
+            /**
+             * Toggle fields based on type
+             * 
+             * @since 5.2.3 
+             * @param {string} type | 'google'|'upload'
+             * @returns {void}
+             */
+            toggleFields: function(type) {
+                if ( type === 'upload' ) {
+                    this.$uploadFields.removeClass('d-none');
+                    this.$googleFields.addClass('d-none');
+                } else {
+                    this.$googleFields.removeClass('d-none');
+                    this.$uploadFields.addClass('d-none');
+                }
+            },
+
+            /**
+             * Extract filename from URL
+             * 
+             * @since 5.2.3
+             * @param {string} url | URL string
+             * @returns {void}
+             */
+            extractFilename: function(url) {
+                if ( ! url ) {
+                    return '';
+                }
+
+                try {
+                    const decoded = decodeURIComponent(url);
+                    return decoded.split('/').pop();
+                } catch (err) {
+                    return url.split('/').pop();
+                }
+            },
+
+            /**
+             * Generate slug from string
+             * 
+             * @since 5.2.3
+             * @param {string} value | Input string
+             * @returns {string} 
+             */
+            generateSlug: function(value) {
+                if ( ! value ) {
+                    return '';
+                }
+
+                return value
+                    .toString()
+                    .normalize('NFD')
+                    .replace(/[\u0300-\u036f]/g, '')
+                    .toLowerCase()
+                    .trim()
+                    .replace(/[^a-z0-9\-\_\s]/g, '')
+                    .replace(/\s+/g, '-')
+                    .replace(/-+/g, '-');
+            },
+
+            /**
+             * Eacape HTML special characters
+             * 
+             * @since 5.2.3
+             * @param {string} str | Input string
+             * @returns {string}
+             */
+            escapeHtml: function(str) {
+                if ( str === undefined || str === null ) {
+                    return '';
+                }
+
+                const map = {
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    "'": '&#039;',
+                };
+
+                return str.toString().replace(/[&<>"']/g, function(m) { return map[m]; });
+            },
+
+            /**
+             * Update file labels
+             * 
+             * @since 5.2.3
+             * @param {Object} files | { woff2: string, woff: string }
+             * @returns {void}
+             */
+            updateFileLabels: function(files) {
+                const i18n = this.getI18n();
+                const keepLabel = i18n.upload_keep_file || '';
+
+                if ( files && files.woff2 ) {
+                    this.$woff2Current.text( keepLabel ? `${keepLabel}: ${this.extractFilename(files.woff2)}` : this.extractFilename(files.woff2) );
+                } else {
+                    this.$woff2Current.text('');
+                }
+
+                if ( files && files.woff ) {
+                    this.$woffCurrent.text( keepLabel ? `${keepLabel}: ${this.extractFilename(files.woff)}` : this.extractFilename(files.woff) );
+                } else {
+                    this.$woffCurrent.text('');
+                }
+            },
+
+            /**
+             * Reset form
+             * 
+             * @since 5.2.3
+             * @returns {void}
+             */
+            resetForm: function() {
+                if ( this.$form.length && this.$form[0].reset ) {
+                    this.$form[0].reset();
+                }
+
+                this.$fontId.val('');
+                this.$isNew.val('yes');
+                this.$cancelEdit.addClass('d-none');
+                this.$formTitle.text(this.addTitle);
+                this.$existingWoff2.val('');
+                this.$existingWoff.val('');
+                this.updateFileLabels({});
+                this.toggleFields( this.$type.val() );
+            },
+
+            /**
+             * Fill form for editing
+             * 
+             * @since 5.2.3
+             * @param {string} fontId | Font identifier
+             * @returns {void}
+             */
+            fillForm: function(fontId) {
+                if ( ! fontId || ! this.fonts[fontId] ) {
+                    return;
+                }
+
+                const font = this.fonts[fontId];
+
+                this.$fontId.val(fontId);
+                this.$isNew.val('no');
+                this.$name.val(font.font_name || '');
+                this.$type.val(font.type || 'google');
+                this.$url.val(font.font_url || '');
+                this.$weight.val(font.font_weight || '400');
+                this.$style.val(font.font_style || 'normal');
+                this.$existingWoff2.val(font.font_files && font.font_files.woff2 ? font.font_files.woff2 : '');
+                this.$existingWoff.val(font.font_files && font.font_files.woff ? font.font_files.woff : '');
+                this.updateFileLabels(font.font_files || {});
+                this.$form.find('input[type="file"]').val('');
+                this.toggleFields(font.type || 'google');
+                this.$cancelEdit.removeClass('d-none');
+                this.$formTitle.text(this.editTitle);
+            },
+
+            /**
+             * Render fonts list
+             * 
+             * @since 5.2.3
+             * @returns {void}
+             */
+            renderList: function() {
+                if ( ! this.$fontsList.length ) {
+                    return;
+                }
+
+                const fonts = this.fonts || {};
+                const i18n = this.getI18n();
+                const fragments = [];
+                const fontKeys = Object.keys(fonts);
+
+                if ( fontKeys.length ) {
+                    fontKeys.forEach((fontId) => {
+                        const font = fonts[fontId] || {};
+                        const typeLabel = (font.type === 'upload') ? (i18n.type_upload || 'Upload') : (i18n.type_google || 'Google Fonts');
+                        const isDefault = (font.source === 'default');
+                        const sourceClass = isDefault ? 'bg-primary' : 'bg-info';
+                        const sourceLabel = isDefault ? (i18n.badge_default || 'Padrão') : (i18n.badge_custom || 'Personalizada');
+                        const fontLabel = font.font_name || fontId;
+
+                        const escapedId = this.escapeHtml(fontId);
+                        const escapedLabel = this.escapeHtml(fontLabel);
+                        const escapedTypeLabel = this.escapeHtml(typeLabel);
+                        const escapedSourceLabel = this.escapeHtml(sourceLabel);
+
+                        fragments.push(
+                            `<li class="list-group-item d-flex flex-column flex-lg-row align-items-lg-center justify-content-between fcw-font-item" data-font-id="${escapedId}" data-font-type="${this.escapeHtml(font.type || 'google')}" data-font-source="${this.escapeHtml(font.source || 'custom')}">
+                                <div class="fcw-font-item__info">
+                                    <span class="fw-semibold">${escapedLabel}</span>
+                                    <span class="badge bg-secondary ms-2">${escapedTypeLabel}</span>
+                                    <span class="badge ${sourceClass} ms-1">${escapedSourceLabel}</span>
+                                </div>
+                                <div class="fcw-font-item__actions mt-3 mt-lg-0">
+                                    ${isDefault ? `<span class="text-muted small">${escapedSourceLabel}</span>` : `
+                                        <button type="button" class="btn btn-sm btn-outline-secondary fcw-font-edit" data-font-id="${escapedId}">${this.escapeHtml(i18n.edit || 'Editar')}</button>
+                                        <button type="button" class="btn btn-sm btn-outline-danger ms-2 fcw-font-delete" data-font-id="${escapedId}">${this.escapeHtml(i18n.delete || 'Excluir')}</button>`}
+                                </div>
+                            </li>`
+                        );
+                    });
+                }
+
+                if ( ! fragments.length ) {
+                    fragments.push(`<li class="list-group-item text-muted">${i18n.empty || ''}</li>`);
+                }
+
+                this.$fontsList.html(fragments.join(''));
+
+                const hasCustom = fontKeys.some((key) => {
+                    const font = fonts[key] || {};
+                    return (font.source || 'custom') !== 'default';
+                });
+
+                if ( this.$emptyState.length ) {
+                    this.$emptyState.toggleClass('d-none', hasCustom);
+                }
+
+                this.updateSelectOptions();
+            },
+
+            /**
+             * Update select options
+             * 
+             * @since 5.2.3
+             * @returns {void}
+             */
+            updateSelectOptions: function() {
+                if ( ! this.$select.length ) {
+                    return;
+                }
+
+                const current = this.$select.val();
+                const options = [];
+
+                Object.keys(this.fonts || {}).forEach((fontId) => {
+                    const font = this.fonts[fontId] || {};
+                    const label = this.escapeHtml(font.font_name || fontId);
+                    options.push(`<option value="${this.escapeHtml(fontId)}">${label}</option>`);
+                });
+
+                this.$select.html(options.join(''));
+
+                if ( current && this.fonts[current] ) {
+                    this.$select.val(current);
+                } else {
+                    const keys = Object.keys(this.fonts || {});
+                    if ( keys.length ) {
+                        this.$select.val(keys[0]);
+                    }
+                }
+
+                this.$select.trigger('change');
+            },
+
+            /**
+             * Save font
+             * 
+             * @since 5.2.3
+             * @returns {void}
+             */
+            save: function() {
+                if ( ! this.$form.length ) {
+                    return;
+                }
+
+                if ( this.$isNew.val() === 'yes' ) {
+                    const slug = this.generateSlug(this.$name.val());
+                    this.$fontId.val(slug);
+                }
+
+                if ( ! this.$fontId.val() ) {
+                    Flexify_Checkout_Admin.displayToast('danger', 'Erro', 'Informe um nome válido para gerar o identificador da fonte.');
+                    return;
+                }
+
+                const formData = new FormData(this.$form[0]);
+                formData.append('action', 'flexify_checkout_save_font');
+                formData.append('nonce', params.nonces ? params.nonces.fonts : '');
+                formData.append('is_new', this.$isNew.val());
+
+                const $btn = this.$saveButton;
+                const state = Flexify_Checkout_Admin.keepButtonState($btn);
+
+                $.ajax({
+                    url: params.ajax_url,
+                    method: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    dataType: 'json',
+                    beforeSend: () => {
+                        $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span>');
+                    },
+                }).done((response) => {
+                    if ( response && response.status === 'success' ) {
+                        this.fonts = response.fonts || this.fonts;
+                        this.renderList();
+                        this.resetForm();
+
+                        if ( response.current_font ) {
+                            this.$select.val(response.current_font).trigger('change');
+                        }
+
+                        Flexify_Checkout_Admin.displayToast('success', response.toast_header_title, response.toast_body_title);
+                    } else {
+                        if ( response && response.font_exists && params.font_exists ) {
+                            Flexify_Checkout_Admin.displayToast('danger', response.toast_header_title || 'Erro', params.font_exists);
+                        } else {
+                            Flexify_Checkout_Admin.displayToast('danger', response?.toast_header_title || 'Erro', response?.toast_body_title || 'Não foi possível salvar a fonte.');
+                        }
+                    }
+                }).fail(() => {
+                    Flexify_Checkout_Admin.displayToast('danger', 'Erro', 'Não foi possível salvar a fonte.');
+                }).always(() => {
+                    $btn.prop('disabled', false).html(state.html).width(state.width).height(state.height);
+                });
+            },
+
+            /**
+             * Delete font
+             * 
+             * @since 5.2.3
+             * @param {string} fontId | Font identifier
+             * @param {jQuery} $btn | Button jQuery object 
+             * @returns {void}
+             */
+            delete: function(fontId, $btn) {
+                if ( ! fontId ) {
+                    return;
+                }
+
+                const i18n = this.getI18n();
+
+                if ( ! window.confirm(i18n.confirm_delete || 'Tem certeza que deseja excluir esta fonte?') ) {
+                    return;
+                }
+
+                let state = null;
+
+                if ( $btn && $btn.length ) {
+                    state = Flexify_Checkout_Admin.keepButtonState($btn);
+                    $btn.html('<span class="spinner-border spinner-border-sm"></span>').prop('disabled', true);
+                }
+
+                $.ajax({
+                    url: params.ajax_url,
+                    method: 'POST',
+                    dataType: 'json',
+                    data: {
+                        action: 'flexify_checkout_delete_font',
+                        font_id: fontId,
+                        nonce: params.nonces ? params.nonces.fonts : '',
+                    },
+                }).done((response) => {
+                    if ( response && response.status === 'success' ) {
+                        this.fonts = response.fonts || this.fonts;
+                        this.renderList();
+
+                        if ( response.current_font ) {
+                            this.$select.val(response.current_font).trigger('change');
+                        }
+
+                        if ( this.$fontId.val() === fontId ) {
+                            this.resetForm();
+                        }
+
+                        Flexify_Checkout_Admin.displayToast('success', response.toast_header_title, response.toast_body_title);
+                    } else {
+                        Flexify_Checkout_Admin.displayToast('danger', response?.toast_header_title || 'Erro', response?.toast_body_title || 'Não foi possível remover a fonte.');
+                    }
+                }).fail(() => {
+                    Flexify_Checkout_Admin.displayToast('danger', 'Erro', 'Não foi possível remover a fonte.');
+                }).always(() => {
+                    if ( $btn && $btn.length && state ) {
+                        $btn.prop('disabled', false).html(state.html).width(state.width).height(state.height);
+                    }
+                });
+            },
+        },
+
+        /**
+         * Handle license actions
          * 
+         * @since 1.0.0
+         * @version 5.2.0
          */
         License: {
 
@@ -1947,7 +2462,7 @@
          * Initialize all modules
          * 
          * @since 5.1.0
-         * @version 5.2.0
+         * @version 5.2.3
          */
         init: function() {
             this.initTabs();
@@ -1963,6 +2478,7 @@
             this.resetSettings();
 			this.themeSelector();
             this.handleConditions();
+            this.fontsManager.init();
             this.License.init();
             this.integrationModules.init();
             this.connectionListener.init();
