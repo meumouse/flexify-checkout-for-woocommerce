@@ -448,7 +448,7 @@
          * Register all popups needed by the admin
          * 
          * @since 2.3.0
-         * @version 5.2.3
+         * @version 5.3.0
          */
         popups: function() {
             this.displayModal('#inter_bank_credencials_settings', '#inter_bank_credendials_container', '#inter_bank_credendials_close');
@@ -1499,21 +1499,21 @@
          * Handle fonts manager
          *
          * @since 3.9.0
-         * @version 5.2.3
+         * @version 5.3.0
          */
         fontsManager: {
 
             /**
              * Fonts library
              * 
-             * @since 5.2.3
+             * @since 5.3.0
              */
             fonts: $.extend(true, {}, params.fonts_library || {}),
 
             /**
              * Get i18n string for fonts manager
              * 
-             * @since 5.2.3
+             * @since 5.3.0
              * @returns {Object}
              */
             getI18n: function() {
@@ -1523,7 +1523,7 @@
             /**
              * Bind events
              * 
-             * @since 5.2.3
+             * @since 5.3.0
              * @returns {void}
              */
             bindEvents: function() {
@@ -1566,7 +1566,7 @@
             /**
              * Toggle fields based on type
              * 
-             * @since 5.2.3 
+             * @since 5.3.0 
              * @param {string} type | 'google'|'upload'
              * @returns {void}
              */
@@ -1586,7 +1586,7 @@
             /**
              * Extract filename from URL
              * 
-             * @since 5.2.3
+             * @since 5.3.0
              * @param {string} url | URL string
              * @returns {string}
              */
@@ -1603,7 +1603,7 @@
             /**
              * Generate slug from string
              * 
-             * @since 5.2.3
+             * @since 5.3.0
              * @param {string} value | Input string
              * @returns {string} 
              */
@@ -1623,7 +1623,7 @@
             /**
              * Escape HTML special characters
              * 
-             * @since 5.2.3
+             * @since 5.3.0
              * @param {string} str | Input string
              * @returns {string}
              */
@@ -1642,7 +1642,7 @@
             /**
             * Update file labels
             * 
-            * @since 5.2.3
+            * @since 5.3.0
             * @param {Object} files | { woff2: string, woff: string }
             * @returns {void}
             */
@@ -1668,7 +1668,7 @@
             /**
             * Reset form
             * 
-            * @since 5.2.3
+            * @since 5.3.0
             * @returns {void}
             */
             resetForm: function() {
@@ -1697,7 +1697,7 @@
             /**
             * Fill form for editing
             * 
-            * @since 5.2.3
+            * @since 5.3.0
             * @param {string} fontId | Font identifier
             * @returns {void}
             */
@@ -1728,7 +1728,7 @@
             /**
             * Render fonts list
             * 
-            * @since 5.2.3
+            * @since 5.3.0
             * @returns {void}
             */
             renderList: function() {
@@ -1791,7 +1791,7 @@
             /**
             * Update select options
             * 
-            * @since 5.2.3
+            * @since 5.3.0
             * @returns {void}
             */
             updateSelectOptions: function() {
@@ -1824,7 +1824,7 @@
             /**
             * Save font
             * 
-            * @since 5.2.3
+            * @since 5.3.0
             * @returns {void}
             */
             save: function() {
@@ -1887,7 +1887,7 @@
             /**
             * Delete font
             * 
-            * @since 5.2.3
+            * @since 5.3.0
             * @param {string} fontId | Font identifier
             * @param {jQuery} $btn | Button jQuery object 
             * @returns {void}
@@ -1946,7 +1946,7 @@
             /**
             * Initialize fonts manager
             * 
-            * @since 5.2.3
+            * @since 5.3.0
             * @returns {void}
             */
             init: function() {
@@ -2133,7 +2133,7 @@
              * Deactivation license process
              * 
              * @since 1.0.0
-             * @version 5.2.3
+             * @version 5.3.0
              */
             deactivate: function() {
                 $('#flexify_checkout_deactive_license').on('click', function(e) {
@@ -2365,7 +2365,7 @@
          * Display toast on offline connection
          * 
          * @since 4.5.0
-         * @version 5.2.3
+         * @version 5.3.0
          */
         connectionListener: {
             /**
@@ -2409,7 +2409,7 @@
          * Initialize all modules
          * 
          * @since 5.1.0
-         * @version 5.2.3
+         * @version 5.3.0
          */
         init: function() {
             this.initTabs();

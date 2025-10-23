@@ -17,7 +17,7 @@ defined('ABSPATH') || exit;
  * Class to make requests to a remote server to get plugin versions and updates
  *
  * @since 1.0.0
- * @version 5.2.3
+ * @version 5.3.0
  * @package MeuMouse.com
  */
 class Updater {
@@ -37,7 +37,7 @@ class Updater {
      * Construct function
      *
      * @since 1.0.0
-     * @version 5.2.3
+     * @version 5.3.0
      * @return void
      */
     public function __construct() {

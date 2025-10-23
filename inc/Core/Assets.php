@@ -19,7 +19,7 @@ defined('ABSPATH') || exit;
  * Register/enqueue frontend and backend scripts
  *
  * @since 1.0.0
- * @version 5.2.3
+ * @version 5.3.0
  * @package MeuMouse.com
  */
 class Assets {
@@ -324,7 +324,7 @@ class Assets {
 	 * Enqueue admin scripts in page settings only
 	 * 
 	 * @since 1.0.0
-	 * @version 5.2.3
+	 * @version 5.3.0
 	 * @return void
 	 */
 	public function admin_assets() {

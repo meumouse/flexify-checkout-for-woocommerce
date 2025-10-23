@@ -30,7 +30,7 @@ class Steps {
 			add_filter( 'Flexify_Checkout/Steps/Set_Custom_Steps', array( __CLASS__, 'disable_address_step' ) );
 		}
 
-		add_filter( 'woocommerce_order_button_html', array( __CLASS__, 'place_order_button' ), 999 );
+		add_filter( 'woocommerce_order_button_html', array( __CLASS__, 'place_order_button' ), 999, 1 );
 	}
 
 

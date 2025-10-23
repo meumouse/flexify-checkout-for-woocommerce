@@ -2197,7 +2197,7 @@
 			 * We use AJAX to get the correct message and then trigger Woo validation
 			 * 
 			 * @since 1.0.0
-			 * @version 5.2.3
+			 * @version 5.3.0
 			 */
 			onNextClick: function() {
 				$('[data-step-next]').each( function() {
@@ -3700,7 +3700,7 @@
 		 * Handle with session functions
 		 * 
 		 * @since 1.8.5
-		 * @version 5.2.3
+		 * @version 5.3.0
 		 */
 		Session: {
 			/**
@@ -3736,7 +3736,7 @@
 			 * Gather all checkout field values and send to session via AJAX
 			 *
 			 * @since 1.8.5
-			 * @version 5.2.3
+			 * @version 5.3.0
 			 * @return {jQuery.Promise} AJAX Promise
 			 */
 			update: function() {
@@ -3775,7 +3775,7 @@
 			 * Bind events and perform initial session update
 			 *
 			 * @since 1.8.5
-			 * @version 5.2.3
+			 * @version 5.3.0
 			 * @return {void}
 			 */
 			init: function() {

@@ -10,14 +10,14 @@ defined('ABSPATH') || exit;
 /**
  * Manage custom fonts registered in the plugin settings.
  * 
- * @since 5.2.3
+ * @since 5.3.0
  */
 class Fonts_Manager {
 
 	/**
 	 * Built-in fonts delivered with the plugin.
 	 * 
-	 * @since 5.2.3
+	 * @since 5.3.0
 	 * @return string[]
 	 */
 	public static function builtin_fonts() {
@@ -40,7 +40,7 @@ class Fonts_Manager {
 	/**
 	 * Default font ID used by the plugin
 	 * 
-	 * @since 5.2.3
+	 * @since 5.3.0
 	 * @return string
 	 */
 	public static function default_font_id() {
@@ -51,7 +51,7 @@ class Fonts_Manager {
 	/**
 	 * Retrieve all fonts registered in the settings and ensure they are normalized.
 	 * 
-	 * @since 5.2.3
+	 * @since 5.3.0
 	 * @return array
 	 */
 	public static function get_fonts() {
@@ -71,7 +71,7 @@ class Fonts_Manager {
 	/**
 	 * Save (create/update) a font configuration
 	 * 
-	 * @since 5.2.3
+	 * @since 5.3.0
 	 * @param string $font_id | Font identifier
 	 * @param array  $font_data | Font configuration data
 	 * @return bool
@@ -92,7 +92,7 @@ class Fonts_Manager {
 	/**
 	 * Delete a font configuration and remove uploaded assets.
 	 * 
-	 * @since 5.2.3
+	 * @since 5.3.0
 	 * @param string $font_id | Font identifier.
 	 * @return bool
 	 */
@@ -120,7 +120,7 @@ class Fonts_Manager {
 	/**
 	 * Determine whether a font is bundled with the plugin.
 	 * 
-	 * @since 5.2.3
+	 * @since 5.3.0
 	 * @param string $font_id Font identifier.
 	 * @return bool
 	 */
@@ -132,7 +132,7 @@ class Fonts_Manager {
 	/**
 	 * Normalize fonts structure with defaults.
 	 * 
-	 * @since 5.2.3
+	 * @since 5.3.0
 	 * @param array $fonts Fonts array to normalize.
 	 * @return array{fonts:array,changed:bool}
 	 */
@@ -197,7 +197,7 @@ class Fonts_Manager {
 	/**
 	 * Ensure the upload directory exists.
 	 * 
-	 * @since 5.2.3
+	 * @since 5.3.0
 	 * @return array|WP_Error
 	 */
 	protected static function ensure_upload_dir() {
@@ -224,7 +224,7 @@ class Fonts_Manager {
 	/**
 	 * Handle the upload of a font file.
 	 * 
-	 * @since 5.2.3
+	 * @since 5.3.0
 	 * @param array  $file | File array from $_FILES.
 	 * @param string $font_id | Font identifier.
 	 * @param string $weight | Font weight.
@@ -286,7 +286,7 @@ class Fonts_Manager {
 	/**
 	 * Delete a file stored by URL if it belongs to the uploads directory.
 	 * 
-	 * @since 5.2.3
+	 * @since 5.3.0
 	 * @param string $file_url File URL.
 	 * @return void
 	 */
@@ -319,7 +319,7 @@ class Fonts_Manager {
 	/**
 	 * Update selected font if the current option references a removed font.
 	 * 
-	 * @since 5.2.3
+	 * @since 5.3.0
 	 * @param string $removed_font Font identifier removed.
 	 * @return void
 	 */
@@ -351,7 +351,7 @@ class Fonts_Manager {
 	/**
 	 * Allowed mime types for font upload.
 	 * 
-	 * @since 5.2.3
+	 * @since 5.3.0
 	 * @return array
 	 */
 	public static function allowed_mimes() {

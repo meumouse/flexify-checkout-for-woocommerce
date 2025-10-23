@@ -16,7 +16,7 @@ defined('ABSPATH') || exit;
  * Class for handle AJAX events
  *
  * @since 1.0.0
- * @version 5.2.3
+ * @version 5.3.0
  * @package MeuMouse.com
  */
 class Ajax {
@@ -28,7 +28,7 @@ class Ajax {
 	 * Construct function
 	 * 
 	 * @since 1.0.0
-	 * @version 5.2.3
+	 * @version 5.3.0
 	 * @return void
 	 */
 	public function __construct() {
@@ -543,7 +543,7 @@ class Ajax {
 	 * Add new font to library on AJAX callback
 	 * 
 	 * @since 3.5.0
-	 * @version 5.2.3
+	 * @version 5.3.0
 	 * @return void
 	 */
 	public function add_new_font_action_callback() {
@@ -591,7 +591,7 @@ class Ajax {
 	/**
 	 * Save font configuration via AJAX.
 	 *
-	 * @since 5.2.3
+	 * @since 5.3.0
 	 * @return void
 	 */
 	public function save_font_callback() {
@@ -738,7 +738,7 @@ class Ajax {
 	/**
 	 * Delete font configuration via AJAX.
 	 *
-	 * @since 5.2.3
+	 * @since 5.3.0
 	 * @return void
 	 */
 	public function delete_font_callback() {

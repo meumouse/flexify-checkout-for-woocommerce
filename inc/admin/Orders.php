@@ -13,7 +13,7 @@ defined('ABSPATH') || exit;
  * Orders class
  *
  * @since 1.0.0
- * @version 5.2.3
+ * @version 5.3.0
  * @package MeuMouse.com
  */
 class Orders {
@@ -22,7 +22,7 @@ class Orders {
 	 * Construct function
 	 *
 	 * @since 1.0.0
-	 * @version 5.2.3
+	 * @version 5.3.0
 	 * @return void
 	 */
 	public function __construct() {
