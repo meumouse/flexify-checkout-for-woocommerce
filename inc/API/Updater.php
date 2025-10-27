@@ -17,7 +17,7 @@ defined('ABSPATH') || exit;
  * Class to make requests to a remote server to get plugin versions and updates
  *
  * @since 1.0.0
- * @version 5.0.0
+ * @version 5.3.0
  * @package MeuMouse.com
  */
 class Updater {
@@ -37,7 +37,7 @@ class Updater {
      * Construct function
      *
      * @since 1.0.0
-     * @version 5.0.0
+     * @version 5.3.0
      * @return void
      */
     public function __construct() {
@@ -53,13 +53,11 @@ class Updater {
         add_filter( 'plugin_row_meta', array( $this, 'add_check_updates_link' ), 10, 2 );
         add_filter( 'all_admin_notices', array( $this, 'check_manual_update_query_arg' ) );
 
-        // enable auto updates
-        if ( Admin_Options::get_setting('enable_auto_updates') === 'yes' ) {
+        if ( Admin_Options::get_setting('enable_update_notices') === 'yes' && License::is_valid() ) {
+            // enable auto updates
             add_filter( 'auto_update_plugin', array( $this, 'enable_auto_update' ), 10, 2 );
-        }
 
-        // display new update on plugins list
-        if ( Admin_Options::get_setting('enable_update_notices') === 'yes' ) {
+            // display new update on plugins list
             add_action( 'admin_notices', array( $this, 'admin_update_notice' ) );
         }
     }

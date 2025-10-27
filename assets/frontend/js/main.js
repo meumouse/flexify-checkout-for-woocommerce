@@ -2197,7 +2197,7 @@
 			 * We use AJAX to get the correct message and then trigger Woo validation
 			 * 
 			 * @since 1.0.0
-			 * @version 5.0.0
+			 * @version 5.3.0
 			 */
 			onNextClick: function() {
 				$('[data-step-next]').each( function() {
@@ -2212,6 +2212,15 @@
 
 						let current_parent = btn.closest('[data-step]');
 						let fields = Flexify_Checkout.Steps.getFields( current_parent );
+
+						try {
+							await Flexify_Checkout.Session.update();
+						} catch (error) {
+							if ( params.debug_mode ) {
+								console.warn('[FLEXIFY CHECKOUT] Session.update() failed before verification: ', error);
+							}
+						}
+
 						let has_errors = await Flexify_Checkout.Validations.checkFieldsForErrors( fields );
 
 						if ( has_errors ) {
@@ -3691,9 +3700,19 @@
 		 * Handle with session functions
 		 * 
 		 * @since 1.8.5
-		 * @version 5.0.0
+		 * @version 5.3.0
 		 */
 		Session: {
+			/**
+			 * Internal state for performance:
+			 * - _lastSnapshot: last set of field-id/value pairs we synced
+			 * - _stale: whether local form differs from the last synced snapshot
+			 * - _inflight: current AJAX request (so we can abort if a new one starts)
+			 */
+			_lastSnapshot: null,
+			_stale: true,
+			_inflight: null,
+
 			/**
 			 * Debounce function to limit the rate of calls
 			 *
@@ -3717,8 +3736,8 @@
 			 * Gather all checkout field values and send to session via AJAX
 			 *
 			 * @since 1.8.5
-			 * @version 5.0.0
-			 * @return {void}
+			 * @version 5.3.0
+			 * @return {jQuery.Promise} AJAX Promise
 			 */
 			update: function() {
 				const groups = params.get_all_checkout_fields || [];
@@ -3738,7 +3757,7 @@
 				});
 
 				// send AJAX request
-				$.ajax({
+				return $.ajax({
 					type: 'POST',
 					url: params.ajax_url,
 					data: {
@@ -3756,7 +3775,7 @@
 			 * Bind events and perform initial session update
 			 *
 			 * @since 1.8.5
-			 * @version 5.0.0
+			 * @version 5.3.0
 			 * @return {void}
 			 */
 			init: function() {
@@ -3773,12 +3792,6 @@
 							$('#' + field_id).on('change input', debounced);
 						});
 					}
-				});
-
-				// sync on proceed step
-				$('.flexify-button[data-step-next]').on('click', function(e) {
-					e.preventDefault();
-					Flexify_Checkout.Session.update();
 				});
 			}
 		},

@@ -24,13 +24,14 @@ use MeuMouse\Flexify_Checkout\Checkout\Thankyou;
 // Exit if accessed directly.
 defined('ABSPATH') || exit; ?>
 
-<form id="order_review" method="post" class='flexify-order-pay'>
+<form id="order_review" method="post" class="flexify-order-pay">
 	<div class="flexify-common-wrap">
 		<div class="flexify-order-pay-header flexify-order-pay-header--mobile">
 			<?php if ( Helpers::is_modern_theme() ) :
 				Steps::render_header( false );
 			endif; ?>
 		</div>
+
 		<div class="flexify-common-wrap__wrapper">
 			<div class="flexify-common-wrap__content-left">
 				<div class="flexify-step">
@@ -58,7 +59,7 @@ defined('ABSPATH') || exit; ?>
 							<div class="form-row">
 								<input type="hidden" name="woocommerce_pay" value="1" />
 
-								<?php wc_get_template( 'checkout/terms.php' ); ?>
+								<?php wc_get_template('checkout/terms.php'); ?>
 
 								<?php
 								/**
@@ -81,7 +82,7 @@ defined('ABSPATH') || exit; ?>
 								 *
 								 * @since 1.0.0
 								 */
-								do_action( 'woocommerce_pay_order_after_submit' );
+								do_action('woocommerce_pay_order_after_submit');
 
 								wp_nonce_field( 'woocommerce-pay', 'woocommerce-pay-nonce' ); ?>
 							</div>

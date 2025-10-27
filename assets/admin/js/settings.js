@@ -67,7 +67,7 @@
                 <div class="toast-header bg-${type} text-white">
 					${icon}
 					<span class="me-auto">${header || ''}</span>
-                    <button class="btn-close btn-close-white ms-2" type="button" aria-label="${params.close_aria_label_notice || 'Close'}"></button>
+                    <button class="btn-close btn-close-white ms-2" type="button" aria-label="${params.i18n.close_aria_label_notice || 'Close'}"></button>
                 </div>
                 <div class="toast-body">${body || ''}</div>
             </div>`;
@@ -404,14 +404,14 @@
             setup_media_selector(
                 '#flexify-checkout-search-header-logo',
                 'input[name="search_image_header_checkout"]',
-                params.set_logo_modal_title,
-                params.use_this_image_title
+                params.i18n.set_logo_modal_title,
+                params.i18n.use_this_image_title
             );
 
             // Process animations
-            setup_media_selector('#animation_process_purchase_file_1_trigger','input[name="animation_process_purchase_file_1"]', params.set_animation_modal_title, params.set_animation_button_title);
-            setup_media_selector('#animation_process_purchase_file_2_trigger','input[name="animation_process_purchase_file_2"]', params.set_animation_modal_title, params.set_animation_button_title);
-            setup_media_selector('#animation_process_purchase_file_3_trigger','input[name="animation_process_purchase_file_3"]', params.set_animation_modal_title, params.set_animation_button_title);
+            setup_media_selector('#animation_process_purchase_file_1_trigger','input[name="animation_process_purchase_file_1"]', params.i18n.set_animation_modal_title, params.i18n.set_animation_button_title);
+            setup_media_selector('#animation_process_purchase_file_2_trigger','input[name="animation_process_purchase_file_2"]', params.i18n.set_animation_modal_title, params.i18n.set_animation_button_title);
+            setup_media_selector('#animation_process_purchase_file_3_trigger','input[name="animation_process_purchase_file_3"]', params.i18n.set_animation_modal_title, params.i18n.set_animation_button_title);
         },
 
         /**
@@ -448,7 +448,7 @@
          * Register all popups needed by the admin
          * 
          * @since 2.3.0
-         * @version 5.2.0
+         * @version 5.3.0
          */
         popups: function() {
             this.displayModal('#inter_bank_credencials_settings', '#inter_bank_credendials_container', '#inter_bank_credendials_close');
@@ -459,7 +459,7 @@
             this.displayModal('#set_ip_api_service_trigger', '.set-api-service-container', '.set-api-service-close');
             this.displayModal('#add_new_checkout_fields_trigger', '.add-new-checkout-fields-container', '.add-new-checkout-fields-close');
             this.displayModal('#auto_fill_address_api_trigger', '.auto-fill-address-api-container', '.auto-fill-address-api-close');
-            this.displayModal('#set_new_font_family_trigger', '#set_new_font_family_container', '#close_new_font_family');
+            this.displayModal('#fcw_manage_fonts_trigger', '#fcw_manage_fonts_container', '#fcw_close_fonts_manager');
             this.displayModal('#fcw_reset_settings_trigger', '#fcw_reset_settings_container', '#fcw_close_reset');
             this.displayModal('#add_new_checkout_condition_trigger', '#add_new_checkout_condition_container', '#close_add_new_checkout_condition');
             this.displayModal('#set_email_providers_trigger', '#set_email_providers_container', '#close_set_email_providers');
@@ -631,7 +631,7 @@
             $(document).on('click', '.exclude-field', (e) => {
                 e.preventDefault();
 
-                if ( ! confirm(params.confirm_exclude_field) ) {
+                if ( ! confirm(params.i18n.confirm_exclude_field) ) {
                     return;
                 }
 
@@ -892,7 +892,7 @@
             $(document).on('click', '.exclude-option-select-live', (e) => {
                 e.preventDefault();
 
-                if ( ! confirm(params.confirm_remove_option) ) {
+                if ( ! confirm(params.i18n.confirm_remove_option) ) {
                     return;
                 }
 
@@ -937,12 +937,12 @@
                 const template = `<div id="new_select_option_live_preview" class="d-flex align-items-center justify-content-between mb-4">
                     <div class="d-grid me-3">
                         <div class="input-group mb-3">
-                            <span class="input-group-text w-fit">${params.new_option_value}</span>
-                            <input type="text" id="add_new_field_select_option_value_live" class="form-control input-control-wd-12" value="" placeholder="${params.placeholder_new_option_value}">
+                            <span class="input-group-text w-fit">${params.i18n.new_option_value}</span>
+                            <input type="text" id="add_new_field_select_option_value_live" class="form-control input-control-wd-12" value="" placeholder="${params.i18n.placeholder_new_option_value}">
                         </div>
                         <div class="input-group">
-                            <span class="input-group-text w-fit">${params.new_option_title}</span>
-                            <input type="text" id="add_new_field_select_option_title_live" class="form-control input-control-wd-12" value="" placeholder="${params.placeholder_new_option_title}">
+                            <span class="input-group-text w-fit">${params.i18n.new_option_title}</span>
+                            <input type="text" id="add_new_field_select_option_title_live" class="form-control input-control-wd-12" value="" placeholder="${params.i18n.placeholder_new_option_title}">
                         </div>
                     </div>
                     <button id="add_new_options_to_select_live" class="btn btn-icon btn-icon-lg btn-outline-secondary">
@@ -1496,7 +1496,504 @@
         },
 
         /**
+         * Handle fonts manager
+         *
+         * @since 3.9.0
+         * @version 5.3.0
+         */
+        fontsManager: {
+
+            /**
+             * Fonts library
+             * 
+             * @since 5.3.0
+             */
+            fonts: $.extend(true, {}, params.fonts_library || {}),
+
+            /**
+             * Get i18n string for fonts manager
+             * 
+             * @since 5.3.0
+             * @returns {Object}
+             */
+            getI18n: function() {
+                return (params.i18n && params.i18n.fonts) ? params.i18n.fonts : {};
+            },
+
+            /**
+             * Bind events
+             * 
+             * @since 5.3.0
+             * @returns {void}
+             */
+            bindEvents: function() {
+                const self = this;
+
+                // select font type
+                $(document).off('change.fcw', '#fcw-font-type').on('change.fcw', '#fcw-font-type', function () {
+                    self.toggleFields($(this).val());
+                });
+
+                // cancel edit
+                $(document).off('click.fcw', '#fcw-cancel-font-edit').on('click.fcw', '#fcw-cancel-font-edit', function(e) {
+                    e.preventDefault();
+                    self.resetForm();
+                });
+
+                // edit / delete (delegation)
+                $(document).off('click.fcw', '.fcw-font-edit').on('click.fcw', '.fcw-font-edit', function(e) {
+                    e.preventDefault();
+                    self.fillForm($(this).data('font-id'));
+                });
+
+                $(document).off('click.fcw', '.fcw-font-delete').on('click.fcw', '.fcw-font-delete', function(e) {
+                    e.preventDefault();
+                    self.delete($(this).data('font-id'), $(this));
+                });
+
+                // when open popup
+                $(document).on('click', '#fcw_manage_fonts_trigger', function () {
+                    $('#fcw-font-type').trigger('change');
+                });
+            },
+
+            /**
+             * Toggle fields based on type
+             * 
+             * @since 5.3.0 
+             * @param {string} type | 'google'|'upload'
+             * @returns {void}
+             */
+            toggleFields: function(type) {
+                const $upload = $('.fcw-font-upload-fields');
+                const $google = $('.fcw-font-google-fields');
+
+                if (type === 'upload') {
+                    $upload.removeClass('d-none');
+                    $google.addClass('d-none');
+                } else {
+                    $google.removeClass('d-none');
+                    $upload.addClass('d-none');
+                }
+            },
+
+            /**
+             * Extract filename from URL
+             * 
+             * @since 5.3.0
+             * @param {string} url | URL string
+             * @returns {string}
+             */
+            extractFilename: function(url) {
+                if ( ! url ) {
+                    return '';
+                }
+
+                try {
+                    const decoded = decodeURIComponent(url);
+
+                    return decoded.split('/').pop();
+                } catch (err) {
+                    return url.split('/').pop();
+                }
+            },
+
+            /**
+             * Generate slug from string
+             * 
+             * @since 5.3.0
+             * @param {string} value | Input string
+             * @returns {string} 
+             */
+            generateSlug: function(value) {
+                if ( ! value ) {
+                    return '';
+                }
+
+                return value
+                    .toString()
+                    .normalize('NFD')
+                    .replace(/[\u0300-\u036f]/g, '')
+                    .toLowerCase()
+                    .trim()
+                    .replace(/[^a-z0-9\-\_\s]/g, '')
+                    .replace(/\s+/g, '-')
+                    .replace(/-+/g, '-');
+            },
+
+            /**
+             * Escape HTML special characters
+             * 
+             * @since 5.3.0
+             * @param {string} str | Input string
+             * @returns {string}
+             */
+            escapeHtml: function(str) {
+                if ( str === undefined || str === null ) return '';
+                const map = {
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    "'": '&#039;',
+                };
+                return str.toString().replace(/[&<>"']/g, function(m) { return map[m]; });
+            },
+
+            /**
+            * Update file labels
+            * 
+            * @since 5.3.0
+            * @param {Object} files | { woff2: string, woff: string }
+            * @returns {void}
+            */
+            updateFileLabels: function(files) {
+                const i18n = this.getI18n();
+                const keepLabel = i18n.upload_keep_file || '';
+
+                if ( files && files.woff2 ) {
+                    $('#fcw-font-file-woff2-current')
+                        .text( keepLabel ? `${keepLabel}: ${this.extractFilename(files.woff2)}` : this.extractFilename(files.woff2) );
+                } else {
+                    $('#fcw-font-file-woff2-current').text('');
+                }
+
+                if ( files && files.woff ) {
+                    $('#fcw-font-file-woff-current')
+                        .text( keepLabel ? `${keepLabel}: ${this.extractFilename(files.woff)}` : this.extractFilename(files.woff) );
+                } else {
+                    $('#fcw-font-file-woff-current').text('');
+                }
+            },
+
+            /**
+            * Reset form
+            * 
+            * @since 5.3.0
+            * @returns {void}
+            */
+            resetForm: function() {
+                const $form = $('#fcw-fonts-form');
+
+                if ($form.length && $form[0].reset) {
+                    $form[0].reset();
+                }
+
+                $('#fcw-font-id').val('');
+                $('#fcw-font-is-new').val('yes');
+                $('#fcw-cancel-font-edit').addClass('d-none');
+
+                const $title = $('#fcw-font-form-title');
+                $title.text(this.addTitle || $title.text());
+
+                $('#fcw-existing-woff2').val('');
+                $('#fcw-existing-woff').val('');
+                this.updateFileLabels({});
+
+                // força estado inicial
+                const currentType = $('#fcw-font-type').val();
+                this.toggleFields(currentType);
+            },
+
+            /**
+            * Fill form for editing
+            * 
+            * @since 5.3.0
+            * @param {string} fontId | Font identifier
+            * @returns {void}
+            */
+            fillForm: function(fontId) {
+                if ( ! fontId || ! this.fonts[fontId] ) {
+                    return;
+                }
+
+                const font = this.fonts[fontId];
+
+                $('#fcw-font-id').val(fontId);
+                $('#fcw-font-is-new').val('no');
+                $('#fcw-font-name').val(font.font_name || '');
+                $('#fcw-font-type').val(font.type || 'google');
+                $('#fcw-font-url').val(font.font_url || '');
+                $('#fcw-font-weight').val(font.font_weight || '400');
+                $('#fcw-font-style').val(font.font_style || 'normal');
+                $('#fcw-existing-woff2').val(font.font_files && font.font_files.woff2 ? font.font_files.woff2 : '');
+                $('#fcw-existing-woff').val(font.font_files && font.font_files.woff ? font.font_files.woff : '');
+                $('#fcw-existing-ttf').val(font.font_files && font.font_files.ttf ? font.font_files.ttf : '');
+                this.updateFileLabels(font.font_files || {});
+                $('#fcw-fonts-form').find('input[type="file"]').val('');
+
+                this.toggleFields(font.type || 'google');
+                $('#fcw-cancel-font-edit').removeClass('d-none');
+                $('#fcw-font-form-title').text(this.editTitle || $('#fcw-font-form-title').text());
+            },
+
+            /**
+            * Render fonts list
+            * 
+            * @since 5.3.0
+            * @returns {void}
+            */
+            renderList: function() {
+                if ( ! $('#fcw-fonts-list').length ) return;
+
+                const fonts = this.fonts || {};
+                const i18n = this.getI18n();
+                const fragments = [];
+                const fontKeys = Object.keys(fonts);
+
+                if ( fontKeys.length ) {
+                    fontKeys.forEach((fontId) => {
+                        const font = fonts[fontId] || {};
+                        const typeLabel = (font.type === 'upload') ? (i18n.type_upload || 'Upload') : (i18n.type_google || 'Google Fonts');
+                        const isDefault = (font.source === 'default');
+                        const sourceClass = isDefault ? 'bg-primary' : 'bg-info';
+                        const sourceLabel = isDefault ? (i18n.badge_default || 'Padrão') : (i18n.badge_custom || 'Personalizada');
+                        const fontLabel = font.font_name || fontId;
+
+                        const escapedId = this.escapeHtml(fontId);
+                        const escapedLabel = this.escapeHtml(fontLabel);
+                        const escapedTypeLabel = this.escapeHtml(typeLabel);
+                        const escapedSourceLabel = this.escapeHtml(sourceLabel);
+
+                        fragments.push(
+                            `<li class="list-group-item d-flex flex-column flex-lg-row align-items-lg-center justify-content-between fcw-font-item" data-font-id="${escapedId}" data-font-type="${this.escapeHtml(font.type || 'google')}" data-font-source="${this.escapeHtml(font.source || 'custom')}">
+                                <div class="fcw-font-item__info">
+                                    <span class="fw-semibold">${escapedLabel}</span>
+                                    <span class="badge bg-secondary ms-2">${escapedTypeLabel}</span>
+                                    <span class="badge ${sourceClass} ms-1">${escapedSourceLabel}</span>
+                                </div>
+                                <div class="fcw-font-item__actions mt-3 mt-lg-0">
+                                    ${isDefault ? `<span class="text-muted small">${escapedSourceLabel}</span>` : `
+                                        <button type="button" class="btn btn-sm btn-outline-secondary fcw-font-edit" data-font-id="${escapedId}">${this.escapeHtml(i18n.edit || 'Editar')}</button>
+                                        <button type="button" class="btn btn-sm btn-outline-danger ms-2 fcw-font-delete" data-font-id="${escapedId}">${this.escapeHtml(i18n.delete || 'Excluir')}</button>`}
+                                </div>
+                            </li>`
+                        );
+                    });
+                }
+
+                if ( ! fragments.length ) {
+                    fragments.push(`<li class="list-group-item text-muted">${i18n.empty || ''}</li>`);
+                }
+
+                $('#fcw-fonts-list').html(fragments.join(''));
+
+                const hasCustom = fontKeys.some((key) => {
+                    const font = fonts[key] || {};
+                    return (font.source || 'custom') !== 'default';
+                });
+
+                if ( $('#fcw-fonts-empty').length ) {
+                    $('#fcw-fonts-empty').toggleClass('d-none', hasCustom);
+                }
+
+                this.updateSelectOptions();
+            },
+
+            /**
+            * Update select options
+            * 
+            * @since 5.3.0
+            * @returns {void}
+            */
+            updateSelectOptions: function() {
+                const $select = $('#set_font_family');
+                if ( ! $select.length ) return;
+
+                const current = $select.val();
+                const options = [];
+
+                Object.keys(this.fonts || {}).forEach((fontId) => {
+                    const font = this.fonts[fontId] || {};
+                    const label = this.escapeHtml(font.font_name || fontId);
+                    options.push(`<option value="${this.escapeHtml(fontId)}">${label}</option>`);
+                });
+
+                $select.html(options.join(''));
+
+                if ( current && this.fonts[current] ) {
+                    $select.val(current);
+                } else {
+                    const keys = Object.keys(this.fonts || {});
+                    if ( keys.length ) {
+                        $select.val(keys[0]);
+                    }
+                }
+
+                $select.trigger('change');
+            },
+
+            /**
+             * Save font
+             * 
+             * @since 5.3.0
+             * @returns {void}
+             */
+            save: function() {
+                $(document).on('click', '#fcw-save-font', function(e) {
+                    e.preventDefault();
+
+                    const $btn = $(this);
+                    const $form = $('#fcw-fonts-form');
+                    const state = Flexify_Checkout_Admin.keepButtonState($btn);
+                    const fontNameRaw = ( $('#fcw-font-name').val() || '' ).trim();
+                    const isNew = ( $('#fcw-font-is-new').val() === 'yes' );
+                    let fontId = $('#fcw-font-id').val();
+
+                    if ( isNew ) {
+                        fontId = Flexify_Checkout_Admin.fontsManager.generateSlug(fontNameRaw);
+                        $('#fcw-font-id').val(fontId);
+                    }
+
+                    const fd = new FormData($form[0]);
+                    fd.append( 'action', 'flexify_checkout_save_font' );
+                    fd.append( 'nonce', ( params.nonces && params.nonces.fonts ) ? params.nonces.fonts : '' );
+                    fd.set( 'font_name', fontNameRaw );
+                    fd.set( 'font_id', fontId );
+
+                    const type = $('#fcw-font-type').val();
+                    fd.set('font_type', type);
+
+                    if ( type !== 'upload' ) {
+                        fd.delete('font_file');
+                        fd.delete('font_weight');
+                        fd.delete('font_style');
+                        fd.set( 'font_url', ( $('#fcw-font-url').val() || '').trim() );
+                    } else {
+                        fd.set( 'font_weight', ( $('#fcw-font-weight').val() || '400').trim() );
+                        fd.set( 'font_style', ( $('#fcw-font-style').val() || 'normal').trim() );
+
+                        const $input = $('#fcw-font-file');
+                        const file = $input && $input[0] && $input[0].files ? $input[0].files[0] : null;
+
+                        fd.delete('font_file');
+
+                        if (file) {
+                            fd.append('font_file', file, file.name);
+                        }
+
+                        if (params.debug_mode === 'yes') {
+                            console.log('Arquivo selecionado:', file);
+                            for (const [k, v] of fd.entries()) {
+                            console.log('FD:', k, v instanceof File ? `${v.name} (${v.size})` : v);
+                            }
+                        }
+                    }
+
+                    // send ajax request
+                    $.ajax({
+                        url: params.ajax_url,
+                        method: 'POST',
+                        data: fd,
+                        processData: false,
+                        contentType: false,
+                        beforeSend: () => {
+                            $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span>');
+                        },
+                        success: (response) => {
+                            if (response && response.status === 'success') {
+                                Flexify_Checkout_Admin.fontsManager.fonts = response.fonts || Flexify_Checkout_Admin.fontsManager.fonts;
+                                Flexify_Checkout_Admin.fontsManager.renderList();
+                                Flexify_Checkout_Admin.fontsManager.resetForm();
+
+                                if (response.current_font) {
+                                    $('#set_font_family').val(response.current_font).trigger('change');
+                                }
+
+                                Flexify_Checkout_Admin.displayToast('success', response.toast_header_title, response.toast_body_title);
+                            } else {
+                                const msg = response?.toast_body_title || (params.i18n?.fonts?.font_exists ? params.i18n.fonts.font_exists : 'Não foi possível salvar a fonte.');
+                                Flexify_Checkout_Admin.displayToast('danger', response?.toast_header_title || 'Erro', msg);
+                            }
+                        },
+                        error: () => {
+                            Flexify_Checkout_Admin.displayToast('danger', 'Erro', 'Não foi possível salvar a fonte.');
+                        },
+                        complete: () => {
+                            $btn.prop('disabled', false).html(state.html);
+                        },
+                    });
+                });
+            },
+
+            /**
+            * Delete font
+            * 
+            * @since 5.3.0
+            * @param {string} fontId | Font identifier
+            * @param {jQuery} $btn | Button jQuery object 
+            * @returns {void}
+            */
+            delete: function(fontId, $btn) {
+                if ( ! fontId ) return;
+
+                const i18n = this.getI18n();
+
+                if ( ! window.confirm(i18n.confirm_delete || 'Tem certeza que deseja excluir esta fonte?') ) {
+                    return;
+                }
+
+                let state = null;
+
+                if ( $btn && $btn.length ) {
+                    state = Flexify_Checkout_Admin.keepButtonState($btn);
+                    $btn.html('<span class="spinner-border spinner-border-sm"></span>').prop('disabled', true);
+                }
+
+                $.ajax({
+                    url: params.ajax_url,
+                    method: 'POST',
+                    dataType: 'json',
+                    data: {
+                        action: 'flexify_checkout_delete_font',
+                        font_id: fontId,
+                        nonce: params.nonces ? params.nonces.fonts : '',
+                    },
+                }).done((response) => {
+                    if ( response && response.status === 'success' ) {
+                        this.fonts = response.fonts || this.fonts;
+                        this.renderList();
+
+                        if ( response.current_font ) {
+                            $('#set_font_family').val(response.current_font).trigger('change');
+                        }
+
+                        if ( $('#fcw-font-id').val() === fontId ) {
+                            this.resetForm();
+                        }
+
+                        Flexify_Checkout_Admin.displayToast('success', response.toast_header_title, response.toast_body_title);
+                    } else {
+                        Flexify_Checkout_Admin.displayToast('danger', response?.toast_header_title || 'Erro', response?.toast_body_title || 'Não foi possível remover a fonte.');
+                    }
+                }).fail(() => {
+                    Flexify_Checkout_Admin.displayToast('danger', 'Erro', 'Não foi possível remover a fonte.');
+                }).always(() => {
+                    if ( $btn && $btn.length && state ) {
+                        $btn.prop('disabled', false).html(state.html).width(state.width).height(state.height);
+                    }
+                });
+            },
+
+            /**
+            * Initialize fonts manager
+            * 
+            * @since 5.3.0
+            * @returns {void}
+            */
+            init: function() {
+                this.renderList();
+                this.resetForm();
+                this.bindEvents();
+                this.save();
+            },
+        },
+
+        /**
+         * Handle license actions
          * 
+         * @since 1.0.0
+         * @version 5.2.0
          */
         License: {
 
@@ -1669,15 +2166,13 @@
              * Deactivation license process
              * 
              * @since 1.0.0
-             * @version 5.2.0
+             * @version 5.3.0
              */
             deactivate: function() {
                 $('#flexify_checkout_deactive_license').on('click', function(e) {
                     e.preventDefault();
 
-                    var confirm_deactivate_license = confirm(flexify_checkout_params.confirm_deactivate_license);
-
-                    if ( ! confirm_deactivate_license ) {
+                    if ( ! confirm(flexify_checkout_params.i18n.confirm_deactivate_license) ) {
                         return;
                     }
 
@@ -1903,7 +2398,7 @@
          * Display toast on offline connection
          * 
          * @since 4.5.0
-         * @version 5.2.0
+         * @version 5.3.0
          */
         connectionListener: {
             /**
@@ -1916,7 +2411,7 @@
                 if (navigator.onLine) {
                     $('.toast.toast-offline-connection').remove();
                 } else {
-                    Flexify_Checkout_Admin.displayToast( 'warning', params.offline_toast_header, params.offline_toast_body, 'toast-offline-connection' );
+                    Flexify_Checkout_Admin.displayToast( 'warning', params.i18n.offline_toast_header, params.i18n.offline_toast_body, 'toast-offline-connection' );
                 }
             },
 
@@ -1947,7 +2442,7 @@
          * Initialize all modules
          * 
          * @since 5.1.0
-         * @version 5.2.0
+         * @version 5.3.0
          */
         init: function() {
             this.initTabs();
@@ -1963,6 +2458,7 @@
             this.resetSettings();
 			this.themeSelector();
             this.handleConditions();
+            this.fontsManager.init();
             this.License.init();
             this.integrationModules.init();
             this.connectionListener.init();

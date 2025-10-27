@@ -871,7 +871,6 @@ form.woocommerce-checkout
 .form-row .select2-selection__rendered,
 .form-row .select2-selection__rendered .select2-selection__placeholder {
     padding: 0;
-    font-family: Inter, Helvetica, Arial, sans-serif;
     font-size: 16px;
     letter-spacing: unset;
     line-height: 2;
@@ -2408,7 +2407,6 @@ label.checkbox {
 
 label.checkbox span {
     font-size: 1.115rem;
-    line-height: 0;
 }
 
 input[type="checkbox"] {

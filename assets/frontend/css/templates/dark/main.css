@@ -872,7 +872,6 @@ form.woocommerce-checkout
 .form-row .select2-selection__rendered,
 .form-row .select2-selection__rendered .select2-selection__placeholder {
     padding: 0;
-    font-family: Inter, Helvetica, Arial, sans-serif;
     font-size: 16px;
     letter-spacing: unset;
     line-height: 2;
@@ -2419,7 +2418,6 @@ label.checkbox {
 
 label.checkbox span {
     font-size: 1.115rem;
-    line-height: 0;
 }
 
 input[type="checkbox"] {
@@ -5208,7 +5206,8 @@ p.form-row.flexify-checkout-loading-placeholder > label {
 
 .mp-checkout-container .mp-wallet-button-container .mp-wallet-button-description,
 .mp-checkout-container .mp-pix-template-subtitle,
-.mp-terms-and-conditions-text {
+.mp-terms-and-conditions-text,
+.mp-details-pix-qr-subtitle {
     color: #E9ECEF !important;
 }
 

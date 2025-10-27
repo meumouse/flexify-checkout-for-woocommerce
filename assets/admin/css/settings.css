@@ -1800,6 +1800,10 @@ code {
     .popup-lg {
         width: 900px !important;
     }
+
+    .popup-xg {
+        width: 1200px !important;
+    }
 }
 
 @media screen and (min-width: 768px) {
@@ -1892,4 +1896,58 @@ table.popup-table th {
     100% {
         background-position: 650px 0;
     }
+}
+
+.fcw-fonts-manager {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+@media screen and (min-width: 992px) {
+    .fcw-fonts-manager {
+        flex-direction: row;
+    }
+}
+
+.fcw-fonts-form,
+.fcw-fonts-list {
+    flex: 1;
+}
+
+.fcw-fonts-form form {
+    background-color: #f8f9fa;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+}
+
+.fcw-fonts-list .list-group-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+@media screen and (min-width: 992px) {
+    .fcw-fonts-list .list-group-item {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+}
+
+.fcw-font-item__info {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.fcw-font-item__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+#fcw-fonts-empty {
+    margin-bottom: 0;
 }
