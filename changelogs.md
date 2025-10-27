@@ -1,3 +1,7 @@
+Versão 5.3.1 (26/10/2025)
+* Correção de bugs
+  - Seção Sobre não é exibida
+
 Versão 5.3.0 (26/10/2025)
 * Correção de bugs
   - Ausência de campos nativos no editor do pedido

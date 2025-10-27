@@ -1915,7 +1915,7 @@ table.popup-table th {
     flex: 1;
 }
 
-.fcw-fonts-form form {
+.fcw-fonts-form__body {
     background-color: #f8f9fa;
     border-radius: 0.5rem;
     padding: 1.5rem;
