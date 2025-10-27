@@ -273,7 +273,7 @@ defined('ABSPATH') || exit; ?>
 				<div class="fcw-fonts-form">
 					<h3 class="fw-semibold mb-3" id="fcw-font-form-title"><?php esc_html_e( 'Adicionar nova fonte', 'flexify-checkout-for-woocommerce' ) ?></h3>
 
-					<form id="fcw-fonts-form" enctype="multipart/form-data">
+					<div id="fcw-fonts-form" class="fcw-fonts-form__body">
 						<input type="hidden" name="font_id" id="fcw-font-id" value="" />
 						<input type="hidden" name="is_new" id="fcw-font-is-new" value="yes" />
 
@@ -326,8 +326,8 @@ defined('ABSPATH') || exit; ?>
 							</div>
 
 							<input type="hidden" name="existing_files[woff2]" id="fcw-existing-woff2" value="" />
-							<input type="hidden" name="existing_files[woff]"  id="fcw-existing-woff"  value="" />
-							<input type="hidden" name="existing_files[ttf]"   id="fcw-existing-ttf"   value="" />
+							<input type="hidden" name="existing_files[woff]" id="fcw-existing-woff" value="" />
+							<input type="hidden" name="existing_files[ttf]" id="fcw-existing-ttf" value="" />
 
 							<span class="flexify-checkout-description d-block"><?php esc_html_e( 'Os arquivos enviados serão armazenados em /wp-content/uploads/flexify-checkout/fonts/.', 'flexify-checkout-for-woocommerce' ) ?></span>
 						</div>
@@ -336,7 +336,7 @@ defined('ABSPATH') || exit; ?>
 							<button type="button" class="btn btn-outline-secondary d-none" id="fcw-cancel-font-edit"><?php esc_html_e( 'Cancelar edição', 'flexify-checkout-for-woocommerce' ) ?></button>
 							<button type="submit" class="btn btn-primary" id="fcw-save-font"><?php esc_html_e( 'Salvar fonte', 'flexify-checkout-for-woocommerce' ) ?></button>
 						</div>
-					</form>
+					</div>
 				</div>
 
 				<div class="fcw-fonts-list">

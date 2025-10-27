@@ -1675,8 +1675,13 @@
             resetForm: function() {
                 const $form = $('#fcw-fonts-form');
 
-                if ($form.length && $form[0].reset) {
-                    $form[0].reset();
+                if ( $form.length ) {
+                    $('#fcw-font-name').val('');
+                    $('#fcw-font-url').val('');
+                    $('#fcw-font-weight').val('400');
+                    $('#fcw-font-style').val('normal');
+                    $('#fcw-font-type').val('google');
+                    $form.find('input[type="file"]').val('');
                 }
 
                 $('#fcw-font-id').val('');
@@ -1845,7 +1850,31 @@
                         $('#fcw-font-id').val(fontId);
                     }
 
-                    const fd = new FormData($form[0]);
+                    const fd = new FormData();
+
+                    if ( $form.length ) {
+                        $form.find('input, select, textarea').each(function() {
+                            const $field = $(this);
+                            const name = $field.attr('name');
+
+                            if ( ! name ) {
+                                return;
+                            }
+
+                            const type = ($field.attr('type') || '').toLowerCase();
+
+                            if ( type === 'file' ) {
+                                return;
+                            }
+
+                            if ( ( type === 'checkbox' || type === 'radio' ) && ! $field.is(':checked') ) {
+                                return;
+                            }
+
+                            fd.append(name, $field.val());
+                        });
+                    }
+                    
                     fd.append( 'action', 'flexify_checkout_save_font' );
                     fd.append( 'nonce', ( params.nonces && params.nonces.fonts ) ? params.nonces.fonts : '' );
                     fd.set( 'font_name', fontNameRaw );
