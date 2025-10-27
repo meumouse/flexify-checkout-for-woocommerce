@@ -233,53 +233,54 @@ class Fonts_Manager {
 	 * @return string|WP_Error URL of the stored file or WP_Error on failure.
 	 */
 	public static function handle_font_upload( $file, $font_id, $weight, $style, $format ) {
-		if ( empty( $file['name'] ) ) {
-			return new WP_Error( 'font_upload_missing', __( 'Nenhum arquivo de fonte foi enviado.', 'flexify-checkout-for-woocommerce' ) );
-		}
+		$ext = strtolower( (string) $format );
+		$safe = sanitize_file_name( "{$font_id}-{$weight}-{$style}.{$ext}" );
 
-		if ( ! isset( $file['error'] ) || UPLOAD_ERR_OK !== (int) $file['error'] ) {
-			return new WP_Error( 'font_upload_error', __( 'Não foi possível enviar o arquivo da fonte.', 'flexify-checkout-for-woocommerce' ) );
-		}
+		require_once ABSPATH . 'wp-admin/includes/file.php';
+		require_once ABSPATH . 'wp-admin/includes/media.php';
+		require_once ABSPATH . 'wp-admin/includes/image.php';
 
-		$allowed = self::allowed_mimes();
+		$mimes = array(
+			'woff2' => 'font/woff2',
+			'woff' => 'font/woff',
+			'ttf' => 'font/ttf',
+			'otf' => 'font/otf',
+		);
 
-		if ( ! isset( $allowed[ $format ] ) ) {
-			return new WP_Error( 'font_upload_invalid_format', __( 'Formato de fonte não suportado.', 'flexify-checkout-for-woocommerce' ) );
-		}
-
-		$checked = wp_check_filetype_and_ext( $file['tmp_name'], $file['name'], $allowed );
-
-		if ( empty( $checked['ext'] ) || $format !== $checked['ext'] ) {
-			return new WP_Error( 'font_upload_invalid_format', __( 'Formato de fonte não suportado.', 'flexify-checkout-for-woocommerce' ) );
-		}
-
-		$upload_dir = self::ensure_upload_dir();
-
-		if ( is_wp_error( $upload_dir ) ) {
-			return $upload_dir;
-		}
-
-		$upload = wp_handle_upload( $file, array(
+		$overrides = array(
 			'test_form' => false,
-			'mimes' => $allowed,
-		));
+			'mimes' => $mimes,
+			'test_type' => false,
+			'unique_filename_callback' => function( $dir, $name, $ext2 ) use ( $safe ) {
+				return $safe;
+			},
+		);
 
-		if ( isset( $upload['error'] ) ) {
-			return new WP_Error( 'font_upload_error', $upload['error'] );
+		$uploaded = wp_handle_upload( $file, $overrides );
+
+		if ( isset( $uploaded['error'] ) ) {
+			return new \WP_Error( 'upload_error', $uploaded['error'] );
 		}
 
-		$filename = sanitize_file_name( $font_id . '-' . $weight . '-' . $style . '.' . $format );
-		$destination = trailingslashit( $upload_dir['path'] ) . $filename;
+		$uploads = wp_upload_dir();
+		$base_dir = trailingslashit( $uploads['basedir'] ) . 'flexify-checkout/fonts/';
+		$base_url = trailingslashit( $uploads['baseurl'] ) . 'flexify-checkout/fonts/';
 
-		if ( ! @rename( $upload['file'], $destination ) ) { // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
-			if ( isset( $upload['file'] ) ) {
-				wp_delete_file( $upload['file'] );
+		if ( ! wp_mkdir_p( $base_dir ) ) {
+			return new \WP_Error( 'mkdir_failed', __( 'Não foi possível criar o diretório de fontes.', 'flexify-checkout-for-woocommerce' ) );
+		}
+
+		$dest_path = $base_dir . $safe;
+
+		if ( ! @rename( $uploaded['file'], $dest_path ) ) {
+			if ( ! @copy( $uploaded['file'], $dest_path ) ) {
+				return new \WP_Error( 'move_failed', __( 'Falha ao mover o arquivo de fonte.', 'flexify-checkout-for-woocommerce' ) );
 			}
-
-			return new WP_Error( 'font_upload_error', __( 'Não foi possível mover o arquivo de fonte enviado.', 'flexify-checkout-for-woocommerce' ) );
+			
+			@unlink( $uploaded['file'] );
 		}
 
-		return $upload_dir['url'] . $filename;
+		return $base_url . $safe;
 	}
 
 

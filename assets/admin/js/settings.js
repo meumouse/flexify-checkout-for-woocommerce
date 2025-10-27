@@ -1540,12 +1540,6 @@
                     self.resetForm();
                 });
 
-                // submit form
-                $(document).off('submit.fcw', '#fcw-fonts-form').on('submit.fcw', '#fcw-fonts-form', function(e) {
-                    e.preventDefault();
-                    self.save();
-                });
-
                 // edit / delete (delegation)
                 $(document).off('click.fcw', '.fcw-font-edit').on('click.fcw', '.fcw-font-edit', function(e) {
                     e.preventDefault();
@@ -1591,9 +1585,13 @@
              * @returns {string}
              */
             extractFilename: function(url) {
-                if ( ! url ) return '';
+                if ( ! url ) {
+                    return '';
+                }
+
                 try {
                     const decoded = decodeURIComponent(url);
+
                     return decoded.split('/').pop();
                 } catch (err) {
                     return url.split('/').pop();
@@ -1608,7 +1606,10 @@
              * @returns {string} 
              */
             generateSlug: function(value) {
-                if ( ! value ) return '';
+                if ( ! value ) {
+                    return '';
+                }
+
                 return value
                     .toString()
                     .normalize('NFD')
@@ -1702,7 +1703,9 @@
             * @returns {void}
             */
             fillForm: function(fontId) {
-                if ( ! fontId || ! this.fonts[fontId] ) return;
+                if ( ! fontId || ! this.fonts[fontId] ) {
+                    return;
+                }
 
                 const font = this.fonts[fontId];
 
@@ -1715,9 +1718,8 @@
                 $('#fcw-font-style').val(font.font_style || 'normal');
                 $('#fcw-existing-woff2').val(font.font_files && font.font_files.woff2 ? font.font_files.woff2 : '');
                 $('#fcw-existing-woff').val(font.font_files && font.font_files.woff ? font.font_files.woff : '');
+                $('#fcw-existing-ttf').val(font.font_files && font.font_files.ttf ? font.font_files.ttf : '');
                 this.updateFileLabels(font.font_files || {});
-
-                // limpa inputs de arquivo
                 $('#fcw-fonts-form').find('input[type="file"]').val('');
 
                 this.toggleFields(font.type || 'google');
@@ -1822,65 +1824,95 @@
             },
 
             /**
-            * Save font
-            * 
-            * @since 5.3.0
-            * @returns {void}
-            */
+             * Save font
+             * 
+             * @since 5.3.0
+             * @returns {void}
+             */
             save: function() {
-                const $form = $('#fcw-fonts-form');
-                if ( ! $form.length ) return;
+                $(document).on('click', '#fcw-save-font', function(e) {
+                    e.preventDefault();
 
-                if ( $('#fcw-font-is-new').val() === 'yes' ) {
-                    const slug = this.generateSlug($('#fcw-font-name').val());
-                    $('#fcw-font-id').val(slug);
-                }
+                    const $btn = $(this);
+                    const $form = $('#fcw-fonts-form');
+                    const state = Flexify_Checkout_Admin.keepButtonState($btn);
+                    const fontNameRaw = ( $('#fcw-font-name').val() || '' ).trim();
+                    const isNew = ( $('#fcw-font-is-new').val() === 'yes' );
+                    let fontId = $('#fcw-font-id').val();
 
-                if ( ! $('#fcw-font-id').val() ) {
-                    Flexify_Checkout_Admin.displayToast('danger', 'Erro', 'Informe um nome válido para gerar o identificador da fonte.');
-                    return;
-                }
+                    if ( isNew ) {
+                        fontId = Flexify_Checkout_Admin.fontsManager.generateSlug(fontNameRaw);
+                        $('#fcw-font-id').val(fontId);
+                    }
 
-                const formData = new FormData($form[0]);
-                formData.append('action', 'flexify_checkout_save_font');
-                formData.append('nonce', params.nonces ? params.nonces.fonts : '');
-                formData.append('is_new', $('#fcw-font-is-new').val());
+                    const fd = new FormData($form[0]);
+                    fd.append( 'action', 'flexify_checkout_save_font' );
+                    fd.append( 'nonce', ( params.nonces && params.nonces.fonts ) ? params.nonces.fonts : '' );
+                    fd.set( 'font_name', fontNameRaw );
+                    fd.set( 'font_id', fontId );
 
-                const $btn = $('#fcw-save-font');
-                const state = Flexify_Checkout_Admin.keepButtonState($btn);
+                    const type = $('#fcw-font-type').val();
+                    fd.set('font_type', type);
 
-                $.ajax({
-                    url: params.ajax_url,
-                    method: 'POST',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    dataType: 'json',
-                    beforeSend: () => {
-                        $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span>');
-                    },
-                }).done((response) => {
-                    if ( response && response.status === 'success' ) {
-                        this.fonts = response.fonts || this.fonts;
-                        this.renderList();
-                        this.resetForm();
+                    if ( type !== 'upload' ) {
+                        fd.delete('font_file');
+                        fd.delete('font_weight');
+                        fd.delete('font_style');
+                        fd.set( 'font_url', ( $('#fcw-font-url').val() || '').trim() );
+                    } else {
+                        fd.set( 'font_weight', ( $('#fcw-font-weight').val() || '400').trim() );
+                        fd.set( 'font_style', ( $('#fcw-font-style').val() || 'normal').trim() );
 
-                        if ( response.current_font ) {
-                            $('#set_font_family').val(response.current_font).trigger('change');
+                        const $input = $('#fcw-font-file');
+                        const file = $input && $input[0] && $input[0].files ? $input[0].files[0] : null;
+
+                        fd.delete('font_file');
+
+                        if (file) {
+                            fd.append('font_file', file, file.name);
                         }
 
-                        Flexify_Checkout_Admin.displayToast('success', response.toast_header_title, response.toast_body_title);
-                    } else {
-                        if ( response && response.i18n?.fonts?.font_exists && params.i18n?.fonts?.font_exists ) {
-                            Flexify_Checkout_Admin.displayToast('danger', response.toast_header_title || 'Erro', params.i18n.fonts.font_exists);
-                        } else {
-                            Flexify_Checkout_Admin.displayToast('danger', response?.toast_header_title || 'Erro', response?.toast_body_title || 'Não foi possível salvar a fonte.');
+                        if (params.debug_mode === 'yes') {
+                            console.log('Arquivo selecionado:', file);
+                            for (const [k, v] of fd.entries()) {
+                            console.log('FD:', k, v instanceof File ? `${v.name} (${v.size})` : v);
+                            }
                         }
                     }
-                }).fail(() => {
-                    Flexify_Checkout_Admin.displayToast('danger', 'Erro', 'Não foi possível salvar a fonte.');
-                }).always(() => {
-                    $btn.prop('disabled', false).html(state.html).width(state.width).height(state.height);
+
+                    // send ajax request
+                    $.ajax({
+                        url: params.ajax_url,
+                        method: 'POST',
+                        data: fd,
+                        processData: false,
+                        contentType: false,
+                        beforeSend: () => {
+                            $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span>');
+                        },
+                        success: (response) => {
+                            if (response && response.status === 'success') {
+                                Flexify_Checkout_Admin.fontsManager.fonts = response.fonts || Flexify_Checkout_Admin.fontsManager.fonts;
+                                Flexify_Checkout_Admin.fontsManager.renderList();
+                                Flexify_Checkout_Admin.fontsManager.resetForm();
+
+                                if (response.current_font) {
+                                    $('#set_font_family').val(response.current_font).trigger('change');
+                                }
+
+                                Flexify_Checkout_Admin.displayToast('success', response.toast_header_title, response.toast_body_title);
+                            } else {
+                                const msg = response?.toast_body_title || (params.i18n?.fonts?.font_exists ? params.i18n.fonts.font_exists : 'Não foi possível salvar a fonte.');
+                                Flexify_Checkout_Admin.displayToast('danger', response?.toast_header_title || 'Erro', msg);
+                            }
+                        },
+                        error: () => {
+                            Flexify_Checkout_Admin.displayToast('danger', 'Erro', 'Não foi possível salvar a fonte.');
+                        },
+                        complete: () => {
+                            $btn.prop('disabled', false).html(state.html);
+                        },
+                    });
                 });
             },
 
@@ -1953,6 +1985,7 @@
                 this.renderList();
                 this.resetForm();
                 this.bindEvents();
+                this.save();
             },
         },
 

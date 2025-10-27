@@ -316,26 +316,25 @@ defined('ABSPATH') || exit; ?>
 							</div>
 
 							<div class="mb-3 mt-3">
-								<label for="fcw-font-file-woff2" class="form-label text-left"><?php esc_html_e( 'Arquivo WOFF2', 'flexify-checkout-for-woocommerce' ) ?></label>
-								<input type="file" class="form-control" id="fcw-font-file-woff2" name="font_file_woff2" accept=".woff2" />
-								<div class="form-text" id="fcw-font-file-woff2-current"></div>
-							</div>
+								<label for="fcw-font-file" class="form-label text-left">
+									<?php esc_html_e( 'Arquivo de fonte', 'flexify-checkout-for-woocommerce' ) ?>
+								</label>
 
-							<div class="mb-3">
-								<label for="fcw-font-file-woff" class="form-label text-left"><?php esc_html_e( 'Arquivo WOFF', 'flexify-checkout-for-woocommerce' ) ?></label>
-								<input type="file" class="form-control" id="fcw-font-file-woff" name="font_file_woff" accept=".woff" />
-								<div class="form-text" id="fcw-font-file-woff-current"></div>
+								<input type="file" class="form-control" id="fcw-font-file" name="font_file" accept=".woff2,.woff,.ttf" />
+								
+								<div class="form-text" id="fcw-font-file-current"></div>
 							</div>
 
 							<input type="hidden" name="existing_files[woff2]" id="fcw-existing-woff2" value="" />
-							<input type="hidden" name="existing_files[woff]" id="fcw-existing-woff" value="" />
+							<input type="hidden" name="existing_files[woff]"  id="fcw-existing-woff"  value="" />
+							<input type="hidden" name="existing_files[ttf]"   id="fcw-existing-ttf"   value="" />
 
 							<span class="flexify-checkout-description d-block"><?php esc_html_e( 'Os arquivos enviados serão armazenados em /wp-content/uploads/flexify-checkout/fonts/.', 'flexify-checkout-for-woocommerce' ) ?></span>
 						</div>
 
-						<div class="d-flex align-items-center gap-2 mt-4">
-							<button type="submit" class="btn btn-primary" id="fcw-save-font"><?php esc_html_e( 'Salvar fonte', 'flexify-checkout-for-woocommerce' ) ?></button>
+						<div class="d-flex align-items-center justify-content-end gap-2 mt-4">
 							<button type="button" class="btn btn-outline-secondary d-none" id="fcw-cancel-font-edit"><?php esc_html_e( 'Cancelar edição', 'flexify-checkout-for-woocommerce' ) ?></button>
+							<button type="submit" class="btn btn-primary" id="fcw-save-font"><?php esc_html_e( 'Salvar fonte', 'flexify-checkout-for-woocommerce' ) ?></button>
 						</div>
 					</form>
 				</div>

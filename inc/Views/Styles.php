@@ -3,6 +3,7 @@
 namespace MeuMouse\Flexify_Checkout\Views;
 
 use MeuMouse\Flexify_Checkout\Admin\Admin_Options;
+use MeuMouse\Flexify_Checkout\Admin\Fonts_Manager;
 use MeuMouse\Flexify_Checkout\Core\Helpers;
 use MeuMouse\Flexify_Checkout\Checkout\Themes;
 
@@ -89,13 +90,40 @@ class Styles {
 		$set_placeholder_color = Admin_Options::get_setting('set_placeholder_color');
 		$border_radius = Admin_Options::get_setting('input_border_radius') . Admin_Options::get_setting('unit_input_border_radius');
 		$font = Admin_Options::get_setting('set_font_family');
+		$fonts = Fonts_Manager::get_fonts();
+		$current = isset( $fonts[ $font ] ) ? $fonts[ $font ] : array();
+		$font_name = $current['font_name'] ?? 'Inter';
+		$font_type = $current['type'] ?? ( ! empty( $current['font_url'] ) ? 'google' : 'upload' );
+		$font_files = $current['font_files'] ?? array();
+		$font_weight = $current['font_weight'] ?? '400';
+		$font_style  = $current['font_style']  ?? 'normal';
 
 		ob_start(); ?>
 
-		@import url('<?php echo esc_attr( $settings['font_family'][$font]['font_url'] ); ?>');
+		<?php if ( $font_type === 'google' && ! empty( $current['font_url'] ) ) : ?>
+			@import url('<?php echo esc_attr( $current['font_url'] ); ?>');
+		<?php elseif ( $font_type === 'upload' && ! empty( $font_files ) ) : ?>
+			<?php
+				$src = array();
+
+				if ( ! empty( $font_files['woff2'] ) ) $src[] = "url('".esc_url( $font_files['woff2'] )."') format('woff2')";
+				if ( ! empty( $font_files['woff'] ) ) $src[] = "url('".esc_url( $font_files['woff'] )."') format('woff')";
+				if ( ! empty( $font_files['ttf'] ) ) $src[] = "url('".esc_url( $font_files['ttf'] )."') format('truetype')";
+				if ( ! empty( $src ) ) :
+			?>
+
+			@font-face{
+				font-family:'<?php echo esc_attr( $font_name ); ?>';
+				src: <?php echo implode( ",\n ", $src ); ?>;
+				font-weight: <?php echo esc_attr( $font_weight ); ?>;
+				font-style:  <?php echo esc_attr( $font_style ); ?>;
+				font-display: swap;
+			}
+		<?php endif; ?>
+		<?php endif; ?>
 
 		* {
-			font-family: <?php echo esc_attr( $settings['font_family'][$font]['font_name'] ); ?>, Inter, Helvetica, Arial, sans-serif;
+			font-family: '<?php echo esc_attr( $font_name ); ?>', Inter, Helvetica, Arial, sans-serif;
 		}
 
 		:root {

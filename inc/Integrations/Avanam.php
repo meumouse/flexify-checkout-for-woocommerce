@@ -25,7 +25,7 @@ if ( defined('AVANAM_VERSION') ) {
 		 */
 		public function __construct() {
 			add_action( 'wp_enqueue_scripts', array( $this, 'remove_scripts' ), 100 );
-			add_action( 'wp_print_scripts',   array( $this, 'remove_scripts' ), 100 );
+			add_action( 'wp_print_scripts', array( $this, 'remove_scripts' ), 100 );
 
             // remove checkout hooks from template mela core plugin
 			add_action( 'wp', array( $this, 'strip_tmcore_hooks_on_checkout' ), 99 );
@@ -33,7 +33,7 @@ if ( defined('AVANAM_VERSION') ) {
             // dark mode switcher
             add_filter( 'base_dark_mode_enable', '__return_false', 99 );
 
-            remove_action( 'wp_footer', 'Base\scroll_up', 99 );
+            remove_action( 'wp_footer', 'Base\scroll_up' );
 		}
 
 

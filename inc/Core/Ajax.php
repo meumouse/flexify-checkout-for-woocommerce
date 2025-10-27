@@ -589,7 +589,7 @@ class Ajax {
 
 
 	/**
-	 * Save font configuration via AJAX.
+	 * Save font configuration via AJAX
 	 *
 	 * @since 5.3.0
 	 * @return void
@@ -657,43 +657,49 @@ class Ajax {
 			$font_data['font_url'] = $font_url;
 		} else {
 			$font_weight = isset( $_POST['font_weight'] ) ? sanitize_text_field( wp_unslash( $_POST['font_weight'] ) ) : '400';
-			$font_style = isset( $_POST['font_style'] ) ? sanitize_text_field( wp_unslash( $_POST['font_style'] ) ) : 'normal';
+			$font_style = isset( $_POST['font_style'] )  ? sanitize_text_field( wp_unslash( $_POST['font_style'] ) )  : 'normal';
 			$existing = isset( $_POST['existing_files'] ) ? (array) wp_unslash( $_POST['existing_files'] ) : array();
 
 			$font_files = array(
 				'woff2' => isset( $existing['woff2'] ) ? esc_url_raw( $existing['woff2'] ) : '',
-				'woff' => isset( $existing['woff'] ) ? esc_url_raw( $existing['woff'] ) : '',
+				'woff' => isset( $existing['woff'] )  ? esc_url_raw( $existing['woff'] )  : '',
+				'ttf' => isset( $existing['ttf'] )   ? esc_url_raw( $existing['ttf'] )   : '',
 			);
 
-			foreach ( array( 'woff2', 'woff' ) as $format ) {
-				$input_key = 'font_file_' . $format;
+			if ( ! empty( $_FILES['font_file'] ) && ! empty( $_FILES['font_file']['name'] ) ) {
+				$ext = strtolower( pathinfo( $_FILES['font_file']['name'], PATHINFO_EXTENSION ) );
+				$allowed = array( 'woff2', 'woff', 'ttf' );
 
-				if ( empty( $_FILES[ $input_key ] ) || empty( $_FILES[ $input_key ]['name'] ) ) {
-					continue;
+				if ( ! in_array( $ext, $allowed, true ) ) {
+					wp_send_json( array(
+						'status' => 'error',
+						'toast_header_title' => esc_html__( 'Erro ao salvar fonte', 'flexify-checkout-for-woocommerce' ),
+						'toast_body_title' => esc_html__( 'Extensão inválida. Use WOFF, WOFF2 ou TTF.', 'flexify-checkout-for-woocommerce' ),
+					));
 				}
 
-				$upload = Fonts_Manager::handle_font_upload( $_FILES[ $input_key ], $font_id, $font_weight, $font_style, $format );
+				$upload = Fonts_Manager::handle_font_upload( $_FILES['font_file'], $font_id, $font_weight, $font_style, $ext );
 
 				if ( is_wp_error( $upload ) ) {
 					wp_send_json( array(
 						'status' => 'error',
 						'toast_header_title' => esc_html__( 'Erro ao salvar fonte', 'flexify-checkout-for-woocommerce' ),
 						'toast_body_title' => $upload->get_error_message(),
-					));
+					) );
 				}
 
-				if ( ! empty( $font_files[ $format ] ) && $font_files[ $format ] !== $upload ) {
-					Fonts_Manager::delete_file_by_url( $font_files[ $format ] );
+				if ( ! empty( $font_files[ $ext ] ) && $font_files[ $ext ] !== $upload ) {
+					Fonts_Manager::delete_file_by_url( $font_files[ $ext ] );
 				}
 
-				$font_files[ $format ] = $upload;
+				$font_files[ $ext ] = $upload;
 			}
 
-			if ( empty( $font_files['woff2'] ) && empty( $font_files['woff'] ) ) {
+			if ( empty( $font_files['woff2'] ) && empty( $font_files['woff'] ) && empty( $font_files['ttf'] ) ) {
 				wp_send_json( array(
 					'status' => 'error',
 					'toast_header_title' => esc_html__( 'Erro ao salvar fonte', 'flexify-checkout-for-woocommerce' ),
-					'toast_body_title' => esc_html__( 'Envie ao menos um arquivo de fonte (WOFF ou WOFF2).', 'flexify-checkout-for-woocommerce' ),
+					'toast_body_title'   => esc_html__( 'Envie ao menos um arquivo de fonte (WOFF, WOFF2 ou TTF).', 'flexify-checkout-for-woocommerce' ),
 				));
 			}
 
@@ -722,7 +728,7 @@ class Ajax {
 				'fonts' => $fonts_updated,
 				'toast_header_title' => esc_html__( 'Fonte salva', 'flexify-checkout-for-woocommerce' ),
 				'toast_body_title' => esc_html__( 'As configurações da fonte foram salvas com sucesso!', 'flexify-checkout-for-woocommerce' ),
-				'current_font' => Admin_Options::get_setting( 'set_font_family' ),
+				'current_font' => Admin_Options::get_setting('set_font_family'),
 				'is_new' => $request_is_new ? 'yes' : 'no',
 			));
 		}
