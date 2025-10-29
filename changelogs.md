@@ -1,3 +1,6 @@
+Versão 5.3.2 (28/10/2025)
+* Alteração na API de consulta de atualizações
+
 Versão 5.3.1 (26/10/2025)
 * Correção de bugs
   - Seção Sobre não é exibida

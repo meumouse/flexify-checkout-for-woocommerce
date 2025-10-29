@@ -17,12 +17,12 @@ defined('ABSPATH') || exit;
  * Class to make requests to a remote server to get plugin versions and updates
  *
  * @since 1.0.0
- * @version 5.3.0
+ * @version 5.3.2
  * @package MeuMouse.com
  */
 class Updater {
 
-    public $update_checker_file = 'https://raw.githubusercontent.com/meumouse/flexify-checkout-for-woocommerce/refs/heads/main/dist/update-checker.json';
+    public $update_checker_file = 'https://packages.meumouse.com/v1/updates/flexify-checkout-for-woocommerce?path=dist&file=update-checker.json';
     public $plugin_slug = FLEXIFY_CHECKOUT_SLUG;
     public $version = FLEXIFY_CHECKOUT_VERSION;
     public $cache_key = 'flexify_checkout_check_updates';
