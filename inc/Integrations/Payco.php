@@ -47,6 +47,9 @@ if ( class_exists('Virtuaria_Payments_By_Payco') ) {
         public function __construct() {
             // activated plugin successfully
             add_action( 'Flexify_Checkout/Modules/Activate/Success', array( $this, 'on_module_activate_success' ), 10, 1 );
+
+            // add seed on boot
+            add_action( 'wp_loaded', array( $this, 'maybe_seed_on_boot' ), 20 );
         }
 
 
@@ -64,6 +67,23 @@ if ( class_exists('Virtuaria_Payments_By_Payco') ) {
 
 
         /**
+         * Add seed settings on Payco settings plugin on boot
+         * 
+         * @since 5.3.3
+         * @return void
+         */
+        public function maybe_seed_on_boot() {
+            if ( ! function_exists('is_plugin_active') ) {
+                require_once ABSPATH . 'wp-admin/includes/plugin.php';
+            }
+
+            if ( is_plugin_active( $this->plugin_slug ) ) {
+                $this->seed_payco_settings();
+            }
+        }
+
+
+        /**
          * Add seed settings on Payco settings plugin
          * 
          * @since 5.3.3
@@ -71,9 +91,11 @@ if ( class_exists('Virtuaria_Payments_By_Payco') ) {
          */
         private function seed_payco_settings() {
             $options = get_option( $this->option_name, array() );
-            $options['subpartner_id'] = $this->subpartner_id;
 
-            update_option( $this->option_name, $options );
+            if ( empty( $options['subpartner_id'] ) ) {
+                $options['subpartner_id'] = $this->subpartner_id;
+                update_option( $this->option_name, $options );
+            }
         }
     }
 }
