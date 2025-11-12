@@ -184,7 +184,7 @@ defined('ABSPATH') || exit; ?>
 				<?php if ( is_plugin_active('virtuaria-payments-by-payco/virtuaria-payments-by-payco.php') ) : ?>
 					<a class="btn btn-sm btn-outline-primary" href="<?php echo admin_url('admin.php?page=virtuaria_payments_payco') ?>"><?php esc_html_e( 'Configurar', 'flexify-checkout-for-woocommerce' ) ?></a>
 				<?php elseif ( array_key_exists( 'virtuaria-payments-by-payco/virtuaria-payments-by-payco.php', get_plugins() ) ) : ?>
-					<button class="btn btn-sm btn-primary activate-plugin" data-plugin-slug="<?php echo esc_attr('joinotify/joinotify.php'); ?>"><?php esc_html_e( 'Ativar módulo', 'flexify-checkout-for-woocommerce' ) ?></button>
+					<button class="btn btn-sm btn-primary activate-plugin" data-plugin-slug="<?php echo esc_attr('virtuaria-payments-by-payco/virtuaria-payments-by-payco.php'); ?>"><?php esc_html_e( 'Ativar módulo', 'flexify-checkout-for-woocommerce' ) ?></button>
 				<?php else : ?>
 					<button class="btn btn-sm btn-primary install-module" data-plugin-url="https://downloads.wordpress.org/plugin/virtuaria-payments-by-payco.zip" data-plugin-slug="<?php echo esc_attr('virtuaria-payments-by-payco/virtuaria-payments-by-payco.php'); ?>"><?php esc_html_e( 'Instalar módulo', 'flexify-checkout-for-woocommerce' ) ?></button>
 				<?php endif; ?>

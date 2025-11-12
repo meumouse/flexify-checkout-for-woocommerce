@@ -76,6 +76,7 @@ class ComposerStaticInit178be007d0b6d0c39a4c2788c7b3977c
         'MeuMouse\\Flexify_Checkout\\Integrations\\Neve' => __DIR__ . '/../..' . '/inc/Integrations/Neve.php',
         'MeuMouse\\Flexify_Checkout\\Integrations\\North' => __DIR__ . '/../..' . '/inc/Integrations/North.php',
         'MeuMouse\\Flexify_Checkout\\Integrations\\Pagarme' => __DIR__ . '/../..' . '/inc/Integrations/Pagarme.php',
+        'MeuMouse\\Flexify_Checkout\\Integrations\\Payco' => __DIR__ . '/../..' . '/inc/Integrations/Payco.php',
         'MeuMouse\\Flexify_Checkout\\Integrations\\Ricky' => __DIR__ . '/../..' . '/inc/Integrations/Ricky.php',
         'MeuMouse\\Flexify_Checkout\\Integrations\\Sala' => __DIR__ . '/../..' . '/inc/Integrations/Sala.php',
         'MeuMouse\\Flexify_Checkout\\Integrations\\Salient' => __DIR__ . '/../..' . '/inc/Integrations/Salient.php',

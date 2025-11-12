@@ -32,10 +32,6 @@ class Settings_Panel {
     public function __construct() {
         // add submenu on WooCommerce
         add_action( 'admin_menu', array( $this, 'add_woo_submenu' ) );
-
-    //    $options = get_option( 'virtuaria_payments_payco_settings', array() );
-    //    $options['subpartner_id'] = '6e349681-55c1-4189-8499-637b0e47aeaa';
-    //    update_option( 'virtuaria_payments_payco_settings', $options );
     }
 
 
