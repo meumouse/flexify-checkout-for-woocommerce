@@ -11,7 +11,7 @@ defined('ABSPATH') || exit;
  * Class for handling the installation of external modules (plugins)
  * 
  * @since 3.8.0
- * @version 5.2.0
+ * @version 5.3.3
  * @package MeuMouse.com
  */
 class Modules {
@@ -66,6 +66,7 @@ class Modules {
      * Handle AJAX request to install external plugins
      * 
      * @since 3.8.0
+     * @version 5.3.3
      * @return void
      */
     public function install_modules_ajax_callback() {
@@ -94,11 +95,37 @@ class Modules {
             ob_end_clean();
 
             if ( ! is_wp_error( $installed ) && $installed ) {
+                $install_context = $this->is_plugin_installed( $plugin_slug ) ? 'upgrade' : 'install';
+
+                /**
+                 * Fired hook after a plugin is successfully installed or upgraded, before activation.
+                 *
+                 * @since 5.3.3
+                 * @param string $plugin_slug | Ex.: 'meu-plugin/meu-plugin.php'
+                 * @param array $meta | Additional data about the installation
+                 */
+                do_action( 'Flexify_Checkout/Modules/Install/Success', $plugin_slug, array(
+                    'context' => $install_context,
+                    'zip' => $plugin_zip,
+                    'request_time' => time(),
+                ));
+
                 $plugin_file = WP_PLUGIN_DIR . '/' . $plugin_slug;
                 $this->log('plugin_installation', "Tentando ativar o plugin: $plugin_slug no caminho " . $plugin_file );
                 $activate = activate_plugin( $plugin_file );
             
                 if ( ! is_wp_error( $activate ) ) {
+                    /**
+                     * Fired hook after a plugin is successfully activated.
+                     * 
+                     * @since 5.3.3
+                     * @param string $plugin_slug | Ex.: 'meu-plugin/meu-plugin.php'
+                     * @param array $meta | Additional data about the activation
+                     */
+                    do_action( 'Flexify_Checkout/Modules/Activate/Success', $plugin_slug, array(
+                        'source' => 'install_modules_ajax_callback',
+                    ));
+
                     $this->log('plugin_installation', "Plugin ativado com sucesso: $plugin_slug");
                     
                     $response = array(
@@ -107,6 +134,18 @@ class Modules {
                         'toast_body_title' => esc_html__( 'Plugin instalado e ativado com sucesso.', 'flexify-checkout-for-woocommerce' ),
                     );
                 } else {
+                    /**
+                     * Fired hook after a plugin installation succeeded but activation failed.
+                     * 
+                     * @since 5.3.3
+                     * @param string $plugin_slug | Ex.: 'meu-plugin/meu-plugin.php
+                     * @param array $meta | Additional data about the activation failure
+                     */
+                    do_action( 'Flexify_Checkout/Modules/Activate/Error', $plugin_slug, array(
+                        'source'  => 'install_modules_ajax_callback',
+                        'wp_error'=> $activate,
+                    ));
+
                     $this->log('plugin_installation', "Erro na ativação do plugin: $plugin_slug - " . $activate->get_error_message());
                     $this->log('plugin_installation', "Detalhes do erro na ativação: " . print_r( $activate, true ) );
 
@@ -116,7 +155,32 @@ class Modules {
                         'toast_body_title' => esc_html__( 'O plugin foi instalado, mas não pôde ser ativado.', 'flexify-checkout-for-woocommerce' ),
                     );
                 }
+
+                /**
+                 * Fired hook after a plugin is successfully installed/updated and activation attempted.
+                 * 
+                 * @since 5.3.3
+                 * @param string $plugin_slug | Ex.: 'meu-plugin/meu-plugin.php'
+                 * @param array $meta | Additional data about the installation and activation attempt
+                 */
+                do_action( 'Flexify_Checkout/Modules/After_Activate', $plugin_slug, array(
+                    'source' => 'install_modules_ajax_callback',
+                    'status' => is_wp_error( $activate ) ? 'error' : 'success',
+                ));
             } else {
+                /**
+                 * Fired hook after a plugin installation failed.
+                 * 
+                 * @since 5.3.3
+                 * @param string $plugin_slug | Ex.: 'meu-plugin/meu-plugin.php'
+                 * @param array $meta | Additional data about the installation failure
+                 */
+                do_action( 'Flexify_Checkout/Modules/Install/Error', $plugin_slug, array(
+                    'zip' => $plugin_zip,
+                    'request_time' => time(),
+                    'wp_error' => is_wp_error( $installed ) ? $installed : null,
+                ));
+    
                 $this->log('plugin_installation', "Falha na instalação/atualização do plugin: $plugin_slug");
 
                 $response = array(
@@ -202,6 +266,7 @@ class Modules {
      * Activate plugin when is installed
      * 
      * @since 3.8.0
+     * @version 5.3.3
      * @return void
      */
     public function activate_plugin_callback() {
@@ -210,12 +275,35 @@ class Modules {
             $activate = activate_plugin( $plugin_slug );
     
             if ( is_wp_error( $activate ) ) {
+                /**
+                 * Fired hook after a plugin installation succeeded but activation failed.
+                 * 
+                 * @since 5.3.3
+                 * @param string $plugin_slug | Ex.: 'meu-plugin/meu-plugin.php
+                 * @param array $meta | Additional data about the activation failure
+                 */
+                do_action( 'Flexify_Checkout/Modules/Activate/Error', $plugin_slug, array(
+                    'source'  => 'activate_plugin_callback',
+                    'wp_error'=> $activate,
+                ));
+
                 $response = array(
                     'status'  => 'error',
                     'toast_header_title' => esc_html__( 'Ops! Ocorreu um erro.', 'flexify-checkout-for-woocommerce' ),
                     'toast_body_title' => $activate->get_error_message(),
                 );
             } else {
+                /**
+                 * Fired hook after a plugin is successfully activated.
+                 * 
+                 * @since 5.3.3
+                 * @param string $plugin_slug | Ex.: 'meu-plugin/meu-plugin.php'
+                 * @param array $meta | Additional data about the activation
+                 */
+                do_action( 'Flexify_Checkout/Modules/Activate/Success', $plugin_slug, array(
+                    'source' => 'activate_plugin_callback'
+                ));
+
                 $response = array(
                     'status'  => 'success',
                     'toast_header_title' => esc_html__( 'Plugin ativado com sucesso.', 'flexify-checkout-for-woocommerce' ),

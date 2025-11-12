@@ -1,3 +1,6 @@
+Versão 5.3.3 (12/11/2025)
+* 
+
 Versão 5.3.2 (28/10/2025)
 * Alteração na API de consulta de atualizações
 
