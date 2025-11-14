@@ -93,7 +93,7 @@ class Fields {
 			add_filter( 'woocommerce_order_received_verify_known_shoppers', '__return_false' );
 		}
 
-		add_action( 'woocommerce_after_checkout_validation', array( $this, 'validate_shipping_address', 10, 2 ) );
+		add_action( 'woocommerce_after_checkout_validation', array( $this, 'validate_shipping_address' ), 10, 2 );
     }
 
 
@@ -1461,7 +1461,7 @@ class Fields {
 			if ( ! $city_matches || ! $state_matches ) {
 				$errors->add( 'invalid_postcode_region',
 					__( 'O CEP informado não pertence à cidade/UF selecionados.', 'flexify-checkout-for-woocommerce' ),
-					[ 'id' => 'shipping_postcode' ]
+					[ 'id' => 'billing_postcode' ]
 				);
 			}
 		}

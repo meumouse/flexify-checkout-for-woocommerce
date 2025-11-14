@@ -2468,10 +2468,41 @@
         },
 
         /**
+         * Initialize WordPress CodeMirror editors for custom code fields
+         *
+         * @since 5.3.3
+         */
+        codeEditor: function() {
+            const editorSettings = window.flexify_checkout_code_editor_settings || {};
+
+            $('.flexify-checkout-code-editor').each( function() {
+                const textarea = this;
+                const $textarea = $(textarea);
+                const mode = ($textarea.data('editor-mode') || 'css').toString();
+                const settings = $.extend(true, {}, editorSettings[mode] || {});
+
+                settings.codemirror = settings.codemirror || {};
+                settings.codemirror.mode = mode === 'javascript' ? 'javascript' : 'css';
+                settings.codemirror.indentUnit = settings.codemirror.indentUnit || 2;
+                settings.codemirror.tabSize = settings.codemirror.tabSize || 2;
+                settings.codemirror.lineNumbers = true;
+
+                const editorInstance = wp.codeEditor.initialize(textarea, settings);
+
+                if ( editorInstance && editorInstance.codemirror ) {
+                    editorInstance.codemirror.on('change', function(cm) {
+                        textarea.value = cm.getValue();
+                        $textarea.trigger('change');
+                    });
+                }
+            });
+        },
+
+        /**
          * Initialize all modules
          * 
          * @since 5.1.0
-         * @version 5.3.0
+         * @version 5.3.3
          */
         init: function() {
             this.initTabs();
@@ -2491,6 +2522,7 @@
             this.License.init();
             this.integrationModules.init();
             this.connectionListener.init();
+            this.codeEditor();
         },
     };
 

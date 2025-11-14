@@ -9,7 +9,7 @@ defined('ABSPATH') || exit;
  * Set default options
  * 
  * @since 5.0.0
- * @version 5.2.2
+ * @version 5.3.3
  * @package MeuMouse.com
  */
 class Default_Options {
@@ -18,7 +18,7 @@ class Default_Options {
      * Set default options
      * 
      * @since 1.0.0
-     * @version 5.2.2
+     * @version 5.3.3
      * @return array
      */
     public function set_default_data_options() {
@@ -160,6 +160,9 @@ class Default_Options {
             'countdown_background_color' => '#141D26',
             'countdown_font_color_type' => 'default',
             'countdown_font_color' => '#ffffff',
+            'validate_address_by_postcode' => 'yes',
+            'custom_css_checkout' => '',
+            'custom_js_checkout' => '',
         ));
     }
 

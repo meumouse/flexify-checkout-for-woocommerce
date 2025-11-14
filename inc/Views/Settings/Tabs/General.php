@@ -450,6 +450,18 @@ defined('ABSPATH') || exit; ?>
             </td>
         </tr>
 
+        <tr>
+            <th>
+                <?php esc_html_e( 'Ativar validação de endereço por CEP', 'flexify-checkout-for-woocommerce' ); ?>
+                <span class="flexify-checkout-description"><?php esc_html_e( 'Ative esta opção para validar se a cidade e estado do usuário confere com CEP de cobrança informado.', 'flexify-checkout-for-woocommerce' ) ?></span>
+            </th>
+            <td>
+                <div class="form-check form-switch">
+                    <input type="checkbox" class="toggle-switch" id="validate_address_by_postcode" name="validate_address_by_postcode" value="yes" <?php checked( Admin_Options::get_setting('validate_address_by_postcode') === 'yes' ) ?> />
+                </div>
+            </td>
+        </tr>
+
         <tr class="container-separator"></tr>
         
         <tr>
