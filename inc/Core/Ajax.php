@@ -16,7 +16,7 @@ defined('ABSPATH') || exit;
  * Class for handle AJAX events
  *
  * @since 1.0.0
- * @version 5.3.0
+ * @version 5.3.3
  * @package MeuMouse.com
  */
 class Ajax {
@@ -215,7 +215,7 @@ class Ajax {
 	 * Save options in AJAX
 	 * 
 	 * @since 1.0.0
-	 * @version 5.2.0
+	 * @version 5.3.3
 	 * @return void
 	 */
 	public function ajax_save_options_callback() {
@@ -250,6 +250,7 @@ class Ajax {
 				'enable_update_notices',
 				'enable_debug_mode',
 				'enable_checkout_countdown',
+				'validate_address_by_postcode'
 			);
 
 			$license_fields = array(
@@ -277,6 +278,14 @@ class Ajax {
 
 			foreach ( $license_fields as $field ) {
 				$options[ $field ] = ( isset( $form_data[ $field ] ) && License::is_valid() ) ? 'yes' : 'no';
+			}
+
+			if ( isset( $form_data['custom_css_checkout'] ) ) {
+				$form_data['custom_css_checkout'] = trim( wp_unslash( $form_data['custom_css_checkout'] ) );
+			}
+
+			if ( isset( $form_data['custom_js_checkout'] ) ) {
+				$form_data['custom_js_checkout'] = trim( wp_unslash( $form_data['custom_js_checkout'] ) );
 			}
 
 			// check if form data exists "checkout_step" name and is array

@@ -14,7 +14,7 @@ defined('ABSPATH') || exit;
  * Class for handle checkout fields
  *
  * @since 5.0.0
- * @version 5.1.0
+ * @version 5.3.3
  * @package MeuMouse.com
  */
 class Fields {
@@ -23,6 +23,7 @@ class Fields {
      * Construct function
      * 
      * @since 3.9.8
+	 * @version 5.3.3
      * @return void
      */
     public function __construct() {
@@ -91,6 +92,8 @@ class Fields {
 			add_filter( 'woocommerce_order_email_verification_required', '__return_false' );
 			add_filter( 'woocommerce_order_received_verify_known_shoppers', '__return_false' );
 		}
+
+		add_action( 'woocommerce_after_checkout_validation', array( $this, 'validate_shipping_address' ), 10, 2 );
     }
 
 
@@ -1410,5 +1413,57 @@ class Fields {
 		}
 
 		return WC()->countries->get_base_country();
+	}
+
+
+	/**
+	 * Validate shipping address
+	 * 
+	 * @since 5.3.3
+	 * @param array $data | Checkout data
+	 * @param WP_Error $errors | WP_Error object
+	 * @return void
+	 */
+	public function validate_shipping_address( $data, $errors ) {
+		if ( isset( $data['billing_country'] ) && 'BR' === $data['billing_country'] ) {
+			$postcode = preg_replace( '/\D/', '', $data['billing_postcode'] ?? '' );
+
+			if ( strlen( $postcode ) !== 8 ) {
+				return;
+			}
+
+			/**
+			 * Filter the API URL for validating shipping address
+			 * 
+			 * @since 5.3.3
+			 * @param string $api_url | API URL
+			 */
+			$api_url = apply_filters( 'Flexify_Checkout/Fields/Validate_Shipping_Address/API_URL', "https://viacep.com.br/ws/{$postcode}/json/" );
+
+			$response = wp_remote_get( $api_url, array(
+				'timeout' => 10,
+			));
+
+			if ( is_wp_error( $response ) ) {
+				return;
+			}
+
+			$body = json_decode( wp_remote_retrieve_body( $response ), true );
+
+			if ( empty( $body ) || ! empty( $body['erro'] ) ) {
+				$errors->add( 'invalid_postcode', __( 'CEP inválido.', 'flexify-checkout-for-woocommerce' ), [ 'id' => 'billing_postcode' ] );
+				return;
+			}
+
+			$city_matches = strcasecmp( remove_accents( $body['localidade'] ), remove_accents( $data['billing_city'] ?? '' ) ) === 0;
+			$state_matches = strtoupper( $body['uf'] ) === strtoupper( $data['billing_state'] ?? '' );
+
+			if ( ! $city_matches || ! $state_matches ) {
+				$errors->add( 'invalid_postcode_region',
+					__( 'O CEP informado não pertence à cidade/UF selecionados.', 'flexify-checkout-for-woocommerce' ),
+					[ 'id' => 'billing_postcode' ]
+				);
+			}
+		}
 	}
 }
