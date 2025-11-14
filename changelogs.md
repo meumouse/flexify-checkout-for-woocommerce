@@ -1,4 +1,4 @@
-Versão 5.3.3 (12/11/2025)
+Versão 5.3.3 (13/11/2025)
 * Recurso adicionado: Integração com Payments by Payco
 * Recurso adicionado: Ativar validação de endereço por CEP
 

@@ -350,7 +350,7 @@ class Assets {
 			wp_enqueue_script( 'bootstrap-datepicker-translate-pt-br', $this->assets_url . 'vendor/bootstrap-datepicker/bootstrap-datepicker.pt-BR.min.js', array('jquery'), $this->version );
 
 			// codemirror library
-			wp_enqueue_style( 'flexify-checkout-codemirror-styles', $this->assets_url . 'vendor/codemirror/lib/codemirror.css', array(), '5.65.18' );
+		/*	wp_enqueue_style( 'flexify-checkout-codemirror-styles', $this->assets_url . 'vendor/codemirror/lib/codemirror.css', array(), '5.65.18' );
 			wp_enqueue_style( 'flexify-checkout-codemirror-dracula-theme', $this->assets_url . 'vendor/codemirror/theme/dracula.css', array(), '5.65.18' );
 			wp_enqueue_script( 'flexify-checkout-codemirror-scripts', $this->assets_url . 'vendor/codemirror/lib/codemirror.js', array(),  '5.65.18' );
 			wp_enqueue_script( 'flexify-checkout-codemirror-clike-mode', $this->assets_url . 'vendor/codemirror/mode/clike/clike.js', array(),  '5.65.18' );
@@ -361,7 +361,7 @@ class Assets {
 			wp_enqueue_script( 'flexify-checkout-codemirror-activeline-addon', $this->assets_url . 'vendor/codemirror/addon/selection/active-line.js', array(),  '5.65.18' );
 			wp_enqueue_script( 'flexify-checkout-codemirror-matchtags-addon', $this->assets_url . 'vendor/codemirror/addon/edit/matchtags.js', array(),  '5.65.18' );
 			wp_enqueue_script( 'flexify-checkout-codemirror-closebrackets-addon', $this->assets_url . 'vendor/codemirror/addon/edit/closebrackets.js', array(),  '5.65.18' );
-			wp_enqueue_script( 'flexify-checkout-codemirror-autorefresh-addon', $this->assets_url . 'vendor/codemirror/addon/display/autorefresh.js', array(),  '5.65.18' );
+			wp_enqueue_script( 'flexify-checkout-codemirror-autorefresh-addon', $this->assets_url . 'vendor/codemirror/addon/display/autorefresh.js', array(),  '5.65.18' );*/
 
 			wp_enqueue_script( 'flexify-checkout-admin-scripts', $this->assets_url . 'admin/js/settings'. $this->min_file .'.js', array('jquery', 'media-upload'), $this->version );
 			wp_enqueue_style( 'flexify-checkout-admin-styles', $this->assets_url . 'admin/css/settings'. $this->min_file .'.css', array(), $this->version );

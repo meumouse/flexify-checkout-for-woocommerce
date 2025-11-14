@@ -38,6 +38,13 @@ Você pode instalar um plugin WordPress de duas maneiras: via o painel de admini
 
 ### Registro de alterações (Changelogs):
 
+Versão 5.3.3 (13/11/2025)
+* Recurso adicionado: Integração com Payments by Payco
+* Recurso adicionado: Ativar validação de endereço por CEP
+
+Versão 5.3.2 (28/10/2025)
+* Alteração na API de consulta de atualizações
+
 Versão 5.3.1 (26/10/2025)
 * Correção de bugs
   - Seção Sobre não é exibida
