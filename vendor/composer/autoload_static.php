@@ -70,6 +70,7 @@ class ComposerStaticInit178be007d0b6d0c39a4c2788c7b3977c
         'MeuMouse\\Flexify_Checkout\\Integrations\\Force_Sells' => __DIR__ . '/../..' . '/inc/Integrations/Force_Sells.php',
         'MeuMouse\\Flexify_Checkout\\Integrations\\Germanized' => __DIR__ . '/../..' . '/inc/Integrations/Germanized.php',
         'MeuMouse\\Flexify_Checkout\\Integrations\\Gift_Vouchers_Codemenschen' => __DIR__ . '/../..' . '/inc/Integrations/Gift_Vouchers_Codemenschen.php',
+        'MeuMouse\\Flexify_Checkout\\Integrations\\Glozin' => __DIR__ . '/../..' . '/inc/Integrations/Glozin.php',
         'MeuMouse\\Flexify_Checkout\\Integrations\\Kadence' => __DIR__ . '/../..' . '/inc/Integrations/Kadence.php',
         'MeuMouse\\Flexify_Checkout\\Integrations\\Kangu' => __DIR__ . '/../..' . '/inc/Integrations/Kangu.php',
         'MeuMouse\\Flexify_Checkout\\Integrations\\Martfury' => __DIR__ . '/../..' . '/inc/Integrations/Martfury.php',

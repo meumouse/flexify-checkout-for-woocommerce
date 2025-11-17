@@ -102,7 +102,7 @@ class Assets {
 		global $wp, $wp_scripts, $wp_styles;
 
 		$theme = Themes::get_theme();
-		$custom_inline_js = '';
+	//	$custom_inline_js = '';
 
 		/**
 		 * Choose which sources are allowed at checkout
@@ -145,9 +145,10 @@ class Assets {
 				wp_add_inline_style( 'flexify-checkout-theme', trim( (string) $settings['custom_css_checkout'] ) );
 			}
 
+			/*
 			if ( ! empty( $settings['custom_js_checkout'] ) ) {
 				$custom_inline_js = trim( (string) $settings['custom_js_checkout'] );
-			}
+			}*/
 		}
 
 		// set dependencies for scripts
@@ -198,9 +199,9 @@ class Assets {
 		// enqueue plugin scripts
 		wp_enqueue_script( 'flexify-checkout-for-woocommerce', $this->assets_url . 'frontend/js/main.js?version=' . $timestamp, $deps, $version, true );
 
-		if ( $custom_inline_js && ( is_flexify_checkout() || Helpers::is_thankyou_page() ) ) {
+	/*	if ( $custom_inline_js && ( is_flexify_checkout() || Helpers::is_thankyou_page() ) ) {
 			wp_add_inline_script( 'flexify-checkout-for-woocommerce', $custom_inline_js, 'after' );
-		}
+		}*/
 
 		/**
 		 * Flexify checkout script localized data
@@ -344,6 +345,7 @@ class Assets {
 		// check if is admin settings
 		if ( is_flexify_checkout_admin_settings() ) {
 			wp_enqueue_media();
+			wp_enqueue_script('jquery-ui-sortable');
 			
 			wp_enqueue_style( 'bootstrap-datepicker-styles', $this->assets_url . 'vendor/bootstrap-datepicker/bootstrap-datepicker'. $this->min_file .'.css', array(), $this->version );
 			wp_enqueue_script( 'bootstrap-datepicker', 'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js', array('jquery'), '1.9.0' );
@@ -363,7 +365,7 @@ class Assets {
 			wp_enqueue_script( 'flexify-checkout-codemirror-closebrackets-addon', $this->assets_url . 'vendor/codemirror/addon/edit/closebrackets.js', array(),  '5.65.18' );
 			wp_enqueue_script( 'flexify-checkout-codemirror-autorefresh-addon', $this->assets_url . 'vendor/codemirror/addon/display/autorefresh.js', array(),  '5.65.18' );*/
 
-			wp_enqueue_script( 'flexify-checkout-admin-scripts', $this->assets_url . 'admin/js/settings'. $this->min_file .'.js', array('jquery', 'media-upload'), $this->version );
+			wp_enqueue_script( 'flexify-checkout-admin-scripts', $this->assets_url . 'admin/js/settings'. $this->min_file .'.js', array( 'jquery', 'media-upload', 'jquery-ui-sortable' ), $this->version );
 			wp_enqueue_style( 'flexify-checkout-admin-styles', $this->assets_url . 'admin/css/settings'. $this->min_file .'.css', array(), $this->version );
 
 			if ( ! class_exists('Flexify_Dashboard') ) {
@@ -371,7 +373,7 @@ class Assets {
                 wp_enqueue_style( 'bootstrap-utilities', $this->assets_url . 'vendor/bootstrap/bootstrap-utilities.min.css', array(), '5.3.3' );
             }
 
-			$css_editor_settings = wp_enqueue_code_editor( array( 'type' => 'text/css' ) );
+		/*	$css_editor_settings = wp_enqueue_code_editor( array( 'type' => 'text/css' ) );
 			$js_editor_settings = wp_enqueue_code_editor( array( 'type' => 'text/javascript' ) );
 
 			if ( $css_editor_settings || $js_editor_settings ) {
@@ -386,7 +388,7 @@ class Assets {
 						'javascript' => $js_editor_settings ? $js_editor_settings : array(),
 					)
 				);
-			}
+			}*/
 		
 			wp_localize_script( 'flexify-checkout-admin-scripts', 'flexify_checkout_params', array(
 				'ajax_url' => admin_url( 'admin-ajax.php' ),

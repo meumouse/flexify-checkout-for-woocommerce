@@ -55,6 +55,7 @@ return array(
     'MeuMouse\\Flexify_Checkout\\Integrations\\Force_Sells' => $baseDir . '/inc/Integrations/Force_Sells.php',
     'MeuMouse\\Flexify_Checkout\\Integrations\\Germanized' => $baseDir . '/inc/Integrations/Germanized.php',
     'MeuMouse\\Flexify_Checkout\\Integrations\\Gift_Vouchers_Codemenschen' => $baseDir . '/inc/Integrations/Gift_Vouchers_Codemenschen.php',
+    'MeuMouse\\Flexify_Checkout\\Integrations\\Glozin' => $baseDir . '/inc/Integrations/Glozin.php',
     'MeuMouse\\Flexify_Checkout\\Integrations\\Kadence' => $baseDir . '/inc/Integrations/Kadence.php',
     'MeuMouse\\Flexify_Checkout\\Integrations\\Kangu' => $baseDir . '/inc/Integrations/Kangu.php',
     'MeuMouse\\Flexify_Checkout\\Integrations\\Martfury' => $baseDir . '/inc/Integrations/Martfury.php',
