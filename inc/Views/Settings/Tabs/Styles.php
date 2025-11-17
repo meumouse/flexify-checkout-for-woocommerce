@@ -251,27 +251,6 @@ defined('ABSPATH') || exit; ?>
 
 		<tr class="container-separator"></tr>
 
-	<!--
-		<tr>
-			<th>
-				<?php// esc_html_e( 'CSS personalizado', 'flexify-checkout-for-woocommerce' ); ?>
-				<span class="flexify-checkout-description"><?php// esc_html_e( 'Adicione CSS personalizado que será aplicado apenas no checkout e na página de agradecimento do Flexify.', 'flexify-checkout-for-woocommerce' ); ?></span>
-			</th>
-			<td>
-				<textarea name="custom_css_checkout" class="form-control flexify-checkout-code-editor" data-editor-mode="css" rows="10"><?php// echo esc_textarea( Admin_Options::get_setting('custom_css_checkout') ); ?></textarea>
-			</td>
-		</tr>
-
-		<tr>
-			<th>
-				<?php// esc_html_e( 'JavaScript personalizado', 'flexify-checkout-for-woocommerce' ); ?>
-				<span class="flexify-checkout-description"><?php// esc_html_e( 'Insira scripts JavaScript que serão executados apenas no checkout e na página de agradecimento do Flexify.', 'flexify-checkout-for-woocommerce' ); ?></span>
-			</th>
-			<td>
-				<textarea name="custom_js_checkout" class="form-control flexify-checkout-code-editor" data-editor-mode="javascript" rows="10"><?php// echo esc_textarea( Admin_Options::get_setting('custom_js_checkout') ); ?></textarea>
-			</td>
-		</tr>-->
-
 		<?php
 		/**
 		 * Hook for display custom design options

@@ -26,7 +26,7 @@ if ( class_exists('\Glozin\WooCommerce\Checkout') ) {
          * @return void
          */
         public function __construct() {
-            add_action( 'init', array( $this, 'remove_actions' ), 99 );
+            add_action( 'wp', array( $this, 'remove_actions' ) );
         }
 
 

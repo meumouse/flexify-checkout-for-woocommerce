@@ -38,6 +38,9 @@ Você pode instalar um plugin WordPress de duas maneiras: via o painel de admini
 
 ### Registro de alterações (Changelogs):
 
+Versão 5.3.4 (17/11/2025)
+* Compatibilidade com tema Glozin
+
 Versão 5.3.3 (13/11/2025)
 * Recurso adicionado: Integração com Payments by Payco
 * Recurso adicionado: Ativar validação de endereço por CEP
