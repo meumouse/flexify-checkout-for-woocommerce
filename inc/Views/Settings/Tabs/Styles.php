@@ -125,7 +125,7 @@ defined('ABSPATH') || exit; ?>
 		<tr>
 			<th>
 				<?php esc_html_e( 'Cor primária', 'flexify-checkout-for-woocommerce' ) ?>
-				<span class="flexify-checkout-description"><?php esc_html_e( 'A cor primária define a cor dos elementos que terão ações ou informações na página de finalização de compras.' ) ?></span>
+				<span class="flexify-checkout-description"><?php esc_html_e( 'A cor primária define a cor dos elementos que terão ações ou informações na página de finalização de compras.', 'flexify-checkout-for-woocommerce' ) ?></span>
 			</th>
 
 			<td>
@@ -144,7 +144,7 @@ defined('ABSPATH') || exit; ?>
 		<tr>
 			<th>
 				<?php esc_html_e( 'Cor secundára', 'flexify-checkout-for-woocommerce' ) ?>
-				<span class="flexify-checkout-description"><?php esc_html_e( 'A cor secundária define a cor dos elementos que terão ações ou informações na página de finalização de compras.' ) ?></span>
+				<span class="flexify-checkout-description"><?php esc_html_e( 'A cor secundária define a cor dos elementos que terão ações ou informações na página de finalização de compras.', 'flexify-checkout-for-woocommerce' ) ?></span>
 			</th>
 
 			<td>
@@ -163,7 +163,7 @@ defined('ABSPATH') || exit; ?>
 		<tr>
 			<th>
 				<?php esc_html_e( 'Cor do título dos campos', 'flexify-checkout-for-woocommerce' ) ?>
-				<span class="flexify-checkout-description"><?php esc_html_e( 'Informe a cor do título dos campos da finalização de compras.' ) ?></span>
+				<span class="flexify-checkout-description"><?php esc_html_e( 'Informe a cor do título dos campos da finalização de compras.', 'flexify-checkout-for-woocommerce' ) ?></span>
 			</th>
 
 			<td>
@@ -182,7 +182,7 @@ defined('ABSPATH') || exit; ?>
 		<tr>
 			<th>
 				<?php esc_html_e( 'Raio da borda dos elementos', 'flexify-checkout-for-woocommerce' ) ?>
-				<span class="flexify-checkout-description"><?php esc_html_e( 'Define o raio da borda dos campos, botões e elementos da finalização de compra.' ) ?></span>
+				<span class="flexify-checkout-description"><?php esc_html_e( 'Define o raio da borda dos campos, botões e elementos da finalização de compra.', 'flexify-checkout-for-woocommerce' ) ?></span>
 			</th>
 
 			<td>
@@ -233,7 +233,7 @@ defined('ABSPATH') || exit; ?>
 		<tr>
 			<th>
 				<?php esc_html_e( 'Tamanho do h2', 'flexify-checkout-for-woocommerce' ) ?>
-				<span class="flexify-checkout-description"><?php esc_html_e( 'Define o tamanho da fonte para tags h2 de subtítulos (Heading 2).' ) ?></span>
+				<span class="flexify-checkout-description"><?php esc_html_e( 'Define o tamanho da fonte para tags h2 de subtítulos (Heading 2).', 'flexify-checkout-for-woocommerce' ) ?></span>
 			</th>
 
 			<td>

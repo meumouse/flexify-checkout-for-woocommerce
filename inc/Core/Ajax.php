@@ -171,11 +171,11 @@ class Ajax {
 			$validation_error = apply_filters( 'woocommerce_process_login_errors', $validation_error, $credentials['user_login'], $credentials['user_password'] );
 
 			if ( $validation_error->get_error_code() ) {
-				throw new \Exception( '<strong>' . __( 'Erro:', 'woocommerce' ) . '</strong> ' . $validation_error->get_error_message() );
+				throw new \Exception( '<strong>' . __( 'Erro:', 'flexify-checkout-for-woocommerce' ) . '</strong> ' . $validation_error->get_error_message() );
 			}
 
 			if ( empty( $credentials['user_login'] ) ) {
-				throw new \Exception( '<strong>' . __( 'Erro:', 'woocommerce' ) . '</strong> ' . __( 'Usuário é obrigatório.', 'woocommerce' ) );
+				throw new \Exception( '<strong>' . __( 'Erro:', 'flexify-checkout-for-woocommerce' ) . '</strong> ' . __( 'Usuário é obrigatório.', 'flexify-checkout-for-woocommerce' ) );
 			}
 
 			// On multisite, ensure user exists on current site, if not add them before allowing login.

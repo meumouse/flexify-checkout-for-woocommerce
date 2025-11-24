@@ -40,13 +40,13 @@ $auto_open_class = filter_input( INPUT_POST, 'login' ) ? 'woocommerce-form-login
 		<?php echo ! empty( $message ) ? wp_kses_post( wpautop( wptexturize( $message ) ) ) : ''; ?>
 
 		<p class="form-row form-row-first">
-			<label for="username"><?php esc_html_e( 'Nome de usuário ou email', 'woocommerce' ); ?>&nbsp;<span class="required">*</span></label>
+			<label for="username"><?php esc_html_e( 'Nome de usuário ou email', 'flexify-checkout-for-woocommerce' ); ?>&nbsp;<span class="required">*</span></label>
 			<input type="text" class="input-text" name="username" id="username" autocomplete="username" />
 		</p>
 
 		<div class="user-password-login">
 			<p class="form-row form-row-last">
-				<label for="password"><?php esc_html_e( 'Senha', 'woocommerce' ); ?>&nbsp;<span class="required">*</span></label>
+				<label for="password"><?php esc_html_e( 'Senha', 'flexify-checkout-for-woocommerce' ); ?>&nbsp;<span class="required">*</span></label>
 				<input class="input-text flexify-login-password" type="password" name="password" id="password" autocomplete="current-password" />
 			</p>
 
@@ -68,17 +68,17 @@ $auto_open_class = filter_input( INPUT_POST, 'login' ) ? 'woocommerce-form-login
 
 		<p class="form-row">
 			<label class="woocommerce-form__label woocommerce-form__label-for-checkbox woocommerce-form-login__rememberme">
-				<input class="woocommerce-form__input woocommerce-form__input-checkbox" name="rememberme" type="checkbox" id="rememberme" value="forever" /> <span><?php esc_html_e( 'Lembrar de mim', 'woocommerce' ); ?></span>
+				<input class="woocommerce-form__input woocommerce-form__input-checkbox" name="rememberme" type="checkbox" id="rememberme" value="forever" /> <span><?php esc_html_e( 'Lembrar de mim', 'flexify-checkout-for-woocommerce' ); ?></span>
 			</label>
 
 			<?php wp_nonce_field( 'woocommerce-login', 'woocommerce-login-nonce' ); ?>
 			
 			<input type="hidden" name="redirect" value="<?php echo esc_url( wc_get_checkout_url() ); ?>" />
-			<button type="submit" class="flexify-button woocommerce-button button woocommerce-form-login__submit" name="login" value="<?php esc_attr_e( 'Entrar', 'woocommerce' ); ?>"><?php esc_html_e( 'Entrar', 'woocommerce' ); ?></button>
+			<button type="submit" class="flexify-button woocommerce-button button woocommerce-form-login__submit" name="login" value="<?php esc_attr_e( 'Entrar', 'flexify-checkout-for-woocommerce' ); ?>"><?php esc_html_e( 'Entrar', 'flexify-checkout-for-woocommerce' ); ?></button>
 		</p>
 
 		<p class="lost_password">
-			<a href="<?php echo esc_url( wp_lostpassword_url() ); ?>"><?php esc_html_e( 'Esqueceu sua senha?', 'woocommerce' ); ?></a>
+			<a href="<?php echo esc_url( wp_lostpassword_url() ); ?>"><?php esc_html_e( 'Esqueceu sua senha?', 'flexify-checkout-for-woocommerce' ); ?></a>
 		</p>
 
 		<?php

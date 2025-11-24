@@ -292,7 +292,7 @@ class Assets {
 			'remove_coupon_nonce' => wp_create_nonce('remove-coupon'),
 			'checkout_url' => \WC_AJAX::get_endpoint('checkout'),
 			'is_checkout' => is_checkout() && empty( $wp->query_vars['order-pay'] ) && ! isset( $wp->query_vars['order-received'] ) ? 1 : 0,
-			'i18n_checkout_error' => esc_attr__( 'Erro ao processar a finalização da compra. Por favor, tente novamente.', 'woocommerce' ),
+			'i18n_checkout_error' => esc_attr__( 'Erro ao processar a finalização da compra. Por favor, tente novamente.', 'flexify-checkout-for-woocommerce' ),
 		), 'wc-checkout', );
 
 		$params = array_merge( $params, $wc_params );

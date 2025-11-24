@@ -250,7 +250,7 @@ defined('ABSPATH') || exit; ?>
                                     <tr>
                                         <th class="w-50">
                                             <?php esc_html_e( 'Cor de fundo da contagem regressiva', 'flexify-checkout-for-woocommerce' ) ?>
-                                            <span class="flexify-checkout-description"><?php esc_html_e( 'Informe a cor de fundo da barra de contagem regressiva.' ) ?></span>
+                                            <span class="flexify-checkout-description"><?php esc_html_e( 'Informe a cor de fundo da barra de contagem regressiva.', 'flexify-checkout-for-woocommerce' ) ?></span>
                                         </th>
 
                                         <td class="w-50">
@@ -274,7 +274,7 @@ defined('ABSPATH') || exit; ?>
                                     <tr>
                                         <th class="w-50">
                                             <?php esc_html_e( 'Cor do texto da contagem regressiva', 'flexify-checkout-for-woocommerce' ) ?>
-                                            <span class="flexify-checkout-description"><?php esc_html_e( 'Informe a cor do texto da barra de contagem regressiva.' ) ?></span>
+                                            <span class="flexify-checkout-description"><?php esc_html_e( 'Informe a cor do texto da barra de contagem regressiva.', 'flexify-checkout-for-woocommerce' ) ?></span>
                                         </th>
 
                                         <td class="w-50">
