@@ -1,3 +1,7 @@
+Versão 5.4.0 (24/11/2025)
+* Recurso adicionado: CSS personalizado
+* Recurso adicionado: JS personalizado
+
 Versão 5.3.4 (17/11/2025)
 * Compatibilidade com tema Glozin
 

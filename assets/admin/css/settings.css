@@ -1951,3 +1951,43 @@ table.popup-table th {
 #fcw-fonts-empty {
     margin-bottom: 0;
 }
+
+.CodeMirror:not(.preview) {
+    border-radius: 0.5rem 0.5rem 0 0;
+}
+
+.CodeMirror.preview {
+    border-radius: 0.5rem;
+    width: calc(100% - 1rem) !important;
+    max-width: 900px;
+    float: left;
+    margin-top: 1rem;
+}
+
+.CodeMirror pre.CodeMirror-line,
+.CodeMirror pre.CodeMirror-line-like {
+    padding: 0 10px;
+}
+
+.fcw-resize-code-area {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #E9ECEF;
+    height: 1.5rem;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    cursor: row-resize;
+    border-bottom: 1px solid #dee2e6;
+    border-left: 1px solid #dee2e6;
+    border-right: 1px solid #dee2e6;
+    margin-bottom: 1rem;
+    border-radius: 0 0 0.5rem 0.5rem;
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+}
+
+.fcw-resize-code-area:hover {
+    background-color: #CED4DA;
+}

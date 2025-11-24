@@ -249,6 +249,32 @@ defined('ABSPATH') || exit; ?>
 			</td>
 		</tr>
 
+		<tr>
+			<th>
+				<?php esc_html_e( 'CSS personalizado', 'flexify-checkout-for-woocommerce' ); ?>
+				<span class="flexify-checkout-description">
+					<?php esc_html_e( 'Adicione CSS customizado que será aplicado no checkout.', 'flexify-checkout-for-woocommerce' ); ?>
+				</span>
+			</th>
+
+			<td class="w-50">
+				<textarea id="flexify_custom_css_editor" name="custom_css_checkout" class="flexify-checkout-code-editor" rows="12" editor-mode="css"><?php echo esc_textarea( Admin_Options::get_setting('custom_css_checkout') ); ?></textarea>
+			</td>
+		</tr>
+
+		<tr>
+			<th>
+				<?php esc_html_e( 'JS personalizado', 'flexify-checkout-for-woocommerce' ); ?>
+				<span class="flexify-checkout-description">
+					<?php esc_html_e( 'Adicione JavaScript customizado que será executado no checkout.', 'flexify-checkout-for-woocommerce' ); ?>
+				</span>
+			</th>
+
+			<td class="w-50">
+				<textarea id="flexify_custom_js_editor" name="custom_js_checkout" class="flexify-checkout-code-editor" rows="12" editor-mode="javascript"><?php echo esc_textarea( Admin_Options::get_setting('custom_js_checkout') ); ?></textarea>
+			</td>
+		</tr>
+
 		<tr class="container-separator"></tr>
 
 		<?php

@@ -169,8 +169,8 @@ class Default_Options {
             'countdown_font_color_type' => 'default',
             'countdown_font_color' => '#ffffff',
             'validate_address_by_postcode' => 'yes',
-        //    'custom_css_checkout' => '',
-        //    'custom_js_checkout' => '',
+            'custom_css_checkout' => '',
+            'custom_js_checkout' => '',
         ));
     }
 

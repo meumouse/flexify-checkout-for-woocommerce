@@ -2470,31 +2470,121 @@
         /**
          * Initialize WordPress CodeMirror editors for custom code fields
          *
-         * @since 5.3.3
+         * @since 5.4.0
          */
         codeEditor: function() {
-            const editorSettings = window.flexify_checkout_code_editor_settings || {};
-
             $('.flexify-checkout-code-editor').each( function() {
-                const textarea = this;
-                const $textarea = $(textarea);
-                const mode = ($textarea.data('editor-mode') || 'css').toString();
-                const settings = $.extend(true, {}, editorSettings[mode] || {});
+                let textarea = this;
 
-                settings.codemirror = settings.codemirror || {};
-                settings.codemirror.mode = mode === 'javascript' ? 'javascript' : 'css';
-                settings.codemirror.indentUnit = settings.codemirror.indentUnit || 2;
-                settings.codemirror.tabSize = settings.codemirror.tabSize || 2;
-                settings.codemirror.lineNumbers = true;
-
-                const editorInstance = wp.codeEditor.initialize(textarea, settings);
-
-                if ( editorInstance && editorInstance.codemirror ) {
-                    editorInstance.codemirror.on('change', function(cm) {
-                        textarea.value = cm.getValue();
-                        $textarea.trigger('change');
-                    });
+                // prevent duplicate initialization
+                if ( $(textarea).hasClass('initiliazed-editor') ) {
+                    return;
                 }
+
+                // get editor mode (css/javascript/php/etc)
+                const mode = ( $(textarea).data('editor-mode') || 'css' ).toString();
+
+                // map modes to CodeMirror syntax
+                let cmMode = 'css';
+
+                switch (mode) {
+                    case 'css':
+                        cmMode = 'css';
+                        break;
+
+                    case 'javascript':
+                    case 'js':
+                        cmMode = 'javascript';
+                        break;
+
+                    case 'php':
+                        cmMode = 'application/x-httpd-php';
+                        break;
+
+                    default:
+                        cmMode = mode; // fallback
+                        break;
+                }
+
+                // initialize CodeMirror
+                const editor = CodeMirror.fromTextArea(textarea, {
+                    mode: cmMode,
+                    theme: 'dracula',
+                    lineNumbers: true,
+                    matchBrackets: true,
+                    autoCloseBrackets: true,
+                    indentUnit: 4,
+                    tabSize: 4,
+                    autoRefresh: true,
+                });
+
+                // mark initialized
+                $(textarea).addClass('initiliazed-editor');
+
+                // load existing content
+                editor.setValue(textarea.value);
+
+                // listener to keep textarea updated
+                editor.on('change', function() {
+                    let value = editor.getValue();
+
+                    // escape backslashes
+                    value = value.replace(/\\/g, '\\\\');
+
+                    textarea.value = value;
+                    $(textarea).trigger('change');
+                });
+
+                // Add resize handle
+                setTimeout(() => {
+                    let codemirror_element = $(textarea).next('.CodeMirror');
+
+                    if (!codemirror_element.length) {
+                        console.warn('CodeMirror element not found for textarea:', textarea);
+                        return;
+                    }
+
+                    let resize_handle = $(`<div class="fcw-resize-code-area"><svg class="icon-sm icon-dark opacity-75" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"></path></svg></div>`);
+
+                    codemirror_element.after(resize_handle);
+
+                    let is_resizing = false;
+                    let startY = 0;
+                    let startHeight = 0;
+
+                    resize_handle.on('mousedown', function(e) {
+                        e.preventDefault();
+                        is_resizing = true;
+                        startY = e.clientY;
+                        startHeight = codemirror_element.outerHeight();
+
+                        $(document).on('mousemove', handle_resize);
+                        $(document).on('mouseup', stop_resize);
+                    });
+
+                    function handle_resize(e) {
+                        if ( ! is_resizing ) {
+                            return;
+                        }
+
+                        let diffY = e.clientY - startY;
+                        let newHeight = startHeight + diffY;
+
+                        if ( newHeight < 100 ) {
+                            newHeight = 100;
+                        }
+
+                        codemirror_element.css('height', newHeight + 'px');
+                        codemirror_element.find('.CodeMirror-scroll').css('height', newHeight + 'px');
+                    }
+
+                    function stop_resize() {
+                        is_resizing = false;
+                        $(document).off('mousemove', handle_resize);
+                        $(document).off('mouseup', stop_resize);
+                    }
+
+                }, 300);
             });
         },
 

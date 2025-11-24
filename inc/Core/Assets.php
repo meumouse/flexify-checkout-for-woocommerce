@@ -19,7 +19,7 @@ defined('ABSPATH') || exit;
  * Register/enqueue frontend and backend scripts
  *
  * @since 1.0.0
- * @version 5.3.0
+ * @version 5.4.0
  * @package MeuMouse.com
  */
 class Assets {
@@ -102,7 +102,7 @@ class Assets {
 		global $wp, $wp_scripts, $wp_styles;
 
 		$theme = Themes::get_theme();
-	//	$custom_inline_js = '';
+		$custom_inline_js = '';
 
 		/**
 		 * Choose which sources are allowed at checkout
@@ -145,10 +145,9 @@ class Assets {
 				wp_add_inline_style( 'flexify-checkout-theme', trim( (string) $settings['custom_css_checkout'] ) );
 			}
 
-			/*
 			if ( ! empty( $settings['custom_js_checkout'] ) ) {
 				$custom_inline_js = trim( (string) $settings['custom_js_checkout'] );
-			}*/
+			}
 		}
 
 		// set dependencies for scripts
@@ -199,9 +198,9 @@ class Assets {
 		// enqueue plugin scripts
 		wp_enqueue_script( 'flexify-checkout-for-woocommerce', $this->assets_url . 'frontend/js/main.js?version=' . $timestamp, $deps, $version, true );
 
-	/*	if ( $custom_inline_js && ( is_flexify_checkout() || Helpers::is_thankyou_page() ) ) {
+		if ( $custom_inline_js && ( is_flexify_checkout() || Helpers::is_thankyou_page() ) ) {
 			wp_add_inline_script( 'flexify-checkout-for-woocommerce', $custom_inline_js, 'after' );
-		}*/
+		}
 
 		/**
 		 * Flexify checkout script localized data
@@ -338,7 +337,7 @@ class Assets {
 	 * Enqueue admin scripts in page settings only
 	 * 
 	 * @since 1.0.0
-	 * @version 5.3.3
+	 * @version 5.4.0
 	 * @return void
 	 */
 	public function admin_assets() {
@@ -352,7 +351,7 @@ class Assets {
 			wp_enqueue_script( 'bootstrap-datepicker-translate-pt-br', $this->assets_url . 'vendor/bootstrap-datepicker/bootstrap-datepicker.pt-BR.min.js', array('jquery'), $this->version );
 
 			// codemirror library
-		/*	wp_enqueue_style( 'flexify-checkout-codemirror-styles', $this->assets_url . 'vendor/codemirror/lib/codemirror.css', array(), '5.65.18' );
+			wp_enqueue_style( 'flexify-checkout-codemirror-styles', $this->assets_url . 'vendor/codemirror/lib/codemirror.css', array(), '5.65.18' );
 			wp_enqueue_style( 'flexify-checkout-codemirror-dracula-theme', $this->assets_url . 'vendor/codemirror/theme/dracula.css', array(), '5.65.18' );
 			wp_enqueue_script( 'flexify-checkout-codemirror-scripts', $this->assets_url . 'vendor/codemirror/lib/codemirror.js', array(),  '5.65.18' );
 			wp_enqueue_script( 'flexify-checkout-codemirror-clike-mode', $this->assets_url . 'vendor/codemirror/mode/clike/clike.js', array(),  '5.65.18' );
@@ -363,7 +362,7 @@ class Assets {
 			wp_enqueue_script( 'flexify-checkout-codemirror-activeline-addon', $this->assets_url . 'vendor/codemirror/addon/selection/active-line.js', array(),  '5.65.18' );
 			wp_enqueue_script( 'flexify-checkout-codemirror-matchtags-addon', $this->assets_url . 'vendor/codemirror/addon/edit/matchtags.js', array(),  '5.65.18' );
 			wp_enqueue_script( 'flexify-checkout-codemirror-closebrackets-addon', $this->assets_url . 'vendor/codemirror/addon/edit/closebrackets.js', array(),  '5.65.18' );
-			wp_enqueue_script( 'flexify-checkout-codemirror-autorefresh-addon', $this->assets_url . 'vendor/codemirror/addon/display/autorefresh.js', array(),  '5.65.18' );*/
+			wp_enqueue_script( 'flexify-checkout-codemirror-autorefresh-addon', $this->assets_url . 'vendor/codemirror/addon/display/autorefresh.js', array(),  '5.65.18' );
 
 			wp_enqueue_script( 'flexify-checkout-admin-scripts', $this->assets_url . 'admin/js/settings'. $this->min_file .'.js', array( 'jquery', 'media-upload', 'jquery-ui-sortable' ), $this->version );
 			wp_enqueue_style( 'flexify-checkout-admin-styles', $this->assets_url . 'admin/css/settings'. $this->min_file .'.css', array(), $this->version );
@@ -372,23 +371,6 @@ class Assets {
                 wp_enqueue_style( 'bootstrap-grid', $this->assets_url . 'vendor/bootstrap/bootstrap-grid.min.css', array(), '5.3.3' );
                 wp_enqueue_style( 'bootstrap-utilities', $this->assets_url . 'vendor/bootstrap/bootstrap-utilities.min.css', array(), '5.3.3' );
             }
-
-		/*	$css_editor_settings = wp_enqueue_code_editor( array( 'type' => 'text/css' ) );
-			$js_editor_settings = wp_enqueue_code_editor( array( 'type' => 'text/javascript' ) );
-
-			if ( $css_editor_settings || $js_editor_settings ) {
-				wp_enqueue_script( 'wp-theme-plugin-editor' );
-				wp_enqueue_style( 'wp-codemirror' );
-
-				wp_localize_script(
-					'flexify-checkout-admin-scripts',
-					'flexify_checkout_code_editor_settings',
-					array(
-						'css' => $css_editor_settings ? $css_editor_settings : array(),
-						'javascript' => $js_editor_settings ? $js_editor_settings : array(),
-					)
-				);
-			}*/
 		
 			wp_localize_script( 'flexify-checkout-admin-scripts', 'flexify_checkout_params', array(
 				'ajax_url' => admin_url( 'admin-ajax.php' ),
