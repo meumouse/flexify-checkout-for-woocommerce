@@ -183,6 +183,15 @@ table {
     border-collapse: collapse;
 }
 
+@media screen and (max-width: 992px) {
+    table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+        width: 100%;
+    }
+}
+
 body.woocommerce-checkout {
     margin: 0;
     padding: 0;
@@ -5220,14 +5229,28 @@ p.form-row.flexify-checkout-loading-placeholder > label {
     font-size: 1.225rem;
     font-weight: 600;
     margin: 0;
+    line-height: 1.45;
 }
 
 .flexify-checkout-woo-subscriptions-tks-message .message-content .description {
     margin: 0;
     font-size: 1.115rem;
+    line-height: 1.45;
 }
 
 .flexify-checkout-woo-subscriptions-tks-message a {
     color: #664d03 !important;
     font-weight: 600;
+}
+
+@media screen and (max-width: 767px) {
+    .flexify-checkout-woo-subscriptions-tks-message {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 1.5rem;
+    }
+
+    .flexify-checkout-woo-subscriptions-tks-message .icon {
+        margin-bottom: 1rem;
+    }
 }

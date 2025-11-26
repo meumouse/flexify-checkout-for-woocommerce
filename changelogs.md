@@ -1,6 +1,8 @@
 Versão 5.4.0 (25/11/2025)
 * Recurso adicionado: CSS personalizado
 * Recurso adicionado: JS personalizado
+* Otimizações
+  - Tabela e aviso de assinatura do WooCommerce Subscriptions na página de agradecimento
 
 Versão 5.3.4 (17/11/2025)
 * Compatibilidade com tema Glozin

@@ -93,14 +93,14 @@ if ( class_exists('WC_Subscriptions') ) {
 			if ( $subscription_count ) {
 				foreach ( $subscriptions as $subscription ) {
 					if ( ! $subscription->has_status('active') ) {
-						$thank_you_message .= '<p class="need-payment-message">Sua assinatura será ativada quando o pagamento for compensado.</p>';
+						$thank_you_message .= '<p class="need-payment-message">'. esc_html__( 'Sua assinatura será ativada quando o pagamento for compensado.', 'flexify-checkout-for-woocommerce' ) .'</p>';
 						break;
 					}
 				}
 			}
 
 			$my_account_subscriptions_url = wc_get_endpoint_url( 'subscriptions', '', wc_get_page_permalink( 'myaccount' ) );
-			$thank_you_message .= '<p class="description">Veja o status da sua assinatura na <a href="' . esc_url( $my_account_subscriptions_url ) . '">sua conta</a>.</p>';
+			$thank_you_message .= '<p class="description">'. sprintf( __( 'Veja o status da sua assinatura na <a href="%s">sua conta</a>', 'flexify-checkout-for-woocommerce' ), esc_url( $my_account_subscriptions_url ) ) .'</p>';
 			$thank_you_message .= '</div></div>';
 
 			echo $thank_you_message;
