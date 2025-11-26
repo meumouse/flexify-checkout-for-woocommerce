@@ -7,6 +7,7 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
+    'MeuMouse\\Flexify_Checkout\\API\\Direct_Checkout' => $baseDir . '/inc/API/Direct_Checkout.php',
     'MeuMouse\\Flexify_Checkout\\API\\License' => $baseDir . '/inc/API/License.php',
     'MeuMouse\\Flexify_Checkout\\API\\Updater' => $baseDir . '/inc/API/Updater.php',
     'MeuMouse\\Flexify_Checkout\\Admin\\Admin_Options' => $baseDir . '/inc/Admin/Admin_Options.php',

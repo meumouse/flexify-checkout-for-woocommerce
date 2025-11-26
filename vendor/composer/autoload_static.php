@@ -22,6 +22,7 @@ class ComposerStaticInit178be007d0b6d0c39a4c2788c7b3977c
 
     public static $classMap = array (
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
+        'MeuMouse\\Flexify_Checkout\\API\\Direct_Checkout' => __DIR__ . '/../..' . '/inc/API/Direct_Checkout.php',
         'MeuMouse\\Flexify_Checkout\\API\\License' => __DIR__ . '/../..' . '/inc/API/License.php',
         'MeuMouse\\Flexify_Checkout\\API\\Updater' => __DIR__ . '/../..' . '/inc/API/Updater.php',
         'MeuMouse\\Flexify_Checkout\\Admin\\Admin_Options' => __DIR__ . '/../..' . '/inc/Admin/Admin_Options.php',

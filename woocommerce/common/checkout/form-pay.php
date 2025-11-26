@@ -40,7 +40,9 @@ defined('ABSPATH') || exit; ?>
 							Steps::render_header( false );
 						endif; ?>
 					</div>
+					
 					<h2 class="flexify-heading flexify-heading--order-pay"><?php esc_html_e( 'Pagar pelo pedido', 'flexify-checkout-for-woocommerce' ); ?></h2>
+					
 					<div id="order_review">
 						<div id="payment">
 							<?php if ( $order->needs_payment() ) : ?>
@@ -56,6 +58,7 @@ defined('ABSPATH') || exit; ?>
 									?>
 								</ul>
 							<?php endif; ?>
+
 							<div class="form-row">
 								<input type="hidden" name="woocommerce_pay" value="1" />
 
@@ -71,8 +74,9 @@ defined('ABSPATH') || exit; ?>
 
 								<footer class="flexify-footer flexify-footer--order-pay">
 									<?php if ( Helpers::is_modern_theme() ) : ?>
-										<a class='flexify-step__back' href="<?php echo esc_url( wc_get_account_endpoint_url('orders') ); ?>"><?php esc_html_e( 'Voltar para a conta', 'flexify-checkout-for-woocommerce' ); ?></a>
+										<a class="flexify-step__back" href="<?php echo esc_url( wc_get_account_endpoint_url('orders') ); ?>"><?php esc_html_e( 'Voltar para a conta', 'flexify-checkout-for-woocommerce' ); ?></a>
 									<?php endif;
+
 									echo '<button type="submit" class="button alt" id="place_order" data-text="' . esc_attr( Helpers::get_order_pay_btn_text( $order ) ) . '" value="' . esc_html__( 'Pagar pelo pedido', 'flexify-checkout-for-woocommerce' ) . '" data-value="' . esc_attr( $order_button_text ) . '">' . wp_kses_post( $order_button_text ) . '</button>'; ?>
 								</footer>
 
@@ -90,6 +94,7 @@ defined('ABSPATH') || exit; ?>
 					</div>
 				</div>
 			</div>
+
 			<div class="flexify-common-wrap__content-right">
 				<section class="flexify-order-pay-order-review">
 					<?php Thankyou::render_product_details( $order ); ?>

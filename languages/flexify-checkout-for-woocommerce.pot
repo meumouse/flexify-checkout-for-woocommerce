@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Flexify Checkout para WooCommerce\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-17 12:19+0000\n"
+"POT-Creation-Date: 2025-11-26 02:39+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -16,7 +16,7 @@ msgstr ""
 "X-Loco-Version: 2.6.6; wp-6.4.2\n"
 "X-Domain: flexify-checkout-for-woocommerce"
 
-#: inc/Core/Assets.php:329
+#: inc/Core/Assets.php:328
 msgid "${count} resultados encontrados"
 msgstr ""
 
@@ -55,7 +55,7 @@ msgstr ""
 msgid "'%s' não é um código de país válido."
 msgstr ""
 
-#: inc/Core/Assets.php:328
+#: inc/Core/Assets.php:327
 msgid "1 resultado encontrado"
 msgstr ""
 
@@ -90,6 +90,18 @@ msgstr ""
 
 #: inc/Views/Settings/Tabs/Styles.php:119
 msgid "[shortcode id=\"101\"]"
+msgstr ""
+
+#: inc/Views/Settings/Tabs/Styles.php:128
+msgid ""
+"A cor primária define a cor dos elementos que terão ações ou informações na "
+"página de finalização de compras."
+msgstr ""
+
+#: inc/Views/Settings/Tabs/Styles.php:147
+msgid ""
+"A cor secundária define a cor dos elementos que terão ações ou informações "
+"na página de finalização de compras."
 msgstr ""
 
 #: inc/API/License.php:392
@@ -158,11 +170,11 @@ msgstr ""
 msgid "Adicionar máscaras para campos"
 msgstr ""
 
-#: inc/Core/Assets.php:424 inc/Views/Settings/Tabs/Styles.php:276
+#: inc/Core/Assets.php:406 inc/Views/Settings/Tabs/Styles.php:302
 msgid "Adicionar nova fonte"
 msgstr ""
 
-#: inc/Views/Components.php:171
+#: inc/Views/Components.php:172
 msgid "Adicionar nova opção"
 msgstr ""
 
@@ -178,6 +190,14 @@ msgstr ""
 msgid "Adicionar observações ao pedido?"
 msgstr ""
 
+#: inc/Views/Settings/Tabs/Styles.php:256
+msgid "Adicione CSS customizado que será aplicado no checkout."
+msgstr ""
+
+#: inc/Views/Settings/Tabs/Styles.php:269
+msgid "Adicione JavaScript customizado que será executado no checkout."
+msgstr ""
+
 #: inc/Views/Settings/Tabs/Styles.php:104
 msgid "Adicione seu cabeçalho personalizado informando o shortcode."
 msgstr ""
@@ -186,7 +206,7 @@ msgstr ""
 msgid "Adicione seu rodapé personalizado informando o shortcode."
 msgstr ""
 
-#: inc/Views/Components.php:218 inc/Views/Components.php:466
+#: inc/Views/Components.php:219 inc/Views/Components.php:467
 msgid ""
 "Adicione uma máscara de preenchimento para este campo, seguindo o padrão "
 "informado pela documentação. (Opcional)"
@@ -200,7 +220,7 @@ msgstr ""
 msgid "Agora todos os recursos estão ativos!"
 msgstr ""
 
-#: inc/Views/Components.php:291
+#: inc/Views/Components.php:292
 msgid "Aguarde alguns instantes"
 msgstr ""
 
@@ -208,7 +228,7 @@ msgstr ""
 msgid "Ainda não existem condições."
 msgstr ""
 
-#: inc/Core/Assets.php:419 inc/Views/Settings/Tabs/Styles.php:374
+#: inc/Core/Assets.php:401 inc/Views/Settings/Tabs/Styles.php:400
 msgid "Ainda não há fontes personalizadas cadastradas."
 msgstr ""
 
@@ -222,7 +242,7 @@ msgstr ""
 msgid "Antes da forma de pagamento"
 msgstr ""
 
-#: inc/Views/Components.php:107 inc/Views/Components.php:420
+#: inc/Views/Components.php:108 inc/Views/Components.php:421
 msgid "Ao desativar, este campo se tornará não obrigatório."
 msgstr ""
 
@@ -236,13 +256,18 @@ msgstr ""
 msgid "Apartamento, suíte, unidade etc."
 msgstr ""
 
-#: inc/Admin/Default_Options.php:288
+#: inc/Admin/Default_Options.php:296
 msgid "Apartamento, suíte, unidade, etc."
 msgstr ""
 
 #: woocommerce/dark/checkout/form-coupon.php:32
 #: woocommerce/modern/checkout/form-coupon.php:32
 msgid "Aplicar"
+msgstr ""
+
+#: woocommerce/dark/checkout/form-coupon.php:32
+#: woocommerce/modern/checkout/form-coupon.php:32
+msgid "Aplicar cupom"
 msgstr ""
 
 #: inc/Views/Settings/Tabs/General.php:549
@@ -261,11 +286,11 @@ msgstr ""
 msgid "Arquivo da animação 3"
 msgstr ""
 
-#: inc/Views/Settings/Tabs/Styles.php:322
+#: inc/Views/Settings/Tabs/Styles.php:348
 msgid "Arquivo de fonte"
 msgstr ""
 
-#: inc/Core/Assets.php:416 inc/Views/Settings/Tabs/Styles.php:357
+#: inc/Core/Assets.php:398 inc/Views/Settings/Tabs/Styles.php:383
 msgid "Arquivo enviado"
 msgstr ""
 
@@ -281,7 +306,7 @@ msgstr ""
 msgid "Arraste e solte o campo para reordenar ou mudar o campo de etapa."
 msgstr ""
 
-#: inc/Core/Assets.php:403
+#: inc/Core/Assets.php:385
 msgid "As alterações não serão salvas."
 msgstr ""
 
@@ -366,7 +391,7 @@ msgstr ""
 msgid "Ativar verificação de força da senha do usuário"
 msgstr ""
 
-#: inc/Views/Components.php:94
+#: inc/Views/Components.php:95
 msgid "Ativar/Desativar este campo"
 msgstr ""
 
@@ -575,7 +600,7 @@ msgstr ""
 msgid "Ação não permitida"
 msgstr ""
 
-#: inc/Admin/Default_Options.php:473
+#: inc/Admin/Default_Options.php:481
 msgid "Bairro"
 msgstr ""
 
@@ -583,19 +608,19 @@ msgstr ""
 msgid "Barra lateral (Padrão)"
 msgstr ""
 
-#: inc/Core/Assets.php:231
+#: inc/Core/Assets.php:230
 msgid "Bem vindo de volta!"
 msgstr ""
 
-#: inc/Views/Components.php:319
+#: inc/Views/Components.php:320
 msgid "billing_"
 msgstr ""
 
-#: inc/Core/Assets.php:408 inc/Views/Components.php:360
+#: inc/Core/Assets.php:390 inc/Views/Components.php:361
 msgid "BR"
 msgstr ""
 
-#: inc/Core/Assets.php:409 inc/Views/Components.php:365
+#: inc/Core/Assets.php:391 inc/Views/Components.php:366
 msgid "Brasil"
 msgstr ""
 
@@ -607,7 +632,7 @@ msgstr ""
 msgid "Cabeçalho personalizado"
 msgstr ""
 
-#: inc/Views/Components.php:344
+#: inc/Views/Components.php:345
 msgid "Caixa de seleção"
 msgstr ""
 
@@ -640,7 +665,7 @@ msgstr ""
 msgid "Campos e etapas"
 msgstr ""
 
-#: inc/Views/Settings/Tabs/Styles.php:338
+#: inc/Views/Settings/Tabs/Styles.php:364
 msgid "Cancelar edição"
 msgstr ""
 
@@ -652,7 +677,7 @@ msgstr ""
 msgid "Categorias específicas:"
 msgstr ""
 
-#: inc/Admin/Default_Options.php:405
+#: inc/Admin/Default_Options.php:413
 msgid "Celular"
 msgstr ""
 
@@ -660,7 +685,7 @@ msgstr ""
 msgid "Central de ajuda"
 msgstr ""
 
-#: inc/Admin/Default_Options.php:261
+#: inc/Admin/Default_Options.php:269
 msgid "CEP"
 msgstr ""
 
@@ -668,19 +693,23 @@ msgstr ""
 msgid "CEP inválido."
 msgstr ""
 
+#: woocommerce/common/cart/cart-shipping.php:65
+msgid "Change address"
+msgstr ""
+
 #: inc/Views/Settings/Tabs/Styles.php:95
 msgid "CHECKOUT"
 msgstr ""
 
-#: inc/Admin/Default_Options.php:301
+#: inc/Admin/Default_Options.php:309
 msgid "Cidade"
 msgstr ""
 
-#: inc/Views/Components.php:194 inc/Views/Components.php:445
+#: inc/Views/Components.php:195 inc/Views/Components.php:446
 msgid "Classe CSS personalizada do campo (Opcional)"
 msgstr ""
 
-#: inc/Views/Components.php:205 inc/Views/Components.php:455
+#: inc/Views/Components.php:206 inc/Views/Components.php:456
 msgid "Classe CSS personalizada do título (Opcional)"
 msgstr ""
 
@@ -692,7 +721,7 @@ msgstr ""
 msgid "Clique aqui para gerar seu arquivo de licença"
 msgstr ""
 
-#: inc/Admin/Default_Options.php:377
+#: inc/Admin/Default_Options.php:385
 msgid "CNPJ"
 msgstr ""
 
@@ -700,7 +729,7 @@ msgstr ""
 msgid "Colaborador"
 msgstr ""
 
-#: inc/Views/Settings/Tabs/Styles.php:300
+#: inc/Views/Settings/Tabs/Styles.php:326
 msgid "Cole a URL gerada pelo Google Fonts para incluir a família desejada."
 msgstr ""
 
@@ -776,7 +805,7 @@ msgstr ""
 msgid "Configurar API de preenchimento de endereço"
 msgstr ""
 
-#: inc/Views/Components.php:66
+#: inc/Views/Components.php:67
 #, php-format
 msgid "Configurar campo <strong class=\"field-name\">%s</strong>"
 msgstr ""
@@ -836,11 +865,11 @@ msgstr ""
 msgid "Cor secundára"
 msgstr ""
 
-#: inc/Core/Assets.php:225
+#: inc/Core/Assets.php:224
 msgid "Corrija todos os erros e tente novamente."
 msgstr ""
 
-#: inc/Admin/Default_Options.php:363
+#: inc/Admin/Default_Options.php:371
 msgid "CPF"
 msgstr ""
 
@@ -879,6 +908,10 @@ msgid ""
 "cliente, entre em sua conta para resgatar sua informações pessoais."
 msgstr ""
 
+#: inc/Views/Settings/Tabs/Styles.php:254
+msgid "CSS personalizado"
+msgstr ""
+
 #: woocommerce/dark/checkout/form-coupon.php:28
 #: woocommerce/modern/checkout/form-coupon.php:28
 msgid "Cupom de desconto"
@@ -900,7 +933,7 @@ msgstr ""
 msgid "Dados inválidos."
 msgstr ""
 
-#: inc/Admin/Default_Options.php:433
+#: inc/Admin/Default_Options.php:441
 msgid "Data de nascimento"
 msgstr ""
 
@@ -910,20 +943,30 @@ msgid ""
 "adicionar novas fontes personalizadas ou do Google Fonts."
 msgstr ""
 
-#: inc/Views/Components.php:121 inc/Views/Components.php:149
-#: inc/Views/Components.php:180 inc/Views/Components.php:432
+#: inc/Views/Components.php:122 inc/Views/Components.php:150
+#: inc/Views/Components.php:181 inc/Views/Components.php:433
 msgid "Define a posição deste campo na finalização de compras."
 msgstr ""
 
-#: inc/Views/Components.php:476
+#: inc/Views/Components.php:477
 msgid "Define em qual etapa da finalização de compras o campo será exibido."
 msgstr ""
 
-#: inc/Views/Components.php:137
+#: inc/Views/Settings/Tabs/Styles.php:185
+msgid ""
+"Define o raio da borda dos campos, botões e elementos da finalização de "
+"compra."
+msgstr ""
+
+#: inc/Views/Settings/Tabs/Styles.php:236
+msgid "Define o tamanho da fonte para tags h2 de subtítulos (Heading 2)."
+msgstr ""
+
+#: inc/Views/Components.php:138
 msgid "Define o título que será exibido para este campo."
 msgstr ""
 
-#: inc/Views/Components.php:120
+#: inc/Views/Components.php:121
 msgid "Definir país padrão"
 msgstr ""
 
@@ -956,7 +999,7 @@ msgid ""
 "(%2$s disponíveis). Pedimos desculpas por qualquer inconveniente causado."
 msgstr ""
 
-#: inc/Checkout/Common.php:63
+#: inc/Checkout/Common.php:63 woocommerce/common/checkout/form-pay.php:56
 msgid ""
 "Desculpe, parece que não há métodos de pagamento disponíveis para sua "
 "localização. Entre em contato conosco se precisar de assistência ou desejar "
@@ -980,7 +1023,7 @@ msgstr ""
 msgid "Digitar endereço manualmente"
 msgstr ""
 
-#: inc/Views/Components.php:186 inc/Views/Components.php:437
+#: inc/Views/Components.php:187 inc/Views/Components.php:438
 msgid "Direita"
 msgstr ""
 
@@ -1005,12 +1048,12 @@ msgid "E-mail"
 msgstr ""
 
 #: inc/Checkout/Steps.php:1014 inc/Checkout/Steps.php:1055
-#: inc/Checkout/Steps.php:1072 inc/Core/Assets.php:420
-#: inc/Views/Components.php:53 inc/Views/Settings/Tabs/Styles.php:363
+#: inc/Checkout/Steps.php:1072 inc/Core/Assets.php:402
+#: inc/Views/Components.php:54 inc/Views/Settings/Tabs/Styles.php:389
 msgid "Editar"
 msgstr ""
 
-#: inc/Core/Assets.php:425
+#: inc/Core/Assets.php:407
 msgid "Editar fonte"
 msgstr ""
 
@@ -1027,11 +1070,11 @@ msgstr ""
 msgid "Em breve"
 msgstr ""
 
-#: inc/Views/Components.php:546
+#: inc/Views/Components.php:547
 msgid "Em breve..."
 msgstr ""
 
-#: inc/Admin/Default_Options.php:235
+#: inc/Admin/Default_Options.php:243
 msgid "Empresa"
 msgstr ""
 
@@ -1039,7 +1082,7 @@ msgstr ""
 msgid "Encerrar sessão do checkout"
 msgstr ""
 
-#: inc/Admin/Default_Options.php:275
+#: inc/Admin/Default_Options.php:283
 msgid "Endereço"
 msgstr ""
 
@@ -1047,11 +1090,21 @@ msgstr ""
 msgid "Endereço de cobrança"
 msgstr ""
 
-#: inc/Admin/Default_Options.php:182
+#: inc/Admin/Default_Options.php:190
 msgid "Endereço de e-mail"
 msgstr ""
 
-#: inc/Checkout/Steps.php:626 inc/Core/Assets.php:227
+#: woocommerce/common/cart/cart-shipping.php:96
+msgid "Enter a different address"
+msgstr ""
+
+#: woocommerce/common/cart/cart-shipping.php:75
+msgid "Enter your address to view shipping options."
+msgstr ""
+
+#: inc/Checkout/Steps.php:626 inc/Core/Assets.php:226
+#: woocommerce/common/checkout/form-login.php:77
+#: woocommerce/common/checkout/form-login.php:77
 #: woocommerce/dark/checkout/form-checkout.php:44
 #: woocommerce/modern/checkout/form-checkout.php:44
 msgid "Entrar"
@@ -1094,6 +1147,10 @@ msgstr ""
 msgid "Erro ao carregar o arquivo. O arquivo não foi enviado."
 msgstr ""
 
+#: inc/Core/Assets.php:294
+msgid "Erro ao processar a finalização da compra. Por favor, tente novamente."
+msgstr ""
+
 #: inc/Core/Ajax.php:1379 inc/Core/Ajax.php:1388
 msgid "Erro ao remover"
 msgstr ""
@@ -1123,19 +1180,27 @@ msgstr ""
 msgid "Erro JSON: %s"
 msgstr ""
 
-#: inc/Core/Assets.php:411
+#: inc/Core/Ajax.php:174 inc/Core/Ajax.php:178
+msgid "Erro:"
+msgstr ""
+
+#: inc/Core/Assets.php:393
 msgid "Escolher animação"
 msgstr ""
 
-#: inc/Core/Assets.php:400
+#: inc/Core/Assets.php:382
 msgid "Escolher Imagem de cabeçalho"
 msgstr ""
 
-#: inc/Views/Components.php:185 inc/Views/Components.php:436
+#: woocommerce/common/checkout/form-login.php:81
+msgid "Esqueceu sua senha?"
+msgstr ""
+
+#: inc/Views/Components.php:186 inc/Views/Components.php:437
 msgid "Esquerda"
 msgstr ""
 
-#: inc/Admin/Default_Options.php:314
+#: inc/Admin/Default_Options.php:322
 msgid "Estado"
 msgstr ""
 
@@ -1147,11 +1212,11 @@ msgstr ""
 msgid "Este identificador é reservado para as fontes padrão."
 msgstr ""
 
-#: inc/Views/Components.php:325
+#: inc/Views/Components.php:326
 msgid "Este nome e ID do campo já está em uso. Use um outro nome."
 msgstr ""
 
-#: inc/Views/Settings/Tabs/Styles.php:285
+#: inc/Views/Settings/Tabs/Styles.php:311
 msgid "Este nome será exibido na lista de seleção de fontes."
 msgstr ""
 
@@ -1159,13 +1224,13 @@ msgstr ""
 msgid "Este recurso está disponível na versão Pro"
 msgstr ""
 
-#: inc/Views/Components.php:95
+#: inc/Views/Components.php:96
 msgid ""
 "Este é um campo nativo do WooCommerce e não pode ser removido, apenas "
 "desativado."
 msgstr ""
 
-#: inc/Views/Settings/Tabs/Styles.php:312
+#: inc/Views/Settings/Tabs/Styles.php:338
 msgid "Estilo da fonte"
 msgstr ""
 
@@ -1173,19 +1238,19 @@ msgstr ""
 msgid "Estilos"
 msgstr ""
 
-#: inc/Views/Components.php:480 inc/Views/Settings/Tabs/Fields.php:167
+#: inc/Views/Components.php:481 inc/Views/Settings/Tabs/Fields.php:167
 msgid "Etapa 1 (Contato)"
 msgstr ""
 
-#: inc/Views/Components.php:481 inc/Views/Settings/Tabs/Fields.php:168
+#: inc/Views/Components.php:482 inc/Views/Settings/Tabs/Fields.php:168
 msgid "Etapa 2 (Entrega)"
 msgstr ""
 
-#: inc/Views/Components.php:475
+#: inc/Views/Components.php:476
 msgid "Etapa do campo"
 msgstr ""
 
-#: inc/Core/Assets.php:421 inc/Views/Settings/Tabs/Styles.php:364
+#: inc/Core/Assets.php:403 inc/Views/Settings/Tabs/Styles.php:390
 msgid "Excluir"
 msgstr ""
 
@@ -1233,8 +1298,8 @@ msgstr ""
 msgid "Família de fontes"
 msgstr ""
 
-#: inc/Core/Assets.php:410 inc/Views/Components.php:67
-#: inc/Views/Settings/Tabs/Styles.php:270
+#: inc/Core/Assets.php:392 inc/Views/Components.php:68
+#: inc/Views/Settings/Tabs/Styles.php:296
 msgid "Fechar"
 msgstr ""
 
@@ -1274,11 +1339,11 @@ msgstr ""
 msgid "Fonte não encontrada."
 msgstr ""
 
-#: inc/Views/Settings/Tabs/Styles.php:366
+#: inc/Views/Settings/Tabs/Styles.php:392
 msgid "Fonte padrão"
 msgstr ""
 
-#: inc/Views/Settings/Tabs/Styles.php:292
+#: inc/Views/Settings/Tabs/Styles.php:318
 msgid "Fonte personalizada"
 msgstr ""
 
@@ -1294,7 +1359,7 @@ msgstr ""
 msgid "Fontes padrão não podem ser excluídas."
 msgstr ""
 
-#: inc/Views/Settings/Tabs/Styles.php:345
+#: inc/Views/Settings/Tabs/Styles.php:371
 msgid "Fontes registradas"
 msgstr ""
 
@@ -1350,7 +1415,7 @@ msgstr ""
 msgid "Função PHP \"file_get_content\":"
 msgstr ""
 
-#: inc/Views/Components.php:393
+#: inc/Views/Components.php:394
 msgid "GDPR"
 msgstr ""
 
@@ -1358,7 +1423,7 @@ msgstr ""
 msgid "Geral"
 msgstr ""
 
-#: inc/Views/Settings/Tabs/Styles.php:269
+#: inc/Views/Settings/Tabs/Styles.php:295
 msgid "Gerenciar biblioteca de fontes"
 msgstr ""
 
@@ -1374,8 +1439,8 @@ msgstr ""
 msgid "Gerente de loja"
 msgstr ""
 
-#: inc/Core/Assets.php:415 inc/Views/Settings/Tabs/Styles.php:291
-#: inc/Views/Settings/Tabs/Styles.php:357
+#: inc/Core/Assets.php:397 inc/Views/Settings/Tabs/Styles.php:317
+#: inc/Views/Settings/Tabs/Styles.php:383
 msgid "Google Fonts"
 msgstr ""
 
@@ -1383,7 +1448,7 @@ msgstr ""
 msgid "Google Maps"
 msgstr ""
 
-#: inc/Admin/Default_Options.php:447
+#: inc/Admin/Default_Options.php:455
 msgid "Gênero"
 msgstr ""
 
@@ -1403,7 +1468,7 @@ msgstr ""
 msgid "https://seudominio.com/contato"
 msgstr ""
 
-#: inc/Views/Components.php:387
+#: inc/Views/Components.php:388
 msgid "ID da opção"
 msgstr ""
 
@@ -1429,6 +1494,18 @@ msgstr ""
 
 #: inc/Views/Settings/Tabs/About.php:59
 msgid "Informações sobre a licença:"
+msgstr ""
+
+#: inc/Views/Settings/Tabs/General.php:253
+msgid "Informe a cor de fundo da barra de contagem regressiva."
+msgstr ""
+
+#: inc/Views/Settings/Tabs/General.php:277
+msgid "Informe a cor do texto da barra de contagem regressiva."
+msgstr ""
+
+#: inc/Views/Settings/Tabs/Styles.php:166
+msgid "Informe a cor do título dos campos da finalização de compras."
 msgstr ""
 
 #: inc/Views/Settings/Tabs/General.php:411
@@ -1459,11 +1536,11 @@ msgstr ""
 msgid "Informe a URL de incorporação do Google Fonts."
 msgstr ""
 
-#: inc/Views/Components.php:195 inc/Views/Components.php:446
+#: inc/Views/Components.php:196 inc/Views/Components.php:447
 msgid "Informe a(s) classe(s) CSS personalizadas para este campo. (Opcional)"
 msgstr ""
 
-#: inc/Views/Components.php:206 inc/Views/Components.php:456
+#: inc/Views/Components.php:207 inc/Views/Components.php:457
 msgid ""
 "Informe a(s) classe(s) CSS personalizadas para o título (label) deste campo. "
 "(Opcional)"
@@ -1491,7 +1568,7 @@ msgid ""
 "com"
 msgstr ""
 
-#: inc/Views/Components.php:314
+#: inc/Views/Components.php:315
 msgid ""
 "Informe o nome que será usado no campo em letras minúsculas, usando "
 "underline no lugar dos espaços e após o prefixo \"billing_\"."
@@ -1509,7 +1586,7 @@ msgid ""
 "compras."
 msgstr ""
 
-#: inc/Views/Components.php:410
+#: inc/Views/Components.php:411
 msgid "Informe o título do campo."
 msgstr ""
 
@@ -1521,7 +1598,7 @@ msgstr ""
 msgid "Informe um identificador e um nome válidos para a fonte."
 msgstr ""
 
-#: inc/Admin/Default_Options.php:391
+#: inc/Admin/Default_Options.php:399
 msgid "Inscrição Estadual"
 msgstr ""
 
@@ -1536,7 +1613,7 @@ msgstr ""
 msgid "Integrações"
 msgstr ""
 
-#: inc/Admin/Default_Options.php:77
+#: inc/Admin/Default_Options.php:85
 msgid "Inter"
 msgstr ""
 
@@ -1544,12 +1621,16 @@ msgstr ""
 msgid "Inválida"
 msgstr ""
 
-#: inc/Views/Settings/Tabs/Styles.php:315
+#: inc/Views/Settings/Tabs/Styles.php:341
 msgid "Itálico"
 msgstr ""
 
 #: inc/Views/Settings/Tabs/Integrations.php:108
 msgid "Joinotify"
+msgstr ""
+
+#: inc/Views/Settings/Tabs/Styles.php:267
+msgid "JS personalizado"
 msgstr ""
 
 #: inc/API/License.php:950
@@ -1560,7 +1641,7 @@ msgstr ""
 msgid "Já é um cliente?"
 msgstr ""
 
-#: inc/Views/Components.php:187 inc/Views/Components.php:438
+#: inc/Views/Components.php:188 inc/Views/Components.php:439
 msgid "Largura completa"
 msgstr ""
 
@@ -1568,8 +1649,12 @@ msgstr ""
 msgid "Largura da imagem de cabeçalho"
 msgstr ""
 
-#: inc/Admin/Default_Options.php:101
+#: inc/Admin/Default_Options.php:109
 msgid "Lato"
+msgstr ""
+
+#: woocommerce/common/checkout/form-login.php:71
+msgid "Lembrar de mim"
 msgstr ""
 
 #: inc/Core/Ajax.php:1842
@@ -1617,7 +1702,7 @@ msgstr ""
 msgid "Link personalizado"
 msgstr ""
 
-#: inc/Core/Assets.php:325
+#: inc/Core/Assets.php:324
 msgid "Lista de países"
 msgstr ""
 
@@ -1626,7 +1711,7 @@ msgstr ""
 msgid "Maior que"
 msgstr ""
 
-#: inc/Core/Assets.php:423
+#: inc/Core/Assets.php:405
 msgid "Mantendo arquivo atual"
 msgstr ""
 
@@ -1664,7 +1749,7 @@ msgstr ""
 msgid "Modo de depuração do WordPress:"
 msgstr ""
 
-#: inc/Admin/Default_Options.php:85
+#: inc/Admin/Default_Options.php:93
 msgid "Montserrat"
 msgstr ""
 
@@ -1698,7 +1783,7 @@ msgstr ""
 msgid "Mostrar resumo do pedido aberto por padrão"
 msgstr ""
 
-#: inc/Views/Components.php:217 inc/Views/Components.php:465
+#: inc/Views/Components.php:218 inc/Views/Components.php:466
 msgid "Máscara do campo (Opcional)"
 msgstr ""
 
@@ -1706,11 +1791,11 @@ msgstr ""
 msgid "Nenhum atributo encontrado."
 msgstr ""
 
-#: inc/Core/Assets.php:324
+#: inc/Core/Assets.php:323
 msgid "Nenhum país selecionado"
 msgstr ""
 
-#: inc/Core/Assets.php:327
+#: inc/Core/Assets.php:326
 msgid "Nenhum resultado encontrado"
 msgstr ""
 
@@ -1734,15 +1819,25 @@ msgstr ""
 msgid "Nenhuma produto encontrado."
 msgstr ""
 
-#: inc/Admin/Default_Options.php:195
+#. $s shipping destination.
+#: woocommerce/common/cart/cart-shipping.php:91
+#, php-format
+msgid "No shipping options were found for %s."
+msgstr ""
+
+#: inc/Admin/Default_Options.php:203
 msgid "Nome"
 msgstr ""
 
-#: inc/Views/Settings/Tabs/Styles.php:283
+#: inc/Views/Settings/Tabs/Styles.php:309
 msgid "Nome da fonte"
 msgstr ""
 
-#: inc/Views/Components.php:136
+#: woocommerce/common/checkout/form-login.php:43
+msgid "Nome de usuário ou email"
+msgstr ""
+
+#: inc/Views/Components.php:137
 msgid "Nome do campo"
 msgstr ""
 
@@ -1750,11 +1845,11 @@ msgstr ""
 msgid "Nome e extensão do novo provedor"
 msgstr ""
 
-#: inc/Views/Components.php:313
+#: inc/Views/Components.php:314
 msgid "Nome e ID do campo *"
 msgstr ""
 
-#: inc/Views/Settings/Tabs/Styles.php:314
+#: inc/Views/Settings/Tabs/Styles.php:340
 msgid "Normal"
 msgstr ""
 
@@ -1774,7 +1869,7 @@ msgstr ""
 msgid "Nunca expira"
 msgstr ""
 
-#: inc/Admin/Default_Options.php:109
+#: inc/Admin/Default_Options.php:117
 msgid "Nunito"
 msgstr ""
 
@@ -1829,11 +1924,11 @@ msgstr ""
 msgid "Não é"
 msgstr ""
 
-#: inc/Views/Components.php:339
+#: inc/Views/Components.php:340
 msgid "Número"
 msgstr ""
 
-#: inc/Admin/Default_Options.php:460
+#: inc/Admin/Default_Options.php:468
 msgid "Número da residência"
 msgstr ""
 
@@ -1861,7 +1956,7 @@ msgstr ""
 msgid "O CEP informado não pertence à cidade/UF selecionados."
 msgstr ""
 
-#: inc/Core/Assets.php:229
+#: inc/Core/Assets.php:228
 msgid "O cupom foi removido."
 msgstr ""
 
@@ -1898,15 +1993,15 @@ msgstr ""
 msgid "Obrigado, %s!"
 msgstr ""
 
-#: inc/Views/Components.php:106 inc/Views/Components.php:419
+#: inc/Views/Components.php:107 inc/Views/Components.php:420
 msgid "Obrigatoriedade do campo"
 msgstr ""
 
-#: inc/Core/Assets.php:242
+#: inc/Core/Assets.php:241
 msgid "obrigatório"
 msgstr ""
 
-#: inc/Core/Assets.php:232
+#: inc/Core/Assets.php:231
 msgid "Ocorreu um erro"
 msgstr ""
 
@@ -1951,11 +2046,11 @@ msgstr ""
 msgid "Ocultar resumo do pedido"
 msgstr ""
 
-#: inc/Admin/Default_Options.php:89
+#: inc/Admin/Default_Options.php:97
 msgid "Open Sans"
 msgstr ""
 
-#: inc/Core/Ajax.php:646 inc/Core/Assets.php:414
+#: inc/Core/Ajax.php:646 inc/Core/Assets.php:396
 msgid "Ops! Essa fonte já existe."
 msgstr ""
 
@@ -1979,7 +2074,7 @@ msgstr ""
 msgid "Ops! Não foi possível salvar a fonte."
 msgstr ""
 
-#: inc/Core/Assets.php:402
+#: inc/Core/Assets.php:384
 msgid "Ops! Não há conexão com a internet"
 msgstr ""
 
@@ -1999,15 +2094,15 @@ msgstr ""
 msgid "Opção removida"
 msgstr ""
 
-#: inc/Views/Components.php:148
+#: inc/Views/Components.php:149
 msgid "Opções "
 msgstr ""
 
-#: inc/Views/Settings/Tabs/Styles.php:289
+#: inc/Views/Settings/Tabs/Styles.php:315
 msgid "Origem da fonte"
 msgstr ""
 
-#: inc/Views/Settings/Tabs/Styles.php:334
+#: inc/Views/Settings/Tabs/Styles.php:360
 msgid ""
 "Os arquivos enviados serão armazenados em /wp-content/uploads/flexify-"
 "checkout/fonts/."
@@ -2017,7 +2112,7 @@ msgstr ""
 msgid "Otimizar para produtos digitais"
 msgstr ""
 
-#: inc/Core/Assets.php:417 inc/Views/Settings/Tabs/Styles.php:358
+#: inc/Core/Assets.php:399 inc/Views/Settings/Tabs/Styles.php:384
 msgid "Padrão"
 msgstr ""
 
@@ -2025,11 +2120,12 @@ msgstr ""
 msgid "Pagamento"
 msgstr ""
 
-#: inc/Core/Assets.php:228
+#: inc/Core/Assets.php:227
 msgid "Pagar"
 msgstr ""
 
-#: inc/Core/Helpers.php:371 woocommerce/common/checkout/form-pay.php:43
+#: inc/Core/Helpers.php:371 woocommerce/common/checkout/form-pay.php:44
+#: woocommerce/common/checkout/form-pay.php:80
 msgid "Pagar pelo pedido"
 msgstr ""
 
@@ -2037,11 +2133,11 @@ msgstr ""
 msgid "Payments by Payco"
 msgstr ""
 
-#: inc/Admin/Default_Options.php:248
+#: inc/Admin/Default_Options.php:256
 msgid "País"
 msgstr ""
 
-#: inc/Core/Assets.php:323
+#: inc/Core/Assets.php:322
 msgid "País selecionado"
 msgstr ""
 
@@ -2092,7 +2188,7 @@ msgstr ""
 msgid "Permitir remover produtos do carrinho"
 msgstr ""
 
-#: inc/Core/Assets.php:418 inc/Views/Settings/Tabs/Styles.php:358
+#: inc/Core/Assets.php:400 inc/Views/Settings/Tabs/Styles.php:384
 msgid "Personalizada"
 msgstr ""
 
@@ -2101,11 +2197,11 @@ msgid ""
 "Personalize componentes da finalização de compras com regras específicas."
 msgstr ""
 
-#: inc/Views/Settings/Tabs/Styles.php:307
+#: inc/Views/Settings/Tabs/Styles.php:333
 msgid "Peso da fonte"
 msgstr ""
 
-#: inc/Core/Assets.php:326
+#: inc/Core/Assets.php:325
 msgid "Pesquisar"
 msgstr ""
 
@@ -2113,11 +2209,11 @@ msgstr ""
 msgid "Pesquisar um endereço"
 msgstr ""
 
-#: inc/Admin/Default_Options.php:352
+#: inc/Admin/Default_Options.php:360
 msgid "Pessoa Física (CPF)"
 msgstr ""
 
-#: inc/Admin/Default_Options.php:356
+#: inc/Admin/Default_Options.php:364
 msgid "Pessoa Jurífica (CNPJ)"
 msgstr ""
 
@@ -2133,7 +2229,7 @@ msgstr ""
 msgid "Plugin instalado e ativado."
 msgstr ""
 
-#: inc/Admin/Default_Options.php:81
+#: inc/Admin/Default_Options.php:89
 msgid "Poppins"
 msgstr ""
 
@@ -2145,19 +2241,19 @@ msgstr ""
 msgid "Por favor insira um número de telefone válido"
 msgstr ""
 
-#: inc/Core/Assets.php:240
+#: inc/Core/Assets.php:239
 msgid "Por favor, insira um CNPJ válido."
 msgstr ""
 
-#: inc/Core/Assets.php:237
+#: inc/Core/Assets.php:236
 msgid "Por favor, insira um CPF válido."
 msgstr ""
 
-#: inc/Core/Assets.php:234
+#: inc/Core/Assets.php:233
 msgid "Por favor, insira um número de telefone válido."
 msgstr ""
 
-#: inc/Views/Components.php:179 inc/Views/Components.php:431
+#: inc/Views/Components.php:180 inc/Views/Components.php:432
 msgid "Posição do campo"
 msgstr ""
 
@@ -2178,7 +2274,7 @@ msgid "Preencher informações da empresa automaticamente"
 msgstr ""
 
 #. placeholder is a date.
-#: inc/Integrations/Woo_Subscriptions.php:62
+#: inc/Integrations/Woo_Subscriptions.php:68
 msgid "Primeira renovação"
 msgstr ""
 
@@ -2214,7 +2310,7 @@ msgstr ""
 msgid "Procurar um endereço"
 msgstr ""
 
-#: inc/Core/Assets.php:226
+#: inc/Core/Assets.php:225
 msgid "Procure um endereço e tente novamente."
 msgstr ""
 
@@ -2283,7 +2379,7 @@ msgstr ""
 msgid "Quantidade total do carrinho:"
 msgstr ""
 
-#: inc/Admin/Default_Options.php:113
+#: inc/Admin/Default_Options.php:121
 msgid "Quicksand"
 msgstr ""
 
@@ -2291,7 +2387,7 @@ msgstr ""
 msgid "Raio da borda dos elementos"
 msgstr ""
 
-#: inc/Admin/Default_Options.php:105
+#: inc/Admin/Default_Options.php:113
 msgid "Raleway"
 msgstr ""
 
@@ -2363,11 +2459,11 @@ msgstr ""
 msgid "Retornar à loja"
 msgstr ""
 
-#: inc/Admin/Default_Options.php:419
+#: inc/Admin/Default_Options.php:427
 msgid "RG"
 msgstr ""
 
-#: inc/Admin/Default_Options.php:97
+#: inc/Admin/Default_Options.php:105
 msgid "Roboto"
 msgstr ""
 
@@ -2375,7 +2471,7 @@ msgstr ""
 msgid "Rodapé personalizado"
 msgstr ""
 
-#: inc/Admin/Default_Options.php:93
+#: inc/Admin/Default_Options.php:101
 msgid "Rubik"
 msgstr ""
 
@@ -2383,7 +2479,7 @@ msgstr ""
 msgid "Salvar alterações"
 msgstr ""
 
-#: inc/Views/Settings/Tabs/Styles.php:339
+#: inc/Views/Settings/Tabs/Styles.php:365
 msgid "Salvar fonte"
 msgstr ""
 
@@ -2420,7 +2516,7 @@ msgstr ""
 msgid "Selecione o tipo de regra"
 msgstr ""
 
-#: inc/Views/Components.php:332
+#: inc/Views/Components.php:333
 msgid "Selecione o tipo do campo que será incluído na finalização de compras."
 msgstr ""
 
@@ -2462,11 +2558,11 @@ msgstr ""
 msgid "Selecione uma função de usuário"
 msgstr ""
 
-#: inc/Views/Components.php:343
+#: inc/Views/Components.php:344
 msgid "Seletor/Lista suspensa"
 msgstr ""
 
-#: inc/Views/Components.php:340
+#: inc/Views/Components.php:341 woocommerce/common/checkout/form-login.php:49
 msgid "Senha"
 msgstr ""
 
@@ -2480,6 +2576,20 @@ msgstr ""
 
 #: woocommerce/common/checkout/empty-cart.php:22
 msgid "Seu carrinho está vazio, visite nossa loja para comprar algum produto."
+msgstr ""
+
+#: woocommerce/common/cart/cart-shipping.php:73
+msgid "Shipping costs are calculated during checkout."
+msgstr ""
+
+#: woocommerce/common/cart/cart-shipping.php:67
+msgid "Shipping options will be updated during checkout."
+msgstr ""
+
+#. $s shipping destination.
+#: woocommerce/common/cart/cart-shipping.php:64
+#, php-format
+msgid "Shipping to %s."
 msgstr ""
 
 #: inc/Views/Settings/Tabs/About.php:184 inc/Views/Settings/Tabs/About.php:254
@@ -2500,7 +2610,7 @@ msgstr ""
 msgid "Sobre"
 msgstr ""
 
-#: inc/Admin/Default_Options.php:208
+#: inc/Admin/Default_Options.php:216
 msgid "Sobrenome"
 msgstr ""
 
@@ -2510,6 +2620,10 @@ msgstr ""
 
 #: inc/Views/Settings/Tabs/About.php:173
 msgid "Status do sistema:"
+msgstr ""
+
+#: inc/Integrations/Woo_Subscriptions.php:96
+msgid "Sua assinatura será ativada quando o pagamento for compensado."
 msgstr ""
 
 #: inc/Views/Settings/Tabs/About.php:97
@@ -2522,7 +2636,7 @@ msgid ""
 "renovação para continuar aproveitando os recursos Pro."
 msgstr ""
 
-#: inc/Admin/Default_Options.php:157
+#: inc/Admin/Default_Options.php:165
 msgid "Sua sessão termina em:"
 msgstr ""
 
@@ -2543,24 +2657,24 @@ msgstr ""
 msgid "Tamanho máximo de envio do PHP:"
 msgstr ""
 
-#: inc/Admin/Default_Options.php:221 inc/Admin/Orders.php:254
-#: inc/Views/Components.php:341
+#: inc/Admin/Default_Options.php:229 inc/Admin/Orders.php:254
+#: inc/Views/Components.php:342
 msgid "Telefone"
 msgstr ""
 
-#: inc/Core/Assets.php:399
+#: inc/Core/Assets.php:381
 msgid "Tem certeza que deseja desativar sua licença?"
 msgstr ""
 
-#: inc/Core/Assets.php:422
+#: inc/Core/Assets.php:404
 msgid "Tem certeza que deseja excluir esta fonte?"
 msgstr ""
 
-#: inc/Core/Assets.php:405
+#: inc/Core/Assets.php:387
 msgid "Tem certeza que deseja excluir esta opção?"
 msgstr ""
 
-#: inc/Core/Assets.php:404
+#: inc/Core/Assets.php:386
 msgid "Tem certeza que deseja excluir este campo?"
 msgstr ""
 
@@ -2573,7 +2687,7 @@ msgstr ""
 msgid "Termos e condições ativo por padrão"
 msgstr ""
 
-#: inc/Views/Components.php:337 inc/Views/Settings/Tabs/Styles.php:41
+#: inc/Views/Components.php:338 inc/Views/Settings/Tabs/Styles.php:41
 msgid "Texto"
 msgstr ""
 
@@ -2641,6 +2755,12 @@ msgstr ""
 msgid "Textos"
 msgstr ""
 
+#: woocommerce/common/cart/cart-shipping.php:78
+msgid ""
+"There are no shipping options available. Please ensure that your address has "
+"been entered correctly, or contact us if you need any help."
+msgstr ""
+
 #: inc/Core/Ajax.php:1653 inc/Views/Settings/Tabs/About.php:92
 #, php-format
 msgid "Tipo da licença: %s"
@@ -2654,11 +2774,11 @@ msgstr ""
 msgid "Tipo de marca no cabeçalho"
 msgstr ""
 
-#: inc/Admin/Default_Options.php:340
+#: inc/Admin/Default_Options.php:348
 msgid "Tipo de Pessoa"
 msgstr ""
 
-#: inc/Views/Components.php:331
+#: inc/Views/Components.php:332
 msgid "Tipo do campo *"
 msgstr ""
 
@@ -2707,8 +2827,8 @@ msgstr ""
 msgid "Título da contagem regressiva"
 msgstr ""
 
-#: inc/Core/Assets.php:407 inc/Views/Components.php:364
-#: inc/Views/Components.php:392
+#: inc/Core/Assets.php:389 inc/Views/Components.php:365
+#: inc/Views/Components.php:393
 msgid "Título da opção"
 msgstr ""
 
@@ -2716,7 +2836,7 @@ msgstr ""
 msgid "Título das formas de entrega"
 msgstr ""
 
-#: inc/Views/Components.php:409
+#: inc/Views/Components.php:410
 msgid "Título do campo *"
 msgstr ""
 
@@ -2726,7 +2846,7 @@ msgid ""
 "login>Deseja entrar na sua conta?</a>"
 msgstr ""
 
-#: inc/Core/Assets.php:230
+#: inc/Core/Assets.php:229
 msgid ""
 "Uma conta já está registrada com este endereço de e-mail. Gostaria de entrar "
 "nela?"
@@ -2750,15 +2870,15 @@ msgid ""
 "Uma nova versão do plugin <strong>Flexify Checkout</strong> está disponível."
 msgstr ""
 
-#: inc/Admin/Default_Options.php:117
+#: inc/Admin/Default_Options.php:125
 msgid "Urbanist"
 msgstr ""
 
-#: inc/Views/Components.php:342
+#: inc/Views/Components.php:343
 msgid "URL"
 msgstr ""
 
-#: inc/Views/Settings/Tabs/Styles.php:298
+#: inc/Views/Settings/Tabs/Styles.php:324
 msgid "URL de incorporação do Google Fonts"
 msgstr ""
 
@@ -2771,12 +2891,16 @@ msgstr ""
 msgid "Usar cor padrão"
 msgstr ""
 
-#: inc/Core/Assets.php:401
+#: inc/Core/Assets.php:383
 msgid "Usar esta imagem"
 msgstr ""
 
-#: inc/Core/Assets.php:412
+#: inc/Core/Assets.php:394
 msgid "Usar este arquivo"
+msgstr ""
+
+#: inc/Core/Ajax.php:178
+msgid "Usuário é obrigatório."
 msgstr ""
 
 #: inc/Views/Settings/Tabs/Conditions.php:273
@@ -2797,7 +2921,7 @@ msgstr ""
 msgid "Valor da condição: *"
 msgstr ""
 
-#: inc/Core/Assets.php:406 inc/Views/Components.php:359
+#: inc/Core/Assets.php:388 inc/Views/Components.php:360
 msgid "Valor da opção"
 msgstr ""
 
@@ -2835,6 +2959,11 @@ msgstr ""
 msgid "Vazio"
 msgstr ""
 
+#: inc/Integrations/Woo_Subscriptions.php:103
+#, php-format
+msgid "Veja o status da sua assinatura na <a href=\"%s\">sua conta</a>"
+msgstr ""
+
 #: inc/API/Updater.php:286
 msgid "Verificar atualizações"
 msgstr ""
@@ -2843,7 +2972,7 @@ msgstr ""
 msgid "Verificação"
 msgstr ""
 
-#: inc/Views/Components.php:388
+#: inc/Views/Components.php:389
 msgid "verify_gdpr"
 msgstr ""
 
@@ -2884,7 +3013,7 @@ msgstr ""
 msgid "Você só pode comprar 1 %s por pedido."
 msgstr ""
 
-#: woocommerce/common/checkout/form-pay.php:74
+#: woocommerce/common/checkout/form-pay.php:77
 msgid "Voltar para a conta"
 msgstr ""
 
@@ -2908,7 +3037,7 @@ msgstr ""
 msgid "WordPress Multisite:"
 msgstr ""
 
-#: inc/Views/Components.php:338
+#: inc/Views/Components.php:339
 msgid "Área de texto"
 msgstr ""
 
