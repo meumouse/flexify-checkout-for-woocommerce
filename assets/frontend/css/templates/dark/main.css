@@ -5234,3 +5234,7 @@ p.form-row.flexify-checkout-loading-placeholder > label {
     font-weight: 700;
     margin-left: 0.5rem;
 }
+
+.cart_item .subscription-details {
+    min-width: 3rem;
+}

@@ -1,4 +1,4 @@
-Versão 5.4.0 (24/11/2025)
+Versão 5.4.0 (25/11/2025)
 * Recurso adicionado: CSS personalizado
 * Recurso adicionado: JS personalizado
 
