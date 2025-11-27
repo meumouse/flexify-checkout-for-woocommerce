@@ -171,6 +171,7 @@ class Default_Options {
             'validate_address_by_postcode' => 'yes',
             'custom_css_checkout' => '',
             'custom_js_checkout' => '',
+            'direct_checkout_api' => 'yes',
         ));
     }
 

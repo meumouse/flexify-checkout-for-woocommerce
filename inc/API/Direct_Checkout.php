@@ -2,6 +2,7 @@
 
 namespace MeuMouse\Flexify_Checkout\API;
 
+use MeuMouse\Flexify_Checkout\Admin\Admin_Options;
 use MeuMouse\Flexify_Checkout\Core\Logger;
 
 use WP_REST_Server;
@@ -45,8 +46,10 @@ class Direct_Checkout {
     public function __construct() {
         $this->set_logger_source( 'flexify-direct-checkout', false );
 
-        add_action( 'rest_api_init', array( $this, 'register_route' ) );
-        add_action( 'template_redirect', array( $this, 'intercept_checkout_token' ) );
+        if ( Admin_Options::get_setting('direct_checkout_api') === 'yes' && License::is_valid() ) {
+            add_action( 'rest_api_init', array( $this, 'register_route' ) );
+            add_action( 'template_redirect', array( $this, 'intercept_checkout_token' ) );
+        }
     }
 
 
@@ -330,7 +333,7 @@ class Direct_Checkout {
         $ls_key = apply_filters( 'Flexify_Checkout/API/Direct_Checkout/Form_Data_Key', 'flexify_checkout_form_data' );
 
         // Use a simple HTML/JS redirect to execute localStorage injection reliably
-        $html = '<!doctype html><html><head><title>Redirecting...</title><meta name="robots" content="noindex,nofollow"></head><body><script>';
+        $html = '<!doctype html><html><head><title>'. esc_html__( 'Redirecionando...', 'flexify-checkout-for-woocommerce' ) .'</title><meta name="robots" content="noindex,nofollow"></head><body><script>';
         $html .= 'try { var d=' . wp_json_encode( $form_data ) . '; if(d){ localStorage.setItem(' . wp_json_encode( $ls_key ) . ', JSON.stringify(d)); } }catch(e){console.error("Flexify Checkout Error:", e);}';
         $html .= 'window.location.replace(' . wp_json_encode( $final_url ) . ');';
         $html .= '</script></body></html>';

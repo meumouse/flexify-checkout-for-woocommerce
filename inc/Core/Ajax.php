@@ -16,7 +16,7 @@ defined('ABSPATH') || exit;
  * Class for handle AJAX events
  *
  * @since 1.0.0
- * @version 5.3.3
+ * @version 5.4.0
  * @package MeuMouse.com
  */
 class Ajax {
@@ -215,7 +215,7 @@ class Ajax {
 	 * Save options in AJAX
 	 * 
 	 * @since 1.0.0
-	 * @version 5.3.3
+	 * @version 5.4.0
 	 * @return void
 	 */
 	public function ajax_save_options_callback() {
@@ -270,6 +270,7 @@ class Ajax {
 				'enable_shipping_to_different_address',
 				'hide_header_stepper_buttons',
 				'auto_display_login_modal',
+				'direct_checkout_api',
 			);
 
 			foreach ( $basic_fields as $field ) {
