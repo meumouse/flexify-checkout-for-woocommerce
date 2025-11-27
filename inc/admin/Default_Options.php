@@ -9,16 +9,24 @@ defined('ABSPATH') || exit;
  * Set default options
  * 
  * @since 5.0.0
- * @version 5.3.3
+ * @version 5.4.0
  * @package MeuMouse.com
  */
 class Default_Options {
 
     /**
+     * Get assets directory URL
+     * 
+     * @since 5.4.0
+     * @return string
+     */
+    public $assets_url = FLEXIFY_CHECKOUT_ASSETS;
+
+    /**
      * Set default options
      * 
      * @since 1.0.0
-     * @version 5.3.3
+     * @version 5.4.0
      * @return array
      */
     public function set_default_data_options() {
@@ -59,7 +67,7 @@ class Default_Options {
             'api_auto_fill_address_neightborhood_param' => 'bairro',
             'api_auto_fill_address_city_param' => 'localidade',
             'api_auto_fill_address_state_param' => 'uf',
-            'logo_header_link' => get_permalink( wc_get_page_id('shop') ),
+            'logo_header_link' => function_exists('wc_get_page_id') ? get_permalink( wc_get_page_id('shop') ) : home_url('/'),
             'enable_field_masks' => 'yes',
             'enable_display_local_pickup_kangu' => 'no',
             'text_header_step_1' => 'Informações do cliente',
@@ -136,11 +144,11 @@ class Default_Options {
             'enable_remove_quantity_select' => 'yes',
             'enable_animation_process_purchase' => 'yes',
             'text_animation_process_purchase_1' => 'Processando seus dados com segurança',
-            'animation_process_purchase_file_1' => FLEXIFY_CHECKOUT_ASSETS . 'frontend/json/document-lock.json',
+            'animation_process_purchase_file_1' => $this->assets_url . 'frontend/json/document-lock.json',
             'text_animation_process_purchase_2' => 'Confirmando seu pagamento',
-            'animation_process_purchase_file_2' => FLEXIFY_CHECKOUT_ASSETS . 'frontend/json/money-safe.json',
+            'animation_process_purchase_file_2' => $this->assets_url . 'frontend/json/money-safe.json',
             'text_animation_process_purchase_3' => 'Finalizando seu pedido',
-            'animation_process_purchase_file_3' => FLEXIFY_CHECKOUT_ASSETS . 'frontend/json/invoice-receipt.json',
+            'animation_process_purchase_file_3' => $this->assets_url . 'frontend/json/invoice-receipt.json',
             'enable_shipping_to_different_address' => 'no',
             'enable_auto_updates' => 'no',
             'enable_update_notices' => 'yes',
@@ -161,8 +169,9 @@ class Default_Options {
             'countdown_font_color_type' => 'default',
             'countdown_font_color' => '#ffffff',
             'validate_address_by_postcode' => 'yes',
-        //    'custom_css_checkout' => '',
-        //    'custom_js_checkout' => '',
+            'custom_css_checkout' => '',
+            'custom_js_checkout' => '',
+            'direct_checkout_api' => 'yes',
         ));
     }
 

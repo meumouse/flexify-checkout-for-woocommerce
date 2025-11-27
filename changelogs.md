@@ -1,3 +1,10 @@
+Versão 5.4.0 (27/11/2025)
+* Otimizações
+  - Tabela e aviso de assinatura do WooCommerce Subscriptions na página de agradecimento
+* Recurso adicionado: CSS personalizado
+* Recurso adicionado: JS personalizado
+* Recurso adicionado: API para criação de links de checkout direto
+
 Versão 5.3.4 (17/11/2025)
 * Compatibilidade com tema Glozin
 

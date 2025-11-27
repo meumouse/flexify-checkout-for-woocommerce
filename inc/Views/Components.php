@@ -6,6 +6,7 @@ use MeuMouse\Flexify_Checkout\Admin\Admin_Options;
 use MeuMouse\Flexify_Checkout\API\License;
 use MeuMouse\Flexify_Checkout\Validations\ISO3166;
 use MeuMouse\Flexify_Checkout\Checkout\Fields;
+use MeuMouse\Flexify_Checkout\Core\Helpers;
 
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
@@ -14,7 +15,7 @@ defined('ABSPATH') || exit;
  * Render components
  *
  * @since 5.0.0
- * @version 5.2.0
+ * @version 5.4.0
  * @package MeuMouse.com
  */
 class Components {
@@ -259,11 +260,11 @@ class Components {
 	 * Add processing purchase animation
 	 * 
 	 * @since 3.9.4
-     * @version 5.0.0
+     * @version 5.4.0
 	 * @return void
 	 */
 	public static function add_processing_purchase_animation() {
-		if ( Admin_Options::get_setting('enable_animation_process_purchase') === 'yes' && License::is_valid() ) : ?>
+		if ( Admin_Options::get_setting('enable_animation_process_purchase') === 'yes' && License::is_valid() && ! Helpers::is_thankyou_page() ) : ?>
 			<div id="flexify_checkout_purchase_animation" class="purchase-animations-group">
 				<div class="animations-content">
 					<div class="animations-group">

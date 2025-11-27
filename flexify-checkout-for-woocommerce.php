@@ -7,9 +7,9 @@
  * Requires Plugins: 		woocommerce
  * Author: 					MeuMouse.com
  * Author URI: 				https://meumouse.com/?utm_source=wordpress&utm_medium=plugins_list&utm_campaign=flexify_checkout
- * Version: 				5.3.4
+ * Version: 				5.4.0
  * WC requires at least: 	6.0.0
- * WC tested up to: 		10.3.4
+ * WC tested up to: 		10.3.5
  * Requires PHP: 			7.4
  * Tested up to:      		6.8.3
  * Text Domain: 			flexify-checkout-for-woocommerce
@@ -59,7 +59,7 @@ class Flexify_Checkout {
 	 * @since 1.0.0
 	 * @var string
 	 */
-	public static $version = '5.3.4';
+	public static $version = '5.4.0';
 
 	/**
 	 * Plugin initiated

@@ -16,7 +16,7 @@ defined('ABSPATH') || exit;
  * Class for handle AJAX events
  *
  * @since 1.0.0
- * @version 5.3.3
+ * @version 5.4.0
  * @package MeuMouse.com
  */
 class Ajax {
@@ -171,11 +171,11 @@ class Ajax {
 			$validation_error = apply_filters( 'woocommerce_process_login_errors', $validation_error, $credentials['user_login'], $credentials['user_password'] );
 
 			if ( $validation_error->get_error_code() ) {
-				throw new \Exception( '<strong>' . __( 'Erro:', 'woocommerce' ) . '</strong> ' . $validation_error->get_error_message() );
+				throw new \Exception( '<strong>' . __( 'Erro:', 'flexify-checkout-for-woocommerce' ) . '</strong> ' . $validation_error->get_error_message() );
 			}
 
 			if ( empty( $credentials['user_login'] ) ) {
-				throw new \Exception( '<strong>' . __( 'Erro:', 'woocommerce' ) . '</strong> ' . __( 'Usuário é obrigatório.', 'woocommerce' ) );
+				throw new \Exception( '<strong>' . __( 'Erro:', 'flexify-checkout-for-woocommerce' ) . '</strong> ' . __( 'Usuário é obrigatório.', 'flexify-checkout-for-woocommerce' ) );
 			}
 
 			// On multisite, ensure user exists on current site, if not add them before allowing login.
@@ -215,7 +215,7 @@ class Ajax {
 	 * Save options in AJAX
 	 * 
 	 * @since 1.0.0
-	 * @version 5.3.3
+	 * @version 5.4.0
 	 * @return void
 	 */
 	public function ajax_save_options_callback() {
@@ -270,6 +270,7 @@ class Ajax {
 				'enable_shipping_to_different_address',
 				'hide_header_stepper_buttons',
 				'auto_display_login_modal',
+				'direct_checkout_api',
 			);
 
 			foreach ( $basic_fields as $field ) {

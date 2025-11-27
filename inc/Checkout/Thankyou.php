@@ -213,7 +213,7 @@ class Thankyou {
 				<div class='flexify-review-customer__label'><label><?php esc_html_e( 'Pagamento', 'flexify-checkout-for-woocommerce' ); ?></label></div>
 				
 				<div class='flexify-review-customer__content'>
-					<p><?php echo __( $order->get_payment_method_title() ); ?></p>
+					<p><?php echo $order->get_payment_method_title(); ?></p>
 				</div>
 			</div>
 

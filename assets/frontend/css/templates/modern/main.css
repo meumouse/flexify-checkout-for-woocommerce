@@ -183,6 +183,15 @@ table {
     border-collapse: collapse;
 }
 
+@media screen and (max-width: 992px) {
+    table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+        width: 100%;
+    }
+}
+
 body.woocommerce-checkout {
     margin: 0;
     padding: 0;
@@ -4163,7 +4172,7 @@ body .pac-container .pac-item .pac-icon.pac-icon-marker {
     font-size: 16px;
     line-height: 19px;
     text-align: center;
-    color: var(--flexify-checkout-primary);
+    color: var(--flexify-checkout-text-dark);
     margin-top: 0;
     margin-bottom: 0;
 }
@@ -5107,6 +5116,7 @@ section.woocommerce-order-details table.shop_table {
     width: 100%;
     border-collapse: separate;
     border-radius: 0.375rem;
+    border: 1px solid #e5e5e5;
 }
 
 button.show-password-input {
@@ -5149,4 +5159,98 @@ p.form-row.flexify-checkout-loading-placeholder > label {
     font-size: 1.325rem;
     font-weight: 700;
     margin-left: 0.5rem;
+}
+
+.cart_item .subscription-details {
+    min-width: 3rem;
+}
+
+.woocommerce-orders-table--subscriptions th,
+.woocommerce-orders-table--subscriptions td {
+    text-align: left;
+    padding: 1.5rem;
+    font-size: 1.125rem;
+}
+
+.woocommerce-orders-table--subscriptions th {
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.woocommerce-orders-table--subscriptions {
+    margin-top: 2rem;
+}
+
+.woocommerce-orders-table__cell-subscription-actions a.button {
+    font-style: normal;
+    font-weight: 600;
+    font-size: 1rem;
+    line-height: 19px;
+    text-align: center;
+    color: var(--flexify-checkout-primary) !important;
+    background-color: #fff !important;
+    border: 2px solid var(--flexify-checkout-primary) !important;
+    margin-top: 0;
+    margin-bottom: 0;
+    text-decoration: none;
+}
+
+.woocommerce-orders-table__cell-subscription-actions a.button:hover {
+    color: #fff !important;
+    background-color: var(--flexify-checkout-primary) !important;
+    filter: brightness(100%);
+}
+
+.flexify-checkout-woo-subscriptions-tks-message {
+    display: flex;
+    align-items: center;
+    margin: 2.115rem;
+    padding: 2rem;
+    color: #664d03;
+    background-color: #fff3cd;
+    border: 1px solid #ffe69c;
+    border-radius: 0.375rem;
+    border-left: 5px solid #664d03;
+}
+
+.flexify-checkout-woo-subscriptions-tks-message .icon {
+    width: 2.725rem;
+    height: 2.725rem;
+    margin-right: 1rem;
+    padding: 0.35rem;
+    background-color: rgb(102 77 3 / 10%);
+    border-radius: 10rem;
+}
+
+.flexify-checkout-woo-subscriptions-tks-message .icon path {
+    fill: #664d03;
+}
+
+.flexify-checkout-woo-subscriptions-tks-message .message-content .need-payment-message {
+    font-size: 1.225rem;
+    font-weight: 600;
+    margin: 0;
+    line-height: 1.45;
+}
+
+.flexify-checkout-woo-subscriptions-tks-message .message-content .description {
+    margin: 0;
+    font-size: 1.115rem;
+    line-height: 1.45;
+}
+
+.flexify-checkout-woo-subscriptions-tks-message a {
+    color: #664d03 !important;
+    font-weight: 600;
+}
+
+@media screen and (max-width: 767px) {
+    .flexify-checkout-woo-subscriptions-tks-message {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 1.5rem;
+    }
+
+    .flexify-checkout-woo-subscriptions-tks-message .icon {
+        margin-bottom: 1rem;
+    }
 }

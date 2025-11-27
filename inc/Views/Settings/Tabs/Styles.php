@@ -125,7 +125,7 @@ defined('ABSPATH') || exit; ?>
 		<tr>
 			<th>
 				<?php esc_html_e( 'Cor primária', 'flexify-checkout-for-woocommerce' ) ?>
-				<span class="flexify-checkout-description"><?php esc_html_e( 'A cor primária define a cor dos elementos que terão ações ou informações na página de finalização de compras.' ) ?></span>
+				<span class="flexify-checkout-description"><?php esc_html_e( 'A cor primária define a cor dos elementos que terão ações ou informações na página de finalização de compras.', 'flexify-checkout-for-woocommerce' ) ?></span>
 			</th>
 
 			<td>
@@ -144,7 +144,7 @@ defined('ABSPATH') || exit; ?>
 		<tr>
 			<th>
 				<?php esc_html_e( 'Cor secundára', 'flexify-checkout-for-woocommerce' ) ?>
-				<span class="flexify-checkout-description"><?php esc_html_e( 'A cor secundária define a cor dos elementos que terão ações ou informações na página de finalização de compras.' ) ?></span>
+				<span class="flexify-checkout-description"><?php esc_html_e( 'A cor secundária define a cor dos elementos que terão ações ou informações na página de finalização de compras.', 'flexify-checkout-for-woocommerce' ) ?></span>
 			</th>
 
 			<td>
@@ -163,7 +163,7 @@ defined('ABSPATH') || exit; ?>
 		<tr>
 			<th>
 				<?php esc_html_e( 'Cor do título dos campos', 'flexify-checkout-for-woocommerce' ) ?>
-				<span class="flexify-checkout-description"><?php esc_html_e( 'Informe a cor do título dos campos da finalização de compras.' ) ?></span>
+				<span class="flexify-checkout-description"><?php esc_html_e( 'Informe a cor do título dos campos da finalização de compras.', 'flexify-checkout-for-woocommerce' ) ?></span>
 			</th>
 
 			<td>
@@ -182,7 +182,7 @@ defined('ABSPATH') || exit; ?>
 		<tr>
 			<th>
 				<?php esc_html_e( 'Raio da borda dos elementos', 'flexify-checkout-for-woocommerce' ) ?>
-				<span class="flexify-checkout-description"><?php esc_html_e( 'Define o raio da borda dos campos, botões e elementos da finalização de compra.' ) ?></span>
+				<span class="flexify-checkout-description"><?php esc_html_e( 'Define o raio da borda dos campos, botões e elementos da finalização de compra.', 'flexify-checkout-for-woocommerce' ) ?></span>
 			</th>
 
 			<td>
@@ -233,7 +233,7 @@ defined('ABSPATH') || exit; ?>
 		<tr>
 			<th>
 				<?php esc_html_e( 'Tamanho do h2', 'flexify-checkout-for-woocommerce' ) ?>
-				<span class="flexify-checkout-description"><?php esc_html_e( 'Define o tamanho da fonte para tags h2 de subtítulos (Heading 2).' ) ?></span>
+				<span class="flexify-checkout-description"><?php esc_html_e( 'Define o tamanho da fonte para tags h2 de subtítulos (Heading 2).', 'flexify-checkout-for-woocommerce' ) ?></span>
 			</th>
 
 			<td>
@@ -246,6 +246,32 @@ defined('ABSPATH') || exit; ?>
 						<option value="rem" <?php echo ( Admin_Options::get_setting( 'h2_size_unit' ) == 'rem' ) ? "selected=selected" : ""; ?>><?php esc_html_e( 'rem', 'flexify-checkout-for-woocommerce' ) ?></option>
 					</select>
 				</div>
+			</td>
+		</tr>
+
+		<tr>
+			<th>
+				<?php esc_html_e( 'CSS personalizado', 'flexify-checkout-for-woocommerce' ); ?>
+				<span class="flexify-checkout-description">
+					<?php esc_html_e( 'Adicione CSS customizado que será aplicado no checkout.', 'flexify-checkout-for-woocommerce' ); ?>
+				</span>
+			</th>
+
+			<td class="w-50">
+				<textarea id="flexify_custom_css_editor" name="custom_css_checkout" class="flexify-checkout-code-editor" rows="12" editor-mode="css"><?php echo esc_textarea( Admin_Options::get_setting('custom_css_checkout') ); ?></textarea>
+			</td>
+		</tr>
+
+		<tr>
+			<th>
+				<?php esc_html_e( 'JS personalizado', 'flexify-checkout-for-woocommerce' ); ?>
+				<span class="flexify-checkout-description">
+					<?php esc_html_e( 'Adicione JavaScript customizado que será executado no checkout.', 'flexify-checkout-for-woocommerce' ); ?>
+				</span>
+			</th>
+
+			<td class="w-50">
+				<textarea id="flexify_custom_js_editor" name="custom_js_checkout" class="flexify-checkout-code-editor" rows="12" editor-mode="javascript"><?php echo esc_textarea( Admin_Options::get_setting('custom_js_checkout') ); ?></textarea>
 			</td>
 		</tr>
 
