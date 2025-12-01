@@ -1,3 +1,7 @@
+Versão 5.4.1 (01/12/2025)
+* Correção de bugs
+  - Overflow em formas de entrega em dispositivos móveis
+
 Versão 5.4.0 (27/11/2025)
 * Otimizações
   - Tabela e aviso de assinatura do WooCommerce Subscriptions na página de agradecimento
