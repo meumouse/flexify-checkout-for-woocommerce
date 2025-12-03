@@ -901,7 +901,9 @@
 						if ( $('body').hasClass('processing') ) {
 							console.log('[FLEXIFY CHECKOUT] Safety timeout triggered');
 
+							Flexify_Checkout.Helpers.resetProcessingState();
 							Flexify_Checkout.Animations.purchaseAnimation.stop();
+
 							$('#place_order').removeClass('flexify-checkout-btn-loading');
 							$('body').removeClass('processing');
 						}
@@ -1047,6 +1049,9 @@
 				 */
 				$(document.body).on('checkout_error', function(e, error) {
 					$('#place_order').removeClass('flexify-checkout-btn-loading');
+
+					// Reset processing state first
+        			Flexify_Checkout.Helpers.resetProcessingState();
 					
 					// Stop all ongoing animations
 					Flexify_Checkout.Animations.purchaseAnimation.stop();
@@ -1083,7 +1088,9 @@
 				document.addEventListener('mp_checkout_error', function(e) {
 					console.log('[FLEXIFY CHECKOUT] Mercado Pago error detected:', e.detail.message);
 
+					Flexify_Checkout.Helpers.resetProcessingState();
 					Flexify_Checkout.Animations.purchaseAnimation.stop();
+
 					$('#place_order').removeClass('flexify-checkout-btn-loading');
 					$('body').removeClass('processing');
 				});
@@ -1677,6 +1684,44 @@
 					notices_wrapper.prependTo('.flexify-checkout__steps');
 				}
 			},
+
+			/**
+			 * Completely reset processing state
+			 * Ensures checkout is not stuck in processing mode
+			 * 
+			 * @since 5.4.1
+			 * @return {void}
+			 */
+			resetProcessingState: function() {
+				// Remove processing classes
+				$('body').removeClass('processing');
+				$('form.checkout').removeClass('processing');
+				$('.woocommerce-checkout').removeClass('processing');
+				
+				// Remove loading state from place order button
+				$('#place_order').removeClass('flexify-checkout-btn-loading');
+				
+				// Remove any WooCommerce blockUI overlays
+				$('.blockOverlay').remove();
+				$('.blockUI').remove();
+				$('.wc-block-components-loading-mask').remove();
+				
+				// Unblock any blocked elements
+				$('.woocommerce-checkout').unblock();
+				$('.woocommerce-checkout-review-order-table').unblock();
+				$('.payment_methods').unblock();
+				
+				// Ensure payment methods are visible
+				$('.payment_methods, .wc_payment_methods, .wc-payment-form').show();
+				
+				// Remove any processing spinners
+				$('.flexify-button--processing').removeClass('flexify-button--processing');
+				$('.flexify-btn-processing-inline').remove();
+				
+				if (params.debug_mode) {
+					console.log('[FLEXIFY CHECKOUT] Processing state completely reset');
+				}
+			},
 		},
 
 		/**
@@ -2132,6 +2177,9 @@
 				const stop_all_animations = function() {
 					const animationGroup = $('#flexify_checkout_purchase_animation');
 					const progressBar = animationGroup.find('.animation-progress-bar');
+
+					// Reset processing state
+    				Flexify_Checkout.Helpers.resetProcessingState();
 
 					// Clear intervals and reset progress
 					clearInterval(animationInterval);
