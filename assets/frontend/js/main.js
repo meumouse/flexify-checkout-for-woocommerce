@@ -2507,24 +2507,69 @@
 			 * @param {boolean} replaceState | Whether to replace state
 			 * @return {void}
 			 */
-			navigateToStep: function( step, scrollElement = '', replaceState = false ) {
-				const url = new URL( window.location.href );
-				url.searchParams.set( 'step', step );
+			navigateToStep: function(step, scrollElement = '', replaceState = false) {
+				const url = new URL(window.location.href);
+				url.searchParams.set('step', step);
 				
-				if ( scrollElement ) {
-					url.searchParams.set( 'scroll', scrollElement );
+				if (scrollElement) {
+					url.searchParams.set('scroll', scrollElement);
 				} else {
-					url.searchParams.delete( 'scroll' );
+					url.searchParams.delete('scroll');
 				}
 				
-				if ( replaceState ) {
-					window.history.replaceState( null, '', url.toString() );
+				if (replaceState) {
+					window.history.replaceState(null, '', url.toString());
 				} else {
-					window.history.pushState( null, '', url.toString() );
+					window.history.pushState(null, '', url.toString());
 				}
 				
 				// Update UI to reflect new step
-				this.updateStepUI( step, scrollElement );
+				this.updateStepUI(step, scrollElement);
+			},
+
+			/**
+			 * Handle back button clicks
+			 * 
+			 * @since 5.4.1
+			 * @return {void}
+			 */
+			onBackClick: function() {
+				$(document).on('click', '.flexify-step__back, .flexify-step__back--back-history', function(e) {
+					e.preventDefault();
+					
+					// Get current step from URL or UI
+					const url = new URL(window.location.href);
+					const currentStep = url.searchParams.get('step');
+					const steps = Flexify_Checkout.Steps.steps_hash;
+					
+					if (!currentStep) {
+						window.history.back();
+						return;
+					}
+					
+					// Find current step number
+					let currentStepNumber = null;
+					for (const [key, value] of Object.entries(steps)) {
+						if (value === currentStep) {
+							currentStepNumber = parseInt(key);
+							break;
+						}
+					}
+					
+					if (!currentStepNumber || currentStepNumber <= 1) {
+						window.history.back();
+						return;
+					}
+					
+					// Go to previous step
+					const previousStepNumber = currentStepNumber - 1;
+					const previousStepSlug = steps[previousStepNumber];
+					
+					if (previousStepSlug) {
+						// Navigate using query parameter (replace state to avoid back button loop)
+						Flexify_Checkout.Steps.navigateToStep(previousStepSlug, '', true);
+					}
+				});
 			},
 
 			/**
@@ -2537,12 +2582,12 @@
 			 */
 			updateStepUI: function( step, scrollElement = '' ) {
 				const url = new URL( window.location.href );
-				const scroll = url.searchParams.get( 'scroll' );
+				const scroll = url.searchParams.get('scroll');
 				
 				const steps = Flexify_Checkout.Steps.steps_hash;
 				let stepNumber = null;
 				
-				// Find step number from slug
+				// find step number from slug
 				for ( const [key, value] of Object.entries( steps ) ) {
 					if ( value === step ) {
 						stepNumber = parseInt( key );
@@ -2554,7 +2599,7 @@
 					return;
 				}
 				
-				// Get current step number from UI
+				// get step number from UI
 				const currentStepper = document.querySelector('.flexify-stepper__step.selected .flexify-stepper__button');
 				const currentStepNumber = currentStepper ? parseInt( currentStepper.dataset.stepper ) : 1;
 				
@@ -2563,7 +2608,13 @@
 					Flexify_Checkout.Steps.switchStepper( currentStepNumber, stepNumber );
 				}
 				
-				// Scroll to element if specified
+				// hide all steps
+				$('[data-step]').css('display', 'none').attr('aria-hidden', 'true');
+				
+				// show current step only
+				$(`[data-step="${stepNumber}"]`).css('display', '').attr('aria-hidden', 'false');
+				
+				// scroll for specified element
 				if ( scroll && $(`#${scroll}`).length ) {
 					setTimeout(() => {
 						$('html, body').animate({
@@ -2572,7 +2623,32 @@
 					}, 100);
 				}
 			},
-			
+
+			/**
+			 * Handle edit links from review section
+			 * 
+			 * @since 5.4.1
+			 * @return void
+			 */
+			handleEditLinks: function() {
+				$(document).on('click', '[data-stepper-goto]', function(e) {
+					e.preventDefault();
+					
+					const link = $(this);
+					const stepNumber = link.data('stepper-goto');
+					const scrollElement = link.data('scroll-element');
+					const stepSlug = Flexify_Checkout.Steps.steps_hash[stepNumber];
+					
+					if ( ! stepSlug ) {
+						console.warn('[FLEXIFY CHECKOUT] Step slug not found for number:', stepNumber);
+						return;
+					}
+					
+					// Navigate to step with optional scroll element
+					Flexify_Checkout.Steps.navigateToStep(stepSlug, scrollElement || '');
+				});
+			},
+
 			/**
 			 * Handle popstate event (back/forward navigation)
 			 * 
@@ -2600,13 +2676,35 @@
 				const url = new URL( window.location.href );
 				let step = url.searchParams.get( 'step' );
 				
-				// If no step parameter, set default to first step
 				if ( ! step ) {
 					step = this.steps_hash[1];
-					this.navigateToStep( step, true ); // Replace state without adding to history
+					this.navigateToStep( step, '', true ); // Replace state
 				}
 				
 				this.updateStepUI( step );
+				
+				setTimeout(() => {
+					let currentStepNumber = null;
+					
+					for ( const [key, value] of Object.entries( this.steps_hash ) ) {
+						if ( value === step ) {
+							currentStepNumber = parseInt( key );
+							break;
+						}
+					}
+					
+					if ( currentStepNumber ) {
+						// hide all steps
+						$('[data-step]').css('display', 'none').attr('aria-hidden', 'true');
+						
+						// show current step
+						$(`[data-step="${currentStepNumber}"]`).css('display', '').attr('aria-hidden', 'false');
+						
+						// update stepper
+						$('.flexify-stepper__step').removeClass('selected').addClass('disabled');
+						$(`[data-stepper-li="${currentStepNumber}"]`).removeClass('disabled').addClass('selected');
+					}
+				}, 100);
 			},
 
 			/**
@@ -2708,6 +2806,8 @@
 				this.handeStepOnPageLoad();
 				this.onNextClick();
 				this.onStepperClick();
+				this.onBackClick();
+				this.handleEditLinks();
 
 				// Listen for hash link clicks
 				document.addEventListener( 'click', (e) => {

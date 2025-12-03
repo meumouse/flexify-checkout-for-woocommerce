@@ -1018,7 +1018,7 @@ class Steps {
 						</div>
 						
 						<div class="flexify-review-customer__buttons">
-							<a href="<?php echo esc_url( add_query_arg( 'step', 'customer-info', wc_get_checkout_url() ) ); ?>" data-stepper-goto="1"><?php esc_html_e( 'Editar', 'flexify-checkout-for-woocommerce' ); ?></a>
+							<a href="#" data-stepper="1" data-stepper-goto="1"><?php esc_html_e( 'Editar', 'flexify-checkout-for-woocommerce' ); ?></a>
 						</div>
 					</div>
 				</div>
@@ -1059,7 +1059,7 @@ class Steps {
 						</div>
 
 						<div class="flexify-review-customer__buttons">
-							<a href="#address|billing_country" data-stepper-goto="2"><?php esc_html_e( 'Editar', 'flexify-checkout-for-woocommerce' ); ?></a>
+							<a href="#" data-stepper="2" data-stepper-goto="2"><?php esc_html_e( 'Editar', 'flexify-checkout-for-woocommerce' ); ?></a>
 						</div>
 					</div>
 				</div>
@@ -1076,7 +1076,7 @@ class Steps {
 							</div>
 
 							<div class="flexify-review-customer__buttons">
-								<a href="#address|shipping_method" data-stepper-goto="2"><?php esc_html_e('Editar', 'flexify-checkout-for-woocommerce'); ?></a>
+								<a href="#" data-stepper="2" data-stepper-goto="2" data-scroll-element="shipping_method"><?php esc_html_e('Editar', 'flexify-checkout-for-woocommerce'); ?></a>
 							</div>
 						</div>
 					</div>
