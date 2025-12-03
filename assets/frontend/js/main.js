@@ -856,6 +856,7 @@
 		 * Process checkout object helper
          * 
          * @since 5.0.0
+		 * @version 5.4.1
 		 */
 		processCheckout: {
             /**
@@ -870,29 +871,46 @@
             },
 
             /**
-             * On button click
-             * 
-             * @since 1.0.0
-             * @version 5.0.0
-             * @return void
-             */
-            onClick: function() {
-                $(document).on('click', '#place_order', function(e) {
-                    // Prevent the default behavior of the button
-                    e.preventDefault();
+			 * On button click
+			 * 
+			 * @since 1.0.0
+			 * @version 5.4.1
+			 * @return void
+			 */
+			onClick: function() {
+				$(document).on('click', '#place_order', function(e) {
+					// Prevent the default behavior of the button
+					e.preventDefault();
 
-                    Flexify_Checkout.Animations.preparePlaceOrderButton();
-                    $('#place_order').addClass('flexify-checkout-btn-loading');
+					// Check if form is already processing
+					if ($('body').hasClass('processing')) {
+						console.log('[FLEXIFY CHECKOUT] Checkout is already processing');
+						return;
+					}
 
-                    // enable purchase animation
-                    if ( params.enable_animation_process_purchase === 'yes' ) {
-                        Flexify_Checkout.Animations.purchaseAnimation.start();
-                    }
+					Flexify_Checkout.Animations.preparePlaceOrderButton();
+					$('#place_order').addClass('flexify-checkout-btn-loading');
 
-                    // Simulate the form submission event
-                    $('#place_order').closest('form').submit();
-                });
-            },
+					// enable purchase animation
+					if ( params.enable_animation_process_purchase === 'yes' ) {
+						Flexify_Checkout.Animations.purchaseAnimation.start();
+					}
+
+					// Add a safety timeout to stop animation if form submission hangs
+					setTimeout(() => {
+						if ( $('body').hasClass('processing') ) {
+							console.log('[FLEXIFY CHECKOUT] Safety timeout triggered');
+
+							Flexify_Checkout.Animations.purchaseAnimation.stop();
+							$('#place_order').removeClass('flexify-checkout-btn-loading');
+							$('body').removeClass('processing');
+						}
+					}, 30000); // 30 second timeout
+
+					// Simulate the form submission event
+					$('#place_order').closest('form').submit();
+				});
+			},
 
             /**
              * The HTML of checkout button would reset to default when payment method is selected
@@ -1014,7 +1032,7 @@
 			 * Process actions when checkout has errors
 			 * 
 			 * @since 1.0.0
-			 * @version 5.0.0
+			 * @version 5.4.1
 			 * @return void
 			 */
 			onCheckoutError: function() {
@@ -1023,22 +1041,72 @@
 				 * Checkout error trigger
 				 * 
 				 * @since 1.0.0
-				 * @version 5.0.0
+				 * @version 5.4.1
 				 * @param {object} e | Event object
 				 * @param {string} error | Error message in HTML format
 				 */
 				$(document.body).on('checkout_error', function(e, error) {
 					$('#place_order').removeClass('flexify-checkout-btn-loading');
+					
+					// Stop all ongoing animations
+					Flexify_Checkout.Animations.purchaseAnimation.stop();
+					
+					// Remove WooCommerce processing state
+					$('body').removeClass('processing');
+					$('form.checkout').removeClass('processing');
+					
+					// Unblock any blocked elements
+					$('.woocommerce-checkout').unblock();
+					$('.woocommerce-checkout-review-order-table').unblock();
+					
+					// Ensure payment methods are visible
+					$('.payment_methods, .wc_payment_methods, .wc-payment-form').show();
 
 					Flexify_Checkout.Helpers.removeDomElements();
 					$('.woocommerce-notices-wrapper').html(''); // Clear previous notices
 					Flexify_Checkout.Components.addNotice( error );
 
-					// Stop all ongoing animations and reset state
-					Flexify_Checkout.Animations.purchaseAnimation.stop();
-
 					if ( params.debug_mode ) {
 						console.log('[FLEXIFY CHECKOUT] - Checkout error: ', error);
+					}
+				});
+			},
+
+			/**
+			 * Handle payment gateway specific errors (Stripe, etc.)
+			 * 
+			 * @since 5.4.1
+			 * @return void
+			 */
+			onPaymentGatewayError: function() {
+				// Listen for Mercado Pago errors (from mp-checkout-error-dispatcher.min.js)
+				document.addEventListener('mp_checkout_error', function(e) {
+					console.log('[FLEXIFY CHECKOUT] Mercado Pago error detected:', e.detail.message);
+
+					Flexify_Checkout.Animations.purchaseAnimation.stop();
+					$('#place_order').removeClass('flexify-checkout-btn-loading');
+					$('body').removeClass('processing');
+				});
+				
+				// Listen for Stripe errors (common pattern)
+				$(document).on('stripeError', function(e, error) {
+					console.log('[FLEXIFY CHECKOUT] Stripe error detected:', error);
+
+					Flexify_Checkout.Animations.purchaseAnimation.stop();
+					$('#place_order').removeClass('flexify-checkout-btn-loading');
+					$('body').removeClass('processing');
+				});
+				
+				// Listen for general AJAX errors during checkout
+				$(document).ajaxError(function(event, jqxhr, settings, error) {
+					// Check if this is a payment-related AJAX call
+					if (settings.url && (
+						settings.url.includes('checkout') || 
+						settings.url.includes('payment') ||
+						settings.url.includes('stripe') ||
+						settings.url.includes('paypal')
+					)) {
+						console.log('[FLEXIFY CHECKOUT] Payment AJAX error:', error);
 					}
 				});
 			},
@@ -1203,12 +1271,14 @@
 			 * Initialize module
 			 * 
 			 * @since 5.0.0
-			 * @version 5.2.0
+			 * @version 5.4.1
+			 * @return {void}
 			 */
 			init: function() {
 				Flexify_Checkout.Helpers.removeDomElements();
 				this.onUpdatedCheckout();
 				this.onCheckoutError();
+				this.onPaymentGatewayError();
 				this.onFragmentsUpdated();
 				this.onSelectShippingMethod();
 				this.removeProductItem();
@@ -1934,6 +2004,7 @@
 		 * Animations object helper
 		 * 
 		 * @since 5.0.0
+		 * @version 5.4.1
 		 * @return void
 		 */
 		Animations: {
@@ -1964,7 +2035,7 @@
 			 * Process purchase animation
 			 * 
 			 * @since 3.9.4
-			 * @version 5.0.0
+			 * @version 5.4.1
 			 * @return object
 			 */
 			purchaseAnimation: function() {
@@ -1975,6 +2046,7 @@
 				let animationInterval; // Interval for animations
 				let progressBarInterval; // Interval for progress bar
 				let isAnimating = false; // Flag to track animation state
+				let safetyTimeout;
 
 				// Start purchase animation
 				const start_purchase_animation = function() {
@@ -1982,7 +2054,7 @@
 					const progressBar = animationGroup.find('.animation-progress-bar');
 
 					// Prevent multiple animations from starting
-					if (isAnimating) {
+					if ( isAnimating ) {
 						return;
 					}
 
@@ -1994,6 +2066,11 @@
 
 					// Add "active" class to main group
 					animationGroup.addClass('active');
+
+					safetyTimeout = setTimeout(() => {
+						console.log('[FLEXIFY CHECKOUT] Animation safety timeout reached');
+						stop_all_animations();
+					}, 45000);
 
 					// Remove WooCommerce overlay
 					setTimeout(() => {
@@ -2059,6 +2136,7 @@
 					// Clear intervals and reset progress
 					clearInterval(animationInterval);
 					clearInterval(progressBarInterval);
+					clearTimeout(safetyTimeout);
 					isAnimating = false;
 					progressWidth = 0;
 
@@ -2066,6 +2144,16 @@
 					progressBar.css('width', '0%');
 					animationGroup.find('.purchase-animation-item').removeClass('active');
 					animationGroup.removeClass('active');
+					
+					// IMPORTANT: Remove processing class from WooCommerce form
+					$('body').removeClass('processing');
+					$('form.checkout').removeClass('processing');
+					
+					// Re-enable place order button
+					$('#place_order').removeClass('flexify-checkout-btn-loading');
+					
+					// Show payment form again if hidden
+					$('.payment_methods, .wc_payment_methods').show();
 				};
 
 				// Reset animation state

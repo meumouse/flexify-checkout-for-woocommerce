@@ -2650,6 +2650,11 @@
                 // Delete provider (event delegation for dynamically added elements)
                 $(document).on('click', '.exclude-provider', function(e) {
                     e.preventDefault();
+
+                    if ( ! confirm( params.i18n.confirm_remove_option ) ) {
+                        return;
+                    }
+
                     const providerElement = $(this).closest('.list-group-item');
                     self.deleteProvider(providerElement);
                 });
