@@ -1,6 +1,7 @@
 Versão 5.4.1 (03/12/2025)
 * Correção de bugs
   - Overflow em formas de entrega em dispositivos móveis
+  - Remover animação de processamento de compras ao receber um erro do Mercado Pago
 
 Versão 5.4.0 (27/11/2025)
 * Otimizações

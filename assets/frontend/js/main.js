@@ -2165,7 +2165,7 @@
 					const increment = Math.floor(Math.random() * (25 - 15 + 1)) + 15;
 					progressWidth += increment;
 
-					if (progressWidth > maxProgress) {
+					if ( progressWidth > maxProgress ) {
 						progressWidth = maxProgress;
 						clearInterval(progressBarInterval); // Stop updates when max is reached
 					}
@@ -2282,7 +2282,7 @@
 			 * On proceed to next step
 			 * 
 			 * @since 1.0.0
-			 * @version 5.0.0
+			 * @version 5.4.1
 			 */
 			onStepperClick: function() {
 				$('[data-stepper]').each( function() {
@@ -2290,9 +2290,10 @@
 						e.preventDefault();
 
 						// clear error messages
-						Flexify_Checkout.Validations.clearErrorMessages();;
+						Flexify_Checkout.Validations.clearErrorMessages();
 						
 						let step_number = $(this).data('stepper');
+						let step_slug = Flexify_Checkout.Steps.steps_hash[step_number];
 						let is_active = $(this).closest('[data-stepper-li]').hasClass('selected');
 
 						if ( is_active ) {
@@ -2315,8 +2316,8 @@
 							return false;
 						}
 
-						// Only change the hash. Panels will be toggled by hashchange event listener.
-						window.location.hash = '#' + Flexify_Checkout.Steps.steps_hash[step_number];
+						// Navigate using query parameter
+						Flexify_Checkout.Steps.navigateToStep( step_slug );
 
 						// Woo trigger select2 reload.
 						$(document.body).trigger('country_to_state_changed');
@@ -2333,7 +2334,7 @@
 			 * We use AJAX to get the correct message and then trigger Woo validation
 			 * 
 			 * @since 1.0.0
-			 * @version 5.3.0
+			 * @version 5.4.1
 			 */
 			onNextClick: function() {
 				$('[data-step-next]').each( function() {
@@ -2344,7 +2345,7 @@
 
 						// add button spinner
 						Flexify_Checkout.Components.addSpinner( btn );
-						Flexify_Checkout.Validations.clearErrorMessages();;
+						Flexify_Checkout.Validations.clearErrorMessages();
 
 						let current_parent = btn.closest('[data-step]');
 						let fields = Flexify_Checkout.Steps.getFields( current_parent );
@@ -2373,14 +2374,14 @@
 						Flexify_Checkout.Components.removeSpinner( btn );
 						
 						let next_step_number = btn.data('step-show');
-						let next_step = $(`[data-step="${next_step_number}"]`);
+						let next_step_slug = Flexify_Checkout.Steps.steps_hash[next_step_number];
 
-						if ( ! next_step.length ) {
+						if ( ! next_step_slug ) {
 							return false;
 						}
 
-						// Only change the hash. Panels will be toggled by hashchange event listener.
-						window.location.hash = '#' + Flexify_Checkout.Steps.steps_hash[next_step_number];
+						// Navigate using query parameter
+						Flexify_Checkout.Steps.navigateToStep( next_step_slug );
 
 						// Woo trigger select2 reload.
 						$(document.body).trigger('country_to_state_changed');
@@ -2487,62 +2488,104 @@
 			 * On hash change
 			 * 
 			 * @since 1.0.0
-			 * @version 5.0.0
+			 * @version 5.4.1
 			 * @param {object} e | Event object
 			 * @return {void}
 			 */
 			onHashChange: function(e) {
-				if ( ! window.location.hash ) {
-					return;
-				}
+				// This method is no longer used for step navigation
+				// We'll keep it for backward compatibility but it won't trigger step changes
+				return;
+			},
 
-				var hash, parts, step, scrollElement, goingForward;
-
-				hash = window.location.hash.replace('#', '');
-				goingForward = Flexify_Checkout.Steps.isHashGoingForward(e);
-
-				if ( hash.includes("|") ) {
-					parts = hash.split("|");
-					step = parts[0];
-					scrollElement = parts[1];
+			/**
+			 * Navigate to step with optional scroll element
+			 * 
+			 * @since 5.4.1
+			 * @param {string} step | Step slug
+			 * @param {string} scrollElement | Element to scroll to
+			 * @param {boolean} replaceState | Whether to replace state
+			 * @return {void}
+			 */
+			navigateToStep: function( step, scrollElement = '', replaceState = false ) {
+				const url = new URL( window.location.href );
+				url.searchParams.set( 'step', step );
+				
+				if ( scrollElement ) {
+					url.searchParams.set( 'scroll', scrollElement );
 				} else {
-					step = hash;
+					url.searchParams.delete( 'scroll' );
 				}
+				
+				if ( replaceState ) {
+					window.history.replaceState( null, '', url.toString() );
+				} else {
+					window.history.pushState( null, '', url.toString() );
+				}
+				
+				// Update UI to reflect new step
+				this.updateStepUI( step, scrollElement );
+			},
 
-				var next_stepper = document.querySelector('[data-hash="' + step + '"]');
-
-				if ( ! next_stepper ) {
+			/**
+			 * Update UI based on step parameter
+			 * 
+			 * @since 5.4.1
+			 * @param {string} step | Step slug
+			 * @param {string} scrollElement | Element to scroll to
+			 * @return {void}
+			 */
+			updateStepUI: function( step, scrollElement = '' ) {
+				const url = new URL( window.location.href );
+				const scroll = url.searchParams.get( 'scroll' );
+				
+				const steps = Flexify_Checkout.Steps.steps_hash;
+				let stepNumber = null;
+				
+				// Find step number from slug
+				for ( const [key, value] of Object.entries( steps ) ) {
+					if ( value === step ) {
+						stepNumber = parseInt( key );
+						break;
+					}
+				}
+				
+				if ( ! stepNumber ) {
 					return;
 				}
-
-				var next_step_number = next_stepper.attributes['data-stepper'].value;
-				var stepper = document.querySelector('.flexify-stepper__step.selected .flexify-stepper__button');
-				var currentStepNumber = stepper.attributes['data-stepper'].value;
-				var step_number = stepper.attributes['data-stepper'].value;
-				var is_active = next_step_number === currentStepNumber;
-
-				if ( goingForward ) {
-					Flexify_Checkout.Validations.clearErrorMessages();;
+				
+				// Get current step number from UI
+				const currentStepper = document.querySelector('.flexify-stepper__step.selected .flexify-stepper__button');
+				const currentStepNumber = currentStepper ? parseInt( currentStepper.dataset.stepper ) : 1;
+				
+				if ( currentStepNumber !== stepNumber ) {
+					Flexify_Checkout.Steps.switchPanels( currentStepNumber, stepNumber );
+					Flexify_Checkout.Steps.switchStepper( currentStepNumber, stepNumber );
 				}
-
-				if ( is_active ) {
-					Flexify_Checkout.Steps.scrollToElement( scrollElement );
-
-					return false;
+				
+				// Scroll to element if specified
+				if ( scroll && $(`#${scroll}`).length ) {
+					setTimeout(() => {
+						$('html, body').animate({
+							scrollTop: $(`#${scroll}`).offset().top - 60
+						}, 'fast');
+					}, 100);
 				}
-
-				Flexify_Checkout.Steps.switchPanels(step_number, next_step_number);
-				Flexify_Checkout.Steps.switchStepper(step_number, next_step_number);
-				Flexify_Checkout.Steps.scrollToElement(scrollElement);
-
-				// Woo trigger select2 reload.
-				$(document.body).trigger('country_to_state_changed');
-
-				// Trigger custom event.
-				$(document.body).trigger('flexify_step_change');
-
-				if ( document.getElementById("billing_phone") ) {
-					document.getElementById("billing_phone").dispatchEvent( new Event('keyup') );
+			},
+			
+			/**
+			 * Handle popstate event (back/forward navigation)
+			 * 
+			 * @since 5.4.1
+			 * @param {object} e | Event object
+			 * @return {void}
+			 */
+			onPopState: function(e) {
+				const url = new URL( window.location.href );
+				const step = url.searchParams.get( 'step' );
+				
+				if ( step ) {
+					this.updateStepUI( step );
 				}
 			},
 
@@ -2550,16 +2593,20 @@
 			 * Change step on load page
 			 * 
 			 * @since 1.0.0
-			 * @version 5.0.0
+			 * @version 5.4.1
 			 * @return void
 			 */
 			handeStepOnPageLoad: function() {
-				if ( ! window.location.hash ) {
-					window.location.hash = Flexify_Checkout.Steps.steps_hash[1];
-					return;
+				const url = new URL( window.location.href );
+				let step = url.searchParams.get( 'step' );
+				
+				// If no step parameter, set default to first step
+				if ( ! step ) {
+					step = this.steps_hash[1];
+					this.navigateToStep( step, true ); // Replace state without adding to history
 				}
-
-				Flexify_Checkout.Steps.onHashChange();
+				
+				this.updateStepUI( step );
 			},
 
 			/**
@@ -2605,6 +2652,37 @@
 			},
 
 			/**
+			 * Handle hash-based links and convert them to query parameters
+			 * 
+			 * @since 5.4.1
+			 * @param {object} e | Event object
+			 * @return {void}
+			 */
+			handleHashLinks: function(e) {
+				const target = e.target.closest('a');
+				
+				if ( ! target ) return;
+				
+				const href = target.getAttribute('href');
+				
+				// Check if it's a hash link for step navigation
+				if ( href && href.startsWith('#') ) {
+					e.preventDefault();
+					
+					const hash = href.substring(1);
+					const parts = hash.split('|');
+					const step = parts[0];
+					
+					// Check if this is a valid step slug
+					const steps = Object.values( Flexify_Checkout.Steps.steps_hash );
+
+					if ( steps.includes( step ) ) {
+						Flexify_Checkout.Steps.navigateToStep( step );
+					}
+				}
+			},
+
+			/**
 			 * Scroll to element
 			 * 
 			 * @since 1.0.0
@@ -2624,14 +2702,25 @@
 			 * Initialize module
 			 * 
 			 * @since 1.0.0
-			 * @version 5.0.0
+			 * @version 5.4.1
 			 */
 			init: function() {
 				this.handeStepOnPageLoad();
 				this.onNextClick();
 				this.onStepperClick();
 
-				window.addEventListener( 'hashchange', Flexify_Checkout.Steps.onHashChange );
+				// Listen for hash link clicks
+				document.addEventListener( 'click', (e) => {
+					this.handleHashLinks(e);
+				});
+
+				// Listen for browser back/forward navigation
+				window.addEventListener( 'popstate', (e) => {
+					this.onPopState(e);
+				});
+				
+				// Remove old hashchange listener
+				window.removeEventListener( 'hashchange', Flexify_Checkout.Steps.onHashChange );
 			},
 		},
 
