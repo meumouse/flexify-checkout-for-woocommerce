@@ -13,7 +13,7 @@ defined('ABSPATH') || exit;
  * Handle de steps
  *
  * @since 1.0.0
- * @version 5.0.0
+ * @version 5.4.1
  * @package MeuMouse.com
  */
 class Steps {
@@ -22,6 +22,7 @@ class Steps {
 	 * Construct function
 	 * 
 	 * @since 5.0.0
+	 * @version 5.4.1
 	 * @return void
 	 */
 	public function __construct() {
@@ -31,6 +32,9 @@ class Steps {
 		}
 
 		add_filter( 'woocommerce_order_button_html', array( __CLASS__, 'place_order_button' ), 999, 1 );
+
+		// Add handler for query string parameter
+    	add_action( 'template_redirect', array( __CLASS__, 'handle_step_redirect' ) );
 	}
 
 
@@ -823,7 +827,7 @@ class Steps {
 	 * Print back button
 	 *
 	 * @since 1.0.0
-	 * @version 5.0.0
+	 * @version 5.4.1
 	 * @param array $step | Step slug
 	 * @return void
 	 */
@@ -834,7 +838,7 @@ class Steps {
 				 * Filter to modify the URL for the back button
 				 *
 				 * @since 2.0.0
-				 * @version 5.0.0
+				 * @version 5.3.3
 				 * @param string $url | Back button URL
 				 * @return string
 				 */
@@ -843,8 +847,11 @@ class Steps {
 				<a class="flexify-step__back flexify-step__back--back-shop" href="<?php echo esc_url( $button_url ); ?>"><?php echo esc_html__( 'Voltar à loja', 'flexify-checkout-for-woocommerce' ); ?></a>
 			<?php endif;
 		} else {
-			if ( ! empty( Admin_Options::get_setting('text_previous_step_button') ) ) : ?>
-				<a class="flexify-step__back flexify-step__back--back-history" href="#<?php echo esc_attr( self::get_prev_step_slug( $step ) ); ?>">
+			if ( ! empty( Admin_Options::get_setting('text_previous_step_button') ) ) :
+				$prev_step = self::get_prev_step_slug( $step );
+				$prev_url = add_query_arg( 'step', $prev_step, wc_get_checkout_url() ); ?>
+				
+				<a class="flexify-step__back flexify-step__back--back-history" href="<?php echo esc_url( $prev_url ); ?>">
 					<?php echo Admin_Options::get_setting('text_previous_step_button'); ?>
 				</a>
 			<?php endif;
@@ -982,7 +989,7 @@ class Steps {
 	 * Render customer details review section
 	 *
 	 * @since 1.0.0
-	 * @version 3.9.8
+	 * @version 5.4.1
 	 * @return void
 	 */
 	public static function render_customer_review() {
@@ -1011,7 +1018,7 @@ class Steps {
 						</div>
 						
 						<div class="flexify-review-customer__buttons">
-							<a href="#customer-info|billing_first_name_field" data-stepper-goto="1"><?php esc_html_e( 'Editar', 'flexify-checkout-for-woocommerce' ); ?></a>
+							<a href="#" data-stepper="1" data-stepper-goto="1"><?php esc_html_e( 'Editar', 'flexify-checkout-for-woocommerce' ); ?></a>
 						</div>
 					</div>
 				</div>
@@ -1052,7 +1059,7 @@ class Steps {
 						</div>
 
 						<div class="flexify-review-customer__buttons">
-							<a href="#address|billing_country" data-stepper-goto="2"><?php esc_html_e( 'Editar', 'flexify-checkout-for-woocommerce' ); ?></a>
+							<a href="#" data-stepper="2" data-stepper-goto="2"><?php esc_html_e( 'Editar', 'flexify-checkout-for-woocommerce' ); ?></a>
 						</div>
 					</div>
 				</div>
@@ -1069,7 +1076,7 @@ class Steps {
 							</div>
 
 							<div class="flexify-review-customer__buttons">
-								<a href="#address|shipping_method" data-stepper-goto="2"><?php esc_html_e('Editar', 'flexify-checkout-for-woocommerce'); ?></a>
+								<a href="#" data-stepper="2" data-stepper-goto="2" data-scroll-element="shipping_method"><?php esc_html_e('Editar', 'flexify-checkout-for-woocommerce'); ?></a>
 							</div>
 						</div>
 					</div>
@@ -1209,6 +1216,7 @@ class Steps {
 	 * Get slug of the previous step
 	 *
 	 * @since 1.0.0
+	 * @version 5.4.1
 	 * @param string $current_step
 	 * @return string
 	 */
@@ -1246,5 +1254,51 @@ class Steps {
 
 		// re-index the array
 		return array_values( $steps );
+	}
+
+
+	/**
+	 * Handle step redirect based on query parameter
+	 * 
+	 * @since 5.4.1
+	 * @return void
+	 */
+	public static function handle_step_redirect() {
+		if ( ! is_checkout() || ! is_flexify_checkout() ) {
+			return;
+		}
+		
+		$current_step = isset( $_GET['step'] ) ? sanitize_text_field( $_GET['step'] ) : '';
+		
+		if ( empty( $current_step ) ) {
+			// Set default step to customer-info
+			$steps = self::get_steps_hashes();
+
+			if ( ! empty( $steps[1] ) ) {
+				wp_redirect( add_query_arg( 'step', $steps[1], wc_get_checkout_url() ) );
+				exit;
+			}
+		}
+	}
+
+	/**
+	 * Get current step from query parameter
+	 * 
+	 * @since 5.4.1
+	 * @return string
+	 */
+	public static function get_current_step() {
+		if ( ! is_checkout() || ! is_flexify_checkout() ) {
+			return '';
+		}
+		
+		$current_step = isset( $_GET['step'] ) ? sanitize_text_field( $_GET['step'] ) : '';
+		
+		if ( empty( $current_step ) ) {
+			$steps = self::get_steps_hashes();
+			$current_step = ! empty( $steps[1] ) ? $steps[1] : 'customer-info';
+		}
+		
+		return $current_step;
 	}
 }

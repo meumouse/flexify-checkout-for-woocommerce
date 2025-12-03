@@ -1,3 +1,10 @@
+Versão 5.4.1 (03/12/2025)
+* Correção de bugs
+  - Overflow em formas de entrega em dispositivos móveis
+  - Remover animação de processamento de compras ao receber um erro do Mercado Pago
+* Otimizações
+  - Substituição de hash por query string ?step= na URL para verificar a etapa atual
+
 Versão 5.4.0 (27/11/2025)
 * Otimizações
   - Tabela e aviso de assinatura do WooCommerce Subscriptions na página de agradecimento

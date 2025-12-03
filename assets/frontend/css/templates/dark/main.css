@@ -2809,12 +2809,13 @@ input[type="checkbox"]:checked:focus:before {
 @media screen and (max-width: 1024px) {
     .flexify-checkout__shipping-table tbody td {
         text-align: left;
-    }
-}
-
-@media screen and (max-width: 1024px) {
-    .flexify-checkout__shipping-table tbody td {
         width: 100%;
+    }
+
+    #shipping_method .shipping-method-details label.shipping-label {
+        line-height: 1.5;
+        display: inline-flex !important;
+        text-wrap-mode: wrap;
     }
 }
 

@@ -2589,10 +2589,274 @@
         },
 
         /**
+         * Email suggestion providers manager
+         * 
+         * @since 3.5.0
+         * @version 5.4.1
+         */
+        emailProviders: {
+            /**
+             * DOM elements for email provider management
+             * 
+             * @since 5.4.1
+             */
+            elements: {
+                submitButton: null,
+                inputField: null,
+                providersList: null
+            },
+            
+            /**
+             * Current provider value being edited/added
+             * 
+             * @since 5.4.1
+             */
+            currentProvider: '',
+            
+            /**
+             * Initialize email providers module
+             * 
+             * @since 5.4.1
+             */
+            init: function() {
+                this.elements.submitButton = $('#add_new_email_provider');
+                this.elements.inputField = $('#get_new_email_provider');
+                this.elements.providersList = $('#flexify_checkout_email_providers');
+                
+                this.bindEvents();
+                this.setupSubmitButtonState();
+            },
+            
+            /**
+             * Bind all event listeners for email providers
+             * 
+             * @since 5.4.1
+             */
+            bindEvents: function() {
+                const self = this;
+                
+                // Listen for input changes on provider field
+                $(this.elements.inputField).on('keyup input', function() {
+                    self.currentProvider = $(this).val().trim();
+                    self.setupSubmitButtonState();
+                });
+                
+                // Submit new provider
+                $(this.elements.submitButton).on('click', function(e) {
+                    e.preventDefault();
+                    self.addProvider();
+                });
+                
+                // Delete provider (event delegation for dynamically added elements)
+                $(document).on('click', '.exclude-provider', function(e) {
+                    e.preventDefault();
+
+                    if ( ! confirm( params.i18n.confirm_remove_option ) ) {
+                        return;
+                    }
+
+                    const providerElement = $(this).closest('.list-group-item');
+                    self.deleteProvider(providerElement);
+                });
+            },
+            
+            /**
+             * Enable/disable submit button based on input state
+             * 
+             * @since 5.4.1
+             */
+            setupSubmitButtonState: function() {
+                const isDisabled = this.currentProvider === '';
+                $(this.elements.submitButton).prop('disabled', isDisabled);
+            },
+            
+            /**
+             * Add a new email provider via AJAX
+             * 
+             * @since 5.4.1
+             */
+            addProvider: function() {
+                const self = this;
+                const button = $(this.elements.submitButton);
+                const buttonState = Flexify_Checkout_Admin.keepButtonState(button);
+            
+                // send AJAX request
+                $.ajax({
+                    url: flexify_checkout_params.ajax_url,
+                    type: 'POST',
+                    data: {
+                        action: 'add_new_email_provider',
+                        new_provider: this.currentProvider,
+                    },
+                    beforeSend: function() {
+                        // Show loading state
+                        button.html('<span class="spinner-border spinner-border-sm"></span>');
+                    },
+                    success: function(response) {
+                        try {
+                            if (response.status === 'success') {
+                                self.handleAddSuccess(response, buttonState);
+                            } else {
+                                self.handleAddError(response, buttonState);
+                            }
+                        } catch (error) {
+                            console.error('Error processing response:', error);
+                            button.html(buttonState.html);
+                        }
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        console.error("AJAX request failed:", textStatus, errorThrown);
+                        button.html(buttonState.html);
+                    }
+                });
+            },
+            
+            /**
+             * Handle successful provider addition
+             * 
+             * @since 5.4.1
+             * @param {Object} response - AJAX response
+             * @param {Object} buttonState - Original button state
+             */
+            handleAddSuccess: function(response, buttonState) {
+                // Reset form
+                this.currentProvider = '';
+                $(this.elements.inputField).val('');
+                this.setupSubmitButtonState();
+                
+                // Restore button
+                $(this.elements.submitButton).html(buttonState.html);
+                
+                // Add new provider to list
+                this.addProviderToList(response.new_provider);
+                
+                // Show success toast
+                this.showToast('success', response.toast_header_title, response.toast_body_title, 'new-email-provider-toast');
+            },
+            
+            /**
+             * Handle provider addition error
+             * 
+             * @since 5.4.1
+             * @param {Object} response - AJAX response
+             * @param {Object} buttonState - Original button state
+             */
+            handleAddError: function(response, buttonState) {
+                // Restore button
+                $(this.elements.submitButton).html(buttonState.html);
+                
+                // Show error toast
+                this.showToast('danger', response.toast_header_title || 'Error', response.toast_body_title || 'Failed to add provider', 'new-email-provider-toast');
+            },
+            
+            /**
+             * Add provider item to the DOM list
+             * 
+             * @since 5.4.1
+             * @param {string} provider - Provider name
+             */
+            addProviderToList: function(provider) {
+                const providerItem = `<li class="list-group-item d-flex align-items-center justify-content-between" data-provider="${provider}">
+                    <span>${provider}</span>
+                    <button class="exclude-provider btn btn-icon btn-sm btn-outline-danger rounded-3 ms-3"><svg class="icon icon-sm icon-danger" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15 2H9c-1.103 0-2 .897-2 2v2H3v2h2v12c0 1.103.897 2 2 2h10c1.103 0 2-.897 2-2V8h2V6h-4V4c0-1.103-.897-2-2-2zM9 4h6v2H9V4zm8 16H7V8h10v12z"></path></svg></button>
+                </li>`;
+                
+                $(this.elements.providersList).append(providerItem);
+            },
+            
+            /**
+             * Delete an email provider via AJAX
+             * 
+             * @since 5.4.1
+             * @param {jQuery} providerElement - The provider list item element
+             */
+            deleteProvider: function(providerElement) {
+                const self = this;
+                const button = $(providerElement).find('.exclude-provider');
+                const buttonState = Flexify_Checkout_Admin.keepButtonState(button);
+                const providerName = $(providerElement).data('provider');
+                
+                // send AJAX request
+                $.ajax({
+                    url: flexify_checkout_params.ajax_url,
+                    type: 'POST',
+                    data: {
+                        action: 'remove_email_provider',
+                        exclude_provider: providerName,
+                    },
+                    beforeSend: function() {
+                        // Show loading state
+                        button.html('<span class="spinner-border spinner-border-sm"></span>');
+                    },
+                    success: function(response) {
+                        try {
+                            if (response.status === 'success') {
+                                self.handleDeleteSuccess(providerElement, response, buttonState);
+                            } else {
+                                self.handleDeleteError(response, buttonState);
+                            }
+                        } catch (error) {
+                            console.error('Error processing response:', error);
+                            button.html(buttonState.html);
+                        }
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        console.error("AJAX request failed:", textStatus, errorThrown);
+                        button.html(buttonState.html);
+                    }
+                });
+            },
+            
+            /**
+             * Handle successful provider deletion
+             * 
+             * @since 5.4.1
+             * @param {jQuery} providerElement - The provider list item element
+             * @param {Object} response - AJAX response
+             * @param {Object} buttonState - Original button state
+             */
+            handleDeleteSuccess: function(providerElement, response, buttonState) {
+                // Animate removal
+                $(providerElement).fadeOut('fast', function() {
+                    $(this).remove();
+                });
+                
+                // Show success toast
+                this.showToast('success', response.toast_header_title, response.toast_body_title, 'exclude-email-provider-toast');
+            },
+            
+            /**
+             * Handle provider deletion error
+             * 
+             * @since 5.4.1
+             * @param {Object} response - AJAX response
+             * @param {Object} buttonState - Original button state
+             */
+            handleDeleteError: function(response, buttonState) {
+                // Show error toast
+                this.showToast('danger', response.toast_header_title || 'Error', response.toast_body_title || 'Failed to remove provider', 'exclude-email-provider-toast');
+            },
+            
+            /**
+             * Display a toast notification
+             * 
+             * @since 5.4.1
+             * @param {string} type - Toast type (success, danger, warning, error)
+             * @param {string} header - Toast header text
+             * @param {string} body - Toast body text
+             * @param {string} customClass - Additional CSS class
+             */
+            showToast: function(type, header, body, customClass) {
+                // Use the existing displayToast method from the main admin object
+                Flexify_Checkout_Admin.displayToast(type, header, body, customClass);
+            }
+        },
+
+        /**
          * Initialize all modules
          * 
          * @since 5.1.0
-         * @version 5.3.3
+         * @version 5.4.1
          */
         init: function() {
             this.initTabs();
@@ -2613,6 +2877,7 @@
             this.integrationModules.init();
             this.connectionListener.init();
             this.codeEditor();
+            this.emailProviders.init();
         },
     };
 

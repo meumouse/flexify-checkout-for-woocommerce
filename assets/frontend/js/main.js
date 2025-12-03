@@ -856,6 +856,7 @@
 		 * Process checkout object helper
          * 
          * @since 5.0.0
+		 * @version 5.4.1
 		 */
 		processCheckout: {
             /**
@@ -870,29 +871,48 @@
             },
 
             /**
-             * On button click
-             * 
-             * @since 1.0.0
-             * @version 5.0.0
-             * @return void
-             */
-            onClick: function() {
-                $(document).on('click', '#place_order', function(e) {
-                    // Prevent the default behavior of the button
-                    e.preventDefault();
+			 * On button click
+			 * 
+			 * @since 1.0.0
+			 * @version 5.4.1
+			 * @return void
+			 */
+			onClick: function() {
+				$(document).on('click', '#place_order', function(e) {
+					// Prevent the default behavior of the button
+					e.preventDefault();
 
-                    Flexify_Checkout.Animations.preparePlaceOrderButton();
-                    $('#place_order').addClass('flexify-checkout-btn-loading');
+					// Check if form is already processing
+					if ($('body').hasClass('processing')) {
+						console.log('[FLEXIFY CHECKOUT] Checkout is already processing');
+						return;
+					}
 
-                    // enable purchase animation
-                    if ( params.enable_animation_process_purchase === 'yes' ) {
-                        Flexify_Checkout.Animations.purchaseAnimation.start();
-                    }
+					Flexify_Checkout.Animations.preparePlaceOrderButton();
+					$('#place_order').addClass('flexify-checkout-btn-loading');
 
-                    // Simulate the form submission event
-                    $('#place_order').closest('form').submit();
-                });
-            },
+					// enable purchase animation
+					if ( params.enable_animation_process_purchase === 'yes' ) {
+						Flexify_Checkout.Animations.purchaseAnimation.start();
+					}
+
+					// Add a safety timeout to stop animation if form submission hangs
+					setTimeout(() => {
+						if ( $('body').hasClass('processing') ) {
+							console.log('[FLEXIFY CHECKOUT] Safety timeout triggered');
+
+							Flexify_Checkout.Helpers.resetProcessingState();
+							Flexify_Checkout.Animations.purchaseAnimation.stop();
+
+							$('#place_order').removeClass('flexify-checkout-btn-loading');
+							$('body').removeClass('processing');
+						}
+					}, 30000); // 30 second timeout
+
+					// Simulate the form submission event
+					$('#place_order').closest('form').submit();
+				});
+			},
 
             /**
              * The HTML of checkout button would reset to default when payment method is selected
@@ -1014,7 +1034,7 @@
 			 * Process actions when checkout has errors
 			 * 
 			 * @since 1.0.0
-			 * @version 5.0.0
+			 * @version 5.4.1
 			 * @return void
 			 */
 			onCheckoutError: function() {
@@ -1023,22 +1043,77 @@
 				 * Checkout error trigger
 				 * 
 				 * @since 1.0.0
-				 * @version 5.0.0
+				 * @version 5.4.1
 				 * @param {object} e | Event object
 				 * @param {string} error | Error message in HTML format
 				 */
 				$(document.body).on('checkout_error', function(e, error) {
 					$('#place_order').removeClass('flexify-checkout-btn-loading');
 
+					// Reset processing state first
+        			Flexify_Checkout.Helpers.resetProcessingState();
+					
+					// Stop all ongoing animations
+					Flexify_Checkout.Animations.purchaseAnimation.stop();
+					
+					// Remove WooCommerce processing state
+					$('body').removeClass('processing');
+					$('form.checkout').removeClass('processing');
+					
+					// Unblock any blocked elements
+					$('.woocommerce-checkout').unblock();
+					$('.woocommerce-checkout-review-order-table').unblock();
+					
+					// Ensure payment methods are visible
+					$('.payment_methods, .wc_payment_methods, .wc-payment-form').show();
+
 					Flexify_Checkout.Helpers.removeDomElements();
 					$('.woocommerce-notices-wrapper').html(''); // Clear previous notices
 					Flexify_Checkout.Components.addNotice( error );
 
-					// Stop all ongoing animations and reset state
-					Flexify_Checkout.Animations.purchaseAnimation.stop();
-
 					if ( params.debug_mode ) {
 						console.log('[FLEXIFY CHECKOUT] - Checkout error: ', error);
+					}
+				});
+			},
+
+			/**
+			 * Handle payment gateway specific errors (Stripe, etc.)
+			 * 
+			 * @since 5.4.1
+			 * @return void
+			 */
+			onPaymentGatewayError: function() {
+				// Listen for Mercado Pago errors (from mp-checkout-error-dispatcher.min.js)
+				document.addEventListener('mp_checkout_error', function(e) {
+					console.log('[FLEXIFY CHECKOUT] Mercado Pago error detected:', e.detail.message);
+
+					Flexify_Checkout.Helpers.resetProcessingState();
+					Flexify_Checkout.Animations.purchaseAnimation.stop();
+
+					$('#place_order').removeClass('flexify-checkout-btn-loading');
+					$('body').removeClass('processing');
+				});
+				
+				// Listen for Stripe errors (common pattern)
+				$(document).on('stripeError', function(e, error) {
+					console.log('[FLEXIFY CHECKOUT] Stripe error detected:', error);
+
+					Flexify_Checkout.Animations.purchaseAnimation.stop();
+					$('#place_order').removeClass('flexify-checkout-btn-loading');
+					$('body').removeClass('processing');
+				});
+				
+				// Listen for general AJAX errors during checkout
+				$(document).ajaxError(function(event, jqxhr, settings, error) {
+					// Check if this is a payment-related AJAX call
+					if (settings.url && (
+						settings.url.includes('checkout') || 
+						settings.url.includes('payment') ||
+						settings.url.includes('stripe') ||
+						settings.url.includes('paypal')
+					)) {
+						console.log('[FLEXIFY CHECKOUT] Payment AJAX error:', error);
 					}
 				});
 			},
@@ -1203,12 +1278,14 @@
 			 * Initialize module
 			 * 
 			 * @since 5.0.0
-			 * @version 5.2.0
+			 * @version 5.4.1
+			 * @return {void}
 			 */
 			init: function() {
 				Flexify_Checkout.Helpers.removeDomElements();
 				this.onUpdatedCheckout();
 				this.onCheckoutError();
+				this.onPaymentGatewayError();
 				this.onFragmentsUpdated();
 				this.onSelectShippingMethod();
 				this.removeProductItem();
@@ -1607,6 +1684,44 @@
 					notices_wrapper.prependTo('.flexify-checkout__steps');
 				}
 			},
+
+			/**
+			 * Completely reset processing state
+			 * Ensures checkout is not stuck in processing mode
+			 * 
+			 * @since 5.4.1
+			 * @return {void}
+			 */
+			resetProcessingState: function() {
+				// Remove processing classes
+				$('body').removeClass('processing');
+				$('form.checkout').removeClass('processing');
+				$('.woocommerce-checkout').removeClass('processing');
+				
+				// Remove loading state from place order button
+				$('#place_order').removeClass('flexify-checkout-btn-loading');
+				
+				// Remove any WooCommerce blockUI overlays
+				$('.blockOverlay').remove();
+				$('.blockUI').remove();
+				$('.wc-block-components-loading-mask').remove();
+				
+				// Unblock any blocked elements
+				$('.woocommerce-checkout').unblock();
+				$('.woocommerce-checkout-review-order-table').unblock();
+				$('.payment_methods').unblock();
+				
+				// Ensure payment methods are visible
+				$('.payment_methods, .wc_payment_methods, .wc-payment-form').show();
+				
+				// Remove any processing spinners
+				$('.flexify-button--processing').removeClass('flexify-button--processing');
+				$('.flexify-btn-processing-inline').remove();
+				
+				if (params.debug_mode) {
+					console.log('[FLEXIFY CHECKOUT] Processing state completely reset');
+				}
+			},
 		},
 
 		/**
@@ -1934,6 +2049,7 @@
 		 * Animations object helper
 		 * 
 		 * @since 5.0.0
+		 * @version 5.4.1
 		 * @return void
 		 */
 		Animations: {
@@ -1964,7 +2080,7 @@
 			 * Process purchase animation
 			 * 
 			 * @since 3.9.4
-			 * @version 5.0.0
+			 * @version 5.4.1
 			 * @return object
 			 */
 			purchaseAnimation: function() {
@@ -1975,6 +2091,7 @@
 				let animationInterval; // Interval for animations
 				let progressBarInterval; // Interval for progress bar
 				let isAnimating = false; // Flag to track animation state
+				let safetyTimeout;
 
 				// Start purchase animation
 				const start_purchase_animation = function() {
@@ -1982,7 +2099,7 @@
 					const progressBar = animationGroup.find('.animation-progress-bar');
 
 					// Prevent multiple animations from starting
-					if (isAnimating) {
+					if ( isAnimating ) {
 						return;
 					}
 
@@ -1994,6 +2111,11 @@
 
 					// Add "active" class to main group
 					animationGroup.addClass('active');
+
+					safetyTimeout = setTimeout(() => {
+						console.log('[FLEXIFY CHECKOUT] Animation safety timeout reached');
+						stop_all_animations();
+					}, 45000);
 
 					// Remove WooCommerce overlay
 					setTimeout(() => {
@@ -2043,7 +2165,7 @@
 					const increment = Math.floor(Math.random() * (25 - 15 + 1)) + 15;
 					progressWidth += increment;
 
-					if (progressWidth > maxProgress) {
+					if ( progressWidth > maxProgress ) {
 						progressWidth = maxProgress;
 						clearInterval(progressBarInterval); // Stop updates when max is reached
 					}
@@ -2056,9 +2178,13 @@
 					const animationGroup = $('#flexify_checkout_purchase_animation');
 					const progressBar = animationGroup.find('.animation-progress-bar');
 
+					// Reset processing state
+    				Flexify_Checkout.Helpers.resetProcessingState();
+
 					// Clear intervals and reset progress
 					clearInterval(animationInterval);
 					clearInterval(progressBarInterval);
+					clearTimeout(safetyTimeout);
 					isAnimating = false;
 					progressWidth = 0;
 
@@ -2066,6 +2192,16 @@
 					progressBar.css('width', '0%');
 					animationGroup.find('.purchase-animation-item').removeClass('active');
 					animationGroup.removeClass('active');
+					
+					// IMPORTANT: Remove processing class from WooCommerce form
+					$('body').removeClass('processing');
+					$('form.checkout').removeClass('processing');
+					
+					// Re-enable place order button
+					$('#place_order').removeClass('flexify-checkout-btn-loading');
+					
+					// Show payment form again if hidden
+					$('.payment_methods, .wc_payment_methods').show();
 				};
 
 				// Reset animation state
@@ -2146,7 +2282,7 @@
 			 * On proceed to next step
 			 * 
 			 * @since 1.0.0
-			 * @version 5.0.0
+			 * @version 5.4.1
 			 */
 			onStepperClick: function() {
 				$('[data-stepper]').each( function() {
@@ -2154,9 +2290,10 @@
 						e.preventDefault();
 
 						// clear error messages
-						Flexify_Checkout.Validations.clearErrorMessages();;
+						Flexify_Checkout.Validations.clearErrorMessages();
 						
 						let step_number = $(this).data('stepper');
+						let step_slug = Flexify_Checkout.Steps.steps_hash[step_number];
 						let is_active = $(this).closest('[data-stepper-li]').hasClass('selected');
 
 						if ( is_active ) {
@@ -2179,8 +2316,8 @@
 							return false;
 						}
 
-						// Only change the hash. Panels will be toggled by hashchange event listener.
-						window.location.hash = '#' + Flexify_Checkout.Steps.steps_hash[step_number];
+						// Navigate using query parameter
+						Flexify_Checkout.Steps.navigateToStep( step_slug );
 
 						// Woo trigger select2 reload.
 						$(document.body).trigger('country_to_state_changed');
@@ -2197,7 +2334,7 @@
 			 * We use AJAX to get the correct message and then trigger Woo validation
 			 * 
 			 * @since 1.0.0
-			 * @version 5.3.0
+			 * @version 5.4.1
 			 */
 			onNextClick: function() {
 				$('[data-step-next]').each( function() {
@@ -2208,7 +2345,7 @@
 
 						// add button spinner
 						Flexify_Checkout.Components.addSpinner( btn );
-						Flexify_Checkout.Validations.clearErrorMessages();;
+						Flexify_Checkout.Validations.clearErrorMessages();
 
 						let current_parent = btn.closest('[data-step]');
 						let fields = Flexify_Checkout.Steps.getFields( current_parent );
@@ -2237,14 +2374,14 @@
 						Flexify_Checkout.Components.removeSpinner( btn );
 						
 						let next_step_number = btn.data('step-show');
-						let next_step = $(`[data-step="${next_step_number}"]`);
+						let next_step_slug = Flexify_Checkout.Steps.steps_hash[next_step_number];
 
-						if ( ! next_step.length ) {
+						if ( ! next_step_slug ) {
 							return false;
 						}
 
-						// Only change the hash. Panels will be toggled by hashchange event listener.
-						window.location.hash = '#' + Flexify_Checkout.Steps.steps_hash[next_step_number];
+						// Navigate using query parameter
+						Flexify_Checkout.Steps.navigateToStep( next_step_slug );
 
 						// Woo trigger select2 reload.
 						$(document.body).trigger('country_to_state_changed');
@@ -2351,62 +2488,180 @@
 			 * On hash change
 			 * 
 			 * @since 1.0.0
-			 * @version 5.0.0
+			 * @version 5.4.1
 			 * @param {object} e | Event object
 			 * @return {void}
 			 */
 			onHashChange: function(e) {
-				if ( ! window.location.hash ) {
-					return;
-				}
+				// This method is no longer used for step navigation
+				// We'll keep it for backward compatibility but it won't trigger step changes
+				return;
+			},
 
-				var hash, parts, step, scrollElement, goingForward;
-
-				hash = window.location.hash.replace('#', '');
-				goingForward = Flexify_Checkout.Steps.isHashGoingForward(e);
-
-				if ( hash.includes("|") ) {
-					parts = hash.split("|");
-					step = parts[0];
-					scrollElement = parts[1];
+			/**
+			 * Navigate to step with optional scroll element
+			 * 
+			 * @since 5.4.1
+			 * @param {string} step | Step slug
+			 * @param {string} scrollElement | Element to scroll to
+			 * @param {boolean} replaceState | Whether to replace state
+			 * @return {void}
+			 */
+			navigateToStep: function(step, scrollElement = '', replaceState = false) {
+				const url = new URL(window.location.href);
+				url.searchParams.set('step', step);
+				
+				if (scrollElement) {
+					url.searchParams.set('scroll', scrollElement);
 				} else {
-					step = hash;
+					url.searchParams.delete('scroll');
 				}
+				
+				if (replaceState) {
+					window.history.replaceState(null, '', url.toString());
+				} else {
+					window.history.pushState(null, '', url.toString());
+				}
+				
+				// Update UI to reflect new step
+				this.updateStepUI(step, scrollElement);
+			},
 
-				var next_stepper = document.querySelector('[data-hash="' + step + '"]');
+			/**
+			 * Handle back button clicks
+			 * 
+			 * @since 5.4.1
+			 * @return {void}
+			 */
+			onBackClick: function() {
+				$(document).on('click', '.flexify-step__back, .flexify-step__back--back-history', function(e) {
+					e.preventDefault();
+					
+					// Get current step from URL or UI
+					const url = new URL(window.location.href);
+					const currentStep = url.searchParams.get('step');
+					const steps = Flexify_Checkout.Steps.steps_hash;
+					
+					if (!currentStep) {
+						window.history.back();
+						return;
+					}
+					
+					// Find current step number
+					let currentStepNumber = null;
+					for (const [key, value] of Object.entries(steps)) {
+						if (value === currentStep) {
+							currentStepNumber = parseInt(key);
+							break;
+						}
+					}
+					
+					if (!currentStepNumber || currentStepNumber <= 1) {
+						window.history.back();
+						return;
+					}
+					
+					// Go to previous step
+					const previousStepNumber = currentStepNumber - 1;
+					const previousStepSlug = steps[previousStepNumber];
+					
+					if (previousStepSlug) {
+						// Navigate using query parameter (replace state to avoid back button loop)
+						Flexify_Checkout.Steps.navigateToStep(previousStepSlug, '', true);
+					}
+				});
+			},
 
-				if ( ! next_stepper ) {
+			/**
+			 * Update UI based on step parameter
+			 * 
+			 * @since 5.4.1
+			 * @param {string} step | Step slug
+			 * @param {string} scrollElement | Element to scroll to
+			 * @return {void}
+			 */
+			updateStepUI: function( step, scrollElement = '' ) {
+				const url = new URL( window.location.href );
+				const scroll = url.searchParams.get('scroll');
+				
+				const steps = Flexify_Checkout.Steps.steps_hash;
+				let stepNumber = null;
+				
+				// find step number from slug
+				for ( const [key, value] of Object.entries( steps ) ) {
+					if ( value === step ) {
+						stepNumber = parseInt( key );
+						break;
+					}
+				}
+				
+				if ( ! stepNumber ) {
 					return;
 				}
-
-				var next_step_number = next_stepper.attributes['data-stepper'].value;
-				var stepper = document.querySelector('.flexify-stepper__step.selected .flexify-stepper__button');
-				var currentStepNumber = stepper.attributes['data-stepper'].value;
-				var step_number = stepper.attributes['data-stepper'].value;
-				var is_active = next_step_number === currentStepNumber;
-
-				if ( goingForward ) {
-					Flexify_Checkout.Validations.clearErrorMessages();;
+				
+				// get step number from UI
+				const currentStepper = document.querySelector('.flexify-stepper__step.selected .flexify-stepper__button');
+				const currentStepNumber = currentStepper ? parseInt( currentStepper.dataset.stepper ) : 1;
+				
+				if ( currentStepNumber !== stepNumber ) {
+					Flexify_Checkout.Steps.switchPanels( currentStepNumber, stepNumber );
+					Flexify_Checkout.Steps.switchStepper( currentStepNumber, stepNumber );
 				}
-
-				if ( is_active ) {
-					Flexify_Checkout.Steps.scrollToElement( scrollElement );
-
-					return false;
+				
+				// hide all steps
+				$('[data-step]').css('display', 'none').attr('aria-hidden', 'true');
+				
+				// show current step only
+				$(`[data-step="${stepNumber}"]`).css('display', '').attr('aria-hidden', 'false');
+				
+				// scroll for specified element
+				if ( scroll && $(`#${scroll}`).length ) {
+					setTimeout(() => {
+						$('html, body').animate({
+							scrollTop: $(`#${scroll}`).offset().top - 60
+						}, 'fast');
+					}, 100);
 				}
+			},
 
-				Flexify_Checkout.Steps.switchPanels(step_number, next_step_number);
-				Flexify_Checkout.Steps.switchStepper(step_number, next_step_number);
-				Flexify_Checkout.Steps.scrollToElement(scrollElement);
+			/**
+			 * Handle edit links from review section
+			 * 
+			 * @since 5.4.1
+			 * @return void
+			 */
+			handleEditLinks: function() {
+				$(document).on('click', '[data-stepper-goto]', function(e) {
+					e.preventDefault();
+					
+					const link = $(this);
+					const stepNumber = link.data('stepper-goto');
+					const scrollElement = link.data('scroll-element');
+					const stepSlug = Flexify_Checkout.Steps.steps_hash[stepNumber];
+					
+					if ( ! stepSlug ) {
+						console.warn('[FLEXIFY CHECKOUT] Step slug not found for number:', stepNumber);
+						return;
+					}
+					
+					// Navigate to step with optional scroll element
+					Flexify_Checkout.Steps.navigateToStep(stepSlug, scrollElement || '');
+				});
+			},
 
-				// Woo trigger select2 reload.
-				$(document.body).trigger('country_to_state_changed');
-
-				// Trigger custom event.
-				$(document.body).trigger('flexify_step_change');
-
-				if ( document.getElementById("billing_phone") ) {
-					document.getElementById("billing_phone").dispatchEvent( new Event('keyup') );
+			/**
+			 * Handle popstate event (back/forward navigation)
+			 * 
+			 * @since 5.4.1
+			 * @param {object} e | Event object
+			 * @return {void}
+			 */
+			onPopState: function(e) {
+				const url = new URL( window.location.href );
+				const step = url.searchParams.get( 'step' );
+				
+				if ( step ) {
+					this.updateStepUI( step );
 				}
 			},
 
@@ -2414,16 +2669,42 @@
 			 * Change step on load page
 			 * 
 			 * @since 1.0.0
-			 * @version 5.0.0
+			 * @version 5.4.1
 			 * @return void
 			 */
 			handeStepOnPageLoad: function() {
-				if ( ! window.location.hash ) {
-					window.location.hash = Flexify_Checkout.Steps.steps_hash[1];
-					return;
+				const url = new URL( window.location.href );
+				let step = url.searchParams.get( 'step' );
+				
+				if ( ! step ) {
+					step = this.steps_hash[1];
+					this.navigateToStep( step, '', true ); // Replace state
 				}
-
-				Flexify_Checkout.Steps.onHashChange();
+				
+				this.updateStepUI( step );
+				
+				setTimeout(() => {
+					let currentStepNumber = null;
+					
+					for ( const [key, value] of Object.entries( this.steps_hash ) ) {
+						if ( value === step ) {
+							currentStepNumber = parseInt( key );
+							break;
+						}
+					}
+					
+					if ( currentStepNumber ) {
+						// hide all steps
+						$('[data-step]').css('display', 'none').attr('aria-hidden', 'true');
+						
+						// show current step
+						$(`[data-step="${currentStepNumber}"]`).css('display', '').attr('aria-hidden', 'false');
+						
+						// update stepper
+						$('.flexify-stepper__step').removeClass('selected').addClass('disabled');
+						$(`[data-stepper-li="${currentStepNumber}"]`).removeClass('disabled').addClass('selected');
+					}
+				}, 100);
 			},
 
 			/**
@@ -2469,6 +2750,37 @@
 			},
 
 			/**
+			 * Handle hash-based links and convert them to query parameters
+			 * 
+			 * @since 5.4.1
+			 * @param {object} e | Event object
+			 * @return {void}
+			 */
+			handleHashLinks: function(e) {
+				const target = e.target.closest('a');
+				
+				if ( ! target ) return;
+				
+				const href = target.getAttribute('href');
+				
+				// Check if it's a hash link for step navigation
+				if ( href && href.startsWith('#') ) {
+					e.preventDefault();
+					
+					const hash = href.substring(1);
+					const parts = hash.split('|');
+					const step = parts[0];
+					
+					// Check if this is a valid step slug
+					const steps = Object.values( Flexify_Checkout.Steps.steps_hash );
+
+					if ( steps.includes( step ) ) {
+						Flexify_Checkout.Steps.navigateToStep( step );
+					}
+				}
+			},
+
+			/**
 			 * Scroll to element
 			 * 
 			 * @since 1.0.0
@@ -2488,14 +2800,27 @@
 			 * Initialize module
 			 * 
 			 * @since 1.0.0
-			 * @version 5.0.0
+			 * @version 5.4.1
 			 */
 			init: function() {
 				this.handeStepOnPageLoad();
 				this.onNextClick();
 				this.onStepperClick();
+				this.onBackClick();
+				this.handleEditLinks();
 
-				window.addEventListener( 'hashchange', Flexify_Checkout.Steps.onHashChange );
+				// Listen for hash link clicks
+				document.addEventListener( 'click', (e) => {
+					this.handleHashLinks(e);
+				});
+
+				// Listen for browser back/forward navigation
+				window.addEventListener( 'popstate', (e) => {
+					this.onPopState(e);
+				});
+				
+				// Remove old hashchange listener
+				window.removeEventListener( 'hashchange', Flexify_Checkout.Steps.onHashChange );
 			},
 		},
 
