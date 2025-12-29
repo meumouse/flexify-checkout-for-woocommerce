@@ -1,3 +1,7 @@
+Versão 5.4.2 (29/12/2025)
+* Correção de bugs
+  - Ativar validação de endereço por CEP
+
 Versão 5.4.1 (03/12/2025)
 * Correção de bugs
   - Overflow em formas de entrega em dispositivos móveis
