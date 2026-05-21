@@ -1236,7 +1236,7 @@ class Fields {
 			exit;
 		}
 
-		// get step fields
+		// Build target fields from step manager + native checkout required fields.
 		$fields = maybe_unserialize( get_option('flexify_checkout_step_fields', array()) );
 		$target_fields = array();
 
@@ -1244,7 +1244,9 @@ class Fields {
 			foreach ( $fields as $index => $option ) {
 				$target_fields[] = $index;
 			}
-		} elseif ( function_exists( 'WC' ) && WC() && WC()->checkout ) {
+		}
+
+		if ( function_exists( 'WC' ) && WC() && WC()->checkout ) {
 			$checkout_fields = WC()->checkout->get_checkout_fields();
 
 			foreach ( array( 'billing', 'shipping', 'account' ) as $group ) {
@@ -1271,6 +1273,14 @@ class Fields {
 		$target_fields = apply_filters( 'Flexify_Checkout/Checkout/Fields/Target_Fields_For_Check_Errors', $target_fields );
 		$target_fields = array_unique( array_filter( $target_fields ) );
 		$field_id = isset( $args['id'] ) ? $args['id'] : $key;
+
+		// Guarantee required field currently being rendered is decorated,
+		// even if it is not explicitly mapped in step fields.
+		if ( $field_is_required ) {
+			$target_fields[] = $field_id;
+			$target_fields[] = $key;
+			$target_fields = array_unique( array_filter( $target_fields ) );
+		}
 
 		$data_attributes = '<p ';
 		$data_attributes .= sprintf( 'data-type="%s"', esc_attr( $field_type ) ) . ' ';
