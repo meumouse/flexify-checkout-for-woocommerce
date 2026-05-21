@@ -5255,3 +5255,45 @@ p.form-row.flexify-checkout-loading-placeholder > label {
         margin-bottom: 1rem;
     }
 }
+
+@media screen and (max-width: 550px) {
+    .flexify-checkout__content-right #order_review tr.cart_item,
+    .flexify-step #order_review tr.cart_item {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        grid-template-areas:
+            "name total"
+            "qty remove";
+        align-items: start;
+        column-gap: 12px;
+    }
+
+    .flexify-checkout__content-right #order_review tr.cart_item td.product-name,
+    .flexify-step #order_review tr.cart_item td.product-name {
+        grid-area: name;
+        min-height: 0;
+        width: 100%;
+        padding-left: 0 !important;
+        font-size: 15px;
+    }
+
+    .flexify-checkout__content-right #order_review tr.cart_item td.product-total,
+    .flexify-step #order_review tr.cart_item td.product-total {
+        grid-area: total;
+        align-items: flex-end;
+        padding-top: 16px;
+    }
+
+    .flexify-checkout__content-right #order_review tr.cart_item td.product-name .quantity,
+    .flexify-step #order_review tr.cart_item td.product-name .quantity {
+        grid-area: qty;
+        margin-top: 8px;
+        padding-top: 0;
+        min-width: 0;
+    }
+
+    .flexify-checkout__content-right #order_review tr.cart_item td.product-total .flexify-checkout__remove-link,
+    .flexify-step #order_review tr.cart_item td.product-total .flexify-checkout__remove-link {
+        margin-top: 8px;
+    }
+}

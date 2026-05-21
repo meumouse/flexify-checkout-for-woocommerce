@@ -3066,34 +3066,62 @@
 				}).filter(el => el); // remove null values
 
 				// if has postcode, then try to auto fill address
-				if ( code.length === 8 ) {
-					// send request to API service
+				if ( code.length !== 8 ) {
+					return;
+				}
+
+				const providers = Flexify_Checkout.Fields.getAddressProviders( code );
+				const logEnabled = params.debug_mode === 'yes' || params.debug_mode === true;
+				const log = (...args) => {
+					if ( logEnabled ) {
+						console.log('[FLEXIFY CHECKOUT][CEP]', ...args);
+					}
+				};
+
+				const tryProvider = (index) => {
+					if ( ! providers[index] ) {
+						log('all providers failed', { type, code });
+						$(document).trigger('flexify_checkout_cep_lookup_failed', [{ type, postcode: code }]);
+						Flexify_Checkout.UI.togglePlaceholder( fields, false );
+						return;
+					}
+
+					const provider = providers[index];
+					log('trying provider', provider.name, provider.url);
+
 					$.ajax({
 						type: 'GET',
-						url: params.fill_address.api_service.replace( '{postcode}', code ),
+						url: provider.url,
+						timeout: 6000,
 						dataType: 'json',
 						contentType: 'application/json',
 						beforeSend: function() {
-							// add loading placeholders
-							Flexify_Checkout.UI.togglePlaceholder( fields, true );
-						},
-						success: function(response) {
-							if ( response ) {
-								Flexify_Checkout.Fields.fillAddressFields(type, response);
+							if ( index === 0 ) {
+								Flexify_Checkout.UI.togglePlaceholder( fields, true );
 							}
 						},
-						error: function(jqXHR, textStatus, errorThrown) {
-							console.error('[FLEXIFY CHECKOUT] AJAX error on try fill address:', textStatus, errorThrown);
-							
-							// remove loading placeholder
+						success: function(response) {
+							const normalized = Flexify_Checkout.Fields.normalizeAddressResponse( provider, response );
+
+							if ( ! normalized ) {
+								log('provider returned invalid payload', provider.name, response);
+								tryProvider(index + 1);
+								return;
+							}
+
+							Flexify_Checkout.Fields.fillAddressFields(type, normalized);
+							log('provider success', provider.name, normalized);
+							$(document).trigger('flexify_checkout_cep_lookup_success', [{ type, postcode: code, provider: provider.name }]);
 							Flexify_Checkout.UI.togglePlaceholder( fields, false );
 						},
-						complete: () => {
-							// remove loading placeholder
-							Flexify_Checkout.UI.togglePlaceholder( fields, false );
+						error: function(jqXHR, textStatus, errorThrown) {
+							log('provider error', provider.name, textStatus, errorThrown);
+							tryProvider(index + 1);
 						},
 					});
-				}
+				};
+
+				tryProvider(0);
 			},
 
 			/**
@@ -3106,12 +3134,91 @@
 			 * @return {void}
 			 */
 			fillAddressFields: function(type, data) {
-				const p = params.fill_address;
+				$(`#${type}_address_1`).val( data.address_1 || '' ).change();
+				$(`#${type}_neighborhood`).val( data.neighborhood || '' ).change();
+				$(`#${type}_city`).val( data.city || '' ).change();
+				$(`#${type}_state`).val( data.state || '' ).change();
+			},
 
-				$(`#${type}_address_1`).val( data[p.address_param] ).change();
-				$(`#${type}_neighborhood`).val(data[p.neightborhood_param]).change();
-				$(`#${type}_city`).val( data[p.city_param] ).change();
-				$(`#${type}_state`).val( data[p.state_param] ).change();
+			/**
+			 * Build ordered CEP providers list.
+			 *
+			 * @since 5.4.3
+			 * @param {string} code
+			 * @returns {Array}
+			 */
+			getAddressProviders: function( code ) {
+				const p = params.fill_address || {};
+				const providers = [];
+
+				if ( p.api_service ) {
+					providers.push({
+						name: 'primary',
+						url: p.api_service.replace('{postcode}', code),
+						map: {
+							address_1: p.address_param || 'logradouro',
+							neighborhood: p.neightborhood_param || 'bairro',
+							city: p.city_param || 'localidade',
+							state: p.state_param || 'uf',
+						},
+					});
+				}
+
+				providers.push({
+					name: 'viacep',
+					url: `https://viacep.com.br/ws/${code}/json/`,
+					map: {
+						address_1: 'logradouro',
+						neighborhood: 'bairro',
+						city: 'localidade',
+						state: 'uf',
+					},
+				});
+
+				providers.push({
+					name: 'brasilapi',
+					url: `https://brasilapi.com.br/api/cep/v1/${code}`,
+					map: {
+						address_1: 'street',
+						neighborhood: 'neighborhood',
+						city: 'city',
+						state: 'state',
+					},
+				});
+
+				return providers;
+			},
+
+			/**
+			 * Normalize CEP provider response to unified shape.
+			 *
+			 * @since 5.4.3
+			 * @param {object} provider
+			 * @param {object} response
+			 * @returns {object|null}
+			 */
+			normalizeAddressResponse: function( provider, response ) {
+				if ( ! response || typeof response !== 'object' ) {
+					return null;
+				}
+
+				if ( response.erro === true || response.error ) {
+					return null;
+				}
+
+				const map = provider.map || {};
+				const normalized = {
+					address_1: response[map.address_1] || '',
+					neighborhood: response[map.neighborhood] || '',
+					city: response[map.city] || '',
+					state: response[map.state] || '',
+				};
+
+				if ( ! normalized.city || ! normalized.state ) {
+					return null;
+				}
+
+				return normalized;
 			},
 
 			/**
