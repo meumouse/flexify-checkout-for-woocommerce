@@ -591,6 +591,54 @@
 			},
 
 			/**
+			 * Watch billing email and trigger account lookup without page reload.
+			 *
+			 * @since 5.4.3
+			 * @return {void}
+			 */
+			watchEmailAccountLookup: function() {
+				let timer = null;
+				let last_checked_email = '';
+
+				$(document).off('input.flexifyEmailLookup change.flexifyEmailLookup blur.flexifyEmailLookup', '#billing_email');
+				$(document).on('input.flexifyEmailLookup change.flexifyEmailLookup blur.flexifyEmailLookup', '#billing_email', function() {
+					const field = this;
+					const email = String( $(field).val() || '' ).trim().toLowerCase();
+
+					clearTimeout(timer);
+
+					timer = setTimeout( function() {
+						if ( ! email || ! Flexify_Checkout.Validations.isValidEmail( email ) ) {
+							last_checked_email = '';
+							return;
+						}
+
+						if ( email === last_checked_email ) {
+							return;
+						}
+
+						last_checked_email = email;
+						Flexify_Checkout.Validations.getFieldErrors( field );
+					}, 350);
+				});
+
+				$(document.body).off('updated_checkout.flexifyEmailLookup').on('updated_checkout.flexifyEmailLookup', function() {
+					const field = document.getElementById('billing_email');
+
+					if ( ! field ) {
+						return;
+					}
+
+					const email = String( $(field).val() || '' ).trim().toLowerCase();
+
+					if ( email && Flexify_Checkout.Validations.isValidEmail( email ) && email !== last_checked_email ) {
+						last_checked_email = email;
+						Flexify_Checkout.Validations.getFieldErrors( field );
+					}
+				});
+			},
+
+			/**
 			 * Initialize validations
 			 * 
 			 * @since 1.0.0
@@ -598,6 +646,7 @@
 			 */
 			init: function() {
 				this.onChange();
+				this.watchEmailAccountLookup();
 
 				let billing_email = $('#billing_email').val();
 
