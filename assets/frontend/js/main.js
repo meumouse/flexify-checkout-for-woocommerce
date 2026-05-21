@@ -4036,6 +4036,208 @@
 		},
 
 		/**
+		 * Internal tracking router for browser-side events
+		 *
+		 * @since 5.4.3
+		 */
+		Tracking: {
+			state: {
+				sent: {},
+			},
+
+			isEnabled: function() {
+				return !!( params.tracking_router && params.tracking_router.enabled === 'yes' );
+			},
+
+			getRoutes: function() {
+				return ( params.tracking_router && params.tracking_router.routes ) ? params.tracking_router.routes : {};
+			},
+
+			getEventMap: function() {
+				return ( params.tracking_router && params.tracking_router.event_map ) ? params.tracking_router.event_map : {};
+			},
+
+			canSendTo: function( event_name, destination ) {
+				const routes = this.getRoutes();
+				return !!( routes[event_name] && routes[event_name][destination] === 'yes' );
+			},
+
+			getExternalEventName: function( event_name, destination ) {
+				const map = this.getEventMap();
+				return map[event_name] && map[event_name][destination] ? map[event_name][destination] : event_name;
+			},
+
+			ensureEventId: function( payload, event_name ) {
+				if ( payload.event_id ) {
+					return payload;
+				}
+
+				const rand = Math.random().toString(36).slice(2, 10);
+				return Object.assign({}, payload, {
+					event_id: event_name + '_' + Date.now() + '_' + rand,
+				});
+			},
+
+			sanitizePayload: function( payload, event_name ) {
+				const base = Object.assign({}, payload || {});
+				base.event_name = event_name;
+				return this.ensureEventId( base, event_name );
+			},
+
+			pushDataLayer: function( event_name, payload ) {
+				window.dataLayer = window.dataLayer || [];
+				window.dataLayer.push( Object.assign({ event: event_name }, payload ) );
+			},
+
+			sendGtag: function( destination, event_name, payload ) {
+				if ( typeof window.gtag !== 'function' ) {
+					return;
+				}
+
+				window.gtag( 'event', this.getExternalEventName( event_name, destination ), payload );
+			},
+
+			sendMeta: function( event_name, payload ) {
+				if ( typeof window.fbq !== 'function' ) {
+					return;
+				}
+
+				window.fbq( 'track', this.getExternalEventName( event_name, 'meta' ), payload, { eventID: payload.event_id } );
+			},
+
+			sendTikTok: function( event_name, payload ) {
+				if ( ! window.ttq || typeof window.ttq.track !== 'function' ) {
+					return;
+				}
+
+				window.ttq.track( this.getExternalEventName( event_name, 'tiktok' ), payload );
+			},
+
+			emit: function( event_name, payload, once_key ) {
+				if ( ! this.isEnabled() ) {
+					return;
+				}
+
+				if ( once_key && this.state.sent[once_key] ) {
+					return;
+				}
+
+				const safe_payload = this.sanitizePayload( payload, event_name );
+
+				if ( this.canSendTo( event_name, 'data_layer' ) ) {
+					this.pushDataLayer( event_name, safe_payload );
+				}
+
+				if ( this.canSendTo( event_name, 'ga4' ) ) {
+					this.sendGtag( 'ga4', event_name, safe_payload );
+				}
+
+				if ( this.canSendTo( event_name, 'google_ads' ) ) {
+					this.sendGtag( 'google_ads', event_name, safe_payload );
+				}
+
+				if ( this.canSendTo( event_name, 'meta' ) ) {
+					this.sendMeta( event_name, safe_payload );
+				}
+
+				if ( this.canSendTo( event_name, 'tiktok' ) ) {
+					this.sendTikTok( event_name, safe_payload );
+				}
+
+				if ( once_key ) {
+					this.state.sent[once_key] = true;
+				}
+
+				$(document).trigger( 'flexify_checkout_tracking_event', [ event_name, safe_payload ] );
+			},
+
+			getCheckoutPayload: function() {
+				return ( params.tracking_router && params.tracking_router.checkout_payload ) ? params.tracking_router.checkout_payload : {};
+			},
+
+			getPurchasePayload: function() {
+				return ( params.tracking_router && params.tracking_router.purchase_payload ) ? params.tracking_router.purchase_payload : {};
+			},
+
+			isCheckoutPage: function() {
+				return params.is_thankyou !== 'yes' && $('form.checkout').length > 0;
+			},
+
+			emitBeginCheckout: function() {
+				if ( ! this.isCheckoutPage() ) {
+					return;
+				}
+
+				const payload = this.getCheckoutPayload();
+
+				if ( ! payload || ! Array.isArray(payload.items) || payload.items.length === 0 ) {
+					return;
+				}
+
+				this.emit( 'fc_begin_checkout', payload, 'begin_checkout' );
+			},
+
+			emitShippingInfo: function() {
+				const payload = this.getCheckoutPayload();
+				const selected_shipping = $('input.shipping_method:checked');
+
+				if ( selected_shipping.length ) {
+					payload.shipping_tier = selected_shipping.val() || '';
+				}
+
+				this.emit( 'fc_add_shipping_info', payload );
+			},
+
+			emitPaymentInfo: function() {
+				const payload = this.getCheckoutPayload();
+				const payment_method = $('input[name="payment_method"]:checked').val();
+
+				if ( payment_method ) {
+					payload.payment_type = payment_method;
+				}
+
+				this.emit( 'fc_add_payment_info', payload );
+			},
+
+			emitPurchase: function() {
+				const payload = this.getPurchasePayload();
+
+				if ( ! payload || ! payload.transaction_id ) {
+					return;
+				}
+
+				this.emit( 'fc_purchase', payload, 'purchase_' + payload.transaction_id );
+			},
+
+			bindEvents: function() {
+				const debounced_shipping_emit = Flexify_Checkout.Session.debounce( () => {
+					this.emitShippingInfo();
+				}, 350 );
+
+				$(document.body).on( 'change', 'input.shipping_method', debounced_shipping_emit );
+				$(document.body).on( 'updated_checkout', debounced_shipping_emit );
+
+				$('form.checkout').on( 'checkout_place_order', () => {
+					this.emitPaymentInfo();
+					return true;
+				});
+			},
+
+			init: function() {
+				if ( ! this.isEnabled() ) {
+					return;
+				}
+
+				this.emitBeginCheckout();
+				this.bindEvents();
+
+				if ( params.is_thankyou === 'yes' ) {
+					this.emitPurchase();
+				}
+			},
+		},
+
+		/**
 		 * Handle with session functions
 		 * 
 		 * @since 1.8.5
@@ -4676,6 +4878,7 @@
 				['Components', this.Components],
 				['Conditions', this.Conditions],
 				['Session', this.Session],
+				['Tracking', this.Tracking],
 				['Validations', this.Validations],
 				['Countdown', this.Countdown],
 				['processCheckout', this.processCheckout],
