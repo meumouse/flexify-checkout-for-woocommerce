@@ -81,6 +81,7 @@ class Fields {
 
 		// validate account password server-side when account creation is required.
 		add_action( 'woocommerce_after_checkout_validation', array( $this, 'validate_required_account_password' ), 20, 2 );
+		add_filter( 'woocommerce_checkout_posted_data', array( $this, 'normalize_gender_alias_fields' ), 20 );
 
 		// allow user to ship to different address
 		if ( Admin_Options::get_setting('enable_shipping_to_different_address') !== 'yes' ) {
@@ -898,6 +899,7 @@ class Fields {
 			self::set_field_priority( $fields, 'billing_birthdate', 65 );
 			self::set_field_priority( $fields, 'billing_sex', 66 );
 			self::set_field_priority( $fields, 'billing_gender', 64 );
+			self::set_field_priority( $fields, 'billing_document', 67 );
 			self::set_field_priority( $fields, 'billing_country', 80 );
 			self::set_field_priority( $fields, 'billing_postcode', 90 );
 			self::set_field_priority( $fields, 'billing_address_1', 100 );
@@ -1327,6 +1329,32 @@ class Fields {
 
 
 	/**
+	 * Normalize legacy gender aliases to keep backward compatibility.
+	 *
+	 * Canonical field: billing_gender
+	 * Legacy alias: billing_sex
+	 *
+	 * @since 5.4.3
+	 * @param array $posted_data Checkout posted data.
+	 * @return array
+	 */
+	public function normalize_gender_alias_fields( $posted_data ) {
+		$gender = isset( $posted_data['billing_gender'] ) ? trim( (string) $posted_data['billing_gender'] ) : '';
+		$sex = isset( $posted_data['billing_sex'] ) ? trim( (string) $posted_data['billing_sex'] ) : '';
+
+		if ( $gender === '' && $sex !== '' ) {
+			$posted_data['billing_gender'] = $sex;
+		}
+
+		if ( $sex === '' && $gender !== '' ) {
+			$posted_data['billing_sex'] = $gender;
+		}
+
+		return $posted_data;
+	}
+
+
+	/**
 	 * Return list of fields for which data is persistently stored on the browser
 	 *
 	 * @since 1.0.0
@@ -1345,6 +1373,7 @@ class Fields {
 			'billing_ie',
 			'billing_cellphone',
 			'billing_birthdate',
+			'billing_document',
 			'billing_sex',
 			'billing_gender',
 			'billing_company',

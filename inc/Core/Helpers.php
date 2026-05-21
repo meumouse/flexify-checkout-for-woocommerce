@@ -65,6 +65,7 @@ class Helpers {
 				'billing_cnpj',
 				'billing_ie',
 				'billing_birthdate',
+				'billing_document',
 				'billing_sex',
 				'billing_gender',
 			);

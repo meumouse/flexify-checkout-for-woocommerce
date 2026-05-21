@@ -4282,7 +4282,7 @@
              * @version 5.0.0
              * @return void
              */
-            compatDeliverySlots: function() {
+			compatDeliverySlots: function() {
                 // setTimeOut because we want our event listener to run after wc_checkout_form::validate_field().
                 window.setTimeout( function() {
                     $('#jckwds-delivery-date, #jckwds-delivery-time').on('validate', function(e) {
@@ -4291,8 +4291,46 @@
                             e.stopPropagation();
                         }
                     });
-                });
-            },
+				});
+			},
+
+			/**
+			 * Trigger checkout recalculation when SuperFrete-required fields change.
+			 *
+			 * @since 5.4.3
+			 * @return void
+			 */
+			bindSuperfreteCheckoutUpdates: function() {
+				if ( params.superfrete_active !== 'yes' ) {
+					return;
+				}
+
+				const selectors = [
+					'#billing_postcode',
+					'#billing_state',
+					'#billing_city',
+					'#billing_address_1',
+					'#billing_number',
+					'#billing_neighborhood',
+					'#billing_document',
+					'#shipping_postcode',
+					'#shipping_state',
+					'#shipping_city',
+					'#shipping_address_1',
+					'#shipping_number',
+					'#shipping_neighborhood'
+				];
+
+				let timer = null;
+				const triggerUpdate = function() {
+					clearTimeout(timer);
+					timer = setTimeout(function() {
+						$(document.body).trigger('update_checkout');
+					}, 350);
+				};
+
+				$(document).on('change input', selectors.join(', '), triggerUpdate);
+			},
 
 			/**
 			 * Show/hide Brazilian-market checkout fields based on person type
@@ -4398,6 +4436,7 @@
             init: function() {
                 this.compatSalesBooster();
                 this.compatDeliverySlots();
+				this.bindSuperfreteCheckoutUpdates();
 				this.initPersonTypeFields();
 
 				// Handle the condition where back button is pressed and document.ready event is not triggered.
