@@ -560,10 +560,19 @@
 				const val = input.val().trim();
 				const row = input.closest('.form-row');
 				const iti = input.data('itiInstance');
+				const fieldLabel = row.attr('data-label') || 'Telefone';
+				const requiredMessage = `${fieldLabel} ${params.i18n.required_field || 'obrigatório'}.`;
+				const isRequired = row.hasClass('validate-required') || row.hasClass('required') || row.hasClass('required-field') || input.prop('required');
+
+				// Required field must display explicit required error when empty.
+				if ( isRequired && ! val ) {
+					row.removeClass('woocommerce-validated').addClass('woocommerce-invalid woocommerce-invalid-required').find('.error').text( requiredMessage );
+					return;
+				}
 
 				// prevent validate fields without changed
 				if ( ! row.hasClass('has-changed') && val.length < 4 ) {
-					row.removeClass('woocommerce-validated woocommerce-invalid');
+					row.removeClass('woocommerce-validated woocommerce-invalid woocommerce-invalid-phone woocommerce-invalid-required');
 					return;
 				}
 
@@ -575,7 +584,7 @@
 						if ( ! is_valid ) {
 							row.removeClass('woocommerce-validated').addClass('woocommerce-invalid woocommerce-invalid-phone').find('.error').text( params.i18n.phone.invalid );
 						} else {
-							row.removeClass('woocommerce-invalid woocommerce-invalid-phone');
+							row.removeClass('woocommerce-invalid woocommerce-invalid-phone woocommerce-invalid-required');
 						}
 					});
 				}
