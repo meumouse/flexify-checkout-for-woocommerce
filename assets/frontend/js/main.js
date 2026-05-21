@@ -42,6 +42,11 @@
 					field.addEventListener('change input', function(e) {
 						e.preventDefault();
 
+						// billing_email has a dedicated debounced watcher to avoid duplicate lookups.
+						if ( field.name === 'billing_email' ) {
+							return false;
+						}
+
 						Flexify_Checkout.Validations.getFieldErrors( field );
 
 						return false;
@@ -599,26 +604,40 @@
 			watchEmailAccountLookup: function() {
 				let timer = null;
 				let last_checked_email = '';
+				let is_lookup_pending = false;
 
-				$(document).off('input.flexifyEmailLookup change.flexifyEmailLookup blur.flexifyEmailLookup', '#billing_email');
-				$(document).on('input.flexifyEmailLookup change.flexifyEmailLookup blur.flexifyEmailLookup', '#billing_email', function() {
+				const runLookup = function(field, email) {
+					if ( is_lookup_pending ) {
+						return;
+					}
+
+					if ( ! email || ! Flexify_Checkout.Validations.isValidEmail( email ) ) {
+						last_checked_email = '';
+						return;
+					}
+
+					if ( email === last_checked_email ) {
+						return;
+					}
+
+					is_lookup_pending = true;
+					last_checked_email = email;
+
+					Promise.resolve( Flexify_Checkout.Validations.getFieldErrors( field ) )
+						.finally( function() {
+							is_lookup_pending = false;
+						});
+				};
+
+				$(document).off('input.flexifyEmailLookup', '#billing_email');
+				$(document).on('input.flexifyEmailLookup', '#billing_email', function() {
 					const field = this;
 					const email = String( $(field).val() || '' ).trim().toLowerCase();
 
 					clearTimeout(timer);
 
 					timer = setTimeout( function() {
-						if ( ! email || ! Flexify_Checkout.Validations.isValidEmail( email ) ) {
-							last_checked_email = '';
-							return;
-						}
-
-						if ( email === last_checked_email ) {
-							return;
-						}
-
-						last_checked_email = email;
-						Flexify_Checkout.Validations.getFieldErrors( field );
+						runLookup(field, email);
 					}, 350);
 				});
 
@@ -631,10 +650,7 @@
 
 					const email = String( $(field).val() || '' ).trim().toLowerCase();
 
-					if ( email && Flexify_Checkout.Validations.isValidEmail( email ) && email !== last_checked_email ) {
-						last_checked_email = email;
-						Flexify_Checkout.Validations.getFieldErrors( field );
-					}
+					runLookup(field, email);
 				});
 			},
 
@@ -652,7 +668,13 @@
 
 				// Offer to login if a user a user already exits with the matching email
 				if ( billing_email && Flexify_Checkout.Validations.isValidEmail( billing_email ) ) {
-					Flexify_Checkout.Validations.getFieldErrors( document.getElementById('billing_email') );
+					setTimeout( function() {
+						const emailField = document.getElementById('billing_email');
+
+						if ( emailField ) {
+							$(emailField).trigger('input');
+						}
+					}, 0 );
 				}
 
 				// Add mask for each field with input mask defined
@@ -1937,6 +1959,7 @@
 		 * @version 5.0.0
 		 */
 		loginForm: {
+			_lastModalOpenAt: 0,
 
 			/**
 			 * Show notice for the login form
@@ -1967,6 +1990,20 @@
 			 * @param {boolean} openAuto | Open modal automatically
 			 */
 			openModal: function( openAuto ) {
+				const now = Date.now();
+				const popupInstance = $.magnificPopup.instance;
+
+				// Prevent duplicate modal open calls in quick sequence.
+				if ( popupInstance && popupInstance.isOpen ) {
+					return;
+				}
+
+				if ( now - Flexify_Checkout.loginForm._lastModalOpenAt < 700 ) {
+					return;
+				}
+
+				Flexify_Checkout.loginForm._lastModalOpenAt = now;
+
 				let billing_email = $('#billing_email').val();
 
 				if ( billing_email ) {
