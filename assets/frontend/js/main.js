@@ -4446,6 +4446,9 @@
 			_lastSnapshot: null,
 			_stale: true,
 			_inflight: null,
+			_initialized: false,
+			_initialSyncDone: false,
+			_initialSyncAt: 0,
 
 			/**
 			 * Debounce function to limit the rate of calls
@@ -4473,7 +4476,16 @@
 			 * @version 5.3.0
 			 * @return {jQuery.Promise} AJAX Promise
 			 */
-			update: function() {
+			update: function( context ) {
+				const now = Date.now();
+
+				// Ignore automatic bootstrap-triggered field changes right after first sync.
+				if ( context === 'field_change' && this._initialSyncAt > 0 && ( now - this._initialSyncAt ) < 1200 ) {
+					const deferred = $.Deferred();
+					deferred.resolve();
+					return deferred.promise();
+				}
+
 				const groups = params.get_all_checkout_fields || {};
 				const fields_data = [];
 
@@ -4522,23 +4534,39 @@
 			 * @return {void}
 			 */
 			init: function() {
+				if ( this._initialized ) {
+					return;
+				}
+
+				this._initialized = true;
+
 				const groups = params.get_all_checkout_fields || {};
-				const debounced = this.debounce(this.update.bind(this), 500);
+				const debounced = this.debounce(() => this.update('field_change'), 500);
 
 				// first sync
-				Flexify_Checkout.Session.update();
+				if ( ! this._initialSyncDone ) {
+					this._initialSyncDone = true;
+					this._initialSyncAt = Date.now();
+					Flexify_Checkout.Session.update('initial');
+				}
+
+				const bindFieldEvents = function( field_id ) {
+					const selector = '#' + field_id;
+					$(document).off('change.flexifySession input.flexifySession', selector);
+					$(document).on('change.flexifySession input.flexifySession', selector, debounced);
+				};
 
 				// on change inputs
 				Object.entries(groups).forEach(([groupKey, groupValue]) => {
 					if ( groupValue && typeof groupValue === 'object' && ! Array.isArray(groupValue) && ! ('type' in groupValue) ) {
 						Object.keys(groupValue).forEach( field_id => {
-							$('#' + field_id).on('change input', debounced);
+							bindFieldEvents( field_id );
 						});
 
 						return;
 					}
 
-					$('#' + groupKey).on('change input', debounced);
+					bindFieldEvents( groupKey );
 				});
 			}
 		},
