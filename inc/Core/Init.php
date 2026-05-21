@@ -337,6 +337,7 @@ class Init {
         $manual_classes = apply_filters( 'Flexify_Checkout/Init/Instance_Classes', array(
             '\MeuMouse\Flexify_Checkout\Compatibility\Backward_Compatibility',
             '\MeuMouse\Flexify_Checkout\Tracking\Router',
+            '\MeuMouse\Flexify_Checkout\API\REST_Checkout_Fields',
         ));
 
         // iterate through manual classes and instance them
