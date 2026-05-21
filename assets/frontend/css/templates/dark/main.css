@@ -4262,8 +4262,12 @@ body .pac-container .pac-item .pac-icon.pac-icon-marker {
 }
 
 .flexify-intl-phone .iti__flag {
-    order: 2;
     margin-right: 7px;
+    background-image: var(--iti-path-flags-2x);
+    background-size: cover;
+    height: 24px !important;
+    width: 32px !important;
+    background-position: var(--iti-flag-offset) 0 !important;
 }
 
 .iti--inline-dropdown .iti__dropdown-content {
