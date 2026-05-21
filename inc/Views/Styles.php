@@ -143,15 +143,15 @@ class Styles {
 				--iti-flag-sprite-height: 24px;
 			}
 
-			button.iti__selected-country:hover {
+			.flexify-checkout .flexify-intl-phone .iti__selected-country:hover {
 				background-color: transparent !important;
 			}
 
-			.iti__flag {
+			.flexify-checkout .flexify-intl-phone .iti__flag {
 				border-radius: 0.225rem !important;
 			}
 
-			.iti__flag-box {
+			.flexify-checkout .flexify-intl-phone .iti__flag-box {
 				margin-right: 1.525rem;
 			}
 
@@ -159,7 +159,7 @@ class Styles {
 				padding-left: 9rem !important;
 			}
 
-			ul.iti__country-list .iti__dial-code {
+			.flexify-checkout .flexify-intl-phone ul.iti__country-list .iti__dial-code {
 				margin-right: 1rem;
 			}
 		<?php endif;

@@ -2958,7 +2958,7 @@
 			 * @returns {void}
 			 */
 			internationalPhone: function() {
-				const selector = '.flexify-intl-phone input[type="tel"], .flexify-intl-phone input[type="text"]';
+				const selector = 'form.checkout .flexify-intl-phone input[type="tel"], form.checkout .flexify-intl-phone input[type="text"]';
 				const inputs = $(selector);
 
 				if ( ! inputs.length ) {
@@ -2967,6 +2967,11 @@
 
 				inputs.each((_, el) => {
 					const phone_element = $(el);
+
+					// Isolate Flexify instance and avoid conflicts/re-init with other intl-tel-input instances.
+					if ( phone_element.data('flexifyItiInitialized') ) {
+						return;
+					}
 					
 					const iti = window.intlTelInput(el, {
 						loadUtils: () => import( params.path_to_utils ),
@@ -2981,6 +2986,7 @@
 
 					// storage the instance in the input element for later use
 					phone_element.data('itiInstance', iti);
+					phone_element.data('flexifyItiInitialized', true);
 
 					// add init class to the row
 					phone_element.closest('.form-row').addClass('flexify-intl-phone--init');
@@ -2992,15 +2998,15 @@
 						});
 
 						// validate events
-						phone_element.on('blur', Flexify_Checkout.Validations.markInternationalPhoneChanged);
-						phone_element.on('blur validate flexify_validate keyup', Flexify_Checkout.Validations.validateInternationalPhone);
+						phone_element.off('blur.flexifyIntl').on('blur.flexifyIntl', Flexify_Checkout.Validations.markInternationalPhoneChanged);
+						phone_element.off('blur.flexifyIntl validate.flexifyIntl flexify_validate.flexifyIntl keyup.flexifyIntl').on('blur.flexifyIntl validate.flexifyIntl flexify_validate.flexifyIntl keyup.flexifyIntl', Flexify_Checkout.Validations.validateInternationalPhone);
 
-						phone_element.on('blur validate flexify_validate keyup', function() {
+						phone_element.off('blur.flexifyIntlHidden validate.flexifyIntlHidden flexify_validate.flexifyIntlHidden keyup.flexifyIntlHidden').on('blur.flexifyIntlHidden validate.flexifyIntlHidden flexify_validate.flexifyIntlHidden keyup.flexifyIntlHidden', function() {
 							Flexify_Checkout.Fields.updateInternationalPhoneHiddenField( iti.getNumber() );
 						});
 						
 						// listen change billing country
-						$('#billing_country').on('change', function() {
+						$('#billing_country').off('change.flexifyIntlCountry').on('change.flexifyIntlCountry', function() {
 							const code = $(this).val().toLowerCase();
 
 							iti.setCountry(code);
@@ -3009,11 +3015,8 @@
 							$('#billing_phone').change();
 						});
 
-						$('#billing_country').on('change', Flexify_Checkout.Validations.validateInternationalPhone);
+						$('#billing_country').off('change.flexifyIntlValidate').on('change.flexifyIntlValidate', Flexify_Checkout.Validations.validateInternationalPhone);
 					});
-
-					// Disable wc_checkout_form.validate_field() event listener on input event.
-      				$('form.checkout').off('input', '**');
 				});
 			},
 
