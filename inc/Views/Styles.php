@@ -135,8 +135,12 @@ class Styles {
 		// international phone is active
 		if ( Admin_Options::get_setting('enable_ddi_phone_field') === 'yes' ) : ?>
 			:root {
-				--iti-path-flags-1x: url("<?php echo esc_url( self::$assets_url . 'vendor/intl-tel-input/img/flags.webp' ) ?>");
-				--iti-path-flags-2x: url("<?php echo esc_url( self::$assets_url . 'vendor/intl-tel-input/img/flags@2x.webp' ) ?>");
+				--iti-path-flags-1x: url("<?php echo esc_url( self::$assets_url . 'vendor/intl-tel-input/img/flags.webp' ) ?>") !important;
+				--iti-path-flags-2x: url("<?php echo esc_url( self::$assets_url . 'vendor/intl-tel-input/img/flags@2x.webp' ) ?>") !important;
+				--iti-flag-width: 32px;
+				--iti-flag-height: 24px;
+				--iti-flag-sprite-width: 7808px;
+				--iti-flag-sprite-height: 24px;
 			}
 
 			button.iti__selected-country:hover {
