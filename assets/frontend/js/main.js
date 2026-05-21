@@ -115,7 +115,14 @@
 						$('.flexify-review-customer__content').find('.customer-details-info.' + update_element_text).text( value.input_value );
 
 						// Update field error
-						row.querySelector('.error').innerHTML = value.message;
+						let errorNode = row.querySelector('.error');
+
+						if ( ! errorNode ) {
+							row.insertAdjacentHTML('beforeend', '<span class="error"></span>');
+							errorNode = row.querySelector('.error');
+						}
+
+						errorNode.innerHTML = value.message;
 						row.classList.remove('woocommerce-invalid');
 
 						if ( row.classList.contains('validate-required') ) {
@@ -437,7 +444,14 @@
 						$('.flexify-review-customer__content').find('.customer-details-info.' + value.input_id.replace('billing_', '')).text(value.input_value);
 
 						const row = field.closest('.form-row');
-						row.querySelector('.error').innerHTML = value.message;
+						let errorNode = row.querySelector('.error');
+
+						if ( ! errorNode ) {
+							row.insertAdjacentHTML('beforeend', '<span class="error"></span>');
+							errorNode = row.querySelector('.error');
+						}
+
+						errorNode.innerHTML = value.message;
 						row.classList.remove('woocommerce-invalid');
 
 						if ( row.classList.contains('validate-required') ) {
@@ -461,7 +475,7 @@
 				Flexify_Checkout.Validations.clearErrorMessages('data-flexify-error');
 				Flexify_Checkout.Validations.accessibleErrors();
 
-				if ( error_fields.length ) {
+				if ( error_fields.length && fields.length ) {
 					// display error
 					const stepNo = fields[0].closest('[data-step]').dataset.step;
 					document.querySelector(`[data-stepper-li="${stepNo}"]`).classList.add('error');
@@ -4065,19 +4079,28 @@
 			 * @return {jQuery.Promise} AJAX Promise
 			 */
 			update: function() {
-				const groups = params.get_all_checkout_fields || [];
+				const groups = params.get_all_checkout_fields || {};
 				const fields_data = [];
 
-				// loop for each group (billing, shipping, etc.)
-				$(groups).each( function(index, fields) {
-					if (fields) {
-						$.each(fields, function(field_id, field_properties) {
+				// support both grouped structure ({ billing, shipping, account })
+				// and flat structure ({ billing_email: {...}, ... }).
+				Object.entries(groups).forEach(([groupKey, groupValue]) => {
+					if ( groupValue && typeof groupValue === 'object' && ! Array.isArray(groupValue) && ! ('type' in groupValue) ) {
+						Object.keys(groupValue).forEach( field_id => {
 							let input_value = $('#' + field_id).val();
 
 							if ( input_value !== undefined ) {
 								fields_data.push({ field_id: field_id, value: input_value });
 							}
 						});
+
+						return;
+					}
+
+					let input_value = $('#' + groupKey).val();
+
+					if ( input_value !== undefined ) {
+						fields_data.push({ field_id: groupKey, value: input_value });
 					}
 				});
 
@@ -4111,12 +4134,16 @@
 				Flexify_Checkout.Session.update();
 
 				// on change inputs
-				$.each(groups, (idx, group) => {
-					if (group.billing) {
-						$.each(group.billing, (field_id) => {
+				Object.entries(groups).forEach(([groupKey, groupValue]) => {
+					if ( groupValue && typeof groupValue === 'object' && ! Array.isArray(groupValue) && ! ('type' in groupValue) ) {
+						Object.keys(groupValue).forEach( field_id => {
 							$('#' + field_id).on('change input', debounced);
 						});
+
+						return;
 					}
+
+					$('#' + groupKey).on('change input', debounced);
 				});
 			}
 		},

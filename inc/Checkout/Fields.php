@@ -79,6 +79,9 @@ class Fields {
 		// set shipping to different address not checked
 		add_filter('woocommerce_ship_to_different_address_checked', '__return_false');
 
+		// validate account password server-side when account creation is required.
+		add_action( 'woocommerce_after_checkout_validation', array( $this, 'validate_required_account_password' ), 20, 2 );
+
 		// allow user to ship to different address
 		if ( Admin_Options::get_setting('enable_shipping_to_different_address') !== 'yes' ) {
 			add_filter( 'woocommerce_cart_needs_shipping_address', '__return_false' );
@@ -1097,9 +1100,12 @@ class Fields {
 		$message_type = 'error';
 		$global_message = false;
 		$custom = false;
+		$field_label = isset( $args['label'] ) ? $args['label'] : $key;
+		$field_type = isset( $args['type'] ) ? $args['type'] : 'text';
+		$field_is_required = ! empty( $args['required'] );
 
-		if ( (bool) $args['required'] || $args['class'] === 'required-field' ) {
-			$message = sprintf( __( '%s é um campo obrigatório.', 'flexify-checkout-for-woocommerce' ), esc_html( $args['label'] ) );
+		if ( $field_is_required || ( isset( $args['class'] ) && $args['class'] === 'required-field' ) ) {
+			$message = sprintf( __( '%s é um campo obrigatório.', 'flexify-checkout-for-woocommerce' ), esc_html( $field_label ) );
 
 			/**
 			 * Filters the required field error message
@@ -1114,10 +1120,10 @@ class Fields {
 		}
 
 		// is required field
-		if ( (bool) $args['required'] && $value ) {
-			if ( 'country' === $args['type'] && property_exists( WC()->countries, 'country_exists' ) && WC()->countries && ! WC()->countries->country_exists( $value ) ) {
+		if ( $field_is_required && $value ) {
+			if ( 'country' === $field_type && property_exists( WC()->countries, 'country_exists' ) && WC()->countries && ! WC()->countries->country_exists( $value ) ) {
 				/* translators: ISO 3166-1 alpha-2 country code */
-				$message = sprintf( __( "'%s' não é um código de país válido.", 'flexify-checkout-for-woocommerce' ), esc_html( $args['label'] ) );
+				$message = sprintf( __( "'%s' não é um código de país válido.", 'flexify-checkout-for-woocommerce' ), esc_html( $field_label ) );
 				$custom  = true;
 			}
 
@@ -1125,12 +1131,12 @@ class Fields {
 				switch ( $country ) {
 					case 'IE':
 						/* translators: %1$s: field name, %2$s finder.eircode.ie URL */
-						$message = sprintf( __( '%1$s não é válido. Você pode procurar o Eircode correto <a target="_blank" href="%2$s">aqui</a>.', 'flexify-checkout-for-woocommerce' ), esc_html( $args['label'] ), 'https://finder.eircode.ie' );
+						$message = sprintf( __( '%1$s não é válido. Você pode procurar o Eircode correto <a target="_blank" href="%2$s">aqui</a>.', 'flexify-checkout-for-woocommerce' ), esc_html( $field_label ), 'https://finder.eircode.ie' );
 						$custom  = true;
 						break;
 					default:
 						/* translators: %s: field name */
-						$message = sprintf( __( '%s não é um código postal válido.', 'flexify-checkout-for-woocommerce' ), esc_html( $args['label'] ) );
+						$message = sprintf( __( '%s não é um código postal válido.', 'flexify-checkout-for-woocommerce' ), esc_html( $field_label ) );
 						$custom  = true;
 						break;
 				}
@@ -1139,29 +1145,29 @@ class Fields {
 			// validate if phone is valid
 			if ( strpos( $key, 'phone' ) !== false ) {
 				if ( ! \WC_Validation::is_phone( $value ) || Admin_Options::get_setting('enable_ddi_phone_field') && ! Utils::is_valid_phone( $value ) ) {
-					$message = sprintf( __( '%s não é um número de telefone válido.', 'flexify-checkout-for-woocommerce' ), esc_html( $args['label'] ) );
+					$message = sprintf( __( '%s não é um número de telefone válido.', 'flexify-checkout-for-woocommerce' ), esc_html( $field_label ) );
 					$custom  = true;
 				}
 			}
 
 			// add compatibility with multiple cpf fields
 			if ( strpos( $key, 'billing_cpf' ) !== false && ! Utils::validate_cpf( $value ) || ( isset( $args['class'] ) && 'validate-cpf-field' === $args['class'] && ! Utils::validate_cpf( $value ) ) ) {
-				$message = sprintf( __('O %s informado não é válido.', 'flexify-checkout-for-woocommerce'), esc_html( $args['label'] ) );
+				$message = sprintf( __('O %s informado não é válido.', 'flexify-checkout-for-woocommerce'), esc_html( $field_label ) );
 				$custom  = true;
 			}
 
 			// add compatibility with multiple cnpj fields
 			if ( strpos( $key, 'billing_cnpj' ) !== false && ! Utils::validate_cnpj( $value ) || ( isset( $args['class'] ) && 'validate-cnpj-field' === $args['class'] && ! Utils::validate_cnpj( $value ) ) ) {
-				$message = sprintf(__('O %s informado não é válido.', 'flexify-checkout-for-woocommerce'), esc_html( $args['label'] ) );
+				$message = sprintf(__('O %s informado não é válido.', 'flexify-checkout-for-woocommerce'), esc_html( $field_label ) );
 				$custom  = true;
 			}
 
-			if ( 'email' === $args['type'] && ! is_email( $value ) || ( isset( $args['class'] ) && 'validate-email-field' === $args['class'] && ! is_email( $value ) ) ) {
-				$message = sprintf( __('%s não é um endereço de e-mail válido.', 'flexify-checkout-for-woocommerce'), esc_html( $args['label'] ) );
+			if ( 'email' === $field_type && ! is_email( $value ) || ( isset( $args['class'] ) && 'validate-email-field' === $args['class'] && ! is_email( $value ) ) ) {
+				$message = sprintf( __('%s não é um endereço de e-mail válido.', 'flexify-checkout-for-woocommerce'), esc_html( $field_label ) );
 				$custom  = true;
 			}
 
-			if ( 'email' === $args['type'] && ! is_user_logged_in() && email_exists( $value ) ) {
+			if ( 'email' === $field_type && ! is_user_logged_in() && email_exists( $value ) ) {
 				/**
 				 * Filter text displayed during registration when an email already exists
 				 *
@@ -1232,8 +1238,24 @@ class Fields {
 		$fields = maybe_unserialize( get_option('flexify_checkout_step_fields', array()) );
 		$target_fields = array();
 
-		foreach ( $fields as $index => $value ) {
-			$target_fields[] = $index;
+		if ( is_array( $fields ) && ! empty( $fields ) ) {
+			foreach ( $fields as $index => $option ) {
+				$target_fields[] = $index;
+			}
+		} elseif ( function_exists( 'WC' ) && WC() && WC()->checkout ) {
+			$checkout_fields = WC()->checkout->get_checkout_fields();
+
+			foreach ( array( 'billing', 'shipping', 'account' ) as $group ) {
+				if ( empty( $checkout_fields[ $group ] ) || ! is_array( $checkout_fields[ $group ] ) ) {
+					continue;
+				}
+
+				foreach ( $checkout_fields[ $group ] as $checkout_field_key => $checkout_field ) {
+					if ( ! empty( $checkout_field['required'] ) ) {
+						$target_fields[] = $checkout_field_key;
+					}
+				}
+			}
 		}
 
 		/**
@@ -1245,13 +1267,15 @@ class Fields {
 		 * @return array
 		 */
 		$target_fields = apply_filters( 'Flexify_Checkout/Checkout/Fields/Target_Fields_For_Check_Errors', $target_fields );
+		$target_fields = array_unique( array_filter( $target_fields ) );
+		$field_id = isset( $args['id'] ) ? $args['id'] : $key;
 
 		$data_attributes = '<p ';
-		$data_attributes .= sprintf( 'data-type="%s"', esc_attr( $args['type'] ) ) . ' ';
-		$data_attributes .= sprintf( 'data-label="%s"', esc_attr( $args['label'] ) ) . ' ';
+		$data_attributes .= sprintf( 'data-type="%s"', esc_attr( $field_type ) ) . ' ';
+		$data_attributes .= sprintf( 'data-label="%s"', esc_attr( $field_label ) ) . ' ';
 
 		// check if field is allowed from array $target_fields list
-		if ( in_array( $args['id'], $target_fields ) ) {
+		if ( in_array( $field_id, $target_fields, true ) ) {
 			if ( strpos( $field, '</p>' ) !== false ) {
 				$error = '<span class="error">';
 					$error .= $message;
@@ -1263,6 +1287,42 @@ class Fields {
 		}
 
 		return $field;
+	}
+
+
+	/**
+	 * Validate account password when account creation is required at checkout.
+	 *
+	 * @since 5.4.3
+	 * @param array $data Checkout submitted data.
+	 * @param WP_Error $errors Validation errors object.
+	 * @return void
+	 */
+	public function validate_required_account_password( $data, $errors ) {
+		$registration_enabled = 'yes' === get_option( 'woocommerce_enable_signup_and_login_from_checkout', 'yes' );
+		$auto_generate_password = 'yes' === get_option( 'woocommerce_registration_generate_password', 'no' );
+
+		if ( ! $registration_enabled || $auto_generate_password ) {
+			return;
+		}
+
+		$guest_checkout_enabled = 'yes' === get_option( 'woocommerce_enable_guest_checkout', 'yes' );
+		$create_account_checked = ! empty( $data['createaccount'] ) || isset( $_POST['createaccount'] );
+		$must_create_account = ! $guest_checkout_enabled || $create_account_checked;
+
+		if ( ! $must_create_account ) {
+			return;
+		}
+
+		$password = isset( $data['account_password'] ) ? trim( (string) $data['account_password'] ) : '';
+
+		if ( $password === '' ) {
+			$errors->add(
+				'required_account_password',
+				__( 'A senha da conta e obrigatoria para continuar.', 'flexify-checkout-for-woocommerce' ),
+				array( 'id' => 'account_password' )
+			);
+		}
 	}
 
 

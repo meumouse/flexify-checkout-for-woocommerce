@@ -15,6 +15,13 @@ defined('ABSPATH') || exit;
  * @package MeuMouse.com
  */
 class Init {
+    /**
+     * Schema version for options bootstrap/migrations.
+     *
+     * @since 5.4.3
+     * @var int
+     */
+    const SCHEMA_VERSION = 1;
 
     /**
      * Plugin base name
@@ -107,10 +114,8 @@ class Init {
     
         // check if WooCommerce is active
         if ( is_plugin_active('woocommerce/woocommerce.php') && defined('WC_VERSION') && version_compare( WC_VERSION, '6.0', '>' ) ) {
+            self::maybe_bootstrap_defaults();
             $this->instance_classes();
-
-            // register activation and deactivation hooks
-            add_action( 'Flexify_Checkout/Init', array( $this, 'register_hooks' ) );
 
             // add settings link on plugins list
             add_filter( 'plugin_action_links_' . $this->basename, array( $this, 'add_action_plugin_links' ), 10, 4 );
@@ -152,29 +157,62 @@ class Init {
 
 
     /**
-     * Clear template cache on activation and deactivation
-     * 
-     * @since 5.0.0
-     * @return void
-     */
-    public function register_hooks() {
-        register_activation_hook( $this->plugin_file, array( $this, 'activate_plugin' ) );
-        register_deactivation_hook( $this->plugin_file, array( $this, 'clear_wc_template_cache' ) );
-    }
-
-
-    /**
      * Run tasks on plugin activation
      *
      * @since 5.1.0
      * @return void
      */
-    public function activate_plugin() {
-        $admin_options = new Admin_Options();
-        $admin_options->set_default_options();
-        $admin_options->set_checkout_step_fields();
+    public static function activate_plugin() {
+        self::maybe_bootstrap_defaults( true );
+        self::clear_wc_template_cache();
+    }
 
-        $this->clear_wc_template_cache();
+
+    /**
+     * Ensure required options/default structures exist and are sane.
+     *
+     * @since 5.4.3
+     * @param bool $force Force full defaults merge when true.
+     * @return void
+     */
+    public static function maybe_bootstrap_defaults( $force = false ) {
+        $admin_options = new Admin_Options();
+        $stored_schema_version = intval( get_option( 'flexify_checkout_schema_version', 0 ) );
+
+        $stored_settings = get_option( 'flexify_checkout_settings', array() );
+        $stored_step_fields = maybe_unserialize( get_option( 'flexify_checkout_step_fields', array() ) );
+
+        $needs_settings = $force || ! is_array( $stored_settings ) || empty( $stored_settings );
+        $needs_step_fields = $force || ! is_array( $stored_step_fields ) || empty( $stored_step_fields );
+        $needs_migration = $stored_schema_version < self::SCHEMA_VERSION;
+
+        if ( $needs_settings || $needs_migration ) {
+            $admin_options->set_default_options();
+        }
+
+        if ( $needs_step_fields || $needs_migration ) {
+            $admin_options->set_checkout_step_fields();
+        }
+
+        // Safety net: remove conditions that reference missing fields.
+        if ( class_exists( '\MeuMouse\Flexify_Checkout\Core\Ajax' ) ) {
+            \MeuMouse\Flexify_Checkout\Core\Ajax::scrub_orphan_checkout_conditions();
+        }
+
+        if ( $needs_settings || $needs_step_fields || $needs_migration ) {
+            update_option( 'flexify_checkout_schema_version', self::SCHEMA_VERSION );
+        }
+    }
+
+
+    /**
+     * Deactivation callback for plugin bootstrap file.
+     *
+     * @since 5.4.3
+     * @return void
+     */
+    public static function deactivate_plugin() {
+        self::clear_wc_template_cache();
     }
 
 
@@ -185,7 +223,7 @@ class Init {
      * @version 5.0.0
 	 * @return void
 	 */
-	public function clear_wc_template_cache() {
+    public static function clear_wc_template_cache() {
 		if ( function_exists('wc_clear_template_cache') ) {
 			wc_clear_template_cache();
 		}

@@ -208,7 +208,73 @@ class Flexify_Checkout {
 		
 		return self::$instance;
 	}
+
+
+	/**
+	 * Activation callback.
+	 *
+	 * @since 5.4.3
+	 * @return void
+	 */
+	public static function on_activate() {
+		self::setup_constants_for_hooks();
+		require_once FLEXIFY_CHECKOUT_PATH . 'vendor/autoload.php';
+		\MeuMouse\Flexify_Checkout\Core\Init::activate_plugin();
+	}
+
+
+	/**
+	 * Deactivation callback.
+	 *
+	 * @since 5.4.3
+	 * @return void
+	 */
+	public static function on_deactivate() {
+		self::setup_constants_for_hooks();
+		require_once FLEXIFY_CHECKOUT_PATH . 'vendor/autoload.php';
+		\MeuMouse\Flexify_Checkout\Core\Init::deactivate_plugin();
+	}
+
+
+	/**
+	 * Minimal constant bootstrap for activation/deactivation hooks.
+	 *
+	 * @since 5.4.3
+	 * @return void
+	 */
+	private static function setup_constants_for_hooks() {
+		$base_file = __FILE__;
+		$base_dir = plugin_dir_path( $base_file );
+		$base_url = plugin_dir_url( $base_file );
+
+		$constants = array(
+			'FLEXIFY_CHECKOUT_BASENAME' => plugin_basename( $base_file ),
+			'FLEXIFY_CHECKOUT_FILE' => $base_file,
+			'FLEXIFY_CHECKOUT_PATH' => $base_dir,
+			'FLEXIFY_CHECKOUT_INC_PATH' => $base_dir . 'inc/',
+			'FLEXIFY_CHECKOUT_URL' => $base_url,
+			'FLEXIFY_CHECKOUT_ASSETS' => $base_url . 'assets/',
+			'FLEXIFY_CHECKOUT_ABSPATH' => dirname( $base_file ) . '/',
+			'FLEXIFY_CHECKOUT_TEMPLATES_DIR' => $base_dir . 'templates/',
+			'FLEXIFY_CHECKOUT_SETTINGS_TABS_DIR' => $base_dir . 'inc/Views/Settings/Tabs/',
+			'FLEXIFY_CHECKOUT_SLUG' => self::$slug,
+			'FLEXIFY_CHECKOUT_VERSION' => self::$version,
+			'FLEXIFY_CHECKOUT_ADMIN_EMAIL' => get_option('admin_email'),
+			'FLEXIFY_CHECKOUT_DOCS_LINK' => 'https://ajuda.meumouse.com/docs/flexify-checkout-for-woocommerce/overview',
+			'FLEXIFY_CHECKOUT_DEV_MODE' => false,
+		);
+
+		foreach ( $constants as $key => $value ) {
+			if ( ! defined( $key ) ) {
+				define( $key, $value );
+			}
+		}
+	}
 }
+
+// Activation/deactivation bootstrap.
+register_activation_hook( __FILE__, array( '\MeuMouse\Flexify_Checkout\Flexify_Checkout', 'on_activate' ) );
+register_deactivation_hook( __FILE__, array( '\MeuMouse\Flexify_Checkout\Flexify_Checkout', 'on_deactivate' ) );
 
 /**
  * Initialise the plugin

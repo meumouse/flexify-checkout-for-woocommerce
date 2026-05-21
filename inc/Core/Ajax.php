@@ -397,6 +397,7 @@ class Ajax {
 		
 				// Update the fields options
 				$removed_field = update_option('flexify_checkout_step_fields', maybe_serialize( $get_fields ));
+				$removed_conditions = self::scrub_orphan_checkout_conditions( $field_to_remove );
 
 				if ( $removed_field ) {
 					$response = array(
@@ -404,6 +405,7 @@ class Ajax {
 						'toast_header_title' => esc_html__( 'Campo removido', 'flexify-checkout-for-woocommerce' ),
 						'toast_body_title' => esc_html__( 'O campo foi removido com sucesso!', 'flexify-checkout-for-woocommerce' ),
 						'field' => $field_to_remove,
+						'removed_conditions' => $removed_conditions,
 					);
 				} else {
 					$response = array(
@@ -416,6 +418,59 @@ class Ajax {
 				wp_send_json( $response ); // send response
 			}
 		}
+	}
+
+
+	/**
+	 * Remove orphan checkout conditions.
+	 *
+	 * @since 5.4.3
+	 * @param string $field_id Optional specific field id to scrub.
+	 * @return int Amount of removed condition rows.
+	 */
+	public static function scrub_orphan_checkout_conditions( $field_id = '' ) {
+		$conditions = get_option( 'flexify_checkout_conditions', array() );
+		$fields = maybe_unserialize( get_option( 'flexify_checkout_step_fields', array() ) );
+
+		if ( ! is_array( $conditions ) || empty( $conditions ) ) {
+			return 0;
+		}
+
+		if ( ! is_array( $fields ) ) {
+			$fields = array();
+		}
+
+		$existing_fields = array_keys( $fields );
+		$filtered_conditions = array();
+		$removed_count = 0;
+
+		foreach ( $conditions as $condition ) {
+			$component_field = isset( $condition['component_field'] ) ? $condition['component_field'] : '';
+			$verification_field = isset( $condition['verification_condition_field'] ) ? $condition['verification_condition_field'] : '';
+
+			if ( ! empty( $field_id ) && ( $component_field === $field_id || $verification_field === $field_id ) ) {
+				$removed_count++;
+				continue;
+			}
+
+			if ( ! empty( $component_field ) && ! in_array( $component_field, $existing_fields, true ) ) {
+				$removed_count++;
+				continue;
+			}
+
+			if ( ! empty( $verification_field ) && ! in_array( $verification_field, $existing_fields, true ) ) {
+				$removed_count++;
+				continue;
+			}
+
+			$filtered_conditions[] = $condition;
+		}
+
+		if ( $removed_count > 0 ) {
+			update_option( 'flexify_checkout_conditions', array_values( $filtered_conditions ) );
+		}
+
+		return $removed_count;
 	}
 
 

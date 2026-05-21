@@ -428,6 +428,13 @@ class Helpers {
 		foreach ( $get_fields['shipping'] as $field_id => $value ) {
 			$fields[$field_id] = $value;
 		}
+
+		// add account fields
+		if ( ! empty( $get_fields['account'] ) && is_array( $get_fields['account'] ) ) {
+			foreach ( $get_fields['account'] as $field_id => $value ) {
+				$fields[$field_id] = $value;
+			}
+		}
 		
 		return apply_filters( 'flexify_checkout_export_checkout_fields_id', $fields );
 	}
