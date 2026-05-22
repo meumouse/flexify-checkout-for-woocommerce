@@ -1,3 +1,8 @@
+Versão 5.5.0 (22/05/2026)
+* Correção de problemas
+  -
+* Recurso implementado: 
+
 Versão 5.4.2 (29/12/2025)
 * Correção de bugs
   - Ativar validação de endereço por CEP

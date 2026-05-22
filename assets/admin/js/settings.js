@@ -445,26 +445,59 @@
         },
 
         /**
+         * Public modal API
+         *
+         * @since 5.5.0
+         */
+        modalApi: {
+            register: function(trigger, container, close) {
+                if ( ! trigger || ! container || ! close ) {
+                    return;
+                }
+
+                Flexify_Checkout_Admin.displayModal(trigger, container, close);
+            },
+
+            open: function(container) {
+                if ( ! container ) {
+                    return;
+                }
+
+                $(container).addClass('show');
+            },
+
+            close: function(container) {
+                if ( ! container ) {
+                    return;
+                }
+
+                $(container).removeClass('show');
+            },
+        },
+
+        /**
          * Register all popups needed by the admin
          * 
          * @since 2.3.0
          * @version 5.3.0
          */
         popups: function() {
-            this.displayModal('#inter_bank_credencials_settings', '#inter_bank_credendials_container', '#inter_bank_credendials_close');
-            this.displayModal('#inter_bank_pix_settings', '#inter_bank_pix_container', '#inter_bank_pix_close');
-            this.displayModal('#inter_bank_slip_settings', '#inter_bank_slip_container', '#inter_bank_slip_close');
-            this.displayModal('#require_inter_bank_module_trigger', '#require_inter_bank_module_container', '#require_inter_bank_module_close');
-            this.displayModal('.require-pro', '#popup-pro-notice', '.require-pro-close');
-            this.displayModal('#set_ip_api_service_trigger', '.set-api-service-container', '.set-api-service-close');
-            this.displayModal('#add_new_checkout_fields_trigger', '.add-new-checkout-fields-container', '.add-new-checkout-fields-close');
-            this.displayModal('#auto_fill_address_api_trigger', '.auto-fill-address-api-container', '.auto-fill-address-api-close');
-            this.displayModal('#fcw_manage_fonts_trigger', '#fcw_manage_fonts_container', '#fcw_close_fonts_manager');
-            this.displayModal('#fcw_reset_settings_trigger', '#fcw_reset_settings_container', '#fcw_close_reset');
-            this.displayModal('#add_new_checkout_condition_trigger', '#add_new_checkout_condition_container', '#close_add_new_checkout_condition');
-            this.displayModal('#set_email_providers_trigger', '#set_email_providers_container', '#close_set_email_providers');
-            this.displayModal('#set_process_purchase_animation_trigger', '#set_process_purchase_animation_container', '#close_set_process_purchase_animation');
-            this.displayModal('#set_countdown_trigger', '#set_countdown_container', '#close_set_countdown');
+            this.modalApi.register('#inter_bank_credencials_settings', '#inter_bank_credendials_container', '#inter_bank_credendials_close');
+            this.modalApi.register('#inter_bank_pix_settings', '#inter_bank_pix_container', '#inter_bank_pix_close');
+            this.modalApi.register('#inter_bank_slip_settings', '#inter_bank_slip_container', '#inter_bank_slip_close');
+            this.modalApi.register('#require_inter_bank_module_trigger', '#require_inter_bank_module_container', '#require_inter_bank_module_close');
+            this.modalApi.register('.require-pro', '#popup-pro-notice', '.require-pro-close');
+            this.modalApi.register('#set_ip_api_service_trigger', '.set-api-service-container', '.set-api-service-close');
+            this.modalApi.register('#add_new_checkout_fields_trigger', '.add-new-checkout-fields-container', '.add-new-checkout-fields-close');
+            this.modalApi.register('#auto_fill_address_api_trigger', '.auto-fill-address-api-container', '.auto-fill-address-api-close');
+            this.modalApi.register('#fcw_manage_fonts_trigger', '#fcw_manage_fonts_container', '#fcw_close_fonts_manager');
+            this.modalApi.register('#fcw_reset_settings_trigger', '#fcw_reset_settings_container', '#fcw_close_reset');
+            this.modalApi.register('#add_new_checkout_condition_trigger', '#add_new_checkout_condition_container', '#close_add_new_checkout_condition');
+            this.modalApi.register('#set_email_providers_trigger', '#set_email_providers_container', '#close_set_email_providers');
+            this.modalApi.register('#set_process_purchase_animation_trigger', '#set_process_purchase_animation_container', '#close_set_process_purchase_animation');
+            this.modalApi.register('#set_countdown_trigger', '#set_countdown_container', '#close_set_countdown');
+            this.modalApi.register('#tracking_integrations_settings', '#tracking_integrations_container', '#tracking_integrations_close');
+            this.modalApi.register('#tracking_integrations_settings', '#tracking_integrations_container', '#tracking_integrations_close_footer');
         },
 
         /**
@@ -2896,6 +2929,12 @@
      * @since 5.1.0
      */
     window.Flexify_Checkout_Admin = Flexify_Checkout_Admin;
+    window.Flexify_Checkout_Settings = window.Flexify_Checkout_Settings || {};
+    window.Flexify_Checkout_Settings.modal = {
+        register: Flexify_Checkout_Admin.modalApi.register.bind(Flexify_Checkout_Admin.modalApi),
+        open: Flexify_Checkout_Admin.modalApi.open.bind(Flexify_Checkout_Admin.modalApi),
+        close: Flexify_Checkout_Admin.modalApi.close.bind(Flexify_Checkout_Admin.modalApi),
+    };
 
     /**
      * Fire trigger when admin module is ready

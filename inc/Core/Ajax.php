@@ -289,6 +289,10 @@ class Ajax {
 				$form_data['custom_js_checkout'] = trim( wp_unslash( $form_data['custom_js_checkout'] ) );
 			}
 
+			if ( isset( $form_data['tracking_integrations'] ) && is_array( $form_data['tracking_integrations'] ) ) {
+				$form_data['tracking_integrations'] = $this->sanitize_tracking_integrations_settings( $form_data['tracking_integrations'] );
+			}
+
 			// check if form data exists "checkout_step" name and is array
 			if ( isset( $form_data['checkout_step'] ) && is_array( $form_data['checkout_step'] ) ) {
 				$form_data_fields = $form_data['checkout_step'];
@@ -376,6 +380,65 @@ class Ajax {
 			// Send JSON response
 			wp_send_json( $response );
 		}
+	}
+
+
+	/**
+	 * Sanitize tracking integrations settings.
+	 *
+	 * @since 5.5.0
+	 * @param array $input Raw form input.
+	 * @return array
+	 */
+	private function sanitize_tracking_integrations_settings( $input ) {
+		$is_pro = License::is_valid();
+		$default = array(
+			'enabled' => 'no',
+			'ga4' => array(
+				'enabled' => 'no',
+				'measurement_id' => '',
+				'api_secret' => '',
+			),
+			'google_ads' => array(
+				'enabled' => 'no',
+				'conversion_id' => '',
+				'conversion_label' => '',
+			),
+			'meta' => array(
+				'enabled' => 'no',
+				'pixel_id' => '',
+				'access_token' => '',
+				'test_event_code' => '',
+			),
+		);
+
+		if ( ! is_array( $input ) ) {
+			return $default;
+		}
+
+		$ga4 = isset( $input['ga4'] ) && is_array( $input['ga4'] ) ? $input['ga4'] : array();
+		$google_ads = isset( $input['google_ads'] ) && is_array( $input['google_ads'] ) ? $input['google_ads'] : array();
+		$meta = isset( $input['meta'] ) && is_array( $input['meta'] ) ? $input['meta'] : array();
+
+		return array(
+			'enabled' => ( isset( $input['enabled'] ) && $is_pro ) ? 'yes' : 'no',
+			'ga4' => array(
+				'enabled' => ( isset( $ga4['enabled'] ) && $is_pro ) ? 'yes' : 'no',
+				'measurement_id' => isset( $ga4['measurement_id'] ) ? sanitize_text_field( wp_unslash( $ga4['measurement_id'] ) ) : '',
+				'api_secret' => isset( $ga4['api_secret'] ) ? sanitize_text_field( wp_unslash( $ga4['api_secret'] ) ) : '',
+			),
+			'google_ads' => array(
+				'enabled' => ( isset( $google_ads['enabled'] ) && $is_pro ) ? 'yes' : 'no',
+				'conversion_id' => isset( $google_ads['conversion_id'] ) ? sanitize_text_field( wp_unslash( $google_ads['conversion_id'] ) ) : '',
+				'conversion_label' => isset( $google_ads['conversion_label'] ) ? sanitize_text_field( wp_unslash( $google_ads['conversion_label'] ) ) : '',
+			),
+			'meta' => array(
+				'enabled' => ( isset( $meta['enabled'] ) && $is_pro ) ? 'yes' : 'no',
+				'pixel_id' => isset( $meta['pixel_id'] ) ? sanitize_text_field( wp_unslash( $meta['pixel_id'] ) ) : '',
+				'access_token' => isset( $meta['access_token'] ) ? sanitize_text_field( wp_unslash( $meta['access_token'] ) ) : '',
+				'test_event_code' => isset( $meta['test_event_code'] ) ? sanitize_text_field( wp_unslash( $meta['test_event_code'] ) ) : '',
+			),
+		);
 	}
 
 

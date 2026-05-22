@@ -3,6 +3,7 @@
 namespace MeuMouse\Flexify_Checkout\Tracking;
 
 use MeuMouse\Flexify_Checkout\Admin\Admin_Options;
+use MeuMouse\Flexify_Checkout\API\License;
 
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
@@ -10,7 +11,7 @@ defined('ABSPATH') || exit;
 /**
  * Flexify internal tracking router.
  *
- * @since 5.4.3
+ * @since 5.5.0
  * @package MeuMouse.com
  */
 class Router {
@@ -18,7 +19,7 @@ class Router {
     /**
      * Supported internal events.
      *
-     * @since 5.4.3
+     * @since 5.5.0
      * @var array
      */
     const EVENTS = array(
@@ -31,7 +32,7 @@ class Router {
     /**
      * Destinations.
      *
-     * @since 5.4.3
+     * @since 5.5.0
      * @var array
      */
     const DESTINATIONS = array( 'data_layer', 'ga4', 'meta', 'tiktok', 'google_ads' );
@@ -40,7 +41,7 @@ class Router {
     /**
      * Construct function.
      *
-     * @since 5.4.3
+     * @since 5.5.0
      * @return void
      */
     public function __construct() {
@@ -48,13 +49,15 @@ class Router {
         add_action( 'woocommerce_payment_complete', array( $this, 'maybe_emit_server_purchase' ), 20 );
         add_action( 'woocommerce_order_status_processing', array( $this, 'maybe_emit_server_purchase' ), 20 );
         add_action( 'woocommerce_order_status_completed', array( $this, 'maybe_emit_server_purchase' ), 20 );
+        add_action( 'wp_ajax_flexify_checkout_tracking_async', array( $this, 'ajax_tracking_async_callback' ) );
+        add_action( 'wp_ajax_nopriv_flexify_checkout_tracking_async', array( $this, 'ajax_tracking_async_callback' ) );
     }
 
 
     /**
      * Append tracking config and payloads to frontend script data.
      *
-     * @since 5.4.3
+     * @since 5.5.0
      * @param array $params Script data.
      * @return array
      */
@@ -90,6 +93,11 @@ class Router {
             ),
             'checkout_payload' => $this->build_checkout_payload(),
             'purchase_payload' => $this->build_purchase_payload_for_browser(),
+            'async' => array(
+                'enabled' => $this->is_async_enabled() ? 'yes' : 'no',
+                'action' => 'flexify_checkout_tracking_async',
+                'nonce' => wp_create_nonce( 'flexify_checkout_tracking_async' ),
+            ),
         );
 
         return $params;
@@ -99,7 +107,7 @@ class Router {
     /**
      * Server-side purchase router with deduplication.
      *
-     * @since 5.4.3
+     * @since 5.5.0
      * @param int $order_id Order id.
      * @return void
      */
@@ -138,7 +146,7 @@ class Router {
         /**
          * Fires when server-side purchase event is emitted by Flexify router.
          *
-         * @since 5.4.3
+         * @since 5.5.0
          * @param array $payload Unified payload.
          * @param WC_Order $order Woo order.
          */
@@ -152,7 +160,7 @@ class Router {
     /**
      * Build checkout payload from cart/session.
      *
-     * @since 5.4.3
+     * @since 5.5.0
      * @return array
      */
     private function build_checkout_payload() {
@@ -192,7 +200,7 @@ class Router {
     /**
      * Build purchase payload for browser (thankyou page only).
      *
-     * @since 5.4.3
+     * @since 5.5.0
      * @return array
      */
     private function build_purchase_payload_for_browser() {
@@ -221,7 +229,7 @@ class Router {
     /**
      * Build normalized order payload.
      *
-     * @since 5.4.3
+     * @since 5.5.0
      * @param \WC_Order $order Order.
      * @param string $event_id Event id.
      * @return array
@@ -268,7 +276,7 @@ class Router {
     /**
      * Default tracking routes map.
      *
-     * @since 5.4.3
+     * @since 5.5.0
      * @return array
      */
     public static function get_tracking_routes() {
@@ -283,6 +291,430 @@ class Router {
         );
 
         return wp_parse_args( $routes, $default );
+    }
+
+
+    /**
+     * Handle async tracking event ingestion from checkout frontend.
+     *
+     * @since 5.5.0
+     * @return void
+     */
+    public function ajax_tracking_async_callback() {
+        check_ajax_referer( 'flexify_checkout_tracking_async', 'nonce' );
+
+        if ( ! $this->is_async_enabled() ) {
+            wp_send_json_success( array( 'skipped' => 'disabled' ) );
+        }
+
+        $event_name = isset( $_POST['event_name'] ) ? sanitize_text_field( wp_unslash( $_POST['event_name'] ) ) : '';
+        $raw_payload = isset( $_POST['payload'] ) ? wp_unslash( $_POST['payload'] ) : array();
+        $payload = $this->normalize_payload( $raw_payload, $event_name );
+
+        if ( empty( $event_name ) || ! in_array( $event_name, self::EVENTS, true ) ) {
+            wp_send_json_error( array( 'message' => 'Invalid event' ) );
+        }
+
+        if ( empty( $payload['event_id'] ) ) {
+            wp_send_json_error( array( 'message' => 'Missing event id' ) );
+        }
+
+        if ( $this->is_duplicate_event( $payload['event_id'] ) ) {
+            wp_send_json_success( array( 'skipped' => 'duplicate' ) );
+        }
+
+        $results = $this->dispatch_to_platforms( $event_name, $payload );
+        wp_send_json_success( array( 'results' => $results ) );
+    }
+
+
+    /**
+     * Checks if async integration mode is enabled.
+     *
+     * @since 5.5.0
+     * @return bool
+     */
+    private function is_async_enabled() {
+        if ( ! License::is_valid() ) {
+            return false;
+        }
+
+        if ( Admin_Options::get_setting( 'tracking_router_enabled' ) !== 'yes' ) {
+            return false;
+        }
+
+        $settings = $this->get_tracking_integrations_settings();
+        return isset( $settings['enabled'] ) && $settings['enabled'] === 'yes';
+    }
+
+
+    /**
+     * Get tracking integrations settings with defaults.
+     *
+     * @since 5.5.0
+     * @return array
+     */
+    private function get_tracking_integrations_settings() {
+        $settings = Admin_Options::get_setting( 'tracking_integrations' );
+        $settings = is_array( $settings ) ? $settings : array();
+
+        $default = array(
+            'enabled' => 'no',
+            'ga4' => array(
+                'enabled' => 'no',
+                'measurement_id' => '',
+                'api_secret' => '',
+            ),
+            'google_ads' => array(
+                'enabled' => 'no',
+                'conversion_id' => '',
+                'conversion_label' => '',
+            ),
+            'meta' => array(
+                'enabled' => 'no',
+                'pixel_id' => '',
+                'access_token' => '',
+                'test_event_code' => '',
+            ),
+        );
+
+        return wp_parse_args( $settings, $default );
+    }
+
+
+    /**
+     * Normalize payload from request.
+     *
+     * @since 5.5.0
+     * @param mixed $raw_payload Raw payload.
+     * @param string $event_name Event name.
+     * @return array
+     */
+    private function normalize_payload( $raw_payload, $event_name ) {
+        if ( is_string( $raw_payload ) ) {
+            $decoded = json_decode( $raw_payload, true );
+            $raw_payload = is_array( $decoded ) ? $decoded : array();
+        }
+
+        if ( ! is_array( $raw_payload ) ) {
+            $raw_payload = array();
+        }
+
+        $raw_payload['event_name'] = $event_name;
+
+        if ( empty( $raw_payload['event_id'] ) ) {
+            $raw_payload['event_id'] = $event_name . '_' . wp_generate_uuid4();
+        }
+
+        return $raw_payload;
+    }
+
+
+    /**
+     * Check whether event id was already consumed recently.
+     *
+     * @since 5.5.0
+     * @param string $event_id Event id.
+     * @return bool
+     */
+    private function is_duplicate_event( $event_id ) {
+        $key = 'flexify_track_evt_' . md5( (string) $event_id );
+        $exists = get_transient( $key );
+
+        if ( $exists ) {
+            return true;
+        }
+
+        set_transient( $key, '1', 15 * MINUTE_IN_SECONDS );
+        return false;
+    }
+
+
+    /**
+     * Dispatchs event to enabled platforms.
+     *
+     * @since 5.5.0
+     * @param string $event_name Event name.
+     * @param array $payload Event payload.
+     * @return array
+     */
+    private function dispatch_to_platforms( $event_name, $payload ) {
+        $settings = $this->get_tracking_integrations_settings();
+        $results = array();
+
+        if ( isset( $settings['ga4']['enabled'] ) && $settings['ga4']['enabled'] === 'yes' && $this->can_route_to( $event_name, 'ga4' ) ) {
+            $results['ga4'] = $this->send_to_ga4( $event_name, $payload, $settings['ga4'] );
+        }
+
+        if ( isset( $settings['google_ads']['enabled'] ) && $settings['google_ads']['enabled'] === 'yes' && $this->can_route_to( $event_name, 'google_ads' ) ) {
+            $results['google_ads'] = $this->send_to_google_ads( $event_name, $payload, $settings['google_ads'] );
+        }
+
+        if ( isset( $settings['meta']['enabled'] ) && $settings['meta']['enabled'] === 'yes' && $this->can_route_to( $event_name, 'meta' ) ) {
+            $results['meta'] = $this->send_to_meta( $event_name, $payload, $settings['meta'] );
+        }
+
+        return $results;
+    }
+
+
+    /**
+     * Route check for destination.
+     *
+     * @since 5.5.0
+     * @param string $event_name Event name.
+     * @param string $destination Destination key.
+     * @return bool
+     */
+    private function can_route_to( $event_name, $destination ) {
+        $routes = self::get_tracking_routes();
+        return isset( $routes[ $event_name ][ $destination ] ) && $routes[ $event_name ][ $destination ] === 'yes';
+    }
+
+
+    /**
+     * Send event to GA4 Measurement Protocol.
+     *
+     * @since 5.5.0
+     * @param string $event_name Event name.
+     * @param array $payload Event payload.
+     * @param array $settings GA4 settings.
+     * @return array
+     */
+    private function send_to_ga4( $event_name, $payload, $settings ) {
+        $measurement_id = isset( $settings['measurement_id'] ) ? trim( (string) $settings['measurement_id'] ) : '';
+        $api_secret = isset( $settings['api_secret'] ) ? trim( (string) $settings['api_secret'] ) : '';
+
+        if ( empty( $measurement_id ) || empty( $api_secret ) ) {
+            return array( 'status' => 'skipped', 'reason' => 'missing_credentials' );
+        }
+
+        $params = $payload;
+        unset( $params['event_name'] );
+
+        $body = array(
+            'client_id' => ! empty( $payload['event_id'] ) ? (string) $payload['event_id'] : wp_generate_uuid4(),
+            'events' => array(
+                array(
+                    'name' => $this->get_external_event_name( $event_name, 'ga4' ),
+                    'params' => $params,
+                ),
+            ),
+        );
+
+        $url = add_query_arg(
+            array(
+                'measurement_id' => rawurlencode( $measurement_id ),
+                'api_secret' => rawurlencode( $api_secret ),
+            ),
+            'https://www.google-analytics.com/mp/collect'
+        );
+
+        $response = wp_remote_post( $url, array(
+            'timeout' => 3,
+            'headers' => array( 'Content-Type' => 'application/json' ),
+            'body' => wp_json_encode( $body ),
+        ) );
+
+        return $this->format_remote_result( 'ga4', $response );
+    }
+
+
+    /**
+     * Send event to Google Ads endpoint.
+     *
+     * @since 5.5.0
+     * @param string $event_name Event name.
+     * @param array $payload Event payload.
+     * @param array $settings Google Ads settings.
+     * @return array
+     */
+    private function send_to_google_ads( $event_name, $payload, $settings ) {
+        $conversion_id = isset( $settings['conversion_id'] ) ? trim( (string) $settings['conversion_id'] ) : '';
+        $conversion_label = isset( $settings['conversion_label'] ) ? trim( (string) $settings['conversion_label'] ) : '';
+
+        if ( empty( $conversion_id ) || empty( $conversion_label ) ) {
+            return array( 'status' => 'skipped', 'reason' => 'missing_credentials' );
+        }
+
+        $clean_id = preg_replace( '/[^0-9]/', '', $conversion_id );
+
+        if ( empty( $clean_id ) ) {
+            return array( 'status' => 'skipped', 'reason' => 'invalid_conversion_id' );
+        }
+
+        $url = add_query_arg(
+            array(
+                'label' => $conversion_label,
+                'value' => isset( $payload['value'] ) ? (float) $payload['value'] : 0,
+                'currency_code' => isset( $payload['currency'] ) ? sanitize_text_field( $payload['currency'] ) : get_woocommerce_currency(),
+                'guid' => 'ON',
+                'script' => 0,
+                'event_id' => isset( $payload['event_id'] ) ? sanitize_text_field( $payload['event_id'] ) : '',
+            ),
+            'https://www.googleadservices.com/pagead/conversion/' . $clean_id . '/'
+        );
+
+        $response = wp_remote_get( $url, array( 'timeout' => 3 ) );
+        return $this->format_remote_result( 'google_ads', $response );
+    }
+
+
+    /**
+     * Send event to Meta Conversions API.
+     *
+     * @since 5.5.0
+     * @param string $event_name Event name.
+     * @param array $payload Event payload.
+     * @param array $settings Meta settings.
+     * @return array
+     */
+    private function send_to_meta( $event_name, $payload, $settings ) {
+        $pixel_id = isset( $settings['pixel_id'] ) ? trim( (string) $settings['pixel_id'] ) : '';
+        $access_token = isset( $settings['access_token'] ) ? trim( (string) $settings['access_token'] ) : '';
+
+        if ( empty( $pixel_id ) || empty( $access_token ) ) {
+            return array( 'status' => 'skipped', 'reason' => 'missing_credentials' );
+        }
+
+        $customer = isset( $payload['customer'] ) && is_array( $payload['customer'] ) ? $payload['customer'] : array();
+        $user_data = array_filter( array(
+            'em' => isset( $customer['email'] ) ? $this->hash_user_data( $customer['email'] ) : '',
+            'ph' => isset( $customer['phone'] ) ? $this->hash_user_data( $customer['phone'] ) : '',
+            'fn' => isset( $customer['first_name'] ) ? $this->hash_user_data( $customer['first_name'] ) : '',
+            'ln' => isset( $customer['last_name'] ) ? $this->hash_user_data( $customer['last_name'] ) : '',
+        ) );
+
+        $custom_data = array(
+            'currency' => isset( $payload['currency'] ) ? sanitize_text_field( $payload['currency'] ) : get_woocommerce_currency(),
+            'value' => isset( $payload['value'] ) ? (float) $payload['value'] : 0,
+        );
+
+        if ( isset( $payload['items'] ) && is_array( $payload['items'] ) ) {
+            $custom_data['contents'] = $payload['items'];
+        }
+
+        $body = array(
+            'data' => array(
+                array(
+                    'event_name' => $this->get_external_event_name( $event_name, 'meta' ),
+                    'event_time' => time(),
+                    'event_id' => isset( $payload['event_id'] ) ? sanitize_text_field( $payload['event_id'] ) : '',
+                    'action_source' => 'website',
+                    'event_source_url' => home_url( add_query_arg( null, null ) ),
+                    'user_data' => $user_data,
+                    'custom_data' => $custom_data,
+                ),
+            ),
+        );
+
+        if ( ! empty( $settings['test_event_code'] ) ) {
+            $body['test_event_code'] = sanitize_text_field( $settings['test_event_code'] );
+        }
+
+        $endpoint = 'https://graph.facebook.com/v20.0/' . rawurlencode( $pixel_id ) . '/events?access_token=' . rawurlencode( $access_token );
+        $response = wp_remote_post( $endpoint, array(
+            'timeout' => 4,
+            'headers' => array( 'Content-Type' => 'application/json' ),
+            'body' => wp_json_encode( $body ),
+        ) );
+
+        return $this->format_remote_result( 'meta', $response );
+    }
+
+
+    /**
+     * Format remote call result and log only when debug mode is enabled.
+     *
+     * @since 5.5.0
+     * @param string $platform Platform name.
+     * @param mixed $response Response.
+     * @return array
+     */
+    private function format_remote_result( $platform, $response ) {
+        if ( is_wp_error( $response ) ) {
+            $this->debug_log( $platform . ' error: ' . $response->get_error_message(), 'error' );
+            return array( 'status' => 'error', 'message' => $response->get_error_message() );
+        }
+
+        $code = wp_remote_retrieve_response_code( $response );
+        $body = wp_remote_retrieve_body( $response );
+
+        if ( $code >= 200 && $code < 300 ) {
+            $this->debug_log( $platform . ' success [' . $code . ']', 'debug' );
+            return array( 'status' => 'success', 'code' => $code );
+        }
+
+        $this->debug_log( $platform . ' failed [' . $code . '] ' . $body, 'warning' );
+        return array( 'status' => 'error', 'code' => $code );
+    }
+
+
+    /**
+     * Get external mapped event name.
+     *
+     * @since 5.5.0
+     * @param string $event_name Internal event.
+     * @param string $destination Destination.
+     * @return string
+     */
+    private function get_external_event_name( $event_name, $destination ) {
+        $event_map = array(
+            'fc_begin_checkout' => array(
+                'ga4' => 'begin_checkout',
+                'meta' => 'InitiateCheckout',
+                'google_ads' => 'begin_checkout',
+            ),
+            'fc_add_shipping_info' => array(
+                'ga4' => 'add_shipping_info',
+                'meta' => 'AddShippingInfo',
+                'google_ads' => 'add_shipping_info',
+            ),
+            'fc_add_payment_info' => array(
+                'ga4' => 'add_payment_info',
+                'meta' => 'AddPaymentInfo',
+                'google_ads' => 'add_payment_info',
+            ),
+            'fc_purchase' => array(
+                'ga4' => 'purchase',
+                'meta' => 'Purchase',
+                'google_ads' => 'purchase',
+            ),
+        );
+
+        return isset( $event_map[ $event_name ][ $destination ] ) ? $event_map[ $event_name ][ $destination ] : $event_name;
+    }
+
+
+    /**
+     * Hash user data for Meta CAPI.
+     *
+     * @since 5.5.0
+     * @param string $value Raw value.
+     * @return string
+     */
+    private function hash_user_data( $value ) {
+        $normalized = strtolower( trim( (string) $value ) );
+        return hash( 'sha256', $normalized );
+    }
+
+
+    /**
+     * Logs only in debug mode.
+     *
+     * @since 5.5.0
+     * @param string $message Message.
+     * @param string $level Level.
+     * @return void
+     */
+    private function debug_log( $message, $level = 'debug' ) {
+        if ( Admin_Options::get_setting( 'enable_debug_mode' ) !== 'yes' ) {
+            return;
+        }
+
+        if ( function_exists( 'wc_get_logger' ) ) {
+            wc_get_logger()->log( $level, $message, array( 'source' => 'flexify-tracking-router' ) );
+        }
     }
 
 

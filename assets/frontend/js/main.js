@@ -4248,6 +4248,8 @@
 		Tracking: {
 			state: {
 				sent: {},
+				async_queue: [],
+				async_inflight: false,
 			},
 
 			isEnabled: function() {
@@ -4260,6 +4262,15 @@
 
 			getEventMap: function() {
 				return ( params.tracking_router && params.tracking_router.event_map ) ? params.tracking_router.event_map : {};
+			},
+
+			getAsyncConfig: function() {
+				return ( params.tracking_router && params.tracking_router.async ) ? params.tracking_router.async : {};
+			},
+
+			isAsyncEnabled: function() {
+				const config = this.getAsyncConfig();
+				return !!( config && config.enabled === 'yes' && config.action && config.nonce );
 			},
 
 			canSendTo: function( event_name, destination ) {
@@ -4318,6 +4329,49 @@
 				window.ttq.track( this.getExternalEventName( event_name, 'tiktok' ), payload );
 			},
 
+			enqueueAsyncEvent: function( event_name, payload ) {
+				if ( ! this.isAsyncEnabled() ) {
+					return;
+				}
+
+				this.state.async_queue.push({
+					event_name: event_name,
+					payload: payload,
+				});
+
+				this.processAsyncQueue();
+			},
+
+			processAsyncQueue: function() {
+				if ( ! this.isAsyncEnabled() || this.state.async_inflight || this.state.async_queue.length === 0 ) {
+					return;
+				}
+
+				const config = this.getAsyncConfig();
+				const next_item = this.state.async_queue.shift();
+
+				if ( ! next_item || ! next_item.event_name || ! next_item.payload ) {
+					return;
+				}
+
+				this.state.async_inflight = true;
+
+				$.ajax({
+					type: 'POST',
+					url: params.ajax_url,
+					timeout: 4000,
+					data: {
+						action: config.action,
+						nonce: config.nonce,
+						event_name: next_item.event_name,
+						payload: JSON.stringify( next_item.payload ),
+					},
+				}).always(() => {
+					this.state.async_inflight = false;
+					this.processAsyncQueue();
+				});
+			},
+
 			emit: function( event_name, payload, once_key ) {
 				if ( ! this.isEnabled() ) {
 					return;
@@ -4348,6 +4402,8 @@
 				if ( this.canSendTo( event_name, 'tiktok' ) ) {
 					this.sendTikTok( event_name, safe_payload );
 				}
+
+				this.enqueueAsyncEvent( event_name, safe_payload );
 
 				if ( once_key ) {
 					this.state.sent[once_key] = true;
