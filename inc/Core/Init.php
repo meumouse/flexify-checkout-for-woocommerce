@@ -2,6 +2,7 @@
 
 namespace MeuMouse\Flexify_Checkout\Core;
 
+use Automattic\WooCommerce\Utilities\FeaturesUtil;
 use MeuMouse\Flexify_Checkout\Admin\Admin_Options;
 
 // Exit if accessed directly.
@@ -24,12 +25,20 @@ class Init {
     const SCHEMA_VERSION = 1;
 
     /**
+     * Ensure bootstrap is registered once.
+     *
+     * @since 5.5.0
+     * @var bool
+     */
+    private static $bootstrapped = false;
+
+    /**
      * Plugin base name
 	 * 
 	 * @since 5.0.0
 	 * @return string
      */
-    public $basename = FLEXIFY_CHECKOUT_BASENAME;
+    public $basename = '';
 
     /**
      * Plugin file constant
@@ -37,7 +46,7 @@ class Init {
 	 * @since 5.0.0
 	 * @return string
      */
-    public $plugin_file = FLEXIFY_CHECKOUT_FILE;
+    public $plugin_file = '';
 
     /**
      * Plugin directory path
@@ -45,7 +54,113 @@ class Init {
      * @since 5.2.0
      * @return string
      */
-    public $directory = FLEXIFY_CHECKOUT_PATH;
+    public $directory = '';
+
+    /**
+     * Bootstrap plugin lifecycle hooks.
+     *
+     * @since 5.5.0
+     * @param string $plugin_file Plugin main file.
+     * @return void
+     */
+    public static function bootstrap( $plugin_file, $plugin_version ) {
+        if ( self::$bootstrapped ) {
+            return;
+        }
+
+        self::define_constants( $plugin_file, $plugin_version );
+
+        do_action( 'Flexify_Checkout/Before_Init' );
+
+        add_action( 'before_woocommerce_init', function() use ( $plugin_file ) {
+            self::declare_woo_compatibility( $plugin_file );
+        } );
+
+        add_action( 'init', function() use ( $plugin_version ) {
+            new self( $plugin_version );
+        }, 99 );
+
+        self::$bootstrapped = true;
+    }
+
+
+    /**
+     * Activation callback.
+     *
+     * @since 5.5.0
+     * @param string $plugin_file Plugin main file.
+     * @return void
+     */
+    public static function activate( $plugin_file, $plugin_version ) {
+        self::define_constants( $plugin_file, $plugin_version );
+        self::maybe_bootstrap_defaults( true );
+        self::clear_wc_template_cache();
+    }
+
+
+    /**
+     * Deactivation callback.
+     *
+     * @since 5.5.0
+     * @param string $plugin_file Plugin main file.
+     * @return void
+     */
+    public static function deactivate( $plugin_file, $plugin_version ) {
+        self::define_constants( $plugin_file, $plugin_version );
+        self::clear_wc_template_cache();
+    }
+
+
+    /**
+     * Define plugin constants.
+     *
+     * @since 5.5.0
+     * @param string $plugin_file Plugin main file.
+     * @return void
+     */
+    private static function define_constants( $plugin_file, $plugin_version ) {
+        $base_file = $plugin_file;
+        $base_dir = plugin_dir_path( $base_file );
+        $base_url = plugin_dir_url( $base_file );
+
+        $constants = array(
+            'FLEXIFY_CHECKOUT_BASENAME' => plugin_basename( $base_file ),
+            'FLEXIFY_CHECKOUT_FILE' => $base_file,
+            'FLEXIFY_CHECKOUT_PATH' => $base_dir,
+            'FLEXIFY_CHECKOUT_INC_PATH' => $base_dir . 'inc/',
+            'FLEXIFY_CHECKOUT_URL' => $base_url,
+            'FLEXIFY_CHECKOUT_ASSETS' => $base_url . 'assets/',
+            'FLEXIFY_CHECKOUT_ABSPATH' => dirname( $base_file ) . '/',
+            'FLEXIFY_CHECKOUT_TEMPLATES_DIR' => $base_dir . 'templates/',
+            'FLEXIFY_CHECKOUT_SETTINGS_TABS_DIR' => $base_dir . 'inc/Views/Settings/Tabs/',
+            'FLEXIFY_CHECKOUT_SLUG' => 'flexify-checkout-for-woocommerce',
+            'FLEXIFY_CHECKOUT_VERSION' => $plugin_version,
+            'FLEXIFY_CHECKOUT_ADMIN_EMAIL' => get_option( 'admin_email' ),
+            'FLEXIFY_CHECKOUT_DOCS_LINK' => 'https://ajuda.meumouse.com/docs/flexify-checkout-for-woocommerce/overview',
+            'FLEXIFY_CHECKOUT_DEV_MODE' => false,
+        );
+
+        foreach ( $constants as $key => $value ) {
+            if ( ! defined( $key ) ) {
+                define( $key, $value );
+            }
+        }
+    }
+
+
+    /**
+     * Setup WooCommerce High-Performance Order Storage compatibility.
+     *
+     * @since 5.5.0
+     * @param string $plugin_file Plugin main file.
+     * @return void
+     */
+    public static function declare_woo_compatibility( $plugin_file ) {
+        if ( defined( 'WC_VERSION' ) && version_compare( WC_VERSION, '7.1', '>' ) && class_exists( FeaturesUtil::class ) ) {
+            FeaturesUtil::declare_compatibility( 'custom_order_tables', $plugin_file, true );
+            FeaturesUtil::declare_compatibility( 'cart_checkout_blocks', $plugin_file, false );
+        }
+    }
 
     /**
      * Construct function
@@ -54,7 +169,15 @@ class Init {
      * @version 5.2.0
      * @return void
      */
-    public function __construct() {
+    public function __construct( $plugin_version = '' ) {
+        if ( ! empty( $plugin_version ) && ! defined( 'FLEXIFY_CHECKOUT_VERSION' ) ) {
+            define( 'FLEXIFY_CHECKOUT_VERSION', $plugin_version );
+        }
+
+        $this->basename = defined( 'FLEXIFY_CHECKOUT_BASENAME' ) ? FLEXIFY_CHECKOUT_BASENAME : '';
+        $this->plugin_file = defined( 'FLEXIFY_CHECKOUT_FILE' ) ? FLEXIFY_CHECKOUT_FILE : '';
+        $this->directory = defined( 'FLEXIFY_CHECKOUT_PATH' ) ? FLEXIFY_CHECKOUT_PATH : '';
+
         // Display notice if PHP version is bottom 7.4
 		if ( version_compare( phpversion(), '7.4', '<' ) ) {
 			add_action( 'admin_notices', array( $this, 'php_version_notice' ) );
@@ -157,18 +280,6 @@ class Init {
 
 
     /**
-     * Run tasks on plugin activation
-     *
-     * @since 5.1.0
-     * @return void
-     */
-    public static function activate_plugin() {
-        self::maybe_bootstrap_defaults( true );
-        self::clear_wc_template_cache();
-    }
-
-
-    /**
      * Ensure required options/default structures exist and are sane.
      *
      * @since 5.4.3
@@ -202,17 +313,6 @@ class Init {
         if ( $needs_settings || $needs_step_fields || $needs_migration ) {
             update_option( 'flexify_checkout_schema_version', self::SCHEMA_VERSION );
         }
-    }
-
-
-    /**
-     * Deactivation callback for plugin bootstrap file.
-     *
-     * @since 5.4.3
-     * @return void
-     */
-    public static function deactivate_plugin() {
-        self::clear_wc_template_cache();
     }
 
 
