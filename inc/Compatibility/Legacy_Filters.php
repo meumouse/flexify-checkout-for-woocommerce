@@ -115,7 +115,7 @@ class Legacy_Filters {
 	protected static function warn_deprecated_filter( $old_filter, $new_filter, $version ) {
 		if ( function_exists( '_doing_it_wrong' ) ) {
 			$message = sprintf(
-				__( 'O filtro "%1$s" estÃ¡ obsoleto desde a versÃ£o %3$s. Use "%2$s" em seu lugar.', 'flexify-checkout-for-woocommerce' ),
+				__( 'O filtro "%1$s" está obsoleto desde a versão %3$s. Use "%2$s" em seu lugar.', 'flexify-checkout-for-woocommerce' ),
 				$old_filter,
 				$new_filter,
 				$version

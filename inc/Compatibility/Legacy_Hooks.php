@@ -112,7 +112,7 @@ class Legacy_Hooks {
 	protected static function warn_deprecated_hook( $old_hook, $new_hook, $version ) {
 		if ( function_exists('_doing_it_wrong') ) {
 			$message = sprintf(
-				__( 'O gancho "%1$s" estÃ¡ obsoleto desde a versÃ£o %3$s. Use "%2$s" em seu lugar.', 'flexify-checkout-for-woocommerce' ),
+				__( 'O gancho "%1$s" está obsoleto desde a versão %3$s. Use "%2$s" em seu lugar.', 'flexify-checkout-for-woocommerce' ),
 				$old_hook,
 				$new_hook,
 				$version

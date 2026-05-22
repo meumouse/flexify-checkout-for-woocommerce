@@ -79,11 +79,11 @@ class Modules {
             ob_start();
 
             // Log the start of the installation process
-            $this->log('plugin_installation', "Iniciando a instalaÃ§Ã£o do plugin: $plugin_slug");
+            $this->log('plugin_installation', "Iniciando a instalação do plugin: $plugin_slug");
 
             // Check if the plugin is already installed
             if ( $this->is_plugin_installed( $plugin_slug ) ) {
-                $this->log('plugin_installation', "Plugin jÃ¡ estÃ¡ instalado: $plugin_slug");
+                $this->log('plugin_installation', "Plugin já está instalado: $plugin_slug");
                 
                 // If the plugin is installed, try to update it
                 $installed = $this->upgrade_plugin( $plugin_slug );
@@ -147,13 +147,13 @@ class Modules {
                         'wp_error'=> $activate,
                     ));
 
-                    $this->log('plugin_installation', "Erro na ativaÃ§Ã£o do plugin: $plugin_slug - " . $activate->get_error_message());
-                    $this->log('plugin_installation', "Detalhes do erro na ativaÃ§Ã£o: " . print_r( $activate, true ) );
+                    $this->log('plugin_installation', "Erro na ativação do plugin: $plugin_slug - " . $activate->get_error_message());
+                    $this->log('plugin_installation', "Detalhes do erro na ativação: " . print_r( $activate, true ) );
 
                     $response = array(
                         'status' => 'error',
                         'toast_header_title' => esc_html__( 'Falha ao ativar o plugin.', 'flexify-checkout-for-woocommerce' ),
-                        'toast_body_title' => esc_html__( 'O plugin foi instalado, mas nÃ£o pÃ´de ser ativado.', 'flexify-checkout-for-woocommerce' ),
+                        'toast_body_title' => esc_html__( 'O plugin foi instalado, mas não pôde ser ativado.', 'flexify-checkout-for-woocommerce' ),
                     );
                 }
 
@@ -182,7 +182,7 @@ class Modules {
                     'wp_error' => is_wp_error( $installed ) ? $installed : null,
                 ));
     
-                $this->log('plugin_installation', "Falha na instalaÃ§Ã£o/atualizaÃ§Ã£o do plugin: $plugin_slug");
+                $this->log('plugin_installation', "Falha na instalação/atualização do plugin: $plugin_slug");
 
                 $response = array(
                     'status' => 'error',

@@ -71,8 +71,8 @@ class Default_Options {
             'logo_header_link' => function_exists('wc_get_page_id') ? get_permalink( wc_get_page_id('shop') ) : home_url('/'),
             'enable_field_masks' => 'yes',
             'enable_display_local_pickup_kangu' => 'no',
-            'text_header_step_1' => 'InformaÃ§Ãµes do cliente',
-            'text_header_step_2' => 'EndereÃ§o de entrega',
+            'text_header_step_1' => 'Informações do cliente',
+            'text_header_step_2' => 'Endereço de entrega',
             'text_header_step_3' => 'Formas de pagamento',
             'text_header_sidebar_right' => 'Carrinho',
             'text_check_step_1' => 'Contato',
@@ -144,7 +144,7 @@ class Default_Options {
             'text_view_shop_thankyou' => 'Ver mais produtos',
             'enable_remove_quantity_select' => 'yes',
             'enable_animation_process_purchase' => 'yes',
-            'text_animation_process_purchase_1' => 'Processando seus dados com seguranÃ§a',
+            'text_animation_process_purchase_1' => 'Processando seus dados com segurança',
             'animation_process_purchase_file_1' => $this->assets_url . 'frontend/json/document-lock.json',
             'text_animation_process_purchase_2' => 'Confirmando seu pagamento',
             'animation_process_purchase_file_2' => $this->assets_url . 'frontend/json/money-safe.json',
@@ -163,7 +163,7 @@ class Default_Options {
             'checkout_countdown_value' => '15',
             'checkout_countdown_unit' => 'minutes',
             'checkout_countdown_action' => 'hide',
-            'checkout_countdown_title' => esc_html__( 'Sua sessÃ£o termina em:', 'flexify-checkout-for-woocommerce' ),
+            'checkout_countdown_title' => esc_html__( 'Sua sessão termina em:', 'flexify-checkout-for-woocommerce' ),
             'checkout_countdown_redirect_url' => home_url('/'),
             'countdown_background_type' => 'primary',
             'countdown_background_color' => '#141D26',
@@ -239,7 +239,7 @@ class Default_Options {
             'billing_email' => array(
                 'id' => 'billing_email',
                 'type' => 'email',
-                'label' => esc_html__( 'EndereÃ§o de e-mail', 'flexify-checkout-for-woocommerce' ),
+                'label' => esc_html__( 'Endereço de e-mail', 'flexify-checkout-for-woocommerce' ),
                 'position' => 'full',
                 'classes' => '',
                 'label_classes' => '',
@@ -305,7 +305,7 @@ class Default_Options {
             'billing_country' => array(
                 'id' => 'billing_country',
                 'type' => 'select',
-                'label' => esc_html__( 'PaÃ­s', 'flexify-checkout-for-woocommerce' ),
+                'label' => esc_html__( 'País', 'flexify-checkout-for-woocommerce' ),
                 'position' => 'full',
                 'classes' => '',
                 'label_classes' => '',
@@ -332,7 +332,7 @@ class Default_Options {
             'billing_address_1' => array(
                 'id' => 'billing_address_1',
                 'type' => 'text',
-                'label' => esc_html__( 'EndereÃ§o', 'flexify-checkout-for-woocommerce' ),
+                'label' => esc_html__( 'Endereço', 'flexify-checkout-for-woocommerce' ),
                 'position' => 'left',
                 'classes' => '',
                 'label_classes' => '',
@@ -345,7 +345,7 @@ class Default_Options {
             'billing_address_2' => array(
                 'id' => 'billing_address_2',
                 'type' => 'text',
-                'label' => esc_html__( 'Apartamento, suÃ­te, unidade, etc.', 'flexify-checkout-for-woocommerce' ),
+                'label' => esc_html__( 'Apartamento, suíte, unidade, etc.', 'flexify-checkout-for-woocommerce' ),
                 'position' => 'right',
                 'classes' => '',
                 'label_classes' => '',
@@ -409,11 +409,11 @@ class Default_Options {
                 'options' => array(
                     array(
                         'value' => '1',
-                        'text' => esc_html__( 'Pessoa FÃ­sica (CPF)', 'flexify-checkout-for-woocommerce' ),
+                        'text' => esc_html__( 'Pessoa Física (CPF)', 'flexify-checkout-for-woocommerce' ),
                     ),
                     array(
                         'value' => '2',
-                        'text' => esc_html__( 'Pessoa JurÃ­fica (CNPJ)', 'flexify-checkout-for-woocommerce' ),
+                        'text' => esc_html__( 'Pessoa Jurífica (CNPJ)', 'flexify-checkout-for-woocommerce' ),
                     ),
                 ),
             ),
@@ -448,7 +448,7 @@ class Default_Options {
             'billing_ie' => array(
                 'id' => 'billing_ie',
                 'type' => 'tel',
-                'label' => esc_html__( 'InscriÃ§Ã£o Estadual', 'flexify-checkout-for-woocommerce' ),
+                'label' => esc_html__( 'Inscrição Estadual', 'flexify-checkout-for-woocommerce' ),
                 'position' => 'full',
                 'classes' => '',
                 'label_classes' => '',
@@ -504,7 +504,7 @@ class Default_Options {
             'billing_gender' => array(
                 'id' => 'billing_gender',
                 'type' => 'select',
-                'label' => esc_html__( 'GÃªnero', 'flexify-checkout-for-woocommerce' ),
+                'label' => esc_html__( 'Gênero', 'flexify-checkout-for-woocommerce' ),
                 'position' => 'full',
                 'classes' => '',
                 'label_classes' => '',
@@ -543,7 +543,7 @@ class Default_Options {
             'billing_number' => array(
                 'id' => 'billing_number',
                 'type' => 'text',
-                'label' => esc_html__( 'NÃºmero da residÃªncia', 'flexify-checkout-for-woocommerce' ),
+                'label' => esc_html__( 'Número da residência', 'flexify-checkout-for-woocommerce' ),
                 'position' => 'right',
                 'classes' => '',
                 'label_classes' => '',

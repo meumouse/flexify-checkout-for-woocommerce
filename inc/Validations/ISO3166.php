@@ -79,10 +79,10 @@ class ISO3166 {
             'CR' => esc_html( 'Costa Rica', 'flexify-checkout-for-woocommerce' ),
             'HR' => esc_html( 'Croatia', 'flexify-checkout-for-woocommerce' ),
             'CU' => esc_html( 'Cuba', 'flexify-checkout-for-woocommerce' ),
-            'CW' => esc_html( 'CuraÃ§ao', 'flexify-checkout-for-woocommerce' ),
+            'CW' => esc_html( 'Curaçao', 'flexify-checkout-for-woocommerce' ),
             'CY' => esc_html( 'Cyprus', 'flexify-checkout-for-woocommerce' ),
             'CZ' => esc_html( 'Czechia', 'flexify-checkout-for-woocommerce' ),
-            'CI' => esc_html( 'CÃ´te d`Ivoire', 'flexify-checkout-for-woocommerce' ),
+            'CI' => esc_html( 'Côte d`Ivoire', 'flexify-checkout-for-woocommerce' ),
             'DK' => esc_html( 'Denmark', 'flexify-checkout-for-woocommerce' ),
             'DJ' => esc_html( 'Djibouti', 'flexify-checkout-for-woocommerce' ),
             'DM' => esc_html( 'Dominica', 'flexify-checkout-for-woocommerce' ),
@@ -207,8 +207,8 @@ class ISO3166 {
             'RO' => esc_html( 'Romania', 'flexify-checkout-for-woocommerce' ),
             'RU' => esc_html( 'Russian Federation', 'flexify-checkout-for-woocommerce' ),
             'RW' => esc_html( 'Rwanda', 'flexify-checkout-for-woocommerce' ),
-            'RE' => esc_html( 'RÃ©union', 'flexify-checkout-for-woocommerce' ),
-            'BL' => esc_html( 'Saint BarthÃ©lemy', 'flexify-checkout-for-woocommerce' ),
+            'RE' => esc_html( 'Réunion', 'flexify-checkout-for-woocommerce' ),
+            'BL' => esc_html( 'Saint Barthélemy', 'flexify-checkout-for-woocommerce' ),
             'SH' => esc_html( 'Saint Helena, Ascension and Tristan da Cunha', 'flexify-checkout-for-woocommerce' ),
             'KN' => esc_html( 'Saint Kitts and Nevis', 'flexify-checkout-for-woocommerce' ),
             'LC' => esc_html( 'Saint Lucia', 'flexify-checkout-for-woocommerce' ),
@@ -272,7 +272,7 @@ class ISO3166 {
             'YE' => esc_html( 'Yemen', 'flexify-checkout-for-woocommerce' ),
             'ZM' => esc_html( 'Zambia', 'flexify-checkout-for-woocommerce' ),
             'ZW' => esc_html( 'Zimbabwe', 'flexify-checkout-for-woocommerce' ),
-            'AX' => esc_html( 'Ã…land Islands', 'flexify-checkout-for-woocommerce' ),
+            'AX' => esc_html( 'Åland Islands', 'flexify-checkout-for-woocommerce' ),
         ));
     }
 }

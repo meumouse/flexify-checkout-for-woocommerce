@@ -83,13 +83,13 @@ class Settings_Panel {
             ),
             'conditions' => array(
                 'id' => 'conditions',
-                'label' => esc_html__( 'CondiÃ§Ãµes', 'flexify-checkout-for-woocommerce' ),
+                'label' => esc_html__( 'Condições', 'flexify-checkout-for-woocommerce' ),
                 'icon' => '<svg class="flexify-checkout-tab-icon" xmlns="http://www.w3.org/2000/svg"><path d="M21 3H5a1 1 0 0 0-1 1v2.59c0 .523.213 1.037.583 1.407L10 13.414V21a1.001 1.001 0 0 0 1.447.895l4-2c.339-.17.553-.516.553-.895v-5.586l5.417-5.417c.37-.37.583-.884.583-1.407V4a1 1 0 0 0-1-1zm-6.707 9.293A.996.996 0 0 0 14 13v5.382l-2 1V13a.996.996 0 0 0-.293-.707L6 6.59V5h14.001l.002 1.583-5.71 5.71z"></path></svg>',
                 'file' => $this->tabs_dir . 'Conditions.php',
             ),
             'integrations' => array(
                 'id' => 'integrations',
-                'label' => esc_html__( 'IntegraÃ§Ãµes', 'flexify-checkout-for-woocommerce' ),
+                'label' => esc_html__( 'Integrações', 'flexify-checkout-for-woocommerce' ),
                 'icon' => '<svg class="flexify-checkout-tab-icon"><path d="M3 8h2v5c0 2.206 1.794 4 4 4h2v5h2v-5h2c2.206 0 4-1.794 4-4V8h2V6H3v2zm4 0h10v5c0 1.103-.897 2-2 2H9c-1.103 0-2-.897-2-2V8zm0-6h2v3H7zm8 0h2v3h-2z"></path></svg>',
                 'file' => $this->tabs_dir . 'Integrations.php',
             ),
@@ -131,7 +131,7 @@ class Settings_Panel {
 
         <div class="flexify-checkout-admin-title-description">
             <p>
-                <?php esc_html_e( 'Configure abaixo as opÃ§Ãµes da finalizaÃ§Ã£o de compra do WooCommerce. Se precisar de ajuda para configurar, acesse nossa', 'flexify-checkout-for-woocommerce' ); ?>
+                <?php esc_html_e( 'Configure abaixo as opções da finalização de compra do WooCommerce. Se precisar de ajuda para configurar, acesse nossa', 'flexify-checkout-for-woocommerce' ); ?>
                 <a class="fancy-link" href="<?php echo esc_url( FLEXIFY_CHECKOUT_DOCS_LINK ); ?>" target="_blank"><?php esc_html_e( 'Central de ajuda', 'flexify-checkout-for-woocommerce' ); ?></a>
             </p>
         </div>
@@ -164,7 +164,7 @@ class Settings_Panel {
                 <div class="flexify-checkout-settings-actions-footer">
                     <button id="flexify_checkout_save_options" class="btn btn-primary d-flex align-items-center justify-content-center" disabled>
                         <svg class="icon me-2 icon-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 21h14a2 2 0 0 0 2-2V8a1 1 0 0 0-.29-.71l-4-4A1 1 0 0 0 16 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2zm10-2H9v-5h6zM13 7h-2V5h2zM5 5h2v4h8V5h.59L19 8.41V19h-2v-5a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v5H5z"></path></svg>
-                        <?php esc_html_e( 'Salvar alteraÃ§Ãµes', 'flexify-checkout-for-woocommerce' ); ?>
+                        <?php esc_html_e( 'Salvar alterações', 'flexify-checkout-for-woocommerce' ); ?>
                     </button>
                 </div>
             </div>
@@ -197,7 +197,7 @@ class Settings_Panel {
             ),
             'single' => array(
                 'id'        => 'single',
-                'label'     => esc_html__( 'PÃ¡gina Ãºnica', 'flexify-checkout-for-woocommerce' ),
+                'label'     => esc_html__( 'Página única', 'flexify-checkout-for-woocommerce' ),
                 'icon'      => '',
                 'status'    => 'soon',
                 'classes'   => '',
