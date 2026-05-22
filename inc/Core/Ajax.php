@@ -38,6 +38,7 @@ class Ajax {
 			'flexify_check_for_inline_error'        => array( __CLASS__, 'check_for_inline_error' ),
 			'flexify_check_for_inline_errors'       => array( __CLASS__, 'check_for_inline_errors' ),
 			'flexify_checkout_login'                => array( $this, 'checkout_login_callback' ),
+			'flexify_checkout_lostpassword'         => array( $this, 'checkout_lostpassword_callback' ),
 			'flexify_checkout_save_settings'        => array( $this, 'ajax_save_options_callback' ),
 			'remove_checkout_fields'                => array( $this, 'remove_checkout_fields_callback' ),
 			'add_new_field_to_checkout'             => array( $this, 'add_new_field_to_checkout_callback' ),
@@ -75,6 +76,7 @@ class Ajax {
 			'flexify_check_for_inline_error',
 			'flexify_check_for_inline_errors',
 			'flexify_checkout_login',
+			'flexify_checkout_lostpassword',
 			'get_checkout_session_data',
 			'flexify_checkout_remove_product',
 			'flexify_checkout_undo_remove_product',
@@ -1371,6 +1373,49 @@ class Ajax {
 			// send response
 			wp_send_json( $response );
 		}
+	}
+
+
+	/**
+	 * Handle lost password request from checkout login modal.
+	 *
+	 * @since 5.5.0
+	 * @return void
+	 */
+	public function checkout_lostpassword_callback() {
+		$nonce = isset( $_POST['security'] ) ? sanitize_text_field( wp_unslash( $_POST['security'] ) ) : '';
+
+		if ( ! wp_verify_nonce( $nonce, 'flexify-checkout-lostpassword' ) ) {
+			wp_send_json_error( array(
+				'error' => __( 'Sua sessao expirou. Recarregue a pagina e tente novamente.', 'flexify-checkout-for-woocommerce' ),
+			) );
+		}
+
+		$user_login = isset( $_POST['user_login'] ) ? sanitize_text_field( wp_unslash( $_POST['user_login'] ) ) : '';
+
+		if ( empty( $user_login ) || ! is_email( $user_login ) ) {
+			wp_send_json_error( array(
+				'error' => __( 'Por favor, insira um e-mail valido.', 'flexify-checkout-for-woocommerce' ),
+			) );
+		}
+
+		$_POST['user_login'] = $user_login;
+		$recover_password = retrieve_password();
+
+		if ( is_wp_error( $recover_password ) ) {
+			$error_codes = $recover_password->get_error_codes();
+
+			// Keep a generic success response to prevent user enumeration.
+			if ( in_array( 'invalidcombo', $error_codes, true ) ) {
+				wp_send_json_success();
+			}
+
+			wp_send_json_error( array(
+				'error' => __( 'Nao foi possivel enviar o e-mail de redefinição. Tente novamente.', 'flexify-checkout-for-woocommerce' ),
+			) );
+		}
+
+		wp_send_json_success();
 	}
 
 

@@ -613,7 +613,7 @@
 				const row = input.closest('.form-row');
 				const iti = input.data('itiInstance');
 				const fieldLabel = row.attr('data-label') || 'Telefone';
-				const requiredMessage = `${fieldLabel} ${params.i18n.required_field || 'obrigatório'}.`;
+				const requiredMessage = `${fieldLabel} ${params.i18n.required_field || 'obrigatorio'}.`;
 				const isRequired = row.hasClass('validate-required') || row.hasClass('required') || row.hasClass('required-field') || input.prop('required');
 
 				// Required field must display explicit required error when empty.
@@ -2027,28 +2027,66 @@
 			 * Show notice for the login form
 			 *
 			 * @since 1.0.0
-			 * @version 5.0.0
+			 * @version 5.5.0
 			 * @param {string} message | The message to display
-			 * @param {string} type | 'error' or 'success'
+			 * @param {string} type | "error", "success" or "info"
 			 */
 			showNotice: function(message, type) {
 				if ( ! type ) {
 					type = 'error';
 				}
 
-				var notice_wrapper = $('.flexify-login-notice');
+				var notice_wrapper = $('.woocommerce-form-login .flexify-login-notice');
 				var typeClass = `flexify-login-notice--${type}`;
 				
 				notice_wrapper.removeClass('flexify-login-notice--success flexify-login-notice--error flexify-login-notice--info');
 				notice_wrapper.addClass(typeClass);
-				notice_wrapper.html(message);
+				notice_wrapper.html(message || '');
+			},
+
+			/**
+			 * Clear login modal notice
+			 *
+			 * @since 5.5.0
+			 * @return {void}
+			 */
+			clearNotice: function() {
+				$('.woocommerce-form-login .flexify-login-notice')
+					.removeClass('flexify-login-notice--success flexify-login-notice--error flexify-login-notice--info')
+					.html('');
+			},
+
+			/**
+			 * Toggle login/reset views in the same modal.
+			 *
+			 * @since 5.5.0
+			 * @param {string} view | "login" or "reset"
+			 */
+			switchView: function( view ) {
+				const loginView = $('.woocommerce-form-login .flexify-login-view--login');
+				const resetView = $('.woocommerce-form-login .flexify-login-view--reset');
+
+				if ( view === 'reset' ) {
+					loginView.hide();
+					resetView.show();
+					window.setTimeout(function() {
+						resetView.find('#flexify-reset-email').trigger('focus');
+					}, 50);
+					return;
+				}
+
+				resetView.hide();
+				loginView.show();
+				window.setTimeout(function() {
+					loginView.find('#username').trigger('focus');
+				}, 50);
 			},
 
 			/**
 			 * Open modal for login on checkout
 			 * 
 			 * @since 1.0.0
-			 * @version 5.0.0
+			 * @version 5.5.0
 			 * @param {boolean} openAuto | Open modal automatically
 			 */
 			openModal: function( openAuto ) {
@@ -2070,7 +2108,11 @@
 
 				if ( billing_email ) {
 					$('.woocommerce-form-login #username').val(billing_email).trigger('change');
+					$('.woocommerce-form-login #flexify-reset-email').val(billing_email).trigger('change');
 				}
+
+				Flexify_Checkout.loginForm.switchView('login');
+				Flexify_Checkout.loginForm.clearNotice();
 
 				if ( openAuto ) {
 					Flexify_Checkout.loginForm.showNotice( params.i18n.account_exists, 'info' );
@@ -2102,10 +2144,36 @@
 					$(document.body).off('click', 'a.showlogin');
 				}, 100);
 
-				$(document).on('click', '[data-login], .showlogin', function(e) {
+				$(document).off('click.flexifyLoginModal').on('click.flexifyLoginModal', '[data-login], .showlogin', function(e) {
 					e.preventDefault();
 
 					Flexify_Checkout.loginForm.openModal();
+				});
+			},
+
+			/**
+			 * Handle switch to reset password view.
+			 *
+			 * @since 5.5.0
+			 */
+			onForgotPasswordClick: function() {
+				$(document).off('click.flexifyLoginForgot').on('click.flexifyLoginForgot', '.woocommerce-form-login .flexify-lost-password-trigger', function(e) {
+					e.preventDefault();
+					Flexify_Checkout.loginForm.clearNotice();
+					Flexify_Checkout.loginForm.switchView('reset');
+				});
+			},
+
+			/**
+			 * Handle switch back to login view.
+			 *
+			 * @since 5.5.0
+			 */
+			onBackToLoginClick: function() {
+				$(document).off('click.flexifyLoginBack').on('click.flexifyLoginBack', '.woocommerce-form-login .flexify-back-to-login', function(e) {
+					e.preventDefault();
+					Flexify_Checkout.loginForm.clearNotice();
+					Flexify_Checkout.loginForm.switchView('login');
 				});
 			},
 
@@ -2116,7 +2184,7 @@
 			 * @version 5.0.0
 			 */
 			passwordVisibility: function() {
-				$('.toggle-password-visibility .toggle').on('click', function() {
+				$('.toggle-password-visibility .toggle').off('click.flexifyToggleLoginPass').on('click.flexifyToggleLoginPass', function() {
 					var inputLoginPass = $('.flexify-login-password');
 					var showPasswordIcon = $('.toggle-password-visibility .show-password');
 					var hidePasswordIcon = $('.toggle-password-visibility .hide-password');
@@ -2137,14 +2205,14 @@
 			 * Handle submit login event
 			 *
 			 * @since 1.0.0
-			 * @version 5.0.0
+			 * @version 5.5.0
 			 * @param {object} e | Event object
 			 */
 			onSubmit: function(e) {
 				e.preventDefault();
 
-				const form = $('.woocommerce-form-login');
-				let btn = $('.flexify-button.woocommerce-button.button.woocommerce-form-login__submit');
+				const form = $('.woocommerce-form-login .flexify-login-form');
+				let btn = $('.woocommerce-form-login .woocommerce-form-login__submit');
 				let btn_state = Flexify_Checkout.Helpers.keepButtonState( btn );
 
 				// send AJAX request
@@ -2169,7 +2237,7 @@
 
 							window.location.reload();
 						} else {
-							Flexify_Checkout.loginForm.showNotice( response.data.error, 'error' );
+							Flexify_Checkout.loginForm.showNotice( response?.data?.error || params.i18n.error, 'error' );
 						}
 					},
 					error: function(jqXHR, textStatus, errorThrown) {
@@ -2183,14 +2251,66 @@
 			},
 
 			/**
+			 * Handle submit reset password event.
+			 *
+			 * @since 5.5.0
+			 * @param {object} e | Event object
+			 */
+			onSubmitReset: function(e) {
+				e.preventDefault();
+
+				const form = $('.woocommerce-form-login .flexify-lostpassword-form');
+				const email = String(form.find('#flexify-reset-email').val() || '').trim();
+				let btn = $('.woocommerce-form-login .flexify-reset-password__submit');
+				let btn_state = Flexify_Checkout.Helpers.keepButtonState( btn );
+
+				if ( ! email || ! Flexify_Checkout.Validations.isValidEmail(email) ) {
+					Flexify_Checkout.loginForm.showNotice( params.i18n.lostpassword_invalid_email, 'error' );
+					return;
+				}
+
+				$.ajax({
+					type: 'POST',
+					url: params.ajax_url,
+					data: {
+						action: 'flexify_checkout_lostpassword',
+						user_login: email,
+						security: form.find('#flexify-lostpassword-nonce').val(),
+					},
+					beforeSend: function() {
+						btn.prop('disabled', true).html('<span class="flexify-btn-processing-inline"></span>');
+					},
+					success: function(response) {
+						if ( response.success ) {
+							Flexify_Checkout.loginForm.showNotice( params.i18n.lostpassword_success, 'success' );
+							Flexify_Checkout.loginForm.switchView('login');
+							$('.woocommerce-form-login #username').val(email).trigger('change');
+						} else {
+							Flexify_Checkout.loginForm.showNotice( response?.data?.error || params.i18n.lostpassword_error, 'error' );
+						}
+					},
+					error: function(jqXHR, textStatus, errorThrown) {
+						console.error('[FLEXIFY CHECKOUT] AJAX error on try recover password:', textStatus, errorThrown);
+						Flexify_Checkout.loginForm.showNotice( params.i18n.lostpassword_error, 'error' );
+					},
+					complete: function() {
+						btn.html(btn_state.html).prop('disabled', false);
+					},
+				});
+			},
+
+			/**
 			 * Initialize module
 			 * 
 			 * @since 1.0.0
-			 * @version 5.0.0
+			 * @version 5.5.0
 			 */
 			init: function() {
 				this.onClick();
+				this.onForgotPasswordClick();
+				this.onBackToLoginClick();
 				this.passwordVisibility();
+				this.switchView('login');
 
 				/**
 				 * If auto-open class is present in the login for i.e. user has entered a wrong password,
@@ -2202,8 +2322,12 @@
 					}, 1000);
 				}
 
-				$('.woocommerce-form-login > h2:first').append('<div class="flexify-login-notice"></div>');
-      			$('.woocommerce-form-login').on('submit', Flexify_Checkout.loginForm.onSubmit);
+				if ( ! $('.woocommerce-form-login .flexify-login-notice').length ) {
+					$('.woocommerce-form-login').prepend('<div class="flexify-login-notice"></div>');
+				}
+
+				$('.woocommerce-form-login .flexify-login-form').off('submit.flexifyLogin').on('submit.flexifyLogin', Flexify_Checkout.loginForm.onSubmit);
+				$('.woocommerce-form-login .flexify-lostpassword-form').off('submit.flexifyLostPass').on('submit.flexifyLostPass', Flexify_Checkout.loginForm.onSubmitReset);
 			},
 		},
 
@@ -5521,3 +5645,5 @@
      */
     $(document).trigger('flexify_checkout_ready');
 })(jQuery);
+
+

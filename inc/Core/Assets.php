@@ -213,23 +213,26 @@ class Assets {
 			'i18n' => array(
 				'iti_i18n' => $this->build_iti_i18n(),
 				'error' => __( 'Corrija todos os erros e tente novamente.', 'flexify-checkout-for-woocommerce' ),
-				'errorAddressSearch' => __( 'Procure um endereço e tente novamente.', 'flexify-checkout-for-woocommerce' ),
+				'errorAddressSearch' => __( 'Procure um endereÃ§o e tente novamente.', 'flexify-checkout-for-woocommerce' ),
 				'login' => __( 'Entrar', 'flexify-checkout-for-woocommerce' ),
 				'pay' => __( 'Pagar', 'flexify-checkout-for-woocommerce' ),
 				'coupon_success' => __( 'O cupom foi removido.', 'flexify-checkout-for-woocommerce' ),
-				'account_exists' => __( 'Uma conta já está registrada com este endereço de e-mail. Gostaria de entrar nela?', 'flexify-checkout-for-woocommerce' ),
+				'account_exists' => __( 'Uma conta jÃ¡ estÃ¡ registrada com este endereÃ§o de e-mail. Gostaria de entrar nela?', 'flexify-checkout-for-woocommerce' ),
 				'login_successful' => __( 'Bem vindo de volta!', 'flexify-checkout-for-woocommerce' ),
+				'lostpassword_success' => __( 'Se o e-mail informado estiver cadastrado, voce receberá um link para redefinir sua senha.', 'flexify-checkout-for-woocommerce' ),
+				'lostpassword_invalid_email' => __( 'Por favor, insira um e-mail valido.', 'flexify-checkout-for-woocommerce' ),
+				'lostpassword_error' => __( 'Nao foi possivel enviar o e-mail de redefinição. Tente novamente.', 'flexify-checkout-for-woocommerce' ),
 				'error_occured' => __( 'Ocorreu um erro', 'flexify-checkout-for-woocommerce' ),
 				'phone' => array(
-					'invalid' => __( 'Por favor, insira um número de telefone válido.', 'flexify-checkout-for-woocommerce' ),
+					'invalid' => __( 'Por favor, insira um nÃºmero de telefone vÃ¡lido.', 'flexify-checkout-for-woocommerce' ),
 				),
 				'cpf' => array(
-					'invalid' => __( 'Por favor, insira um CPF válido.', 'flexify-checkout-for-woocommerce' ),
+					'invalid' => __( 'Por favor, insira um CPF vÃ¡lido.', 'flexify-checkout-for-woocommerce' ),
 				),
 				'cnpj' => array(
-					'invalid' => __( 'Por favor, insira um CNPJ válido.', 'flexify-checkout-for-woocommerce' ),
+					'invalid' => __( 'Por favor, insira um CNPJ vÃ¡lido.', 'flexify-checkout-for-woocommerce' ),
 				),
-				'required_field' => __( 'obrigatório', 'flexify-checkout-for-woocommerce' ),
+				'required_field' => __( 'obrigatÃ³rio', 'flexify-checkout-for-woocommerce' ),
 			),
 			'nonces' => array(
 				'remove_product' => wp_create_nonce('flexify_checkout_remove_product'),
@@ -282,7 +285,7 @@ class Assets {
 			'remove_coupon_nonce' => wp_create_nonce('remove-coupon'),
 			'checkout_url' => \WC_AJAX::get_endpoint('checkout'),
 			'is_checkout' => is_checkout() && empty( $wp->query_vars['order-pay'] ) && ! isset( $wp->query_vars['order-received'] ) ? 1 : 0,
-			'i18n_checkout_error' => esc_attr__( 'Erro ao processar a finalização da compra. Por favor, tente novamente.', 'flexify-checkout-for-woocommerce' ),
+			'i18n_checkout_error' => esc_attr__( 'Erro ao processar a finalizaÃ§Ã£o da compra. Por favor, tente novamente.', 'flexify-checkout-for-woocommerce' ),
 		), 'wc-checkout', );
 
 		$params = array_merge( $params, $wc_params );
@@ -310,9 +313,9 @@ class Assets {
 		 * @since 5.0.0
 		 */
 		$labels = apply_filters( 'Flexify_Checkout/Assets/Iti_I18n', array(
-			'selectedCountryAriaLabel'  => __( 'País selecionado', 'flexify-checkout-for-woocommerce' ),
-			'noCountrySelected'         => __( 'Nenhum país selecionado', 'flexify-checkout-for-woocommerce' ),
-			'countryListAriaLabel'      => __( 'Lista de países', 'flexify-checkout-for-woocommerce' ),
+			'selectedCountryAriaLabel'  => __( 'PaÃ­s selecionado', 'flexify-checkout-for-woocommerce' ),
+			'noCountrySelected'         => __( 'Nenhum paÃ­s selecionado', 'flexify-checkout-for-woocommerce' ),
+			'countryListAriaLabel'      => __( 'Lista de paÃ­ses', 'flexify-checkout-for-woocommerce' ),
 			'searchPlaceholder'         => __( 'Pesquisar', 'flexify-checkout-for-woocommerce' ),
 			'zeroSearchResults'         => __( 'Nenhum resultado encontrado', 'flexify-checkout-for-woocommerce' ),
 			'oneSearchResult'           => __( '1 resultado encontrado', 'flexify-checkout-for-woocommerce' ),
@@ -369,27 +372,27 @@ class Assets {
 				'debug_mode' => defined('FLEXIFY_CHECKOUT_DEBUG_MODE') && FLEXIFY_CHECKOUT_DEBUG_MODE === true ? 'yes' : 'no',
 				'get_array_checkout_fields' => Helpers::get_array_index_checkout_fields(),
 				'i18n' => array(
-					'confirm_deactivate_license' => esc_html__( 'Tem certeza que deseja desativar sua licença?', 'flexify-checkout-for-woocommerce' ),
-					'set_logo_modal_title' => esc_html__( 'Escolher Imagem de cabeçalho', 'flexify-checkout-for-woocommerce' ),
+					'confirm_deactivate_license' => esc_html__( 'Tem certeza que deseja desativar sua licenÃ§a?', 'flexify-checkout-for-woocommerce' ),
+					'set_logo_modal_title' => esc_html__( 'Escolher Imagem de cabeÃ§alho', 'flexify-checkout-for-woocommerce' ),
 					'use_this_image_title' => esc_html__( 'Usar esta imagem', 'flexify-checkout-for-woocommerce' ),
-					'offline_toast_header' => esc_html__( 'Ops! Não há conexão com a internet', 'flexify-checkout-for-woocommerce' ),
-                	'offline_toast_body' => esc_html__( 'As alterações não serão salvas.', 'flexify-checkout-for-woocommerce' ),
+					'offline_toast_header' => esc_html__( 'Ops! NÃ£o hÃ¡ conexÃ£o com a internet', 'flexify-checkout-for-woocommerce' ),
+                	'offline_toast_body' => esc_html__( 'As alteraÃ§Ãµes nÃ£o serÃ£o salvas.', 'flexify-checkout-for-woocommerce' ),
 					'confirm_exclude_field' => esc_html__( 'Tem certeza que deseja excluir este campo?', 'flexify-checkout-for-woocommerce' ),
-					'confirm_remove_option' => esc_html__( 'Tem certeza que deseja excluir esta opção?', 'flexify-checkout-for-woocommerce' ),
-					'new_option_value' => esc_html__( 'Valor da opção', 'flexify-checkout-for-woocommerce' ),
-					'new_option_title' => esc_html__( 'Título da opção', 'flexify-checkout-for-woocommerce' ),
+					'confirm_remove_option' => esc_html__( 'Tem certeza que deseja excluir esta opÃ§Ã£o?', 'flexify-checkout-for-woocommerce' ),
+					'new_option_value' => esc_html__( 'Valor da opÃ§Ã£o', 'flexify-checkout-for-woocommerce' ),
+					'new_option_title' => esc_html__( 'TÃ­tulo da opÃ§Ã£o', 'flexify-checkout-for-woocommerce' ),
 					'placeholder_new_option_value' => esc_attr__( 'BR', 'flexify-checkout-for-woocommerce' ),
 					'placeholder_new_option_title' => esc_attr__( 'Brasil', 'flexify-checkout-for-woocommerce' ),
 					'close_aria_label_notice' => esc_attr__( 'Fechar', 'flexify-checkout-for-woocommerce' ),
-					'set_animation_modal_title' => esc_html__( 'Escolher animação', 'flexify-checkout-for-woocommerce' ),
+					'set_animation_modal_title' => esc_html__( 'Escolher animaÃ§Ã£o', 'flexify-checkout-for-woocommerce' ),
 					'set_animation_button_title' => esc_html__( 'Usar este arquivo', 'flexify-checkout-for-woocommerce' ),
 					'fonts' => array(
-						'font_exists' => esc_html__( 'Ops! Essa fonte já existe.', 'flexify-checkout-for-woocommerce' ),
+						'font_exists' => esc_html__( 'Ops! Essa fonte jÃ¡ existe.', 'flexify-checkout-for-woocommerce' ),
 						'type_google' => __( 'Google Fonts', 'flexify-checkout-for-woocommerce' ),
 						'type_upload' => __( 'Arquivo enviado', 'flexify-checkout-for-woocommerce' ),
-						'badge_default' => __( 'Padrão', 'flexify-checkout-for-woocommerce' ),
+						'badge_default' => __( 'PadrÃ£o', 'flexify-checkout-for-woocommerce' ),
 						'badge_custom' => __( 'Personalizada', 'flexify-checkout-for-woocommerce' ),
-						'empty' => __( 'Ainda não há fontes personalizadas cadastradas.', 'flexify-checkout-for-woocommerce' ),
+						'empty' => __( 'Ainda nÃ£o hÃ¡ fontes personalizadas cadastradas.', 'flexify-checkout-for-woocommerce' ),
 						'edit' => __( 'Editar', 'flexify-checkout-for-woocommerce' ),
 						'delete' => __( 'Excluir', 'flexify-checkout-for-woocommerce' ),
 						'confirm_delete' => __( 'Tem certeza que deseja excluir esta fonte?', 'flexify-checkout-for-woocommerce' ),
@@ -419,4 +422,5 @@ class Assets {
 		wp_deregister_script('wc-password-strength-meter');
 	}
 }
+
 
