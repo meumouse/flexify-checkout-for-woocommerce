@@ -2,6 +2,8 @@
 
 namespace MeuMouse\Flexify_Checkout\Integrations;
 
+use MeuMouse\Flexify_Checkout\Core\Helpers;
+
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
 
@@ -9,7 +11,7 @@ defined('ABSPATH') || exit;
  * Compatibility with SuperFrete 3.3.x.
  *
  * @since 5.5.0
-
+ * @package MeuMouse\Flexify_Checkout\Integrations
  * @author MeuMouse.com
  */
 class Superfrete {
@@ -49,14 +51,6 @@ class Superfrete {
             'required' => 'yes',
             'priority' => 80,
         ),
-        'billing_document' => array(
-            'type' => 'text',
-            'label' => 'Documento',
-            'step' => '1',
-            'position' => 'full',
-            'priority' => '13',
-            'required' => 'yes',
-        ),
     );
 
 
@@ -81,7 +75,9 @@ class Superfrete {
      * @return bool
      */
     public static function is_active() {
-        return class_exists('SuperfreteShipping') || class_exists('SuperFrete\\App\\Controllers\\CheckoutFields');
+        return class_exists('SuperfreteShipping')
+            || class_exists('SuperFrete\\App\\Controllers\\CheckoutFields')
+            || class_exists('SuperFrete_API\\Controllers\\CheckoutFields');
     }
 
 
@@ -96,6 +92,8 @@ class Superfrete {
             return;
         }
 
+        $this->remove_checkout_fields_hooks();
+
         global $wp_filter;
 
         if ( isset( $wp_filter['woocommerce_review_order_before_order_total']->callbacks ) ) {
@@ -105,6 +103,54 @@ class Superfrete {
                         remove_action( 'woocommerce_review_order_before_order_total', array( $hook['function'][0], $hook['function'][1] ), $priority );
                     }
                 }
+            }
+        }
+    }
+
+
+    /**
+     * Remove SuperFrete checkout field hooks that can duplicate/customize fields in Flexify checkout.
+     *
+     * @since 5.5.0
+     * @return void
+     */
+    private function remove_checkout_fields_hooks() {
+        $checkout_fields_classes = array(
+            'SuperFrete_API\\Controllers\\CheckoutFields',
+            'SuperFrete\\App\\Controllers\\CheckoutFields',
+        );
+
+        $hooks = array(
+            array(
+                'tag' => 'woocommerce_checkout_fields',
+                'method' => 'add_required_checkout_fields',
+                'priority' => 20,
+            ),
+            array(
+                'tag' => 'woocommerce_billing_fields',
+                'method' => 'customize_billing_fields',
+                'priority' => 20,
+            ),
+            array(
+                'tag' => 'woocommerce_shipping_fields',
+                'method' => 'customize_shipping_fields',
+                'priority' => 20,
+            ),
+            array(
+                'tag' => 'woocommerce_before_checkout_form',
+                'method' => 'add_number_field_notice',
+                'priority' => 10,
+            ),
+            array(
+                'tag' => 'woocommerce_blocks_loaded',
+                'method' => 'register_checkout_fields_block',
+                'priority' => 10,
+            ),
+        );
+
+        foreach ( $checkout_fields_classes as $class_name ) {
+            foreach ( $hooks as $hook ) {
+                Helpers::remove_class_filter( $hook['tag'], $class_name, $hook['method'], $hook['priority'] );
             }
         }
     }
@@ -122,7 +168,7 @@ class Superfrete {
             return $fields;
         }
 
-        foreach ( array( 'billing_number', 'billing_neighborhood', 'billing_document' ) as $field_id ) {
+        foreach ( array( 'billing_number', 'billing_neighborhood' ) as $field_id ) {
             if ( isset( $fields['billing'][ $field_id ] ) ) {
                 $fields['billing'][ $field_id ]['required'] = true;
                 $fields['billing'][ $field_id ]['class'][] = 'required';
@@ -159,15 +205,8 @@ class Superfrete {
             }
         }
 
-        // If billing_document is not provided by SuperFrete, create it with a safe default.
-        if ( ! isset( $fields['billing']['billing_document'] ) ) {
-            $fields['billing']['billing_document'] = array(
-                'type' => 'text',
-                'label' => esc_html__( 'Documento', 'flexify-checkout-for-woocommerce' ),
-                'required' => true,
-                'class' => array( 'form-row-wide', 'required', 'validate-required' ),
-                'priority' => 72,
-            );
+        if ( $this->should_remove_billing_document( $fields ) ) {
+            unset( $fields['billing']['billing_document'] );
         }
 
         return $fields;
@@ -239,9 +278,53 @@ class Superfrete {
             $updated = true;
         }
 
+        if ( $this->should_remove_billing_document_from_registry( $step_fields ) ) {
+            unset( $step_fields['billing_document'] );
+            $updated = true;
+        }
+
         if ( $updated ) {
             update_option( 'flexify_checkout_step_fields', maybe_serialize( $step_fields ) );
         }
     }
-}
 
+
+    /**
+     * Decide whether billing_document should be removed from runtime checkout fields.
+     *
+     * @since 5.5.0
+     * @param array $fields Checkout fields.
+     * @return bool
+     */
+    private function should_remove_billing_document( $fields ) {
+        if ( ! is_flexify_checkout() ) {
+            return false;
+        }
+
+        if ( empty( $fields['billing']['billing_document'] ) ) {
+            return false;
+        }
+
+        return isset( $fields['billing']['billing_cpf'] )
+            || isset( $fields['billing']['billing_cnpj'] )
+            || isset( $fields['billing']['billing_persontype'] );
+    }
+
+
+    /**
+     * Decide whether billing_document should be removed from saved step fields registry.
+     *
+     * @since 5.5.0
+     * @param array $step_fields Step fields registry.
+     * @return bool
+     */
+    private function should_remove_billing_document_from_registry( $step_fields ) {
+        if ( ! is_array( $step_fields ) || ! isset( $step_fields['billing_document'] ) ) {
+            return false;
+        }
+
+        return isset( $step_fields['billing_cpf'] )
+            || isset( $step_fields['billing_cnpj'] )
+            || isset( $step_fields['billing_persontype'] );
+    }
+}
