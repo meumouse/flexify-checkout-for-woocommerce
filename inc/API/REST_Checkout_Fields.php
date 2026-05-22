@@ -3,20 +3,21 @@
 namespace MeuMouse\Flexify_Checkout\API;
 
 // Exit if accessed directly.
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
 /**
  * Expose Flexify checkout extra fields in WooCommerce REST API.
  *
- * @since 5.4.3
- * @package MeuMouse.com
+ * @since 5.5.0
+ * @package MeuMouse\Flexify_Checkout\API
+ * @author MeuMouse.com
  */
 class REST_Checkout_Fields {
 
 	/**
 	 * Constructor.
 	 *
-	 * @since 5.4.3
+	 * @since 5.5.0
 	 * @return void
 	 */
 	public function __construct() {
@@ -32,7 +33,7 @@ class REST_Checkout_Fields {
 	/**
 	 * Extend customer response with checkout extra fields.
 	 *
-	 * @since 5.4.3
+	 * @since 5.5.0
 	 * @param \WP_REST_Response $response Response object.
 	 * @param \WP_User $user User object.
 	 * @return \WP_REST_Response
@@ -64,6 +65,7 @@ class REST_Checkout_Fields {
 			if ( 0 === strpos( $field_id, 'shipping_' ) ) {
 				$key = substr( $field_id, 9 );
 				$data['shipping'][ $key ] = $value;
+
 				continue;
 			}
 
@@ -84,7 +86,7 @@ class REST_Checkout_Fields {
 	/**
 	 * Extend order response with checkout extra fields.
 	 *
-	 * @since 5.4.3
+	 * @since 5.5.0
 	 * @param \WP_REST_Response $response Response object.
 	 * @param \WC_Order $order Order object.
 	 * @return \WP_REST_Response
@@ -136,7 +138,7 @@ class REST_Checkout_Fields {
 	/**
 	 * Extend customer schema.
 	 *
-	 * @since 5.4.3
+	 * @since 5.5.0
 	 * @param array $schema Endpoint schema.
 	 * @return array
 	 */
@@ -151,7 +153,7 @@ class REST_Checkout_Fields {
 	/**
 	 * Extend order schema.
 	 *
-	 * @since 5.4.3
+	 * @since 5.5.0
 	 * @param array $schema Endpoint schema.
 	 * @return array
 	 */
@@ -166,7 +168,7 @@ class REST_Checkout_Fields {
 	/**
 	 * Add flexify fields schema and augment billing/shipping object schemas.
 	 *
-	 * @since 5.4.3
+	 * @since 5.5.0
 	 * @param array $schema Endpoint schema.
 	 * @param array $field_ids Field ids.
 	 * @return array
@@ -211,7 +213,7 @@ class REST_Checkout_Fields {
 			'readonly' => true,
 			'properties' => array(
 				'fields' => array(
-					'description' => __( 'Colecao de campos adicionais genericos.', 'flexify-checkout-for-woocommerce' ),
+					'description' => __( 'Coleção de campos adicionais genéricos.', 'flexify-checkout-for-woocommerce' ),
 					'type' => 'object',
 					'context' => array( 'view', 'edit' ),
 					'additionalProperties' => array(
@@ -228,7 +230,7 @@ class REST_Checkout_Fields {
 	/**
 	 * Return registered field ids from flexify step fields.
 	 *
-	 * @since 5.4.3
+	 * @since 5.5.0
 	 * @return array
 	 */
 	private static function get_registered_field_ids() {
