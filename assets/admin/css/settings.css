@@ -1889,6 +1889,21 @@ table.popup-table th {
     font-weight: 600;
 }
 
+table.popup-table tr.popup-table-section {
+    margin-top: 0.75rem;
+    margin-bottom: 1rem;
+    align-items: flex-start;
+}
+
+table.popup-table tr.popup-table-section th {
+    width: 100%;
+    padding-right: 0;
+}
+
+table.popup-table tr.popup-table-section td {
+    display: none;
+}
+
 .placeholder-content {
     width: fit-content;
     height: 100%;
