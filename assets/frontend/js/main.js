@@ -5403,7 +5403,8 @@
 			// set flag
 			this.__inited = true;
 
-			const dbg = !!( window.flexify_checkout_params && window.flexify_checkout_params.debug_mode );
+			const debug_mode = window.flexify_checkout_params ? window.flexify_checkout_params.debug_mode : null;
+			const dbg = debug_mode === true || debug_mode === 'yes' || debug_mode === 1 || debug_mode === '1';
 			const log = dbg ? (...a) => console.log('[Flexify Checkout]', ...a) : () => {};
 
 			if (dbg) {
