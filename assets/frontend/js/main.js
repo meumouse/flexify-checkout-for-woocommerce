@@ -5646,5 +5646,3 @@
      */
     $(document).trigger('flexify_checkout_ready');
 })(jQuery);
-
-
