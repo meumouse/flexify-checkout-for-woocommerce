@@ -9,7 +9,8 @@ defined('ABSPATH') || exit;
  * Vendor util functions for validations
  *
  * @since 5.0.0
- * @package MeuMouse.com
+
+ * @author MeuMouse.com
  */
 class Utils {
 

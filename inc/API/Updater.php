@@ -18,7 +18,8 @@ defined('ABSPATH') || exit;
  *
  * @since 1.0.0
  * @version 5.3.2
- * @package MeuMouse.com
+
+ * @author MeuMouse.com
  */
 class Updater {
 
@@ -277,7 +278,7 @@ class Updater {
      * Add check updates link in the plugin_row_meta
      * 
      * @since 1.0.0
-     * @param string $plugin_meta | An array of the plugin’s metadata, including the version, author, author URI, and plugin URI
+     * @param string $plugin_meta | An array of the pluginâ€™s metadata, including the version, author, author URI, and plugin URI
      * @param string $plugin_file | Path to the plugin file relative to the plugins directory
      * @return array
      */

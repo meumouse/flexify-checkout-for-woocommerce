@@ -1,3 +1,21 @@
+Versão 5.5.0 (22/05/2026)
+* Otimizações
+  - Cadeia de fallback para consulta de CEP (com múltiplas URLs)
+  - Sincronização mais robusta do resumo de checkout (telefone internacional, endereço e frete)
+  - Prevenção de duplicidade em validação de e-mail e sincronização inicial de sessão
+* Correção de problemas
+  - Conflitos de campos no checkout com SuperFrete
+  - Validação da etapa no checkout de convidado quando a senha de conta é opcional/obrigatória
+  - Erro de obrigatório para telefone internacional mandatório
+  - Remoção do flash do aviso nativo de login do WooCommerce
+  - Ajustes de layout mobile (sidebar e carrinho) e responsividade da área de integrações
+* Recurso adicionado: Roteador de tracking multi-plataforma (GA4, Google Ads e Meta) com envio browser/server, deduplicação de compra e suporte a requisição assíncrona
+* Recurso adicionado: Exposição dos campos extras do checkout na REST API do WooCommerce (clientes e pedidos), com schema e filtros de extensão
+* Recurso adicionado: Fluxo AJAX de recuperação de senha no modal de login do checkout
+* Recurso adicionado: Compatibilidade com tema XStore (ajustes no toggle de senha no checkout)
+* Recurso modificado: Bootstrap do plugin refatorado para ciclo de vida em Core\Init (incluindo ativação/desativação), mantendo shim legado
+* Recurso removido: Dependência jQuery Mask (substituída por mascaramento nativo)
+
 Versão 5.4.2 (29/12/2025)
 * Correção de bugs
   - Ativar validação de endereço por CEP

@@ -14,7 +14,8 @@ defined('ABSPATH') || exit;
  *
  * @since 1.0.0
  * @version 5.4.1
- * @package MeuMouse.com
+ * @package MeuMouse\Flexify_Checkout\Checkout
+ * @author MeuMouse.com
  */
 class Steps {
 
@@ -1044,7 +1045,7 @@ class Steps {
 				$has_shipping = false;
 			}
 
-			$session_key = WC()->session->get('flexify_checkout_ship_different_address') === 'yes' ? 'shipping' : 'billing';
+			$session_key = self::get_review_address_prefix();
 			$shipping_review = self::replace_placeholders( Admin_Options::get_setting('text_shipping_customer_review'), self::get_review_customer_fragment(), $session_key );
 
 			if ( $has_shipping && ! empty( $shipping_review ) ) : ?>
@@ -1116,6 +1117,31 @@ class Steps {
 			$fragment_data[$field_id] = isset( $value ) ? $value : '';
 		}
 
+		// Fallback: when Woo recalculates checkout it sends full serialized post_data.
+		// Use it to fill any missing review fields so address summary does not go blank.
+		if ( isset( $_POST['post_data'] ) ) {
+			$posted_data = array();
+			parse_str( wp_unslash( $_POST['post_data'] ), $posted_data );
+
+			if ( is_array( $posted_data ) ) {
+				foreach ( $posted_data as $field_id => $value ) {
+					if ( ! is_string( $field_id ) ) {
+						continue;
+					}
+
+					if ( strpos( $field_id, 'billing_' ) !== 0 && strpos( $field_id, 'shipping_' ) !== 0 ) {
+						continue;
+					}
+
+					if ( isset( $fragment_data[ $field_id ] ) && $fragment_data[ $field_id ] !== '' ) {
+						continue;
+					}
+
+					$fragment_data[ $field_id ] = is_scalar( $value ) ? sanitize_text_field( (string) $value ) : '';
+				}
+			}
+		}
+
 		/**
 		 * Filter to modify the customer review fragment data
 		 * 
@@ -1125,6 +1151,41 @@ class Steps {
 		 * @return array
 		 */
 		return apply_filters( 'Flexify_Checkout/Steps/Review_Customer_Fragment', $fragment_data );
+	}
+
+
+	/**
+	 * Resolve the address prefix used in customer review fragments.
+	 *
+	 * If "ship to different address" is checked but shipping data is still incomplete
+	 * (common before the user fills step 2), fallback to billing to avoid empty summary.
+	 *
+	 * @since 5.5.0
+	 * @return string
+	 */
+	public static function get_review_address_prefix() {
+		$ship_different = WC()->session->get('flexify_checkout_ship_different_address') === 'yes';
+
+		if ( ! $ship_different ) {
+			return 'billing';
+		}
+
+		$data = self::get_review_customer_fragment();
+		$shipping_fields_to_check = array(
+			'shipping_address_1',
+			'shipping_postcode',
+			'shipping_city',
+			'shipping_number',
+			'shipping_neighborhood',
+		);
+
+		foreach ( $shipping_fields_to_check as $field_key ) {
+			if ( ! empty( $data[ $field_key ] ) ) {
+				return 'shipping';
+			}
+		}
+
+		return 'billing';
 	}
 
 
@@ -1302,3 +1363,4 @@ class Steps {
 		return $current_step;
 	}
 }
+

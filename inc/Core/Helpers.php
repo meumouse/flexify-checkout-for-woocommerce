@@ -13,7 +13,8 @@ defined('ABSPATH') || exit;
  *
  * @since 1.0.0
  * @version 5.0.0
- * @package MeuMouse.com
+
+ * @author MeuMouse.com
  */
 class Helpers {
 
@@ -65,6 +66,7 @@ class Helpers {
 				'billing_cnpj',
 				'billing_ie',
 				'billing_birthdate',
+				'billing_document',
 				'billing_sex',
 				'billing_gender',
 			);
@@ -428,6 +430,13 @@ class Helpers {
 		foreach ( $get_fields['shipping'] as $field_id => $value ) {
 			$fields[$field_id] = $value;
 		}
+
+		// add account fields
+		if ( ! empty( $get_fields['account'] ) && is_array( $get_fields['account'] ) ) {
+			foreach ( $get_fields['account'] as $field_id => $value ) {
+				$fields[$field_id] = $value;
+			}
+		}
 		
 		return apply_filters( 'flexify_checkout_export_checkout_fields_id', $fields );
 	}
@@ -467,9 +476,39 @@ class Helpers {
 	public static function get_shipping_method() {
 		$packages = WC()->shipping()->get_packages();
 		$chosen_shipping_methods = WC()->session->get('chosen_shipping_methods');
+		$session_shipping_method = WC()->session->get('flexify_checkout_selected_shipping_method');
+		$session_shipping_method_label = WC()->session->get('flexify_checkout_selected_shipping_method_label');
+
+		// Fallback to current request payload when session is stale.
+		if ( empty( $chosen_shipping_methods ) ) {
+			$chosen_shipping_methods = array();
+		}
+
+		if ( ! empty( $session_shipping_method ) ) {
+			$chosen_shipping_methods = array( 0 => $session_shipping_method );
+		}
+
+		// Direct request value from update_order_review.
+		$posted_shipping_method = filter_input( INPUT_POST, 'shipping_method', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+
+		if ( ! empty( $posted_shipping_method ) && is_array( $posted_shipping_method ) ) {
+			$chosen_shipping_methods = $posted_shipping_method;
+		}
+
+		// Serialized checkout payload used by WooCommerce.
+		$posted_data_raw = filter_input( INPUT_POST, 'post_data', FILTER_UNSAFE_RAW );
+
+		if ( ! empty( $posted_data_raw ) ) {
+			$parsed_post_data = array();
+			parse_str( wp_unslash( $posted_data_raw ), $parsed_post_data );
+
+			if ( isset( $parsed_post_data['shipping_method'] ) && is_array( $parsed_post_data['shipping_method'] ) && ! empty( $parsed_post_data['shipping_method'] ) ) {
+				$chosen_shipping_methods = $parsed_post_data['shipping_method'];
+			}
+		}
 
 		if ( empty( $packages ) || empty( $chosen_shipping_methods ) ) {
-			return '';
+			return ! empty( $session_shipping_method_label ) ? $session_shipping_method_label : '';
 		}
 
 		$shipping_labels = array();
@@ -487,7 +526,13 @@ class Helpers {
 		}
 
 		// Returns the names of the delivery methods separated by commas
-		return implode( ', ', $shipping_labels );
+		$shipping_labels_output = implode( ', ', $shipping_labels );
+
+		if ( empty( $shipping_labels_output ) && ! empty( $session_shipping_method_label ) ) {
+			return $session_shipping_method_label;
+		}
+
+		return $shipping_labels_output;
 	}
 
 
@@ -636,3 +681,4 @@ class Helpers {
 		}
 	}
 }
+

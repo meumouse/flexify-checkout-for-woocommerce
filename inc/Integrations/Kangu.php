@@ -13,7 +13,8 @@ if ( class_exists('KanguShipping') ) {
      *
      * @since 3.3.0
      * @version 5.0.0
-     * @package MeuMouse.com
+
+ * @author MeuMouse.com
      */
     class Kangu {
 

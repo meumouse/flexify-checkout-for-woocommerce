@@ -12,7 +12,8 @@ defined('ABSPATH') || exit;
  * Add and manipulate checkout fragments
  *
  * @since 5.0.0
- * @package MeuMouse.com
+ * @package MeuMouse\Flexify_Checkout\Checkout
+ * @author MeuMouse.com
  */
 class Fragments {
 
@@ -40,7 +41,7 @@ class Fragments {
 	 * @return array
 	 */
 	public function update_order_review_framents( $fragments ) {
-		$session_key = WC()->session->get('flexify_checkout_ship_different_address') === 'yes' ? 'shipping' : 'billing';
+		$session_key = Steps::get_review_address_prefix();
 		
 		$fragments['.flexify-review-customer'] = Steps::render_customer_review();
 		$fragments['.flexify-checkout-review-customer-contact'] = Steps::replace_placeholders( Admin_Options::get_setting('text_contact_customer_review'), Steps::get_review_customer_fragment() );
@@ -99,3 +100,4 @@ class Fragments {
 		return $fragments;
 	}
 }
+

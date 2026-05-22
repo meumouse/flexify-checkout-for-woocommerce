@@ -10,7 +10,8 @@ defined('ABSPATH') || exit;
  * 
  * @since 5.0.0
  * @version 5.4.0
- * @package MeuMouse.com
+
+ * @author MeuMouse.com
  */
 class Default_Options {
 
@@ -169,6 +170,56 @@ class Default_Options {
             'countdown_font_color_type' => 'default',
             'countdown_font_color' => '#ffffff',
             'validate_address_by_postcode' => 'yes',
+            'tracking_router_enabled' => 'no',
+            'tracking_routes' => array(
+                'fc_begin_checkout' => array(
+                    'data_layer' => 'yes',
+                    'ga4' => 'yes',
+                    'meta' => 'no',
+                    'tiktok' => 'no',
+                    'google_ads' => 'no',
+                ),
+                'fc_add_shipping_info' => array(
+                    'data_layer' => 'yes',
+                    'ga4' => 'yes',
+                    'meta' => 'no',
+                    'tiktok' => 'no',
+                    'google_ads' => 'no',
+                ),
+                'fc_add_payment_info' => array(
+                    'data_layer' => 'yes',
+                    'ga4' => 'yes',
+                    'meta' => 'no',
+                    'tiktok' => 'no',
+                    'google_ads' => 'no',
+                ),
+                'fc_purchase' => array(
+                    'data_layer' => 'yes',
+                    'ga4' => 'yes',
+                    'meta' => 'yes',
+                    'tiktok' => 'yes',
+                    'google_ads' => 'no',
+                ),
+            ),
+            'tracking_integrations' => array(
+                'enabled' => 'yes',
+                'ga4' => array(
+                    'enabled' => 'no',
+                    'measurement_id' => '',
+                    'api_secret' => '',
+                ),
+                'google_ads' => array(
+                    'enabled' => 'no',
+                    'conversion_id' => '',
+                    'conversion_label' => '',
+                ),
+                'meta' => array(
+                    'enabled' => 'no',
+                    'pixel_id' => '',
+                    'access_token' => '',
+                    'test_event_code' => '',
+                ),
+            ),
             'custom_css_checkout' => '',
             'custom_js_checkout' => '',
             'direct_checkout_api' => 'yes',
@@ -463,6 +514,32 @@ class Default_Options {
                 'enabled' => 'no',
                 'step' => '1',
             ),
+            'billing_sex' => array(
+                'id' => 'billing_sex',
+                'type' => 'select',
+                'label' => esc_html__( 'Genero', 'flexify-checkout-for-woocommerce' ),
+                'position' => 'full',
+                'classes' => '',
+                'label_classes' => '',
+                'required' => 'no',
+                'priority' => '13',
+                'source' => 'plugin',
+                'enabled' => 'no',
+                'step' => '1',
+            ),
+            'billing_document' => array(
+                'id' => 'billing_document',
+                'type' => 'text',
+                'label' => esc_html__( 'Documento', 'flexify-checkout-for-woocommerce' ),
+                'position' => 'full',
+                'classes' => '',
+                'label_classes' => '',
+                'required' => 'yes',
+                'priority' => '13',
+                'source' => 'plugin',
+                'enabled' => 'yes',
+                'step' => '1',
+            ),
             'billing_number' => array(
                 'id' => 'billing_number',
                 'type' => 'text',
@@ -492,3 +569,4 @@ class Default_Options {
         ));
     }
 }
+

@@ -83,17 +83,23 @@ defined('ABSPATH') || exit; ?>
                                     
                                     $condition_value = isset( $value['condition_value'] ) ? $value['condition_value'] : ''; ?>
 
-                                    <div class="d-grid">
-                                        <div class="mb-2">
+                                    <div class="d-grid condition-lines">
+                                        <div class="mb-2 condition-line-1">
                                             <?php echo sprintf( esc_html__( 'Condição: %s %s', 'flexify-checkout-for-woocommerce' ), $condition_type[$value['type_rule']], $component_type_label ) ?>
                                         </div>
-                                        <div>
+                                        <div class="condition-line-2">
                                             <?php echo sprintf( esc_html__( 'Se: %s %s %s', 'flexify-checkout-for-woocommerce' ), $component_verification_label, mb_strtolower( $condition[$value['condition']] ), $condition_value ) ?>
                                         </div>
                                     </div>
-                                    <button class="exclude-condition btn btn-icon btn-sm btn-outline-danger rounded-3 ms-3">
-                                        <svg class="icon icon-sm icon-danger" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15 2H9c-1.103 0-2 .897-2 2v2H3v2h2v12c0 1.103.897 2 2 2h10c1.103 0 2-.897 2-2V8h2V6h-4V4c0-1.103-.897-2-2-2zM9 4h6v2H9V4zm8 16H7V8h10v12z"></path></svg>
-                                    </button>
+                                    <div class="d-flex align-items-center ms-3">
+                                        <button class="btn btn-icon btn-sm btn-outline-secondary rounded-3 me-2 <?php echo License::is_valid() ? 'edit-condition' : 'require-pro'; ?>">
+                                            <svg class="icon icon-sm icon-dark" xmlns="http://www.w3.org/2000/svg" width="24" height="24"  fill="currentColor" viewBox="0 0 24 24" ><path d="m17.71 7.29-3-3a.996.996 0 0 0-1.41 0l-11.01 11A1 1 0 0 0 2 16v3c0 .55.45 1 1 1h3c.27 0 .52-.11.71-.29l11-11a.996.996 0 0 0 0-1.41ZM5.59 18H4v-1.59l7.5-7.5 1.59 1.59zm8.91-8.91L12.91 7.5 14 6.41 15.59 8zM11 18h11v2H11z"></path></svg>
+                                        </button>
+
+                                        <button class="exclude-condition btn btn-icon btn-sm btn-outline-danger rounded-3">
+                                            <svg class="icon icon-sm icon-danger" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15 2H9c-1.103 0-2 .897-2 2v2H3v2h2v12c0 1.103.897 2 2 2h10c1.103 0 2-.897 2-2V8h2V6h-4V4c0-1.103-.897-2-2-2zM9 4h6v2H9V4zm8 16H7V8h10v12z"></path></svg>
+                                        </button>
+                                    </div>
                                 </li>
                             <?php endforeach; ?>
                         </ul>

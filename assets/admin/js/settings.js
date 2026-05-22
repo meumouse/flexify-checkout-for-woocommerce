@@ -445,26 +445,59 @@
         },
 
         /**
+         * Public modal API
+         *
+         * @since 5.5.0
+         */
+        modalApi: {
+            register: function(trigger, container, close) {
+                if ( ! trigger || ! container || ! close ) {
+                    return;
+                }
+
+                Flexify_Checkout_Admin.displayModal(trigger, container, close);
+            },
+
+            open: function(container) {
+                if ( ! container ) {
+                    return;
+                }
+
+                $(container).addClass('show');
+            },
+
+            close: function(container) {
+                if ( ! container ) {
+                    return;
+                }
+
+                $(container).removeClass('show');
+            },
+        },
+
+        /**
          * Register all popups needed by the admin
          * 
          * @since 2.3.0
          * @version 5.3.0
          */
         popups: function() {
-            this.displayModal('#inter_bank_credencials_settings', '#inter_bank_credendials_container', '#inter_bank_credendials_close');
-            this.displayModal('#inter_bank_pix_settings', '#inter_bank_pix_container', '#inter_bank_pix_close');
-            this.displayModal('#inter_bank_slip_settings', '#inter_bank_slip_container', '#inter_bank_slip_close');
-            this.displayModal('#require_inter_bank_module_trigger', '#require_inter_bank_module_container', '#require_inter_bank_module_close');
-            this.displayModal('.require-pro', '#popup-pro-notice', '.require-pro-close');
-            this.displayModal('#set_ip_api_service_trigger', '.set-api-service-container', '.set-api-service-close');
-            this.displayModal('#add_new_checkout_fields_trigger', '.add-new-checkout-fields-container', '.add-new-checkout-fields-close');
-            this.displayModal('#auto_fill_address_api_trigger', '.auto-fill-address-api-container', '.auto-fill-address-api-close');
-            this.displayModal('#fcw_manage_fonts_trigger', '#fcw_manage_fonts_container', '#fcw_close_fonts_manager');
-            this.displayModal('#fcw_reset_settings_trigger', '#fcw_reset_settings_container', '#fcw_close_reset');
-            this.displayModal('#add_new_checkout_condition_trigger', '#add_new_checkout_condition_container', '#close_add_new_checkout_condition');
-            this.displayModal('#set_email_providers_trigger', '#set_email_providers_container', '#close_set_email_providers');
-            this.displayModal('#set_process_purchase_animation_trigger', '#set_process_purchase_animation_container', '#close_set_process_purchase_animation');
-            this.displayModal('#set_countdown_trigger', '#set_countdown_container', '#close_set_countdown');
+            this.modalApi.register('#inter_bank_credencials_settings', '#inter_bank_credendials_container', '#inter_bank_credendials_close');
+            this.modalApi.register('#inter_bank_pix_settings', '#inter_bank_pix_container', '#inter_bank_pix_close');
+            this.modalApi.register('#inter_bank_slip_settings', '#inter_bank_slip_container', '#inter_bank_slip_close');
+            this.modalApi.register('#require_inter_bank_module_trigger', '#require_inter_bank_module_container', '#require_inter_bank_module_close');
+            this.modalApi.register('.require-pro', '#popup-pro-notice', '.require-pro-close');
+            this.modalApi.register('#set_ip_api_service_trigger', '.set-api-service-container', '.set-api-service-close');
+            this.modalApi.register('#add_new_checkout_fields_trigger', '.add-new-checkout-fields-container', '.add-new-checkout-fields-close');
+            this.modalApi.register('#auto_fill_address_api_trigger', '.auto-fill-address-api-container', '.auto-fill-address-api-close');
+            this.modalApi.register('#fcw_manage_fonts_trigger', '#fcw_manage_fonts_container', '#fcw_close_fonts_manager');
+            this.modalApi.register('#fcw_reset_settings_trigger', '#fcw_reset_settings_container', '#fcw_close_reset');
+            this.modalApi.register('#add_new_checkout_condition_trigger', '#add_new_checkout_condition_container', '#close_add_new_checkout_condition');
+            this.modalApi.register('#set_email_providers_trigger', '#set_email_providers_container', '#close_set_email_providers');
+            this.modalApi.register('#set_process_purchase_animation_trigger', '#set_process_purchase_animation_container', '#close_set_process_purchase_animation');
+            this.modalApi.register('#set_countdown_trigger', '#set_countdown_container', '#close_set_countdown');
+            this.modalApi.register('#tracking_integrations_settings', '#tracking_integrations_container', '#tracking_integrations_close');
+            this.modalApi.register('#tracking_integrations_settings', '#tracking_integrations_container', '#tracking_integrations_close_footer');
         },
 
         /**
@@ -1084,14 +1117,6 @@
          * @version 5.2.0
          */
         handleConditions: function() {
-            /**
-             * Simple debounce
-             *
-             * @since 5.1.0
-             * @param {Function} fn
-             * @param {number} wait
-             * @returns {Function}
-             */
             const debounce = (fn, wait = 250) => {
                 let t;
                 return function(...args) {
@@ -1100,80 +1125,69 @@
                 };
             };
 
-            /**
-             * Get value safely from a select/input
-             *
-             * @since 5.1.0
-             * @param {string} sel
-             * @returns {string}
-             */
             const val = (sel) => $(sel).val() || 'none';
 
-            /**
-             * Build FormData fresh from DOM
-             *
-             * @since 5.1.0
-             * @version 5.2.0
-             * @returns {FormData}
-             */
-            const buildPayload = () => {
-                const fd = new FormData();
-                fd.set('action', 'add_new_checkout_condition');
-
-                // base selects/inputs
-                fd.set('type_rule', val(S.type_rule));
-                fd.set('component', val(S.component));
-                fd.set('component_field', val(S.component_field));
-                fd.set('verification_condition', val(S.verification_condition));
-                fd.set('verification_condition_field', val(S.verification_condition_field));
-
-                const condType = val(S.condition);
-                fd.set('condition', condType);
-
-                if ( ['checked', 'not_checked'].includes(condType) ) {
-                    fd.set('condition_value', '' );
-                } else {
-                    fd.set('condition_value', $(S.condition_value).val() || '' );
-                }
-
-                // specifics
-                fd.set('payment_method', val(S.payment));
-                fd.set('shipping_method', val(S.shipping));
-
-                // user filter
-                const userFunc = val(S.user_function);
-                fd.set('filter_user', val(S.user_role));
-
-                if ( userFunc === 'specific_user' ) {
-                    fd.set('specific_user', JSON.stringify([...specificUsers]));
-                } else if ( userFunc === 'specific_role' ) {
-                    fd.set('specific_role', val(S.user_role));
-                }
-
-                // product filter
-                const pf = val(S.product_filter);
-                fd.set('product_filter', pf);
-
-                if ( pf === 'specific_products' ) {
-                    fd.set('specific_products', JSON.stringify([...specificProducts]));
-                }
-
-                if ( pf === 'specific_categories' ) {
-                    fd.set('specific_categories', JSON.stringify([...specificCategories]));
-                }
-
-                if ( pf === 'specific_attributes' ) {
-                    fd.set('specific_attributes', JSON.stringify([...specificAttributes]));
-                }
-
-                return fd;
+            const S = {
+                container: '#add_new_condition_container_master',
+                modal: '#add_new_checkout_condition_container',
+                submit: '#add_new_condition_submit',
+                type_rule: '#add_new_condition_type_rule',
+                component: '#add_new_condition_component',
+                component_field: '#add_new_condition_specific_field_component',
+                verification_condition: '#add_new_condition_component_verification',
+                verification_condition_field: '#add_new_condition_specific_field',
+                condition: '#add_new_condition_component_type',
+                condition_value: '#add_new_condition_get_condition_value',
+                payment: '#add_new_condition_specific_payment_component',
+                shipping: '#add_new_condition_specific_shipping_component',
+                user_function: '#add_new_condition_user_function',
+                user_role: '#add_new_condition_specific_user_role',
+                product_filter: '#add_new_condition_product_filter',
+                product_input: '.product-search',
+                category_input: '.category-search',
+                attribute_input: '.attribute-search',
+                user_input: '.user-search',
+                products_box: '#get_specific_products',
+                categories_box: '#get_specific_categories',
+                attributes_box: '#get_specific_attribute',
+                users_box: '#get_specific_users',
+                close_modal_btn: '#close_add_new_checkout_condition',
             };
 
-            /**
-             * Enable/disable submit based on current UI state
-             *
-             * @since 5.1.0
-             */
+            const specificProducts = new Set();
+            const specificCategories = new Set();
+            const specificAttributes = new Set();
+            const specificUsers = new Set();
+            const canEditConditions = $('#add_new_checkout_condition_trigger').length > 0;
+            const submitDefaultText = $(S.submit).text().trim() || 'Criar condição';
+            const editorState = { mode: 'create', conditionIndex: null };
+
+            const setEditorMode = (mode = 'create', conditionIndex = null) => {
+                editorState.mode = mode;
+                editorState.conditionIndex = conditionIndex;
+                $(S.submit).text(mode === 'edit' ? 'Salvar condição' : submitDefaultText);
+            };
+
+            const clearSelectableResults = () => {
+                $(S.products_box).empty().removeClass('has-items');
+                $(S.categories_box).empty().removeClass('has-items');
+                $(S.attributes_box).empty().removeClass('has-items');
+                $(S.users_box).empty().removeClass('has-items');
+                specificProducts.clear();
+                specificCategories.clear();
+                specificAttributes.clear();
+                specificUsers.clear();
+            };
+
+            const setSelectValue = (selector, value, fallback = 'none') => {
+                if ($(selector).find(`option[value="${value}"]`).length) {
+                    $(selector).val(value);
+                    return;
+                }
+
+                $(selector).val(fallback);
+            };
+
             const toggleSubmit = () => {
                 const typeRule = val(S.type_rule);
                 const component = val(S.component);
@@ -1186,70 +1200,197 @@
                 const condVal = $(S.condition_value).val() || '';
 
                 const needsValue = ['is', 'is_not', 'contains', 'not_contain', 'start_with', 'finish_with', 'bigger_then', 'less_than'];
-
                 let ok = typeRule !== 'none' && component !== 'none' && condType !== 'none';
 
-                if ( component === 'field' && compField === 'none' ) {
+                if (component === 'field' && compField === 'none') {
                     ok = false;
                 }
 
-                if ( component === 'payment' && compPay   === 'none' ) {
+                if (component === 'payment' && compPay === 'none') {
                     ok = false;
                 }
 
-                if ( component === 'shipping'&& compShip  === 'none' ) {
+                if (component === 'shipping' && compShip === 'none') {
                     ok = false;
                 }
 
-                if ( verifyCond === 'field'  && verifyFld === 'none' ) {
+                if (verifyCond === 'field' && verifyFld === 'none') {
                     ok = false;
                 }
 
-                if ( needsValue.includes(condType) && condVal.trim() === '' ) {
+                if (needsValue.includes(condType) && condVal.trim() === '') {
                     ok = false;
                 }
 
-                $(S.submit).prop('disabled', ! ok);
+                $(S.submit).prop('disabled', !ok);
             };
 
-            /**
-            * Reset all selects/inputs inside a container
-            *
-            * @since 5.2.0
-            * @param {string} container
-            */
-            const resetForm = (container) => {
+            const resetForm = (container, resetMode = true) => {
                 const $c = $(container);
 
-                $c.find('select').each( function() {
+                $c.find('select').each(function() {
                     const first = $(this).find('option:first').val();
                     $(this).val(first).trigger('change');
                 });
 
                 $c.find('input[type="text"], input[type="search"], input[type="number"]').val('');
+                clearSelectableResults();
 
-                // also limpa listas de seleção
-                $(S.products_box).empty().removeClass('has-items');
-                $(S.categories_box).empty().removeClass('has-items');
-                $(S.attributes_box).empty().removeClass('has-items');
-                $(S.users_box).empty().removeClass('has-items');
-                specificProducts.clear();
-                specificCategories.clear();
-                specificAttributes.clear();
-                specificUsers.clear();
+                if (resetMode) {
+                    setEditorMode('create', null);
+                }
+
                 toggleSubmit();
             };
 
-            /**
-            * Live search (AJAX) with delegation + debouce
-            *
-            * @since 5.2.0
-            * @param {string} inputSel
-            * @param {string} boxSel
-            * @param {string} action
-            * @param {"product-id"|"category-id"|"attribute-id"|"user-id"} dataKey
-            * @param {Set} setRef
-            */
+            const buildConditionItemHtml = (res, conditionIndex) => {
+                const editClass = canEditConditions ? 'edit-condition' : 'require-pro';
+
+                return `<li class="list-group-item d-flex align-items-center justify-content-between" data-condition="${conditionIndex}">
+                    <div class="d-grid condition-lines">
+                        <div class="mb-2 condition-line-1">${res.condition_line_1 || ''}</div>
+                        <div class="condition-line-2">${res.condition_line_2 || ''}</div>
+                    </div>
+                    <div class="d-flex align-items-center ms-3">
+                        <button class="btn btn-icon btn-sm btn-outline-secondary rounded-3 me-2 ${editClass}">
+                            <svg class="icon icon-sm" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m7 16.125 9.688-9.688 1.875 1.875-9.688 9.688H7v-1.875Zm12.469-7.594-1.875-1.875 1.406-1.406a1.326 1.326 0 0 1 1.875 0l.469.469a1.326 1.326 0 0 1 0 1.875l-1.875 1.406Z"></path></svg>
+                        </button>
+                        <button class="exclude-condition btn btn-icon btn-sm btn-outline-danger rounded-3">
+                            <svg class="icon icon-sm icon-danger" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15 2H9c-1.103 0-2 .897-2 2v2H3v2h2v12c0 1.103.897 2 2 2h10c1.103 0 2-.897 2-2V8h2V6h-4V4c0-1.103-.897-2-2-2zM9 4h6v2H9V4zm8 16H7V8h10v12z"></path></svg>
+                        </button>
+                    </div>
+                </li>`;
+            };
+
+            const renderSelectedItems = (boxSel, setRef, items, dataAttr) => {
+                const $box = $(boxSel);
+                $box.empty();
+                setRef.clear();
+
+                if (!Array.isArray(items) || items.length === 0) {
+                    $box.removeClass('has-items');
+                    return;
+                }
+
+                items.forEach((item) => {
+                    const id = item?.id;
+                    const label = item?.label || String(id);
+
+                    if (id === undefined || id === null || String(id) === '') {
+                        return;
+                    }
+
+                    const normId = String(id);
+                    setRef.add(normId);
+                    $box.append(`<li class="list-group-item selected" data-${dataAttr}="${id}">${label}</li>`);
+                });
+
+                $box.toggleClass('has-items', $box.children().length > 0);
+            };
+
+            const prefillConditionForm = (condition, selectedItems) => {
+                resetForm(S.container, false);
+
+                setSelectValue(S.type_rule, condition.type_rule || 'none');
+                $(S.type_rule).trigger('change');
+
+                setSelectValue(S.component, condition.component || 'none');
+                $(S.component).trigger('change');
+
+                setSelectValue(S.component_field, condition.component_field || 'none');
+                $(S.component_field).trigger('change');
+
+                setSelectValue(S.payment, condition.payment_method || 'none');
+                $(S.payment).trigger('change');
+
+                setSelectValue(S.shipping, condition.shipping_method || 'none');
+                $(S.shipping).trigger('change');
+
+                setSelectValue(S.verification_condition, condition.verification_condition || 'none');
+                $(S.verification_condition).trigger('change');
+
+                setSelectValue(S.verification_condition_field, condition.verification_condition_field || 'none');
+                $(S.verification_condition_field).trigger('change');
+
+                setSelectValue(S.condition, condition.condition || 'none');
+                $(S.condition).trigger('change');
+
+                $(S.condition_value).val(condition.condition_value || '');
+
+                const allowedUserFilters = ['all_users', 'all_roles', 'specific_user', 'specific_role'];
+                let userFilter = condition.filter_user || 'all_users';
+
+                if (!allowedUserFilters.includes(userFilter)) {
+                    userFilter = (condition.specific_role && condition.specific_role !== 'none') ? 'specific_role' : 'specific_user';
+                }
+
+                setSelectValue(S.user_function, userFilter, 'all_users');
+                $(S.user_function).trigger('change');
+
+                setSelectValue(S.user_role, condition.specific_role || 'none');
+                $(S.user_role).trigger('change');
+
+                const allowedProductFilters = ['all_products', 'all_categories', 'all_attributes', 'specific_products', 'specific_categories', 'specific_attributes'];
+                const productFilter = allowedProductFilters.includes(condition.product_filter) ? condition.product_filter : 'all_products';
+                setSelectValue(S.product_filter, productFilter, 'all_products');
+                $(S.product_filter).trigger('change');
+
+                renderSelectedItems(S.products_box, specificProducts, selectedItems?.specific_products || [], 'product-id');
+                renderSelectedItems(S.categories_box, specificCategories, selectedItems?.specific_categories || [], 'category-id');
+                renderSelectedItems(S.attributes_box, specificAttributes, selectedItems?.specific_attributes || [], 'attribute-id');
+                renderSelectedItems(S.users_box, specificUsers, selectedItems?.specific_users || [], 'user-id');
+
+                toggleSubmit();
+            };
+
+            const buildPayload = (actionName = 'add_new_checkout_condition') => {
+                const fd = new FormData();
+                fd.set('action', actionName);
+
+                fd.set('type_rule', val(S.type_rule));
+                fd.set('component', val(S.component));
+                fd.set('component_field', val(S.component_field));
+                fd.set('verification_condition', val(S.verification_condition));
+                fd.set('verification_condition_field', val(S.verification_condition_field));
+
+                const condType = val(S.condition);
+                fd.set('condition', condType);
+                fd.set('condition_value', ['checked', 'not_checked'].includes(condType) ? '' : ($(S.condition_value).val() || ''));
+
+                fd.set('payment_method', val(S.payment));
+                fd.set('shipping_method', val(S.shipping));
+
+                const userFunc = val(S.user_function);
+                fd.set('filter_user', userFunc);
+
+                if (userFunc === 'specific_user') {
+                    fd.set('specific_user', JSON.stringify([...specificUsers]));
+                } else if (userFunc === 'specific_role') {
+                    fd.set('specific_role', val(S.user_role));
+                }
+
+                const pf = val(S.product_filter);
+                fd.set('product_filter', pf);
+
+                if (pf === 'specific_products') {
+                    fd.set('specific_products', JSON.stringify([...specificProducts]));
+                }
+
+                if (pf === 'specific_categories') {
+                    fd.set('specific_categories', JSON.stringify([...specificCategories]));
+                }
+
+                if (pf === 'specific_attributes') {
+                    fd.set('specific_attributes', JSON.stringify([...specificAttributes]));
+                }
+
+                if (editorState.mode === 'edit' && editorState.conditionIndex !== null) {
+                    fd.set('condition_index', editorState.conditionIndex);
+                }
+
+                return fd;
+            };
+
             const bindSearch = (inputSel, boxSel, action, dataKey, setRef) => {
                 const run = debounce(function(e) {
                     const query = $(e.target).val().trim();
@@ -1273,94 +1414,48 @@
                             search_query: query,
                         },
                     })
-                    .done((html) => {
-                        $(inputSel).parent('div').find('.specific-search-spinner').remove();
-                        $box.html(html).addClass('has-items');
-                    })
-                    .fail((xhr, t, err) => {
-                        console.error('AJAX search failed:', t, err);
-                        $(inputSel).parent('div').find('.specific-search-spinner').remove();
-                    });
+                        .done((html) => {
+                            $(inputSel).parent('div').find('.specific-search-spinner').remove();
+                            $box.html(html).addClass('has-items');
+                        })
+                        .fail((xhr, t, err) => {
+                            console.error('AJAX search failed:', t, err);
+                            $(inputSel).parent('div').find('.specific-search-spinner').remove();
+                        });
                 }, 300);
 
                 $(document).off('keyup', inputSel).on('keyup', inputSel, run);
 
-                // toggle selection
                 $(document).off('click', `${boxSel} li.list-group-item`).on('click', `${boxSel} li.list-group-item`, function() {
                     const id = $(this).data(dataKey);
 
-                    if ( ! id && id !== 0 ) {
+                    if (!id && id !== 0) {
                         return;
                     }
 
-                    if ( $(this).toggleClass('selected').hasClass('selected') ) {
-                        setRef.add(id);
+                    const normId = String(id);
+                    if ($(this).toggleClass('selected').hasClass('selected')) {
+                        setRef.add(normId);
                     } else {
-                        setRef.delete(id);
+                        setRef.delete(normId);
                     }
                 });
             };
 
-            const S = {
-                container: '#add_new_condition_container_master',
-                submit: '#add_new_condition_submit',
-
-                // base controls
-                type_rule: '#add_new_condition_type_rule',
-                component: '#add_new_condition_component',
-                component_field: '#add_new_condition_specific_field_component',
-                verification_condition: '#add_new_condition_component_verification',
-                verification_condition_field: '#add_new_condition_specific_field',
-                condition: '#add_new_condition_component_type',
-                condition_value: '#add_new_condition_get_condition_value',
-                payment: '#add_new_condition_specific_payment_component',
-                shipping: '#add_new_condition_specific_shipping_component',
-
-                // user
-                user_function: '#add_new_condition_user_function',
-                user_role: '#add_new_condition_specific_user_role',
-
-                // products
-                product_filter: '#add_new_condition_product_filter',
-
-                // search inputs
-                product_input: '.product-search',
-                category_input: '.category-search',
-                attribute_input: '.attribute-search',
-                user_input: '.user-search',
-
-                // search result boxes
-                products_box: '#get_specific_products',
-                categories_box: '#get_specific_categories',
-                attributes_box: '#get_specific_attribute',
-                users_box: '#get_specific_users',
-
-                // close
-                close_modal_btn: '#close_add_new_checkout_condition',
-            };
-
-            const specificProducts = new Set();
-            const specificCategories = new Set();
-            const specificAttributes = new Set();
-            const specificUsers = new Set();
-
-            // listener for any change in selects/inputs to toggle submit button
             $(document).off('change keyup', `${S.container} select, ${S.container} input`).on('change keyup', `${S.container} select, ${S.container} input`, toggleSubmit);
-
-            // when changing the product filter, update the button state
             $(document).off('change', S.product_filter).on('change', S.product_filter, toggleSubmit);
 
             const allConditionOptions = $(S.condition).find('option').clone();
 
-            $(document).on('change', S.verification_condition_field, function() {
+            $(document).off('change', S.verification_condition_field).on('change', S.verification_condition_field, function() {
                 const type = $(this).find('option:selected').data('type');
                 const $cond = $(S.condition);
                 $cond.html(allConditionOptions.clone());
 
-                if ( type === 'checkbox' ) {
-                    $cond.find('option').each( function() {
-                        const val = $(this).val();
-                        if ( ! ['none', 'checked', 'not_checked'].includes(val) ) {
+                if (type === 'checkbox') {
+                    $cond.find('option').each(function() {
+                        const current = $(this).val();
+                        if (!['none', 'checked', 'not_checked'].includes(current)) {
                             $(this).remove();
                         }
                     });
@@ -1369,83 +1464,128 @@
                 $cond.val('none').trigger('change');
             });
 
-            $(document).on('change', S.verification_condition, function() {
-                if ( $(this).val() !== 'field' ) {
+            $(document).off('change', S.verification_condition).on('change', S.verification_condition, function() {
+                if ($(this).val() !== 'field') {
                     $(S.condition).html(allConditionOptions.clone()).val('none').trigger('change');
                 } else {
                     $(S.verification_condition_field).trigger('change');
                 }
             });
 
-            // searching with debounce
-            bindSearch( S.product_input, S.products_box, 'get_woo_products_ajax', 'product-id', specificProducts );
-            bindSearch( S.category_input, S.categories_box, 'get_woo_categories_ajax', 'category-id', specificCategories );
-            bindSearch( S.attribute_input, S.attributes_box, 'get_woo_attributes_ajax', 'attribute-id', specificAttributes );
-            bindSearch( S.user_input, S.users_box, 'search_users_ajax', 'user-id', specificUsers);
+            bindSearch(S.product_input, S.products_box, 'get_woo_products_ajax', 'product-id', specificProducts);
+            bindSearch(S.category_input, S.categories_box, 'get_woo_categories_ajax', 'category-id', specificCategories);
+            bindSearch(S.attribute_input, S.attributes_box, 'get_woo_attributes_ajax', 'attribute-id', specificAttributes);
+            bindSearch(S.user_input, S.users_box, 'search_users_ajax', 'user-id', specificUsers);
 
             $(document).off('click', S.submit).on('click', S.submit, (e) => {
                 e.preventDefault();
 
                 const $btn = $(e.currentTarget);
-                const state  = Flexify_Checkout_Admin.keepButtonState($btn);
+                const state = Flexify_Checkout_Admin.keepButtonState($btn);
+                const isEditMode = editorState.mode === 'edit';
+                const actionName = isEditMode ? 'update_checkout_condition_item' : 'add_new_checkout_condition';
 
                 $btn.html('<span class="spinner-border spinner-border-sm"></span>');
-
-                const fd = buildPayload();
+                const fd = buildPayload(actionName);
 
                 $.ajax({
-                    url:  flexify_checkout_params.ajax_url,
+                    url: flexify_checkout_params.ajax_url,
                     type: 'POST',
                     data: fd,
                     processData: false,
                     contentType: false,
                     dataType: 'json',
                 })
-                .done((res) => {
-                    if (res && res.status === 'success') {
-                        Flexify_Checkout_Admin.displayToast('success', res.toast_header_title, res.toast_body_title);
+                    .done((res) => {
+                        if (res && res.status === 'success') {
+                            Flexify_Checkout_Admin.displayToast('success', res.toast_header_title, res.toast_body_title);
 
-                        const $wrap = $('#display_conditions');
-                        const item  = `<li class="list-group-item d-flex align-items-center justify-content-between">
-                            <div class="d-grid">
-                                <div class="mb-2">${res.condition_line_1 || ''}</div>
-                                <div>${res.condition_line_2 || ''}</div>
-                            </div>
-                            <button class="exclude-condition btn btn-icon btn-sm btn-outline-danger rounded-3 ms-3">
-                                <svg class="icon icon-sm icon-danger" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15 2H9c-1.103 0-2 .897-2 2v2H3v2h2v12c0 1.103.897 2 2 2h10c1.103 0 2-.897 2-2V8h2V6h-4V4c0-1.103-.897-2-2-2zM9 4h6v2H9V4zm8 16H7V8h10v12z"></path></svg>
-                            </button>
-                        </li>`;
+                            if (isEditMode) {
+                                const idx = String(res.condition_index ?? editorState.conditionIndex);
+                                const $current = $(`.list-group-item[data-condition="${idx}"]`);
 
-                        if ( res[0] && res[0].empty_conditions === 'yes' ) {
-                            const $td = $('#empty_conditions').parent('td');
-                            $('#empty_conditions').remove();
-                            $td.append(`<div id="display_conditions" class="mb-3"><ul class="list-group">${item}</ul></div>`);
-                        } else {
-                            if ($wrap.length) {
-                                $wrap.find('ul.list-group').append(item);
+                                if ($current.length) {
+                                    $current.find('.condition-line-1').html(res.condition_line_1 || '');
+                                    $current.find('.condition-line-2').html(res.condition_line_2 || '');
+                                } else {
+                                    const $wrap = $('#display_conditions');
+                                    if ($wrap.length) {
+                                        $wrap.find('ul.list-group').append(buildConditionItemHtml(res, idx));
+                                    }
+                                }
+                            } else {
+                                const $wrap = $('#display_conditions');
+                                const idx = res.condition_index ?? '';
+                                const item = buildConditionItemHtml(res, idx);
+
+                                if (res[0] && res[0].empty_conditions === 'yes') {
+                                    const $td = $('#empty_conditions').parent('td');
+                                    $('#empty_conditions').remove();
+                                    $td.append(`<div id="display_conditions" class="mb-3"><ul class="list-group">${item}</ul></div>`);
+                                } else if ($wrap.length) {
+                                    $wrap.find('ul.list-group').append(item);
+                                }
                             }
+
+                            setTimeout(() => {
+                                $(S.close_modal_btn).trigger('click');
+                                resetForm(S.container);
+                            }, 300);
+                        } else {
+                            Flexify_Checkout_Admin.displayToast('danger', res?.toast_header_title || 'Erro', res?.toast_body_title || (res?.error_message || 'Falha ao salvar condição.'));
                         }
-
-                        // close modal and reset form
-                        setTimeout(() => {
-                            $(S.close_modal_btn).trigger('click');
-                            resetForm(S.container);
-                        }, 300);
-
-                    } else {
-                        Flexify_Checkout_Admin.displayToast('danger', res?.toast_header_title || 'Erro', res?.toast_body_title || (res?.error_message || 'Falha ao adicionar condição.'));
-                    }
-                })
-                .fail((xhr, t, err) => {
-                    console.error('AJAX failed:', t, err);
-                    Flexify_Checkout_Admin.displayToast('danger', 'Erro', 'Não foi possível enviar a condição.');
-                })
-                .always(() => {
-                    $btn.html(state.html).width(state.width).height(state.height);
-                });
+                    })
+                    .fail((xhr, t, err) => {
+                        console.error('AJAX failed:', t, err);
+                        Flexify_Checkout_Admin.displayToast('danger', 'Erro', 'Não foi possível enviar a condição.');
+                    })
+                    .always(() => {
+                        $btn.html(state.html).width(state.width).height(state.height);
+                    });
             });
 
-            // remove condition item
+            $(document).off('click', '.edit-condition').on('click', '.edit-condition', (e) => {
+                e.preventDefault();
+
+                const $btn = $(e.currentTarget);
+                const state = Flexify_Checkout_Admin.keepButtonState($btn);
+                const $li = $btn.closest('.list-group-item');
+                const conditionIndex = String($li.data('condition'));
+
+                if (!conditionIndex) {
+                    Flexify_Checkout_Admin.displayToast('danger', 'Erro', 'Não foi possível localizar a condição.');
+                    return;
+                }
+
+                $btn.html('<span class="spinner-border spinner-border-sm"></span>');
+
+                $.ajax({
+                    url: flexify_checkout_params.ajax_url,
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        action: 'get_checkout_condition_item',
+                        condition_index: conditionIndex,
+                    },
+                })
+                    .done((res) => {
+                        if (res && res.status === 'success' && res.condition) {
+                            prefillConditionForm(res.condition, res.selected_items || {});
+                            setEditorMode('edit', String(res.condition_index ?? conditionIndex));
+                            Flexify_Checkout_Admin.modalApi.open(S.modal);
+                        } else {
+                            Flexify_Checkout_Admin.displayToast('danger', res?.toast_header_title || 'Erro', res?.toast_body_title || 'Não foi possível carregar a condição.');
+                        }
+                    })
+                    .fail((xhr, t, err) => {
+                        console.error('AJAX failed:', t, err);
+                        Flexify_Checkout_Admin.displayToast('danger', 'Erro', 'Não foi possível carregar a condição.');
+                    })
+                    .always(() => {
+                        $btn.html(state.html).width(state.width).height(state.height);
+                    });
+            });
+
             $(document).off('click', '.exclude-condition').on('click', '.exclude-condition', (e) => {
                 e.preventDefault();
 
@@ -1457,41 +1597,51 @@
                 $btn.html('<span class="spinner-border spinner-border-sm"></span>');
 
                 $.ajax({
-                    url:  flexify_checkout_params.ajax_url,
+                    url: flexify_checkout_params.ajax_url,
                     type: 'POST',
                     dataType: 'json',
                     data: { action: 'exclude_condition_item', condition_index: idx },
                 })
-                .done((res) => {
-                    if (res && res.status === 'success') {
-                        Flexify_Checkout_Admin.displayToast('success', res.toast_header_title, res.toast_body_title);
+                    .done((res) => {
+                        if (res && res.status === 'success') {
+                            Flexify_Checkout_Admin.displayToast('success', res.toast_header_title, res.toast_body_title);
 
-                        $li.fadeOut(150, function() {
-                            $(this).remove();
+                            $li.fadeOut(150, function() {
+                                $(this).remove();
 
-                            if (res[0] && res[0].empty_conditions === 'yes') {
-                                const $td = $('#display_conditions').parent('td');
-                                $('#display_conditions').remove();
-                                $td.append(`<div id="empty_conditions" class="alert alert-info d-flex align-items-center">
-                                    <svg class="icon icon-info me-2" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8z"></path><path d="M11 11h2v6h-2zm0-4h2v2h-2z"></path></svg>
-                                    <span>${res[0].empty_conditions_message || ''}</span>
-                                </div>`);
-                            }
-                        });
-                    } else {
-                        Flexify_Checkout_Admin.displayToast('danger', res?.toast_header_title || 'Erro', res?.toast_body_title || 'Falha ao excluir condição.');
-                    }
-                })
-                .fail((xhr, t, err) => {
-                    console.error('AJAX failed:', t, err);
-                    Flexify_Checkout_Admin.displayToast('danger', 'Erro', 'Não foi possível excluir a condição.');
-                })
-                .always(() => {
-                    $btn.html(state.html).width(state.width).height(state.height);
+                                if (res[0] && res[0].empty_conditions === 'yes') {
+                                    const $td = $('#display_conditions').parent('td');
+                                    $('#display_conditions').remove();
+                                    $td.append(`<div id="empty_conditions" class="alert alert-info d-flex align-items-center">
+                                        <svg class="icon icon-info me-2" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8z"></path><path d="M11 11h2v6h-2zm0-4h2v2h-2z"></path></svg>
+                                        <span>${res[0].empty_conditions_message || ''}</span>
+                                    </div>`);
+                                }
+                            });
+                        } else {
+                            Flexify_Checkout_Admin.displayToast('danger', res?.toast_header_title || 'Erro', res?.toast_body_title || 'Falha ao excluir condição.');
+                        }
+                    })
+                    .fail((xhr, t, err) => {
+                        console.error('AJAX failed:', t, err);
+                        Flexify_Checkout_Admin.displayToast('danger', 'Erro', 'Não foi possível excluir a condição.');
+                    })
+                    .always(() => {
+                        $btn.html(state.html).width(state.width).height(state.height);
+                    });
+            });
+
+            $(document).off('click.fcwConditionReset', `${S.close_modal_btn}, ${S.modal}`).on('click.fcwConditionReset', `${S.close_modal_btn}, ${S.modal}`, function(e) {
+                if ($(this).is(S.modal) && e.target !== this) {
+                    return;
+                }
+
+                setTimeout(() => {
+                    resetForm(S.container);
                 });
             });
 
-            // initial state
+            setEditorMode('create', null);
             toggleSubmit();
         },
 
@@ -2896,6 +3046,12 @@
      * @since 5.1.0
      */
     window.Flexify_Checkout_Admin = Flexify_Checkout_Admin;
+    window.Flexify_Checkout_Settings = window.Flexify_Checkout_Settings || {};
+    window.Flexify_Checkout_Settings.modal = {
+        register: Flexify_Checkout_Admin.modalApi.register.bind(Flexify_Checkout_Admin.modalApi),
+        open: Flexify_Checkout_Admin.modalApi.open.bind(Flexify_Checkout_Admin.modalApi),
+        close: Flexify_Checkout_Admin.modalApi.close.bind(Flexify_Checkout_Admin.modalApi),
+    };
 
     /**
      * Fire trigger when admin module is ready

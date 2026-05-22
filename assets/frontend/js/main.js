@@ -42,6 +42,11 @@
 					field.addEventListener('change input', function(e) {
 						e.preventDefault();
 
+						// billing_email has a dedicated debounced watcher to avoid duplicate lookups.
+						if ( field.name === 'billing_email' ) {
+							return false;
+						}
+
 						Flexify_Checkout.Validations.getFieldErrors( field );
 
 						return false;
@@ -115,7 +120,14 @@
 						$('.flexify-review-customer__content').find('.customer-details-info.' + update_element_text).text( value.input_value );
 
 						// Update field error
-						row.querySelector('.error').innerHTML = value.message;
+						let errorNode = row.querySelector('.error');
+
+						if ( ! errorNode ) {
+							row.insertAdjacentHTML('beforeend', '<span class="error"></span>');
+							errorNode = row.querySelector('.error');
+						}
+
+						errorNode.innerHTML = value.message;
 						row.classList.remove('woocommerce-invalid');
 
 						if ( row.classList.contains('validate-required') ) {
@@ -437,7 +449,14 @@
 						$('.flexify-review-customer__content').find('.customer-details-info.' + value.input_id.replace('billing_', '')).text(value.input_value);
 
 						const row = field.closest('.form-row');
-						row.querySelector('.error').innerHTML = value.message;
+						let errorNode = row.querySelector('.error');
+
+						if ( ! errorNode ) {
+							row.insertAdjacentHTML('beforeend', '<span class="error"></span>');
+							errorNode = row.querySelector('.error');
+						}
+
+						errorNode.innerHTML = value.message;
 						row.classList.remove('woocommerce-invalid');
 
 						if ( row.classList.contains('validate-required') ) {
@@ -461,7 +480,7 @@
 				Flexify_Checkout.Validations.clearErrorMessages('data-flexify-error');
 				Flexify_Checkout.Validations.accessibleErrors();
 
-				if ( error_fields.length ) {
+				if ( error_fields.length && fields.length ) {
 					// display error
 					const stepNo = fields[0].closest('[data-step]').dataset.step;
 					document.querySelector(`[data-stepper-li="${stepNo}"]`).classList.add('error');
@@ -487,6 +506,53 @@
 				}
 
 				const field_masks = params.get_input_masks || {};
+				const token_map = {
+					'0': /\d/,
+					'9': /\d/,
+					'A': /[a-zA-Z0-9]/,
+					'S': /[a-zA-Z]/,
+				};
+
+				const applyMaskPattern = function(rawValue, maskPattern) {
+					if ( ! maskPattern || typeof rawValue !== 'string' ) {
+						return rawValue || '';
+					}
+
+					const alnum = rawValue.replace(/[^a-zA-Z0-9]/g, '');
+					let masked = '';
+					let value_index = 0;
+					let i = 0;
+
+					while ( i < maskPattern.length && value_index < alnum.length ) {
+						const mask_char = maskPattern.charAt(i);
+						const matcher = token_map[mask_char];
+
+						if ( matcher ) {
+							let found = false;
+
+							while ( value_index < alnum.length ) {
+								const candidate = alnum.charAt(value_index);
+								value_index++;
+
+								if ( matcher.test(candidate) ) {
+									masked += candidate;
+									found = true;
+									break;
+								}
+							}
+
+							if ( ! found ) {
+								break;
+							}
+						} else {
+							masked += mask_char;
+						}
+
+						i++;
+					}
+
+					return masked;
+				};
 
 				/**
 				 * Loop through each field mask and apply it
@@ -504,27 +570,32 @@
 						return;
 					}
 
-					// Skip if already masked
-					if ( $field.data('mask-applied') ) {
+					// Prevent conflict with intl-tel-input
+					if ( params.international_phone === 'yes' && id === 'billing_phone' ) {
 						return;
 					}
 
-					// Remove any previous mask
-					if ( typeof $field.unmask === 'function' ) {
-						$field.unmask();
+					const field = $field.get(0);
+
+					if ( ! field ) {
+						return;
 					}
 
-					// Apply mask and mark as applied
-					if ( typeof $field.mask === 'function' ) {
-						$field.mask(maskPattern);
-						$field.data('mask-applied', true);
+					if ( field.dataset.flexifyMaskApplied === 'yes' ) {
+						field.value = applyMaskPattern(field.value || '', maskPattern);
+						return;
 					}
 
-					// Prevent conflict with intl-tel-input
-					if ( params.international_phone === 'yes' && id === 'billing_phone' ) {
-						$field.unmask();
-						$field.removeData('mask-applied');
-					}
+					field.dataset.flexifyMaskApplied = 'yes';
+					field.dataset.flexifyMaskPattern = maskPattern;
+					field.value = applyMaskPattern(field.value || '', maskPattern);
+
+					const onMaskInput = function() {
+						field.value = applyMaskPattern(field.value || '', field.dataset.flexifyMaskPattern || '');
+					};
+
+					field.addEventListener('input', onMaskInput);
+					field.addEventListener('blur', onMaskInput);
 				});
 			},
 
@@ -541,10 +612,19 @@
 				const val = input.val().trim();
 				const row = input.closest('.form-row');
 				const iti = input.data('itiInstance');
+				const fieldLabel = row.attr('data-label') || 'Telefone';
+				const requiredMessage = `${fieldLabel} ${params.i18n.required_field || 'obrigatorio'}.`;
+				const isRequired = row.hasClass('validate-required') || row.hasClass('required') || row.hasClass('required-field') || input.prop('required');
+
+				// Required field must display explicit required error when empty.
+				if ( isRequired && ! val ) {
+					row.removeClass('woocommerce-validated').addClass('woocommerce-invalid woocommerce-invalid-required').find('.error').text( requiredMessage );
+					return;
+				}
 
 				// prevent validate fields without changed
 				if ( ! row.hasClass('has-changed') && val.length < 4 ) {
-					row.removeClass('woocommerce-validated woocommerce-invalid');
+					row.removeClass('woocommerce-validated woocommerce-invalid woocommerce-invalid-phone woocommerce-invalid-required');
 					return;
 				}
 
@@ -556,7 +636,7 @@
 						if ( ! is_valid ) {
 							row.removeClass('woocommerce-validated').addClass('woocommerce-invalid woocommerce-invalid-phone').find('.error').text( params.i18n.phone.invalid );
 						} else {
-							row.removeClass('woocommerce-invalid woocommerce-invalid-phone');
+							row.removeClass('woocommerce-invalid woocommerce-invalid-phone woocommerce-invalid-required');
 						}
 					});
 				}
@@ -577,6 +657,65 @@
 			},
 
 			/**
+			 * Watch billing email and trigger account lookup without page reload.
+			 *
+			 * @since 5.4.3
+			 * @return {void}
+			 */
+			watchEmailAccountLookup: function() {
+				let timer = null;
+				let last_checked_email = '';
+				let is_lookup_pending = false;
+
+				const runLookup = function(field, email) {
+					if ( is_lookup_pending ) {
+						return;
+					}
+
+					if ( ! email || ! Flexify_Checkout.Validations.isValidEmail( email ) ) {
+						last_checked_email = '';
+						return;
+					}
+
+					if ( email === last_checked_email ) {
+						return;
+					}
+
+					is_lookup_pending = true;
+					last_checked_email = email;
+
+					Promise.resolve( Flexify_Checkout.Validations.getFieldErrors( field ) )
+						.finally( function() {
+							is_lookup_pending = false;
+						});
+				};
+
+				$(document).off('input.flexifyEmailLookup', '#billing_email');
+				$(document).on('input.flexifyEmailLookup', '#billing_email', function() {
+					const field = this;
+					const email = String( $(field).val() || '' ).trim().toLowerCase();
+
+					clearTimeout(timer);
+
+					timer = setTimeout( function() {
+						runLookup(field, email);
+					}, 350);
+				});
+
+				$(document.body).off('updated_checkout.flexifyEmailLookup').on('updated_checkout.flexifyEmailLookup', function() {
+					const field = document.getElementById('billing_email');
+
+					if ( ! field ) {
+						return;
+					}
+
+					const email = String( $(field).val() || '' ).trim().toLowerCase();
+
+					runLookup(field, email);
+				});
+			},
+
+			/**
 			 * Initialize validations
 			 * 
 			 * @since 1.0.0
@@ -584,12 +723,19 @@
 			 */
 			init: function() {
 				this.onChange();
+				this.watchEmailAccountLookup();
 
 				let billing_email = $('#billing_email').val();
 
 				// Offer to login if a user a user already exits with the matching email
 				if ( billing_email && Flexify_Checkout.Validations.isValidEmail( billing_email ) ) {
-					Flexify_Checkout.Validations.getFieldErrors( document.getElementById('billing_email') );
+					setTimeout( function() {
+						const emailField = document.getElementById('billing_email');
+
+						if ( emailField ) {
+							$(emailField).trigger('input');
+						}
+					}, 0 );
 				}
 
 				// Add mask for each field with input mask defined
@@ -1024,6 +1170,7 @@
                     }
 
 					Flexify_Checkout.Shippings.selectShippingMethod();
+					Flexify_Checkout.Validations.addMaskOnFields();
 					Flexify_Checkout.Helpers.removeDomElements();
 					Flexify_Checkout.Sidebar.init();
 					Flexify_Checkout.Sidebar.updateSidebarTotal();
@@ -1874,41 +2021,98 @@
 		 * @version 5.0.0
 		 */
 		loginForm: {
+			_lastModalOpenAt: 0,
 
 			/**
 			 * Show notice for the login form
 			 *
 			 * @since 1.0.0
-			 * @version 5.0.0
+			 * @version 5.5.0
 			 * @param {string} message | The message to display
-			 * @param {string} type | 'error' or 'success'
+			 * @param {string} type | "error", "success" or "info"
 			 */
 			showNotice: function(message, type) {
 				if ( ! type ) {
 					type = 'error';
 				}
 
-				var notice_wrapper = $('.flexify-login-notice');
+				var notice_wrapper = $('.woocommerce-form-login .flexify-login-notice');
 				var typeClass = `flexify-login-notice--${type}`;
 				
 				notice_wrapper.removeClass('flexify-login-notice--success flexify-login-notice--error flexify-login-notice--info');
 				notice_wrapper.addClass(typeClass);
-				notice_wrapper.html(message);
+				notice_wrapper.html(message || '');
+			},
+
+			/**
+			 * Clear login modal notice
+			 *
+			 * @since 5.5.0
+			 * @return {void}
+			 */
+			clearNotice: function() {
+				$('.woocommerce-form-login .flexify-login-notice')
+					.removeClass('flexify-login-notice--success flexify-login-notice--error flexify-login-notice--info')
+					.html('');
+			},
+
+			/**
+			 * Toggle login/reset views in the same modal.
+			 *
+			 * @since 5.5.0
+			 * @param {string} view | "login" or "reset"
+			 */
+			switchView: function( view ) {
+				const loginView = $('.woocommerce-form-login .flexify-login-view--login');
+				const resetView = $('.woocommerce-form-login .flexify-login-view--reset');
+
+				if ( view === 'reset' ) {
+					loginView.hide();
+					resetView.show();
+					window.setTimeout(function() {
+						resetView.find('#flexify-reset-email').trigger('focus');
+					}, 50);
+					return;
+				}
+
+				resetView.hide();
+				loginView.show();
+				window.setTimeout(function() {
+					loginView.find('#username').trigger('focus');
+				}, 50);
 			},
 
 			/**
 			 * Open modal for login on checkout
 			 * 
 			 * @since 1.0.0
-			 * @version 5.0.0
+			 * @version 5.5.0
 			 * @param {boolean} openAuto | Open modal automatically
 			 */
 			openModal: function( openAuto ) {
+				const now = Date.now();
+				const popupInstance = $.magnificPopup.instance;
+
+				// Prevent duplicate modal open calls in quick sequence.
+				if ( popupInstance && popupInstance.isOpen ) {
+					return;
+				}
+
+				if ( now - Flexify_Checkout.loginForm._lastModalOpenAt < 700 ) {
+					return;
+				}
+
+				Flexify_Checkout.loginForm._lastModalOpenAt = now;
+
 				let billing_email = $('#billing_email').val();
 
 				if ( billing_email ) {
 					$('.woocommerce-form-login #username').val(billing_email).trigger('change');
+					$('.woocommerce-form-login #flexify-reset-email').val(billing_email).trigger('change');
 				}
+
+				Flexify_Checkout.loginForm.switchView('login');
+				Flexify_Checkout.loginForm.clearNotice();
 
 				if ( openAuto ) {
 					Flexify_Checkout.loginForm.showNotice( params.i18n.account_exists, 'info' );
@@ -1940,10 +2144,36 @@
 					$(document.body).off('click', 'a.showlogin');
 				}, 100);
 
-				$(document).on('click', '[data-login], .showlogin', function(e) {
+				$(document).off('click.flexifyLoginModal').on('click.flexifyLoginModal', '[data-login], .showlogin', function(e) {
 					e.preventDefault();
 
 					Flexify_Checkout.loginForm.openModal();
+				});
+			},
+
+			/**
+			 * Handle switch to reset password view.
+			 *
+			 * @since 5.5.0
+			 */
+			onForgotPasswordClick: function() {
+				$(document).off('click.flexifyLoginForgot').on('click.flexifyLoginForgot', '.woocommerce-form-login .flexify-lost-password-trigger', function(e) {
+					e.preventDefault();
+					Flexify_Checkout.loginForm.clearNotice();
+					Flexify_Checkout.loginForm.switchView('reset');
+				});
+			},
+
+			/**
+			 * Handle switch back to login view.
+			 *
+			 * @since 5.5.0
+			 */
+			onBackToLoginClick: function() {
+				$(document).off('click.flexifyLoginBack').on('click.flexifyLoginBack', '.woocommerce-form-login .flexify-back-to-login', function(e) {
+					e.preventDefault();
+					Flexify_Checkout.loginForm.clearNotice();
+					Flexify_Checkout.loginForm.switchView('login');
 				});
 			},
 
@@ -1954,7 +2184,7 @@
 			 * @version 5.0.0
 			 */
 			passwordVisibility: function() {
-				$('.toggle-password-visibility .toggle').on('click', function() {
+				$('.toggle-password-visibility .toggle').off('click.flexifyToggleLoginPass').on('click.flexifyToggleLoginPass', function() {
 					var inputLoginPass = $('.flexify-login-password');
 					var showPasswordIcon = $('.toggle-password-visibility .show-password');
 					var hidePasswordIcon = $('.toggle-password-visibility .hide-password');
@@ -1975,14 +2205,14 @@
 			 * Handle submit login event
 			 *
 			 * @since 1.0.0
-			 * @version 5.0.0
+			 * @version 5.5.0
 			 * @param {object} e | Event object
 			 */
 			onSubmit: function(e) {
 				e.preventDefault();
 
-				const form = $('.woocommerce-form-login');
-				let btn = $('.flexify-button.woocommerce-button.button.woocommerce-form-login__submit');
+				const form = $('.woocommerce-form-login .flexify-login-form');
+				let btn = $('.woocommerce-form-login .woocommerce-form-login__submit');
 				let btn_state = Flexify_Checkout.Helpers.keepButtonState( btn );
 
 				// send AJAX request
@@ -2007,7 +2237,7 @@
 
 							window.location.reload();
 						} else {
-							Flexify_Checkout.loginForm.showNotice( response.data.error, 'error' );
+							Flexify_Checkout.loginForm.showNotice( response?.data?.error || params.i18n.error, 'error' );
 						}
 					},
 					error: function(jqXHR, textStatus, errorThrown) {
@@ -2021,14 +2251,66 @@
 			},
 
 			/**
+			 * Handle submit reset password event.
+			 *
+			 * @since 5.5.0
+			 * @param {object} e | Event object
+			 */
+			onSubmitReset: function(e) {
+				e.preventDefault();
+
+				const form = $('.woocommerce-form-login .flexify-lostpassword-form');
+				const email = String(form.find('#flexify-reset-email').val() || '').trim();
+				let btn = $('.woocommerce-form-login .flexify-reset-password__submit');
+				let btn_state = Flexify_Checkout.Helpers.keepButtonState( btn );
+
+				if ( ! email || ! Flexify_Checkout.Validations.isValidEmail(email) ) {
+					Flexify_Checkout.loginForm.showNotice( params.i18n.lostpassword_invalid_email, 'error' );
+					return;
+				}
+
+				$.ajax({
+					type: 'POST',
+					url: params.ajax_url,
+					data: {
+						action: 'flexify_checkout_lostpassword',
+						user_login: email,
+						security: form.find('#flexify-lostpassword-nonce').val(),
+					},
+					beforeSend: function() {
+						btn.prop('disabled', true).html('<span class="flexify-btn-processing-inline"></span>');
+					},
+					success: function(response) {
+						if ( response.success ) {
+							Flexify_Checkout.loginForm.showNotice( params.i18n.lostpassword_success, 'success' );
+							Flexify_Checkout.loginForm.switchView('login');
+							$('.woocommerce-form-login #username').val(email).trigger('change');
+						} else {
+							Flexify_Checkout.loginForm.showNotice( response?.data?.error || params.i18n.lostpassword_error, 'error' );
+						}
+					},
+					error: function(jqXHR, textStatus, errorThrown) {
+						console.error('[FLEXIFY CHECKOUT] AJAX error on try recover password:', textStatus, errorThrown);
+						Flexify_Checkout.loginForm.showNotice( params.i18n.lostpassword_error, 'error' );
+					},
+					complete: function() {
+						btn.html(btn_state.html).prop('disabled', false);
+					},
+				});
+			},
+
+			/**
 			 * Initialize module
 			 * 
 			 * @since 1.0.0
-			 * @version 5.0.0
+			 * @version 5.5.0
 			 */
 			init: function() {
 				this.onClick();
+				this.onForgotPasswordClick();
+				this.onBackToLoginClick();
 				this.passwordVisibility();
+				this.switchView('login');
 
 				/**
 				 * If auto-open class is present in the login for i.e. user has entered a wrong password,
@@ -2040,8 +2322,12 @@
 					}, 1000);
 				}
 
-				$('.woocommerce-form-login > h2:first').append('<div class="flexify-login-notice"></div>');
-      			$('.woocommerce-form-login').on('submit', Flexify_Checkout.loginForm.onSubmit);
+				if ( ! $('.woocommerce-form-login .flexify-login-notice').length ) {
+					$('.woocommerce-form-login').prepend('<div class="flexify-login-notice"></div>');
+				}
+
+				$('.woocommerce-form-login .flexify-login-form').off('submit.flexifyLogin').on('submit.flexifyLogin', Flexify_Checkout.loginForm.onSubmit);
+				$('.woocommerce-form-login .flexify-lostpassword-form').off('submit.flexifyLostPass').on('submit.flexifyLostPass', Flexify_Checkout.loginForm.onSubmitReset);
 			},
 		},
 
@@ -2250,13 +2536,14 @@
 				var additional_fields = $parent.find('.woocommerce-additional-fields input, .woocommerce-additional-fields select, .woocommerce-additional-fields textarea');
 				var fields = [];
 
+				const createAccountChecked = $parent.find('input[name=createaccount]:checked').length > 0;
+
 				$parent.find('input, select, textarea').each( function() {
 					var field = $(this);
 
-					if ( ! $parent.find('input[name=createaccount]:checked').length && ! $parent.find('.create-account').filter( function() {
-							return $(this).css('display') === 'block';
-						}).length && account_fields.is(field) ) {
-							return;
+					// Only validate account creation fields when customer explicitly opts in.
+					if ( ! createAccountChecked && account_fields.is(field) ) {
+						return;
 					}
 
 					if ( ! $parent.find('input[name=ship_to_different_address]:checked').length && shipping_fields.is(field) ) {
@@ -2832,6 +3119,33 @@
 		Fields: {
 
 			/**
+			 * Get billing phone in international format when intl-tel-input is active.
+			 *
+			 * @since 5.5.0
+			 * @return {string}
+			 */
+			getInternationalPhoneValue: function() {
+				const $phone = $('#billing_phone');
+				const iti = $phone.data('itiInstance');
+
+				if ( iti && typeof iti.getNumber === 'function' ) {
+					const intl_phone = iti.getNumber();
+
+					if ( intl_phone ) {
+						return intl_phone;
+					}
+				}
+
+				const hidden_phone = $('input[name="billing_phone_full_number"]').val();
+
+				if ( hidden_phone ) {
+					return hidden_phone;
+				}
+
+				return $phone.val() || '';
+			},
+
+			/**
 			 * Update hidden field
 			 * 
 			 * @since 1.0.0
@@ -2846,6 +3160,7 @@
 					hidden_field.val( inputValue );
 				} else {
 					$('#billing_phone').after('<input type="hidden" name="billing_phone_full_number">');
+					hidden_field = $('input[name="billing_phone_full_number"]');
 					hidden_field.val( inputValue );
 				}
 			},
@@ -2858,7 +3173,7 @@
 			 * @returns {void}
 			 */
 			internationalPhone: function() {
-				const selector = '.flexify-intl-phone input[type="tel"], .flexify-intl-phone input[type="text"]';
+				const selector = 'form.checkout .flexify-intl-phone input[type="tel"], form.checkout .flexify-intl-phone input[type="text"]';
 				const inputs = $(selector);
 
 				if ( ! inputs.length ) {
@@ -2867,6 +3182,11 @@
 
 				inputs.each((_, el) => {
 					const phone_element = $(el);
+
+					// Isolate Flexify instance and avoid conflicts/re-init with other intl-tel-input instances.
+					if ( phone_element.data('flexifyItiInitialized') ) {
+						return;
+					}
 					
 					const iti = window.intlTelInput(el, {
 						loadUtils: () => import( params.path_to_utils ),
@@ -2881,26 +3201,30 @@
 
 					// storage the instance in the input element for later use
 					phone_element.data('itiInstance', iti);
+					phone_element.data('flexifyItiInitialized', true);
 
 					// add init class to the row
 					phone_element.closest('.form-row').addClass('flexify-intl-phone--init');
 
 					iti.promise.then(() => {
+						// Ensure hidden field is filled on init.
+						Flexify_Checkout.Fields.updateInternationalPhoneHiddenField( iti.getNumber() );
+
 					  	// update the hidden full-number field when country changes
 						el.addEventListener('countrychange', () => {
 							Flexify_Checkout.Fields.updateInternationalPhoneHiddenField( iti.getNumber() );
 						});
 
 						// validate events
-						phone_element.on('blur', Flexify_Checkout.Validations.markInternationalPhoneChanged);
-						phone_element.on('blur validate flexify_validate keyup', Flexify_Checkout.Validations.validateInternationalPhone);
+						phone_element.off('blur.flexifyIntl').on('blur.flexifyIntl', Flexify_Checkout.Validations.markInternationalPhoneChanged);
+						phone_element.off('blur.flexifyIntl validate.flexifyIntl flexify_validate.flexifyIntl keyup.flexifyIntl').on('blur.flexifyIntl validate.flexifyIntl flexify_validate.flexifyIntl keyup.flexifyIntl', Flexify_Checkout.Validations.validateInternationalPhone);
 
-						phone_element.on('blur validate flexify_validate keyup', function() {
+						phone_element.off('blur.flexifyIntlHidden validate.flexifyIntlHidden flexify_validate.flexifyIntlHidden keyup.flexifyIntlHidden').on('blur.flexifyIntlHidden validate.flexifyIntlHidden flexify_validate.flexifyIntlHidden keyup.flexifyIntlHidden', function() {
 							Flexify_Checkout.Fields.updateInternationalPhoneHiddenField( iti.getNumber() );
 						});
 						
 						// listen change billing country
-						$('#billing_country').on('change', function() {
+						$('#billing_country').off('change.flexifyIntlCountry').on('change.flexifyIntlCountry', function() {
 							const code = $(this).val().toLowerCase();
 
 							iti.setCountry(code);
@@ -2909,11 +3233,8 @@
 							$('#billing_phone').change();
 						});
 
-						$('#billing_country').on('change', Flexify_Checkout.Validations.validateInternationalPhone);
+						$('#billing_country').off('change.flexifyIntlValidate').on('change.flexifyIntlValidate', Flexify_Checkout.Validations.validateInternationalPhone);
 					});
-
-					// Disable wc_checkout_form.validate_field() event listener on input event.
-      				$('form.checkout').off('input', '**');
 				});
 			},
 
@@ -3052,34 +3373,62 @@
 				}).filter(el => el); // remove null values
 
 				// if has postcode, then try to auto fill address
-				if ( code.length === 8 ) {
-					// send request to API service
+				if ( code.length !== 8 ) {
+					return;
+				}
+
+				const providers = Flexify_Checkout.Fields.getAddressProviders( code );
+				const logEnabled = params.debug_mode === 'yes' || params.debug_mode === true;
+				const log = (...args) => {
+					if ( logEnabled ) {
+						console.log('[FLEXIFY CHECKOUT][CEP]', ...args);
+					}
+				};
+
+				const tryProvider = (index) => {
+					if ( ! providers[index] ) {
+						log('all providers failed', { type, code });
+						$(document).trigger('flexify_checkout_cep_lookup_failed', [{ type, postcode: code }]);
+						Flexify_Checkout.UI.togglePlaceholder( fields, false );
+						return;
+					}
+
+					const provider = providers[index];
+					log('trying provider', provider.name, provider.url);
+
 					$.ajax({
 						type: 'GET',
-						url: params.fill_address.api_service.replace( '{postcode}', code ),
+						url: provider.url,
+						timeout: 6000,
 						dataType: 'json',
 						contentType: 'application/json',
 						beforeSend: function() {
-							// add loading placeholders
-							Flexify_Checkout.UI.togglePlaceholder( fields, true );
-						},
-						success: function(response) {
-							if ( response ) {
-								Flexify_Checkout.Fields.fillAddressFields(type, response);
+							if ( index === 0 ) {
+								Flexify_Checkout.UI.togglePlaceholder( fields, true );
 							}
 						},
-						error: function(jqXHR, textStatus, errorThrown) {
-							console.error('[FLEXIFY CHECKOUT] AJAX error on try fill address:', textStatus, errorThrown);
-							
-							// remove loading placeholder
+						success: function(response) {
+							const normalized = Flexify_Checkout.Fields.normalizeAddressResponse( provider, response );
+
+							if ( ! normalized ) {
+								log('provider returned invalid payload', provider.name, response);
+								tryProvider(index + 1);
+								return;
+							}
+
+							Flexify_Checkout.Fields.fillAddressFields(type, normalized);
+							log('provider success', provider.name, normalized);
+							$(document).trigger('flexify_checkout_cep_lookup_success', [{ type, postcode: code, provider: provider.name }]);
 							Flexify_Checkout.UI.togglePlaceholder( fields, false );
 						},
-						complete: () => {
-							// remove loading placeholder
-							Flexify_Checkout.UI.togglePlaceholder( fields, false );
+						error: function(jqXHR, textStatus, errorThrown) {
+							log('provider error', provider.name, textStatus, errorThrown);
+							tryProvider(index + 1);
 						},
 					});
-				}
+				};
+
+				tryProvider(0);
 			},
 
 			/**
@@ -3092,12 +3441,91 @@
 			 * @return {void}
 			 */
 			fillAddressFields: function(type, data) {
-				const p = params.fill_address;
+				$(`#${type}_address_1`).val( data.address_1 || '' ).change();
+				$(`#${type}_neighborhood`).val( data.neighborhood || '' ).change();
+				$(`#${type}_city`).val( data.city || '' ).change();
+				$(`#${type}_state`).val( data.state || '' ).change();
+			},
 
-				$(`#${type}_address_1`).val( data[p.address_param] ).change();
-				$(`#${type}_neighborhood`).val(data[p.neightborhood_param]).change();
-				$(`#${type}_city`).val( data[p.city_param] ).change();
-				$(`#${type}_state`).val( data[p.state_param] ).change();
+			/**
+			 * Build ordered CEP providers list.
+			 *
+			 * @since 5.4.3
+			 * @param {string} code
+			 * @returns {Array}
+			 */
+			getAddressProviders: function( code ) {
+				const p = params.fill_address || {};
+				const providers = [];
+
+				if ( p.api_service ) {
+					providers.push({
+						name: 'primary',
+						url: p.api_service.replace('{postcode}', code),
+						map: {
+							address_1: p.address_param || 'logradouro',
+							neighborhood: p.neightborhood_param || 'bairro',
+							city: p.city_param || 'localidade',
+							state: p.state_param || 'uf',
+						},
+					});
+				}
+
+				providers.push({
+					name: 'viacep',
+					url: `https://viacep.com.br/ws/${code}/json/`,
+					map: {
+						address_1: 'logradouro',
+						neighborhood: 'bairro',
+						city: 'localidade',
+						state: 'uf',
+					},
+				});
+
+				providers.push({
+					name: 'brasilapi',
+					url: `https://brasilapi.com.br/api/cep/v1/${code}`,
+					map: {
+						address_1: 'street',
+						neighborhood: 'neighborhood',
+						city: 'city',
+						state: 'state',
+					},
+				});
+
+				return providers;
+			},
+
+			/**
+			 * Normalize CEP provider response to unified shape.
+			 *
+			 * @since 5.4.3
+			 * @param {object} provider
+			 * @param {object} response
+			 * @returns {object|null}
+			 */
+			normalizeAddressResponse: function( provider, response ) {
+				if ( ! response || typeof response !== 'object' ) {
+					return null;
+				}
+
+				if ( response.erro === true || response.error ) {
+					return null;
+				}
+
+				const map = provider.map || {};
+				const normalized = {
+					address_1: response[map.address_1] || '',
+					neighborhood: response[map.neighborhood] || '',
+					city: response[map.city] || '',
+					state: response[map.state] || '',
+				};
+
+				if ( ! normalized.city || ! normalized.state ) {
+					return null;
+				}
+
+				return normalized;
 			},
 
 			/**
@@ -3609,8 +4037,18 @@
 					$(field).on('change input keyup', function() {
 						let update_element_text = field.id.replace('billing_', '');
 						let get_element_to_update = $('.flexify-review-customer__content').find('.customer-details-info.' + update_element_text);
-						
-						get_element_to_update.html( $(field).val() );
+						let value = $(field).val();
+
+						// Keep review phone synced with international full number (DDI + number).
+						if ( field.id === 'billing_phone' ) {
+							const full_phone = Flexify_Checkout.Fields.getInternationalPhoneValue();
+
+							if ( full_phone ) {
+								value = full_phone;
+							}
+						}
+
+						get_element_to_update.html( value );
 					});
 				});
 			},
@@ -4022,6 +4460,400 @@
 		},
 
 		/**
+		 * Internal tracking router for browser-side events
+		 *
+		 * @since 5.4.3
+		 */
+		Tracking: {
+			state: {
+				sent: {},
+				async_queue: [],
+				async_inflight: false,
+			},
+
+			isDebugEnabled: function() {
+				const debug = params.debug_mode;
+				return debug === true || debug === 1 || debug === '1' || debug === 'yes' || debug === 'true' || debug === 'on';
+			},
+
+			debugLog: function( message, context ) {
+				if ( ! this.isDebugEnabled() || typeof console === 'undefined' || typeof console.log !== 'function' ) {
+					return;
+				}
+
+				if ( typeof context !== 'undefined' ) {
+					console.log( '[FLEXIFY CHECKOUT][Tracking] ' + message, context );
+					return;
+				}
+
+				console.log( '[FLEXIFY CHECKOUT][Tracking] ' + message );
+			},
+
+			isEnabled: function() {
+				return !!( params.tracking_router && params.tracking_router.enabled === 'yes' );
+			},
+
+			getRoutes: function() {
+				return ( params.tracking_router && params.tracking_router.routes ) ? params.tracking_router.routes : {};
+			},
+
+			getEventMap: function() {
+				return ( params.tracking_router && params.tracking_router.event_map ) ? params.tracking_router.event_map : {};
+			},
+
+			getAsyncConfig: function() {
+				return ( params.tracking_router && params.tracking_router.async ) ? params.tracking_router.async : {};
+			},
+
+			isAsyncEnabled: function() {
+				const config = this.getAsyncConfig();
+				return !!( config && config.enabled === 'yes' && config.action && config.nonce );
+			},
+
+			canSendTo: function( event_name, destination ) {
+				const routes = this.getRoutes();
+				return !!( routes[event_name] && routes[event_name][destination] === 'yes' );
+			},
+
+			getExternalEventName: function( event_name, destination ) {
+				const map = this.getEventMap();
+				return map[event_name] && map[event_name][destination] ? map[event_name][destination] : event_name;
+			},
+
+			ensureEventId: function( payload, event_name ) {
+				if ( payload.event_id ) {
+					return payload;
+				}
+
+				const rand = Math.random().toString(36).slice(2, 10);
+				return Object.assign({}, payload, {
+					event_id: event_name + '_' + Date.now() + '_' + rand,
+				});
+			},
+
+			sanitizePayload: function( payload, event_name ) {
+				const base = Object.assign({}, payload || {});
+				base.event_name = event_name;
+				return this.ensureEventId( base, event_name );
+			},
+
+			pushDataLayer: function( event_name, payload ) {
+				window.dataLayer = window.dataLayer || [];
+				window.dataLayer.push( Object.assign({ event: event_name }, payload ) );
+			},
+
+			sendGtag: function( destination, event_name, payload ) {
+				if ( typeof window.gtag !== 'function' ) {
+					return;
+				}
+
+				window.gtag( 'event', this.getExternalEventName( event_name, destination ), payload );
+			},
+
+			sendMeta: function( event_name, payload ) {
+				if ( typeof window.fbq !== 'function' ) {
+					return;
+				}
+
+				window.fbq( 'track', this.getExternalEventName( event_name, 'meta' ), payload, { eventID: payload.event_id } );
+			},
+
+			sendTikTok: function( event_name, payload ) {
+				if ( ! window.ttq || typeof window.ttq.track !== 'function' ) {
+					return;
+				}
+
+				window.ttq.track( this.getExternalEventName( event_name, 'tiktok' ), payload );
+			},
+
+			enqueueAsyncEvent: function( event_name, payload ) {
+				if ( ! this.isAsyncEnabled() ) {
+					return;
+				}
+
+				if ( event_name === 'fc_begin_checkout' && this.trySendBeacon( event_name, payload ) ) {
+					return;
+				}
+
+				this.state.async_queue.push({
+					event_name: event_name,
+					payload: payload,
+					attempts: 0,
+				});
+
+				this.processAsyncQueue();
+			},
+
+			trySendBeacon: function( event_name, payload ) {
+				const config = this.getAsyncConfig();
+
+				if ( ! config || ! config.action || ! config.nonce || ! navigator || typeof navigator.sendBeacon !== 'function' ) {
+					return false;
+				}
+
+				try {
+					const body = new FormData();
+					body.append( 'action', config.action );
+					body.append( 'nonce', config.nonce );
+					body.append( 'event_name', event_name );
+					body.append( 'payload', JSON.stringify( payload ) );
+
+					const sent = navigator.sendBeacon( params.ajax_url, body );
+
+					if ( sent ) {
+						this.debugLog( 'async sent with beacon', { event_name: event_name } );
+					}
+
+					return sent;
+				} catch ( error ) {
+					this.debugLog( 'beacon send failed', { event_name: event_name, error: error } );
+					return false;
+				}
+			},
+
+			processAsyncQueue: function() {
+				if ( ! this.isAsyncEnabled() || this.state.async_inflight || this.state.async_queue.length === 0 ) {
+					return;
+				}
+
+				const config = this.getAsyncConfig();
+				const next_item = this.state.async_queue.shift();
+
+				if ( ! next_item || ! next_item.event_name || ! next_item.payload ) {
+					return;
+				}
+
+				this.state.async_inflight = true;
+				this.debugLog( 'async dispatch', { event_name: next_item.event_name, payload: next_item.payload } );
+
+				$.ajax({
+					type: 'POST',
+					url: params.ajax_url,
+					timeout: 15000,
+					data: {
+						action: config.action,
+						nonce: config.nonce,
+						event_name: next_item.event_name,
+						payload: JSON.stringify( next_item.payload ),
+					},
+				}).fail(( jqXHR, textStatus, errorThrown ) => {
+					this.debugLog( 'async request failed', {
+						event_name: next_item.event_name,
+						status: textStatus,
+						error: errorThrown || null,
+						attempts: next_item.attempts || 0,
+					});
+
+					if ( ( textStatus === 'abort' || textStatus === 'timeout' ) && ( next_item.attempts || 0 ) < 1 ) {
+						next_item.attempts = ( next_item.attempts || 0 ) + 1;
+						this.state.async_queue.unshift( next_item );
+					}
+				}).always(() => {
+					this.debugLog( 'async completed', { event_name: next_item.event_name } );
+					this.state.async_inflight = false;
+					this.processAsyncQueue();
+				});
+			},
+
+			emit: function( event_name, payload, once_key ) {
+				if ( ! this.isEnabled() ) {
+					return;
+				}
+
+				if ( once_key && this.state.sent[once_key] ) {
+					this.debugLog( 'skipped duplicate event', { event_name: event_name, once_key: once_key } );
+					return;
+				}
+
+				const safe_payload = this.sanitizePayload( payload, event_name );
+				const destinations = {
+					data_layer: this.canSendTo( event_name, 'data_layer' ),
+					ga4: this.canSendTo( event_name, 'ga4' ),
+					google_ads: this.canSendTo( event_name, 'google_ads' ),
+					meta: this.canSendTo( event_name, 'meta' ),
+					tiktok: this.canSendTo( event_name, 'tiktok' ),
+					async: this.isAsyncEnabled(),
+				};
+
+				this.debugLog( 'event dispatched', {
+					event_name: event_name,
+					once_key: once_key || null,
+					destinations: destinations,
+					payload: safe_payload,
+				});
+
+				if ( destinations.data_layer ) {
+					this.pushDataLayer( event_name, safe_payload );
+				}
+
+				if ( destinations.ga4 ) {
+					this.sendGtag( 'ga4', event_name, safe_payload );
+				}
+
+				if ( destinations.google_ads ) {
+					this.sendGtag( 'google_ads', event_name, safe_payload );
+				}
+
+				if ( destinations.meta ) {
+					this.sendMeta( event_name, safe_payload );
+				}
+
+				if ( destinations.tiktok ) {
+					this.sendTikTok( event_name, safe_payload );
+				}
+
+				this.enqueueAsyncEvent( event_name, safe_payload );
+
+				if ( once_key ) {
+					this.state.sent[once_key] = true;
+				}
+
+				$(document).trigger( 'flexify_checkout_tracking_event', [ event_name, safe_payload ] );
+			},
+
+			getCheckoutPayload: function() {
+				return ( params.tracking_router && params.tracking_router.checkout_payload ) ? params.tracking_router.checkout_payload : {};
+			},
+
+			getPurchasePayload: function() {
+				return ( params.tracking_router && params.tracking_router.purchase_payload ) ? params.tracking_router.purchase_payload : {};
+			},
+
+			isCheckoutPage: function() {
+				return params.is_thankyou !== 'yes' && $('form.checkout').length > 0;
+			},
+
+			getSelectedShippingLabel: function() {
+				const $selected = $('input.shipping_method:checked');
+
+				if ( ! $selected.length ) {
+					return '';
+				}
+
+				const input_id = $selected.attr('id');
+				let label_text = '';
+
+				if ( input_id ) {
+					label_text = $('label[for="' + input_id + '"]').first().text().trim();
+				}
+
+				if ( ! label_text ) {
+					label_text = $selected.closest('li, .shipping-method-item').find('label').first().text().trim();
+				}
+
+				if ( ! label_text ) {
+					label_text = $selected.val() || '';
+				}
+
+				return label_text;
+			},
+
+			getSelectedPaymentLabel: function() {
+				const $selected = $('input[name="payment_method"]:checked');
+
+				if ( ! $selected.length ) {
+					return '';
+				}
+
+				const input_id = $selected.attr('id');
+				let label_text = '';
+
+				if ( input_id ) {
+					label_text = $('label[for="' + input_id + '"]').first().text().trim();
+				}
+
+				if ( ! label_text ) {
+					label_text = $selected.closest('li, .wc_payment_method, .payment_method').find('label').first().text().trim();
+				}
+
+				if ( ! label_text ) {
+					label_text = $selected.val() || '';
+				}
+
+				return label_text;
+			},
+
+			emitBeginCheckout: function() {
+				if ( ! this.isCheckoutPage() ) {
+					return;
+				}
+
+				const payload = this.getCheckoutPayload();
+
+				if ( ! payload || ! Array.isArray(payload.items) || payload.items.length === 0 ) {
+					return;
+				}
+
+				this.emit( 'fc_begin_checkout', payload, 'begin_checkout' );
+			},
+
+			emitShippingInfo: function() {
+				const payload = this.getCheckoutPayload();
+				const shipping_label = this.getSelectedShippingLabel();
+
+				if ( shipping_label ) {
+					payload.shipping_tier = shipping_label;
+				}
+
+				this.emit( 'fc_add_shipping_info', payload );
+			},
+
+			emitPaymentInfo: function() {
+				const payload = this.getCheckoutPayload();
+				const payment_label = this.getSelectedPaymentLabel();
+
+				if ( payment_label ) {
+					payload.payment_type = payment_label;
+				}
+
+				this.emit( 'fc_add_payment_info', payload );
+			},
+
+			emitPurchase: function() {
+				const payload = this.getPurchasePayload();
+
+				if ( ! payload || ! payload.transaction_id ) {
+					return;
+				}
+
+				this.emit( 'fc_purchase', payload, 'purchase_' + payload.transaction_id );
+			},
+
+			bindEvents: function() {
+				const debounced_shipping_emit = Flexify_Checkout.Session.debounce( () => {
+					this.emitShippingInfo();
+				}, 350 );
+
+				$(document.body).on( 'change', 'input.shipping_method', debounced_shipping_emit );
+				$(document.body).on( 'updated_checkout', debounced_shipping_emit );
+
+				$('form.checkout').on( 'checkout_place_order', () => {
+					this.emitPaymentInfo();
+					return true;
+				});
+			},
+
+			init: function() {
+				if ( ! this.isEnabled() ) {
+					return;
+				}
+
+				this.debugLog( 'tracking initialized', {
+					router_enabled: this.isEnabled(),
+					async_enabled: this.isAsyncEnabled(),
+					debug_mode: params.debug_mode,
+				});
+
+				this.emitBeginCheckout();
+				this.bindEvents();
+
+				if ( params.is_thankyou === 'yes' ) {
+					this.emitPurchase();
+				}
+			},
+		},
+
+		/**
 		 * Handle with session functions
 		 * 
 		 * @since 1.8.5
@@ -4037,6 +4869,9 @@
 			_lastSnapshot: null,
 			_stale: true,
 			_inflight: null,
+			_initialized: false,
+			_initialSyncDone: false,
+			_initialSyncAt: 0,
 
 			/**
 			 * Debounce function to limit the rate of calls
@@ -4064,22 +4899,131 @@
 			 * @version 5.3.0
 			 * @return {jQuery.Promise} AJAX Promise
 			 */
-			update: function() {
-				const groups = params.get_all_checkout_fields || [];
+			update: function( context ) {
+				const now = Date.now();
+
+				// Ignore automatic bootstrap-triggered field changes right after first sync.
+				if ( context === 'field_change' && this._initialSyncAt > 0 && ( now - this._initialSyncAt ) < 1200 ) {
+					const deferred = $.Deferred();
+					deferred.resolve();
+					return deferred.promise();
+				}
+
+				const groups = params.get_all_checkout_fields || {};
 				const fields_data = [];
 
-				// loop for each group (billing, shipping, etc.)
-				$(groups).each( function(index, fields) {
-					if (fields) {
-						$.each(fields, function(field_id, field_properties) {
+				// support both grouped structure ({ billing, shipping, account })
+				// and flat structure ({ billing_email: {...}, ... }).
+				Object.entries(groups).forEach(([groupKey, groupValue]) => {
+					if ( groupValue && typeof groupValue === 'object' && ! Array.isArray(groupValue) && ! ('type' in groupValue) ) {
+						Object.keys(groupValue).forEach( field_id => {
 							let input_value = $('#' + field_id).val();
+
+							// Keep session synced with intl phone full value (DDI + number).
+							if ( field_id === 'billing_phone' ) {
+								const full_phone = Flexify_Checkout.Fields.getInternationalPhoneValue();
+
+								if ( full_phone ) {
+									input_value = full_phone;
+								}
+							}
 
 							if ( input_value !== undefined ) {
 								fields_data.push({ field_id: field_id, value: input_value });
 							}
 						});
+
+						return;
+					}
+
+					let input_value = $('#' + groupKey).val();
+
+					if ( groupKey === 'billing_phone' ) {
+						const full_phone = Flexify_Checkout.Fields.getInternationalPhoneValue();
+
+						if ( full_phone ) {
+							input_value = full_phone;
+						}
+					}
+
+					if ( input_value !== undefined ) {
+						fields_data.push({ field_id: groupKey, value: input_value });
 					}
 				});
+
+				// Safety net: always include core contact/address fields even if they are
+				// not present in localized field config for some reason.
+				const requiredSessionFields = [
+					'billing_first_name',
+					'billing_last_name',
+					'billing_email',
+					'billing_phone',
+					'billing_postcode',
+					'billing_address_1',
+					'billing_number',
+					'billing_neighborhood',
+					'billing_city',
+					'billing_state',
+					'billing_country',
+					'shipping_postcode',
+					'shipping_address_1',
+					'shipping_number',
+					'shipping_neighborhood',
+					'shipping_city',
+					'shipping_state',
+					'shipping_country'
+				];
+
+				requiredSessionFields.forEach((field_id) => {
+					if ( fields_data.some(item => item.field_id === field_id) ) {
+						return;
+					}
+
+					const $field = $('#' + field_id);
+
+					if ( ! $field.length ) {
+						return;
+					}
+
+					let input_value = $field.val();
+
+					if ( field_id === 'billing_phone' ) {
+						const full_phone = Flexify_Checkout.Fields.getInternationalPhoneValue();
+
+						if ( full_phone ) {
+							input_value = full_phone;
+						}
+					}
+
+					if ( input_value !== undefined ) {
+						fields_data.push({ field_id: field_id, value: input_value });
+					}
+				});
+
+				const getSelectedShippingMethodData = function() {
+					let $selected = $('input.shipping_method:checked');
+
+					if ( ! $selected.length ) {
+						$selected = $('.shipping-method-item.selected-method input.shipping_method').first();
+					}
+
+					if ( ! $selected.length ) {
+						return {
+							id: '',
+							label: ''
+						};
+					}
+
+					const id = $selected.val() || '';
+					const label = ($selected.closest('.shipping-method-item').find('label').first().text() || '').trim();
+
+					return {
+						id: id,
+						label: label
+					};
+				};
+
+				const selected_shipping = getSelectedShippingMethodData();
 
 				// send AJAX request
 				return $.ajax({
@@ -4088,7 +5032,9 @@
 					data: {
 						action: 'get_checkout_session_data',
 						fields_data: JSON.stringify( fields_data ),
-						ship_to_different_address: $('#ship-to-different-address-checkbox').is(':checked') ? 'yes' : 'no'
+						ship_to_different_address: $('#ship-to-different-address-checkbox').is(':checked') ? 'yes' : 'no',
+						selected_shipping_method: selected_shipping.id,
+						selected_shipping_method_label: selected_shipping.label
 					},
 					error: function(jqXHR, textStatus, errorThrown) {
 						console.error('[FLEXIFY CHECKOUT] AJAX error on try session update data:', textStatus, errorThrown);
@@ -4104,19 +5050,39 @@
 			 * @return {void}
 			 */
 			init: function() {
+				if ( this._initialized ) {
+					return;
+				}
+
+				this._initialized = true;
+
 				const groups = params.get_all_checkout_fields || {};
-				const debounced = this.debounce(this.update.bind(this), 500);
+				const debounced = this.debounce(() => this.update('field_change'), 500);
 
 				// first sync
-				Flexify_Checkout.Session.update();
+				if ( ! this._initialSyncDone ) {
+					this._initialSyncDone = true;
+					this._initialSyncAt = Date.now();
+					Flexify_Checkout.Session.update('initial');
+				}
+
+				const bindFieldEvents = function( field_id ) {
+					const selector = '#' + field_id;
+					$(document).off('change.flexifySession input.flexifySession', selector);
+					$(document).on('change.flexifySession input.flexifySession', selector, debounced);
+				};
 
 				// on change inputs
-				$.each(groups, (idx, group) => {
-					if (group.billing) {
-						$.each(group.billing, (field_id) => {
-							$('#' + field_id).on('change input', debounced);
+				Object.entries(groups).forEach(([groupKey, groupValue]) => {
+					if ( groupValue && typeof groupValue === 'object' && ! Array.isArray(groupValue) && ! ('type' in groupValue) ) {
+						Object.keys(groupValue).forEach( field_id => {
+							bindFieldEvents( field_id );
 						});
+
+						return;
 					}
+
+					bindFieldEvents( groupKey );
 				});
 			}
 		},
@@ -4255,7 +5221,7 @@
              * @version 5.0.0
              * @return void
              */
-            compatDeliverySlots: function() {
+			compatDeliverySlots: function() {
                 // setTimeOut because we want our event listener to run after wc_checkout_form::validate_field().
                 window.setTimeout( function() {
                     $('#jckwds-delivery-date, #jckwds-delivery-time').on('validate', function(e) {
@@ -4264,8 +5230,46 @@
                             e.stopPropagation();
                         }
                     });
-                });
-            },
+				});
+			},
+
+			/**
+			 * Trigger checkout recalculation when SuperFrete-required fields change.
+			 *
+			 * @since 5.4.3
+			 * @return void
+			 */
+			bindSuperfreteCheckoutUpdates: function() {
+				if ( params.superfrete_active !== 'yes' ) {
+					return;
+				}
+
+				const selectors = [
+					'#billing_postcode',
+					'#billing_state',
+					'#billing_city',
+					'#billing_address_1',
+					'#billing_number',
+					'#billing_neighborhood',
+					'#billing_document',
+					'#shipping_postcode',
+					'#shipping_state',
+					'#shipping_city',
+					'#shipping_address_1',
+					'#shipping_number',
+					'#shipping_neighborhood'
+				];
+
+				let timer = null;
+				const triggerUpdate = function() {
+					clearTimeout(timer);
+					timer = setTimeout(function() {
+						$(document.body).trigger('update_checkout');
+					}, 350);
+				};
+
+				$(document).on('change input', selectors.join(', '), triggerUpdate);
+			},
 
 			/**
 			 * Show/hide Brazilian-market checkout fields based on person type
@@ -4371,6 +5375,7 @@
             init: function() {
                 this.compatSalesBooster();
                 this.compatDeliverySlots();
+				this.bindSuperfreteCheckoutUpdates();
 				this.initPersonTypeFields();
 
 				// Handle the condition where back button is pressed and document.ready event is not triggered.
@@ -4573,7 +5578,8 @@
 			// set flag
 			this.__inited = true;
 
-			const dbg = !!( window.flexify_checkout_params && window.flexify_checkout_params.debug_mode );
+			const debug_mode = window.flexify_checkout_params ? window.flexify_checkout_params.debug_mode : null;
+			const dbg = debug_mode === true || debug_mode === 'yes' || debug_mode === 1 || debug_mode === '1';
 			const log = dbg ? (...a) => console.log('[Flexify Checkout]', ...a) : () => {};
 
 			if (dbg) {
@@ -4610,6 +5616,7 @@
 				['Components', this.Components],
 				['Conditions', this.Conditions],
 				['Session', this.Session],
+				['Tracking', this.Tracking],
 				['Validations', this.Validations],
 				['Countdown', this.Countdown],
 				['processCheckout', this.processCheckout],

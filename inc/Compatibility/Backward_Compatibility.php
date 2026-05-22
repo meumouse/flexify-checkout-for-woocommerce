@@ -11,7 +11,8 @@ defined('ABSPATH') || exit;
  * Handles backward compatibility
  *
  * @since 5.0.0
- * @package MeuMouse.com
+
+ * @author MeuMouse.com
  */
 class Backward_Compatibility {
 

@@ -21,7 +21,8 @@ defined('ABSPATH') || exit;
  * ensuring cross-browser and cross-session reliability.
  *
  * @since 5.4.0
- * @package MeuMouse.com
+
+ * @author MeuMouse.com
  */
 class Direct_Checkout {
 

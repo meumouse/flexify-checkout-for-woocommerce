@@ -10,7 +10,8 @@ defined('ABSPATH') || exit;
  *
  * @since 5.0.0
  * @version 5.2.0
- * @package MeuMouse.com
+
+ * @author MeuMouse.com
  */
 class Legacy_Filters {
 
@@ -125,7 +126,7 @@ class Legacy_Filters {
 
 		// Log on debug.log
 		if ( defined('WP_DEBUG_LOG') && WP_DEBUG_LOG ) {
-			error_log( "[FLEXIFY CHECKOUT] Obsolet filter detected: {$old_filter} → {$new_filter} (since version: {$version})" );
+			error_log( "[FLEXIFY CHECKOUT] Obsolet filter detected: {$old_filter} â†’ {$new_filter} (since version: {$version})" );
 		}
 	}
 

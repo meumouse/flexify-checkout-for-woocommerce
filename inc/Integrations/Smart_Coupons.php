@@ -12,7 +12,8 @@ if ( class_exists('WC_SC_Purchase_Credit') ) {
      * @since 1.0.0
      * @version 5.0.0
      * @link https://woocommerce.com/products/smart-coupons/
-     * @package MeuMouse.com
+
+ * @author MeuMouse.com
      */
     class Smart_Coupons {
 

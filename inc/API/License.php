@@ -10,7 +10,8 @@ defined('ABSPATH') || exit;
  * 
  * @since 1.0.0
  * @version 5.2.0
- * @package MeuMouse.com
+
+ * @author MeuMouse.com
  */
 class License {
 

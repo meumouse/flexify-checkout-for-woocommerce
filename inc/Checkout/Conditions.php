@@ -10,7 +10,8 @@ defined('ABSPATH') || exit;
  *
  * @since 3.5.0
  * @version 5.2.0
- * @package MeuMouse.com
+ * @package MeuMouse\Flexify_Checkout\Checkout
+ * @author MeuMouse.com
  */
 class Conditions {
 

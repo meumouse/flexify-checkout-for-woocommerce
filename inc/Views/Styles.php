@@ -15,7 +15,8 @@ defined('ABSPATH') || exit;
  *
  * @since 5.0.0
  * @version 5.2.2
- * @package MeuMouse.com
+
+ * @author MeuMouse.com
  */
 class Styles {
 
@@ -135,24 +136,23 @@ class Styles {
 		// international phone is active
 		if ( Admin_Options::get_setting('enable_ddi_phone_field') === 'yes' ) : ?>
 			:root {
-				--fc-iti-path-flags-2x: url("<?php echo esc_url( self::$assets_url . 'vendor/intl-tel-input/img/flags@2x.webp' ) ?>");
+				--iti-path-flags-1x: url("<?php echo esc_url( self::$assets_url . 'vendor/intl-tel-input/img/flags.webp' ) ?>") !important;
+				--iti-path-flags-2x: url("<?php echo esc_url( self::$assets_url . 'vendor/intl-tel-input/img/flags@2x.webp' ) ?>") !important;
+				--iti-flag-width: 32px;
+				--iti-flag-height: 24px;
+				--iti-flag-sprite-width: 7808px;
+				--iti-flag-sprite-height: 24px;
 			}
 
-			button.iti__selected-country:hover {
+			.flexify-checkout .flexify-intl-phone .iti__selected-country:hover {
 				background-color: transparent !important;
 			}
 
-			.iti__flag {
-				background-image: var(--fc-iti-path-flags-2x) !important;
-				background-size: cover !important;
-				background-position: var(--iti-flag-offset) 0 !important;
-				height: 24px !important;
-				width: 32px !important;
+			.flexify-checkout .flexify-intl-phone .iti__flag {
 				border-radius: 0.225rem !important;
-				margin-left: 0.5rem;
 			}
 
-			.iti__flag-box {
+			.flexify-checkout .flexify-intl-phone .iti__flag-box {
 				margin-right: 1.525rem;
 			}
 
@@ -160,7 +160,7 @@ class Styles {
 				padding-left: 9rem !important;
 			}
 
-			ul.iti__country-list .iti__dial-code {
+			.flexify-checkout .flexify-intl-phone ul.iti__country-list .iti__dial-code {
 				margin-right: 1rem;
 			}
 		<?php endif;
@@ -417,3 +417,4 @@ class Styles {
 		printf( __('<style>%s</style>'), $css );
 	}
 }
+

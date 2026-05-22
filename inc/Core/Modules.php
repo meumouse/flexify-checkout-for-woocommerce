@@ -12,7 +12,8 @@ defined('ABSPATH') || exit;
  * 
  * @since 3.8.0
  * @version 5.3.3
- * @package MeuMouse.com
+
+ * @author MeuMouse.com
  */
 class Modules {
 

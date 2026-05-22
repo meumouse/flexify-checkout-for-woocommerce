@@ -13,7 +13,8 @@ if ( class_exists('Blocksy_Manager') ) {
 	 *
 	 * @since 1.0.0
 	 * @version 5.0.0
-	 * @package MeuMouse.com
+
+ * @author MeuMouse.com
 	 */
 	class Blocksy {
 

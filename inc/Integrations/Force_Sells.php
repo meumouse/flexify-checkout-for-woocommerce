@@ -11,7 +11,8 @@ if ( class_exists('WC_Force_Sells') ) {
      *
      * @since 1.0.0
      * @version 5.0.0
-     * @package MeuMouse.com
+
+ * @author MeuMouse.com
      */
     class Force_Sells {
 

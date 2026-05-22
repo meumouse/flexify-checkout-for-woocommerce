@@ -13,7 +13,8 @@ if ( Helpers::check_active_theme('North') ) {
      *
      * @since 1.0.0
      * @version 5.0.0
-     * @package MeuMouse.com
+
+ * @author MeuMouse.com
      */
     class North {
 

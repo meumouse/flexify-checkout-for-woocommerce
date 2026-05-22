@@ -11,7 +11,8 @@ if ( class_exists('WC_Gateway_Loja5_Woo_Novo_Erede') ) {
      *
      * @since 3.8.0
      * @version 5.0.0
-     * @package MeuMouse.coma
+
+ * @author MeuMouse.com
      */
     class Erede_Loja5 {
         

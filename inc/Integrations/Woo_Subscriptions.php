@@ -12,7 +12,8 @@ if ( class_exists('WC_Subscriptions') ) {
 	 * @since 1.0.0
 	 * @version 5.4.0
 	 * @link https://woocommerce.com/products/woocommerce-subscriptions/
-	 * @package MeuMouse.com
+
+ * @author MeuMouse.com
 	 */
 	class Woo_Subscriptions {
 		

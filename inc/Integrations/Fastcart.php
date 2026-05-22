@@ -11,7 +11,8 @@ if ( class_exists('Barn2\Plugin\WC_Fast_Cart\Plugin') ) {
 	 * 
 	 * @since 1.0.0
 	 * @version 5.0.0
-	 * @package MeuMouse.com
+
+ * @author MeuMouse.com
 	 */
 	class Fastcart {
 

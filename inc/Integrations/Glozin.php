@@ -15,7 +15,8 @@ if ( class_exists('\Glozin\WooCommerce\Checkout') ) {
      *
      * @since 5.3.4
      * @link https://wpglozin.com/
-     * @package MeuMouse.com
+
+ * @author MeuMouse.com
      */
     class Glozin {
 

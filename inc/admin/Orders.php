@@ -14,7 +14,8 @@ defined('ABSPATH') || exit;
  *
  * @since 1.0.0
  * @version 5.3.0
- * @package MeuMouse.com
+
+ * @author MeuMouse.com
  */
 class Orders {
 
@@ -383,6 +384,7 @@ class Orders {
 		}
 
 		$order->set_billing_phone( $billing_phone_formated );
+		$order->update_meta_data( 'billing_phone_full', $billing_phone_formated );
 
 		// save order
 		$order->save();
@@ -406,3 +408,4 @@ class Orders {
         }
     }
 }
+

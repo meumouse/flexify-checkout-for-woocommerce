@@ -11,7 +11,8 @@ defined('ABSPATH') || exit;
  * Settings handler: registers and renders admin settings tabs, title, description, notices.
  *
  * @since 5.0.0
- * @package MeuMouse.com
+
+ * @author MeuMouse.com
  */
 class Settings_Panel {
 

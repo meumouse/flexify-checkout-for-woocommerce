@@ -9,7 +9,8 @@ defined('ABSPATH') || exit;
  * Register common checkout actions and filters
  *
  * @since 5.0.0
- * @package MeuMouse.com
+ * @package MeuMouse\Flexify_Checkout\Checkout
+ * @author MeuMouse.com
  */
 class Common {
 

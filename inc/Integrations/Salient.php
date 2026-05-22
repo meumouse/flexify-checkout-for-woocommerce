@@ -11,7 +11,8 @@ if ( function_exists('nectar_get_theme_version') ) {
      *
      * @since 1.0.0
      * @version 5.0.0
-     * @package MeuMouse.com
+
+ * @author MeuMouse.com
      */
     class Salient {
 

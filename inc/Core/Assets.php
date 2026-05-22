@@ -19,8 +19,9 @@ defined('ABSPATH') || exit;
  * Register/enqueue frontend and backend scripts
  *
  * @since 1.0.0
- * @version 5.4.0
- * @package MeuMouse.com
+ * @version 5.5.0
+ * @package MeuMouse\Flexify_Checkout\Core
+ * @author MeuMouse.com
  */
 class Assets {
 
@@ -180,16 +181,6 @@ class Assets {
 		// Set script version to null to avoid version-based caching
 		$version = null;
 
-		// enable field masks
-		if ( Admin_Options::get_setting('enable_field_masks') === 'yes' && is_flexify_checkout() && License::is_valid() ) {
-			// try to prevent conflicts with Brazilian Market on WooCommerce plugin
-			if ( ! wp_script_is( 'jquery-mask', 'enqueued' ) ) {
-				wp_enqueue_script( 'jquery-mask-lib', $this->assets_url . 'vendor/jquery-mask/jquery.mask.min.js', array('jquery'), '1.14.16' );
-
-				$deps[] = 'jquery-mask-lib';
-			}
-		}
-
 		// process animation purchase
 		if ( Admin_Options::get_setting('enable_animation_process_purchase') === 'yes' ) {
 			wp_enqueue_script( 'lordicon-player', 'https://cdn.lordicon.com/lordicon.js', array() );
@@ -228,6 +219,9 @@ class Assets {
 				'coupon_success' => __( 'O cupom foi removido.', 'flexify-checkout-for-woocommerce' ),
 				'account_exists' => __( 'Uma conta já está registrada com este endereço de e-mail. Gostaria de entrar nela?', 'flexify-checkout-for-woocommerce' ),
 				'login_successful' => __( 'Bem vindo de volta!', 'flexify-checkout-for-woocommerce' ),
+				'lostpassword_success' => __( 'Se o e-mail informado estiver cadastrado, você receberá um link para redefinir sua senha.', 'flexify-checkout-for-woocommerce' ),
+				'lostpassword_invalid_email' => __( 'Por favor, insira um e-mail válido.', 'flexify-checkout-for-woocommerce' ),
+				'lostpassword_error' => __( 'Não foi possível enviar o e-mail de redefinição. Tente novamente.', 'flexify-checkout-for-woocommerce' ),
 				'error_occured' => __( 'Ocorreu um erro', 'flexify-checkout-for-woocommerce' ),
 				'phone' => array(
 					'invalid' => __( 'Por favor, insira um número de telefone válido.', 'flexify-checkout-for-woocommerce' ),

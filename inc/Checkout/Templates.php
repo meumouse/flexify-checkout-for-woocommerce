@@ -9,7 +9,8 @@ defined('ABSPATH') || exit;
  * Add and manipulate WooCommerce part templates
  *
  * @since 5.0.0
- * @package MeuMouse.com
+ * @package MeuMouse\Flexify_Checkout\Checkout
+ * @author MeuMouse.com
  */
 class Templates {
 

@@ -11,7 +11,8 @@ if ( class_exists('Astra_Woocommerce') ) {
 	 *
 	 * @since 1.0.0
 	 * @version 5.0.0
-	 * @package MeuMouse.com
+
+ * @author MeuMouse.com
 	 */
 	class Astra {
 

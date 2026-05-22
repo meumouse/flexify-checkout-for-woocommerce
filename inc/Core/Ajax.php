@@ -17,7 +17,8 @@ defined('ABSPATH') || exit;
  *
  * @since 1.0.0
  * @version 5.4.0
- * @package MeuMouse.com
+
+ * @author MeuMouse.com
  */
 class Ajax {
 
@@ -37,6 +38,7 @@ class Ajax {
 			'flexify_check_for_inline_error'        => array( __CLASS__, 'check_for_inline_error' ),
 			'flexify_check_for_inline_errors'       => array( __CLASS__, 'check_for_inline_errors' ),
 			'flexify_checkout_login'                => array( $this, 'checkout_login_callback' ),
+			'flexify_checkout_lostpassword'         => array( $this, 'checkout_lostpassword_callback' ),
 			'flexify_checkout_save_settings'        => array( $this, 'ajax_save_options_callback' ),
 			'remove_checkout_fields'                => array( $this, 'remove_checkout_fields_callback' ),
 			'add_new_field_to_checkout'             => array( $this, 'add_new_field_to_checkout_callback' ),
@@ -49,6 +51,8 @@ class Ajax {
 			'get_woo_attributes_ajax'               => array( $this, 'get_woo_attributes_callback' ),
 			'search_users_ajax'                     => array( $this, 'search_users_ajax_callback' ),
 			'add_new_checkout_condition'            => array( $this, 'add_new_checkout_condition_callback' ),
+			'get_checkout_condition_item'           => array( $this, 'get_checkout_condition_item_callback' ),
+			'update_checkout_condition_item'        => array( $this, 'update_checkout_condition_item_callback' ),
 			'exclude_condition_item'                => array( $this, 'exclude_condition_item_callback' ),
 			'add_new_email_provider'                => array( $this, 'add_new_email_provider_callback' ),
 			'remove_email_provider'                 => array( $this, 'remove_email_provider_callback' ),
@@ -72,6 +76,7 @@ class Ajax {
 			'flexify_check_for_inline_error',
 			'flexify_check_for_inline_errors',
 			'flexify_checkout_login',
+			'flexify_checkout_lostpassword',
 			'get_checkout_session_data',
 			'flexify_checkout_remove_product',
 			'flexify_checkout_undo_remove_product',
@@ -115,7 +120,7 @@ class Ajax {
 			$messages[$field_key] = Fields::render_inline_errors( $field_id, $field_key, $field_args, $field_value, $field_country );
 		}
 
-		$session_key = WC()->session->get('flexify_checkout_ship_different_address') === 'yes' ? 'shipping' : 'billing';
+		$session_key = Steps::get_review_address_prefix();
 
 		$messages['fragments'] = array(
 			'.flexify-review-customer' => Steps::render_customer_review(),
@@ -289,6 +294,10 @@ class Ajax {
 				$form_data['custom_js_checkout'] = trim( wp_unslash( $form_data['custom_js_checkout'] ) );
 			}
 
+			if ( isset( $form_data['tracking_integrations'] ) && is_array( $form_data['tracking_integrations'] ) ) {
+				$form_data['tracking_integrations'] = $this->sanitize_tracking_integrations_settings( $form_data['tracking_integrations'] );
+			}
+
 			// check if form data exists "checkout_step" name and is array
 			if ( isset( $form_data['checkout_step'] ) && is_array( $form_data['checkout_step'] ) ) {
 				$form_data_fields = $form_data['checkout_step'];
@@ -380,6 +389,65 @@ class Ajax {
 
 
 	/**
+	 * Sanitize tracking integrations settings.
+	 *
+	 * @since 5.5.0
+	 * @param array $input Raw form input.
+	 * @return array
+	 */
+	private function sanitize_tracking_integrations_settings( $input ) {
+		$is_pro = License::is_valid();
+		$default = array(
+			'enabled' => 'no',
+			'ga4' => array(
+				'enabled' => 'no',
+				'measurement_id' => '',
+				'api_secret' => '',
+			),
+			'google_ads' => array(
+				'enabled' => 'no',
+				'conversion_id' => '',
+				'conversion_label' => '',
+			),
+			'meta' => array(
+				'enabled' => 'no',
+				'pixel_id' => '',
+				'access_token' => '',
+				'test_event_code' => '',
+			),
+		);
+
+		if ( ! is_array( $input ) ) {
+			return $default;
+		}
+
+		$ga4 = isset( $input['ga4'] ) && is_array( $input['ga4'] ) ? $input['ga4'] : array();
+		$google_ads = isset( $input['google_ads'] ) && is_array( $input['google_ads'] ) ? $input['google_ads'] : array();
+		$meta = isset( $input['meta'] ) && is_array( $input['meta'] ) ? $input['meta'] : array();
+
+		return array(
+			'enabled' => ( isset( $input['enabled'] ) && $is_pro ) ? 'yes' : 'no',
+			'ga4' => array(
+				'enabled' => ( isset( $ga4['enabled'] ) && $is_pro ) ? 'yes' : 'no',
+				'measurement_id' => isset( $ga4['measurement_id'] ) ? sanitize_text_field( wp_unslash( $ga4['measurement_id'] ) ) : '',
+				'api_secret' => isset( $ga4['api_secret'] ) ? sanitize_text_field( wp_unslash( $ga4['api_secret'] ) ) : '',
+			),
+			'google_ads' => array(
+				'enabled' => ( isset( $google_ads['enabled'] ) && $is_pro ) ? 'yes' : 'no',
+				'conversion_id' => isset( $google_ads['conversion_id'] ) ? sanitize_text_field( wp_unslash( $google_ads['conversion_id'] ) ) : '',
+				'conversion_label' => isset( $google_ads['conversion_label'] ) ? sanitize_text_field( wp_unslash( $google_ads['conversion_label'] ) ) : '',
+			),
+			'meta' => array(
+				'enabled' => ( isset( $meta['enabled'] ) && $is_pro ) ? 'yes' : 'no',
+				'pixel_id' => isset( $meta['pixel_id'] ) ? sanitize_text_field( wp_unslash( $meta['pixel_id'] ) ) : '',
+				'access_token' => isset( $meta['access_token'] ) ? sanitize_text_field( wp_unslash( $meta['access_token'] ) ) : '',
+				'test_event_code' => isset( $meta['test_event_code'] ) ? sanitize_text_field( wp_unslash( $meta['test_event_code'] ) ) : '',
+			),
+		);
+	}
+
+
+	/**
 	 * Remove checkout fields
 	 * 
 	 * @since 3.2.0
@@ -397,6 +465,7 @@ class Ajax {
 		
 				// Update the fields options
 				$removed_field = update_option('flexify_checkout_step_fields', maybe_serialize( $get_fields ));
+				$removed_conditions = self::scrub_orphan_checkout_conditions( $field_to_remove );
 
 				if ( $removed_field ) {
 					$response = array(
@@ -404,6 +473,7 @@ class Ajax {
 						'toast_header_title' => esc_html__( 'Campo removido', 'flexify-checkout-for-woocommerce' ),
 						'toast_body_title' => esc_html__( 'O campo foi removido com sucesso!', 'flexify-checkout-for-woocommerce' ),
 						'field' => $field_to_remove,
+						'removed_conditions' => $removed_conditions,
 					);
 				} else {
 					$response = array(
@@ -416,6 +486,59 @@ class Ajax {
 				wp_send_json( $response ); // send response
 			}
 		}
+	}
+
+
+	/**
+	 * Remove orphan checkout conditions.
+	 *
+	 * @since 5.4.3
+	 * @param string $field_id Optional specific field id to scrub.
+	 * @return int Amount of removed condition rows.
+	 */
+	public static function scrub_orphan_checkout_conditions( $field_id = '' ) {
+		$conditions = get_option( 'flexify_checkout_conditions', array() );
+		$fields = maybe_unserialize( get_option( 'flexify_checkout_step_fields', array() ) );
+
+		if ( ! is_array( $conditions ) || empty( $conditions ) ) {
+			return 0;
+		}
+
+		if ( ! is_array( $fields ) ) {
+			$fields = array();
+		}
+
+		$existing_fields = array_keys( $fields );
+		$filtered_conditions = array();
+		$removed_count = 0;
+
+		foreach ( $conditions as $condition ) {
+			$component_field = isset( $condition['component_field'] ) ? $condition['component_field'] : '';
+			$verification_field = isset( $condition['verification_condition_field'] ) ? $condition['verification_condition_field'] : '';
+
+			if ( ! empty( $field_id ) && ( $component_field === $field_id || $verification_field === $field_id ) ) {
+				$removed_count++;
+				continue;
+			}
+
+			if ( ! empty( $component_field ) && ! in_array( $component_field, $existing_fields, true ) ) {
+				$removed_count++;
+				continue;
+			}
+
+			if ( ! empty( $verification_field ) && ! in_array( $verification_field, $existing_fields, true ) ) {
+				$removed_count++;
+				continue;
+			}
+
+			$filtered_conditions[] = $condition;
+		}
+
+		if ( $removed_count > 0 ) {
+			update_option( 'flexify_checkout_conditions', array_values( $filtered_conditions ) );
+		}
+
+		return $removed_count;
 	}
 
 
@@ -970,6 +1093,229 @@ class Ajax {
 
 
 	/**
+	 * Build sanitized payload for checkout conditions.
+	 *
+	 * @since 5.6.0
+	 * @return array
+	 */
+	private function build_condition_payload() {
+		$form_condition = array(
+			'type_rule' => isset( $_POST['type_rule'] ) ? sanitize_text_field( wp_unslash( $_POST['type_rule'] ) ) : null,
+			'component' => isset( $_POST['component'] ) ? sanitize_text_field( wp_unslash( $_POST['component'] ) ) : null,
+			'component_field' => isset( $_POST['component_field'] ) ? sanitize_text_field( wp_unslash( $_POST['component_field'] ) ) : null,
+			'verification_condition' => isset( $_POST['verification_condition'] ) ? sanitize_text_field( wp_unslash( $_POST['verification_condition'] ) ) : null,
+			'verification_condition_field' => isset( $_POST['verification_condition_field'] ) ? sanitize_text_field( wp_unslash( $_POST['verification_condition_field'] ) ) : null,
+			'condition' => isset( $_POST['condition'] ) ? sanitize_text_field( wp_unslash( $_POST['condition'] ) ) : null,
+			'condition_value' => isset( $_POST['condition_value'] ) ? sanitize_text_field( wp_unslash( $_POST['condition_value'] ) ) : null,
+			'payment_method' => isset( $_POST['payment_method'] ) ? sanitize_text_field( wp_unslash( $_POST['payment_method'] ) ) : null,
+			'shipping_method' => isset( $_POST['shipping_method'] ) ? sanitize_text_field( wp_unslash( $_POST['shipping_method'] ) ) : null,
+			'filter_user' => isset( $_POST['filter_user'] ) ? sanitize_text_field( wp_unslash( $_POST['filter_user'] ) ) : null,
+			'specific_user' => isset( $_POST['specific_user'] ) ? wp_unslash( $_POST['specific_user'] ) : null,
+			'specific_role' => isset( $_POST['specific_role'] ) ? sanitize_text_field( wp_unslash( $_POST['specific_role'] ) ) : null,
+			'specific_products' => isset( $_POST['specific_products'] ) ? wp_unslash( $_POST['specific_products'] ) : null,
+			'specific_categories' => isset( $_POST['specific_categories'] ) ? wp_unslash( $_POST['specific_categories'] ) : null,
+			'specific_attributes' => isset( $_POST['specific_attributes'] ) ? wp_unslash( $_POST['specific_attributes'] ) : null,
+			'product_filter' => isset( $_POST['product_filter'] ) ? sanitize_text_field( wp_unslash( $_POST['product_filter'] ) ) : null,
+		);
+
+		return array_filter( $form_condition, function( $value ) {
+			return ! is_null( $value );
+		} );
+	}
+
+
+	/**
+	 * Build summary lines for condition list display.
+	 *
+	 * @since 5.6.0
+	 * @param array $form_condition
+	 * @return array
+	 */
+	private function build_condition_summary( $form_condition ) {
+		$get_fields = Helpers::get_checkout_fields_on_admin();
+		$condition_type = array(
+			'show' => esc_html__( 'Mostrar', 'flexify-checkout-for-woocommerce' ),
+			'hide' => esc_html__( 'Ocultar', 'flexify-checkout-for-woocommerce' ),
+		);
+
+		$component_type_label = '';
+
+		if ( isset( $form_condition['component'] ) && 'field' === $form_condition['component'] ) {
+			$field_id = isset( $form_condition['component_field'] ) ? $form_condition['component_field'] : '';
+			$field_label = isset( $get_fields['billing'][ $field_id ]['label'] ) ? $get_fields['billing'][ $field_id ]['label'] : $field_id;
+			$component_type_label = sprintf( esc_html__( 'Campo: %s', 'flexify-checkout-for-woocommerce' ), $field_label );
+		} elseif ( isset( $form_condition['component'] ) && 'shipping' === $form_condition['component'] ) {
+			$shipping_id = isset( $form_condition['shipping_method'] ) ? $form_condition['shipping_method'] : '';
+			$shipping_methods = WC()->shipping->get_shipping_methods();
+			$shipping_title = isset( $shipping_methods[ $shipping_id ] ) ? $shipping_methods[ $shipping_id ]->method_title : $shipping_id;
+			$component_type_label = sprintf( esc_html__( 'Forma de entrega: %s', 'flexify-checkout-for-woocommerce' ), $shipping_title );
+		} elseif ( isset( $form_condition['component'] ) && 'payment' === $form_condition['component'] ) {
+			$payment_id = isset( $form_condition['payment_method'] ) ? $form_condition['payment_method'] : '';
+			$payment_methods = WC()->payment_gateways->payment_gateways();
+			$payment_title = isset( $payment_methods[ $payment_id ] ) ? $payment_methods[ $payment_id ]->method_title : $payment_id;
+			$component_type_label = sprintf( esc_html__( 'Forma de pagamento: %s', 'flexify-checkout-for-woocommerce' ), $payment_title );
+		}
+
+		$component_verification_label = '';
+
+		if ( isset( $form_condition['verification_condition'] ) && 'field' === $form_condition['verification_condition'] ) {
+			$field_id = isset( $form_condition['verification_condition_field'] ) ? $form_condition['verification_condition_field'] : '';
+			$field_label = isset( $get_fields['billing'][ $field_id ]['label'] ) ? $get_fields['billing'][ $field_id ]['label'] : $field_id;
+			$component_verification_label = sprintf( esc_html__( 'Campo %s', 'flexify-checkout-for-woocommerce' ), $field_label );
+		} elseif ( isset( $form_condition['verification_condition'] ) && 'qtd_cart_total' === $form_condition['verification_condition'] ) {
+			$component_verification_label = esc_html__( 'Quantidade total do carrinho', 'flexify-checkout-for-woocommerce' );
+		} elseif ( isset( $form_condition['verification_condition'] ) && 'cart_total_value' === $form_condition['verification_condition'] ) {
+			$component_verification_label = esc_html__( 'Valor total do carrinho', 'flexify-checkout-for-woocommerce' );
+		}
+
+		$condition_labels = array(
+			'is' => esc_html__( 'É', 'flexify-checkout-for-woocommerce' ),
+			'is_not' => esc_html__( 'Não é', 'flexify-checkout-for-woocommerce' ),
+			'empty' => esc_html__( 'Vazio', 'flexify-checkout-for-woocommerce' ),
+			'not_empty' => esc_html__( 'Não está vazio', 'flexify-checkout-for-woocommerce' ),
+			'contains' => esc_html__( 'Contém', 'flexify-checkout-for-woocommerce' ),
+			'not_contain' => esc_html__( 'Não contém', 'flexify-checkout-for-woocommerce' ),
+			'start_with' => esc_html__( 'Começa com', 'flexify-checkout-for-woocommerce' ),
+			'finish_with' => esc_html__( 'Termina com', 'flexify-checkout-for-woocommerce' ),
+			'bigger_then' => esc_html__( 'Maior que', 'flexify-checkout-for-woocommerce' ),
+			'less_than' => esc_html__( 'Menor que', 'flexify-checkout-for-woocommerce' ),
+			'checked' => esc_html__( 'Marcado', 'flexify-checkout-for-woocommerce' ),
+			'not_checked' => esc_html__( 'Desmarcado', 'flexify-checkout-for-woocommerce' ),
+		);
+
+		$condition_value = isset( $form_condition['condition_value'] ) ? $form_condition['condition_value'] : '';
+		$condition_key = isset( $form_condition['condition'] ) ? $form_condition['condition'] : '';
+		$condition_label = isset( $condition_labels[ $condition_key ] ) ? mb_strtolower( $condition_labels[ $condition_key ] ) : '';
+		$type_key = isset( $form_condition['type_rule'] ) ? $form_condition['type_rule'] : '';
+		$type_label = isset( $condition_type[ $type_key ] ) ? $condition_type[ $type_key ] : '';
+
+		return array(
+			'condition_line_1' => sprintf( esc_html__( 'Condição: %s %s', 'flexify-checkout-for-woocommerce' ), $type_label, $component_type_label ),
+			'condition_line_2' => sprintf( esc_html__( 'Se: %s %s %s', 'flexify-checkout-for-woocommerce' ), $component_verification_label, $condition_label, $condition_value ),
+		);
+	}
+
+
+	/**
+	 * Parse stored list value to scalar array.
+	 *
+	 * @since 5.6.0
+	 * @param mixed $value
+	 * @return array
+	 */
+	private function parse_condition_list( $value ) {
+		if ( is_array( $value ) ) {
+			return array_values( array_filter( $value, function( $item ) {
+				return '' !== (string) $item;
+			} ) );
+		}
+
+		if ( ! is_string( $value ) || '' === trim( $value ) ) {
+			return array();
+		}
+
+		$decoded = json_decode( $value, true );
+
+		if ( is_array( $decoded ) ) {
+			return array_values( array_filter( $decoded, function( $item ) {
+				return '' !== (string) $item;
+			} ) );
+		}
+
+		if ( false !== strpos( $value, ',' ) ) {
+			return array_values( array_filter( array_map( 'trim', explode( ',', $value ) ) ) );
+		}
+
+		if ( is_numeric( $value ) ) {
+			return array( $value );
+		}
+
+		return array();
+	}
+
+
+	/**
+	 * Build selected items metadata for edit prefill.
+	 *
+	 * @since 5.6.0
+	 * @param array $condition
+	 * @return array
+	 */
+	private function build_condition_selected_items( $condition ) {
+		$selected_items = array(
+			'specific_products' => array(),
+			'specific_categories' => array(),
+			'specific_attributes' => array(),
+			'specific_users' => array(),
+		);
+
+		$product_ids = array_map( 'absint', $this->parse_condition_list( isset( $condition['specific_products'] ) ? $condition['specific_products'] : array() ) );
+		$category_ids = array_map( 'absint', $this->parse_condition_list( isset( $condition['specific_categories'] ) ? $condition['specific_categories'] : array() ) );
+		$attribute_ids = array_map( 'absint', $this->parse_condition_list( isset( $condition['specific_attributes'] ) ? $condition['specific_attributes'] : array() ) );
+		$user_ids = array_map( 'absint', $this->parse_condition_list( isset( $condition['specific_user'] ) ? $condition['specific_user'] : array() ) );
+
+		if ( ! empty( $product_ids ) ) {
+			$products = get_posts( array(
+				'post_type' => 'product',
+				'post_status' => 'publish',
+				'posts_per_page' => -1,
+				'post__in' => $product_ids,
+				'orderby' => 'post__in',
+			) );
+
+			foreach ( $products as $product ) {
+				$selected_items['specific_products'][] = array(
+					'id' => (int) $product->ID,
+					'label' => $product->post_title,
+				);
+			}
+		}
+
+		if ( ! empty( $category_ids ) ) {
+			foreach ( $category_ids as $term_id ) {
+				$term = get_term( $term_id, 'product_cat' );
+
+				if ( $term && ! is_wp_error( $term ) ) {
+					$selected_items['specific_categories'][] = array(
+						'id' => (int) $term->term_id,
+						'label' => $term->name,
+					);
+				}
+			}
+		}
+
+		if ( ! empty( $attribute_ids ) ) {
+			foreach ( $attribute_ids as $term_id ) {
+				$term = get_term( $term_id );
+
+				if ( $term && ! is_wp_error( $term ) ) {
+					$selected_items['specific_attributes'][] = array(
+						'id' => (int) $term->term_id,
+						'label' => $term->name,
+					);
+				}
+			}
+		}
+
+		if ( ! empty( $user_ids ) ) {
+			$users = get_users( array(
+				'include' => $user_ids,
+				'orderby' => 'include',
+			) );
+
+			foreach ( $users as $user ) {
+				$selected_items['specific_users'][] = array(
+					'id' => (int) $user->ID,
+					'label' => $user->display_name,
+				);
+			}
+		}
+
+		return $selected_items;
+	}
+
+
+	/**
 	 * Add new condition AJAX callback
 	 * 
 	 * @since 3.5.0
@@ -978,29 +1324,7 @@ class Ajax {
 	 */
 	public function add_new_checkout_condition_callback() {
 		if ( isset( $_POST['type_rule'] ) && $_POST['type_rule'] !== 'none' ) {
-			$form_condition = array(
-				'type_rule' => isset( $_POST['type_rule'] ) ? sanitize_text_field( $_POST['type_rule'] ) : null,
-				'component' => isset( $_POST['component'] ) ? sanitize_text_field( $_POST['component'] ) : null,
-				'component_field' => isset( $_POST['component_field'] ) ? sanitize_text_field( $_POST['component_field'] ) : null,
-				'verification_condition' => isset( $_POST['verification_condition'] ) ? sanitize_text_field( $_POST['verification_condition'] ) : null,
-				'verification_condition_field' => isset( $_POST['verification_condition_field'] ) ? sanitize_text_field( $_POST['verification_condition_field'] ) : null,
-				'condition' => isset( $_POST['condition'] ) ? sanitize_text_field( $_POST['condition'] ) : null,
-				'condition_value' => isset( $_POST['condition_value'] ) ? sanitize_text_field( $_POST['condition_value'] ) : null,
-				'payment_method' => isset( $_POST['payment_method'] ) ? sanitize_text_field( $_POST['payment_method'] ) : null,
-				'shipping_method' => isset( $_POST['shipping_method'] ) ? sanitize_text_field( $_POST['shipping_method'] ) : null,
-				'filter_user' => isset( $_POST['filter_user'] ) ? sanitize_text_field( $_POST['filter_user'] ) : null,
-				'specific_user' => isset( $_POST['filter_user'] ) ? $_POST['filter_user'] : null,
-				'specific_role' => isset( $_POST['specific_role'] ) ? sanitize_text_field( $_POST['specific_role'] ) : null,
-				'specific_products' => isset( $_POST['specific_products'] ) ? $_POST['specific_products'] : null,
-				'specific_categories' => isset( $_POST['specific_categories'] ) ? $_POST['specific_categories'] : null,
-				'specific_attributes' => isset( $_POST['specific_attributes'] ) ? $_POST['specific_attributes'] : null,
-				'product_filter' => isset( $_POST['product_filter'] ) ? sanitize_text_field( $_POST['product_filter'] ) : null,
-			);
-
-			// remove null values
-			$form_condition = array_filter( $form_condition, function( $value ) {
-				return ! is_null( $value );
-			});
+			$form_condition = $this->build_condition_payload();
 
 			// get current conditions
 			$current_conditions = get_option('flexify_checkout_conditions', array());
@@ -1014,65 +1338,24 @@ class Ajax {
 
 			// merge new condition with existing
 			$current_conditions[] = $form_condition;
+			end( $current_conditions );
+			$condition_index = key( $current_conditions );
+			reset( $current_conditions );
 
 			// Update conditions
 			$update_conditions = update_option( 'flexify_checkout_conditions', $current_conditions );
 
 			// check if successfully updated
 			if ( $update_conditions ) {
-				$get_fields = Helpers::get_checkout_fields_on_admin();
-				$condition_type = array(
-					'show' => esc_html__( 'Mostrar', 'flexify-checkout-for-woocommerce' ),
-					'hide' => esc_html__( 'Ocultar', 'flexify-checkout-for-woocommerce' ),
-				);
-
-				$component_type_label = '';
-
-				if ( $form_condition['component'] === 'field' ) {
-					$field_id = $form_condition['component_field'];
-					$component_type_label = sprintf( esc_html__( 'Campo %s', 'flexify-checkout-for-woocommerce' ), $get_fields['billing'][$field_id]['label'] );
-				} elseif ( $form_condition['component'] === 'shipping' ) {
-					$shipping_id = $form_condition['shipping_method'];
-					$component_type_label = sprintf( esc_html__( 'Forma de entrega %s', 'flexify-checkout-for-woocommerce' ), WC()->shipping->get_shipping_methods()[$shipping_id]->method_title );
-				} elseif ( $form_condition['component'] === 'payment' ) {
-					$payment_id = $form_condition['payment_method'];
-					$component_type_label = sprintf( esc_html__( 'Forma de pagamento %s', 'flexify-checkout-for-woocommerce' ), WC()->payment_gateways->payment_gateways()[$payment_id]->method_title );
-				}
-
-				$component_verification_label = '';
-
-				if ( $form_condition['verification_condition'] === 'field' ) {
-					$field_id = $form_condition['verification_condition_field'];
-					$component_verification_label = sprintf( esc_html__( 'Campo %s', 'flexify-checkout-for-woocommerce' ), $get_fields['billing'][$field_id]['label'] );
-				} elseif ( $form_condition['verification_condition'] === 'qtd_cart_total' ) {
-					$component_verification_label = esc_html__( 'Quantidade total do carrinho', 'flexify-checkout-for-woocommerce' );
-				} elseif ( $form_condition['verification_condition'] === 'cart_total_value' ) {
-					$component_verification_label = esc_html__( 'Valor total do carrinho', 'flexify-checkout-for-woocommerce' );
-				}
-
-				$condition = array(
-					'is' => esc_html__( 'É', 'flexify-checkout-for-woocommerce' ),
-					'is_not' => esc_html__( 'Não é', 'flexify-checkout-for-woocommerce' ),
-					'empty' => esc_html__( 'Vazio', 'flexify-checkout-for-woocommerce' ),
-					'not_empty' => esc_html__( 'Não está vazio', 'flexify-checkout-for-woocommerce' ),
-					'contains' => esc_html__( 'Contém', 'flexify-checkout-for-woocommerce' ),
-					'not_contain' => esc_html__( 'Não contém', 'flexify-checkout-for-woocommerce' ),
-					'start_with' => esc_html__( 'Começa com', 'flexify-checkout-for-woocommerce' ),
-					'finish_with' => esc_html__( 'Termina com', 'flexify-checkout-for-woocommerce' ),
-					'bigger_then' => esc_html__( 'Maior que', 'flexify-checkout-for-woocommerce' ),
-					'less_than' => esc_html__( 'Menor que', 'flexify-checkout-for-woocommerce' ),
-					'checked' => esc_html__( 'Marcado', 'flexify-checkout-for-woocommerce' ),
-					'not_checked' => esc_html__( 'Desmarcado', 'flexify-checkout-for-woocommerce' ),
-				);
-				
-				$condition_value = isset( $form_condition['condition_value'] ) ? $form_condition['condition_value'] : '';
+				$summary = $this->build_condition_summary( $form_condition );
 
 				$response = array(
 					'status' => 'success',
 					'toast_header_title' => esc_html( 'Nova condição adicionada', 'flexify-checkout-for-woocommerce' ),
 					'toast_body_title' => esc_html( 'Condição criada com sucesso!', 'flexify-checkout-for-woocommerce' ),
-					'condition_line_1' => sprintf( esc_html__( 'Condição: %s %s', 'flexify-checkout-for-woocommerce' ), $condition_type[$form_condition['type_rule']], $component_type_label ),
-					'condition_line_2' => sprintf( esc_html__( 'Se: %s %s %s', 'flexify-checkout-for-woocommerce' ), $component_verification_label, mb_strtolower( $condition[$form_condition['condition']] ), $condition_value ),
+					'condition_index' => $condition_index,
+					'condition_line_1' => $summary['condition_line_1'],
+					'condition_line_2' => $summary['condition_line_2'],
 				);
 
 				if ( $empty_conditions ) {
@@ -1090,6 +1373,146 @@ class Ajax {
 			// send response
 			wp_send_json( $response );
 		}
+	}
+
+
+	/**
+	 * Handle lost password request from checkout login modal.
+	 *
+	 * @since 5.5.0
+	 * @return void
+	 */
+	public function checkout_lostpassword_callback() {
+		$nonce = isset( $_POST['security'] ) ? sanitize_text_field( wp_unslash( $_POST['security'] ) ) : '';
+
+		if ( ! wp_verify_nonce( $nonce, 'flexify-checkout-lostpassword' ) ) {
+			wp_send_json_error( array(
+				'error' => __( 'Sua sessao expirou. Recarregue a pagina e tente novamente.', 'flexify-checkout-for-woocommerce' ),
+			) );
+		}
+
+		$user_login = isset( $_POST['user_login'] ) ? sanitize_text_field( wp_unslash( $_POST['user_login'] ) ) : '';
+
+		if ( empty( $user_login ) || ! is_email( $user_login ) ) {
+			wp_send_json_error( array(
+				'error' => __( 'Por favor, insira um e-mail valido.', 'flexify-checkout-for-woocommerce' ),
+			) );
+		}
+
+		$_POST['user_login'] = $user_login;
+		$recover_password = retrieve_password();
+
+		if ( is_wp_error( $recover_password ) ) {
+			$error_codes = $recover_password->get_error_codes();
+
+			// Keep a generic success response to prevent user enumeration.
+			if ( in_array( 'invalidcombo', $error_codes, true ) ) {
+				wp_send_json_success();
+			}
+
+			wp_send_json_error( array(
+				'error' => __( 'Nao foi possivel enviar o e-mail de redefinição. Tente novamente.', 'flexify-checkout-for-woocommerce' ),
+			) );
+		}
+
+		wp_send_json_success();
+	}
+
+
+	/**
+	 * Get one condition item for edit mode.
+	 *
+	 * @since 5.6.0
+	 * @return void
+	 */
+	public function get_checkout_condition_item_callback() {
+		if ( ! isset( $_POST['condition_index'] ) ) {
+			wp_send_json( array(
+				'status' => 'error',
+				'toast_header_title' => esc_html__( 'Erro ao editar', 'flexify-checkout-for-woocommerce' ),
+				'toast_body_title' => esc_html__( 'Condição inválida.', 'flexify-checkout-for-woocommerce' ),
+			) );
+		}
+
+		$condition_index = sanitize_text_field( wp_unslash( $_POST['condition_index'] ) );
+		$conditions = get_option( 'flexify_checkout_conditions', array() );
+
+		if ( ! isset( $conditions[ $condition_index ] ) || ! is_array( $conditions[ $condition_index ] ) ) {
+			wp_send_json( array(
+				'status' => 'error',
+				'toast_header_title' => esc_html__( 'Erro ao editar', 'flexify-checkout-for-woocommerce' ),
+				'toast_body_title' => esc_html__( 'Condição não encontrada.', 'flexify-checkout-for-woocommerce' ),
+			) );
+		}
+
+		wp_send_json( array(
+			'status' => 'success',
+			'condition_index' => $condition_index,
+			'condition' => $conditions[ $condition_index ],
+			'selected_items' => $this->build_condition_selected_items( $conditions[ $condition_index ] ),
+		) );
+	}
+
+
+	/**
+	 * Update one condition item.
+	 *
+	 * @since 5.6.0
+	 * @return void
+	 */
+	public function update_checkout_condition_item_callback() {
+		if ( ! isset( $_POST['condition_index'] ) ) {
+			wp_send_json( array(
+				'status' => 'error',
+				'toast_header_title' => esc_html__( 'Erro ao atualizar', 'flexify-checkout-for-woocommerce' ),
+				'toast_body_title' => esc_html__( 'Condição inválida.', 'flexify-checkout-for-woocommerce' ),
+			) );
+		}
+
+		$condition_index = sanitize_text_field( wp_unslash( $_POST['condition_index'] ) );
+		$current_conditions = get_option( 'flexify_checkout_conditions', array() );
+
+		if ( ! isset( $current_conditions[ $condition_index ] ) ) {
+			wp_send_json( array(
+				'status' => 'error',
+				'toast_header_title' => esc_html__( 'Erro ao atualizar', 'flexify-checkout-for-woocommerce' ),
+				'toast_body_title' => esc_html__( 'Condição não encontrada.', 'flexify-checkout-for-woocommerce' ),
+			) );
+		}
+
+		$form_condition = $this->build_condition_payload();
+
+		if ( empty( $form_condition ) || ( isset( $form_condition['type_rule'] ) && 'none' === $form_condition['type_rule'] ) ) {
+			wp_send_json( array(
+				'status' => 'error',
+				'toast_header_title' => esc_html__( 'Erro ao atualizar', 'flexify-checkout-for-woocommerce' ),
+				'toast_body_title' => esc_html__( 'Dados da condição inválidos.', 'flexify-checkout-for-woocommerce' ),
+			) );
+		}
+
+		$existing_condition = $current_conditions[ $condition_index ];
+		$current_conditions[ $condition_index ] = $form_condition;
+		$update_conditions = update_option( 'flexify_checkout_conditions', $current_conditions );
+		$is_equal = $existing_condition === $form_condition;
+
+		if ( $update_conditions || $is_equal ) {
+			$summary = $this->build_condition_summary( $form_condition );
+
+			wp_send_json( array(
+				'status' => 'success',
+				'toast_header_title' => esc_html__( 'Condição atualizada', 'flexify-checkout-for-woocommerce' ),
+				'toast_body_title' => esc_html__( 'Condição atualizada com sucesso!', 'flexify-checkout-for-woocommerce' ),
+				'condition_index' => $condition_index,
+				'condition_line_1' => $summary['condition_line_1'],
+				'condition_line_2' => $summary['condition_line_2'],
+			) );
+		}
+
+		wp_send_json( array(
+			'status' => 'error',
+			'toast_header_title' => esc_html__( 'Erro ao atualizar', 'flexify-checkout-for-woocommerce' ),
+			'toast_body_title' => esc_html__( 'Ops! Não foi possível atualizar a condição.', 'flexify-checkout-for-woocommerce' ),
+		) );
 	}
 
 
@@ -1460,7 +1883,10 @@ class Ajax {
 			// Receive data from POST fields
 			$fields_data = isset( $_POST['fields_data'] ) ? json_decode( stripslashes( $_POST['fields_data'] ), true ) : array();
 			$ship_to_different_address = isset( $_POST['ship_to_different_address'] ) ? sanitize_text_field( $_POST['ship_to_different_address'] ) : '';
-			$session_data = array();
+			$selected_shipping_method = isset( $_POST['selected_shipping_method'] ) ? sanitize_text_field( $_POST['selected_shipping_method'] ) : '';
+			$selected_shipping_method_label = isset( $_POST['selected_shipping_method_label'] ) ? sanitize_text_field( $_POST['selected_shipping_method_label'] ) : '';
+			$session_data = WC()->session->get( 'flexify_checkout_customer_fields' );
+			$session_data = is_array( $session_data ) ? $session_data : array();
 		
 			foreach ( $fields_data as $field ) {
 				// Add field and value to array if they exist and are not empty
@@ -1473,6 +1899,14 @@ class Ajax {
 
 			WC()->session->set( 'flexify_checkout_customer_fields', $session_data );
 			WC()->session->set( 'flexify_checkout_ship_different_address', $ship_to_different_address );
+
+			if ( ! empty( $selected_shipping_method ) ) {
+				WC()->session->set( 'flexify_checkout_selected_shipping_method', $selected_shipping_method );
+			}
+
+			if ( ! empty( $selected_shipping_method_label ) ) {
+				WC()->session->set( 'flexify_checkout_selected_shipping_method_label', $selected_shipping_method_label );
+			}
 
 			wp_send_json_success( $session_data );
 		}
@@ -1929,3 +2363,4 @@ class Ajax {
 		}
 	}
 }
+

@@ -9,7 +9,8 @@ defined('ABSPATH') || exit;
  * Class for register country codes on format ISO 3166
  *
  * @since 5.0.0
- * @package MeuMouse.com
+
+ * @author MeuMouse.com
  */
 class ISO3166 {
 

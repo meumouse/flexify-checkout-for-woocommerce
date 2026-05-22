@@ -9,7 +9,9 @@ defined('ABSPATH') || exit;
  * Add and manipulate WooCommerce part templates
  *
  * @since 5.0.0
- * @package MeuMouse.com
+ * @version 5.5.0
+ * @package MeuMouse\Flexify_Checkout\Checkout
+ * @author MeuMouse.com
  */
 class Login {
 
@@ -22,6 +24,9 @@ class Login {
     public function __construct() {
         // add body class
         add_action( 'body_class', array( $this, 'update_body_class' ) );
+
+        // prevent WooCommerce login reminder notice on top of checkout.
+        add_action( 'woocommerce_before_checkout_form', array( $this, 'remove_checkout_login_notice' ), 1 );
 
         // force load form login template
 		add_action( 'flexify_checkout_before_layout', array( $this, 'load_form_login_template' ) );
@@ -71,5 +76,23 @@ class Login {
 
 			do_action('flexify_checkout_form_login_loaded'); // set loaded template
 		}
+	}
+
+
+	/**
+	 * Remove default WooCommerce checkout login notice.
+	 *
+	 * Flexify already provides its own login trigger/modal, so the native
+	 * notice causes a brief flash at the top before JS cleanup.
+	 *
+	 * @since 5.5.0
+	 * @return void
+	 */
+	public function remove_checkout_login_notice() {
+		if ( ! is_flexify_template() ) {
+			return;
+		}
+
+		remove_action( 'woocommerce_before_checkout_form', 'woocommerce_checkout_login_form', 10 );
 	}
 }

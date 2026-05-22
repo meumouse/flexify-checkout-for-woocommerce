@@ -9,7 +9,8 @@ defined( 'ABSPATH' ) || exit;
  * Handles legacy hooks for backward compatibility
  *
  * @since 5.0.0
- * @package MeuMouse.com
+
+ * @author MeuMouse.com
  */
 class Legacy_Hooks {
 
@@ -121,7 +122,7 @@ class Legacy_Hooks {
 		}
 
 		if ( defined('WP_DEBUG_LOG') && WP_DEBUG_LOG ) {
-			error_log( "[FLEXIFY CHECKOUT] Obsolet hook detected: {$old_hook} → {$new_hook} (since version {$version})" );
+			error_log( "[FLEXIFY CHECKOUT] Obsolet hook detected: {$old_hook} â†’ {$new_hook} (since version {$version})" );
 		}
 	}
 
