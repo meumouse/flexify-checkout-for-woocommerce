@@ -506,6 +506,53 @@
 				}
 
 				const field_masks = params.get_input_masks || {};
+				const token_map = {
+					'0': /\d/,
+					'9': /\d/,
+					'A': /[a-zA-Z0-9]/,
+					'S': /[a-zA-Z]/,
+				};
+
+				const applyMaskPattern = function(rawValue, maskPattern) {
+					if ( ! maskPattern || typeof rawValue !== 'string' ) {
+						return rawValue || '';
+					}
+
+					const alnum = rawValue.replace(/[^a-zA-Z0-9]/g, '');
+					let masked = '';
+					let value_index = 0;
+					let i = 0;
+
+					while ( i < maskPattern.length && value_index < alnum.length ) {
+						const mask_char = maskPattern.charAt(i);
+						const matcher = token_map[mask_char];
+
+						if ( matcher ) {
+							let found = false;
+
+							while ( value_index < alnum.length ) {
+								const candidate = alnum.charAt(value_index);
+								value_index++;
+
+								if ( matcher.test(candidate) ) {
+									masked += candidate;
+									found = true;
+									break;
+								}
+							}
+
+							if ( ! found ) {
+								break;
+							}
+						} else {
+							masked += mask_char;
+						}
+
+						i++;
+					}
+
+					return masked;
+				};
 
 				/**
 				 * Loop through each field mask and apply it
@@ -523,27 +570,32 @@
 						return;
 					}
 
-					// Skip if already masked
-					if ( $field.data('mask-applied') ) {
+					// Prevent conflict with intl-tel-input
+					if ( params.international_phone === 'yes' && id === 'billing_phone' ) {
 						return;
 					}
 
-					// Remove any previous mask
-					if ( typeof $field.unmask === 'function' ) {
-						$field.unmask();
+					const field = $field.get(0);
+
+					if ( ! field ) {
+						return;
 					}
 
-					// Apply mask and mark as applied
-					if ( typeof $field.mask === 'function' ) {
-						$field.mask(maskPattern);
-						$field.data('mask-applied', true);
+					if ( field.dataset.flexifyMaskApplied === 'yes' ) {
+						field.value = applyMaskPattern(field.value || '', maskPattern);
+						return;
 					}
 
-					// Prevent conflict with intl-tel-input
-					if ( params.international_phone === 'yes' && id === 'billing_phone' ) {
-						$field.unmask();
-						$field.removeData('mask-applied');
-					}
+					field.dataset.flexifyMaskApplied = 'yes';
+					field.dataset.flexifyMaskPattern = maskPattern;
+					field.value = applyMaskPattern(field.value || '', maskPattern);
+
+					const onMaskInput = function() {
+						field.value = applyMaskPattern(field.value || '', field.dataset.flexifyMaskPattern || '');
+					};
+
+					field.addEventListener('input', onMaskInput);
+					field.addEventListener('blur', onMaskInput);
 				});
 			},
 
@@ -1118,6 +1170,7 @@
                     }
 
 					Flexify_Checkout.Shippings.selectShippingMethod();
+					Flexify_Checkout.Validations.addMaskOnFields();
 					Flexify_Checkout.Helpers.removeDomElements();
 					Flexify_Checkout.Sidebar.init();
 					Flexify_Checkout.Sidebar.updateSidebarTotal();
