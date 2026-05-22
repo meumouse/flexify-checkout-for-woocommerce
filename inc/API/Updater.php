@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace MeuMouse\Flexify_Checkout\API;
 
@@ -18,7 +18,8 @@ defined('ABSPATH') || exit;
  *
  * @since 1.0.0
  * @version 5.3.2
- * @package MeuMouse.com
+
+ * @author MeuMouse.com
  */
 class Updater {
 
@@ -223,7 +224,7 @@ class Updater {
     
                 // if the current version is lower than that of the remote server
                 if ( version_compare( $current_version, $latest_version, '<' )) {
-                    $message = __('Uma nova versão do plugin <strong>Flexify Checkout</strong> está disponível.', 'flexify-checkout-for-woocommerce');
+                    $message = __('Uma nova versÃ£o do plugin <strong>Flexify Checkout</strong> estÃ¡ disponÃ­vel.', 'flexify-checkout-for-woocommerce');
                     $class = 'notice is-dismissible notice-success';
     
                     // Display notice
@@ -237,14 +238,14 @@ class Updater {
                     </script>
                     <?php
                 } elseif ( version_compare( $current_version, $latest_version, '>=' ) ) {
-                    $message = __('A versão do plugin <strong>Flexify Checkout</strong> é a mais recente.', 'flexify-checkout-for-woocommerce');
+                    $message = __('A versÃ£o do plugin <strong>Flexify Checkout</strong> Ã© a mais recente.', 'flexify-checkout-for-woocommerce');
                     $class = 'notice is-dismissible notice-success';
     
                     // Display notice
                     printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), $message );
                 }
             } else {
-                $message = __('Não foi possível verificar atualizações para o plugin <strong>Flexify Checkout.</strong>', 'flexify-checkout-for-woocommerce');
+                $message = __('NÃ£o foi possÃ­vel verificar atualizaÃ§Ãµes para o plugin <strong>Flexify Checkout.</strong>', 'flexify-checkout-for-woocommerce');
                 $class = 'notice is-dismissible notice-error';
     
                 // Display notice
@@ -277,13 +278,13 @@ class Updater {
      * Add check updates link in the plugin_row_meta
      * 
      * @since 1.0.0
-     * @param string $plugin_meta | An array of the plugin’s metadata, including the version, author, author URI, and plugin URI
+     * @param string $plugin_meta | An array of the pluginâ€™s metadata, including the version, author, author URI, and plugin URI
      * @param string $plugin_file | Path to the plugin file relative to the plugins directory
      * @return array
      */
     public function add_check_updates_link( $plugin_meta, $plugin_file ) {
         if ( $plugin_file === $this->plugin_slug . '/' . $this->plugin_slug . '.php' ) {
-            $check_updates_link = '<a href="' . esc_url( add_query_arg( 'flexify_checkout_check_updates', '1' ) ) . '">' . esc_html__( 'Verificar atualizações', 'flexify-checkout-for-woocommerce' ) . '</a>';
+            $check_updates_link = '<a href="' . esc_url( add_query_arg( 'flexify_checkout_check_updates', '1' ) ) . '">' . esc_html__( 'Verificar atualizaÃ§Ãµes', 'flexify-checkout-for-woocommerce' ) . '</a>';
             $plugin_meta['flexify_checkout_check_updates'] = $check_updates_link;
         }
         
@@ -374,7 +375,7 @@ class Updater {
         error_log( "[AUTO UPDATE] Downloading update from remote repository." );
 
         if ( ! $this->download_and_extract( $download_url ) ) {
-            error_log( '[AUTO UPDATE] Falha na extração do plugin Flexify Checkout.' );
+            error_log( '[AUTO UPDATE] Falha na extraÃ§Ã£o do plugin Flexify Checkout.' );
             return;
         }
 
@@ -450,7 +451,7 @@ class Updater {
         );
 
         $message = sprintf(
-            __( 'Uma nova versão do plugin <strong>Flexify Checkout</strong> (%s) está disponível. <a href="%s">Atualize agora</a>.', 'flexify-checkout-for-woocommerce' ),
+            __( 'Uma nova versÃ£o do plugin <strong>Flexify Checkout</strong> (%s) estÃ¡ disponÃ­vel. <a href="%s">Atualize agora</a>.', 'flexify-checkout-for-woocommerce' ),
             esc_html( $latest_version ),
             esc_url( $update_url )
         );

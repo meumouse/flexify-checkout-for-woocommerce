@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace MeuMouse\Flexify_Checkout\Checkout;
 
@@ -14,7 +14,8 @@ defined('ABSPATH') || exit;
  *
  * @since 1.0.0
  * @version 5.4.1
- * @package MeuMouse.com
+
+ * @author MeuMouse.com
  */
 class Steps {
 
@@ -398,7 +399,7 @@ class Steps {
 					<?php if ( Helpers::is_modern_theme() ) : ?>
 						<p class="flexify-address-button-wrapper flexify-address-button-wrapper--billing-lookup">
 							<button class="flexify-address-button flexify-address-button--lookup flexify-address-button--billing-lookup">
-								<?php esc_attr_e( 'Pesquisar um endereço', 'flexify-checkout-for-woocommerce' ); ?>
+								<?php esc_attr_e( 'Pesquisar um endereÃ§o', 'flexify-checkout-for-woocommerce' ); ?>
 							</button>
 						</p>
 					<?php endif;
@@ -442,7 +443,7 @@ class Steps {
 						
 						<input id="ship-to-different-address-checkbox" class="woocommerce-form__input woocommerce-form__input-checkbox input-checkbox" type="checkbox" name="ship_to_different_address" value="1" <?php echo esc_attr( $checked ); ?>/>
 						<span class="toggle__ie11"></span>
-						<span><?php esc_html_e( 'Enviar para um endereço diferente?', 'flexify-checkout-for-woocommerce' ); ?></span>
+						<span><?php esc_html_e( 'Enviar para um endereÃ§o diferente?', 'flexify-checkout-for-woocommerce' ); ?></span>
 					</label>
 				</h3>
 				<div class="shipping_address">
@@ -453,7 +454,7 @@ class Steps {
 							<?php if ( Helpers::is_modern_theme() ) : ?>
 								<p class="flexify-address-button-wrapper flexify-address-button-wrapper--shipping-lookup">
 									<button class="flexify-address-button flexify-address-button--lookup flexify-address-button--shipping-lookup">
-										<?php esc_attr_e( 'Procurar um endereço', 'flexify-checkout-for-woocommerce' ); ?>
+										<?php esc_attr_e( 'Procurar um endereÃ§o', 'flexify-checkout-for-woocommerce' ); ?>
 									</button>
 								</p>
 							<?php endif;
@@ -508,7 +509,7 @@ class Steps {
 					<label class="woocommerce-form__label woocommerce-form__label-for-checkbox checkbox">
 						<input id="show-additional-fields-checkbox" class="woocommerce-form__input woocommerce-form__input-checkbox input-checkbox" type="checkbox" name="show_additional_fields" value="1" />
 						<span class="toggle__ie11"></span>
-						<span><?php esc_html_e( 'Adicionar observações ao pedido?', 'flexify-checkout-for-woocommerce' ); ?></span>
+						<span><?php esc_html_e( 'Adicionar observaÃ§Ãµes ao pedido?', 'flexify-checkout-for-woocommerce' ); ?></span>
 					</label>
 				</h3>
 				<div class="woocommerce-additional-fields" style="display:none;" aria-hidden="true">
@@ -611,7 +612,7 @@ class Steps {
 
 		?>
 		<button class="flexify-checkout__login-button login-button" data-login type="button">
-			<?php esc_html_e( 'Já é um cliente?', 'flexify-checkout-for-woocommerce' ); ?>
+			<?php esc_html_e( 'JÃ¡ Ã© um cliente?', 'flexify-checkout-for-woocommerce' ); ?>
 		</button>
 		<?php
 	}
@@ -626,7 +627,7 @@ class Steps {
 		}
 
 		?>
-		<p class="flexify-checkout__login"><?php esc_html_e( 'Já é um cliente?', 'flexify-checkout-for-woocommerce' ); ?>
+		<p class="flexify-checkout__login"><?php esc_html_e( 'JÃ¡ Ã© um cliente?', 'flexify-checkout-for-woocommerce' ); ?>
 			<button class="flexify-checkout__login-button login-button" data-login type="button"><?php esc_html_e( 'Entrar', 'flexify-checkout-for-woocommerce' ); ?> </button>
 		</p>
 		<?php
@@ -684,12 +685,12 @@ class Steps {
 						if ( 'no' === get_option( 'woocommerce_enable_checkout_login_reminder' ) ) {
 							if ( 'yes' === get_option( 'woocommerce_enable_myaccount_registration' ) ) {
 								// Translators: %1$s = Opening login link, %2$s = Closing login link.
-								printf( esc_html__( 'Crie uma conta inserindo as informações abaixo. Se você já é um cliente, por favor faça %1$login na página da sua conta%2$s.', 'flexify-checkout-for-woocommerce' ), '<a href="' . esc_url( get_permalink( get_option( 'woocommerce_myaccount_page_id' ) ) ) . '">', '</a>' );
+								printf( esc_html__( 'Crie uma conta inserindo as informaÃ§Ãµes abaixo. Se vocÃª jÃ¡ Ã© um cliente, por favor faÃ§a %1$login na pÃ¡gina da sua conta%2$s.', 'flexify-checkout-for-woocommerce' ), '<a href="' . esc_url( get_permalink( get_option( 'woocommerce_myaccount_page_id' ) ) ) . '">', '</a>' );
 							} else {
-								esc_html_e( 'Crie uma conta inserindo as informações abaixo. Se você já é um cliente, faça login.', 'flexify-checkout-for-woocommerce' );
+								esc_html_e( 'Crie uma conta inserindo as informaÃ§Ãµes abaixo. Se vocÃª jÃ¡ Ã© um cliente, faÃ§a login.', 'flexify-checkout-for-woocommerce' );
 							}
 						} else {
-							esc_html_e( 'Crie uma senha para sua conta, caso seja sua primeira compra. Se já é um cliente, entre em sua conta para resgatar sua informações pessoais.', 'flexify-checkout-for-woocommerce' );
+							esc_html_e( 'Crie uma senha para sua conta, caso seja sua primeira compra. Se jÃ¡ Ã© um cliente, entre em sua conta para resgatar sua informaÃ§Ãµes pessoais.', 'flexify-checkout-for-woocommerce' );
 						}
 						?>
 					</p>
@@ -734,13 +735,13 @@ class Steps {
 		if ( ( $is_modern_theme && Helpers::use_autocomplete() ) || ( Helpers::use_autocomplete() && ! $is_pre_populated ) ) : ?>
 			<div class="billing-address-search<?php echo $is_pre_populated ? ' billing-address-search--pre-populated' : ''; ?>">
 				<p class="flexify-address-search__hint">
-					<?php esc_html_e( 'Comece a digitar seu endereço para pesquisar.', 'flexify-checkout-for-woocommerce' ); ?>
+					<?php esc_html_e( 'Comece a digitar seu endereÃ§o para pesquisar.', 'flexify-checkout-for-woocommerce' ); ?>
 					<span class="flexify-tooltip" for="billing-address-info" aria-describedby="billing-address-info">
 						<i class="flexify-tooltip__icon" role="tooltip">
-							<?php esc_html_e( 'Informações', 'flexify-checkout-for-woocommerce' ); ?>
+							<?php esc_html_e( 'InformaÃ§Ãµes', 'flexify-checkout-for-woocommerce' ); ?>
 						</i>
 						<span class="flexify-tooltip__tip" id="billing-address-info">
-							<?php esc_html_e( 'Comece com o endereço da sua casa e depois o número da casa.', 'flexify-checkout-for-woocommerce' ); ?>
+							<?php esc_html_e( 'Comece com o endereÃ§o da sua casa e depois o nÃºmero da casa.', 'flexify-checkout-for-woocommerce' ); ?>
 						</span>
 					</span>
 				</p>
@@ -751,11 +752,11 @@ class Steps {
 					<span class="woocommerce-input-wrapper">
 						<input type="text" class="input-text" name="billing_address_search" id="billing_address_search" value="" />
 					</span>
-					<span class="error"><?php esc_html_e( 'Por favor insira seu endereço', 'flexify-checkout-for-woocommerce' ); ?></span>
+					<span class="error"><?php esc_html_e( 'Por favor insira seu endereÃ§o', 'flexify-checkout-for-woocommerce' ); ?></span>
 				</p>
 				<p class="flexify-address-button-wrapper flexify-address-button-wrapper--billing-manual">
 					<button class="flexify-address-button flexify-address-button--manual flexify-address-button--billing-manual" id="billing_address_not_found">
-						<?php esc_attr_e( 'Digitar endereço manualmente', 'flexify-checkout-for-woocommerce' ); ?>
+						<?php esc_attr_e( 'Digitar endereÃ§o manualmente', 'flexify-checkout-for-woocommerce' ); ?>
 					</button>
 				</p>
 			</div>
@@ -776,13 +777,13 @@ class Steps {
 		if ( ( $is_modern && Helpers::use_autocomplete() ) || ( Helpers::use_autocomplete() && ! $is_pre_populated ) ) : ?>
 			<div class="shipping-address-search<?php echo $is_pre_populated ? ' shipping-address-search--pre-populated' : ''; ?>">
 				<p class="flexify-address-search__hint">
-					<?php esc_html_e( 'Comece a digitar seu endereço para pesquisar.', 'flexify-checkout-for-woocommerce' ); ?>
+					<?php esc_html_e( 'Comece a digitar seu endereÃ§o para pesquisar.', 'flexify-checkout-for-woocommerce' ); ?>
 					<span class="flexify-tooltip" for="shipping-address-info" aria-describedby="shipping-address-info">
 						<i class="flexify-tooltip__icon" role="tooltip">
-							<?php esc_html_e( 'Informações', 'flexify-checkout-for-woocommerce' ); ?>
+							<?php esc_html_e( 'InformaÃ§Ãµes', 'flexify-checkout-for-woocommerce' ); ?>
 						</i>
 						<span class="flexify-tooltip__tip" id="shipping-address-info">
-							<?php esc_html_e( 'Comece com o endereço da sua casa e depois o número da casa.', 'flexify-checkout-for-woocommerce' ); ?>
+							<?php esc_html_e( 'Comece com o endereÃ§o da sua casa e depois o nÃºmero da casa.', 'flexify-checkout-for-woocommerce' ); ?>
 						</span>
 					</span>
 				</p>
@@ -796,7 +797,7 @@ class Steps {
 				</p>
 				<p class="flexify-address-button-wrapper flexify-address-button-wrapper--shipping-manual">
 					<button class="flexify-address-button flexify-address-button--manual flexify-address-button--shipping-manual" id="shipping_address_not_found">
-						<?php esc_attr_e( 'Digitar endereço manualmente', 'flexify-checkout-for-woocommerce' ); ?>
+						<?php esc_attr_e( 'Digitar endereÃ§o manualmente', 'flexify-checkout-for-woocommerce' ); ?>
 					</button>
 				</p>
 			</div>
@@ -844,7 +845,7 @@ class Steps {
 				 */
 				$button_url = apply_filters( 'Flexify_Checkout/Steps/Back_Button_Href', get_permalink( wc_get_page_id('shop') ) ); ?>
 
-				<a class="flexify-step__back flexify-step__back--back-shop" href="<?php echo esc_url( $button_url ); ?>"><?php echo esc_html__( 'Voltar à loja', 'flexify-checkout-for-woocommerce' ); ?></a>
+				<a class="flexify-step__back flexify-step__back--back-shop" href="<?php echo esc_url( $button_url ); ?>"><?php echo esc_html__( 'Voltar Ã  loja', 'flexify-checkout-for-woocommerce' ); ?></a>
 			<?php endif;
 		} else {
 			if ( ! empty( Admin_Options::get_setting('text_previous_step_button') ) ) :
@@ -1362,3 +1363,4 @@ class Steps {
 		return $current_step;
 	}
 }
+

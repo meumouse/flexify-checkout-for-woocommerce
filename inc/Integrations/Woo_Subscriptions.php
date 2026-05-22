@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace MeuMouse\Flexify_Checkout\Integrations;
 
@@ -12,7 +12,8 @@ if ( class_exists('WC_Subscriptions') ) {
 	 * @since 1.0.0
 	 * @version 5.4.0
 	 * @link https://woocommerce.com/products/woocommerce-subscriptions/
-	 * @package MeuMouse.com
+
+ * @author MeuMouse.com
 	 */
 	class Woo_Subscriptions {
 		
@@ -65,7 +66,7 @@ if ( class_exists('WC_Subscriptions') ) {
 			if ( 0 !== $cart->next_payment_date ) {
 				$first_renewal_date = date_i18n( wc_date_format(), wcs_date_to_time( get_date_from_gmt( $cart->next_payment_date ) ) );
 				// Translators: placeholder is a date.
-				$order_total_html .= '<div class="first-payment-date"><small>' . __( 'Primeira renovação', 'flexify-checkout-for-woocommerce' ) . '<br />' . $first_renewal_date . '</small></div>';
+				$order_total_html .= '<div class="first-payment-date"><small>' . __( 'Primeira renovaÃ§Ã£o', 'flexify-checkout-for-woocommerce' ) . '<br />' . $first_renewal_date . '</small></div>';
 			}
 
 			return $order_total_html;
@@ -93,7 +94,7 @@ if ( class_exists('WC_Subscriptions') ) {
 			if ( $subscription_count ) {
 				foreach ( $subscriptions as $subscription ) {
 					if ( ! $subscription->has_status('active') ) {
-						$thank_you_message .= '<p class="need-payment-message">'. esc_html__( 'Sua assinatura será ativada quando o pagamento for compensado.', 'flexify-checkout-for-woocommerce' ) .'</p>';
+						$thank_you_message .= '<p class="need-payment-message">'. esc_html__( 'Sua assinatura serÃ¡ ativada quando o pagamento for compensado.', 'flexify-checkout-for-woocommerce' ) .'</p>';
 						break;
 					}
 				}

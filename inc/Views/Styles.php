@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace MeuMouse\Flexify_Checkout\Views;
 
@@ -15,7 +15,8 @@ defined('ABSPATH') || exit;
  *
  * @since 5.0.0
  * @version 5.2.2
- * @package MeuMouse.com
+
+ * @author MeuMouse.com
  */
 class Styles {
 
@@ -416,3 +417,4 @@ class Styles {
 		printf( __('<style>%s</style>'), $css );
 	}
 }
+

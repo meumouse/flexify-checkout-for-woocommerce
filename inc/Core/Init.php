@@ -13,7 +13,8 @@ defined('ABSPATH') || exit;
  * 
  * @since 5.0.0
  * @version 5.2.0
- * @package MeuMouse.com
+
+ * @author MeuMouse.com
  */
 class Init {
     /**
@@ -273,7 +274,7 @@ class Init {
 	 */
 	public function php_version_notice() {
 		$class = 'notice notice-error is-dismissible';
-		$message = __( '<strong>Flexify Checkout</strong> requer a versão do PHP 7.4 ou maior. Contate o suporte da sua hospedagem para realizar a atualização.', 'flexify-checkout-for-woocommerce' );
+		$message = __( '<strong>Flexify Checkout</strong> requer a versÃ£o do PHP 7.4 ou maior. Contate o suporte da sua hospedagem para realizar a atualizaÃ§Ã£o.', 'flexify-checkout-for-woocommerce' );
 
 		printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), $message );
 	}
@@ -339,7 +340,7 @@ class Init {
 	 */
 	public function woocommerce_version_notice() {
 		$class = 'notice notice-error is-dismissible';
-		$message = __( '<strong>Flexify Checkout</strong> requer a versão do WooCommerce 6.0 ou maior. Faça a atualização do plugin WooCommerce.', 'flexify-checkout-for-woocommerce' );
+		$message = __( '<strong>Flexify Checkout</strong> requer a versÃ£o do WooCommerce 6.0 ou maior. FaÃ§a a atualizaÃ§Ã£o do plugin WooCommerce.', 'flexify-checkout-for-woocommerce' );
 
 		printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), $message );
 	}
@@ -384,7 +385,7 @@ class Init {
 	 * 
 	 * @since 3.0.0
      * @version 5.0.0
-	 * @param string $plugin_meta | An array of the plugin’s metadata, including the version, author, author URI, and plugin URI
+	 * @param string $plugin_meta | An array of the pluginâ€™s metadata, including the version, author, author URI, and plugin URI
 	 * @param string $plugin_file | Path to the plugin file relative to the plugins directory
 	 * @param array $plugin_data | An array of plugin data
 	 * @param string $status | Status filter currently applied to the plugin list
@@ -393,7 +394,7 @@ class Init {
 	public function add_row_meta_links( $plugin_meta, $plugin_file, $plugin_data, $status ) {
 		if ( strpos( $plugin_file, $this->basename ) !== false ) {
 			$new_links = array(
-				'docs' => '<a href="'. FLEXIFY_CHECKOUT_DOCS_LINK .'" target="_blank">'. __( 'Documentação', 'flexify-checkout-for-woocommerce' ) .'</a>',
+				'docs' => '<a href="'. FLEXIFY_CHECKOUT_DOCS_LINK .'" target="_blank">'. __( 'DocumentaÃ§Ã£o', 'flexify-checkout-for-woocommerce' ) .'</a>',
 			);
 			
 			$plugin_meta = array_merge( $plugin_meta, $new_links );
@@ -508,3 +509,4 @@ class Init {
         }
     }
 }
+

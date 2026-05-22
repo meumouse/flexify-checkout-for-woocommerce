@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace MeuMouse\Flexify_Checkout\Integrations;
 
@@ -11,7 +11,8 @@ if ( class_exists('\Ecomus\WooCommerce') ) {
 	 *
 	 * @since 3.9.4
 	 * @version 5.0.0
-	 * @package MeuMouse.com
+
+ * @author MeuMouse.com
 	 */
 	class Ecomus {
 

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace MeuMouse\Flexify_Checkout\Integrations;
 
@@ -12,7 +12,8 @@ if ( function_exists('run_thwcfe') ) {
 	 * @see https://www.themehigh.com/product/woocommerce-checkout-field-editor-pro/
 	 * @since 1.0.0
 	 * @version 5.0.0
-	 * @package MeuMouse.com
+
+ * @author MeuMouse.com
 	 */
 	class Checkout_Field_Editor {
 

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace MeuMouse\Flexify_Checkout\Checkout;
 
@@ -14,7 +14,8 @@ defined('ABSPATH') || exit;
  *
  * @since 1.0.0
  * @version 5.0.0
- * @package MeuMouse.com
+
+ * @author MeuMouse.com
  */
 class Coupons {
 
@@ -148,7 +149,7 @@ class Coupons {
     public static function get_coupon_field_position() {
         return apply_filters( 'Flexify_Checkout/Checkout/Coupon_Field_Position', array(
             'sidebar' => array(
-                'title' => esc_html__( 'Barra lateral (Padrão)', 'flexify-checkout-for-woocommerce' ),
+                'title' => esc_html__( 'Barra lateral (PadrÃ£o)', 'flexify-checkout-for-woocommerce' ),
                 'hook' => 'woocommerce_review_order_before_subtotal',
 				'callback' => function() {
 					?>

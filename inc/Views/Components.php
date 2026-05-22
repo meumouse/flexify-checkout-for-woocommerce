@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace MeuMouse\Flexify_Checkout\Views;
 
@@ -16,7 +16,8 @@ defined('ABSPATH') || exit;
  *
  * @since 5.0.0
  * @version 5.4.0
- * @package MeuMouse.com
+
+ * @author MeuMouse.com
  */
 class Components {
 
@@ -93,7 +94,7 @@ class Components {
 
         <tr>
             <th class="w-50"><?php echo esc_html__('Ativar/Desativar este campo', 'flexify-checkout-for-woocommerce'); ?>
-                <span class="flexify-checkout-description"><?php echo esc_html__('Este é um campo nativo do WooCommerce e não pode ser removido, apenas desativado.', 'flexify-checkout-for-woocommerce'); ?></span>
+                <span class="flexify-checkout-description"><?php echo esc_html__('Este Ã© um campo nativo do WooCommerce e nÃ£o pode ser removido, apenas desativado.', 'flexify-checkout-for-woocommerce'); ?></span>
             </th>
 
             <td class="w-50">
@@ -105,7 +106,7 @@ class Components {
 
         <tr>
             <th class="w-50"><?php echo esc_html__('Obrigatoriedade do campo', 'flexify-checkout-for-woocommerce'); ?>
-                <span class="flexify-checkout-description"><?php echo esc_html__('Ao desativar, este campo se tornará não obrigatório.', 'flexify-checkout-for-woocommerce'); ?></span>
+                <span class="flexify-checkout-description"><?php echo esc_html__('Ao desativar, este campo se tornarÃ¡ nÃ£o obrigatÃ³rio.', 'flexify-checkout-for-woocommerce'); ?></span>
             </th>
 
             <td class="w-50">
@@ -118,8 +119,8 @@ class Components {
         <?php if ( $field_id === 'billing_country' || $field_id === 'shipping_country' ) : ?>
             <tr>
                 <th class="w-50">
-                    <?php echo esc_html__('Definir país padrão', 'flexify-checkout-for-woocommerce'); ?>
-                    <span class="flexify-checkout-description"><?php echo esc_html__('Define a posição deste campo na finalização de compras.', 'flexify-checkout-for-woocommerce'); ?></span>
+                    <?php echo esc_html__('Definir paÃ­s padrÃ£o', 'flexify-checkout-for-woocommerce'); ?>
+                    <span class="flexify-checkout-description"><?php echo esc_html__('Define a posiÃ§Ã£o deste campo na finalizaÃ§Ã£o de compras.', 'flexify-checkout-for-woocommerce'); ?></span>
                 </th>
 
                 <td class="w-50">
@@ -135,7 +136,7 @@ class Components {
         <tr>
             <th class="w-50">
                 <?php echo esc_html__( 'Nome do campo', 'flexify-checkout-for-woocommerce' ) ?>
-                <span class="flexify-checkout-description"><?php echo esc_html__('Define o título que será exibido para este campo.', 'flexify-checkout-for-woocommerce' ) ?></span>
+                <span class="flexify-checkout-description"><?php echo esc_html__('Define o tÃ­tulo que serÃ¡ exibido para este campo.', 'flexify-checkout-for-woocommerce' ) ?></span>
             </th>
 
             <td class="w-50">
@@ -146,8 +147,8 @@ class Components {
         <?php if ( $field_id !== 'billing_country' && $field_type === 'select' && isset( $value['options'] ) && is_array( $value['options'] ) ) : ?>
             <tr class="d-flex align-items-start">
                 <th class="w-50">
-                    <?php echo esc_html__('Opções ', 'flexify-checkout-for-woocommerce'); ?>
-                    <span class="flexify-checkout-description"><?php echo esc_html__('Define a posição deste campo na finalização de compras.', 'flexify-checkout-for-woocommerce'); ?></span>
+                    <?php echo esc_html__('OpÃ§Ãµes ', 'flexify-checkout-for-woocommerce'); ?>
+                    <span class="flexify-checkout-description"><?php echo esc_html__('Define a posiÃ§Ã£o deste campo na finalizaÃ§Ã£o de compras.', 'flexify-checkout-for-woocommerce'); ?></span>
                 </th>
 
                 <td class="w-50">
@@ -169,7 +170,7 @@ class Components {
                             endforeach; ?>
                         </div>
 
-                        <button id="add_new_select_option_live" class="btn btn-outline-secondary"><?php echo esc_html__('Adicionar nova opção', 'flexify-checkout-for-woocommerce'); ?></button>
+                        <button id="add_new_select_option_live" class="btn btn-outline-secondary"><?php echo esc_html__('Adicionar nova opÃ§Ã£o', 'flexify-checkout-for-woocommerce'); ?></button>
                     </div>
                 </td>
             </tr>
@@ -177,8 +178,8 @@ class Components {
 
         <tr>
             <th class="w-50">
-                <?php echo esc_html__('Posição do campo', 'flexify-checkout-for-woocommerce'); ?>
-                <span class="flexify-checkout-description"><?php echo esc_html__('Define a posição deste campo na finalização de compras.', 'flexify-checkout-for-woocommerce'); ?></span>
+                <?php echo esc_html__('PosiÃ§Ã£o do campo', 'flexify-checkout-for-woocommerce'); ?>
+                <span class="flexify-checkout-description"><?php echo esc_html__('Define a posiÃ§Ã£o deste campo na finalizaÃ§Ã£o de compras.', 'flexify-checkout-for-woocommerce'); ?></span>
             </th>
 
             <td class="w-50">
@@ -203,8 +204,8 @@ class Components {
 
         <tr>
             <th class="w-50">
-                <?php echo esc_html__('Classe CSS personalizada do título (Opcional)', 'flexify-checkout-for-woocommerce'); ?>
-                <span class="flexify-checkout-description"><?php echo esc_html__('Informe a(s) classe(s) CSS personalizadas para o título (label) deste campo. (Opcional)', 'flexify-checkout-for-woocommerce'); ?></span>
+                <?php echo esc_html__('Classe CSS personalizada do tÃ­tulo (Opcional)', 'flexify-checkout-for-woocommerce'); ?>
+                <span class="flexify-checkout-description"><?php echo esc_html__('Informe a(s) classe(s) CSS personalizadas para o tÃ­tulo (label) deste campo. (Opcional)', 'flexify-checkout-for-woocommerce'); ?></span>
             </th>
 
             <td class="w-50">
@@ -215,8 +216,8 @@ class Components {
         <?php if ( isset( $value['input_mask'] ) ) : ?>
             <tr class="require-input-mask">
                 <th class="w-50">
-                    <?php echo esc_html__('Máscara do campo (Opcional)', 'flexify-checkout-for-woocommerce'); ?>
-                    <span class="flexify-checkout-description"><?php echo esc_html__('Adicione uma máscara de preenchimento para este campo, seguindo o padrão informado pela documentação. (Opcional)', 'flexify-checkout-for-woocommerce'); ?></span>
+                    <?php echo esc_html__('MÃ¡scara do campo (Opcional)', 'flexify-checkout-for-woocommerce'); ?>
+                    <span class="flexify-checkout-description"><?php echo esc_html__('Adicione uma mÃ¡scara de preenchimento para este campo, seguindo o padrÃ£o informado pela documentaÃ§Ã£o. (Opcional)', 'flexify-checkout-for-woocommerce'); ?></span>
                 </th>
 
                 <td class="w-50">
@@ -312,7 +313,7 @@ class Components {
 				<tr id="set_field_id">
 					<th class="w-50">
 						<?php echo esc_html__( 'Nome e ID do campo *', 'flexify-checkout-for-woocommerce' ) ?>
-						<span class="flexify-checkout-description"><?php echo esc_html__( 'Informe o nome que será usado no campo em letras minúsculas, usando underline no lugar dos espaços e após o prefixo "billing_".', 'flexify-checkout-for-woocommerce' ) ?></span>
+						<span class="flexify-checkout-description"><?php echo esc_html__( 'Informe o nome que serÃ¡ usado no campo em letras minÃºsculas, usando underline no lugar dos espaÃ§os e apÃ³s o prefixo "billing_".', 'flexify-checkout-for-woocommerce' ) ?></span>
 					</th>
 
 					<td class="w-50">
@@ -323,26 +324,26 @@ class Components {
 
 						<input type="hidden" id="checkout_field_name_concat" value=""/>
 						
-						<div id="check_field_availability" class="d-none bg-translucent-danger text-danger px-3 py-2 rounded-pill mt-2 w-fit" data-avalability="true"><?php echo esc_html__( 'Este nome e ID do campo já está em uso. Use um outro nome.', 'flexify-checkout-for-woocommerce' ) ?></div>
+						<div id="check_field_availability" class="d-none bg-translucent-danger text-danger px-3 py-2 rounded-pill mt-2 w-fit" data-avalability="true"><?php echo esc_html__( 'Este nome e ID do campo jÃ¡ estÃ¡ em uso. Use um outro nome.', 'flexify-checkout-for-woocommerce' ) ?></div>
 					</td>
 				</tr>
 				
 				<tr>
 					<th class="w-50">
 						<?php echo esc_html__( 'Tipo do campo *', 'flexify-checkout-for-woocommerce' ) ?>
-						<span class="flexify-checkout-description"><?php echo esc_html__( 'Selecione o tipo do campo que será incluído na finalização de compras.', 'flexify-checkout-for-woocommerce' ) ?></span>
+						<span class="flexify-checkout-description"><?php echo esc_html__( 'Selecione o tipo do campo que serÃ¡ incluÃ­do na finalizaÃ§Ã£o de compras.', 'flexify-checkout-for-woocommerce' ) ?></span>
 					</th>
 
 					<td class="w-50">
 						<select id="checkout_field_type" class="form-select">
 							<option value="text"><?php echo esc_html__( 'Texto', 'flexify-checkout-for-woocommerce' ) ?></option>
-							<option value="textarea"><?php echo esc_html__( 'Área de texto', 'flexify-checkout-for-woocommerce' ) ?></option>
-							<option value="number"><?php echo esc_html__( 'Número', 'flexify-checkout-for-woocommerce' ) ?></option>
+							<option value="textarea"><?php echo esc_html__( 'Ãrea de texto', 'flexify-checkout-for-woocommerce' ) ?></option>
+							<option value="number"><?php echo esc_html__( 'NÃºmero', 'flexify-checkout-for-woocommerce' ) ?></option>
 							<option value="password"><?php echo esc_html__( 'Senha', 'flexify-checkout-for-woocommerce' ) ?></option>
 							<option value="phone"><?php echo esc_html__( 'Telefone', 'flexify-checkout-for-woocommerce' ) ?></option>
 							<option value="url"><?php echo esc_html__( 'URL', 'flexify-checkout-for-woocommerce' ) ?></option>
 							<option value="select"><?php echo esc_html__( 'Seletor/Lista suspensa', 'flexify-checkout-for-woocommerce' ) ?></option>
-							<option value="checkbox"><?php echo esc_html__( 'Caixa de seleção', 'flexify-checkout-for-woocommerce' ) ?></option>
+							<option value="checkbox"><?php echo esc_html__( 'Caixa de seleÃ§Ã£o', 'flexify-checkout-for-woocommerce' ) ?></option>
 						</select>
 					</td>
 				</tr>
@@ -357,12 +358,12 @@ class Components {
 
 						<div class="d-flex align-items-center mt-4">
 							<div class="input-group me-2">
-								<span class="input-group-text w-fit"><?php echo esc_html__( 'Valor da opção', 'flexify-checkout-for-woocommerce' ) ?></span>
+								<span class="input-group-text w-fit"><?php echo esc_html__( 'Valor da opÃ§Ã£o', 'flexify-checkout-for-woocommerce' ) ?></span>
 								<input type="text" id="add_new_field_select_option_value" class="form-control input-control-wd-12" value="" placeholder="<?php echo esc_html__( 'BR', 'flexify-checkout-for-woocommerce' ) ?>"/>
 							</div>
 							
 							<div class="input-group me-3">
-								<span class="input-group-text w-fit"><?php echo esc_html__( 'Título da opção', 'flexify-checkout-for-woocommerce' ) ?></span>
+								<span class="input-group-text w-fit"><?php echo esc_html__( 'TÃ­tulo da opÃ§Ã£o', 'flexify-checkout-for-woocommerce' ) ?></span>
 								<input type="text" id="add_new_field_select_option_title" class="form-control input-control-wd-12" value="" placeholder="<?php echo esc_html__( 'Brasil', 'flexify-checkout-for-woocommerce' ) ?>"/>
 							</div>
 
@@ -385,12 +386,12 @@ class Components {
 
 						<div class="d-flex align-items-center mt-4">
 							<div class="input-group me-2">
-								<span class="input-group-text w-fit"><?php echo esc_html__( 'ID da opção', 'flexify-checkout-for-woocommerce' ) ?></span>
+								<span class="input-group-text w-fit"><?php echo esc_html__( 'ID da opÃ§Ã£o', 'flexify-checkout-for-woocommerce' ) ?></span>
 								<input type="text" id="add_new_field_multicheckbox_option_id" class="form-control input-control-wd-12" value="" placeholder="<?php echo esc_html__( 'verify_gdpr', 'flexify-checkout-for-woocommerce' ) ?>"/>
 							</div>
 
 							<div class="input-group me-3">
-								<span class="input-group-text w-fit"><?php echo esc_html__( 'Título da opção', 'flexify-checkout-for-woocommerce' ) ?></span>
+								<span class="input-group-text w-fit"><?php echo esc_html__( 'TÃ­tulo da opÃ§Ã£o', 'flexify-checkout-for-woocommerce' ) ?></span>
 								<input type="text" id="add_new_field_multicheckbox_option_title" class="form-control input-control-wd-12" value="" placeholder="<?php echo esc_html__( 'GDPR', 'flexify-checkout-for-woocommerce' ) ?>"/>
 							</div>
 
@@ -407,8 +408,8 @@ class Components {
 				
 				<tr>
 					<th class="w-50">
-						<?php echo esc_html__( 'Título do campo *', 'flexify-checkout-for-woocommerce' ) ?>
-						<span class="flexify-checkout-description"><?php echo esc_html__( 'Informe o título do campo.', 'flexify-checkout-for-woocommerce' ) ?></span>
+						<?php echo esc_html__( 'TÃ­tulo do campo *', 'flexify-checkout-for-woocommerce' ) ?>
+						<span class="flexify-checkout-description"><?php echo esc_html__( 'Informe o tÃ­tulo do campo.', 'flexify-checkout-for-woocommerce' ) ?></span>
 					</th>
 					<td class="w-50">
 						<input type="text" class="form-control" id="checkout_field_title" name="checkout_field_title" value=""/>
@@ -418,7 +419,7 @@ class Components {
 				<tr>
 					<th class="w-50">
 						<?php echo esc_html__( 'Obrigatoriedade do campo', 'flexify-checkout-for-woocommerce' ) ?>
-						<span class="flexify-checkout-description"><?php echo esc_html__('Ao desativar, este campo se tornará não obrigatório.', 'flexify-checkout-for-woocommerce' ) ?></span>
+						<span class="flexify-checkout-description"><?php echo esc_html__('Ao desativar, este campo se tornarÃ¡ nÃ£o obrigatÃ³rio.', 'flexify-checkout-for-woocommerce' ) ?></span>
 					</th>
 					<td class="w-50">
 						<div class="form-check form-switch">
@@ -429,8 +430,8 @@ class Components {
 
 				<tr>
 					<th class="w-50">
-						<?php echo esc_html__( 'Posição do campo', 'flexify-checkout-for-woocommerce' ) ?>
-						<span class="flexify-checkout-description"><?php echo esc_html__('Define a posição deste campo na finalização de compras.', 'flexify-checkout-for-woocommerce' ) ?></span>
+						<?php echo esc_html__( 'PosiÃ§Ã£o do campo', 'flexify-checkout-for-woocommerce' ) ?>
+						<span class="flexify-checkout-description"><?php echo esc_html__('Define a posiÃ§Ã£o deste campo na finalizaÃ§Ã£o de compras.', 'flexify-checkout-for-woocommerce' ) ?></span>
 					</th>
 					<td class="w-50">
 						<select class="form-select" id="field_position">
@@ -453,8 +454,8 @@ class Components {
 
 				<tr>
 					<th class="w-50">
-						<?php echo esc_html__( 'Classe CSS personalizada do título (Opcional)', 'flexify-checkout-for-woocommerce' ) ?>
-						<span class="flexify-checkout-description"><?php echo esc_html__('Informe a(s) classe(s) CSS personalizadas para o título (label) deste campo. (Opcional)', 'flexify-checkout-for-woocommerce' ) ?></span>
+						<?php echo esc_html__( 'Classe CSS personalizada do tÃ­tulo (Opcional)', 'flexify-checkout-for-woocommerce' ) ?>
+						<span class="flexify-checkout-description"><?php echo esc_html__('Informe a(s) classe(s) CSS personalizadas para o tÃ­tulo (label) deste campo. (Opcional)', 'flexify-checkout-for-woocommerce' ) ?></span>
 					</th>
 					<td class="w-50">
 						<input type="text" class="form-control" id="field_label_classes" value=""/>
@@ -463,8 +464,8 @@ class Components {
 
 				<tr class="require-input-mask">
 					<th class="w-50">
-						<?php echo esc_html__( 'Máscara do campo (Opcional)', 'flexify-checkout-for-woocommerce' ) ?>
-						<span class="flexify-checkout-description"><?php echo esc_html__('Adicione uma máscara de preenchimento para este campo, seguindo o padrão informado pela documentação. (Opcional)', 'flexify-checkout-for-woocommerce' ) ?></span>
+						<?php echo esc_html__( 'MÃ¡scara do campo (Opcional)', 'flexify-checkout-for-woocommerce' ) ?>
+						<span class="flexify-checkout-description"><?php echo esc_html__('Adicione uma mÃ¡scara de preenchimento para este campo, seguindo o padrÃ£o informado pela documentaÃ§Ã£o. (Opcional)', 'flexify-checkout-for-woocommerce' ) ?></span>
 					</th>
 					<td class="w-50">
 						<input type="text" class="form-control" id="field_input_mask" value=""/>
@@ -474,7 +475,7 @@ class Components {
 				<tr>
 					<th class="w-50">
 						<?php echo esc_html__( 'Etapa do campo', 'flexify-checkout-for-woocommerce' ) ?>
-						<span class="flexify-checkout-description"><?php echo esc_html__('Define em qual etapa da finalização de compras o campo será exibido.', 'flexify-checkout-for-woocommerce' ) ?></span>
+						<span class="flexify-checkout-description"><?php echo esc_html__('Define em qual etapa da finalizaÃ§Ã£o de compras o campo serÃ¡ exibido.', 'flexify-checkout-for-woocommerce' ) ?></span>
 					</th>
 					<td class="w-50">
 						<select class="form-select" id="field_step">

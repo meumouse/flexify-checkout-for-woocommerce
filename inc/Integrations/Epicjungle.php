@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace MeuMouse\Flexify_Checkout\Integrations;
 
@@ -11,7 +11,8 @@ if ( class_exists('EpicJungle') ) {
 	 * 
 	 * @since 1.8.0
 	 * @version 5.0.0
-	 * @package MeuMouse.com
+
+ * @author MeuMouse.com
 	 */
 	class Epicjungle {
 

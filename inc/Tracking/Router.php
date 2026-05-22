@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace MeuMouse\Flexify_Checkout\Tracking;
 
@@ -12,7 +12,8 @@ defined('ABSPATH') || exit;
  * Flexify internal tracking router.
  *
  * @since 5.5.0
- * @package MeuMouse.com
+
+ * @author MeuMouse.com
  */
 class Router {
 
@@ -794,3 +795,4 @@ class Router {
 
 
 }
+

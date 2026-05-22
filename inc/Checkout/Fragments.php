@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace MeuMouse\Flexify_Checkout\Checkout;
 
@@ -12,7 +12,8 @@ defined('ABSPATH') || exit;
  * Add and manipulate checkout fragments
  *
  * @since 5.0.0
- * @package MeuMouse.com
+
+ * @author MeuMouse.com
  */
 class Fragments {
 
@@ -99,3 +100,4 @@ class Fragments {
 		return $fragments;
 	}
 }
+

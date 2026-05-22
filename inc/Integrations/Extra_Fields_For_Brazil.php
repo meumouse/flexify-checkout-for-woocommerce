@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace MeuMouse\Flexify_Checkout\Integrations;
 
@@ -13,7 +13,8 @@ if ( class_exists('Extra_Checkout_Fields_For_Brazil') ) {
      *
      * @since 3.8.0
      * @version 5.2.0
-     * @package MeuMouse.com
+
+ * @author MeuMouse.com
      */
     class Extra_Fields_For_Brazil {
 

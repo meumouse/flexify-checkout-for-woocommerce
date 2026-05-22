@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace MeuMouse\Flexify_Checkout\Compatibility;
 
@@ -10,7 +10,8 @@ defined('ABSPATH') || exit;
  *
  * @since 5.0.0
  * @version 5.2.0
- * @package MeuMouse.com
+
+ * @author MeuMouse.com
  */
 class Legacy_Filters {
 
@@ -114,7 +115,7 @@ class Legacy_Filters {
 	protected static function warn_deprecated_filter( $old_filter, $new_filter, $version ) {
 		if ( function_exists( '_doing_it_wrong' ) ) {
 			$message = sprintf(
-				__( 'O filtro "%1$s" está obsoleto desde a versão %3$s. Use "%2$s" em seu lugar.', 'flexify-checkout-for-woocommerce' ),
+				__( 'O filtro "%1$s" estÃ¡ obsoleto desde a versÃ£o %3$s. Use "%2$s" em seu lugar.', 'flexify-checkout-for-woocommerce' ),
 				$old_filter,
 				$new_filter,
 				$version
@@ -125,7 +126,7 @@ class Legacy_Filters {
 
 		// Log on debug.log
 		if ( defined('WP_DEBUG_LOG') && WP_DEBUG_LOG ) {
-			error_log( "[FLEXIFY CHECKOUT] Obsolet filter detected: {$old_filter} → {$new_filter} (since version: {$version})" );
+			error_log( "[FLEXIFY CHECKOUT] Obsolet filter detected: {$old_filter} â†’ {$new_filter} (since version: {$version})" );
 		}
 	}
 

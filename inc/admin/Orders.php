@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace MeuMouse\Flexify_Checkout\Admin;
 
@@ -14,7 +14,8 @@ defined('ABSPATH') || exit;
  *
  * @since 1.0.0
  * @version 5.3.0
- * @package MeuMouse.com
+
+ * @author MeuMouse.com
  */
 class Orders {
 
@@ -217,7 +218,7 @@ class Orders {
 	 * @return void
 	 */
 	public static function display_custom_fields_in_admin_order( $order ) {
-		echo '<h3>' . esc_html__( 'Informações do cliente', 'flexify-checkout-for-woocommerce' ) . '</h3>';
+		echo '<h3>' . esc_html__( 'InformaÃ§Ãµes do cliente', 'flexify-checkout-for-woocommerce' ) . '</h3>';
 
 		echo '<div class="flexify-checkout-order-fields"><p>';
 
@@ -407,3 +408,4 @@ class Orders {
         }
     }
 }
+

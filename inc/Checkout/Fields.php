@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace MeuMouse\Flexify_Checkout\Checkout;
 
@@ -15,7 +15,8 @@ defined('ABSPATH') || exit;
  *
  * @since 5.0.0
  * @version 5.4.2
- * @package MeuMouse.com
+
+ * @author MeuMouse.com
  */
 class Fields {
 
@@ -127,7 +128,7 @@ class Fields {
 		$fields_manager = maybe_unserialize( get_option('flexify_checkout_step_fields', array()) );
 
 		if ( empty( $fields['shipping']['shipping_address_2']['label'] ) ) {
-			$fields['shipping']['shipping_address_2']['label'] = __( 'Apartamento, suíte, unidade etc.', 'flexify-checkout-for-woocommerce' );
+			$fields['shipping']['shipping_address_2']['label'] = __( 'Apartamento, suÃ­te, unidade etc.', 'flexify-checkout-for-woocommerce' );
 		}
 		
 		$remove_placeholder = array(
@@ -814,7 +815,7 @@ class Fields {
 	 */
 	public static function custom_fields_on_user_profile( $fields ) {
 		$custom_fields = maybe_unserialize( get_option('flexify_checkout_step_fields', array()) );
-		$new_fields['billing']['title'] = __( 'Endereço de cobrança', 'flexify-checkout-for-woocommerce' );
+		$new_fields['billing']['title'] = __( 'EndereÃ§o de cobranÃ§a', 'flexify-checkout-for-woocommerce' );
 		
 		foreach ( $custom_fields as $index => $value ) {
 			if ( isset( $value['source'] ) && $value['source'] !== 'native' && $value['type'] !== 'select' ) {
@@ -978,7 +979,7 @@ class Fields {
 			'last_name',
 		);
 
-		$fields['address_2']['label'] = __( 'Apartamento, suíte, unidade etc.', 'flexify-checkout-for-woocommerce' );
+		$fields['address_2']['label'] = __( 'Apartamento, suÃ­te, unidade etc.', 'flexify-checkout-for-woocommerce' );
 
 		// Otherwise remove the placeholders.
 		foreach ( $fields_to_remove_placeholder as $index ) {
@@ -1041,8 +1042,8 @@ class Fields {
 	 * @return string
 	 */
 	public static function modify_form_field_html( $field, $key, $args, $value ) {
-		$field_required = __( 'Este campo é obrigatório', 'flexify-checkout-for-woocommerce' );
-		$valid_number = __( 'Por favor insira um número de telefone válido', 'flexify-checkout-for-woocommerce' );
+		$field_required = __( 'Este campo Ã© obrigatÃ³rio', 'flexify-checkout-for-woocommerce' );
+		$valid_number = __( 'Por favor insira um nÃºmero de telefone vÃ¡lido', 'flexify-checkout-for-woocommerce' );
 
 		if ( 'billing_phone' === $key || 'shipping_phone' === $key ) {
 			return str_replace( '</p>', "<span class=\".error\">$valid_number</span></p>", $field );
@@ -1107,7 +1108,7 @@ class Fields {
 		$field_is_required = ! empty( $args['required'] );
 
 		if ( $field_is_required || ( isset( $args['class'] ) && $args['class'] === 'required-field' ) ) {
-			$message = sprintf( __( '%s é um campo obrigatório.', 'flexify-checkout-for-woocommerce' ), esc_html( $field_label ) );
+			$message = sprintf( __( '%s Ã© um campo obrigatÃ³rio.', 'flexify-checkout-for-woocommerce' ), esc_html( $field_label ) );
 
 			/**
 			 * Filters the required field error message
@@ -1125,7 +1126,7 @@ class Fields {
 		if ( $field_is_required && $value ) {
 			if ( 'country' === $field_type && property_exists( WC()->countries, 'country_exists' ) && WC()->countries && ! WC()->countries->country_exists( $value ) ) {
 				/* translators: ISO 3166-1 alpha-2 country code */
-				$message = sprintf( __( "'%s' não é um código de país válido.", 'flexify-checkout-for-woocommerce' ), esc_html( $field_label ) );
+				$message = sprintf( __( "'%s' nÃ£o Ã© um cÃ³digo de paÃ­s vÃ¡lido.", 'flexify-checkout-for-woocommerce' ), esc_html( $field_label ) );
 				$custom  = true;
 			}
 
@@ -1133,12 +1134,12 @@ class Fields {
 				switch ( $country ) {
 					case 'IE':
 						/* translators: %1$s: field name, %2$s finder.eircode.ie URL */
-						$message = sprintf( __( '%1$s não é válido. Você pode procurar o Eircode correto <a target="_blank" href="%2$s">aqui</a>.', 'flexify-checkout-for-woocommerce' ), esc_html( $field_label ), 'https://finder.eircode.ie' );
+						$message = sprintf( __( '%1$s nÃ£o Ã© vÃ¡lido. VocÃª pode procurar o Eircode correto <a target="_blank" href="%2$s">aqui</a>.', 'flexify-checkout-for-woocommerce' ), esc_html( $field_label ), 'https://finder.eircode.ie' );
 						$custom  = true;
 						break;
 					default:
 						/* translators: %s: field name */
-						$message = sprintf( __( '%s não é um código postal válido.', 'flexify-checkout-for-woocommerce' ), esc_html( $field_label ) );
+						$message = sprintf( __( '%s nÃ£o Ã© um cÃ³digo postal vÃ¡lido.', 'flexify-checkout-for-woocommerce' ), esc_html( $field_label ) );
 						$custom  = true;
 						break;
 				}
@@ -1147,25 +1148,25 @@ class Fields {
 			// validate if phone is valid
 			if ( strpos( $key, 'phone' ) !== false ) {
 				if ( ! \WC_Validation::is_phone( $value ) || Admin_Options::get_setting('enable_ddi_phone_field') && ! Utils::is_valid_phone( $value ) ) {
-					$message = sprintf( __( '%s não é um número de telefone válido.', 'flexify-checkout-for-woocommerce' ), esc_html( $field_label ) );
+					$message = sprintf( __( '%s nÃ£o Ã© um nÃºmero de telefone vÃ¡lido.', 'flexify-checkout-for-woocommerce' ), esc_html( $field_label ) );
 					$custom  = true;
 				}
 			}
 
 			// add compatibility with multiple cpf fields
 			if ( strpos( $key, 'billing_cpf' ) !== false && ! Utils::validate_cpf( $value ) || ( isset( $args['class'] ) && 'validate-cpf-field' === $args['class'] && ! Utils::validate_cpf( $value ) ) ) {
-				$message = sprintf( __('O %s informado não é válido.', 'flexify-checkout-for-woocommerce'), esc_html( $field_label ) );
+				$message = sprintf( __('O %s informado nÃ£o Ã© vÃ¡lido.', 'flexify-checkout-for-woocommerce'), esc_html( $field_label ) );
 				$custom  = true;
 			}
 
 			// add compatibility with multiple cnpj fields
 			if ( strpos( $key, 'billing_cnpj' ) !== false && ! Utils::validate_cnpj( $value ) || ( isset( $args['class'] ) && 'validate-cnpj-field' === $args['class'] && ! Utils::validate_cnpj( $value ) ) ) {
-				$message = sprintf(__('O %s informado não é válido.', 'flexify-checkout-for-woocommerce'), esc_html( $field_label ) );
+				$message = sprintf(__('O %s informado nÃ£o Ã© vÃ¡lido.', 'flexify-checkout-for-woocommerce'), esc_html( $field_label ) );
 				$custom  = true;
 			}
 
 			if ( 'email' === $field_type && ! is_email( $value ) || ( isset( $args['class'] ) && 'validate-email-field' === $args['class'] && ! is_email( $value ) ) ) {
-				$message = sprintf( __('%s não é um endereço de e-mail válido.', 'flexify-checkout-for-woocommerce'), esc_html( $field_label ) );
+				$message = sprintf( __('%s nÃ£o Ã© um endereÃ§o de e-mail vÃ¡lido.', 'flexify-checkout-for-woocommerce'), esc_html( $field_label ) );
 				$custom  = true;
 			}
 
@@ -1177,7 +1178,7 @@ class Fields {
 				 * @version 5.0.0
 				 * @return string
 				 */
-				$message = apply_filters( 'Flexify_Checkout/Checkout/Fields/Email_Exists_Message', sprintf( __( 'Uma conta já está registrada com este endereço de e-mail. <a href="#" data-login>Deseja entrar na sua conta?</a>', 'flexify-checkout-for-woocommerce' ), '' ) );
+				$message = apply_filters( 'Flexify_Checkout/Checkout/Fields/Email_Exists_Message', sprintf( __( 'Uma conta jÃ¡ estÃ¡ registrada com este endereÃ§o de e-mail. <a href="#" data-login>Deseja entrar na sua conta?</a>', 'flexify-checkout-for-woocommerce' ), '' ) );
 				$message_type = 'info';
 			}
 		}
@@ -1597,7 +1598,7 @@ class Fields {
 
 		if ( ! $has_successful_response ) {
 			$errors->add( 'invalid_postcode',
-				__( 'CEP inválido.', 'flexify-checkout-for-woocommerce' ),
+				__( 'CEP invÃ¡lido.', 'flexify-checkout-for-woocommerce' ),
 				[ 'id' => 'billing_postcode' ]
 			);
 
@@ -1616,9 +1617,10 @@ class Fields {
 
 		if ( ! $city_matches || ! $state_matches ) {
 			$errors->add( 'invalid_postcode_region',
-				__( 'O CEP informado não pertence à cidade/UF selecionados.', 'flexify-checkout-for-woocommerce' ),
+				__( 'O CEP informado nÃ£o pertence Ã  cidade/UF selecionados.', 'flexify-checkout-for-woocommerce' ),
 				[ 'id' => 'billing_postcode' ]
 			);
 		}
 	}
 }
+

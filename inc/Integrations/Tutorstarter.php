@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace MeuMouse\Flexify_Checkout\Integrations;
 
@@ -19,7 +19,8 @@ defined('ABSPATH') || exit;
  *
  * @since 3.8.8
  * @version 5.3.0
- * @package MeuMouse.com
+
+ * @author MeuMouse.com
  */
 class Tutorstarter {
 

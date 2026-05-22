@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace MeuMouse\Flexify_Checkout\Cron;
 
@@ -12,7 +12,8 @@ defined('ABSPATH') || exit;
  * Class for handle with Cron routines
  * 
  * @since 5.0.0
- * @package MeuMouse.com
+
+ * @author MeuMouse.com
  */
 class Routines {
 

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace MeuMouse\Flexify_Checkout\Integrations;
 
@@ -13,7 +13,8 @@ if ( defined('AVANAM_VERSION') ) {
 	 * Compatibility with Avanam theme
 	 *
 	 * @since 5.3.0
-	 * @package MeuMouse.com
+
+ * @author MeuMouse.com
 	 */
 	class Avanam {
 

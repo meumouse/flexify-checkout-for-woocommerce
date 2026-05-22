@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace MeuMouse\Flexify_Checkout\Integrations;
 
@@ -12,7 +12,8 @@ if ( function_exists('tokoo_customer_details_open') ) {
      * @since 1.0.0
      * @version 5.0.0
      * @link https://themeforest.net/item/tokoo-electronics-store-woocommerce-theme-for-affiliates-dropship-and-multivendor-websites/22359036
-     * @package MeuMouse.com
+
+ * @author MeuMouse.com
      */
     class Tokoo {
 

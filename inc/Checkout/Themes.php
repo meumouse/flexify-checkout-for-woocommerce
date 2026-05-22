@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace MeuMouse\Flexify_Checkout\Checkout;
 
@@ -11,7 +11,8 @@ defined('ABSPATH') || exit;
  * Handle with Flexify Checkout theme templates
  *
  * @since 5.0.0
- * @package MeuMouse.com
+
+ * @author MeuMouse.com
  */
 class Themes {
 

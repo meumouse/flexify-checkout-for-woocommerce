@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace MeuMouse\Flexify_Checkout\Integrations;
 
@@ -12,7 +12,8 @@ if ( class_exists('WC_Gateway_Loja5_Woo_Cielo_Webservice') ) {
 	 * @since 3.2.0
 	 * @version 5.0.0
 	 * @see https://www.loja5.com.br/plugin-woocommerce-pagamento-cielo-api-cartao-boleto-pix-p676c271c285.html
-	 * @package MeuMouse.com
+
+ * @author MeuMouse.com
 	 */
 	class Cielo_Loja5 {
 

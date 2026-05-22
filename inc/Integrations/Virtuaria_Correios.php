@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace MeuMouse\Flexify_Checkout\Integrations;
 
@@ -13,7 +13,8 @@ if ( class_exists('Virtuaria_Correios') ) {
      *
      * @since 5.1.0
      * @see 
-     * @package MeuMouse.com
+
+ * @author MeuMouse.com
      */
     class Virtuaria_Correios {
 

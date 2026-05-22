@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace MeuMouse\Flexify_Checkout\Integrations;
 
@@ -8,15 +8,16 @@ defined('ABSPATH') || exit;
 /**
  * Compatibility with SuperFrete 3.3.x.
  *
- * @since 5.4.3
- * @package MeuMouse.com
+ * @since 5.5.0
+
+ * @author MeuMouse.com
  */
 class Superfrete {
 
     /**
      * SuperFrete required fields map.
      *
-     * @since 5.4.3
+     * @since 5.5.0
      * @var array
      */
     const REQUIRED_FIELDS = array(
@@ -62,7 +63,7 @@ class Superfrete {
     /**
      * Construct function.
      *
-     * @since 5.4.3
+     * @since 5.5.0
      * @return void
      */
     public function __construct() {
@@ -76,7 +77,7 @@ class Superfrete {
     /**
      * Check if SuperFrete is active.
      *
-     * @since 5.4.3
+     * @since 5.5.0
      * @return bool
      */
     public static function is_active() {
@@ -87,7 +88,7 @@ class Superfrete {
     /**
      * Remove old SuperFrete action that can duplicate shipping rows.
      *
-     * @since 5.4.3
+     * @since 5.5.0
      * @return void
      */
     public function remove_legacy_actions() {
@@ -112,7 +113,7 @@ class Superfrete {
     /**
      * Ensure required SuperFrete fields exist and are required in checkout.
      *
-     * @since 5.4.3
+     * @since 5.5.0
      * @param array $fields Checkout fields.
      * @return array
      */
@@ -176,7 +177,7 @@ class Superfrete {
     /**
      * Append SuperFrete flags to frontend script data.
      *
-     * @since 5.4.3
+     * @since 5.5.0
      * @param array $params Script params.
      * @return array
      */
@@ -190,7 +191,7 @@ class Superfrete {
     /**
      * Ensure Flexify step fields include SuperFrete required fields metadata.
      *
-     * @since 5.4.3
+     * @since 5.5.0
      * @return void
      */
     public function ensure_step_fields_registry() {
@@ -243,3 +244,4 @@ class Superfrete {
         }
     }
 }
+

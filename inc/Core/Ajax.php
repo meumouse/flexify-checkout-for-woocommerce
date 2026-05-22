@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace MeuMouse\Flexify_Checkout\Core;
 
@@ -17,7 +17,8 @@ defined('ABSPATH') || exit;
  *
  * @since 1.0.0
  * @version 5.4.0
- * @package MeuMouse.com
+
+ * @author MeuMouse.com
  */
 class Ajax {
 
@@ -175,7 +176,7 @@ class Ajax {
 			}
 
 			if ( empty( $credentials['user_login'] ) ) {
-				throw new \Exception( '<strong>' . __( 'Erro:', 'flexify-checkout-for-woocommerce' ) . '</strong> ' . __( 'Usuário é obrigatório.', 'flexify-checkout-for-woocommerce' ) );
+				throw new \Exception( '<strong>' . __( 'Erro:', 'flexify-checkout-for-woocommerce' ) . '</strong> ' . __( 'UsuÃ¡rio Ã© obrigatÃ³rio.', 'flexify-checkout-for-woocommerce' ) );
 			}
 
 			// On multisite, ensure user exists on current site, if not add them before allowing login.
@@ -365,14 +366,14 @@ class Ajax {
 				$response = array(
 					'status' => 'success',
 					'toast_header_title' => esc_html__( 'Salvo com sucesso', 'flexify-checkout-for-woocommerce' ),
-					'toast_body_title' => esc_html__( 'As configurações foram atualizadas!', 'flexify-checkout-for-woocommerce' ),
+					'toast_body_title' => esc_html__( 'As configuraÃ§Ãµes foram atualizadas!', 'flexify-checkout-for-woocommerce' ),
 					'options' => $updated_options,
 				);
 			} else {
 				$response = array(
 					'status' => 'error',
 					'toast_header_title' => esc_html__( 'Ops! Ocorreu um erro.', 'flexify-checkout-for-woocommerce' ),
-					'toast_body_title' => esc_html__( 'Não foi possível salvar as configurações.', 'flexify-checkout-for-woocommerce' ),
+					'toast_body_title' => esc_html__( 'NÃ£o foi possÃ­vel salvar as configuraÃ§Ãµes.', 'flexify-checkout-for-woocommerce' ),
 					'options' => $updated_options,
 				);
 			}
@@ -474,7 +475,7 @@ class Ajax {
 					$response = array(
 						'status' => 'error',
 						'toast_header_title' => esc_html__( 'Ops! Ocorreu um erro.', 'flexify-checkout-for-woocommerce' ),
-						'toast_body_title' => esc_html__( 'Ocorreu um erro ao redefinir as configurações.', 'flexify-checkout-for-woocommerce' ),
+						'toast_body_title' => esc_html__( 'Ocorreu um erro ao redefinir as configuraÃ§Ãµes.', 'flexify-checkout-for-woocommerce' ),
 					);
 				}
 
@@ -583,7 +584,7 @@ class Ajax {
 					$response = array(
 						'status' => 'success',
 						'toast_header_title' => esc_html( 'Novo campo adicionado', 'flexify-checkout-for-woocommerce' ),
-						'toast_body_title' => esc_html( 'Novo campo para finalização de compras adicionado com sucesso!', 'flexify-checkout-for-woocommerce' ),
+						'toast_body_title' => esc_html( 'Novo campo para finalizaÃ§Ã£o de compras adicionado com sucesso!', 'flexify-checkout-for-woocommerce' ),
 						'field_html' => $field_html,
 					);
 				} else {
@@ -611,7 +612,7 @@ class Ajax {
 		if ( ! isset( $_POST['action'] ) || $_POST['action'] !== 'alternative_activation_license' ) {
 			$response = array(
 				'status' => 'error',
-				'message' => __( 'Erro ao carregar o arquivo. A ação não foi acionada corretamente.', 'flexify-checkout-for-woocommerce' ),
+				'message' => __( 'Erro ao carregar o arquivo. A aÃ§Ã£o nÃ£o foi acionada corretamente.', 'flexify-checkout-for-woocommerce' ),
 			);
 
 			wp_send_json( $response );
@@ -621,7 +622,7 @@ class Ajax {
 		if ( empty( $_FILES['file'] ) ) {
 			$response = array(
 				'status' => 'error',
-				'message' => __( 'Erro ao carregar o arquivo. O arquivo não foi enviado.', 'flexify-checkout-for-woocommerce' ),
+				'message' => __( 'Erro ao carregar o arquivo. O arquivo nÃ£o foi enviado.', 'flexify-checkout-for-woocommerce' ),
 			);
 
 			wp_send_json( $response );
@@ -629,17 +630,17 @@ class Ajax {
 
 		$file = $_FILES['file'];
 
-		// Verifica se é um arquivo .key
+		// Verifica se Ã© um arquivo .key
 		if ( pathinfo( $file['name'], PATHINFO_EXTENSION ) !== 'key' ) {
 			$response = array(
 				'status' => 'invalid_file',
-				'message' => __( 'Arquivo inválido. O arquivo deve ser um .crt ou .key.', 'flexify-checkout-for-woocommerce' ),
+				'message' => __( 'Arquivo invÃ¡lido. O arquivo deve ser um .crt ou .key.', 'flexify-checkout-for-woocommerce' ),
 			);
 			
 			wp_send_json( $response );
 		}
 
-		// Lê o conteúdo do arquivo
+		// LÃª o conteÃºdo do arquivo
 		$file_content = file_get_contents( $file['tmp_name'] );
 
 		$decrypt_keys = array(
@@ -654,12 +655,12 @@ class Ajax {
 			
 			$response = array(
 				'status' => 'success',
-				'message' => __( 'Licença enviada e decriptografada com sucesso.', 'flexify-checkout-for-woocommerce' ),
+				'message' => __( 'LicenÃ§a enviada e decriptografada com sucesso.', 'flexify-checkout-for-woocommerce' ),
 			);
 		} else {
 			$response = array(
 				'status' => 'error',
-				'message' => __( 'Não foi possível descriptografar o arquivo de licença.', 'flexify-checkout-for-woocommerce' ),
+				'message' => __( 'NÃ£o foi possÃ­vel descriptografar o arquivo de licenÃ§a.', 'flexify-checkout-for-woocommerce' ),
 			);
 		}
 
@@ -728,8 +729,8 @@ class Ajax {
 		if ( ! current_user_can('manage_options') ) {
 			wp_send_json( array(
 				'status' => 'error',
-				'toast_header_title' => esc_html__( 'Ação não permitida', 'flexify-checkout-for-woocommerce' ),
-				'toast_body_title' => esc_html__( 'Você não tem permissão para gerenciar fontes.', 'flexify-checkout-for-woocommerce' ),
+				'toast_header_title' => esc_html__( 'AÃ§Ã£o nÃ£o permitida', 'flexify-checkout-for-woocommerce' ),
+				'toast_body_title' => esc_html__( 'VocÃª nÃ£o tem permissÃ£o para gerenciar fontes.', 'flexify-checkout-for-woocommerce' ),
 			));
 		}
 
@@ -741,7 +742,7 @@ class Ajax {
 			wp_send_json( array(
 				'status' => 'error',
 				'toast_header_title' => esc_html__( 'Erro ao salvar fonte', 'flexify-checkout-for-woocommerce' ),
-				'toast_body_title' => esc_html__( 'Informe um identificador e um nome válidos para a fonte.', 'flexify-checkout-for-woocommerce' ),
+				'toast_body_title' => esc_html__( 'Informe um identificador e um nome vÃ¡lidos para a fonte.', 'flexify-checkout-for-woocommerce' ),
 			));
 		}
 
@@ -753,7 +754,7 @@ class Ajax {
 			wp_send_json( array(
 				'status' => 'error',
 				'toast_header_title' => esc_html__( 'Erro ao salvar fonte', 'flexify-checkout-for-woocommerce' ),
-				'toast_body_title' => esc_html__( 'Este identificador é reservado para as fontes padrão.', 'flexify-checkout-for-woocommerce' ),
+				'toast_body_title' => esc_html__( 'Este identificador Ã© reservado para as fontes padrÃ£o.', 'flexify-checkout-for-woocommerce' ),
 			));
 		}
 
@@ -762,7 +763,7 @@ class Ajax {
 				'status' => 'error',
 				'font_exists' => true,
 				'toast_header_title' => esc_html__( 'Erro ao salvar fonte', 'flexify-checkout-for-woocommerce' ),
-				'toast_body_title' => esc_html__( 'Ops! Essa fonte já existe.', 'flexify-checkout-for-woocommerce' ),
+				'toast_body_title' => esc_html__( 'Ops! Essa fonte jÃ¡ existe.', 'flexify-checkout-for-woocommerce' ),
 			));
 		}
 
@@ -778,7 +779,7 @@ class Ajax {
 				wp_send_json( array(
 					'status' => 'error',
 					'toast_header_title' => esc_html__( 'Erro ao salvar fonte', 'flexify-checkout-for-woocommerce' ),
-					'toast_body_title' => esc_html__( 'Informe a URL de incorporação do Google Fonts.', 'flexify-checkout-for-woocommerce' ),
+					'toast_body_title' => esc_html__( 'Informe a URL de incorporaÃ§Ã£o do Google Fonts.', 'flexify-checkout-for-woocommerce' ),
 				));
 			}
 
@@ -802,7 +803,7 @@ class Ajax {
 					wp_send_json( array(
 						'status' => 'error',
 						'toast_header_title' => esc_html__( 'Erro ao salvar fonte', 'flexify-checkout-for-woocommerce' ),
-						'toast_body_title' => esc_html__( 'Extensão inválida. Use WOFF, WOFF2 ou TTF.', 'flexify-checkout-for-woocommerce' ),
+						'toast_body_title' => esc_html__( 'ExtensÃ£o invÃ¡lida. Use WOFF, WOFF2 ou TTF.', 'flexify-checkout-for-woocommerce' ),
 					));
 				}
 
@@ -855,7 +856,7 @@ class Ajax {
 				'font' => $fonts_updated[ $font_id ],
 				'fonts' => $fonts_updated,
 				'toast_header_title' => esc_html__( 'Fonte salva', 'flexify-checkout-for-woocommerce' ),
-				'toast_body_title' => esc_html__( 'As configurações da fonte foram salvas com sucesso!', 'flexify-checkout-for-woocommerce' ),
+				'toast_body_title' => esc_html__( 'As configuraÃ§Ãµes da fonte foram salvas com sucesso!', 'flexify-checkout-for-woocommerce' ),
 				'current_font' => Admin_Options::get_setting('set_font_family'),
 				'is_new' => $request_is_new ? 'yes' : 'no',
 			));
@@ -864,7 +865,7 @@ class Ajax {
 		wp_send_json( array(
 			'status' => 'error',
 			'toast_header_title' => esc_html__( 'Erro ao salvar fonte', 'flexify-checkout-for-woocommerce' ),
-			'toast_body_title' => esc_html__( 'Ops! Não foi possível salvar a fonte.', 'flexify-checkout-for-woocommerce' ),
+			'toast_body_title' => esc_html__( 'Ops! NÃ£o foi possÃ­vel salvar a fonte.', 'flexify-checkout-for-woocommerce' ),
 		));
 	}
 
@@ -881,8 +882,8 @@ class Ajax {
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_send_json( array(
 				'status' => 'error',
-				'toast_header_title' => esc_html__( 'Ação não permitida', 'flexify-checkout-for-woocommerce' ),
-				'toast_body_title' => esc_html__( 'Você não tem permissão para gerenciar fontes.', 'flexify-checkout-for-woocommerce' ),
+				'toast_header_title' => esc_html__( 'AÃ§Ã£o nÃ£o permitida', 'flexify-checkout-for-woocommerce' ),
+				'toast_body_title' => esc_html__( 'VocÃª nÃ£o tem permissÃ£o para gerenciar fontes.', 'flexify-checkout-for-woocommerce' ),
 			));
 		}
 
@@ -892,7 +893,7 @@ class Ajax {
 			wp_send_json( array(
 				'status' => 'error',
 				'toast_header_title' => esc_html__( 'Erro ao remover fonte', 'flexify-checkout-for-woocommerce' ),
-				'toast_body_title' => esc_html__( 'Fonte inválida informada.', 'flexify-checkout-for-woocommerce' ),
+				'toast_body_title' => esc_html__( 'Fonte invÃ¡lida informada.', 'flexify-checkout-for-woocommerce' ),
 			));
 		}
 
@@ -900,7 +901,7 @@ class Ajax {
 			wp_send_json( array(
 				'status' => 'error',
 				'toast_header_title' => esc_html__( 'Erro ao remover fonte', 'flexify-checkout-for-woocommerce' ),
-				'toast_body_title' => esc_html__( 'Fontes padrão não podem ser excluídas.', 'flexify-checkout-for-woocommerce' ),
+				'toast_body_title' => esc_html__( 'Fontes padrÃ£o nÃ£o podem ser excluÃ­das.', 'flexify-checkout-for-woocommerce' ),
 			));
 		}
 
@@ -910,7 +911,7 @@ class Ajax {
 			wp_send_json( array(
 				'status' => 'error',
 				'toast_header_title' => esc_html__( 'Erro ao remover fonte', 'flexify-checkout-for-woocommerce' ),
-				'toast_body_title' => esc_html__( 'Fonte não encontrada.', 'flexify-checkout-for-woocommerce' ),
+				'toast_body_title' => esc_html__( 'Fonte nÃ£o encontrada.', 'flexify-checkout-for-woocommerce' ),
 			));
 		}
 
@@ -933,7 +934,7 @@ class Ajax {
 		wp_send_json( array(
 			'status' => 'error',
 			'toast_header_title' => esc_html__( 'Erro ao remover fonte', 'flexify-checkout-for-woocommerce' ),
-			'toast_body_title' => esc_html__( 'Ops! Não foi possível remover a fonte.', 'flexify-checkout-for-woocommerce' ),
+			'toast_body_title' => esc_html__( 'Ops! NÃ£o foi possÃ­vel remover a fonte.', 'flexify-checkout-for-woocommerce' ),
 		));
 	}
 
@@ -1079,7 +1080,7 @@ class Ajax {
 					echo '<li class="list-group-item" data-user-id="' . $user->ID . '">' . $user->display_name . '</li>';
 				}
 			} else {
-				echo esc_html__( 'Nenhum usuário encontrado.', 'flexify-checkout-for-woocommerce' );
+				echo esc_html__( 'Nenhum usuÃ¡rio encontrado.', 'flexify-checkout-for-woocommerce' );
 			}
 
 			wp_die(); // end ajax call
@@ -1169,13 +1170,13 @@ class Ajax {
 				}
 
 				$condition = array(
-					'is' => esc_html__( 'É', 'flexify-checkout-for-woocommerce' ),
-					'is_not' => esc_html__( 'Não é', 'flexify-checkout-for-woocommerce' ),
+					'is' => esc_html__( 'Ã‰', 'flexify-checkout-for-woocommerce' ),
+					'is_not' => esc_html__( 'NÃ£o Ã©', 'flexify-checkout-for-woocommerce' ),
 					'empty' => esc_html__( 'Vazio', 'flexify-checkout-for-woocommerce' ),
-					'not_empty' => esc_html__( 'Não está vazio', 'flexify-checkout-for-woocommerce' ),
-					'contains' => esc_html__( 'Contém', 'flexify-checkout-for-woocommerce' ),
-					'not_contain' => esc_html__( 'Não contém', 'flexify-checkout-for-woocommerce' ),
-					'start_with' => esc_html__( 'Começa com', 'flexify-checkout-for-woocommerce' ),
+					'not_empty' => esc_html__( 'NÃ£o estÃ¡ vazio', 'flexify-checkout-for-woocommerce' ),
+					'contains' => esc_html__( 'ContÃ©m', 'flexify-checkout-for-woocommerce' ),
+					'not_contain' => esc_html__( 'NÃ£o contÃ©m', 'flexify-checkout-for-woocommerce' ),
+					'start_with' => esc_html__( 'ComeÃ§a com', 'flexify-checkout-for-woocommerce' ),
 					'finish_with' => esc_html__( 'Termina com', 'flexify-checkout-for-woocommerce' ),
 					'bigger_then' => esc_html__( 'Maior que', 'flexify-checkout-for-woocommerce' ),
 					'less_than' => esc_html__( 'Menor que', 'flexify-checkout-for-woocommerce' ),
@@ -1187,9 +1188,9 @@ class Ajax {
 
 				$response = array(
 					'status' => 'success',
-					'toast_header_title' => esc_html( 'Nova condição adicionada', 'flexify-checkout-for-woocommerce' ),
-					'toast_body_title' => esc_html( 'Condição criada com sucesso!', 'flexify-checkout-for-woocommerce' ),
-					'condition_line_1' => sprintf( esc_html__( 'Condição: %s %s', 'flexify-checkout-for-woocommerce' ), $condition_type[$form_condition['type_rule']], $component_type_label ),
+					'toast_header_title' => esc_html( 'Nova condiÃ§Ã£o adicionada', 'flexify-checkout-for-woocommerce' ),
+					'toast_body_title' => esc_html( 'CondiÃ§Ã£o criada com sucesso!', 'flexify-checkout-for-woocommerce' ),
+					'condition_line_1' => sprintf( esc_html__( 'CondiÃ§Ã£o: %s %s', 'flexify-checkout-for-woocommerce' ), $condition_type[$form_condition['type_rule']], $component_type_label ),
 					'condition_line_2' => sprintf( esc_html__( 'Se: %s %s %s', 'flexify-checkout-for-woocommerce' ), $component_verification_label, mb_strtolower( $condition[$form_condition['condition']] ), $condition_value ),
 				);
 
@@ -1201,7 +1202,7 @@ class Ajax {
 			} else {
 				$response = array(
 					'status' => 'error',
-					'error_message' => esc_html__( 'Ops! Não foi possível criar uma nova condição.', 'flexify-checkout-for-woocommerce' ),
+					'error_message' => esc_html__( 'Ops! NÃ£o foi possÃ­vel criar uma nova condiÃ§Ã£o.', 'flexify-checkout-for-woocommerce' ),
 				);
 			}
 
@@ -1231,21 +1232,21 @@ class Ajax {
 				if ( $update_conditions ) {
 					$response = array(
 						'status' => 'success',
-						'toast_header_title' => esc_html( 'Excluído com sucesso', 'flexify-checkout-for-woocommerce' ),
-						'toast_body_title' => esc_html( 'Condição excluída com sucesso!', 'flexify-checkout-for-woocommerce' ),
+						'toast_header_title' => esc_html( 'ExcluÃ­do com sucesso', 'flexify-checkout-for-woocommerce' ),
+						'toast_body_title' => esc_html( 'CondiÃ§Ã£o excluÃ­da com sucesso!', 'flexify-checkout-for-woocommerce' ),
 					);
 			
 					if ( empty( $get_conditions ) ) {
 						$response[] = array(
 							'empty_conditions' => 'yes',
-							'empty_conditions_message' => esc_html( 'Ainda não existem condições.', 'flexify-checkout-for-woocommerce' ),
+							'empty_conditions_message' => esc_html( 'Ainda nÃ£o existem condiÃ§Ãµes.', 'flexify-checkout-for-woocommerce' ),
 						);
 					}
 				} else {
 					$response = array(
 						'status' => 'error',
 						'toast_header_title' => esc_html( 'Erro ao excluir', 'flexify-checkout-for-woocommerce' ),
-						'toast_body_title' => esc_html( 'Ops! Não foi possível excluir a condição.', 'flexify-checkout-for-woocommerce' ),
+						'toast_body_title' => esc_html( 'Ops! NÃ£o foi possÃ­vel excluir a condiÃ§Ã£o.', 'flexify-checkout-for-woocommerce' ),
 					);
 				}
 		
@@ -1283,7 +1284,7 @@ class Ajax {
 				$response = array(
 					'status' => 'error',
 					'toast_header_title' => esc_html( 'Erro ao adicionar', 'flexify-checkout-for-woocommerce' ),
-					'toast_body_title' => esc_html( 'Ops! Não foi possível adicionar o novo provedor.', 'flexify-checkout-for-woocommerce' ),
+					'toast_body_title' => esc_html( 'Ops! NÃ£o foi possÃ­vel adicionar o novo provedor.', 'flexify-checkout-for-woocommerce' ),
 				);
 			}
 
@@ -1322,7 +1323,7 @@ class Ajax {
 					$response = array(
 						'status' => 'error',
 						'toast_header_title' => esc_html( 'Erro ao remover', 'flexify-checkout-for-woocommerce' ),
-						'toast_body_title' => esc_html( 'Ops! Não foi possível remover o provedor de e-mail.', 'flexify-checkout-for-woocommerce' ),
+						'toast_body_title' => esc_html( 'Ops! NÃ£o foi possÃ­vel remover o provedor de e-mail.', 'flexify-checkout-for-woocommerce' ),
 					);
 				}
 
@@ -1369,14 +1370,14 @@ class Ajax {
 
                 $response = array(
                     'status' => 'success',
-                    'toast_header_title' => esc_html__( 'A licença foi desativada', 'flexify-checkout-for-woocommerce' ),
-                    'toast_body_title' => esc_html__( 'Todos os recursos da versão Pro agora estão desativados!', 'flexify-checkout-for-woocommerce' ),
+                    'toast_header_title' => esc_html__( 'A licenÃ§a foi desativada', 'flexify-checkout-for-woocommerce' ),
+                    'toast_body_title' => esc_html__( 'Todos os recursos da versÃ£o Pro agora estÃ£o desativados!', 'flexify-checkout-for-woocommerce' ),
                 );
             } else {
                 $response = array(
                     'status' => 'error',
                     'toast_header_title' => esc_html__( 'Ops! Ocorreu um erro.', 'flexify-checkout-for-woocommerce' ),
-                    'toast_body_title' => esc_html__( 'Ocorreu um erro ao desativar sua licença.', 'flexify-checkout-for-woocommerce' ),
+                    'toast_body_title' => esc_html__( 'Ocorreu um erro ao desativar sua licenÃ§a.', 'flexify-checkout-for-woocommerce' ),
                 );
             }
 
@@ -1410,14 +1411,14 @@ class Ajax {
 
                 $response = array(
                     'status' => 'success',
-                    'toast_header_title' => esc_html__( 'As opções foram redefinidas', 'flexify-checkout-for-woocommerce' ),
-                    'toast_body_title' => esc_html__( 'As opções foram redefinidas com sucesso!', 'flexify-checkout-for-woocommerce' ),
+                    'toast_header_title' => esc_html__( 'As opÃ§Ãµes foram redefinidas', 'flexify-checkout-for-woocommerce' ),
+                    'toast_body_title' => esc_html__( 'As opÃ§Ãµes foram redefinidas com sucesso!', 'flexify-checkout-for-woocommerce' ),
                 );
             } else {
                 $response = array(
                     'status' => 'error',
                     'toast_header_title' => esc_html__( 'Ops! Ocorreu um erro.', 'flexify-checkout-for-woocommerce' ),
-                    'toast_body_title' => esc_html__( 'Ocorreu um erro ao redefinir as configurações.', 'flexify-checkout-for-woocommerce' ),
+                    'toast_body_title' => esc_html__( 'Ocorreu um erro ao redefinir as configuraÃ§Ãµes.', 'flexify-checkout-for-woocommerce' ),
                 );
             }
 
@@ -1489,14 +1490,14 @@ class Ajax {
 				if ( $field_updated ) {
 					$response = array(
 						'status' => 'success',
-						'toast_header_title' => esc_html__('Opção removida', 'flexify-checkout-for-woocommerce'),
-						'toast_body_title' => esc_html__('A opção foi removida com sucesso!', 'flexify-checkout-for-woocommerce'),
+						'toast_header_title' => esc_html__('OpÃ§Ã£o removida', 'flexify-checkout-for-woocommerce'),
+						'toast_body_title' => esc_html__('A opÃ§Ã£o foi removida com sucesso!', 'flexify-checkout-for-woocommerce'),
 					);
 				} else {
 					$response = array(
 						'status' => 'error',
 						'toast_header_title' => esc_html__('Erro ao remover', 'flexify-checkout-for-woocommerce'),
-						'toast_body_title' => esc_html__('Ops! Não foi possível remover a opção.', 'flexify-checkout-for-woocommerce'),
+						'toast_body_title' => esc_html__('Ops! NÃ£o foi possÃ­vel remover a opÃ§Ã£o.', 'flexify-checkout-for-woocommerce'),
 					);
 				}
 
@@ -1505,7 +1506,7 @@ class Ajax {
 				$response = array(
 					'status' => 'error',
 					'toast_header_title' => esc_html__('Erro ao remover', 'flexify-checkout-for-woocommerce'),
-					'toast_body_title' => esc_html__('Ops! O campo não existe ou não é do tipo select.', 'flexify-checkout-for-woocommerce'),
+					'toast_body_title' => esc_html__('Ops! O campo nÃ£o existe ou nÃ£o Ã© do tipo select.', 'flexify-checkout-for-woocommerce'),
 				);
 
 				wp_send_json( $response );
@@ -1541,14 +1542,14 @@ class Ajax {
 				if ( $field_updated ) {
 					$response = array(
 						'status' => 'success',
-						'toast_header_title' => esc_html__('Nova opção adicionada', 'flexify-checkout-for-woocommerce'),
-						'toast_body_title' => esc_html__('A nova opção foi adicionada com sucesso!', 'flexify-checkout-for-woocommerce'),
+						'toast_header_title' => esc_html__('Nova opÃ§Ã£o adicionada', 'flexify-checkout-for-woocommerce'),
+						'toast_body_title' => esc_html__('A nova opÃ§Ã£o foi adicionada com sucesso!', 'flexify-checkout-for-woocommerce'),
 					);
 				} else {
 					$response = array(
 						'status' => 'error',
 						'toast_header_title' => esc_html__('Erro ao adicionar', 'flexify-checkout-for-woocommerce'),
-						'toast_body_title' => esc_html__('Ops! Não foi possível adicionar a nova opção.', 'flexify-checkout-for-woocommerce'),
+						'toast_body_title' => esc_html__('Ops! NÃ£o foi possÃ­vel adicionar a nova opÃ§Ã£o.', 'flexify-checkout-for-woocommerce'),
 					);
 				}
 
@@ -1557,7 +1558,7 @@ class Ajax {
 				$response = array(
 					'status' => 'error',
 					'toast_header_title' => esc_html__('Erro ao adicionar', 'flexify-checkout-for-woocommerce'),
-					'toast_body_title' => esc_html__('Ops! O campo não existe ou não é do tipo select.', 'flexify-checkout-for-woocommerce'),
+					'toast_body_title' => esc_html__('Ops! O campo nÃ£o existe ou nÃ£o Ã© do tipo select.', 'flexify-checkout-for-woocommerce'),
 				);
 
 				wp_send_json( $response );
@@ -1657,7 +1658,7 @@ class Ajax {
 
 			if ( ! $cart_item_key || ! WC()->cart->get_cart_item( $cart_item_key ) ) {
 				wp_send_json_error( array(
-					'message' => 'Produto não encontrado no carrinho.',
+					'message' => 'Produto nÃ£o encontrado no carrinho.',
 				));
 			}
 
@@ -1770,24 +1771,24 @@ class Ajax {
                 }
 
                 $date_format = get_option('date_format');
-                $status_html = '<span class="badge bg-translucent-danger rounded-pill">' . esc_html__( 'Inválida', 'flexify-checkout-for-woocommerce' ) . '</span>';
-                $features_html = '<span class="badge bg-translucent-warning rounded-pill">' . esc_html__( 'Básicos', 'flexify-checkout-for-woocommerce' ) . '</span>';
+                $status_html = '<span class="badge bg-translucent-danger rounded-pill">' . esc_html__( 'InvÃ¡lida', 'flexify-checkout-for-woocommerce' ) . '</span>';
+                $features_html = '<span class="badge bg-translucent-warning rounded-pill">' . esc_html__( 'BÃ¡sicos', 'flexify-checkout-for-woocommerce' ) . '</span>';
                 $type_text = '';
                 $expire_text = '';
 
                 if ( $obj->is_valid ) {
-                    $status_html = '<span class="badge bg-translucent-success rounded-pill">' . esc_html__( 'Válida', 'flexify-checkout-for-woocommerce' ) . '</span>';
+                    $status_html = '<span class="badge bg-translucent-success rounded-pill">' . esc_html__( 'VÃ¡lida', 'flexify-checkout-for-woocommerce' ) . '</span>';
                     $features_html = '<span class="badge bg-translucent-primary rounded-pill">' . esc_html__( 'Pro', 'flexify-checkout-for-woocommerce' ) . '</span>';
 
                     $expire_format = ( $obj->expire_date === 'No expiry' ) ? esc_html__( 'Nunca expira', 'flexify-checkout-for-woocommerce' ) : date( $date_format, strtotime( $obj->expire_date ) );
-                    $type_text = ( strpos( $obj->license_key, 'CM-' ) === 0 ) ? sprintf( esc_html__( 'Assinatura: Clube M - %s', 'flexify-checkout-for-woocommerce' ), $data->license_title ) : sprintf( esc_html__( 'Tipo da licença: %s', 'flexify-checkout-for-woocommerce' ), $data->license_title );
-                    $expire_text = sprintf( esc_html__( 'Licença expira em: %s', 'flexify-checkout-for-woocommerce' ), $expire_format );
+                    $type_text = ( strpos( $obj->license_key, 'CM-' ) === 0 ) ? sprintf( esc_html__( 'Assinatura: Clube M - %s', 'flexify-checkout-for-woocommerce' ), $data->license_title ) : sprintf( esc_html__( 'Tipo da licenÃ§a: %s', 'flexify-checkout-for-woocommerce' ), $data->license_title );
+                    $expire_text = sprintf( esc_html__( 'LicenÃ§a expira em: %s', 'flexify-checkout-for-woocommerce' ), $expire_format );
                 }
 
                 $response = array(
                     'status' => 'success',
-                    'toast_header_title' => esc_html__( 'Informações atualizadas', 'flexify-checkout-for-woocommerce' ),
-                    'toast_body_title' => esc_html__( 'A licença foi sincronizada com sucesso!', 'flexify-checkout-for-woocommerce' ),
+                    'toast_header_title' => esc_html__( 'InformaÃ§Ãµes atualizadas', 'flexify-checkout-for-woocommerce' ),
+                    'toast_body_title' => esc_html__( 'A licenÃ§a foi sincronizada com sucesso!', 'flexify-checkout-for-woocommerce' ),
                     'license' => array(
                         'status_html' => $status_html,
                         'features_html' => $features_html,
@@ -1799,7 +1800,7 @@ class Ajax {
                 $response = array(
                     'status' => 'error',
                     'toast_header_title' => esc_html__( 'Ops! Ocorreu um erro.', 'flexify-checkout-for-woocommerce' ),
-                    'toast_body_title' => esc_html__( 'Não foi possível sincronizar as informações da licença.', 'flexify-checkout-for-woocommerce' ),
+                    'toast_body_title' => esc_html__( 'NÃ£o foi possÃ­vel sincronizar as informaÃ§Ãµes da licenÃ§a.', 'flexify-checkout-for-woocommerce' ),
                 );
             }
 
@@ -1842,8 +1843,8 @@ class Ajax {
                 if ( License::is_valid() ) {
                     $response = array(
                         'status' => 'success',
-                        'toast_header_title' => __( 'Licença ativada com sucesso.', 'flexify-checkout-for-woocommerce' ),
-                        'toast_body_title' => __( 'Agora todos os recursos estão ativos!', 'flexify-checkout-for-woocommerce' ),
+                        'toast_header_title' => __( 'LicenÃ§a ativada com sucesso.', 'flexify-checkout-for-woocommerce' ),
+                        'toast_body_title' => __( 'Agora todos os recursos estÃ£o ativos!', 'flexify-checkout-for-woocommerce' ),
                     );
                 }
             } else {
@@ -1873,7 +1874,7 @@ class Ajax {
             wp_send_json( array(
                 'status' => 'error',
                 'toast_header' => __( 'Ops! Ocorreu um erro.', 'flexify-checkout-for-woocommerce' ),
-                'toast_body' => __( 'Erro ao carregar o arquivo. A ação não foi acionada corretamente.', 'flexify-checkout-for-woocommerce' ),
+                'toast_body' => __( 'Erro ao carregar o arquivo. A aÃ§Ã£o nÃ£o foi acionada corretamente.', 'flexify-checkout-for-woocommerce' ),
 			));
         }
 
@@ -1882,7 +1883,7 @@ class Ajax {
             wp_send_json( array(
                 'status' => 'error',
                 'toast_header' => __( 'Ops! Ocorreu um erro.', 'flexify-checkout-for-woocommerce' ),
-                'toast_body' => __( 'Erro ao carregar o arquivo. O arquivo não foi enviado.', 'flexify-checkout-for-woocommerce' ),
+                'toast_body' => __( 'Erro ao carregar o arquivo. O arquivo nÃ£o foi enviado.', 'flexify-checkout-for-woocommerce' ),
 			));
         }
 
@@ -1893,7 +1894,7 @@ class Ajax {
             wp_send_json( array(
                 'status' => 'invalid_file',
                 'toast_header' => __( 'Ops! Ocorreu um erro.', 'flexify-checkout-for-woocommerce' ),
-                'toast_body' => __( 'Arquivo inválido. O arquivo deve ser extensão .key', 'flexify-checkout-for-woocommerce' ),
+                'toast_body' => __( 'Arquivo invÃ¡lido. O arquivo deve ser extensÃ£o .key', 'flexify-checkout-for-woocommerce' ),
             ));
         }
 
@@ -1911,7 +1912,7 @@ class Ajax {
             wp_send_json( array(
                 'status' => 'error',
                 'toast_header' => __( 'Ops! Ocorreu um erro.', 'flexify-checkout-for-woocommerce' ),
-                'toast_body' => __( 'Não foi possível descriptografar o arquivo de licença.', 'flexify-checkout-for-woocommerce' ),
+                'toast_body' => __( 'NÃ£o foi possÃ­vel descriptografar o arquivo de licenÃ§a.', 'flexify-checkout-for-woocommerce' ),
 			));
         }
 
@@ -1922,7 +1923,7 @@ class Ajax {
             wp_send_json( array(
                 'status' => 'error',
                 'toast_header' => __( 'Ops! Ocorreu um erro.', 'flexify-checkout-for-woocommerce' ),
-                'toast_body' => __( 'O arquivo de licença não contém dados válidos.', 'flexify-checkout-for-woocommerce' ),
+                'toast_body' => __( 'O arquivo de licenÃ§a nÃ£o contÃ©m dados vÃ¡lidos.', 'flexify-checkout-for-woocommerce' ),
             ));
         }
 
@@ -1930,7 +1931,7 @@ class Ajax {
             wp_send_json( array(
                 'status' => 'error',
                 'toast_header' => __( 'Ops! Ocorreu um erro.', 'flexify-checkout-for-woocommerce' ),
-                'toast_body' => __( 'O domínio de ativação não é permitido.', 'flexify-checkout-for-woocommerce' ),
+                'toast_body' => __( 'O domÃ­nio de ativaÃ§Ã£o nÃ£o Ã© permitido.', 'flexify-checkout-for-woocommerce' ),
 			));
         }
 
@@ -1938,7 +1939,7 @@ class Ajax {
             wp_send_json( array(
                 'status' => 'error',
                 'toast_header' => __( 'Ops! Ocorreu um erro.', 'flexify-checkout-for-woocommerce' ),
-                'toast_body' => __( 'A licença informada não é permitida para este produto', 'flexify-checkout-for-woocommerce' ),
+                'toast_body' => __( 'A licenÃ§a informada nÃ£o Ã© permitida para este produto', 'flexify-checkout-for-woocommerce' ),
             ));
         }
 
@@ -1969,9 +1970,9 @@ class Ajax {
         // send response
         wp_send_json( array(
             'status' => 'success',
-            'toast_header' => __( 'Licença ativa', 'flexify-checkout-for-woocommerce' ),
-            'toast_body' => __( 'A licença foi ativada com sucesso!', 'flexify-checkout-for-woocommerce' ),
-            'dropfile_message' => __( 'Licença processada com sucesso!', 'flexify-checkout-for-woocommerce' ),
+            'toast_header' => __( 'LicenÃ§a ativa', 'flexify-checkout-for-woocommerce' ),
+            'toast_body' => __( 'A licenÃ§a foi ativada com sucesso!', 'flexify-checkout-for-woocommerce' ),
+            'dropfile_message' => __( 'LicenÃ§a processada com sucesso!', 'flexify-checkout-for-woocommerce' ),
 		));
     }
 
@@ -2058,3 +2059,4 @@ class Ajax {
 		}
 	}
 }
+

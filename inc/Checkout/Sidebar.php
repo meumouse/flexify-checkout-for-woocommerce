@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace MeuMouse\Flexify_Checkout\Checkout;
 
@@ -13,7 +13,8 @@ defined('ABSPATH') || exit;
  *
  * @since 1.0.0
  * @version 5.0.0
- * @package MeuMouse.com
+
+ * @author MeuMouse.com
  */
 class Sidebar {
 	
@@ -354,7 +355,7 @@ class Sidebar {
 		// is_sold_individually.
 		if ( $product->is_sold_individually() && $quantity > 1 ) {
 			/* Translators: %s Product title. */
-			$msg = sprintf( esc_html__( 'Você só pode comprar 1 %s por pedido.', 'flexify-checkout-for-woocommerce' ), $product->get_name() );
+			$msg = sprintf( esc_html__( 'VocÃª sÃ³ pode comprar 1 %s por pedido.', 'flexify-checkout-for-woocommerce' ), $product->get_name() );
 			
 			$updated = array(
 				'error' => $msg,
@@ -370,7 +371,7 @@ class Sidebar {
 
 			if ( $product->get_stock_quantity() < ( $held_stock + $quantity ) ) {
 				/* translators: 1: product name 2: quantity in stock */
-				$msg = sprintf( __( 'Desculpe, não temos "%1$s" suficientes em estoque para atender seu pedido (%2$s disponíveis). Pedimos desculpas por qualquer inconveniente causado.', 'flexify-checkout-for-woocommerce' ), $product->get_name(), wc_format_stock_quantity_for_display( $product->get_stock_quantity() - $held_stock, $product ) );
+				$msg = sprintf( __( 'Desculpe, nÃ£o temos "%1$s" suficientes em estoque para atender seu pedido (%2$s disponÃ­veis). Pedimos desculpas por qualquer inconveniente causado.', 'flexify-checkout-for-woocommerce' ), $product->get_name(), wc_format_stock_quantity_for_display( $product->get_stock_quantity() - $held_stock, $product ) );
 
 				$updated = array(
 					'error' => $msg,
