@@ -2536,13 +2536,14 @@
 				var additional_fields = $parent.find('.woocommerce-additional-fields input, .woocommerce-additional-fields select, .woocommerce-additional-fields textarea');
 				var fields = [];
 
+				const createAccountChecked = $parent.find('input[name=createaccount]:checked').length > 0;
+
 				$parent.find('input, select, textarea').each( function() {
 					var field = $(this);
 
-					if ( ! $parent.find('input[name=createaccount]:checked').length && ! $parent.find('.create-account').filter( function() {
-							return $(this).css('display') === 'block';
-						}).length && account_fields.is(field) ) {
-							return;
+					// Only validate account creation fields when customer explicitly opts in.
+					if ( ! createAccountChecked && account_fields.is(field) ) {
+						return;
 					}
 
 					if ( ! $parent.find('input[name=ship_to_different_address]:checked').length && shipping_fields.is(field) ) {
