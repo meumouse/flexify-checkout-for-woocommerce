@@ -338,6 +338,7 @@ class Init {
             '\MeuMouse\Flexify_Checkout\Compatibility\Backward_Compatibility',
             '\MeuMouse\Flexify_Checkout\Tracking\Router',
             '\MeuMouse\Flexify_Checkout\API\REST_Checkout_Fields',
+            '\MeuMouse\Flexify_Checkout\Admin\Settings\Views\Integrations',
         ));
 
         // iterate through manual classes and instance them

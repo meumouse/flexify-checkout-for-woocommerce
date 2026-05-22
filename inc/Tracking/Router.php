@@ -48,7 +48,6 @@ class Router {
         add_action( 'woocommerce_payment_complete', array( $this, 'maybe_emit_server_purchase' ), 20 );
         add_action( 'woocommerce_order_status_processing', array( $this, 'maybe_emit_server_purchase' ), 20 );
         add_action( 'woocommerce_order_status_completed', array( $this, 'maybe_emit_server_purchase' ), 20 );
-        add_action( 'flexify_checkout_after_integrations_options', array( $this, 'render_admin_tracking_panel' ), 20 );
     }
 
 
@@ -287,61 +286,4 @@ class Router {
     }
 
 
-    /**
-     * Render tracking settings panel in Integrations tab.
-     *
-     * @since 5.4.3
-     * @return void
-     */
-    public function render_admin_tracking_panel() {
-        if ( ! is_admin() ) {
-            return;
-        }
-
-        $enabled = Admin_Options::get_setting( 'tracking_router_enabled' );
-        $routes = self::get_tracking_routes();
-        ?>
-        <div class="cards-group ps-5 mb-5">
-            <div class="card p-4 m-4" style="max-width: 980px;">
-                <h5 class="mb-3"><?php esc_html_e( 'Rastreamento de eventos do checkout', 'flexify-checkout-for-woocommerce' ); ?></h5>
-                <p class="fs-sm mb-4"><?php esc_html_e( 'Mapeie os eventos internos do Flexify para cada destino de coleta.', 'flexify-checkout-for-woocommerce' ); ?></p>
-
-                <div class="mb-4">
-                    <label class="form-label fw-semibold"><?php esc_html_e( 'Ativar roteador de tracking', 'flexify-checkout-for-woocommerce' ); ?></label>
-                    <select class="form-select input-control-wd-20" name="tracking_router_enabled">
-                        <option value="yes" <?php selected( $enabled, 'yes' ); ?>><?php esc_html_e( 'Ativado', 'flexify-checkout-for-woocommerce' ); ?></option>
-                        <option value="no" <?php selected( $enabled, 'no' ); ?>><?php esc_html_e( 'Desativado', 'flexify-checkout-for-woocommerce' ); ?></option>
-                    </select>
-                </div>
-
-                <table class="table table-bordered align-middle">
-                    <thead>
-                        <tr>
-                            <th><?php esc_html_e( 'Evento interno', 'flexify-checkout-for-woocommerce' ); ?></th>
-                            <th>dataLayer</th>
-                            <th>GA4</th>
-                            <th>Meta</th>
-                            <th>TikTok</th>
-                            <th>Google Ads</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ( self::EVENTS as $event_name ) : ?>
-                            <tr>
-                                <td><code><?php echo esc_html( $event_name ); ?></code></td>
-                                <?php foreach ( self::DESTINATIONS as $destination ) :
-                                    $checked = isset( $routes[ $event_name ][ $destination ] ) ? $routes[ $event_name ][ $destination ] : 'no'; ?>
-                                    <td>
-                                        <input type="hidden" name="tracking_routes[<?php echo esc_attr( $event_name ); ?>][<?php echo esc_attr( $destination ); ?>]" value="no">
-                                        <input type="checkbox" value="yes" name="tracking_routes[<?php echo esc_attr( $event_name ); ?>][<?php echo esc_attr( $destination ); ?>]" <?php checked( $checked, 'yes' ); ?>>
-                                    </td>
-                                <?php endforeach; ?>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <?php
-    }
 }
