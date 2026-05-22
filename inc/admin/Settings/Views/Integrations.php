@@ -152,7 +152,7 @@ class Integrations {
 				</div>
 			</div>
 
-			<div class="card-body px-3 py-4 d-flex flex-column align-items-center text-center">
+			<div class="card-body px-3 py-4 d-flex flex-column align-items-center justify-content-center text-center">
 				<h5 class="card-title pt-0 border-top-0"><?php esc_html_e( 'Rastreamento de dados', 'flexify-checkout-for-woocommerce' ) ?></h5>
 
 				<?php if ( ! $is_pro ) : ?>
@@ -160,6 +160,11 @@ class Integrations {
 				<?php endif; ?>
 
 				<p class="card-text fs-sm mb-4"><?php esc_html_e( 'Configure o GA4, Google Ads e Meta para envio de dados de eventos coletados no checkout.', 'flexify-checkout-for-woocommerce' ) ?></p>
+				
+				<div class="d-flex align-items-center justify-content-center w-100 mb-3">
+					<input type="checkbox" class="toggle-switch <?php echo ( ! $is_pro ) ? 'pro-version' : ''; ?>" id="tracking_integrations_enabled" name="tracking_integrations[enabled]" value="yes" <?php checked( isset( $settings['enabled'] ) && $settings['enabled'] === 'yes' && $is_pro ); ?> />
+				</div>
+
 				<button id="tracking_integrations_settings" class="btn btn-sm btn-outline-primary <?php echo ( ! $is_pro ) ? 'pro-version' : ''; ?>"><?php esc_html_e( 'Configurar', 'flexify-checkout-for-woocommerce' ) ?></button>
 			</div>
 		</div>
@@ -174,23 +179,13 @@ class Integrations {
 				<div class="popup-body">
 					<table class="popup-table">
 						<tbody>
-							<tr>
-								<th scope="row">
-									<?php esc_html_e( 'Habilitar envio server-side assíncrono', 'flexify-checkout-for-woocommerce' ) ?>
-									<span class="flexify-checkout-description"><?php esc_html_e( 'Ative para processar os eventos no backend via AJAX, reduzindo impacto no carregamento do checkout.', 'flexify-checkout-for-woocommerce' ) ?></span>
-								</th>
-								<td>
-									<input type="checkbox" class="toggle-switch <?php echo ( ! $is_pro ) ? 'pro-version' : ''; ?>" id="tracking_integrations_enabled" name="tracking_integrations[enabled]" value="yes" <?php checked( isset( $settings['enabled'] ) && $settings['enabled'] === 'yes' && $is_pro ); ?> />
-								</td>
-							</tr>
-
 							<tr class="popup-table-section">
 								<th scope="row">
 									<span class="tracking-platform-heading">
 										<img class="tracking-platform-logo" src="<?php echo esc_url( $ga4_logo_url ); ?>" alt="<?php esc_attr_e( 'GA4', 'flexify-checkout-for-woocommerce' ); ?>" />
 										<strong><?php esc_html_e( 'GA4', 'flexify-checkout-for-woocommerce' ) ?></strong>
 									</span>
-									<span class="flexify-checkout-description"><?php esc_html_e( 'Configure os parametros do Google Analytics 4 para envio de eventos de checkout.', 'flexify-checkout-for-woocommerce' ) ?></span>
+									<span class="flexify-checkout-description"><?php esc_html_e( 'Configure os parâmetros do Google Analytics 4 para envio de eventos de checkout.', 'flexify-checkout-for-woocommerce' ) ?></span>
 								</th>
 								<td></td>
 							</tr>
@@ -228,7 +223,7 @@ class Integrations {
 										<img class="tracking-platform-logo" src="<?php echo esc_url( $google_ads_logo_url ); ?>" alt="<?php esc_attr_e( 'Google Ads', 'flexify-checkout-for-woocommerce' ); ?>" />
 										<strong><?php esc_html_e( 'Google Ads', 'flexify-checkout-for-woocommerce' ) ?></strong>
 									</span>
-									<span class="flexify-checkout-description"><?php esc_html_e( 'Defina os parametros de conversao para envio dos eventos ao Google Ads.', 'flexify-checkout-for-woocommerce' ) ?></span>
+									<span class="flexify-checkout-description"><?php esc_html_e( 'Defina os parâmetros de conversão para envio dos eventos ao Google Ads.', 'flexify-checkout-for-woocommerce' ) ?></span>
 								</th>
 								<td></td>
 							</tr>
@@ -318,7 +313,6 @@ class Integrations {
 		</div>
 		<?php
 	}
-
 
 	/**
 	 * Render Inter card.
