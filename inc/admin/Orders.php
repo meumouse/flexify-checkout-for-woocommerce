@@ -383,6 +383,7 @@ class Orders {
 		}
 
 		$order->set_billing_phone( $billing_phone_formated );
+		$order->update_meta_data( 'billing_phone_full', $billing_phone_formated );
 
 		// save order
 		$order->save();

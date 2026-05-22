@@ -2941,6 +2941,33 @@
 		Fields: {
 
 			/**
+			 * Get billing phone in international format when intl-tel-input is active.
+			 *
+			 * @since 5.5.0
+			 * @return {string}
+			 */
+			getInternationalPhoneValue: function() {
+				const $phone = $('#billing_phone');
+				const iti = $phone.data('itiInstance');
+
+				if ( iti && typeof iti.getNumber === 'function' ) {
+					const intl_phone = iti.getNumber();
+
+					if ( intl_phone ) {
+						return intl_phone;
+					}
+				}
+
+				const hidden_phone = $('input[name="billing_phone_full_number"]').val();
+
+				if ( hidden_phone ) {
+					return hidden_phone;
+				}
+
+				return $phone.val() || '';
+			},
+
+			/**
 			 * Update hidden field
 			 * 
 			 * @since 1.0.0
@@ -2955,6 +2982,7 @@
 					hidden_field.val( inputValue );
 				} else {
 					$('#billing_phone').after('<input type="hidden" name="billing_phone_full_number">');
+					hidden_field = $('input[name="billing_phone_full_number"]');
 					hidden_field.val( inputValue );
 				}
 			},
@@ -3001,6 +3029,9 @@
 					phone_element.closest('.form-row').addClass('flexify-intl-phone--init');
 
 					iti.promise.then(() => {
+						// Ensure hidden field is filled on init.
+						Flexify_Checkout.Fields.updateInternationalPhoneHiddenField( iti.getNumber() );
+
 					  	// update the hidden full-number field when country changes
 						el.addEventListener('countrychange', () => {
 							Flexify_Checkout.Fields.updateInternationalPhoneHiddenField( iti.getNumber() );
@@ -3828,8 +3859,18 @@
 					$(field).on('change input keyup', function() {
 						let update_element_text = field.id.replace('billing_', '');
 						let get_element_to_update = $('.flexify-review-customer__content').find('.customer-details-info.' + update_element_text);
-						
-						get_element_to_update.html( $(field).val() );
+						let value = $(field).val();
+
+						// Keep review phone synced with international full number (DDI + number).
+						if ( field.id === 'billing_phone' ) {
+							const full_phone = Flexify_Checkout.Fields.getInternationalPhoneValue();
+
+							if ( full_phone ) {
+								value = full_phone;
+							}
+						}
+
+						get_element_to_update.html( value );
 					});
 				});
 			},
@@ -4650,6 +4691,15 @@
 						Object.keys(groupValue).forEach( field_id => {
 							let input_value = $('#' + field_id).val();
 
+							// Keep session synced with intl phone full value (DDI + number).
+							if ( field_id === 'billing_phone' ) {
+								const full_phone = Flexify_Checkout.Fields.getInternationalPhoneValue();
+
+								if ( full_phone ) {
+									input_value = full_phone;
+								}
+							}
+
 							if ( input_value !== undefined ) {
 								fields_data.push({ field_id: field_id, value: input_value });
 							}
@@ -4660,10 +4710,92 @@
 
 					let input_value = $('#' + groupKey).val();
 
+					if ( groupKey === 'billing_phone' ) {
+						const full_phone = Flexify_Checkout.Fields.getInternationalPhoneValue();
+
+						if ( full_phone ) {
+							input_value = full_phone;
+						}
+					}
+
 					if ( input_value !== undefined ) {
 						fields_data.push({ field_id: groupKey, value: input_value });
 					}
 				});
+
+				// Safety net: always include core contact/address fields even if they are
+				// not present in localized field config for some reason.
+				const requiredSessionFields = [
+					'billing_first_name',
+					'billing_last_name',
+					'billing_email',
+					'billing_phone',
+					'billing_postcode',
+					'billing_address_1',
+					'billing_number',
+					'billing_neighborhood',
+					'billing_city',
+					'billing_state',
+					'billing_country',
+					'shipping_postcode',
+					'shipping_address_1',
+					'shipping_number',
+					'shipping_neighborhood',
+					'shipping_city',
+					'shipping_state',
+					'shipping_country'
+				];
+
+				requiredSessionFields.forEach((field_id) => {
+					if ( fields_data.some(item => item.field_id === field_id) ) {
+						return;
+					}
+
+					const $field = $('#' + field_id);
+
+					if ( ! $field.length ) {
+						return;
+					}
+
+					let input_value = $field.val();
+
+					if ( field_id === 'billing_phone' ) {
+						const full_phone = Flexify_Checkout.Fields.getInternationalPhoneValue();
+
+						if ( full_phone ) {
+							input_value = full_phone;
+						}
+					}
+
+					if ( input_value !== undefined ) {
+						fields_data.push({ field_id: field_id, value: input_value });
+					}
+				});
+
+				const getSelectedShippingMethodData = function() {
+					let $selected = $('input.shipping_method:checked');
+
+					if ( ! $selected.length ) {
+						$selected = $('.shipping-method-item.selected-method input.shipping_method').first();
+					}
+
+					if ( ! $selected.length ) {
+						return {
+							id: '',
+							label: ''
+						};
+					}
+
+					const id = $selected.val() || '';
+					const label = ($selected.closest('.shipping-method-item').find('label').first().text() || '').trim();
+
+					return {
+						id: id,
+						label: label
+					};
+				};
+
+				const selected_shipping = getSelectedShippingMethodData();
 
 				// send AJAX request
 				return $.ajax({
@@ -4672,7 +4804,9 @@
 					data: {
 						action: 'get_checkout_session_data',
 						fields_data: JSON.stringify( fields_data ),
-						ship_to_different_address: $('#ship-to-different-address-checkbox').is(':checked') ? 'yes' : 'no'
+						ship_to_different_address: $('#ship-to-different-address-checkbox').is(':checked') ? 'yes' : 'no',
+						selected_shipping_method: selected_shipping.id,
+						selected_shipping_method_label: selected_shipping.label
 					},
 					error: function(jqXHR, textStatus, errorThrown) {
 						console.error('[FLEXIFY CHECKOUT] AJAX error on try session update data:', textStatus, errorThrown);

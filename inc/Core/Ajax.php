@@ -115,7 +115,7 @@ class Ajax {
 			$messages[$field_key] = Fields::render_inline_errors( $field_id, $field_key, $field_args, $field_value, $field_country );
 		}
 
-		$session_key = WC()->session->get('flexify_checkout_ship_different_address') === 'yes' ? 'shipping' : 'billing';
+		$session_key = Steps::get_review_address_prefix();
 
 		$messages['fragments'] = array(
 			'.flexify-review-customer' => Steps::render_customer_review(),
@@ -1578,7 +1578,10 @@ class Ajax {
 			// Receive data from POST fields
 			$fields_data = isset( $_POST['fields_data'] ) ? json_decode( stripslashes( $_POST['fields_data'] ), true ) : array();
 			$ship_to_different_address = isset( $_POST['ship_to_different_address'] ) ? sanitize_text_field( $_POST['ship_to_different_address'] ) : '';
-			$session_data = array();
+			$selected_shipping_method = isset( $_POST['selected_shipping_method'] ) ? sanitize_text_field( $_POST['selected_shipping_method'] ) : '';
+			$selected_shipping_method_label = isset( $_POST['selected_shipping_method_label'] ) ? sanitize_text_field( $_POST['selected_shipping_method_label'] ) : '';
+			$session_data = WC()->session->get( 'flexify_checkout_customer_fields' );
+			$session_data = is_array( $session_data ) ? $session_data : array();
 		
 			foreach ( $fields_data as $field ) {
 				// Add field and value to array if they exist and are not empty
@@ -1591,6 +1594,14 @@ class Ajax {
 
 			WC()->session->set( 'flexify_checkout_customer_fields', $session_data );
 			WC()->session->set( 'flexify_checkout_ship_different_address', $ship_to_different_address );
+
+			if ( ! empty( $selected_shipping_method ) ) {
+				WC()->session->set( 'flexify_checkout_selected_shipping_method', $selected_shipping_method );
+			}
+
+			if ( ! empty( $selected_shipping_method_label ) ) {
+				WC()->session->set( 'flexify_checkout_selected_shipping_method_label', $selected_shipping_method_label );
+			}
 
 			wp_send_json_success( $session_data );
 		}
