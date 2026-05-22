@@ -4252,6 +4252,24 @@
 				async_inflight: false,
 			},
 
+			isDebugEnabled: function() {
+				const debug = params.debug_mode;
+				return debug === true || debug === 1 || debug === '1' || debug === 'yes' || debug === 'true' || debug === 'on';
+			},
+
+			debugLog: function( message, context ) {
+				if ( ! this.isDebugEnabled() || typeof console === 'undefined' || typeof console.log !== 'function' ) {
+					return;
+				}
+
+				if ( typeof context !== 'undefined' ) {
+					console.log( '[FLEXIFY CHECKOUT][Tracking] ' + message, context );
+					return;
+				}
+
+				console.log( '[FLEXIFY CHECKOUT][Tracking] ' + message );
+			},
+
 			isEnabled: function() {
 				return !!( params.tracking_router && params.tracking_router.enabled === 'yes' );
 			},
@@ -4334,12 +4352,44 @@
 					return;
 				}
 
+				if ( event_name === 'fc_begin_checkout' && this.trySendBeacon( event_name, payload ) ) {
+					return;
+				}
+
 				this.state.async_queue.push({
 					event_name: event_name,
 					payload: payload,
+					attempts: 0,
 				});
 
 				this.processAsyncQueue();
+			},
+
+			trySendBeacon: function( event_name, payload ) {
+				const config = this.getAsyncConfig();
+
+				if ( ! config || ! config.action || ! config.nonce || ! navigator || typeof navigator.sendBeacon !== 'function' ) {
+					return false;
+				}
+
+				try {
+					const body = new FormData();
+					body.append( 'action', config.action );
+					body.append( 'nonce', config.nonce );
+					body.append( 'event_name', event_name );
+					body.append( 'payload', JSON.stringify( payload ) );
+
+					const sent = navigator.sendBeacon( params.ajax_url, body );
+
+					if ( sent ) {
+						this.debugLog( 'async sent with beacon', { event_name: event_name } );
+					}
+
+					return sent;
+				} catch ( error ) {
+					this.debugLog( 'beacon send failed', { event_name: event_name, error: error } );
+					return false;
+				}
 			},
 
 			processAsyncQueue: function() {
@@ -4355,18 +4405,32 @@
 				}
 
 				this.state.async_inflight = true;
+				this.debugLog( 'async dispatch', { event_name: next_item.event_name, payload: next_item.payload } );
 
 				$.ajax({
 					type: 'POST',
 					url: params.ajax_url,
-					timeout: 4000,
+					timeout: 15000,
 					data: {
 						action: config.action,
 						nonce: config.nonce,
 						event_name: next_item.event_name,
 						payload: JSON.stringify( next_item.payload ),
 					},
+				}).fail(( jqXHR, textStatus, errorThrown ) => {
+					this.debugLog( 'async request failed', {
+						event_name: next_item.event_name,
+						status: textStatus,
+						error: errorThrown || null,
+						attempts: next_item.attempts || 0,
+					});
+
+					if ( ( textStatus === 'abort' || textStatus === 'timeout' ) && ( next_item.attempts || 0 ) < 1 ) {
+						next_item.attempts = ( next_item.attempts || 0 ) + 1;
+						this.state.async_queue.unshift( next_item );
+					}
 				}).always(() => {
+					this.debugLog( 'async completed', { event_name: next_item.event_name } );
 					this.state.async_inflight = false;
 					this.processAsyncQueue();
 				});
@@ -4378,28 +4442,44 @@
 				}
 
 				if ( once_key && this.state.sent[once_key] ) {
+					this.debugLog( 'skipped duplicate event', { event_name: event_name, once_key: once_key } );
 					return;
 				}
 
 				const safe_payload = this.sanitizePayload( payload, event_name );
+				const destinations = {
+					data_layer: this.canSendTo( event_name, 'data_layer' ),
+					ga4: this.canSendTo( event_name, 'ga4' ),
+					google_ads: this.canSendTo( event_name, 'google_ads' ),
+					meta: this.canSendTo( event_name, 'meta' ),
+					tiktok: this.canSendTo( event_name, 'tiktok' ),
+					async: this.isAsyncEnabled(),
+				};
 
-				if ( this.canSendTo( event_name, 'data_layer' ) ) {
+				this.debugLog( 'event dispatched', {
+					event_name: event_name,
+					once_key: once_key || null,
+					destinations: destinations,
+					payload: safe_payload,
+				});
+
+				if ( destinations.data_layer ) {
 					this.pushDataLayer( event_name, safe_payload );
 				}
 
-				if ( this.canSendTo( event_name, 'ga4' ) ) {
+				if ( destinations.ga4 ) {
 					this.sendGtag( 'ga4', event_name, safe_payload );
 				}
 
-				if ( this.canSendTo( event_name, 'google_ads' ) ) {
+				if ( destinations.google_ads ) {
 					this.sendGtag( 'google_ads', event_name, safe_payload );
 				}
 
-				if ( this.canSendTo( event_name, 'meta' ) ) {
+				if ( destinations.meta ) {
 					this.sendMeta( event_name, safe_payload );
 				}
 
-				if ( this.canSendTo( event_name, 'tiktok' ) ) {
+				if ( destinations.tiktok ) {
 					this.sendTikTok( event_name, safe_payload );
 				}
 
@@ -4488,6 +4568,12 @@
 				if ( ! this.isEnabled() ) {
 					return;
 				}
+
+				this.debugLog( 'tracking initialized', {
+					router_enabled: this.isEnabled(),
+					async_enabled: this.isAsyncEnabled(),
+					debug_mode: params.debug_mode,
+				});
 
 				this.emitBeginCheckout();
 				this.bindEvents();
