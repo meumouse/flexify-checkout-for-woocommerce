@@ -1551,6 +1551,7 @@ class Fields {
 		$config = apply_filters( 'Flexify_Checkout/Fields/Validate_Shipping_Address',
 			array(
 				'api_url' => "https://viacep.com.br/ws/{$postcode}/json/",
+				'fallback_api_urls' => array(),
 				'city'    => 'localidade',
 				'state'   => 'uf',
 			),
@@ -1563,15 +1564,38 @@ class Fields {
 			return;
 		}
 
-		$response = wp_remote_get( $config['api_url'], [ 'timeout' => 10 ] );
+		$api_urls = array( $config['api_url'] );
+		$fallback_api_urls = is_array( $config['fallback_api_urls'] ?? null ) ? $config['fallback_api_urls'] : array();
 
-		if ( is_wp_error( $response ) ) {
-			return;
+		foreach ( $fallback_api_urls as $fallback_api_url ) {
+			if ( ! empty( $fallback_api_url ) ) {
+				$api_urls[] = $fallback_api_url;
+			}
 		}
 
-		$body = json_decode( wp_remote_retrieve_body( $response ), true );
+		$body = array();
+		$has_successful_response = false;
 
-		if ( empty( $body ) || ! empty( $body['erro'] ) ) {
+		foreach ( $api_urls as $api_url ) {
+			$response = wp_remote_get( $api_url, [ 'timeout' => 10 ] );
+
+			if ( is_wp_error( $response ) ) {
+				continue;
+			}
+
+			$decoded = json_decode( wp_remote_retrieve_body( $response ), true );
+
+			if ( empty( $decoded ) || ! empty( $decoded['erro'] ) || ! empty( $decoded['error'] ) ) {
+				continue;
+			}
+
+			$body = $decoded;
+			$has_successful_response = true;
+			
+			break;
+		}
+
+		if ( ! $has_successful_response ) {
 			$errors->add( 'invalid_postcode',
 				__( 'CEP inválido.', 'flexify-checkout-for-woocommerce' ),
 				[ 'id' => 'billing_postcode' ]
