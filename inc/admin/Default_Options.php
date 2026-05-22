@@ -200,6 +200,25 @@ class Default_Options {
                     'google_ads' => 'no',
                 ),
             ),
+            'tracking_integrations' => array(
+                'enabled' => 'yes',
+                'ga4' => array(
+                    'enabled' => 'no',
+                    'measurement_id' => '',
+                    'api_secret' => '',
+                ),
+                'google_ads' => array(
+                    'enabled' => 'no',
+                    'conversion_id' => '',
+                    'conversion_label' => '',
+                ),
+                'meta' => array(
+                    'enabled' => 'no',
+                    'pixel_id' => '',
+                    'access_token' => '',
+                    'test_event_code' => '',
+                ),
+            ),
             'custom_css_checkout' => '',
             'custom_js_checkout' => '',
             'direct_checkout_api' => 'yes',

@@ -141,6 +141,9 @@ class Integrations {
 		$google_ads = isset( $settings['google_ads'] ) && is_array( $settings['google_ads'] ) ? $settings['google_ads'] : array();
 		$meta = isset( $settings['meta'] ) && is_array( $settings['meta'] ) ? $settings['meta'] : array();
 		$is_pro = License::is_valid();
+		$ga4_logo_url = FLEXIFY_CHECKOUT_ASSETS . 'admin/img/google-analytics-logo.svg';
+		$google_ads_logo_url = FLEXIFY_CHECKOUT_ASSETS . 'admin/img/google-ads-logo.svg';
+		$meta_logo_url = FLEXIFY_CHECKOUT_ASSETS . 'admin/img/meta-logo.svg';
 		?>
 		<div class="card text-center p-0 m-4">
 			<div class="card-header border-bottom w-100">
@@ -156,7 +159,7 @@ class Integrations {
 					<span class="badge pro bg-primary rounded-pill ms-2 mb-3"><?php esc_html_e( 'Pro', 'flexify-checkout-for-woocommerce' ) ?></span>
 				<?php endif; ?>
 
-				<p class="card-text fs-sm mb-4"><?php esc_html_e( 'Configure GA4, Google Ads e Meta para envio assíncrono de eventos sem sobrecarregar o checkout.', 'flexify-checkout-for-woocommerce' ) ?></p>
+				<p class="card-text fs-sm mb-4"><?php esc_html_e( 'Configure o GA4, Google Ads e Meta para envio de dados de eventos coletados no checkout.', 'flexify-checkout-for-woocommerce' ) ?></p>
 				<button id="tracking_integrations_settings" class="btn btn-sm btn-outline-primary <?php echo ( ! $is_pro ) ? 'pro-version' : ''; ?>"><?php esc_html_e( 'Configurar', 'flexify-checkout-for-woocommerce' ) ?></button>
 			</div>
 		</div>
@@ -183,7 +186,10 @@ class Integrations {
 
 							<tr class="popup-table-section">
 								<th scope="row">
-									<strong><?php esc_html_e( 'GA4', 'flexify-checkout-for-woocommerce' ) ?></strong>
+									<span class="tracking-platform-heading">
+										<img class="tracking-platform-logo" src="<?php echo esc_url( $ga4_logo_url ); ?>" alt="<?php esc_attr_e( 'GA4', 'flexify-checkout-for-woocommerce' ); ?>" />
+										<strong><?php esc_html_e( 'GA4', 'flexify-checkout-for-woocommerce' ) ?></strong>
+									</span>
 									<span class="flexify-checkout-description"><?php esc_html_e( 'Configure os parametros do Google Analytics 4 para envio de eventos de checkout.', 'flexify-checkout-for-woocommerce' ) ?></span>
 								</th>
 								<td></td>
@@ -203,7 +209,7 @@ class Integrations {
 									<span class="flexify-checkout-description"><?php esc_html_e( 'Identificador da propriedade GA4 (exemplo: G-XXXXXXXXXX).', 'flexify-checkout-for-woocommerce' ) ?></span>
 								</th>
 								<td>
-									<input type="text" class="input-field <?php echo ( ! $is_pro ) ? 'pro-version' : ''; ?>" id="tracking_integrations_ga4_measurement_id" name="tracking_integrations[ga4][measurement_id]" value="<?php echo esc_attr( isset( $ga4['measurement_id'] ) ? $ga4['measurement_id'] : '' ); ?>" placeholder="G-XXXXXXXXXX" />
+									<input type="text" class="form-control <?php echo ( ! $is_pro ) ? 'pro-version' : ''; ?>" id="tracking_integrations_ga4_measurement_id" name="tracking_integrations[ga4][measurement_id]" value="<?php echo esc_attr( isset( $ga4['measurement_id'] ) ? $ga4['measurement_id'] : '' ); ?>" placeholder="G-XXXXXXXXXX" />
 								</td>
 							</tr>
 							<tr>
@@ -212,13 +218,16 @@ class Integrations {
 									<span class="flexify-checkout-description"><?php esc_html_e( 'Chave secreta do Measurement Protocol usada para autenticar envios server-side.', 'flexify-checkout-for-woocommerce' ) ?></span>
 								</th>
 								<td>
-									<input type="text" class="input-field <?php echo ( ! $is_pro ) ? 'pro-version' : ''; ?>" id="tracking_integrations_ga4_api_secret" name="tracking_integrations[ga4][api_secret]" value="<?php echo esc_attr( isset( $ga4['api_secret'] ) ? $ga4['api_secret'] : '' ); ?>" />
+									<input type="text" class="form-control <?php echo ( ! $is_pro ) ? 'pro-version' : ''; ?>" id="tracking_integrations_ga4_api_secret" name="tracking_integrations[ga4][api_secret]" value="<?php echo esc_attr( isset( $ga4['api_secret'] ) ? $ga4['api_secret'] : '' ); ?>" />
 								</td>
 							</tr>
-
+							<tr class="container-separator"></tr>
 							<tr class="popup-table-section">
 								<th scope="row">
-									<strong><?php esc_html_e( 'Google Ads', 'flexify-checkout-for-woocommerce' ) ?></strong>
+									<span class="tracking-platform-heading">
+										<img class="tracking-platform-logo" src="<?php echo esc_url( $google_ads_logo_url ); ?>" alt="<?php esc_attr_e( 'Google Ads', 'flexify-checkout-for-woocommerce' ); ?>" />
+										<strong><?php esc_html_e( 'Google Ads', 'flexify-checkout-for-woocommerce' ) ?></strong>
+									</span>
 									<span class="flexify-checkout-description"><?php esc_html_e( 'Defina os parametros de conversao para envio dos eventos ao Google Ads.', 'flexify-checkout-for-woocommerce' ) ?></span>
 								</th>
 								<td></td>
@@ -238,7 +247,7 @@ class Integrations {
 									<span class="flexify-checkout-description"><?php esc_html_e( 'ID da conversão do Google Ads (exemplo: AW-123456789).', 'flexify-checkout-for-woocommerce' ) ?></span>
 								</th>
 								<td>
-									<input type="text" class="input-field <?php echo ( ! $is_pro ) ? 'pro-version' : ''; ?>" id="tracking_integrations_google_ads_conversion_id" name="tracking_integrations[google_ads][conversion_id]" value="<?php echo esc_attr( isset( $google_ads['conversion_id'] ) ? $google_ads['conversion_id'] : '' ); ?>" placeholder="AW-123456789" />
+									<input type="text" class="form-control <?php echo ( ! $is_pro ) ? 'pro-version' : ''; ?>" id="tracking_integrations_google_ads_conversion_id" name="tracking_integrations[google_ads][conversion_id]" value="<?php echo esc_attr( isset( $google_ads['conversion_id'] ) ? $google_ads['conversion_id'] : '' ); ?>" placeholder="AW-123456789" />
 								</td>
 							</tr>
 							<tr>
@@ -247,13 +256,17 @@ class Integrations {
 									<span class="flexify-checkout-description"><?php esc_html_e( 'Rótulo da ação de conversão criada no Google Ads.', 'flexify-checkout-for-woocommerce' ) ?></span>
 								</th>
 								<td>
-									<input type="text" class="input-field <?php echo ( ! $is_pro ) ? 'pro-version' : ''; ?>" id="tracking_integrations_google_ads_conversion_label" name="tracking_integrations[google_ads][conversion_label]" value="<?php echo esc_attr( isset( $google_ads['conversion_label'] ) ? $google_ads['conversion_label'] : '' ); ?>" />
+									<input type="text" class="form-control <?php echo ( ! $is_pro ) ? 'pro-version' : ''; ?>" id="tracking_integrations_google_ads_conversion_label" name="tracking_integrations[google_ads][conversion_label]" value="<?php echo esc_attr( isset( $google_ads['conversion_label'] ) ? $google_ads['conversion_label'] : '' ); ?>" />
 								</td>
 							</tr>
 
+							<tr class="container-separator"></tr>
 							<tr class="popup-table-section">
 								<th scope="row">
-									<strong><?php esc_html_e( 'Meta', 'flexify-checkout-for-woocommerce' ) ?></strong>
+									<span class="tracking-platform-heading">
+										<img class="tracking-platform-logo" src="<?php echo esc_url( $meta_logo_url ); ?>" alt="<?php esc_attr_e( 'Meta', 'flexify-checkout-for-woocommerce' ); ?>" />
+										<strong><?php esc_html_e( 'Meta', 'flexify-checkout-for-woocommerce' ) ?></strong>
+									</span>
 									<span class="flexify-checkout-description"><?php esc_html_e( 'Configure o Pixel e o token da Conversions API para envio dos eventos.', 'flexify-checkout-for-woocommerce' ) ?></span>
 								</th>
 								<td></td>
@@ -273,7 +286,7 @@ class Integrations {
 									<span class="flexify-checkout-description"><?php esc_html_e( 'Identificador do Pixel da Meta vinculado ao seu gerenciador de eventos.', 'flexify-checkout-for-woocommerce' ) ?></span>
 								</th>
 								<td>
-									<input type="text" class="input-field <?php echo ( ! $is_pro ) ? 'pro-version' : ''; ?>" id="tracking_integrations_meta_pixel_id" name="tracking_integrations[meta][pixel_id]" value="<?php echo esc_attr( isset( $meta['pixel_id'] ) ? $meta['pixel_id'] : '' ); ?>" />
+									<input type="text" class="form-control <?php echo ( ! $is_pro ) ? 'pro-version' : ''; ?>" id="tracking_integrations_meta_pixel_id" name="tracking_integrations[meta][pixel_id]" value="<?php echo esc_attr( isset( $meta['pixel_id'] ) ? $meta['pixel_id'] : '' ); ?>" />
 								</td>
 							</tr>
 							<tr>
@@ -282,7 +295,7 @@ class Integrations {
 									<span class="flexify-checkout-description"><?php esc_html_e( 'Token de acesso da Conversions API para autenticação das requisições.', 'flexify-checkout-for-woocommerce' ) ?></span>
 								</th>
 								<td>
-									<input type="text" class="input-field <?php echo ( ! $is_pro ) ? 'pro-version' : ''; ?>" id="tracking_integrations_meta_access_token" name="tracking_integrations[meta][access_token]" value="<?php echo esc_attr( isset( $meta['access_token'] ) ? $meta['access_token'] : '' ); ?>" />
+									<input type="text" class="form-control <?php echo ( ! $is_pro ) ? 'pro-version' : ''; ?>" id="tracking_integrations_meta_access_token" name="tracking_integrations[meta][access_token]" value="<?php echo esc_attr( isset( $meta['access_token'] ) ? $meta['access_token'] : '' ); ?>" />
 								</td>
 							</tr>
 							<tr>
@@ -291,7 +304,7 @@ class Integrations {
 									<span class="flexify-checkout-description"><?php esc_html_e( 'Use para validar eventos no modo de teste da Meta antes de publicar em produção.', 'flexify-checkout-for-woocommerce' ) ?></span>
 								</th>
 								<td>
-									<input type="text" class="input-field <?php echo ( ! $is_pro ) ? 'pro-version' : ''; ?>" id="tracking_integrations_meta_test_event_code" name="tracking_integrations[meta][test_event_code]" value="<?php echo esc_attr( isset( $meta['test_event_code'] ) ? $meta['test_event_code'] : '' ); ?>" />
+									<input type="text" class="form-control <?php echo ( ! $is_pro ) ? 'pro-version' : ''; ?>" id="tracking_integrations_meta_test_event_code" name="tracking_integrations[meta][test_event_code]" value="<?php echo esc_attr( isset( $meta['test_event_code'] ) ? $meta['test_event_code'] : '' ); ?>" />
 								</td>
 							</tr>
 						</tbody>
