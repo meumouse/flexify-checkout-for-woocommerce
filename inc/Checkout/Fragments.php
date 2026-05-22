@@ -12,7 +12,7 @@ defined('ABSPATH') || exit;
  * Add and manipulate checkout fragments
  *
  * @since 5.0.0
-
+ * @package MeuMouse\Flexify_Checkout\Checkout
  * @author MeuMouse.com
  */
 class Fragments {

@@ -93,8 +93,9 @@ defined('ABSPATH') || exit; ?>
                                     </div>
                                     <div class="d-flex align-items-center ms-3">
                                         <button class="btn btn-icon btn-sm btn-outline-secondary rounded-3 me-2 <?php echo License::is_valid() ? 'edit-condition' : 'require-pro'; ?>">
-                                            <svg class="icon icon-sm" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m7 16.125 9.688-9.688 1.875 1.875-9.688 9.688H7v-1.875Zm12.469-7.594-1.875-1.875 1.406-1.406a1.326 1.326 0 0 1 1.875 0l.469.469a1.326 1.326 0 0 1 0 1.875l-1.875 1.406Z"></path></svg>
+                                            <svg class="icon icon-sm icon-dark" xmlns="http://www.w3.org/2000/svg" width="24" height="24"  fill="currentColor" viewBox="0 0 24 24" ><path d="m17.71 7.29-3-3a.996.996 0 0 0-1.41 0l-11.01 11A1 1 0 0 0 2 16v3c0 .55.45 1 1 1h3c.27 0 .52-.11.71-.29l11-11a.996.996 0 0 0 0-1.41ZM5.59 18H4v-1.59l7.5-7.5 1.59 1.59zm8.91-8.91L12.91 7.5 14 6.41 15.59 8zM11 18h11v2H11z"></path></svg>
                                         </button>
+
                                         <button class="exclude-condition btn btn-icon btn-sm btn-outline-danger rounded-3">
                                             <svg class="icon icon-sm icon-danger" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15 2H9c-1.103 0-2 .897-2 2v2H3v2h2v12c0 1.103.897 2 2 2h10c1.103 0 2-.897 2-2V8h2V6h-4V4c0-1.103-.897-2-2-2zM9 4h6v2H9V4zm8 16H7V8h10v12z"></path></svg>
                                         </button>

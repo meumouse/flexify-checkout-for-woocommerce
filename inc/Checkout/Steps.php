@@ -14,7 +14,7 @@ defined('ABSPATH') || exit;
  *
  * @since 1.0.0
  * @version 5.4.1
-
+ * @package MeuMouse\Flexify_Checkout\Checkout
  * @author MeuMouse.com
  */
 class Steps {

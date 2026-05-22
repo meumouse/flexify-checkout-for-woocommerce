@@ -13,7 +13,7 @@ defined('ABSPATH') || exit;
  *
  * @since 1.0.0
  * @version 5.0.0
-
+ * @package MeuMouse\Flexify_Checkout\Checkout
  * @author MeuMouse.com
  */
 class Sidebar {

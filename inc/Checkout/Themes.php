@@ -11,7 +11,7 @@ defined('ABSPATH') || exit;
  * Handle with Flexify Checkout theme templates
  *
  * @since 5.0.0
-
+ * @package MeuMouse\Flexify_Checkout\Checkout
  * @author MeuMouse.com
  */
 class Themes {
