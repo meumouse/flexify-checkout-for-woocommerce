@@ -37,6 +37,41 @@ class Router {
      */
     const DESTINATIONS = array( 'data_layer', 'ga4', 'meta', 'tiktok', 'google_ads' );
 
+    /**
+     * Default internal event map.
+     *
+     * @since 5.5.0
+     * @return array
+     */
+    private function get_event_map() {
+        return apply_filters( 'Flexify_Checkout/Tracking/Event_Map', array(
+            'fc_begin_checkout' => array(
+                'ga4' => 'begin_checkout',
+                'meta' => 'InitiateCheckout',
+                'tiktok' => 'InitiateCheckout',
+                'google_ads' => 'begin_checkout',
+            ),
+            'fc_add_shipping_info' => array(
+                'ga4' => 'add_shipping_info',
+                'meta' => 'AddShippingInfo',
+                'tiktok' => 'AddShippingInfo',
+                'google_ads' => 'add_shipping_info',
+            ),
+            'fc_add_payment_info' => array(
+                'ga4' => 'add_payment_info',
+                'meta' => 'AddPaymentInfo',
+                'tiktok' => 'AddPaymentInfo',
+                'google_ads' => 'add_payment_info',
+            ),
+            'fc_purchase' => array(
+                'ga4' => 'purchase',
+                'meta' => 'Purchase',
+                'tiktok' => 'CompletePayment',
+                'google_ads' => 'purchase',
+            ),
+        ));
+    }
+
 
     /**
      * Construct function.
@@ -62,35 +97,12 @@ class Router {
      * @return array
      */
     public function append_script_data( $params ) {
+        $event_map = $this->get_event_map();
+
         $params['tracking_router'] = array(
-            'enabled' => Admin_Options::get_setting( 'tracking_router_enabled' ) === 'yes' ? 'yes' : 'no',
+            'enabled' => $this->is_router_enabled() ? 'yes' : 'no',
             'routes' => self::get_tracking_routes(),
-            'event_map' => array(
-                'fc_begin_checkout' => array(
-                    'ga4' => 'begin_checkout',
-                    'meta' => 'InitiateCheckout',
-                    'tiktok' => 'InitiateCheckout',
-                    'google_ads' => 'begin_checkout',
-                ),
-                'fc_add_shipping_info' => array(
-                    'ga4' => 'add_shipping_info',
-                    'meta' => 'AddShippingInfo',
-                    'tiktok' => 'AddShippingInfo',
-                    'google_ads' => 'add_shipping_info',
-                ),
-                'fc_add_payment_info' => array(
-                    'ga4' => 'add_payment_info',
-                    'meta' => 'AddPaymentInfo',
-                    'tiktok' => 'AddPaymentInfo',
-                    'google_ads' => 'add_payment_info',
-                ),
-                'fc_purchase' => array(
-                    'ga4' => 'purchase',
-                    'meta' => 'Purchase',
-                    'tiktok' => 'CompletePayment',
-                    'google_ads' => 'purchase',
-                ),
-            ),
+            'event_map' => $event_map,
             'checkout_payload' => $this->build_checkout_payload(),
             'purchase_payload' => $this->build_purchase_payload_for_browser(),
             'async' => array(
@@ -118,7 +130,7 @@ class Router {
             return;
         }
 
-        if ( Admin_Options::get_setting( 'tracking_router_enabled' ) !== 'yes' ) {
+        if ( ! $this->is_router_enabled() ) {
             return;
         }
 
@@ -282,6 +294,8 @@ class Router {
     public static function get_tracking_routes() {
         $settings = get_option( 'flexify_checkout_settings', array() );
         $routes = isset( $settings['tracking_routes'] ) && is_array( $settings['tracking_routes'] ) ? $settings['tracking_routes'] : array();
+        $destinations = apply_filters( 'Flexify_Checkout/Tracking/Destinations', self::DESTINATIONS );
+        $destinations = is_array( $destinations ) ? array_values( array_unique( $destinations ) ) : self::DESTINATIONS;
 
         $default = array(
             'fc_begin_checkout' => array( 'data_layer' => 'yes', 'ga4' => 'yes', 'meta' => 'no', 'tiktok' => 'no', 'google_ads' => 'no' ),
@@ -290,7 +304,24 @@ class Router {
             'fc_purchase' => array( 'data_layer' => 'yes', 'ga4' => 'yes', 'meta' => 'yes', 'tiktok' => 'yes', 'google_ads' => 'no' ),
         );
 
-        return wp_parse_args( $routes, $default );
+        $default = apply_filters( 'Flexify_Checkout/Tracking/Default_Routes', $default, $destinations );
+        $merged = wp_parse_args( $routes, $default );
+
+        foreach ( $merged as $event_name => $event_routes ) {
+            if ( ! is_array( $event_routes ) ) {
+                $event_routes = array();
+            }
+
+            foreach ( $destinations as $destination ) {
+                if ( ! isset( $event_routes[ $destination ] ) ) {
+                    $event_routes[ $destination ] = 'no';
+                }
+            }
+
+            $merged[ $event_name ] = $event_routes;
+        }
+
+        return apply_filters( 'Flexify_Checkout/Tracking/Routes', $merged, $default, $destinations );
     }
 
 
@@ -311,7 +342,10 @@ class Router {
         $raw_payload = isset( $_POST['payload'] ) ? wp_unslash( $_POST['payload'] ) : array();
         $payload = $this->normalize_payload( $raw_payload, $event_name );
 
-        if ( empty( $event_name ) || ! in_array( $event_name, self::EVENTS, true ) ) {
+        $allowed_events = apply_filters( 'Flexify_Checkout/Tracking/Events', self::EVENTS );
+        $allowed_events = is_array( $allowed_events ) ? $allowed_events : self::EVENTS;
+
+        if ( empty( $event_name ) || ! in_array( $event_name, $allowed_events, true ) ) {
             wp_send_json_error( array( 'message' => 'Invalid event' ) );
         }
 
@@ -339,11 +373,36 @@ class Router {
             return false;
         }
 
-        if ( Admin_Options::get_setting( 'tracking_router_enabled' ) !== 'yes' ) {
+        if ( ! $this->is_router_enabled() ) {
             return false;
         }
 
         $settings = $this->get_tracking_integrations_settings();
+        return isset( $settings['enabled'] ) && $settings['enabled'] === 'yes';
+    }
+
+
+    /**
+     * Checks if tracking router is enabled.
+     *
+     * Compatibility rules:
+     * - Legacy key `tracking_router_enabled=yes` keeps router enabled.
+     * - Pro tracking module toggle also enables router when valid license is active.
+     *
+     * @since 5.5.0
+     * @return bool
+     */
+    private function is_router_enabled() {
+        if ( Admin_Options::get_setting( 'tracking_router_enabled' ) === 'yes' ) {
+            return true;
+        }
+
+        if ( ! License::is_valid() ) {
+            return false;
+        }
+
+        $settings = $this->get_tracking_integrations_settings();
+        
         return isset( $settings['enabled'] ) && $settings['enabled'] === 'yes';
     }
 
@@ -441,20 +500,55 @@ class Router {
     private function dispatch_to_platforms( $event_name, $payload ) {
         $settings = $this->get_tracking_integrations_settings();
         $results = array();
+        $handlers = apply_filters( 'Flexify_Checkout/Tracking/Platform_Handlers', array(
+            'ga4' => array( $this, 'send_to_ga4' ),
+            'google_ads' => array( $this, 'send_to_google_ads' ),
+            'meta' => array( $this, 'send_to_meta' ),
+        ), $event_name, $payload, $settings, $this );
 
-        if ( isset( $settings['ga4']['enabled'] ) && $settings['ga4']['enabled'] === 'yes' && $this->can_route_to( $event_name, 'ga4' ) ) {
-            $results['ga4'] = $this->send_to_ga4( $event_name, $payload, $settings['ga4'] );
+        if ( ! is_array( $handlers ) ) {
+            $handlers = array();
         }
 
-        if ( isset( $settings['google_ads']['enabled'] ) && $settings['google_ads']['enabled'] === 'yes' && $this->can_route_to( $event_name, 'google_ads' ) ) {
-            $results['google_ads'] = $this->send_to_google_ads( $event_name, $payload, $settings['google_ads'] );
+        foreach ( $handlers as $destination => $handler ) {
+            if ( ! is_callable( $handler ) ) {
+                continue;
+            }
+
+            if ( ! $this->can_route_to( $event_name, $destination ) ) {
+                continue;
+            }
+
+            $is_enabled = $this->is_destination_enabled( $destination, $settings, $event_name, $payload );
+
+            if ( ! $is_enabled ) {
+                continue;
+            }
+
+            $platform_settings = ( isset( $settings[ $destination ] ) && is_array( $settings[ $destination ] ) ) ? $settings[ $destination ] : array();
+            $results[ $destination ] = call_user_func( $handler, $event_name, $payload, $platform_settings );
         }
 
-        if ( isset( $settings['meta']['enabled'] ) && $settings['meta']['enabled'] === 'yes' && $this->can_route_to( $event_name, 'meta' ) ) {
-            $results['meta'] = $this->send_to_meta( $event_name, $payload, $settings['meta'] );
-        }
+        $results = apply_filters( 'Flexify_Checkout/Tracking/Dispatch_Results', $results, $event_name, $payload, $settings, $handlers, $this );
 
         return $results;
+    }
+
+
+    /**
+     * Check whether destination is enabled for dispatch.
+     *
+     * @since 5.5.0
+     * @param string $destination Destination key.
+     * @param array $settings Tracking settings.
+     * @param string $event_name Event name.
+     * @param array $payload Event payload.
+     * @return bool
+     */
+    private function is_destination_enabled( $destination, $settings, $event_name, $payload ) {
+        $enabled = isset( $settings[ $destination ]['enabled'] ) && $settings[ $destination ]['enabled'] === 'yes';
+
+        return (bool) apply_filters( 'Flexify_Checkout/Tracking/Is_Destination_Enabled', $enabled, $destination, $settings, $event_name, $payload, $this );
     }
 
 
@@ -556,6 +650,7 @@ class Router {
         );
 
         $response = wp_remote_get( $url, array( 'timeout' => 3 ) );
+
         return $this->format_remote_result( 'google_ads', $response );
     }
 
@@ -659,30 +754,10 @@ class Router {
      * @return string
      */
     private function get_external_event_name( $event_name, $destination ) {
-        $event_map = array(
-            'fc_begin_checkout' => array(
-                'ga4' => 'begin_checkout',
-                'meta' => 'InitiateCheckout',
-                'google_ads' => 'begin_checkout',
-            ),
-            'fc_add_shipping_info' => array(
-                'ga4' => 'add_shipping_info',
-                'meta' => 'AddShippingInfo',
-                'google_ads' => 'add_shipping_info',
-            ),
-            'fc_add_payment_info' => array(
-                'ga4' => 'add_payment_info',
-                'meta' => 'AddPaymentInfo',
-                'google_ads' => 'add_payment_info',
-            ),
-            'fc_purchase' => array(
-                'ga4' => 'purchase',
-                'meta' => 'Purchase',
-                'google_ads' => 'purchase',
-            ),
-        );
+        $event_map = $this->get_event_map();
+        $external_name = isset( $event_map[ $event_name ][ $destination ] ) ? $event_map[ $event_name ][ $destination ] : $event_name;
 
-        return isset( $event_map[ $event_name ][ $destination ] ) ? $event_map[ $event_name ][ $destination ] : $event_name;
+        return apply_filters( 'Flexify_Checkout/Tracking/External_Event_Name', $external_name, $event_name, $destination, $event_map );
     }
 
 
