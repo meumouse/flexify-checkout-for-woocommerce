@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 namespace MeuMouse\Flexify_Checkout\API;
 
