@@ -4598,6 +4598,56 @@
 				return params.is_thankyou !== 'yes' && $('form.checkout').length > 0;
 			},
 
+			getSelectedShippingLabel: function() {
+				const $selected = $('input.shipping_method:checked');
+
+				if ( ! $selected.length ) {
+					return '';
+				}
+
+				const input_id = $selected.attr('id');
+				let label_text = '';
+
+				if ( input_id ) {
+					label_text = $('label[for="' + input_id + '"]').first().text().trim();
+				}
+
+				if ( ! label_text ) {
+					label_text = $selected.closest('li, .shipping-method-item').find('label').first().text().trim();
+				}
+
+				if ( ! label_text ) {
+					label_text = $selected.val() || '';
+				}
+
+				return label_text;
+			},
+
+			getSelectedPaymentLabel: function() {
+				const $selected = $('input[name="payment_method"]:checked');
+
+				if ( ! $selected.length ) {
+					return '';
+				}
+
+				const input_id = $selected.attr('id');
+				let label_text = '';
+
+				if ( input_id ) {
+					label_text = $('label[for="' + input_id + '"]').first().text().trim();
+				}
+
+				if ( ! label_text ) {
+					label_text = $selected.closest('li, .wc_payment_method, .payment_method').find('label').first().text().trim();
+				}
+
+				if ( ! label_text ) {
+					label_text = $selected.val() || '';
+				}
+
+				return label_text;
+			},
+
 			emitBeginCheckout: function() {
 				if ( ! this.isCheckoutPage() ) {
 					return;
@@ -4614,10 +4664,10 @@
 
 			emitShippingInfo: function() {
 				const payload = this.getCheckoutPayload();
-				const selected_shipping = $('input.shipping_method:checked');
+				const shipping_label = this.getSelectedShippingLabel();
 
-				if ( selected_shipping.length ) {
-					payload.shipping_tier = selected_shipping.val() || '';
+				if ( shipping_label ) {
+					payload.shipping_tier = shipping_label;
 				}
 
 				this.emit( 'fc_add_shipping_info', payload );
@@ -4625,10 +4675,10 @@
 
 			emitPaymentInfo: function() {
 				const payload = this.getCheckoutPayload();
-				const payment_method = $('input[name="payment_method"]:checked').val();
+				const payment_label = this.getSelectedPaymentLabel();
 
-				if ( payment_method ) {
-					payload.payment_type = payment_method;
+				if ( payment_label ) {
+					payload.payment_type = payment_label;
 				}
 
 				this.emit( 'fc_add_payment_info', payload );
