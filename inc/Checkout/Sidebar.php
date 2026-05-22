@@ -44,7 +44,7 @@ class Sidebar {
 		// Change the coupon form position.
 		remove_action( 'woocommerce_before_checkout_form', 'woocommerce_checkout_coupon_form', 10 );
 
-		// Add image to checkout
+		// Customize checkout cart item content
 		add_filter( 'woocommerce_cart_item_name', array( __CLASS__, 'modify_product_name' ), 10, 3 );
 		add_filter( 'woocommerce_cart_item_class', array( __CLASS__, 'cart_item_class' ), 10, 3 );
 
@@ -149,7 +149,7 @@ class Sidebar {
 
 
 	/**
-	 * Add image to cart
+	 * Modify product name for checkout sidebar
 	 *
 	 * @since 1.0.0
 	 * @version 5.0.0
@@ -169,8 +169,31 @@ class Sidebar {
 			$name .= '<br><small class="product-backorder-info">' . esc_html__( 'Disponibilidade: Sob encomenda', 'flexify-checkout-for-woocommerce' ) . '</small>';
 		}
 
+		return $name;
+	}
+
+
+	/**
+	 * Get cart item image HTML for checkout sidebar rows
+	 *
+	 * @since 5.5.1
+	 * @param array $cart_item | Cart item data
+	 * @param int $cart_item_key | Cart item key
+	 * @return string
+	 */
+	public static function get_checkout_cart_item_image( $cart_item, $cart_item_key ) {
+		if ( ! is_checkout() ) {
+			return '';
+		}
+
+		if ( empty( $cart_item['data'] ) || ! is_object( $cart_item['data'] ) ) {
+			return '';
+		}
+
+		$product = $cart_item['data'];
+
 		if ( ! $product->get_image_id() ) {
-			return $name;
+			return '';
 		}
 
 		// Filter to modify the cart item thumbnail
@@ -180,9 +203,7 @@ class Sidebar {
 			$thumbnail = sprintf( "<a href='%s'>%s</a>", $cart_item['data']->get_permalink(), $thumbnail );
 		}
 
-		$image = '<div class="flexify-cart-image flexify-cart-image--checkout flexify-checkout__cart-image">' . $thumbnail . '</div>';
-
-		return $image . $name;
+		return '<div class="flexify-cart-image flexify-cart-image--checkout flexify-checkout__cart-image">' . $thumbnail . '</div>';
 	}
 
 
