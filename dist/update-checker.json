@@ -1,23 +1,23 @@
 {
-	"name" : "Flexify Checkout para WooCommerce",
-	"slug" : "flexify-checkout-for-woocommerce",
-	"author" : "<a href='https://meumouse.com'>MeuMouse.com</a>",
-	"author_profile" : "https://profiles.wordpress.org/meumouse",
-	"version" : "5.4.2",
-	"download_url" : "https://packages.meumouse.com/v1/downloads/flexify-checkout-for-woocommerce",
-	"requires" : "5.6",
-	"tested" : "6.9",
-	"requires_php" : "7.4",
-	"added" : "2023-09-18 12:00:00",
-	"last_updated" : "2025-12-03 14:56:00",
-	"homepage" : "https://meumouse.com/plugins/flexify-checkout-para-woocommerce/",
+	"name": "Flexify Checkout para WooCommerce",
+	"slug": "flexify-checkout-for-woocommerce",
+	"author": "<a href='https://meumouse.com'>MeuMouse.com</a>",
+	"author_profile": "https://profiles.wordpress.org/meumouse",
+	"version": "5.5.0",
+	"download_url": "https://packages.meumouse.com/v1/downloads/flexify-checkout-for-woocommerce",
+	"requires": "5.6",
+	"tested": "7.0",
+	"requires_php": "7.4",
+	"added": "2023-09-18 12:00:00",
+	"last_updated": "2026-05-22 20:05:00",
+	"homepage": "https://meumouse.com/plugins/flexify-checkout-para-woocommerce/",
 	"sections": {
 	    "description": "Extensão que otimiza a finalização de compra em multi etapas para lojas WooCommerce.",
 	    "installation": "Instalação:<br><br><strong>Instalação via painel de administração:</strong><br>Você pode instalar um plugin WordPress de duas maneiras: via o painel de administração do WordPress ou via FTP. Aqui estão as etapas para ambos os métodos:<br><ol><li>Acesse o painel de administração do seu site WordPress.</li><li>Vá para “Plugins” e clique em “Adicionar Novo”.</li><li>Digite o nome do plugin que você deseja instalar na barra de pesquisa ou carregue o arquivo ZIP do plugin baixado.</li><li>Clique em “Instalar Agora” e espere até que o plugin seja instalado.</li><li>Clique em “Ativar Plugin”.</li></ol><br><strong>Instalação via FTP:</strong><br><ol><li>Baixe o arquivo ZIP do plugin que você deseja instalar.</li><li>Descompacte o arquivo ZIP em seu computador.</li><li>Conecte-se ao seu servidor via FTP.</li><li>Navegue até a pasta “wp-content/plugins”.</li><li>Envie a pasta do plugin descompactada para a pasta “plugins” no seu servidor.</li><li>Acesse o painel de administração do seu site WordPress.</li><li>Vá para “Plugins” e clique em “Plugins Instalados”.</li><li>Localize o plugin que você acabou de instalar e clique em “Ativar”.</li></ol><br>Após seguir essas etapas, o plugin deve estar instalado e funcionando corretamente em seu site WordPress.",
-	    "changelog": "<strong>Versão 5.4.2 (29/12/2025)</strong><ul><li><strong>Correções</strong><ul><li>Ativar validação de endereço por CEP</li></ul></li></ul>"
+	    "changelog": "<strong>Versão 5.5.0 (22/05/2026)</strong><ul><li><strong>Otimizações</strong><ul><li>Cadeia de fallback para consulta de CEP com múltiplas URLs</li><li>Sincronização mais robusta do resumo de checkout, incluindo telefone internacional, endereço e frete</li><li>Prevenção de duplicidade em validação de e-mail e sincronização inicial de sessão</li></ul></li><li><strong>Correção de problemas</strong><ul><li>Conflitos de campos no checkout com SuperFrete</li><li>Validação da etapa no checkout de convidado quando a senha de conta é opcional ou obrigatória</li><li>Erro de obrigatório para telefone internacional mandatório</li><li>Remoção do flash do aviso nativo de login do WooCommerce</li><li>Ajustes de layout mobile, sidebar, carrinho e responsividade da área de integrações</li></ul></li><li><strong>Recursos adicionados</strong><ul><li>Roteador de tracking multi-plataforma para GA4, Google Ads e Meta, com envio browser/server, deduplicação de compra e suporte a requisição assíncrona</li><li>Exposição dos campos extras do checkout na REST API do WooCommerce para clientes e pedidos, com schema e filtros de extensão</li><li>Fluxo AJAX de recuperação de senha no modal de login do checkout</li><li>Compatibilidade com tema XStore, incluindo ajustes no toggle de senha no checkout</li></ul></li><li><strong>Recurso modificado</strong><ul><li>Bootstrap do plugin refatorado para ciclo de vida em Core\\Init, incluindo ativação/desativação, mantendo shim legado</li></ul></li><li><strong>Recurso removido</strong><ul><li>Dependência jQuery Mask, substituída por mascaramento nativo</li></ul></li></ul>"
 	},
-	"banners" : {
-		"low" : "",
-		"high" : ""
+	"banners": {
+		"low": "",
+		"high": ""
 	}
 }
