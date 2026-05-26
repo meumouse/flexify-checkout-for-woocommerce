@@ -442,8 +442,14 @@ class Init {
             '\MeuMouse\Flexify_Checkout\Admin\Settings\Views\Integrations',
         ));
 
+        // normalize manual class names for skip-list comparison with classmap keys
+        $manual_classes_map = array();
+
         // iterate through manual classes and instance them
         foreach ( $manual_classes as $class ) {
+            $normalized = ltrim( (string) $class, '\\' );
+            $manual_classes_map[ $normalized ] = true;
+
             if ( class_exists( $class ) ) {
                 $instance = new $class();
 
@@ -470,6 +476,12 @@ class Init {
 
             // skip the Init class to prevent duplicate instances
             if ( strpos( $class, 'MeuMouse\\Flexify_Checkout\\Core\\Init' ) !== false ) {
+                continue;
+            }
+
+            // skip classes already instanced via the manual list above so their
+            // constructors do not run twice and double-register hooks/cards
+            if ( isset( $manual_classes_map[ ltrim( $class, '\\' ) ] ) ) {
                 continue;
             }
 
