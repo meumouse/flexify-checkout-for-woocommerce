@@ -142,6 +142,25 @@ class Integrations {
 		$google_ads = isset( $settings['google_ads'] ) && is_array( $settings['google_ads'] ) ? $settings['google_ads'] : array();
 		$meta = isset( $settings['meta'] ) && is_array( $settings['meta'] ) ? $settings['meta'] : array();
 		$is_pro = License::is_valid();
+		$routes = Admin_Options::get_setting( 'tracking_routes' );
+		$routes = is_array( $routes ) ? $routes : array();
+		$event_labels = array(
+			'fc_begin_checkout' => esc_html__( 'Checkout iniciado', 'flexify-checkout-for-woocommerce' ),
+			'fc_add_shipping_info' => esc_html__( 'Informações de entrega', 'flexify-checkout-for-woocommerce' ),
+			'fc_add_payment_info' => esc_html__( 'Informações de pagamento', 'flexify-checkout-for-woocommerce' ),
+			'fc_purchase' => esc_html__( 'Compra', 'flexify-checkout-for-woocommerce' ),
+		);
+		$event_descriptions = array(
+			'fc_begin_checkout' => esc_html__( 'Disparado quando o cliente entra no checkout.', 'flexify-checkout-for-woocommerce' ),
+			'fc_add_shipping_info' => esc_html__( 'Disparado quando o cliente seleciona ou altera o método de entrega.', 'flexify-checkout-for-woocommerce' ),
+			'fc_add_payment_info' => esc_html__( 'Disparado quando o cliente seleciona o método de pagamento e envia o pedido.', 'flexify-checkout-for-woocommerce' ),
+			'fc_purchase' => esc_html__( 'Disparado quando o pedido é concluído (página de obrigado e/ou status pago).', 'flexify-checkout-for-woocommerce' ),
+		);
+		$matrix_platforms = array(
+			'ga4' => esc_html__( 'GA4', 'flexify-checkout-for-woocommerce' ),
+			'google_ads' => esc_html__( 'Google Ads', 'flexify-checkout-for-woocommerce' ),
+			'meta' => esc_html__( 'Meta', 'flexify-checkout-for-woocommerce' ),
+		);
 		$ga4_logo_url = FLEXIFY_CHECKOUT_ASSETS . 'admin/img/google-analytics-logo.svg';
 		$google_ads_logo_url = FLEXIFY_CHECKOUT_ASSETS . 'admin/img/google-ads-logo.svg';
 		$meta_logo_url = FLEXIFY_CHECKOUT_ASSETS . 'admin/img/meta-logo.svg';
@@ -303,6 +322,48 @@ class Integrations {
 									<input type="text" class="form-control <?php echo ( ! $is_pro ) ? 'pro-version' : ''; ?>" id="tracking_integrations_meta_test_event_code" name="tracking_integrations[meta][test_event_code]" value="<?php echo esc_attr( isset( $meta['test_event_code'] ) ? $meta['test_event_code'] : '' ); ?>" />
 								</td>
 							</tr>
+
+							<tr class="container-separator"></tr>
+							<tr class="popup-table-section">
+								<th scope="row" colspan="2">
+									<span class="tracking-platform-heading">
+										<strong><?php esc_html_e( 'Eventos por plataforma', 'flexify-checkout-for-woocommerce' ) ?></strong>
+									</span>
+									<span class="flexify-checkout-description"><?php esc_html_e( 'Defina quais eventos do checkout serão enviados para cada plataforma. Os credenciais acima precisam estar configurados para o disparo acontecer.', 'flexify-checkout-for-woocommerce' ) ?></span>
+									<input type="hidden" name="tracking_routes[__rendered]" value="1" />
+								</th>
+							</tr>
+							<?php foreach ( $event_labels as $event_key => $event_label ) :
+								$event_routes = isset( $routes[ $event_key ] ) && is_array( $routes[ $event_key ] ) ? $routes[ $event_key ] : array();
+								?>
+								<tr>
+									<th scope="row">
+										<?php echo esc_html( $event_label ); ?>
+										<span class="flexify-checkout-description"><?php echo esc_html( $event_descriptions[ $event_key ] ); ?></span>
+										<code class="flexify-checkout-description"><?php echo esc_html( $event_key ); ?></code>
+									</th>
+									<td>
+										<div class="tracking-routes-matrix d-flex flex-wrap gap-3 align-items-center">
+											<?php foreach ( $matrix_platforms as $platform_key => $platform_label ) :
+												$is_active = isset( $event_routes[ $platform_key ] ) && $event_routes[ $platform_key ] === 'yes';
+												$field_id = 'tracking_routes_' . $event_key . '_' . $platform_key;
+												?>
+												<label for="<?php echo esc_attr( $field_id ); ?>" class="tracking-routes-matrix__option d-inline-flex align-items-center gap-2 m-0">
+													<input
+														type="checkbox"
+														id="<?php echo esc_attr( $field_id ); ?>"
+														class="toggle-switch <?php echo ( ! $is_pro ) ? 'pro-version' : ''; ?>"
+														name="tracking_routes[<?php echo esc_attr( $event_key ); ?>][<?php echo esc_attr( $platform_key ); ?>]"
+														value="yes"
+														<?php checked( $is_active && $is_pro ); ?>
+													/>
+													<span><?php echo esc_html( $platform_label ); ?></span>
+												</label>
+											<?php endforeach; ?>
+										</div>
+									</td>
+								</tr>
+							<?php endforeach; ?>
 						</tbody>
 					</table>
 				</div>

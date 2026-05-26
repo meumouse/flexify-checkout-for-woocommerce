@@ -298,6 +298,10 @@ class Ajax {
 				$form_data['tracking_integrations'] = $this->sanitize_tracking_integrations_settings( $form_data['tracking_integrations'] );
 			}
 
+			$form_data['tracking_routes'] = $this->sanitize_tracking_routes_settings(
+				isset( $form_data['tracking_routes'] ) && is_array( $form_data['tracking_routes'] ) ? $form_data['tracking_routes'] : array()
+			);
+
 			// check if form data exists "checkout_step" name and is array
 			if ( isset( $form_data['checkout_step'] ) && is_array( $form_data['checkout_step'] ) ) {
 				$form_data_fields = $form_data['checkout_step'];
@@ -460,6 +464,75 @@ class Ajax {
 				'test_event_code' => $keep_text( $meta, 'test_event_code', $stored_meta ),
 			),
 		);
+	}
+
+
+	/**
+	 * Sanitize tracking routes (event x platform matrix) coming from the integrations modal.
+	 *
+	 * Unchecked toggles drop out of the form serialization and only the user-facing platforms
+	 * (GA4, Google Ads, Meta) are rendered in the UI. Stored destinations not exposed in the
+	 * modal (data_layer, tiktok and any custom destination registered via the
+	 * Flexify_Checkout/Tracking/Destinations filter) are preserved as-is. Pro gating is applied
+	 * the same way as the credentials toggles.
+	 *
+	 * @since 5.5.2
+	 * @param array $input Raw form input.
+	 * @return array
+	 */
+	private function sanitize_tracking_routes_settings( $input ) {
+		$is_pro = License::is_valid();
+
+		$stored = get_option( 'flexify_checkout_settings', array() );
+		$stored = ( is_array( $stored ) && isset( $stored['tracking_routes'] ) && is_array( $stored['tracking_routes'] ) ) ? $stored['tracking_routes'] : array();
+
+		$defaults = ( new \MeuMouse\Flexify_Checkout\Admin\Default_Options() )->set_default_data_options();
+		$default_routes = isset( $defaults['tracking_routes'] ) && is_array( $defaults['tracking_routes'] ) ? $defaults['tracking_routes'] : array();
+
+		$events = array( 'fc_begin_checkout', 'fc_add_shipping_info', 'fc_add_payment_info', 'fc_purchase' );
+		$ui_platforms = array( 'ga4', 'google_ads', 'meta' );
+
+		if ( ! is_array( $input ) ) {
+			$input = array();
+		}
+
+		// The hidden marker tells us the matrix UI was actually rendered and submitted.
+		// Without it, an unchecked-all state would be indistinguishable from "not on this form"
+		// and we would wrongly preserve stored values when the user wants to disable everything.
+		$matrix_submitted = ! empty( $input['__rendered'] );
+		unset( $input['__rendered'] );
+
+		$sanitized = array();
+
+		foreach ( $events as $event_name ) {
+			$event_input = isset( $input[ $event_name ] ) && is_array( $input[ $event_name ] ) ? $input[ $event_name ] : array();
+			$event_stored = isset( $stored[ $event_name ] ) && is_array( $stored[ $event_name ] ) ? $stored[ $event_name ] : array();
+			$event_defaults = isset( $default_routes[ $event_name ] ) && is_array( $default_routes[ $event_name ] ) ? $default_routes[ $event_name ] : array();
+
+			$merged = array_merge( $event_defaults, $event_stored );
+
+			foreach ( $ui_platforms as $platform ) {
+				if ( ! $is_pro || ! $matrix_submitted ) {
+					// Preserve previously stored value (or default) when license is invalid or the
+					// matrix was not part of the submitted form.
+					if ( isset( $event_stored[ $platform ] ) ) {
+						$merged[ $platform ] = $event_stored[ $platform ];
+					} elseif ( isset( $event_defaults[ $platform ] ) ) {
+						$merged[ $platform ] = $event_defaults[ $platform ];
+					} else {
+						$merged[ $platform ] = 'no';
+					}
+
+					continue;
+				}
+
+				$merged[ $platform ] = isset( $event_input[ $platform ] ) ? 'yes' : 'no';
+			}
+
+			$sanitized[ $event_name ] = $merged;
+		}
+
+		return $sanitized;
 	}
 
 
