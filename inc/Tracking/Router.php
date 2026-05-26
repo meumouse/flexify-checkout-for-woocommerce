@@ -299,10 +299,10 @@ class Router {
         $destinations = is_array( $destinations ) ? array_values( array_unique( $destinations ) ) : self::DESTINATIONS;
 
         $default = array(
-            'fc_begin_checkout' => array( 'data_layer' => 'yes', 'ga4' => 'yes', 'meta' => 'no', 'tiktok' => 'no', 'google_ads' => 'no' ),
-            'fc_add_shipping_info' => array( 'data_layer' => 'yes', 'ga4' => 'yes', 'meta' => 'no', 'tiktok' => 'no', 'google_ads' => 'no' ),
-            'fc_add_payment_info' => array( 'data_layer' => 'yes', 'ga4' => 'yes', 'meta' => 'no', 'tiktok' => 'no', 'google_ads' => 'no' ),
-            'fc_purchase' => array( 'data_layer' => 'yes', 'ga4' => 'yes', 'meta' => 'yes', 'tiktok' => 'yes', 'google_ads' => 'no' ),
+            'fc_begin_checkout' => array( 'data_layer' => 'yes', 'ga4' => 'yes', 'meta' => 'yes', 'tiktok' => 'no', 'google_ads' => 'yes' ),
+            'fc_add_shipping_info' => array( 'data_layer' => 'yes', 'ga4' => 'yes', 'meta' => 'yes', 'tiktok' => 'no', 'google_ads' => 'yes' ),
+            'fc_add_payment_info' => array( 'data_layer' => 'yes', 'ga4' => 'yes', 'meta' => 'yes', 'tiktok' => 'no', 'google_ads' => 'yes' ),
+            'fc_purchase' => array( 'data_layer' => 'yes', 'ga4' => 'yes', 'meta' => 'yes', 'tiktok' => 'yes', 'google_ads' => 'yes' ),
         );
 
         $default = apply_filters( 'Flexify_Checkout/Tracking/Default_Routes', $default, $destinations );
