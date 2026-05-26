@@ -66,6 +66,7 @@ return array(
     'MeuMouse\\Flexify_Checkout\\Integrations\\North' => $baseDir . '/inc/Integrations/North.php',
     'MeuMouse\\Flexify_Checkout\\Integrations\\Pagarme' => $baseDir . '/inc/Integrations/Pagarme.php',
     'MeuMouse\\Flexify_Checkout\\Integrations\\Payco' => $baseDir . '/inc/Integrations/Payco.php',
+    'MeuMouse\\Flexify_Checkout\\Integrations\\PixelYourSite' => $baseDir . '/inc/Integrations/PixelYourSite.php',
     'MeuMouse\\Flexify_Checkout\\Integrations\\Ricky' => $baseDir . '/inc/Integrations/Ricky.php',
     'MeuMouse\\Flexify_Checkout\\Integrations\\Sala' => $baseDir . '/inc/Integrations/Sala.php',
     'MeuMouse\\Flexify_Checkout\\Integrations\\Salient' => $baseDir . '/inc/Integrations/Salient.php',
