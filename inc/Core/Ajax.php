@@ -391,57 +391,73 @@ class Ajax {
 	/**
 	 * Sanitize tracking integrations settings.
 	 *
+	 * Form inputs gated as Pro-only render with the .pro-version class and the admin JS
+	 * disables them for users without an active license. Disabled inputs are not included
+	 * in jQuery.serialize(), so a partial payload arrives at the server. To avoid wiping
+	 * previously saved text values (Pixel ID, Access Token, Measurement ID, etc.) we
+	 * fall back to the existing stored value whenever a key is absent from the input
+	 * instead of defaulting to an empty string.
+	 *
 	 * @since 5.5.0
+	 * @version 5.5.2
 	 * @param array $input Raw form input.
 	 * @return array
 	 */
 	private function sanitize_tracking_integrations_settings( $input ) {
 		$is_pro = License::is_valid();
-		$default = array(
-			'enabled' => 'no',
-			'ga4' => array(
-				'enabled' => 'no',
-				'measurement_id' => '',
-				'api_secret' => '',
-			),
-			'google_ads' => array(
-				'enabled' => 'no',
-				'conversion_id' => '',
-				'conversion_label' => '',
-			),
-			'meta' => array(
-				'enabled' => 'no',
-				'pixel_id' => '',
-				'access_token' => '',
-				'test_event_code' => '',
-			),
-		);
+
+		$stored = get_option( 'flexify_checkout_settings', array() );
+		$stored = ( is_array( $stored ) && isset( $stored['tracking_integrations'] ) && is_array( $stored['tracking_integrations'] ) ) ? $stored['tracking_integrations'] : array();
+
+		$stored_ga4 = isset( $stored['ga4'] ) && is_array( $stored['ga4'] ) ? $stored['ga4'] : array();
+		$stored_google_ads = isset( $stored['google_ads'] ) && is_array( $stored['google_ads'] ) ? $stored['google_ads'] : array();
+		$stored_meta = isset( $stored['meta'] ) && is_array( $stored['meta'] ) ? $stored['meta'] : array();
 
 		if ( ! is_array( $input ) ) {
-			return $default;
+			$input = array();
 		}
 
 		$ga4 = isset( $input['ga4'] ) && is_array( $input['ga4'] ) ? $input['ga4'] : array();
 		$google_ads = isset( $input['google_ads'] ) && is_array( $input['google_ads'] ) ? $input['google_ads'] : array();
 		$meta = isset( $input['meta'] ) && is_array( $input['meta'] ) ? $input['meta'] : array();
 
+		$keep_text = function( $section, $key, $stored_section ) {
+			if ( array_key_exists( $key, $section ) ) {
+				return sanitize_text_field( wp_unslash( $section[ $key ] ) );
+			}
+
+			return isset( $stored_section[ $key ] ) ? (string) $stored_section[ $key ] : '';
+		};
+
+		$keep_toggle = function( $section, $key, $stored_section ) use ( $is_pro ) {
+			if ( ! $is_pro ) {
+				return 'no';
+			}
+
+			if ( array_key_exists( $key, $section ) ) {
+				return isset( $section[ $key ] ) ? 'yes' : 'no';
+			}
+
+			return ( isset( $stored_section[ $key ] ) && $stored_section[ $key ] === 'yes' ) ? 'yes' : 'no';
+		};
+
 		return array(
-			'enabled' => ( isset( $input['enabled'] ) && $is_pro ) ? 'yes' : 'no',
+			'enabled' => $keep_toggle( $input, 'enabled', $stored ),
 			'ga4' => array(
-				'enabled' => ( isset( $ga4['enabled'] ) && $is_pro ) ? 'yes' : 'no',
-				'measurement_id' => isset( $ga4['measurement_id'] ) ? sanitize_text_field( wp_unslash( $ga4['measurement_id'] ) ) : '',
-				'api_secret' => isset( $ga4['api_secret'] ) ? sanitize_text_field( wp_unslash( $ga4['api_secret'] ) ) : '',
+				'enabled' => $keep_toggle( $ga4, 'enabled', $stored_ga4 ),
+				'measurement_id' => $keep_text( $ga4, 'measurement_id', $stored_ga4 ),
+				'api_secret' => $keep_text( $ga4, 'api_secret', $stored_ga4 ),
 			),
 			'google_ads' => array(
-				'enabled' => ( isset( $google_ads['enabled'] ) && $is_pro ) ? 'yes' : 'no',
-				'conversion_id' => isset( $google_ads['conversion_id'] ) ? sanitize_text_field( wp_unslash( $google_ads['conversion_id'] ) ) : '',
-				'conversion_label' => isset( $google_ads['conversion_label'] ) ? sanitize_text_field( wp_unslash( $google_ads['conversion_label'] ) ) : '',
+				'enabled' => $keep_toggle( $google_ads, 'enabled', $stored_google_ads ),
+				'conversion_id' => $keep_text( $google_ads, 'conversion_id', $stored_google_ads ),
+				'conversion_label' => $keep_text( $google_ads, 'conversion_label', $stored_google_ads ),
 			),
 			'meta' => array(
-				'enabled' => ( isset( $meta['enabled'] ) && $is_pro ) ? 'yes' : 'no',
-				'pixel_id' => isset( $meta['pixel_id'] ) ? sanitize_text_field( wp_unslash( $meta['pixel_id'] ) ) : '',
-				'access_token' => isset( $meta['access_token'] ) ? sanitize_text_field( wp_unslash( $meta['access_token'] ) ) : '',
-				'test_event_code' => isset( $meta['test_event_code'] ) ? sanitize_text_field( wp_unslash( $meta['test_event_code'] ) ) : '',
+				'enabled' => $keep_toggle( $meta, 'enabled', $stored_meta ),
+				'pixel_id' => $keep_text( $meta, 'pixel_id', $stored_meta ),
+				'access_token' => $keep_text( $meta, 'access_token', $stored_meta ),
+				'test_event_code' => $keep_text( $meta, 'test_event_code', $stored_meta ),
 			),
 		);
 	}
