@@ -4493,6 +4493,14 @@
 				return !!( params.tracking_router && params.tracking_router.enabled === 'yes' );
 			},
 
+			isFrontendBridgeEnabled: function() {
+				return !!( params.pixelyoursite_integration && params.pixelyoursite_integration.active === 'yes' );
+			},
+
+			isFrontendEmissionEnabled: function() {
+				return this.isEnabled() || this.isFrontendBridgeEnabled();
+			},
+
 			getRoutes: function() {
 				return ( params.tracking_router && params.tracking_router.routes ) ? params.tracking_router.routes : {};
 			},
@@ -4656,7 +4664,7 @@
 			},
 
 			emit: function( event_name, payload, once_key ) {
-				if ( ! this.isEnabled() ) {
+				if ( ! this.isFrontendEmissionEnabled() ) {
 					return;
 				}
 
@@ -4665,19 +4673,22 @@
 					return;
 				}
 
+				const router_enabled = this.isEnabled();
 				const safe_payload = this.sanitizePayload( payload, event_name );
 				const destinations = {
-					data_layer: this.canSendTo( event_name, 'data_layer' ),
-					ga4: this.canSendTo( event_name, 'ga4' ),
-					google_ads: this.canSendTo( event_name, 'google_ads' ),
-					meta: this.canSendTo( event_name, 'meta' ),
-					tiktok: this.canSendTo( event_name, 'tiktok' ),
-					async: this.isAsyncEnabled(),
+					data_layer: router_enabled ? this.canSendTo( event_name, 'data_layer' ) : true,
+					ga4: router_enabled && this.canSendTo( event_name, 'ga4' ),
+					google_ads: router_enabled && this.canSendTo( event_name, 'google_ads' ),
+					meta: router_enabled && this.canSendTo( event_name, 'meta' ),
+					tiktok: router_enabled && this.canSendTo( event_name, 'tiktok' ),
+					async: router_enabled && this.isAsyncEnabled(),
 				};
 
 				this.debugLog( 'event dispatched', {
 					event_name: event_name,
 					once_key: once_key || null,
+					router_enabled: router_enabled,
+					bridge_enabled: this.isFrontendBridgeEnabled(),
 					destinations: destinations,
 					payload: safe_payload,
 				});
@@ -4702,7 +4713,9 @@
 					this.sendTikTok( event_name, safe_payload );
 				}
 
-				this.enqueueAsyncEvent( event_name, safe_payload );
+				if ( destinations.async ) {
+					this.enqueueAsyncEvent( event_name, safe_payload );
+				}
 
 				if ( once_key ) {
 					this.state.sent[once_key] = true;
@@ -4834,12 +4847,13 @@
 			},
 
 			init: function() {
-				if ( ! this.isEnabled() ) {
+				if ( ! this.isFrontendEmissionEnabled() ) {
 					return;
 				}
 
 				this.debugLog( 'tracking initialized', {
 					router_enabled: this.isEnabled(),
+					bridge_enabled: this.isFrontendBridgeEnabled(),
 					async_enabled: this.isAsyncEnabled(),
 					debug_mode: params.debug_mode,
 				});
