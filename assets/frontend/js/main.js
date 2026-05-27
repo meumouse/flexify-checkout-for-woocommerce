@@ -695,6 +695,16 @@
 					const field = this;
 					const email = String( $(field).val() || '' ).trim().toLowerCase();
 
+					// Clear the "account already exists" inline notice as soon as the user edits the email.
+					// The debounced lookup below will repaint it if the new value also has a registered account.
+					const $row = $(field).closest('.form-row');
+
+					$row.removeClass('woocommerce-invalid woocommerce-invalid-required woocommerce-invalid-email woocommerce-account-exists');
+					$row.find('.error').empty();
+
+					// Reset cached lookup so an email reverted back to a known value triggers a fresh check.
+					last_checked_email = '';
+
 					clearTimeout(timer);
 
 					timer = setTimeout( function() {
