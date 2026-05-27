@@ -99,6 +99,12 @@ class Router {
      */
     public function append_script_data( $params ) {
         $event_map = $this->get_event_map();
+        $integration_settings = $this->get_tracking_integrations_settings();
+        $google_ads_settings = isset( $integration_settings['google_ads'] ) && is_array( $integration_settings['google_ads'] ) ? $integration_settings['google_ads'] : array();
+        $google_ads_conversion_id = isset( $google_ads_settings['conversion_id'] ) ? trim( (string) $google_ads_settings['conversion_id'] ) : '';
+        $google_ads_conversion_label = isset( $google_ads_settings['conversion_label'] ) ? trim( (string) $google_ads_settings['conversion_label'] ) : '';
+        $google_ads_clean_id = preg_replace( '/[^0-9]/', '', $google_ads_conversion_id );
+        $google_ads_send_to = ( $google_ads_clean_id !== '' && $google_ads_conversion_label !== '' ) ? 'AW-' . $google_ads_clean_id . '/' . $google_ads_conversion_label : '';
 
         $params['tracking_router'] = array(
             'enabled' => $this->is_router_enabled() ? 'yes' : 'no',
@@ -106,6 +112,13 @@ class Router {
             'event_map' => $event_map,
             'checkout_payload' => $this->build_checkout_payload(),
             'purchase_payload' => $this->build_purchase_payload_for_browser(),
+            'destinations' => array(
+                'google_ads' => array(
+                    'conversion_id' => $google_ads_clean_id !== '' ? 'AW-' . $google_ads_clean_id : '',
+                    'conversion_label' => $google_ads_conversion_label,
+                    'send_to' => $google_ads_send_to,
+                ),
+            ),
             'async' => array(
                 'enabled' => $this->is_async_enabled() ? 'yes' : 'no',
                 'action' => 'flexify_checkout_tracking_async',
@@ -299,10 +312,10 @@ class Router {
         $destinations = is_array( $destinations ) ? array_values( array_unique( $destinations ) ) : self::DESTINATIONS;
 
         $default = array(
-            'fc_begin_checkout' => array( 'data_layer' => 'yes', 'ga4' => 'yes', 'meta' => 'no', 'tiktok' => 'no', 'google_ads' => 'no' ),
-            'fc_add_shipping_info' => array( 'data_layer' => 'yes', 'ga4' => 'yes', 'meta' => 'no', 'tiktok' => 'no', 'google_ads' => 'no' ),
-            'fc_add_payment_info' => array( 'data_layer' => 'yes', 'ga4' => 'yes', 'meta' => 'no', 'tiktok' => 'no', 'google_ads' => 'no' ),
-            'fc_purchase' => array( 'data_layer' => 'yes', 'ga4' => 'yes', 'meta' => 'yes', 'tiktok' => 'yes', 'google_ads' => 'no' ),
+            'fc_begin_checkout' => array( 'data_layer' => 'yes', 'ga4' => 'yes', 'meta' => 'yes', 'tiktok' => 'no', 'google_ads' => 'yes' ),
+            'fc_add_shipping_info' => array( 'data_layer' => 'yes', 'ga4' => 'yes', 'meta' => 'yes', 'tiktok' => 'no', 'google_ads' => 'yes' ),
+            'fc_add_payment_info' => array( 'data_layer' => 'yes', 'ga4' => 'yes', 'meta' => 'yes', 'tiktok' => 'no', 'google_ads' => 'yes' ),
+            'fc_purchase' => array( 'data_layer' => 'yes', 'ga4' => 'yes', 'meta' => 'yes', 'tiktok' => 'yes', 'google_ads' => 'yes' ),
         );
 
         $default = apply_filters( 'Flexify_Checkout/Tracking/Default_Routes', $default, $destinations );

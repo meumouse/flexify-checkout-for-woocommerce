@@ -9,6 +9,7 @@ defined('ABSPATH') || exit;
  * Register common checkout actions and filters
  *
  * @since 5.0.0
+ * @version 5.5.2
  * @package MeuMouse\Flexify_Checkout\Checkout
  * @author MeuMouse.com
  */
@@ -26,6 +27,62 @@ class Common {
 
         // add custom message for empty payment methods
         add_filter( 'woocommerce_no_available_payment_methods_message', array( $this, 'empty_payment_methods_message' ) );
+
+        // force WooCommerce is_checkout() to return true on Flexify checkout context
+        add_filter( 'woocommerce_is_checkout', array( $this, 'force_is_checkout_on_flexify_context' ) );
+    }
+
+
+    /**
+     * Force WooCommerce is_checkout() to return true on the Flexify checkout context.
+     *
+     * The native check fails for third-party integrations that load the checkout
+     * via wc-ajax or render it on a non-default page. We resolve the checkout
+     * page id directly from the queried object/request URI to avoid recursion
+     * with is_flexify_checkout(), which itself relies on is_checkout().
+     *
+     * @since 5.5.2
+     * @param bool $is_checkout Current value provided by WooCommerce.
+     * @return bool
+     */
+    public function force_is_checkout_on_flexify_context( $is_checkout ) {
+        if ( $is_checkout ) {
+            return $is_checkout;
+        }
+
+        if ( ! function_exists('wc_get_page_id') ) {
+            return $is_checkout;
+        }
+
+        $wc_ajax = filter_input( INPUT_GET, 'wc-ajax', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+
+        if ( 'update_order_review' === $wc_ajax ) {
+            return true;
+        }
+
+        $checkout_page_id = wc_get_page_id('checkout');
+
+        if ( $checkout_page_id <= 0 ) {
+            return $is_checkout;
+        }
+
+        $queried_object = function_exists('get_queried_object') ? get_queried_object() : null;
+
+        if ( $queried_object && isset( $queried_object->ID ) && (int) $queried_object->ID === (int) $checkout_page_id ) {
+            return true;
+        }
+
+        $request_uri = ! empty( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
+
+        if ( $request_uri !== '' ) {
+            $page_id = url_to_postid( home_url( $request_uri ) );
+
+            if ( $page_id > 0 && (int) $page_id === (int) $checkout_page_id ) {
+                return true;
+            }
+        }
+
+        return $is_checkout;
     }
 
 

@@ -298,6 +298,10 @@ class Ajax {
 				$form_data['tracking_integrations'] = $this->sanitize_tracking_integrations_settings( $form_data['tracking_integrations'] );
 			}
 
+			$form_data['tracking_routes'] = $this->sanitize_tracking_routes_settings(
+				isset( $form_data['tracking_routes'] ) && is_array( $form_data['tracking_routes'] ) ? $form_data['tracking_routes'] : array()
+			);
+
 			// check if form data exists "checkout_step" name and is array
 			if ( isset( $form_data['checkout_step'] ) && is_array( $form_data['checkout_step'] ) ) {
 				$form_data_fields = $form_data['checkout_step'];
@@ -363,10 +367,14 @@ class Ajax {
 			// Merge the form data with the default options
 			$updated_options = wp_parse_args( $form_data, $options );
 
-			// Save the updated options
+			// Save the updated options. update_option() returns false when the new value
+			// is identical to the stored one — that is not an error, so we only flag failure
+			// when the persisted option actually diverges from what we tried to save.
 			$saved_options = update_option( 'flexify_checkout_settings', $updated_options );
+			$persisted = get_option( 'flexify_checkout_settings', array() );
+			$is_persisted = $saved_options || ( is_array( $persisted ) && $persisted == $updated_options );
 
-			if ( $saved_options ) {
+			if ( $is_persisted ) {
 				$response = array(
 					'status' => 'success',
 					'toast_header_title' => esc_html__( 'Salvo com sucesso', 'flexify-checkout-for-woocommerce' ),
@@ -391,59 +399,154 @@ class Ajax {
 	/**
 	 * Sanitize tracking integrations settings.
 	 *
+	 * Form inputs gated as Pro-only render with the .pro-version class and the admin JS
+	 * disables them for users without an active license. Disabled inputs are not included
+	 * in jQuery.serialize(), so a partial payload arrives at the server. To avoid wiping
+	 * previously saved text values (Pixel ID, Access Token, Measurement ID, etc.) we
+	 * fall back to the existing stored value whenever a key is absent from the input
+	 * instead of defaulting to an empty string.
+	 *
 	 * @since 5.5.0
+	 * @version 5.5.2
 	 * @param array $input Raw form input.
 	 * @return array
 	 */
 	private function sanitize_tracking_integrations_settings( $input ) {
 		$is_pro = License::is_valid();
-		$default = array(
-			'enabled' => 'no',
-			'ga4' => array(
-				'enabled' => 'no',
-				'measurement_id' => '',
-				'api_secret' => '',
-			),
-			'google_ads' => array(
-				'enabled' => 'no',
-				'conversion_id' => '',
-				'conversion_label' => '',
-			),
-			'meta' => array(
-				'enabled' => 'no',
-				'pixel_id' => '',
-				'access_token' => '',
-				'test_event_code' => '',
-			),
-		);
+
+		$stored = get_option( 'flexify_checkout_settings', array() );
+		$stored = ( is_array( $stored ) && isset( $stored['tracking_integrations'] ) && is_array( $stored['tracking_integrations'] ) ) ? $stored['tracking_integrations'] : array();
+
+		$stored_ga4 = isset( $stored['ga4'] ) && is_array( $stored['ga4'] ) ? $stored['ga4'] : array();
+		$stored_google_ads = isset( $stored['google_ads'] ) && is_array( $stored['google_ads'] ) ? $stored['google_ads'] : array();
+		$stored_meta = isset( $stored['meta'] ) && is_array( $stored['meta'] ) ? $stored['meta'] : array();
 
 		if ( ! is_array( $input ) ) {
-			return $default;
+			$input = array();
 		}
+
+		// The hidden marker tells us the integrations form was actually rendered and submitted.
+		// Without it, an unchecked toggle would be indistinguishable from "form not on this page"
+		// and we would wrongly preserve stored 'yes' values when the user wants to disable them.
+		$form_submitted = ! empty( $input['__rendered'] );
+		unset( $input['__rendered'] );
 
 		$ga4 = isset( $input['ga4'] ) && is_array( $input['ga4'] ) ? $input['ga4'] : array();
 		$google_ads = isset( $input['google_ads'] ) && is_array( $input['google_ads'] ) ? $input['google_ads'] : array();
 		$meta = isset( $input['meta'] ) && is_array( $input['meta'] ) ? $input['meta'] : array();
 
+		$keep_text = function( $section, $key, $stored_section ) {
+			if ( array_key_exists( $key, $section ) ) {
+				return sanitize_text_field( wp_unslash( $section[ $key ] ) );
+			}
+
+			return isset( $stored_section[ $key ] ) ? (string) $stored_section[ $key ] : '';
+		};
+
+		$keep_toggle = function( $section, $key, $stored_section ) use ( $is_pro, $form_submitted ) {
+			if ( ! $is_pro ) {
+				return 'no';
+			}
+
+			if ( array_key_exists( $key, $section ) ) {
+				return isset( $section[ $key ] ) ? 'yes' : 'no';
+			}
+
+			if ( $form_submitted ) {
+				return 'no';
+			}
+
+			return ( isset( $stored_section[ $key ] ) && $stored_section[ $key ] === 'yes' ) ? 'yes' : 'no';
+		};
+
 		return array(
-			'enabled' => ( isset( $input['enabled'] ) && $is_pro ) ? 'yes' : 'no',
+			'enabled' => $keep_toggle( $input, 'enabled', $stored ),
 			'ga4' => array(
-				'enabled' => ( isset( $ga4['enabled'] ) && $is_pro ) ? 'yes' : 'no',
-				'measurement_id' => isset( $ga4['measurement_id'] ) ? sanitize_text_field( wp_unslash( $ga4['measurement_id'] ) ) : '',
-				'api_secret' => isset( $ga4['api_secret'] ) ? sanitize_text_field( wp_unslash( $ga4['api_secret'] ) ) : '',
+				'enabled' => $keep_toggle( $ga4, 'enabled', $stored_ga4 ),
+				'measurement_id' => $keep_text( $ga4, 'measurement_id', $stored_ga4 ),
+				'api_secret' => $keep_text( $ga4, 'api_secret', $stored_ga4 ),
 			),
 			'google_ads' => array(
-				'enabled' => ( isset( $google_ads['enabled'] ) && $is_pro ) ? 'yes' : 'no',
-				'conversion_id' => isset( $google_ads['conversion_id'] ) ? sanitize_text_field( wp_unslash( $google_ads['conversion_id'] ) ) : '',
-				'conversion_label' => isset( $google_ads['conversion_label'] ) ? sanitize_text_field( wp_unslash( $google_ads['conversion_label'] ) ) : '',
+				'enabled' => $keep_toggle( $google_ads, 'enabled', $stored_google_ads ),
+				'conversion_id' => $keep_text( $google_ads, 'conversion_id', $stored_google_ads ),
+				'conversion_label' => $keep_text( $google_ads, 'conversion_label', $stored_google_ads ),
 			),
 			'meta' => array(
-				'enabled' => ( isset( $meta['enabled'] ) && $is_pro ) ? 'yes' : 'no',
-				'pixel_id' => isset( $meta['pixel_id'] ) ? sanitize_text_field( wp_unslash( $meta['pixel_id'] ) ) : '',
-				'access_token' => isset( $meta['access_token'] ) ? sanitize_text_field( wp_unslash( $meta['access_token'] ) ) : '',
-				'test_event_code' => isset( $meta['test_event_code'] ) ? sanitize_text_field( wp_unslash( $meta['test_event_code'] ) ) : '',
+				'enabled' => $keep_toggle( $meta, 'enabled', $stored_meta ),
+				'pixel_id' => $keep_text( $meta, 'pixel_id', $stored_meta ),
+				'access_token' => $keep_text( $meta, 'access_token', $stored_meta ),
+				'test_event_code' => $keep_text( $meta, 'test_event_code', $stored_meta ),
 			),
 		);
+	}
+
+
+	/**
+	 * Sanitize tracking routes (event x platform matrix) coming from the integrations modal.
+	 *
+	 * Unchecked toggles drop out of the form serialization and only the user-facing platforms
+	 * (GA4, Google Ads, Meta) are rendered in the UI. Stored destinations not exposed in the
+	 * modal (data_layer, tiktok and any custom destination registered via the
+	 * Flexify_Checkout/Tracking/Destinations filter) are preserved as-is. Pro gating is applied
+	 * the same way as the credentials toggles.
+	 *
+	 * @since 5.5.2
+	 * @param array $input Raw form input.
+	 * @return array
+	 */
+	private function sanitize_tracking_routes_settings( $input ) {
+		$is_pro = License::is_valid();
+
+		$stored = get_option( 'flexify_checkout_settings', array() );
+		$stored = ( is_array( $stored ) && isset( $stored['tracking_routes'] ) && is_array( $stored['tracking_routes'] ) ) ? $stored['tracking_routes'] : array();
+
+		$defaults = ( new \MeuMouse\Flexify_Checkout\Admin\Default_Options() )->set_default_data_options();
+		$default_routes = isset( $defaults['tracking_routes'] ) && is_array( $defaults['tracking_routes'] ) ? $defaults['tracking_routes'] : array();
+
+		$events = array( 'fc_begin_checkout', 'fc_add_shipping_info', 'fc_add_payment_info', 'fc_purchase' );
+		$ui_platforms = array( 'ga4', 'google_ads', 'meta' );
+
+		if ( ! is_array( $input ) ) {
+			$input = array();
+		}
+
+		// The hidden marker tells us the matrix UI was actually rendered and submitted.
+		// Without it, an unchecked-all state would be indistinguishable from "not on this form"
+		// and we would wrongly preserve stored values when the user wants to disable everything.
+		$matrix_submitted = ! empty( $input['__rendered'] );
+		unset( $input['__rendered'] );
+
+		$sanitized = array();
+
+		foreach ( $events as $event_name ) {
+			$event_input = isset( $input[ $event_name ] ) && is_array( $input[ $event_name ] ) ? $input[ $event_name ] : array();
+			$event_stored = isset( $stored[ $event_name ] ) && is_array( $stored[ $event_name ] ) ? $stored[ $event_name ] : array();
+			$event_defaults = isset( $default_routes[ $event_name ] ) && is_array( $default_routes[ $event_name ] ) ? $default_routes[ $event_name ] : array();
+
+			$merged = array_merge( $event_defaults, $event_stored );
+
+			foreach ( $ui_platforms as $platform ) {
+				if ( ! $is_pro || ! $matrix_submitted ) {
+					// Preserve previously stored value (or default) when license is invalid or the
+					// matrix was not part of the submitted form.
+					if ( isset( $event_stored[ $platform ] ) ) {
+						$merged[ $platform ] = $event_stored[ $platform ];
+					} elseif ( isset( $event_defaults[ $platform ] ) ) {
+						$merged[ $platform ] = $event_defaults[ $platform ];
+					} else {
+						$merged[ $platform ] = 'no';
+					}
+
+					continue;
+				}
+
+				$merged[ $platform ] = isset( $event_input[ $platform ] ) ? 'yes' : 'no';
+			}
+
+			$sanitized[ $event_name ] = $merged;
+		}
+
+		return $sanitized;
 	}
 
 

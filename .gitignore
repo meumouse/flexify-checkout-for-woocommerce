@@ -1,3 +1,4 @@
 # Ignore Git files
 composer.*
 .env
+.claude

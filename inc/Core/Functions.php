@@ -45,6 +45,32 @@ if ( ! function_exists('remove_filters_with_method_name') ) {
     }
 }
 
+if ( ! function_exists('flexify_checkout_is_debug') ) {
+    /**
+     * Lazily resolve whether debug mode is enabled.
+     *
+     * Replaces eager reads of the FLEXIFY_CHECKOUT_DEBUG_MODE constant
+     * (still defined for backward compatibility). The value is memoized
+     * per-request so the underlying option is read at most once.
+     *
+     * @since 5.5.2
+     * @return bool
+     */
+    function flexify_checkout_is_debug() {
+        static $is_debug = null;
+
+        if ( $is_debug === null ) {
+            if ( class_exists( '\MeuMouse\Flexify_Checkout\Admin\Admin_Options' ) ) {
+                $is_debug = \MeuMouse\Flexify_Checkout\Admin\Admin_Options::get_setting('enable_debug_mode') === 'yes';
+            } else {
+                $is_debug = false;
+            }
+        }
+
+        return $is_debug;
+    }
+}
+
 if ( ! function_exists('is_flexify_checkout_admin_settings') ) {
     /**
      * Check if is admin links URL

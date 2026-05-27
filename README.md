@@ -38,6 +38,16 @@ Você pode instalar um plugin WordPress de duas maneiras: via o painel de admini
 
 ### Registro de alterações (Changelogs):
 
+Versão 5.5.2 (27/05/2026)
+* Otimizações
+  - Correção do `is_checkout()` nativo para retornar `true` no contexto do Flexify Checkout
+* Correção de problemas
+  - Senha de conta exigida mesmo com cliente já logado no checkout
+  - Aviso de "conta já cadastrada" persistia após alteração do e-mail no checkout
+* Recurso adicionado: Matriz de roteamento por evento e plataforma no modal de Rastreamento de dados
+* Recurso adicionado: Integração com PixelYourSite
+* Recurso adicionado: Conversão do Google Ads no browser via `send_to: AW-<id>/<label>`
+
 Versão 5.5.0 (22/05/2026)
 * Otimizações
   - Cadeia de fallback para consulta de CEP (com múltiplas URLs)

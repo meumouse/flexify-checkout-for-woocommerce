@@ -695,6 +695,16 @@
 					const field = this;
 					const email = String( $(field).val() || '' ).trim().toLowerCase();
 
+					// Clear the "account already exists" inline notice as soon as the user edits the email.
+					// The debounced lookup below will repaint it if the new value also has a registered account.
+					const $row = $(field).closest('.form-row');
+
+					$row.removeClass('woocommerce-invalid woocommerce-invalid-required woocommerce-invalid-email woocommerce-account-exists');
+					$row.find('.error').empty();
+
+					// Reset cached lookup so an email reverted back to a known value triggers a fresh check.
+					last_checked_email = '';
+
 					clearTimeout(timer);
 
 					timer = setTimeout( function() {
@@ -4493,6 +4503,14 @@
 				return !!( params.tracking_router && params.tracking_router.enabled === 'yes' );
 			},
 
+			isFrontendBridgeEnabled: function() {
+				return !!( params.pixelyoursite_integration && params.pixelyoursite_integration.active === 'yes' );
+			},
+
+			isFrontendEmissionEnabled: function() {
+				return this.isEnabled() || this.isFrontendBridgeEnabled();
+			},
+
 			getRoutes: function() {
 				return ( params.tracking_router && params.tracking_router.routes ) ? params.tracking_router.routes : {};
 			},
@@ -4542,12 +4560,38 @@
 				window.dataLayer.push( Object.assign({ event: event_name }, payload ) );
 			},
 
+			getDestinationConfig: function( destination ) {
+				if ( ! params.tracking_router || ! params.tracking_router.destinations ) {
+					return {};
+				}
+
+				return params.tracking_router.destinations[destination] || {};
+			},
+
 			sendGtag: function( destination, event_name, payload ) {
 				if ( typeof window.gtag !== 'function' ) {
 					return;
 				}
 
-				window.gtag( 'event', this.getExternalEventName( event_name, destination ), payload );
+				const external_name = this.getExternalEventName( event_name, destination );
+				const gtag_payload = Object.assign( {}, payload );
+
+				if ( destination === 'google_ads' ) {
+					const ads_config = this.getDestinationConfig( 'google_ads' );
+
+					if ( ! ads_config.send_to ) {
+						this.debugLog( 'google_ads skipped: missing send_to (conversion_id/label not configured)', { event_name: event_name } );
+						return;
+					}
+
+					gtag_payload.send_to = ads_config.send_to;
+
+					if ( payload.transaction_id ) {
+						gtag_payload.transaction_id = String( payload.transaction_id );
+					}
+				}
+
+				window.gtag( 'event', external_name, gtag_payload );
 			},
 
 			sendMeta: function( event_name, payload ) {
@@ -4656,7 +4700,7 @@
 			},
 
 			emit: function( event_name, payload, once_key ) {
-				if ( ! this.isEnabled() ) {
+				if ( ! this.isFrontendEmissionEnabled() ) {
 					return;
 				}
 
@@ -4665,19 +4709,22 @@
 					return;
 				}
 
+				const router_enabled = this.isEnabled();
 				const safe_payload = this.sanitizePayload( payload, event_name );
 				const destinations = {
-					data_layer: this.canSendTo( event_name, 'data_layer' ),
-					ga4: this.canSendTo( event_name, 'ga4' ),
-					google_ads: this.canSendTo( event_name, 'google_ads' ),
-					meta: this.canSendTo( event_name, 'meta' ),
-					tiktok: this.canSendTo( event_name, 'tiktok' ),
-					async: this.isAsyncEnabled(),
+					data_layer: router_enabled ? this.canSendTo( event_name, 'data_layer' ) : true,
+					ga4: router_enabled && this.canSendTo( event_name, 'ga4' ),
+					google_ads: router_enabled && this.canSendTo( event_name, 'google_ads' ),
+					meta: router_enabled && this.canSendTo( event_name, 'meta' ),
+					tiktok: router_enabled && this.canSendTo( event_name, 'tiktok' ),
+					async: router_enabled && this.isAsyncEnabled(),
 				};
 
 				this.debugLog( 'event dispatched', {
 					event_name: event_name,
 					once_key: once_key || null,
+					router_enabled: router_enabled,
+					bridge_enabled: this.isFrontendBridgeEnabled(),
 					destinations: destinations,
 					payload: safe_payload,
 				});
@@ -4702,7 +4749,9 @@
 					this.sendTikTok( event_name, safe_payload );
 				}
 
-				this.enqueueAsyncEvent( event_name, safe_payload );
+				if ( destinations.async ) {
+					this.enqueueAsyncEvent( event_name, safe_payload );
+				}
 
 				if ( once_key ) {
 					this.state.sent[once_key] = true;
@@ -4834,12 +4883,13 @@
 			},
 
 			init: function() {
-				if ( ! this.isEnabled() ) {
+				if ( ! this.isFrontendEmissionEnabled() ) {
 					return;
 				}
 
 				this.debugLog( 'tracking initialized', {
 					router_enabled: this.isEnabled(),
+					bridge_enabled: this.isFrontendBridgeEnabled(),
 					async_enabled: this.isAsyncEnabled(),
 					debug_mode: params.debug_mode,
 				});
