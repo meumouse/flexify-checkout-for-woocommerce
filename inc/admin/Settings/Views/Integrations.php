@@ -182,6 +182,7 @@ class Integrations {
 				<p class="card-text fs-sm mb-4"><?php esc_html_e( 'Configure o GA4, Google Ads e Meta para envio de dados de eventos coletados no checkout.', 'flexify-checkout-for-woocommerce' ) ?></p>
 				
 				<div class="d-flex align-items-center justify-content-center w-100 mb-3">
+					<input type="hidden" name="tracking_integrations[__rendered]" value="1" />
 					<input type="checkbox" class="toggle-switch <?php echo ( ! $is_pro ) ? 'pro-version' : ''; ?>" id="tracking_integrations_enabled" name="tracking_integrations[enabled]" value="yes" <?php checked( isset( $settings['enabled'] ) && $settings['enabled'] === 'yes' && $is_pro ); ?> />
 				</div>
 
@@ -324,6 +325,7 @@ class Integrations {
 							</tr>
 
 							<tr class="container-separator"></tr>
+							
 							<tr class="popup-table-section">
 								<th scope="row" colspan="2">
 									<span class="tracking-platform-heading">
@@ -333,9 +335,10 @@ class Integrations {
 									<input type="hidden" name="tracking_routes[__rendered]" value="1" />
 								</th>
 							</tr>
+
 							<?php foreach ( $event_labels as $event_key => $event_label ) :
-								$event_routes = isset( $routes[ $event_key ] ) && is_array( $routes[ $event_key ] ) ? $routes[ $event_key ] : array();
-								?>
+								$event_routes = isset( $routes[ $event_key ] ) && is_array( $routes[ $event_key ] ) ? $routes[ $event_key ] : array(); ?>
+
 								<tr>
 									<th scope="row">
 										<?php echo esc_html( $event_label ); ?>

@@ -367,10 +367,14 @@ class Ajax {
 			// Merge the form data with the default options
 			$updated_options = wp_parse_args( $form_data, $options );
 
-			// Save the updated options
+			// Save the updated options. update_option() returns false when the new value
+			// is identical to the stored one — that is not an error, so we only flag failure
+			// when the persisted option actually diverges from what we tried to save.
 			$saved_options = update_option( 'flexify_checkout_settings', $updated_options );
+			$persisted = get_option( 'flexify_checkout_settings', array() );
+			$is_persisted = $saved_options || ( is_array( $persisted ) && $persisted == $updated_options );
 
-			if ( $saved_options ) {
+			if ( $is_persisted ) {
 				$response = array(
 					'status' => 'success',
 					'toast_header_title' => esc_html__( 'Salvo com sucesso', 'flexify-checkout-for-woocommerce' ),
@@ -421,6 +425,12 @@ class Ajax {
 			$input = array();
 		}
 
+		// The hidden marker tells us the integrations form was actually rendered and submitted.
+		// Without it, an unchecked toggle would be indistinguishable from "form not on this page"
+		// and we would wrongly preserve stored 'yes' values when the user wants to disable them.
+		$form_submitted = ! empty( $input['__rendered'] );
+		unset( $input['__rendered'] );
+
 		$ga4 = isset( $input['ga4'] ) && is_array( $input['ga4'] ) ? $input['ga4'] : array();
 		$google_ads = isset( $input['google_ads'] ) && is_array( $input['google_ads'] ) ? $input['google_ads'] : array();
 		$meta = isset( $input['meta'] ) && is_array( $input['meta'] ) ? $input['meta'] : array();
@@ -433,13 +443,17 @@ class Ajax {
 			return isset( $stored_section[ $key ] ) ? (string) $stored_section[ $key ] : '';
 		};
 
-		$keep_toggle = function( $section, $key, $stored_section ) use ( $is_pro ) {
+		$keep_toggle = function( $section, $key, $stored_section ) use ( $is_pro, $form_submitted ) {
 			if ( ! $is_pro ) {
 				return 'no';
 			}
 
 			if ( array_key_exists( $key, $section ) ) {
 				return isset( $section[ $key ] ) ? 'yes' : 'no';
+			}
+
+			if ( $form_submitted ) {
+				return 'no';
 			}
 
 			return ( isset( $stored_section[ $key ] ) && $stored_section[ $key ] === 'yes' ) ? 'yes' : 'no';
