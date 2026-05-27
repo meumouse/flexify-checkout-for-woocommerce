@@ -1,3 +1,11 @@
+Versão 5.5.3 (27/05/2026)
+* Correção de problemas
+  - `is_checkout()` retornava `true` no endpoint `order-received`, fazendo o pipeline gtag do PixelYourSite Pro despachar `purchase` sem `value`, `currency`, `transaction_id` nem `items` no GA4 e Google Ads
+  - Detecção dos endpoints `order-received` / `order-pay` passa a ler os slugs configurados em WooCommerce → Avançado → Endpoints de checkout (suporte a slug renomeado, traduzido por Polylang/WPML)
+* Otimizações
+  - Integração com PixelYourSite expandida com camadas de compatibilidade na thank-you page: força detecção de `is_order_received_page()`, popula `$wp->query_vars['order-received']` defensivamente em `parse_request`, e resolve o `order_id` via `pys_woo_checkout_order_id` com fallbacks (`$_GET['key']` → order key lookup → query var → regex no REQUEST_URI)
+  - Novo filtro `Flexify_Checkout/Checkout/Thankyou_Endpoint_Slugs` para estender a lista de slugs reconhecidos como thank-you/order-pay
+
 Versão 5.5.2 (27/05/2026)
 * Otimizações
   - Correção do `is_checkout()` nativo para retornar `true` no contexto do Flexify Checkout
