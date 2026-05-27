@@ -4550,12 +4550,38 @@
 				window.dataLayer.push( Object.assign({ event: event_name }, payload ) );
 			},
 
+			getDestinationConfig: function( destination ) {
+				if ( ! params.tracking_router || ! params.tracking_router.destinations ) {
+					return {};
+				}
+
+				return params.tracking_router.destinations[destination] || {};
+			},
+
 			sendGtag: function( destination, event_name, payload ) {
 				if ( typeof window.gtag !== 'function' ) {
 					return;
 				}
 
-				window.gtag( 'event', this.getExternalEventName( event_name, destination ), payload );
+				const external_name = this.getExternalEventName( event_name, destination );
+				const gtag_payload = Object.assign( {}, payload );
+
+				if ( destination === 'google_ads' ) {
+					const ads_config = this.getDestinationConfig( 'google_ads' );
+
+					if ( ! ads_config.send_to ) {
+						this.debugLog( 'google_ads skipped: missing send_to (conversion_id/label not configured)', { event_name: event_name } );
+						return;
+					}
+
+					gtag_payload.send_to = ads_config.send_to;
+
+					if ( payload.transaction_id ) {
+						gtag_payload.transaction_id = String( payload.transaction_id );
+					}
+				}
+
+				window.gtag( 'event', external_name, gtag_payload );
 			},
 
 			sendMeta: function( event_name, payload ) {
