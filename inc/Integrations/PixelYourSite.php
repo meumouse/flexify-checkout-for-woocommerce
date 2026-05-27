@@ -226,6 +226,4 @@ class PixelYourSite {
 
         return $params;
     }
-
-
 }
