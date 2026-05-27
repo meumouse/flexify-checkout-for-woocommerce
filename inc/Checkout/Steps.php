@@ -1328,9 +1328,16 @@ class Steps {
 		if ( ! is_checkout() || ! is_flexify_checkout() ) {
 			return;
 		}
-		
+
+		// Skip checkout endpoints like order-received and order-pay,
+		// otherwise the thank-you page gets ?step=customer-info appended
+		// and loops back to itself.
+		if ( is_wc_endpoint_url('order-received') || is_wc_endpoint_url('order-pay') ) {
+			return;
+		}
+
 		$current_step = isset( $_GET['step'] ) ? sanitize_text_field( $_GET['step'] ) : '';
-		
+
 		if ( empty( $current_step ) ) {
 			// Set default step to customer-info
 			$steps = self::get_steps_hashes();
@@ -1344,12 +1351,16 @@ class Steps {
 
 	/**
 	 * Get current step from query parameter
-	 * 
+	 *
 	 * @since 5.4.1
 	 * @return string
 	 */
 	public static function get_current_step() {
 		if ( ! is_checkout() || ! is_flexify_checkout() ) {
+			return '';
+		}
+
+		if ( is_wc_endpoint_url('order-received') || is_wc_endpoint_url('order-pay') ) {
 			return '';
 		}
 		
