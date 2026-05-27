@@ -1312,6 +1312,11 @@ class Fields {
 	 * @return void
 	 */
 	public function validate_required_account_password( $data, $errors ) {
+		// Skip validation when the customer is already logged in, since no account will be created.
+		if ( is_user_logged_in() ) {
+			return;
+		}
+
 		$registration_enabled = 'yes' === get_option( 'woocommerce_enable_signup_and_login_from_checkout', 'yes' );
 		$auto_generate_password = 'yes' === get_option( 'woocommerce_registration_generate_password', 'no' );
 
