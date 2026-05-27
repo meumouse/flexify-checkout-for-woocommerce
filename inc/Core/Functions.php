@@ -197,3 +197,4 @@ if ( ! function_exists('get_shipping_method_name') ) {
         return '';
     }
 }
+
