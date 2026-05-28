@@ -20,6 +20,130 @@ defined('ABSPATH') || exit;
 class Thankyou {
 
 	/**
+	 * Construct function.
+	 *
+	 * Registers the hooks that ensure third-party trackers (PixelYourSite,
+	 * GA4, Google Ads, GTM) resolve the thank-you context correctly when the
+	 * order-received endpoint is rendered by Flexify's SPA template.
+	 *
+	 * @since 5.5.3
+	 * @return void
+	 */
+	public function __construct() {
+		add_action( 'parse_request', array( $this, 'prime_order_received_query_var' ), 1 );
+		add_filter( 'woocommerce_is_order_received_page', array( $this, 'force_order_received_page' ), 20 );
+	}
+
+
+	/**
+	 * Detect the order id from the request URI using the configured
+	 * order-received endpoint slug.
+	 *
+	 * @since 5.5.3
+	 * @return int Order id or 0.
+	 */
+	protected static function extract_order_received_from_uri() {
+		$request_uri = ! empty( $_SERVER['REQUEST_URI'] ) ? (string) $_SERVER['REQUEST_URI'] : '';
+
+		if ( $request_uri === '' ) {
+			return 0;
+		}
+
+		$path = (string) parse_url( $request_uri, PHP_URL_PATH );
+
+		if ( $path === '' ) {
+			$path = $request_uri;
+		}
+
+		$slug = get_option( 'woocommerce_checkout_order_received_endpoint', 'order-received' );
+
+		if ( ! is_string( $slug ) || $slug === '' ) {
+			$slug = 'order-received';
+		}
+
+		$slug = trim( $slug, '/' );
+
+		if ( $slug === '' ) {
+			return 0;
+		}
+
+		if ( preg_match( '#/' . preg_quote( $slug, '#' ) . '/(\d+)(?:/|$)#', $path, $matches ) ) {
+			return (int) $matches[1];
+		}
+
+		return 0;
+	}
+
+
+	/**
+	 * Populate `$wp->query_vars['order-received']` defensively when the request
+	 * URI matches the order-received endpoint but WordPress' own routing has
+	 * not yet primed it.
+	 *
+	 * WooCommerce's native `is_order_received_page()` builds its return value
+	 * from `is_page($checkout_page_id) && isset($wp->query_vars['order-received'])`
+	 * — when Flexify's SPA template renders the thank-you page the queried
+	 * object isn't always the checkout page, so the native check returns false
+	 * even on a perfectly valid `/order-received/{id}/` URL.
+	 *
+	 * @since 5.5.3
+	 * @param \WP $wp WP request object.
+	 * @return void
+	 */
+	public function prime_order_received_query_var( $wp ) {
+		if ( ! ( $wp instanceof \WP ) ) {
+			return;
+		}
+
+		if ( ! empty( $wp->query_vars['order-received'] ) ) {
+			return;
+		}
+
+		$order_id = self::extract_order_received_from_uri();
+
+		if ( $order_id > 0 ) {
+			$wp->query_vars['order-received'] = $order_id;
+		}
+	}
+
+
+	/**
+	 * Force `is_order_received_page()` to return true whenever the request URI
+	 * matches the order-received endpoint, regardless of whether
+	 * `is_page($checkout_page_id)` evaluates to true on the SPA template render.
+	 *
+	 * @since 5.5.3
+	 * @param bool $is_order_received Current filter value.
+	 * @return bool
+	 */
+	public function force_order_received_page( $is_order_received ) {
+		if ( $is_order_received ) {
+			return true;
+		}
+
+		if ( is_admin() || ( function_exists('wp_doing_ajax') && wp_doing_ajax() ) ) {
+			return $is_order_received;
+		}
+
+		if ( function_exists('is_wc_endpoint_url') && is_wc_endpoint_url('order-received') ) {
+			return true;
+		}
+
+		global $wp;
+
+		if ( isset( $wp ) && ! empty( $wp->query_vars['order-received'] ) ) {
+			return true;
+		}
+
+		if ( self::extract_order_received_from_uri() > 0 ) {
+			return true;
+		}
+
+		return $is_order_received;
+	}
+
+
+	/**
 	 * Left column of the Thank you page.
 	 *
 	 * @since 1.0.0

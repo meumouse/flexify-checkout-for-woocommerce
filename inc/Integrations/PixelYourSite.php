@@ -330,7 +330,12 @@ class PixelYourSite {
             return true;
         }
 
-        if ( ! empty( $_GET['key'] ) && self::extract_order_received_from_uri() > 0 ) {
+        // Final fallback: the request URI itself matches the order-received endpoint.
+        // WooCommerce's native is_order_received_page() returns false when
+        // is_page($checkout_page_id) is false — which can happen on Flexify's SPA
+        // template render because the queried object is not always primed to the
+        // checkout page when this filter fires. Trust the URI as ground truth.
+        if ( self::extract_order_received_from_uri() > 0 ) {
             return true;
         }
 
