@@ -388,7 +388,12 @@ class Thankyou {
 				<?php
 				foreach ( $order_items as $item_id => $item ) {
 					$product = $item->get_product();
-					$product = $item->get_product();
+
+					// Product may have been deleted/trashed after the order was placed.
+					if ( ! $product instanceof \WC_Product ) {
+						continue;
+					}
+
 					$qty = $item->get_quantity();
 					$refunded_qty = $order->get_qty_refunded_for_item( $item_id );
 
