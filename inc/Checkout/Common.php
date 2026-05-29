@@ -54,6 +54,27 @@ class Common {
             return $is_checkout;
         }
 
+        // Never force is_checkout() on order-received / order-pay endpoints.
+        // url_to_postid() resolves those URLs to the checkout page ID (the
+        // endpoints live under it), which would otherwise make analytics
+        // integrations (e.g. PixelYourSite gtag pipeline) treat the thank-you
+        // page as a checkout page and drop purchase value/items/transaction_id.
+        if ( function_exists('is_wc_endpoint_url') ) {
+            if ( is_wc_endpoint_url('order-received') || is_wc_endpoint_url('order-pay') ) {
+                return $is_checkout;
+            }
+        }
+
+        if ( function_exists('is_order_received_page') && is_order_received_page() ) {
+            return $is_checkout;
+        }
+
+        $request_uri_check = ! empty( $_SERVER['REQUEST_URI'] ) ? (string) $_SERVER['REQUEST_URI'] : '';
+
+        if ( $request_uri_check !== '' && $this->request_uri_matches_thankyou_endpoints( $request_uri_check ) ) {
+            return $is_checkout;
+        }
+
         $wc_ajax = filter_input( INPUT_GET, 'wc-ajax', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 
         if ( 'update_order_review' === $wc_ajax ) {
@@ -83,6 +104,68 @@ class Common {
         }
 
         return $is_checkout;
+    }
+
+
+    /**
+     * Check whether the current request URI matches the configured order-received
+     * or order-pay endpoint slugs. Reads the slugs from the WooCommerce options
+     * so that merchants who renamed the endpoints (Settings → Advanced → Checkout
+     * endpoints) are still detected correctly.
+     *
+     * @since 5.5.3
+     * @param string $request_uri Request URI to inspect.
+     * @return bool
+     */
+    protected function request_uri_matches_thankyou_endpoints( $request_uri ) {
+        $received_slug = get_option( 'woocommerce_checkout_order_received_endpoint', 'order-received' );
+        $pay_slug = get_option( 'woocommerce_checkout_pay_endpoint', 'order-pay' );
+
+        if ( ! is_string( $received_slug ) || $received_slug === '' ) {
+            $received_slug = 'order-received';
+        }
+
+        if ( ! is_string( $pay_slug ) || $pay_slug === '' ) {
+            $pay_slug = 'order-pay';
+        }
+
+        $slugs = array(
+            trim( $received_slug, '/' ),
+            trim( $pay_slug, '/' ),
+            'order-received',
+            'order-pay',
+        );
+
+        /**
+         * Filter the endpoint slugs that should be treated as thank-you/order-pay
+         * URLs when deciding whether to force is_checkout() to true.
+         *
+         * @since 5.5.3
+         * @param array $slugs List of endpoint slugs (without slashes).
+         */
+        $slugs = apply_filters( 'Flexify_Checkout/Checkout/Thankyou_Endpoint_Slugs', $slugs );
+
+        if ( ! is_array( $slugs ) ) {
+            return false;
+        }
+
+        $path = (string) parse_url( $request_uri, PHP_URL_PATH );
+
+        if ( $path === '' ) {
+            $path = $request_uri;
+        }
+
+        foreach ( $slugs as $slug ) {
+            if ( ! is_string( $slug ) || $slug === '' ) {
+                continue;
+            }
+
+            if ( preg_match( '#/' . preg_quote( $slug, '#' ) . '(/|$)#', $path ) ) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 

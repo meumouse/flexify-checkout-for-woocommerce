@@ -7,7 +7,7 @@
  * Requires Plugins: 		woocommerce
  * Author: 					MeuMouse.com
  * Author URI: 				https://meumouse.com/?utm_source=wordpress&utm_medium=plugins_list&utm_campaign=flexify_checkout
- * Version: 				5.5.2
+ * Version: 				5.5.3
  * WC requires at least: 	6.0.0
  * WC tested up to: 		10.7.0
  * Requires PHP: 			7.4
@@ -17,7 +17,7 @@
  * 
  * @package					Flexify Checkout para WooCommerce - MeuMouse.com
  * @author					MeuMouse.com
- * @copyright 				2025 MeuMouse.com
+ * @copyright 				2026 MeuMouse.com
  * @license 				Proprietary - See license.md for details
  */
 
@@ -28,7 +28,7 @@ use MeuMouse\Flexify_Checkout\Core\Init;
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
 
-const FLEXIFY_CHECKOUT_PLUGIN_VERSION = '5.5.2';
+const FLEXIFY_CHECKOUT_PLUGIN_VERSION = '5.5.3';
 
 /**
  * Composer autoload.
