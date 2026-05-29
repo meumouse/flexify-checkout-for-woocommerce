@@ -38,6 +38,14 @@ Você pode instalar um plugin WordPress de duas maneiras: via o painel de admini
 
 ### Registro de alterações (Changelogs):
 
+Versão 5.5.3 (28/05/2026)
+* Correção de problemas
+  - Erro fatal na página de agradecimento (template form-pay) quando um produto do pedido era excluído após a compra
+  - Loop de redirecionamento ao acessar a página de agradecimento / pagamento do pedido (Pix QR Code não era exibido por causa do `?step=customer-info` forçado na URL)
+* Otimizações
+  - Compatibilidade nativa de página de agradecimento: o Flexify agora força `is_order_received_page()` a retornar `true` no contexto correto, beneficiando qualquer integração de rastreamento que dependa dessa verificação
+  - Novo filtro `Flexify_Checkout/Checkout/Thankyou_Endpoint_Slugs` para estender a lista de slugs reconhecidos como thank-you/order-pay
+
 Versão 5.5.2 (27/05/2026)
 * Otimizações
   - Correção do `is_checkout()` nativo para retornar `true` no contexto do Flexify Checkout

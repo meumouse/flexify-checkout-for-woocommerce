@@ -17,7 +17,7 @@
  * 
  * @package					Flexify Checkout para WooCommerce - MeuMouse.com
  * @author					MeuMouse.com
- * @copyright 				2025 MeuMouse.com
+ * @copyright 				2026 MeuMouse.com
  * @license 				Proprietary - See license.md for details
  */
 
