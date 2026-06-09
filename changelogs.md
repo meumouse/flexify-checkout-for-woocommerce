@@ -1,3 +1,7 @@
+Versão 5.5.4 (09/06/2026)
+* Correção de problemas
+  - Campos `billing_document` e `billing_sex` (aliases legados do SuperFrete) eram gerados automaticamente e reapareciam mesmo após exclusão, ficando impossíveis de remover no gerenciador de campos. O `billing_sex` (rótulo "Genero") ainda duplicava o campo nativo `billing_gender` ("Gênero"). Ambos foram removidos dos padrões e são limpos automaticamente do registro de campos salvo
+
 Versão 5.5.3 (28/05/2026)
 * Correção de problemas
   - Erro fatal na página de agradecimento (template form-pay) quando um produto do pedido era excluído após a compra
