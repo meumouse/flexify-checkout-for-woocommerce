@@ -14,6 +14,7 @@ export const useSettingsStore = defineStore('flexify-checkout-settings', {
     settings: {},
     schema: [],
     runtime: {},
+    fields: {},
     dirty: false,
     saving: false,
     resetting: false,
@@ -35,6 +36,7 @@ export const useSettingsStore = defineStore('flexify-checkout-settings', {
       this.settings = bootstrap?.settings && typeof bootstrap.settings === 'object' ? bootstrap.settings : {};
       this.schema = Array.isArray(bootstrap?.schema) ? bootstrap.schema : [];
       this.runtime = bootstrap?.runtime && typeof bootstrap.runtime === 'object' ? bootstrap.runtime : {};
+      this.fields = this.runtime?.fields && typeof this.runtime.fields === 'object' ? this.runtime.fields : {};
       this.dirty = false;
     },
 
@@ -119,6 +121,64 @@ export const useSettingsStore = defineStore('flexify-checkout-settings', {
         this.pushToast('error', 'Ocorreu um erro ao redefinir as configurações.');
       } finally {
         this.resetting = false;
+      }
+    },
+
+    /**
+     * Persist a map of checkout field updates (field id => properties).
+     */
+    async saveFields(updates) {
+      try {
+        const response = await apiPost('admin/fields', { fields: updates });
+
+        if (response?.status === 'success') {
+          this.fields = response.fields || this.fields;
+          this.pushToast('success', response.message || 'Os campos foram atualizados!');
+        } else {
+          this.pushToast('error', response?.message || 'Ocorreu um erro ao atualizar os campos.');
+        }
+
+        return response;
+      } catch (error) {
+        this.pushToast('error', 'Ocorreu um erro ao atualizar os campos.');
+
+        return null;
+      }
+    },
+
+    async addField(field) {
+      try {
+        const response = await apiPost('admin/fields/add', { field });
+
+        if (response?.status === 'success') {
+          this.fields = response.fields || this.fields;
+        }
+
+        this.pushToast(response?.status === 'success' ? 'success' : 'error', response?.message || '');
+
+        return response;
+      } catch (error) {
+        this.pushToast('error', 'Ocorreu um erro ao adicionar o novo campo.');
+
+        return null;
+      }
+    },
+
+    async removeField(fieldId) {
+      try {
+        const response = await apiPost('admin/fields/remove', { field_id: fieldId });
+
+        if (response?.status === 'success') {
+          this.fields = response.fields || this.fields;
+        }
+
+        this.pushToast(response?.status === 'success' ? 'success' : 'error', response?.message || '');
+
+        return response;
+      } catch (error) {
+        this.pushToast('error', 'Ocorreu um erro ao remover o campo.');
+
+        return null;
       }
     },
 

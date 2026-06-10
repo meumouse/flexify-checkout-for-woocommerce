@@ -8,6 +8,7 @@ import ToastStack from '../../components/toasts/ToastStack.vue';
 import LicenseManager from '../../components/settings/LicenseManager.vue';
 import SystemStatus from '../../components/settings/SystemStatus.vue';
 import LegacyFallbackCard from '../../components/settings/LegacyFallbackCard.vue';
+import FieldsManager from '../../components/settings/FieldsManager.vue';
 
 const props = defineProps({
   bootstrap: { type: Object, default: () => ({}) },
@@ -31,7 +32,7 @@ const currentTab = computed(() => store.schema.find((tab) => tab.id === activeTa
 const customComponents = {
   'license-manager': LicenseManager,
   'system-status': SystemStatus,
-  'fields-manager': LegacyFallbackCard,
+  'fields-manager': FieldsManager,
   'conditions-manager': LegacyFallbackCard,
   'integrations-list': LegacyFallbackCard,
 };

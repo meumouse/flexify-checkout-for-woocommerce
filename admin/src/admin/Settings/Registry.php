@@ -4,6 +4,7 @@ namespace MeuMouse\Flexify_Checkout\Admin\Settings;
 
 use MeuMouse\Flexify_Checkout\API\License;
 use MeuMouse\Flexify_Checkout\Checkout\Coupons;
+use MeuMouse\Flexify_Checkout\Validations\ISO3166;
 use MeuMouse\Flexify_Checkout\Views\Settings\Settings_Panel;
 
 // Exit if accessed directly.
@@ -59,6 +60,13 @@ class Registry {
                 'expire' => method_exists( License::class, 'license_expire' ) ? License::license_expire() : '',
                 'domain' => isset( $license_object->domain ) ? (string) $license_object->domain : '',
             ),
+            'fields' => Fields_Store::get_fields(),
+            'countries' => array_map( static function ( $code, $label ) {
+                return array(
+                    'value' => (string) $code,
+                    'label' => (string) $label,
+                );
+            }, array_keys( ISO3166::country_codes() ), array_values( ISO3166::country_codes() ) ),
             'themes' => array_values( array_map( static function ( $theme ) {
                 return array(
                     'value' => $theme['id'],
@@ -437,6 +445,9 @@ class Registry {
                     'title' => __( 'Gerenciador de campos', 'flexify-checkout-for-woocommerce' ),
                     'description' => __( 'Adicione, edite, ordene e remova campos das etapas do checkout.', 'flexify-checkout-for-woocommerce' ),
                     'component' => 'fields-manager',
+                    'fields' => array(
+                        self::field_toggle( 'enable_manage_fields', __( 'Gerenciar os campos e etapas da finalização de compras', 'flexify-checkout-for-woocommerce' ), __( 'Aplica as personalizações de campos configuradas abaixo no checkout.', 'flexify-checkout-for-woocommerce' ), array( 'pro' => true ) ),
+                    ),
                 ),
                 array(
                     'id' => 'fields-options',
