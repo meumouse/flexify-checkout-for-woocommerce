@@ -15,6 +15,7 @@ export const useSettingsStore = defineStore('flexify-checkout-settings', {
     schema: [],
     runtime: {},
     fields: {},
+    conditions: [],
     dirty: false,
     saving: false,
     resetting: false,
@@ -37,6 +38,7 @@ export const useSettingsStore = defineStore('flexify-checkout-settings', {
       this.schema = Array.isArray(bootstrap?.schema) ? bootstrap.schema : [];
       this.runtime = bootstrap?.runtime && typeof bootstrap.runtime === 'object' ? bootstrap.runtime : {};
       this.fields = this.runtime?.fields && typeof this.runtime.fields === 'object' ? this.runtime.fields : {};
+      this.conditions = Array.isArray(this.runtime?.conditions) ? this.runtime.conditions : [];
       this.dirty = false;
     },
 
@@ -180,6 +182,36 @@ export const useSettingsStore = defineStore('flexify-checkout-settings', {
 
         return null;
       }
+    },
+
+    async conditionAction(endpoint, body) {
+      try {
+        const response = await apiPost(endpoint, body);
+
+        if (response?.status === 'success' && Array.isArray(response.conditions)) {
+          this.conditions = response.conditions;
+        }
+
+        this.pushToast(response?.status === 'success' ? 'success' : 'error', response?.message || '');
+
+        return response;
+      } catch (error) {
+        this.pushToast('error', 'Ocorreu um erro ao processar a condição.');
+
+        return null;
+      }
+    },
+
+    addCondition(condition) {
+      return this.conditionAction('admin/conditions', { condition });
+    },
+
+    updateCondition(index, condition) {
+      return this.conditionAction('admin/conditions/update', { index, condition });
+    },
+
+    removeCondition(index) {
+      return this.conditionAction('admin/conditions/remove', { index });
     },
 
     async licenseAction(endpoint, body = {}) {

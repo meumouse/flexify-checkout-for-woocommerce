@@ -61,6 +61,11 @@ class Registry {
                 'domain' => isset( $license_object->domain ) ? (string) $license_object->domain : '',
             ),
             'fields' => Fields_Store::get_fields(),
+            'conditions' => Conditions_Store::get_conditions_for_client(),
+            'shipping_methods' => self::build_shipping_method_options(),
+            'payment_gateways' => self::build_payment_gateway_options(),
+            'user_roles' => self::build_user_role_options(),
+            'currency_symbol' => function_exists('get_woocommerce_currency_symbol') ? get_woocommerce_currency_symbol() : 'R$',
             'countries' => array_map( static function ( $code, $label ) {
                 return array(
                     'value' => (string) $code,
@@ -874,6 +879,81 @@ class Registry {
                     'label' => isset( $value['title'] ) ? (string) $value['title'] : (string) $position,
                 );
             }
+        }
+
+        return $options;
+    }
+
+
+    /**
+     * Build options for the registered shipping methods.
+     *
+     * @since 6.0.0
+     * @return array<int,array<string,string>>
+     */
+    private static function build_shipping_method_options() {
+        $options = array();
+
+        if ( function_exists('WC') && WC()->shipping ) {
+            foreach ( WC()->shipping->get_shipping_methods() as $shipping ) {
+                $options[] = array(
+                    'value' => (string) $shipping->id,
+                    'label' => (string) $shipping->method_title,
+                );
+            }
+        }
+
+        return $options;
+    }
+
+
+    /**
+     * Build options for the registered payment gateways.
+     *
+     * @since 6.0.0
+     * @return array<int,array<string,string>>
+     */
+    private static function build_payment_gateway_options() {
+        $options = array();
+
+        if ( function_exists('WC') && WC()->payment_gateways ) {
+            foreach ( WC()->payment_gateways->payment_gateways() as $payment ) {
+                $options[] = array(
+                    'value' => (string) $payment->id,
+                    'label' => (string) $payment->get_title(),
+                );
+            }
+        }
+
+        return $options;
+    }
+
+
+    /**
+     * Build options for the registered user roles.
+     *
+     * @since 6.0.0
+     * @return array<int,array<string,string>>
+     */
+    private static function build_user_role_options() {
+        $translations = array(
+            'administrator' => __( 'Administrador', 'flexify-checkout-for-woocommerce' ),
+            'author' => __( 'Autor', 'flexify-checkout-for-woocommerce' ),
+            'subscriber' => __( 'Assinante', 'flexify-checkout-for-woocommerce' ),
+            'customer' => __( 'Cliente', 'flexify-checkout-for-woocommerce' ),
+            'contributor' => __( 'Colaborador', 'flexify-checkout-for-woocommerce' ),
+            'editor' => __( 'Editor', 'flexify-checkout-for-woocommerce' ),
+            'shop_manager' => __( 'Gerente de loja', 'flexify-checkout-for-woocommerce' ),
+            'translator' => __( 'Tradutor', 'flexify-checkout-for-woocommerce' ),
+        );
+
+        $options = array();
+
+        foreach ( wp_roles()->roles as $role_key => $role ) {
+            $options[] = array(
+                'value' => (string) $role_key,
+                'label' => isset( $translations[ $role_key ] ) ? $translations[ $role_key ] : (string) $role['name'],
+            );
         }
 
         return $options;

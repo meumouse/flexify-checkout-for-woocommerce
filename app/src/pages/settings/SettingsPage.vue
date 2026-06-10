@@ -9,6 +9,7 @@ import LicenseManager from '../../components/settings/LicenseManager.vue';
 import SystemStatus from '../../components/settings/SystemStatus.vue';
 import LegacyFallbackCard from '../../components/settings/LegacyFallbackCard.vue';
 import FieldsManager from '../../components/settings/FieldsManager.vue';
+import ConditionsManager from '../../components/settings/ConditionsManager.vue';
 
 const props = defineProps({
   bootstrap: { type: Object, default: () => ({}) },
@@ -33,7 +34,7 @@ const customComponents = {
   'license-manager': LicenseManager,
   'system-status': SystemStatus,
   'fields-manager': FieldsManager,
-  'conditions-manager': LegacyFallbackCard,
+  'conditions-manager': ConditionsManager,
   'integrations-list': LegacyFallbackCard,
 };
 
