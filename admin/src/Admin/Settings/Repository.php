@@ -157,11 +157,11 @@ class Repository {
             return sanitize_textarea_field( (string) $value );
         }
 
-        if ( 'number' === $type ) {
+        if ( 'number' === $type || 'dimension' === $type ) {
             return is_numeric( $value ) ? (string) $value : '';
         }
 
-        if ( 'url' === $type ) {
+        if ( 'url' === $type || 'media' === $type ) {
             return esc_url_raw( (string) $value );
         }
 

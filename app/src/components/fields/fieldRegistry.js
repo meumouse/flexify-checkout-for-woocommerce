@@ -5,6 +5,8 @@ import NumberField from './NumberField.vue';
 import TextAreaField from './TextAreaField.vue';
 import SelectField from './SelectField.vue';
 import ColorPickerField from './ColorPickerField.vue';
+import DimensionField from './DimensionField.vue';
+import MediaPickerField from './MediaPickerField.vue';
 
 // CodeMirror is heavy, so the code editor is lazy-loaded on first render.
 const CodeEditorField = defineAsyncComponent(() => import('./CodeEditorField.vue'));
@@ -36,6 +38,8 @@ registerAlias('textarea', TextAreaField);
 registerAlias('select', SelectField);
 registerAlias('color', ColorPickerField);
 registerAlias('color-picker', ColorPickerField);
+registerAlias('dimension', DimensionField);
+registerAlias('media', MediaPickerField);
 registerAlias('code-editor', CodeEditorField);
 
 /**

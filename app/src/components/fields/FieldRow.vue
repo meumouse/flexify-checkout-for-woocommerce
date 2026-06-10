@@ -1,8 +1,12 @@
 <script setup>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useSettingsStore } from '../../stores/useSettingsStore';
 import { resolveFieldComponent } from './fieldRegistry';
 import TextField from './TextField.vue';
+import BaseButton from '../buttons/BaseButton.vue';
+import ModalDialog from '../modals/ModalDialog.vue';
+import EmailProviders from '../settings/EmailProviders.vue';
+import FontsManager from '../settings/FontsManager.vue';
 
 const props = defineProps({
   field: { type: Object, required: true },
@@ -21,34 +25,65 @@ const model = computed({
 
 const isToggle = computed(() => String(props.field?.type || '') === 'toggle');
 
-// Wide controls render below the label, taking the full row width.
-const isWide = computed(() => String(props.field?.type || '') === 'code-editor');
+// --- Popup support ---
+
+const popupComponents = {
+  'email-providers': EmailProviders,
+  'fonts-manager': FontsManager,
+};
+
+const popup = computed(() => (props.field?.popup && typeof props.field.popup === 'object' ? props.field.popup : null));
+
+const popupOpen = ref(false);
+
+const showPopupTrigger = computed(() => {
+  if (!popup.value || isProLocked.value) {
+    return false;
+  }
+
+  // For toggles the trigger only appears while the feature is enabled,
+  // mirroring the legacy interface behavior.
+  if (isToggle.value) {
+    return model.value === 'yes';
+  }
+
+  return true;
+});
+
+const placeholders = computed(() => (Array.isArray(props.field?.placeholders) ? props.field.placeholders : []));
 </script>
 
 <template>
   <div
     v-if="store.isFieldVisible(field)"
-    class="flex flex-col gap-3 border-b border-gray-100 py-4 last:border-b-0"
-    :class="isWide ? '' : 'sm:flex-row sm:items-start sm:justify-between'"
+    class="flex flex-col gap-3 py-5 sm:flex-row sm:items-start"
   >
-    <div class="max-w-xl">
-      <div class="flex items-center gap-2">
-        <span class="text-sm font-medium text-ink">{{ field.label }}</span>
+    <div class="w-full shrink-0 sm:w-[340px] sm:pr-8">
+      <div class="flex items-start gap-2">
+        <span class="text-[13px] font-semibold leading-snug text-brand">{{ field.label }}</span>
 
         <span
-          v-if="field.pro"
-          class="inline-flex items-center rounded-full bg-primary-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-primary"
+          v-if="field.pro && !store.isPro"
+          class="inline-flex shrink-0 items-center gap-1 rounded-full bg-primary-100 px-2 py-0.5 text-[10px] font-semibold text-primary"
         >
+          <svg class="h-2.5 w-2.5" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" clip-rule="evenodd" d="M12.0001 3C12.3334 3 12.6449 3.16613 12.8306 3.443L16.6106 9.07917L21.2523 3.85213C21.5515 3.51525 22.039 3.42002 22.4429 3.61953C22.8469 3.81904 23.0675 4.26404 22.9818 4.70634L20.2956 18.5706C20.0223 19.9812 18.7872 21 17.3504 21H6.64977C5.21293 21 3.97784 19.9812 3.70454 18.5706L1.01833 4.70634C0.932635 4.26404 1.15329 3.81904 1.55723 3.61953C1.96117 3.42002 2.44865 3.51525 2.74781 3.85213L7.38953 9.07917L11.1696 3.443C11.3553 3.16613 11.6667 3 12.0001 3Z" /></svg>
           Pro
         </span>
       </div>
 
-      <p v-if="field.description" class="mt-1 text-xs leading-relaxed text-muted">
+      <p v-if="field.description" class="m-0 mt-1 text-xs italic leading-relaxed text-gray-500">
         {{ field.description }}
       </p>
+
+      <div v-if="placeholders.length" class="mt-3 flex flex-col gap-1">
+        <div v-for="hint in placeholders" :key="hint.token" class="flex items-baseline gap-2">
+          <code class="rounded bg-gray-100 px-1.5 py-0.5 text-[11px] text-gray-600">{{ hint.token }}</code>
+          <span class="text-[11px] italic text-gray-500">{{ hint.description }}</span>
+        </div>
+      </div>
     </div>
 
-    <div class="shrink-0" :class="isToggle ? 'pt-0.5' : isWide ? 'w-full' : 'w-full sm:w-auto sm:min-w-[16rem]'">
+    <div class="flex min-w-0 flex-1 items-center gap-4" :class="isToggle ? 'pt-0.5' : ''">
       <component
         :is="fieldComponent"
         v-model="model"
@@ -58,7 +93,32 @@ const isWide = computed(() => String(props.field?.type || '') === 'code-editor')
         :aria-label="field.label"
         true-value="yes"
         false-value="no"
+        :class="String(field.type) === 'code-editor' ? 'w-full max-w-3xl' : ''"
       />
+
+      <BaseButton v-if="showPopupTrigger" variant="outline" size="sm" @click="popupOpen = true">
+        {{ popup.button }}
+      </BaseButton>
     </div>
+
+    <ModalDialog v-if="popup" :open="popupOpen" :title="popup.title || popup.button" size="lg" @close="popupOpen = false">
+      <component :is="popupComponents[popup.component]" v-if="popup.component && popupComponents[popup.component]" />
+
+      <div v-else-if="Array.isArray(popup.fields)" class="divide-y divide-gray-100">
+        <FieldRow v-for="subField in popup.fields" :key="subField.key" :field="subField" />
+      </div>
+
+      <template #footer>
+        <div class="flex justify-end">
+          <BaseButton variant="secondary" @click="popupOpen = false">Fechar</BaseButton>
+        </div>
+      </template>
+    </ModalDialog>
   </div>
 </template>
+
+<script>
+export default {
+  name: 'FieldRow',
+};
+</script>

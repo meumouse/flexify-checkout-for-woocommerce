@@ -69,6 +69,9 @@ class Settings_Assets {
             return;
         }
 
+        // Media pickers (header image, Lottie animations) rely on the WP media modal.
+        wp_enqueue_media();
+
         $asset_version = ! empty( $assets['version'] ) ? $assets['version'] : null;
 
         if ( ! empty( $assets['styles'] ) && is_array( $assets['styles'] ) ) {
