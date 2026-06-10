@@ -1144,14 +1144,20 @@
              * On updated_checkout event. Modify the button html
              *
              * @since 1.0.0
-             * @version 5.0.0
+             * @version 5.5.4
              * @param {object} e | Event object
              * @param {data} data |
              */
 			onUpdatedCheckout: function() {
                 $(document.body).on('updated_checkout', function(e, data) {
-                    if ( data.fragments.flexify.total ) {
-                        Flexify_Checkout.processCheckout.cache.button_html = `${params.i18n.pay} ${data.fragments.flexify.total}`;
+                    // Get the freshest order total. Prefer the flexify fragment, but fall back
+                    // to the live order review total in the DOM so the button stays in sync with
+                    // the cart total even when the fragment is missing or stale (e.g. when
+                    // applying discounts/coupons). The sidebar total uses this same source.
+                    let total = data?.fragments?.flexify?.total || $('.order-total td:last-of-type').html();
+
+                    if ( total ) {
+                        Flexify_Checkout.processCheckout.cache.button_html = `${params.i18n.pay} ${total}`;
                         $('#place_order').html(Flexify_Checkout.processCheckout.cache.button_html);
                     }
 

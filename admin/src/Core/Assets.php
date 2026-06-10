@@ -176,18 +176,19 @@ class Assets {
 			$deps[] = 'flexify-international-phone-js';
 		}
 
-		$timestamp = time();
-
-		// Set script version to null to avoid version-based caching
-		$version = null;
-
 		// process animation purchase
 		if ( Admin_Options::get_setting('enable_animation_process_purchase') === 'yes' ) {
 			wp_enqueue_script( 'lordicon-player', 'https://cdn.lordicon.com/lordicon.js', array() );
 		}
 
-		// enqueue plugin scripts
-		wp_enqueue_script( 'flexify-checkout-for-woocommerce', $this->assets_url . 'frontend/js/main.js?version=' . $timestamp, $deps, $version, true );
+		// enqueue plugin scripts (Vite build of app/src/checkout, versioned by build mtime)
+		wp_enqueue_script(
+			'flexify-checkout-for-woocommerce',
+			FLEXIFY_CHECKOUT_URL . 'app/dist/checkout/main.js',
+			$deps,
+			Scripts::get_asset_version('checkout/main.js'),
+			true
+		);
 
 		if ( $custom_inline_js && ( is_flexify_checkout() || Helpers::is_thankyou_page() ) ) {
 			wp_add_inline_script( 'flexify-checkout-for-woocommerce', $custom_inline_js, 'after' );
@@ -335,6 +336,12 @@ class Assets {
 	 * @return void
 	 */
 	public function admin_assets() {
+		// The Vue settings app ships its own Vite-built assets; the legacy
+		// stack below only loads when the classic interface is requested.
+		if ( ! \MeuMouse\Flexify_Checkout\Assets\Settings_Assets::is_legacy_mode() ) {
+			return;
+		}
+
 		// check if is admin settings
 		if ( is_flexify_checkout_admin_settings() ) {
 			wp_enqueue_media();

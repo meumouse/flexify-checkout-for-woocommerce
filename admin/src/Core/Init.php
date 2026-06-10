@@ -209,9 +209,9 @@ class Init {
             'FLEXIFY_CHECKOUT_BASENAME' => plugin_basename( $plugin_file ),
             'FLEXIFY_CHECKOUT_PATH' => $base_dir,
             'FLEXIFY_CHECKOUT_ABSPATH' => dirname( $plugin_file ) . '/',
-            'FLEXIFY_CHECKOUT_INC_PATH' => $base_dir . 'inc/',
+            'FLEXIFY_CHECKOUT_INC_PATH' => $base_dir . 'admin/src/',
             'FLEXIFY_CHECKOUT_TEMPLATES_DIR' => $base_dir . 'templates/',
-            'FLEXIFY_CHECKOUT_SETTINGS_TABS_DIR' => $base_dir . 'inc/Views/Settings/Tabs/',
+            'FLEXIFY_CHECKOUT_SETTINGS_TABS_DIR' => $base_dir . 'admin/src/Views/Settings/Tabs/',
             'FLEXIFY_CHECKOUT_URL' => $base_url,
             'FLEXIFY_CHECKOUT_ASSETS' => $base_url . 'assets/',
         );

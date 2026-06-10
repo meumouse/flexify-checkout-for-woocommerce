@@ -1,0 +1,68 @@
+/*
+ * main.css — base stylesheet for the Vue admin apps.
+ */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  #flexify-checkout-settings-app {
+    font-family:
+      Inter,
+      ui-sans-serif,
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      'Segoe UI',
+      sans-serif;
+    color: #102033;
+  }
+
+  /* Neutralize wp-admin input styling inside the app shell. */
+  #flexify-checkout-settings-app input,
+  #flexify-checkout-settings-app select,
+  #flexify-checkout-settings-app textarea {
+    box-shadow: none;
+    outline: none;
+    transition:
+      border-color 0.15s ease,
+      box-shadow 0.15s ease;
+  }
+
+  #flexify-checkout-settings-app input:focus,
+  #flexify-checkout-settings-app select:focus,
+  #flexify-checkout-settings-app textarea:focus {
+    box-shadow: 0 0 0 4px rgb(228 238 246 / 1);
+  }
+}
+
+@keyframes flexify-skeleton-wave {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.flexify-skeleton,
+#flexify-checkout-settings-app .skeleton-content {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  background: linear-gradient(90deg, #dce5ef 0%, #eef3f8 50%, #dce5ef 100%);
+  background-size: 200% 100%;
+  animation: flexify-skeleton-wave 1.5s ease-in-out infinite;
+}
+
+.flexify-checkout-bootstrap-error {
+  margin-top: 1rem;
+  max-width: 640px;
+  border-radius: 12px;
+  border: 1px solid #fecaca;
+  background: #fef2f2;
+  color: #991b1b;
+  padding: 1rem 1.25rem;
+  font-size: 0.875rem;
+}

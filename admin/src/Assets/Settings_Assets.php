@@ -1,0 +1,140 @@
+<?php
+
+namespace MeuMouse\Flexify_Checkout\Assets;
+
+use MeuMouse\Flexify_Checkout\Core\Scripts;
+
+// Exit if accessed directly.
+defined('ABSPATH') || exit;
+
+/**
+ * Load Vite-built admin assets for the Flexify Checkout settings page.
+ *
+ * @since 6.0.0
+ * @package MeuMouse\Flexify_Checkout\Assets
+ * @author MeuMouse.com
+ */
+class Settings_Assets {
+
+    /**
+     * Page-to-entry map for the Vite build.
+     *
+     * @since 6.0.0
+     * @var array<string,string>
+     */
+    private $entries = array(
+        'flexify-checkout-for-woocommerce' => 'src/entries/settings.js',
+    );
+
+
+    /**
+     * Register hooks for the Vite-driven admin pages.
+     *
+     * @since 6.0.0
+     * @return void
+     */
+    public function __construct() {
+        add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ), 100 );
+        add_filter( 'script_loader_tag', array( $this, 'add_module_type_attribute' ), 10, 3 );
+    }
+
+
+    /**
+     * Whether the legacy settings interface was explicitly requested.
+     *
+     * @since 6.0.0
+     * @return bool
+     */
+    public static function is_legacy_mode() {
+        return isset( $_GET['legacy'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+    }
+
+
+    /**
+     * Enqueue the assets produced by Vite for the current admin page.
+     *
+     * @since 6.0.0
+     * @return void
+     */
+    public function enqueue_assets() {
+        $page = $this->get_current_page();
+
+        if ( empty( $page ) || ! isset( $this->entries[ $page ] ) || self::is_legacy_mode() ) {
+            return;
+        }
+
+        $assets = Scripts::get_entry_assets( $this->entries[ $page ] );
+
+        if ( empty( $assets['script'] ) ) {
+            return;
+        }
+
+        $asset_version = ! empty( $assets['version'] ) ? $assets['version'] : null;
+
+        if ( ! empty( $assets['styles'] ) && is_array( $assets['styles'] ) ) {
+            foreach ( $assets['styles'] as $index => $style_url ) {
+                wp_enqueue_style(
+                    'flexify-checkout-vue-' . sanitize_key( $page ) . '-' . $index,
+                    $style_url,
+                    array(),
+                    $asset_version
+                );
+            }
+        }
+
+        $handle = 'flexify-checkout-settings-app';
+
+        wp_enqueue_script( $handle, $assets['script'], array(), $asset_version, true );
+
+        wp_localize_script( $handle, 'flexifyCheckoutBootstrapConfig', array(
+            'restUrl' => esc_url_raw( rest_url('flexify-checkout/v1') ),
+            'nonce' => wp_create_nonce('wp_rest'),
+            'page' => 'settings',
+            'endpoint' => 'admin/settings',
+            'legacyUrl' => esc_url_raw( admin_url('admin.php?page=flexify-checkout-for-woocommerce&legacy=1') ),
+        ));
+    }
+
+
+    /**
+     * Resolve the current admin page slug.
+     *
+     * @since 6.0.0
+     * @return string
+     */
+    private function get_current_page() {
+        if ( ! is_admin() || ! isset( $_GET['page'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+            return '';
+        }
+
+        return sanitize_text_field( wp_unslash( $_GET['page'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+    }
+
+
+    /**
+     * Mark Vite entry scripts as ES modules.
+     *
+     * @since 6.0.0
+     * @param string $tag Script tag HTML.
+     * @param string $handle Script handle.
+     * @param string $src Script URL.
+     * @return string
+     */
+    public function add_module_type_attribute( $tag, $handle, $src ) {
+        if ( 'flexify-checkout-settings-app' !== $handle ) {
+            return $tag;
+        }
+
+        $tag = is_scalar( $tag ) ? (string) $tag : '';
+
+        if ( false !== strpos( $tag, 'type=' ) ) {
+            return $tag;
+        }
+
+        return sprintf(
+            '<script type="module" src="%s" id="%s-js"></script>' . "\n",
+            esc_url( $src ),
+            esc_attr( $handle )
+        );
+    }
+}
