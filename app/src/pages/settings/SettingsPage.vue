@@ -7,10 +7,11 @@ import BaseButton from '../../components/buttons/BaseButton.vue';
 import ToastStack from '../../components/toasts/ToastStack.vue';
 import LicenseManager from '../../components/settings/LicenseManager.vue';
 import SystemStatus from '../../components/settings/SystemStatus.vue';
-import LegacyFallbackCard from '../../components/settings/LegacyFallbackCard.vue';
 import FieldsManager from '../../components/settings/FieldsManager.vue';
 import ConditionsManager from '../../components/settings/ConditionsManager.vue';
 import IntegrationsList from '../../components/settings/IntegrationsList.vue';
+import FontsManager from '../../components/settings/FontsManager.vue';
+import EmailProviders from '../../components/settings/EmailProviders.vue';
 
 const props = defineProps({
   bootstrap: { type: Object, default: () => ({}) },
@@ -37,6 +38,8 @@ const customComponents = {
   'fields-manager': FieldsManager,
   'conditions-manager': ConditionsManager,
   'integrations-list': IntegrationsList,
+  'fonts-manager': FontsManager,
+  'email-providers': EmailProviders,
 };
 
 function selectTab(tabId) {

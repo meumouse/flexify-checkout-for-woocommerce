@@ -47,6 +47,34 @@ export async function apiGet(endpoint) {
 }
 
 /**
+ * Perform a multipart/form-data POST request against the plugin REST namespace.
+ *
+ * @since 6.0.0
+ * @param {string} endpoint - Endpoint path relative to the REST root.
+ * @param {FormData} formData - Form data payload (may contain files).
+ * @return {Promise<Object>} Parsed JSON response.
+ */
+export async function apiPostForm(endpoint, formData) {
+  const config = readBootstrapConfig() || {};
+
+  const response = await fetch(buildUrl(endpoint), {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      ...(config.nonce ? { 'X-WP-Nonce': config.nonce } : {}),
+    },
+    credentials: 'same-origin',
+    body: formData,
+  });
+
+  if (!response.ok) {
+    throw new Error(`POST ${endpoint} failed (${response.status}).`);
+  }
+
+  return response.json();
+}
+
+/**
  * Perform a POST request against the plugin REST namespace.
  *
  * @since 6.0.0

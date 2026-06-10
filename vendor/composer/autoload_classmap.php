@@ -101,6 +101,8 @@ return array(
     'MeuMouse\\Flexify_Checkout\\Rest\\Fields_Add' => $baseDir . '/admin/src/Rest/Fields_Add.php',
     'MeuMouse\\Flexify_Checkout\\Rest\\Fields_Remove' => $baseDir . '/admin/src/Rest/Fields_Remove.php',
     'MeuMouse\\Flexify_Checkout\\Rest\\Fields_Save' => $baseDir . '/admin/src/Rest/Fields_Save.php',
+    'MeuMouse\\Flexify_Checkout\\Rest\\Fonts_Delete' => $baseDir . '/admin/src/Rest/Fonts_Delete.php',
+    'MeuMouse\\Flexify_Checkout\\Rest\\Fonts_Save' => $baseDir . '/admin/src/Rest/Fonts_Save.php',
     'MeuMouse\\Flexify_Checkout\\Rest\\License_Activate' => $baseDir . '/admin/src/Rest/License_Activate.php',
     'MeuMouse\\Flexify_Checkout\\Rest\\License_Deactivate' => $baseDir . '/admin/src/Rest/License_Deactivate.php',
     'MeuMouse\\Flexify_Checkout\\Rest\\License_Sync' => $baseDir . '/admin/src/Rest/License_Sync.php',

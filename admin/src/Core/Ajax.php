@@ -1718,7 +1718,7 @@ class Ajax {
 				unset( $providers[$search_provider] );
 
 				$get_options['set_email_providers'] = $providers;
-				$update_providers = update_option( 'flexify_checkout_settings', $providers );
+				$update_providers = update_option( 'flexify_checkout_settings', $get_options );
 
 				if ( $update_providers ) {
 					$response = array(

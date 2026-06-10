@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { apiPost } from '../services/api';
+import { apiPost, apiPostForm } from '../services/api';
 
 /**
  * Pinia store for the settings app.
@@ -240,6 +240,86 @@ export const useSettingsStore = defineStore('flexify-checkout-settings', {
 
     activateModule(slug) {
       return this.moduleAction('admin/modules/activate', { slug });
+    },
+
+    /**
+     * Refresh the fonts library and the set_font_family select options.
+     */
+    syncFonts(fonts) {
+      if (!fonts || typeof fonts !== 'object') {
+        return;
+      }
+
+      this.runtime = { ...this.runtime, fonts };
+
+      const options = Object.entries(fonts).map(([id, font]) => ({
+        value: id,
+        label: font?.font_name || id,
+      }));
+
+      for (const tab of this.schema) {
+        for (const card of tab.cards || []) {
+          for (const field of card.fields || []) {
+            if (field.key === 'set_font_family') {
+              field.options = options;
+            }
+          }
+        }
+      }
+    },
+
+    async saveFont(font) {
+      try {
+        const formData = new FormData();
+
+        formData.append('font_id', font.font_id);
+        formData.append('font_name', font.font_name);
+        formData.append('font_type', font.font_type);
+        formData.append('font_url', font.font_url || '');
+        formData.append('font_weight', font.font_weight || '400');
+        formData.append('font_style', font.font_style || 'normal');
+        formData.append('is_new', font.is_new);
+
+        if (font.file) {
+          formData.append('font_file', font.file);
+        }
+
+        const response = await apiPostForm('admin/fonts', formData);
+
+        if (response?.status === 'success') {
+          this.syncFonts(response.fonts);
+        }
+
+        this.pushToast(response?.status === 'success' ? 'success' : 'error', response?.message || '');
+
+        return response;
+      } catch (error) {
+        this.pushToast('error', 'Ocorreu um erro ao salvar a fonte.');
+
+        return null;
+      }
+    },
+
+    async deleteFont(fontId) {
+      try {
+        const response = await apiPost('admin/fonts/delete', { font_id: fontId });
+
+        if (response?.status === 'success') {
+          this.syncFonts(response.fonts);
+
+          if (response.current_font) {
+            this.settings = { ...this.settings, set_font_family: response.current_font };
+          }
+        }
+
+        this.pushToast(response?.status === 'success' ? 'success' : 'error', response?.message || '');
+
+        return response;
+      } catch (error) {
+        this.pushToast('error', 'Ocorreu um erro ao remover a fonte.');
+
+        return null;
+      }
     },
 
     async licenseAction(endpoint, body = {}) {

@@ -2,6 +2,7 @@
 
 namespace MeuMouse\Flexify_Checkout\Admin\Settings;
 
+use MeuMouse\Flexify_Checkout\Admin\Fonts_Manager;
 use MeuMouse\Flexify_Checkout\API\License;
 use MeuMouse\Flexify_Checkout\Checkout\Coupons;
 use MeuMouse\Flexify_Checkout\Validations\ISO3166;
@@ -63,6 +64,7 @@ class Registry {
             'fields' => Fields_Store::get_fields(),
             'conditions' => Conditions_Store::get_conditions_for_client(),
             'integrations' => Integrations_Data::get_cards_for_client(),
+            'fonts' => Fonts_Manager::get_fonts(),
             'shipping_methods' => self::build_shipping_method_options(),
             'payment_gateways' => self::build_payment_gateway_options(),
             'user_roles' => self::build_user_role_options(),
@@ -197,6 +199,12 @@ class Registry {
                         self::field_toggle( 'check_password_strenght', __( 'Ativar verificação de força da senha', 'flexify-checkout-for-woocommerce' ), __( 'Mostra um indicador de força de senha no cadastro.', 'flexify-checkout-for-woocommerce' ) ),
                         self::field_toggle( 'email_providers_suggestion', __( 'Ativar sugestão de preenchimento do e-mail', 'flexify-checkout-for-woocommerce' ), __( 'Sugere provedores de e-mail conhecidos durante a digitação.', 'flexify-checkout-for-woocommerce' ) ),
                     ),
+                ),
+                array(
+                    'id' => 'general-email-providers',
+                    'title' => __( 'Provedores de e-mail', 'flexify-checkout-for-woocommerce' ),
+                    'description' => __( 'Domínios sugeridos durante o preenchimento do e-mail, quando a sugestão de preenchimento está ativa.', 'flexify-checkout-for-woocommerce' ),
+                    'component' => 'email-providers',
                 ),
                 array(
                     'id' => 'general-cart',
@@ -607,7 +615,8 @@ class Registry {
                 array(
                     'id' => 'styles-fonts',
                     'title' => __( 'Fontes', 'flexify-checkout-for-woocommerce' ),
-                    'description' => __( 'Tipografia do checkout. O gerenciador de fontes personalizado chega na próxima fase.', 'flexify-checkout-for-woocommerce' ),
+                    'description' => __( 'Tipografia do checkout e biblioteca de fontes.', 'flexify-checkout-for-woocommerce' ),
+                    'component' => 'fonts-manager',
                     'fields' => array(
                         self::field_select( 'set_font_family', __( 'Família de fontes', 'flexify-checkout-for-woocommerce' ), '', self::build_font_options() ),
                         self::field_number( 'h2_size', __( 'Tamanho dos títulos (h2)', 'flexify-checkout-for-woocommerce' ), '' ),
