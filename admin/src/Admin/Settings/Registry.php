@@ -62,6 +62,7 @@ class Registry {
             ),
             'fields' => Fields_Store::get_fields(),
             'conditions' => Conditions_Store::get_conditions_for_client(),
+            'integrations' => Integrations_Data::get_cards_for_client(),
             'shipping_methods' => self::build_shipping_method_options(),
             'payment_gateways' => self::build_payment_gateway_options(),
             'user_roles' => self::build_user_role_options(),

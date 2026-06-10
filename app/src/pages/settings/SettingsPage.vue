@@ -10,6 +10,7 @@ import SystemStatus from '../../components/settings/SystemStatus.vue';
 import LegacyFallbackCard from '../../components/settings/LegacyFallbackCard.vue';
 import FieldsManager from '../../components/settings/FieldsManager.vue';
 import ConditionsManager from '../../components/settings/ConditionsManager.vue';
+import IntegrationsList from '../../components/settings/IntegrationsList.vue';
 
 const props = defineProps({
   bootstrap: { type: Object, default: () => ({}) },
@@ -35,7 +36,7 @@ const customComponents = {
   'system-status': SystemStatus,
   'fields-manager': FieldsManager,
   'conditions-manager': ConditionsManager,
-  'integrations-list': LegacyFallbackCard,
+  'integrations-list': IntegrationsList,
 };
 
 function selectTab(tabId) {

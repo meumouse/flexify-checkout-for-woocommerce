@@ -16,6 +16,7 @@ export const useSettingsStore = defineStore('flexify-checkout-settings', {
     runtime: {},
     fields: {},
     conditions: [],
+    integrations: [],
     dirty: false,
     saving: false,
     resetting: false,
@@ -39,6 +40,7 @@ export const useSettingsStore = defineStore('flexify-checkout-settings', {
       this.runtime = bootstrap?.runtime && typeof bootstrap.runtime === 'object' ? bootstrap.runtime : {};
       this.fields = this.runtime?.fields && typeof this.runtime.fields === 'object' ? this.runtime.fields : {};
       this.conditions = Array.isArray(this.runtime?.conditions) ? this.runtime.conditions : [];
+      this.integrations = Array.isArray(this.runtime?.integrations) ? this.runtime.integrations : [];
       this.dirty = false;
     },
 
@@ -212,6 +214,32 @@ export const useSettingsStore = defineStore('flexify-checkout-settings', {
 
     removeCondition(index) {
       return this.conditionAction('admin/conditions/remove', { index });
+    },
+
+    async moduleAction(endpoint, body) {
+      try {
+        const response = await apiPost(endpoint, body);
+
+        if (Array.isArray(response?.integrations)) {
+          this.integrations = response.integrations;
+        }
+
+        this.pushToast(response?.status === 'success' ? 'success' : 'error', response?.message || '');
+
+        return response;
+      } catch (error) {
+        this.pushToast('error', 'Ocorreu um erro ao processar o módulo.');
+
+        return null;
+      }
+    },
+
+    installModule(slug, downloadUrl) {
+      return this.moduleAction('admin/modules/install', { slug, download_url: downloadUrl });
+    },
+
+    activateModule(slug) {
+      return this.moduleAction('admin/modules/activate', { slug });
     },
 
     async licenseAction(endpoint, body = {}) {
