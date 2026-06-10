@@ -14,7 +14,10 @@ export default defineConfig({
   plugins: [vue()],
   build: {
     outDir: resolve(__dirname, 'dist'),
-    emptyOutDir: true,
+    // Never wipe dist on admin-only builds: dist/checkout belongs to the
+    // checkout build (vite.checkout.config.js). The full "build" script
+    // passes --emptyOutDir explicitly to clean stale hashed chunks.
+    emptyOutDir: false,
     manifest: true,
     sourcemap: false,
     rollupOptions: {

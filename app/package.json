@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && vite build -c vite.checkout.config.js",
+    "build": "vite build --emptyOutDir && vite build -c vite.checkout.config.js",
     "build:admin": "vite build",
     "build:checkout": "vite build -c vite.checkout.config.js"
   },
