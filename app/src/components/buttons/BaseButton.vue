@@ -11,19 +11,35 @@ const props = defineProps({
 
 const classes = computed(() => {
   const variants = {
-    primary: 'bg-primary text-white border border-primary hover:bg-primary-700 hover:border-primary-700 focus:ring-primary-200',
-    outline: 'bg-white text-primary border border-primary hover:bg-primary hover:text-white focus:ring-primary-200',
-    secondary: 'bg-white text-ink border border-gray-300 hover:bg-gray-50 focus:ring-gray-200',
-    'outline-warning': 'bg-white text-warning border border-warning hover:bg-warning hover:text-white focus:ring-yellow-200',
-    'outline-danger': 'bg-white text-danger border border-danger hover:bg-danger hover:text-white focus:ring-red-200',
-    danger: 'bg-danger text-white border border-danger hover:bg-red-600 focus:ring-red-200',
+    primary: 'border-transparent bg-primary text-white hover:bg-primary-700 focus-visible:ring-primary-200',
+    outline: 'border-primary-200 bg-white text-primary hover:bg-primary-50 focus-visible:ring-primary-100',
+    secondary: 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50 focus-visible:ring-slate-200',
+    'outline-warning': 'border-warning bg-white text-warning hover:bg-warning hover:text-white focus-visible:ring-yellow-200',
+    'outline-danger': 'border-danger bg-white text-danger hover:bg-danger hover:text-white focus-visible:ring-red-200',
+    danger: 'border-transparent bg-danger text-white hover:opacity-90 focus-visible:ring-red-200',
   };
 
   return variants[props.variant] || variants.primary;
 });
 
 const sizeClasses = computed(() => {
-  return props.size === 'sm' ? 'px-3 py-1.5 text-xs' : 'px-4 py-2 text-sm';
+  const sizes = {
+    sm: 'px-3 py-2 text-[13px]',
+    md: 'px-5 py-3 text-[14px]',
+    lg: 'px-6 py-3.5 text-[15px]',
+  };
+
+  return sizes[props.size] || sizes.md;
+});
+
+const spinnerClass = computed(() => {
+  const sizes = {
+    sm: 'h-3.5 w-3.5',
+    md: 'h-4 w-4',
+    lg: 'h-5 w-5',
+  };
+
+  return sizes[props.size] || sizes.md;
 });
 </script>
 
@@ -31,19 +47,15 @@ const sizeClasses = computed(() => {
   <button
     :type="type"
     :disabled="disabled || loading"
-    class="inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-offset-1"
-    :class="[classes, sizeClasses, disabled || loading ? 'cursor-not-allowed opacity-60' : 'cursor-pointer']"
+    class="inline-flex cursor-pointer items-center justify-center gap-2 rounded-[8px] border border-solid font-semibold transition focus:outline-none focus-visible:ring-4 disabled:cursor-not-allowed disabled:opacity-60"
+    :class="[classes, sizeClasses]"
   >
-    <svg
+    <span
       v-if="loading"
-      class="h-4 w-4 animate-spin"
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
-      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
-    </svg>
+      class="inline-flex shrink-0 animate-spin rounded-full border-2 border-current border-r-transparent"
+      :class="spinnerClass"
+      aria-hidden="true"
+    />
 
     <slot />
   </button>

@@ -34,7 +34,7 @@ const units = computed(() => (Array.isArray(props.field?.units) ? props.field.un
       step="any"
       :name="name"
       :disabled="disabled"
-      class="flexify-field-input w-20 border-0 bg-transparent px-3 py-2 text-sm text-ink focus:outline-none"
+      class="flexify-group-control w-20 px-3 py-2.5 text-sm text-ink focus:outline-none"
     />
 
     <select

@@ -42,7 +42,7 @@ function resetToDefault() {
         type="text"
         :disabled="disabled"
         placeholder="#000000"
-        class="flexify-field-input w-28 border-0 bg-transparent px-3 py-2 text-sm lowercase text-ink focus:outline-none"
+        class="flexify-group-control w-28 px-3 py-2.5 text-sm lowercase text-ink focus:outline-none"
       />
     </div>
 

@@ -67,54 +67,55 @@ function selectTab(tabId) {
       </span>
     </header>
 
-    <p class="mb-5 mt-0 text-[13px] text-ink">
+    <p class="mb-0 mt-0 text-[14px] leading-6 text-slate-600">
       Configure abaixo as opções da finalização de compra do WooCommerce. Se precisar de ajuda para configurar, acesse nossa
       <a
         v-if="store.runtime?.docs_link"
         :href="store.runtime.docs_link"
         target="_blank"
-        class="font-medium text-primary underline underline-offset-2"
+        class="font-semibold text-primary underline underline-offset-4"
       >Central de ajuda</a>
     </p>
 
-    <nav class="mb-4 inline-flex max-w-full flex-wrap overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-200">
+    <nav class="mt-8 flex w-fit max-w-full flex-wrap overflow-hidden rounded-[8px] bg-[#e7edf5] p-0.5">
       <button
         v-for="tab in store.schema"
         :key="tab.id"
         type="button"
-        class="flexify-tab inline-flex cursor-pointer items-center gap-2 border-0 border-r border-gray-200 px-6 py-4 text-xs font-semibold uppercase tracking-wide transition-colors last:border-r-0"
-        :class="activeTab === tab.id ? 'bg-primary text-white' : 'bg-white text-ink hover:bg-gray-50'"
+        class="flexify-tab flex min-w-[130px] cursor-pointer items-center justify-center gap-2 rounded-none px-5 py-4 text-[13px] font-semibold uppercase tracking-wide transition first:rounded-l-[8px] last:rounded-r-[8px]"
+        :class="activeTab === tab.id ? 'active bg-primary text-white shadow-sm' : 'bg-transparent text-slate-600 hover:bg-[#d0dce9] hover:text-slate-800'"
         @click="selectTab(tab.id)"
       >
-        <span v-if="tab.icon" class="flexify-tab-icon" v-html="tab.icon" />
-        {{ tab.title }}
+        <span v-if="tab.icon" class="flexify-tab-icon inline-flex h-[18px] w-[18px] shrink-0 items-center justify-center leading-none" v-html="tab.icon" />
+        <span>{{ tab.title }}</span>
       </button>
     </nav>
 
-    <main v-if="currentTab" class="flex flex-col gap-1.5">
-      <section
-        v-for="(card, index) in currentTab.cards"
-        :key="card.id"
-        class="bg-white px-8 py-3"
-        :class="[index === 0 ? 'rounded-t-2xl' : '', 'shadow-sm']"
-      >
-        <component
-          :is="customComponents[card.component]"
-          v-if="card.component && customComponents[card.component]"
-          :tab-id="currentTab.id"
-        />
+    <main v-if="currentTab" class="mt-6 overflow-hidden rounded-[8px] bg-white shadow-[0_1px_0_rgba(0,0,0,0.02)] ring-1 ring-slate-100">
+      <div class="px-10 py-4">
+        <div
+          v-for="(card, index) in currentTab.cards"
+          :key="card.id"
+          :class="index > 0 ? 'border-t border-slate-100' : ''"
+        >
+          <component
+            :is="customComponents[card.component]"
+            v-if="card.component && customComponents[card.component]"
+            :tab-id="currentTab.id"
+          />
 
-        <div v-if="Array.isArray(card.fields) && card.fields.length">
-          <FieldRow v-for="field in card.fields" :key="field.key" :field="field" />
+          <div v-if="Array.isArray(card.fields) && card.fields.length">
+            <FieldRow v-for="field in card.fields" :key="field.key" :field="field" />
+          </div>
         </div>
-      </section>
+      </div>
 
-      <section class="rounded-b-2xl bg-white px-8 py-5 shadow-sm">
+      <div class="sticky bottom-0 inset-x-0 z-10 border-t border-black/10 bg-white/80 px-10 py-5 backdrop-blur-[5px]">
         <BaseButton :disabled="!store.dirty" :loading="store.saving" @click="store.save()">
-          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M5 21h14a2 2 0 0 0 2-2V8a1 1 0 0 0-.29-.71l-4-4A1 1 0 0 0 16 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2zm10-2H9v-5h6zM13 7h-2V5h2zM5 5h2v4h8V5h.59L19 8.41V19h-2v-5a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v5H5z"></path></svg>
+          <svg v-if="!store.saving" class="h-[1.1rem] w-[1.1rem]" viewBox="0 0 24 24" fill="currentColor"><path d="M5 21h14a2 2 0 0 0 2-2V8a1 1 0 0 0-.29-.71l-4-4A1 1 0 0 0 16 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2zm10-2H9v-5h6zM13 7h-2V5h2zM5 5h2v4h8V5h.59L19 8.41V19h-2v-5a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v5H5z"></path></svg>
           Salvar alterações
         </BaseButton>
-      </section>
+      </div>
     </main>
 
     <ToastStack />
@@ -122,9 +123,22 @@ function selectTab(tabId) {
 </template>
 
 <style scoped>
+.flexify-tab {
+  border: none;
+  border-left: 1px solid #dbdee1;
+}
+
+.flexify-tab:first-child {
+  border-left: none;
+}
+
 .flexify-tab-icon :deep(svg) {
-  width: 16px;
-  height: 16px;
-  fill: currentColor;
+  width: 100%;
+  height: 100%;
+  fill: #475569;
+}
+
+.flexify-tab.active .flexify-tab-icon :deep(svg) {
+  fill: #fff;
 }
 </style>

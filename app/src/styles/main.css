@@ -18,21 +18,51 @@
     color: #102033;
   }
 
-  /* Neutralize wp-admin input styling inside the app shell. */
-  #flexify-checkout-settings-app input,
-  #flexify-checkout-settings-app select,
-  #flexify-checkout-settings-app textarea {
-    box-shadow: none;
-    outline: none;
+  /* Standardized form controls, following the Joinotify design system. */
+  #flexify-checkout-settings-app .flexify-field-input {
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 8px !important;
+    background-color: #ffffff !important;
+    padding: 0.65rem 1rem !important;
+    font-size: 14px !important;
+    line-height: 1.5rem !important;
+    color: #334155 !important;
+    box-shadow: none !important;
+    outline: none !important;
     transition:
       border-color 0.15s ease,
-      box-shadow 0.15s ease;
+      box-shadow 0.15s ease !important;
   }
 
-  #flexify-checkout-settings-app input:focus,
-  #flexify-checkout-settings-app select:focus,
-  #flexify-checkout-settings-app textarea:focus {
-    box-shadow: 0 0 0 4px rgb(228 238 246 / 1);
+  #flexify-checkout-settings-app .flexify-field-input::placeholder {
+    color: #94a3b8 !important;
+    opacity: 1 !important;
+  }
+
+  #flexify-checkout-settings-app .flexify-field-input:focus {
+    border-color: #0d6efd !important;
+    box-shadow: 0 0 0 4px rgb(219 234 254 / 1) !important;
+  }
+
+  /* Controls inside input groups keep the group's outer border. */
+  #flexify-checkout-settings-app .flexify-group-control {
+    border: 0 !important;
+    border-radius: 0 !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    outline: none !important;
+    font-size: 14px;
+    color: #334155;
+  }
+}
+
+@keyframes flexify-toast-progress {
+  from {
+    transform: scaleX(1);
+  }
+
+  to {
+    transform: scaleX(0);
   }
 }
 
@@ -50,10 +80,10 @@
 #flexify-checkout-settings-app .skeleton-content {
   position: relative;
   overflow: hidden;
-  border-radius: 12px;
-  background: linear-gradient(90deg, #dce5ef 0%, #eef3f8 50%, #dce5ef 100%);
-  background-size: 200% 100%;
-  animation: flexify-skeleton-wave 1.5s ease-in-out infinite;
+  border-radius: 0.5rem;
+  background: linear-gradient(90deg, #eee 2%, #ddd 18%, #eee 33%);
+  background-size: 1300px 100%;
+  animation: flexify-skeleton-wave 1.7s linear infinite;
 }
 
 .flexify-checkout-bootstrap-error {

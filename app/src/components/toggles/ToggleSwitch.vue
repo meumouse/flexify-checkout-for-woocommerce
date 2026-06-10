@@ -5,39 +5,59 @@ const props = defineProps({
   modelValue: { type: [String, Boolean], default: 'no' },
   trueValue: { type: [String, Boolean], default: 'yes' },
   falseValue: { type: [String, Boolean], default: 'no' },
+  size: { type: String, default: 'md' },
   disabled: { type: Boolean, default: false },
   name: { type: String, default: '' },
   ariaLabel: { type: String, default: '' },
+  id: { type: String, default: '' },
 });
 
-const emit = defineEmits(['update:modelValue']);
+const emit = defineEmits(['update:modelValue', 'change']);
 
-const isOn = computed(() => props.modelValue === props.trueValue);
+const inputId = computed(() => props.id || `flexify-toggle-${Math.random().toString(36).slice(2, 10)}`);
+const checked = computed(() => props.modelValue === props.trueValue);
 
-function toggle() {
-  if (props.disabled) {
-    return;
-  }
+function handleChange(event) {
+  const nextValue = event.target.checked ? props.trueValue : props.falseValue;
 
-  emit('update:modelValue', isOn.value ? props.falseValue : props.trueValue);
+  emit('update:modelValue', nextValue);
+  emit('change', nextValue);
 }
 </script>
 
 <template>
-  <button
-    type="button"
-    role="switch"
-    :name="name"
-    :aria-checked="isOn ? 'true' : 'false'"
-    :aria-label="ariaLabel"
-    :disabled="disabled"
-    class="relative inline-flex h-7 w-[52px] shrink-0 items-center rounded-full border-0 p-0 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary-200 focus:ring-offset-1"
-    :class="[isOn ? 'bg-primary' : 'bg-gray-200', disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer']"
-    @click="toggle"
+  <label
+    :for="inputId"
+    class="relative inline-flex shrink-0 cursor-pointer items-center"
+    :class="{ 'cursor-not-allowed opacity-60': disabled }"
   >
+    <input
+      :id="inputId"
+      :name="name"
+      :checked="checked"
+      :aria-label="ariaLabel || name"
+      :disabled="disabled"
+      type="checkbox"
+      class="peer sr-only"
+      @change="handleChange"
+    >
+
     <span
-      class="inline-block h-[22px] w-[22px] transform rounded-full bg-white shadow-sm transition-transform duration-200"
-      :class="isOn ? 'translate-x-[27px]' : 'translate-x-[3px]'"
+      aria-hidden="true"
+      :class="[
+        'inline-flex shrink-0 rounded-full border border-slate-200 bg-slate-300 transition-colors duration-200 ease-in-out',
+        size === 'sm' ? 'h-5 w-9' : 'h-6 w-11',
+        'peer-focus-visible:outline-none peer-focus-visible:ring-4 peer-focus-visible:ring-primary-100',
+        'peer-checked:border-primary peer-checked:bg-primary',
+      ]"
     />
-  </button>
+
+    <span
+      aria-hidden="true"
+      :class="[
+        'pointer-events-none absolute left-0.5 top-0.5 rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out',
+        size === 'sm' ? 'h-4 w-4 peer-checked:translate-x-4' : 'h-5 w-5 peer-checked:translate-x-5',
+      ]"
+    />
+  </label>
 </template>

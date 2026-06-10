@@ -69,14 +69,37 @@ export const useSettingsStore = defineStore('flexify-checkout-settings', {
       });
     },
 
-    pushToast(type, message) {
+    pushToast(type, message, title = '') {
       const id = `toast-${this.toasts.length}-${message.length}-${type}`;
+      const defaultTitles = {
+        success: 'Salvo com sucesso',
+        error: 'Ops! Ocorreu um erro.',
+        info: 'Flexify Checkout',
+      };
 
-      this.toasts.push({ id, type, message });
+      this.toasts.push({
+        id,
+        type,
+        title: title || defaultTitles[type] || defaultTitles.info,
+        message,
+        closing: false,
+      });
+
+      setTimeout(() => {
+        this.toasts = this.toasts.map((toast) => (toast.id === id ? { ...toast, closing: true } : toast));
+      }, 3000);
 
       setTimeout(() => {
         this.toasts = this.toasts.filter((toast) => toast.id !== id);
-      }, 5000);
+      }, 3500);
+    },
+
+    dismissToast(id) {
+      this.toasts = this.toasts.map((toast) => (toast.id === id ? { ...toast, closing: true } : toast));
+
+      setTimeout(() => {
+        this.toasts = this.toasts.filter((toast) => toast.id !== id);
+      }, 180);
     },
 
     async save() {

@@ -44,7 +44,7 @@ function openMediaLibrary() {
       type="text"
       :name="name"
       :disabled="disabled"
-      class="flexify-field-input w-full border-0 bg-transparent px-3 py-2 text-sm text-ink focus:outline-none"
+      class="flexify-group-control w-full px-4 py-2.5 text-sm text-ink focus:outline-none"
     />
 
     <button
