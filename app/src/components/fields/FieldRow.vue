@@ -20,12 +20,16 @@ const model = computed({
 });
 
 const isToggle = computed(() => String(props.field?.type || '') === 'toggle');
+
+// Wide controls render below the label, taking the full row width.
+const isWide = computed(() => String(props.field?.type || '') === 'code-editor');
 </script>
 
 <template>
   <div
     v-if="store.isFieldVisible(field)"
-    class="flex flex-col gap-3 border-b border-gray-100 py-4 last:border-b-0 sm:flex-row sm:items-start sm:justify-between"
+    class="flex flex-col gap-3 border-b border-gray-100 py-4 last:border-b-0"
+    :class="isWide ? '' : 'sm:flex-row sm:items-start sm:justify-between'"
   >
     <div class="max-w-xl">
       <div class="flex items-center gap-2">
@@ -44,7 +48,7 @@ const isToggle = computed(() => String(props.field?.type || '') === 'toggle');
       </p>
     </div>
 
-    <div class="shrink-0" :class="isToggle ? 'pt-0.5' : 'w-full sm:w-auto sm:min-w-[16rem]'">
+    <div class="shrink-0" :class="isToggle ? 'pt-0.5' : isWide ? 'w-full' : 'w-full sm:w-auto sm:min-w-[16rem]'">
       <component
         :is="fieldComponent"
         v-model="model"

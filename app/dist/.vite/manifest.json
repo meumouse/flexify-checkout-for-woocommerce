@@ -1,9 +1,21 @@
 {
+  "src/components/fields/CodeEditorField.vue": {
+    "file": "chunks/CodeEditorField-C1KWJIy1.js",
+    "name": "CodeEditorField",
+    "src": "src/components/fields/CodeEditorField.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "src/entries/settings.js"
+    ]
+  },
   "src/entries/settings.js": {
     "file": "settings/app.js",
     "name": "settings",
     "src": "src/entries/settings.js",
     "isEntry": true,
+    "dynamicImports": [
+      "src/components/fields/CodeEditorField.vue"
+    ],
     "css": [
       "styles/settings.css"
     ]

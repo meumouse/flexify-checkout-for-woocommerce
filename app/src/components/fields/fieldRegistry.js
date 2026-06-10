@@ -1,10 +1,13 @@
+import { defineAsyncComponent } from 'vue';
 import ToggleSwitch from '../toggles/ToggleSwitch.vue';
 import TextField from './TextField.vue';
 import NumberField from './NumberField.vue';
 import TextAreaField from './TextAreaField.vue';
 import SelectField from './SelectField.vue';
 import ColorPickerField from './ColorPickerField.vue';
-import CodeEditorField from './CodeEditorField.vue';
+
+// CodeMirror is heavy, so the code editor is lazy-loaded on first render.
+const CodeEditorField = defineAsyncComponent(() => import('./CodeEditorField.vue'));
 
 const registry = new Map();
 

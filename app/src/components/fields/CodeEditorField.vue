@@ -1,5 +1,10 @@
 <script setup>
-import { computed } from 'vue';
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { EditorView, basicSetup } from 'codemirror';
+import { EditorState, Compartment } from '@codemirror/state';
+import { css } from '@codemirror/lang-css';
+import { javascript } from '@codemirror/lang-javascript';
+import { oneDark } from '@codemirror/theme-one-dark';
 
 const props = defineProps({
   modelValue: { type: String, default: '' },
@@ -10,25 +15,73 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue']);
 
-const model = computed({
-  get: () => props.modelValue ?? '',
-  set: (value) => emit('update:modelValue', value),
+const host = ref(null);
+
+let view = null;
+const readOnly = new Compartment();
+
+function languageExtension() {
+  return props.field?.language === 'javascript' ? javascript() : css();
+}
+
+onMounted(() => {
+  view = new EditorView({
+    parent: host.value,
+    state: EditorState.create({
+      doc: props.modelValue || '',
+      extensions: [
+        basicSetup,
+        languageExtension(),
+        oneDark,
+        readOnly.of(EditorState.readOnly.of(props.disabled)),
+        EditorView.theme({
+          '&': { fontSize: '12px', borderRadius: '8px' },
+          '.cm-scroller': { fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace', minHeight: '180px', maxHeight: '360px' },
+        }),
+        EditorView.updateListener.of((update) => {
+          if (update.docChanged) {
+            emit('update:modelValue', update.state.doc.toString());
+          }
+        }),
+      ],
+    }),
+  });
 });
 
-const placeholder = computed(() => {
-  return props.field?.language === 'javascript' ? "// console.log('Flexify Checkout');" : '/* .flexify-checkout { } */';
+watch(
+  () => props.modelValue,
+  (value) => {
+    if (view && value !== view.state.doc.toString()) {
+      view.dispatch({
+        changes: { from: 0, to: view.state.doc.length, insert: value || '' },
+      });
+    }
+  }
+);
+
+watch(
+  () => props.disabled,
+  (value) => {
+    if (view) {
+      view.dispatch({
+        effects: readOnly.reconfigure(EditorState.readOnly.of(value)),
+      });
+    }
+  }
+);
+
+onBeforeUnmount(() => {
+  if (view) {
+    view.destroy();
+    view = null;
+  }
 });
 </script>
 
 <template>
-  <textarea
-    v-model="model"
-    :name="name"
-    rows="10"
-    spellcheck="false"
-    :placeholder="placeholder"
-    :disabled="disabled"
-    class="flexify-field-input w-full rounded-lg border border-gray-300 bg-gray-900 px-3 py-2 font-mono text-xs leading-relaxed text-gray-100 focus:border-primary focus:ring-2 focus:ring-primary-100"
-    :class="disabled ? 'cursor-not-allowed opacity-50' : ''"
+  <div
+    ref="host"
+    class="flexify-code-editor w-full overflow-hidden rounded-lg border border-gray-300"
+    :class="disabled ? 'pointer-events-none opacity-60' : ''"
   />
 </template>
