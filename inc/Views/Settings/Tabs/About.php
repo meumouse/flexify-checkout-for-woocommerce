@@ -442,6 +442,54 @@ defined('ABSPATH') || exit; ?>
 		<tr class="container-separator"></tr>
 
 		<tr>
+			<td class="d-grid">
+				<h3 class="h2 mt-0"><?php esc_html_e( 'Exportar e importar configurações:', 'flexify-checkout-for-woocommerce' ); ?></h3>
+				<span class="text-muted mb-4 d-block"><?php esc_html_e( 'Exporte as configurações do plugin em um arquivo JSON para fazer backup ou replicar em outra loja. A exportação não inclui a licença nem dados sensíveis.', 'flexify-checkout-for-woocommerce' ); ?></span>
+
+				<div class="d-flex align-items-center">
+					<button id="fcw_export_settings_trigger" class="btn btn-sm btn-outline-primary d-flex align-items-center me-3">
+						<svg class="icon icon-lg icon-primary me-2" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 16l4-5h-3V4h-2v7H8z"></path><path d="M20 18H4v-7H2v7c0 1.103.897 2 2 2h16c1.103 0 2-.897 2-2v-7h-2v7z"></path></svg>
+						<?php esc_html_e( 'Exportar configurações', 'flexify-checkout-for-woocommerce' ); ?>
+					</button>
+
+					<button id="fcw_import_settings_trigger" class="btn btn-sm btn-outline-secondary d-flex align-items-center">
+						<svg class="icon icon-lg me-2" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 4l-4 5h3v7h2V9h3z"></path><path d="M20 18H4v-7H2v7c0 1.103.897 2 2 2h16c1.103 0 2-.897 2-2v-7h-2v7z"></path></svg>
+						<?php esc_html_e( 'Importar configurações', 'flexify-checkout-for-woocommerce' ); ?>
+					</button>
+				</div>
+
+				<div id="fcw_import_settings_container" class="popup-container">
+					<div class="popup-content">
+						<div class="popup-header border-bottom-0 justify-content-end">
+							<button id="fcw_close_import" class="btn-close" aria-label="<?php esc_attr_e( 'Fechar', 'flexify-checkout-for-woocommerce' ); ?>"></button>
+						</div>
+
+						<div class="popup-body">
+							<div class="d-flex flex-column align-items-center px-4 pb-2">
+								<div class="btn-icon rounded-circle p-2 mb-3 bg-translucent-warning">
+									<svg class="icon icon-lg icon-warning" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8z"></path><path d="M11 7h2v7h-2zm0 8h2v2h-2z"></path></svg>
+								</div>
+								<h5 class="popup-title text-center"><?php esc_html_e( 'Importar configurações', 'flexify-checkout-for-woocommerce' ); ?></h5>
+								<span class="title-hightlight bg-warning mt-2 mb-3"></span>
+								<span class="text-muted fs-lg text-center px-3"><?php esc_html_e( 'Ao importar, as configurações atuais serão substituídas pelas do arquivo selecionado. Recomendamos exportar um backup antes de continuar.', 'flexify-checkout-for-woocommerce' ); ?></span>
+							</div>
+
+							<div class="px-4 py-3">
+								<input type="file" id="fcw_import_settings_file" class="form-control" accept="application/json,.json" />
+							</div>
+
+							<div class="d-flex justify-content-center mb-4 px-3">
+								<button id="confirm_import_settings" class="btn btn-lg btn-outline-warning" disabled><?php esc_html_e( 'Importar e substituir', 'flexify-checkout-for-woocommerce' ); ?></button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</td>
+		</tr>
+
+		<tr class="container-separator"></tr>
+
+		<tr>
 			<td class="d-flex">
 				<button id="fcw_reset_settings_trigger" class="btn btn-sm btn-outline-warning d-flex align-items-center me-3">
 					<svg class="icon icon-lg icon-warning me-2" xmlns="http://www.w3.org/2000/svg"><path d="M12 16c1.671 0 3-1.331 3-3s-1.329-3-3-3-3 1.331-3 3 1.329 3 3 3z"></path><path d="M20.817 11.186a8.94 8.94 0 0 0-1.355-3.219 9.053 9.053 0 0 0-2.43-2.43 8.95 8.95 0 0 0-3.219-1.355 9.028 9.028 0 0 0-1.838-.18V2L8 5l3.975 3V6.002c.484-.002.968.044 1.435.14a6.961 6.961 0 0 1 2.502 1.053 7.005 7.005 0 0 1 1.892 1.892A6.967 6.967 0 0 1 19 13a7.032 7.032 0 0 1-.55 2.725 7.11 7.11 0 0 1-.644 1.188 7.2 7.2 0 0 1-.858 1.039 7.028 7.028 0 0 1-3.536 1.907 7.13 7.13 0 0 1-2.822 0 6.961 6.961 0 0 1-2.503-1.054 7.002 7.002 0 0 1-1.89-1.89A6.996 6.996 0 0 1 5 13H3a9.02 9.02 0 0 0 1.539 5.034 9.096 9.096 0 0 0 2.428 2.428A8.95 8.95 0 0 0 12 22a9.09 9.09 0 0 0 1.814-.183 9.014 9.014 0 0 0 3.218-1.355 8.886 8.886 0 0 0 1.331-1.099 9.228 9.228 0 0 0 1.1-1.332A8.952 8.952 0 0 0 21 13a9.09 9.09 0 0 0-.183-1.814z"></path></svg>

@@ -16,6 +16,7 @@ return array(
     'MeuMouse\\Flexify_Checkout\\Admin\\Fonts_Manager' => $baseDir . '/inc/Admin/Fonts_Manager.php',
     'MeuMouse\\Flexify_Checkout\\Admin\\Orders' => $baseDir . '/inc/Admin/Orders.php',
     'MeuMouse\\Flexify_Checkout\\Admin\\Settings\\Views\\Integrations' => $baseDir . '/inc/Admin/Settings/Views/Integrations.php',
+    'MeuMouse\\Flexify_Checkout\\Admin\\Settings_Import_Export' => $baseDir . '/inc/Admin/Settings_Import_Export.php',
     'MeuMouse\\Flexify_Checkout\\Checkout\\Common' => $baseDir . '/inc/Checkout/Common.php',
     'MeuMouse\\Flexify_Checkout\\Checkout\\Conditions' => $baseDir . '/inc/Checkout/Conditions.php',
     'MeuMouse\\Flexify_Checkout\\Checkout\\Coupons' => $baseDir . '/inc/Checkout/Coupons.php',

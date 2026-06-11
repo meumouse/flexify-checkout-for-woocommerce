@@ -409,6 +409,7 @@ class Assets {
 				),
 				'nonces' => array(
 					'fonts' => wp_create_nonce('flexify_checkout_fonts'),
+					'import_export' => wp_create_nonce( \MeuMouse\Flexify_Checkout\Admin\Settings_Import_Export::NONCE_ACTION ),
 				),
 				'fonts_library' => Fonts_Manager::get_fonts(),
 			));
