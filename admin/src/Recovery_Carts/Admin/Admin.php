@@ -186,14 +186,15 @@ class Admin {
      * @return void
      */
     public function queue_table_page() {
-        global $fcrc_queue_table;
-
-        if ( empty( $fcrc_queue_table ) ) {
-            $fcrc_queue_table = new \MeuMouse\Flexify_Checkout\Recovery_Carts\Views\Queue_Table();
-        }
-
-        $fcrc_queue_table->prepare_items();
-        $fcrc_queue_table->display_page();
+        // "Fila de processamentos" is now a Vue SPA route (/queue) backed by REST.
+        ?>
+        <div class="wrap flexify-checkout-settings-page">
+            <div id="flexify-checkout-settings-app" class="flexify-checkout-settings-app">
+                <div class="skeleton-content" style="width: 950px; height: 100px;"></div>
+                <div class="skeleton-content" style="width: 100%; height: 420px; margin-top: 2rem;"></div>
+            </div>
+        </div>
+        <?php
     }
 
 

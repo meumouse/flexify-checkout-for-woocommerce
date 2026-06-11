@@ -27,6 +27,7 @@ class Settings_Assets {
         'flexify-checkout-license' => 'src/entries/settings.js',
         'fc-recovery-carts' => 'src/entries/settings.js',
         'fc-recovery-carts-list' => 'src/entries/settings.js',
+        'fc-recovery-carts-queue' => 'src/entries/settings.js',
     );
 
 
@@ -41,6 +42,7 @@ class Settings_Assets {
         'flexify-checkout-license' => 'license',
         'fc-recovery-carts' => 'analytics',
         'fc-recovery-carts-list' => 'carts',
+        'fc-recovery-carts-queue' => 'queue',
     );
 
 

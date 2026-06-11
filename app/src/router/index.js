@@ -15,12 +15,14 @@ import SettingsPage from '../pages/settings/SettingsPage.vue';
 import LicensePage from '../pages/license/LicensePage.vue';
 import AnalyticsPage from '../pages/recovery/AnalyticsPage.vue';
 import CartsPage from '../pages/recovery/CartsPage.vue';
+import QueuePage from '../pages/recovery/QueuePage.vue';
 
 const routes = [
   { path: '/settings', name: 'settings', component: SettingsPage },
   { path: '/license', name: 'license', component: LicensePage },
   { path: '/analytics', name: 'analytics', component: AnalyticsPage },
   { path: '/carts', name: 'carts', component: CartsPage },
+  { path: '/queue', name: 'queue', component: QueuePage },
   { path: '/:pathMatch(.*)*', redirect: '/settings' },
 ];
 

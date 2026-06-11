@@ -74,7 +74,11 @@ class Assets {
             && ! Helpers::check_admin_page('fc-recovery-carts-queue')
             && ! Helpers::check_admin_page('fc-recovery-carts-settings');
 
-        if ( $is_analytics_page || Helpers::check_admin_page('fc-recovery-carts-list') ) {
+        if (
+            $is_analytics_page
+            || Helpers::check_admin_page('fc-recovery-carts-list')
+            || Helpers::check_admin_page('fc-recovery-carts-queue')
+        ) {
             return;
         }
 

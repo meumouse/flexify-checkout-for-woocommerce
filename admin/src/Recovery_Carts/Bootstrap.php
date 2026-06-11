@@ -164,6 +164,8 @@ class Bootstrap {
             '\MeuMouse\Flexify_Checkout\Recovery_Carts\Rest\Analytics',
             '\MeuMouse\Flexify_Checkout\Recovery_Carts\Rest\Carts',
             '\MeuMouse\Flexify_Checkout\Recovery_Carts\Rest\Cart_Delete',
+            '\MeuMouse\Flexify_Checkout\Recovery_Carts\Rest\Queue',
+            '\MeuMouse\Flexify_Checkout\Recovery_Carts\Rest\Queue_Delete',
         );
 
         return array_merge( $classes, $recovery );
