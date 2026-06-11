@@ -15,7 +15,7 @@
     },
     "autoload": {
         "psr-4": {
-            "MeuMouse\\Flexify_Checkout\\": "admin/src/"
+            "MeuMouse\\Flexify_Checkout\\": "inc/"
         }
     }
 }
