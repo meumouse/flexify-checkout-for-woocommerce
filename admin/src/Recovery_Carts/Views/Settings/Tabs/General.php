@@ -19,6 +19,16 @@ defined('ABSPATH') || exit; ?>
         <tbody>
             <tr>
                 <th>
+                    <?php esc_html_e( 'Ativar recuperação de carrinhos', 'fc-recovery-carts' ); ?>
+                    <span class="fc-recovery-carts-description"><?php esc_html_e( 'Ative o rastreamento de carrinhos abandonados e as páginas de Análises, Todos os carrinhos e Fila de processamentos no menu do Flexify Checkout. Ao desativar, essas páginas ficam ocultas.', 'fc-recovery-carts' ); ?></span>
+                </th>
+                <td>
+                    <input type="checkbox" id="enable_cart_recovery" class="toggle-switch" name="toggle_switchs[enable_cart_recovery]" value="yes" <?php checked( Admin::get_switch('enable_cart_recovery') !== 'no' ); ?> />
+                </td>
+            </tr>
+
+            <tr>
+                <th>
                     <?php esc_html_e( 'Agendador de tarefas', 'fc-recovery-carts' ); ?>
                     <span class="fc-recovery-carts-description"><?php esc_html_e( 'Escolha como as notificações serão agendadas e processadas.', 'fc-recovery-carts' ); ?></span>
                 </th>
