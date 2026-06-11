@@ -36,14 +36,20 @@ class Admin {
         // render settings tabs
         add_action( 'Flexify_Checkout/Recovery_Carts/Settings/Nav_Tabs', array( $this, 'render_settings_tabs' ) );
 
-        // register new post type
-        add_action( 'init', array( $this, 'register_post_type' ) );
+        // Register the recovery custom post types / statuses. This class is
+        // booted from Init at init:99, so a plain add_action('init', …, 10)
+        // would be queued behind a priority that already ran and never fire.
+        // Register immediately when init is already underway; otherwise hook it.
+        if ( did_action('init') ) {
+            $this->register_post_type();
+            $this->register_cron_event_cpt();
+        } else {
+            add_action( 'init', array( $this, 'register_post_type' ) );
+            add_action( 'init', array( $this, 'register_cron_event_cpt' ) );
+        }
 
         // add screen options to carts table
         add_filter( 'set-screen-option', array( $this, 'set_screen_options' ), 10, 3 );
-
-        // register queue cron events post type
-        add_action( 'init', array( $this, 'register_cron_event_cpt' ) );
 
         // flush rewrite rules once per version (never on every request)
         add_action( 'wp_loaded', array( $this, 'maybe_flush_rewrite_rules' ) );

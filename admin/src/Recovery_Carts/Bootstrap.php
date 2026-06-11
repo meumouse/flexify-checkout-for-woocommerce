@@ -128,6 +128,17 @@ class Bootstrap {
      * @return array
      */
     public static function register_classes( $classes ) {
+        // Migration always boots so it can retire the standalone addon. While the
+        // standalone is still active it owns the feature; booting the rest of the
+        // native stack too would double-register hooks (duplicate cart tracking,
+        // cron, etc.) for that one overlapping request. So defer the rest until
+        // the standalone has been deactivated (Migration does that on admin_init).
+        $classes[] = '\MeuMouse\Flexify_Checkout\Recovery_Carts\Core\Migration';
+
+        if ( \MeuMouse\Flexify_Checkout\Recovery_Carts\Core\Migration::is_standalone_active() ) {
+            return $classes;
+        }
+
         $recovery = array(
             '\MeuMouse\Flexify_Checkout\Recovery_Carts\Admin\Admin',
             '\MeuMouse\Flexify_Checkout\Recovery_Carts\Admin\Components',
