@@ -941,6 +941,7 @@
                     }
 
                     Flexify_Checkout.UI.slideDown( sidebar );
+                    Flexify_Checkout.Sidebar.toggleBackdrop( true );
                 } else {
                     link_hide.style.display = 'none';
                     link_show.style.display = 'block';
@@ -950,6 +951,49 @@
                     } else {
                         Flexify_Checkout.UI.slideUp( sidebar );
                     }
+
+                    Flexify_Checkout.Sidebar.toggleBackdrop( false );
+                }
+            },
+
+            /**
+             * Show or hide the blurred backdrop behind the order summary on mobile
+             *
+             * @since 5.0.2
+             * @param {boolean} show | true to show the backdrop, false to hide it
+             * @return void
+             */
+            toggleBackdrop: function( show ) {
+                var backdrop = document.querySelector('.flexify-checkout__sidebar-backdrop');
+
+                if ( show ) {
+                    if ( ! backdrop ) {
+                        backdrop = document.createElement('div');
+                        backdrop.className = 'flexify-checkout__sidebar-backdrop';
+
+                        // Close the summary when the backdrop is clicked
+                        backdrop.addEventListener('click', function() {
+                            var header = document.querySelector('.flexify-checkout__sidebar-header');
+
+                            if ( header ) {
+                                header.click();
+                            }
+                        });
+
+                        document.body.appendChild(backdrop);
+                    }
+
+                    // Force reflow so the opacity transition runs
+                    void backdrop.offsetWidth;
+                    backdrop.classList.add('flexify-checkout__sidebar-backdrop--visible');
+                } else if ( backdrop ) {
+                    backdrop.classList.remove('flexify-checkout__sidebar-backdrop--visible');
+
+                    setTimeout( function() {
+                        if ( backdrop.parentNode ) {
+                            backdrop.parentNode.removeChild(backdrop);
+                        }
+                    }, 300);
                 }
             },
 
@@ -4882,9 +4926,14 @@
 				$(document.body).on( 'change', 'input.shipping_method', debounced_shipping_emit );
 				$(document.body).on( 'updated_checkout', debounced_shipping_emit );
 
+				// Do not return a truthy value here. WooCommerce decides whether to
+				// submit using triggerHandler('checkout_place_order') !== false, whose
+				// result is the LAST handler that returns a non-undefined value.
+				// Returning `true` would clobber the `false` that client-side gateways
+				// (e.g. Pagar.me) return to defer the submit while they tokenize the
+				// card, causing the order to be sent without the card token.
 				$('form.checkout').on( 'checkout_place_order', () => {
 					this.emitPaymentInfo();
-					return true;
 				});
 			},
 

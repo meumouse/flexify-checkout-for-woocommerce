@@ -1,0 +1,26 @@
+{
+	"name": "flexify-checkout-translations",
+	"version": "1.0.0",
+	"description": "AI-powered translation workflow for the Flexify Checkout for WooCommerce plugin",
+	"type": "module",
+	"scripts": {
+		"pot": "node generate-pot-cli.js",
+		"compile:mo": "node compile-mo-cli.js",
+		"compile:mo:lang": "node compile-mo-cli.js --lang",
+		"compile:php": "node compile-php-cli.js",
+		"compile:php:lang": "node compile-php-cli.js --lang",
+		"pretranslate": "npm run pot",
+		"translate": "node translate-cli.js",
+		"translate:lang": "node translate-cli.js --lang",
+		"pretranslate:ai": "npm run pot",
+		"translate:ai": "node translate-cli.js --engine=openai",
+		"translate:ai:lang": "node translate-cli.js --engine=openai --lang",
+		"pretranslate:ai:retry": "npm run pot",
+		"translate:ai:retry": "node translate-cli.js --engine=openai --retranslate-identical"
+	},
+	"dependencies": {
+		"@google-cloud/translate": "^8.5.0",
+		"dotenv": "^16.4.7",
+		"gettext-parser": "^8.0.0"
+	}
+}

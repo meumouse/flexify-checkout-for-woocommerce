@@ -36,6 +36,7 @@ class ComposerStaticInit178be007d0b6d0c39a4c2788c7b3977c
         'MeuMouse\\Flexify_Checkout\\Admin\\Settings\\Registry' => __DIR__ . '/../..' . '/admin/src/Admin/Settings/Registry.php',
         'MeuMouse\\Flexify_Checkout\\Admin\\Settings\\Repository' => __DIR__ . '/../..' . '/admin/src/Admin/Settings/Repository.php',
         'MeuMouse\\Flexify_Checkout\\Admin\\Settings\\Views\\Integrations' => __DIR__ . '/../..' . '/admin/src/Admin/Settings/Views/Integrations.php',
+        'MeuMouse\\Flexify_Checkout\\Admin\\Settings_Import_Export' => __DIR__ . '/../..' . '/admin/src/Admin/Settings_Import_Export.php',
         'MeuMouse\\Flexify_Checkout\\Assets\\Settings_Assets' => __DIR__ . '/../..' . '/admin/src/Assets/Settings_Assets.php',
         'MeuMouse\\Flexify_Checkout\\Checkout\\Common' => __DIR__ . '/../..' . '/admin/src/Checkout/Common.php',
         'MeuMouse\\Flexify_Checkout\\Checkout\\Conditions' => __DIR__ . '/../..' . '/admin/src/Checkout/Conditions.php',

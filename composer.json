@@ -1,0 +1,21 @@
+{
+    "name": "meumouse/flexify-checkout-for-woocommerce",
+    "description": "Extensão que otimiza a finalização de compras em multi etapas para lojas WooCommerce.",
+    "type": "wordpress-plugin",
+    "license": "Proprietary",
+    "authors": [
+        {
+            "name": "MeuMouse.com",
+            "email": "contato@meumouse.com",
+            "homepage": "https://meumouse.com"
+        }
+    ],
+    "require": {
+        "php": ">= 7.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "MeuMouse\\Flexify_Checkout\\": "admin/src/"
+        }
+    }
+}

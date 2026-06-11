@@ -21,6 +21,7 @@ return array(
     'MeuMouse\\Flexify_Checkout\\Admin\\Settings\\Registry' => $baseDir . '/admin/src/Admin/Settings/Registry.php',
     'MeuMouse\\Flexify_Checkout\\Admin\\Settings\\Repository' => $baseDir . '/admin/src/Admin/Settings/Repository.php',
     'MeuMouse\\Flexify_Checkout\\Admin\\Settings\\Views\\Integrations' => $baseDir . '/admin/src/Admin/Settings/Views/Integrations.php',
+    'MeuMouse\\Flexify_Checkout\\Admin\\Settings_Import_Export' => $baseDir . '/admin/src/Admin/Settings_Import_Export.php',
     'MeuMouse\\Flexify_Checkout\\Assets\\Settings_Assets' => $baseDir . '/admin/src/Assets/Settings_Assets.php',
     'MeuMouse\\Flexify_Checkout\\Checkout\\Common' => $baseDir . '/admin/src/Checkout/Common.php',
     'MeuMouse\\Flexify_Checkout\\Checkout\\Conditions' => $baseDir . '/admin/src/Checkout/Conditions.php',

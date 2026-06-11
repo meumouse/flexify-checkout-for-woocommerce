@@ -1,6 +1,25 @@
-Versão 5.5.4 (09/06/2026)
+Versão 5.5.5 (11/06/2026)
+* Segurança
+  - Adicionada verificação de nonce e de permissão nos handlers AJAX sensíveis (salvar configurações, redefinir plugin, desativar licença, instalar e ativar módulos), prevenindo CSRF e escalada de privilégio
+  - Todas as ações AJAX do painel administrativo agora exigem a permissão de gerenciamento do WooCommerce, impedindo que usuários sem privilégio (ex.: clientes) as acionem
+  - Verificação de nonce (anti-CSRF) estendida automaticamente a todas as requisições AJAX do painel administrativo
+  - Sanitização dos dados de cadastro de fontes personalizadas
+  - Validação reforçada no envio do arquivo de licença (.key): verificação de erro de envio, tamanho máximo e origem do arquivo
 * Correção de problemas
+  - Valor total do botão de finalizar compra não sincronizado com carrinho
+  - Prevenção de erro fatal ao registrar logs quando o WooCommerce não está disponível
+  - Prevenção de erro fatal ao avaliar condições de checkout e o cupom automático quando o carrinho ainda não está disponível
+
+Versão 5.5.4 (11/06/2026)
+* Correção de problemas
+  - Falha na finalização de compra com cartão de crédito via Pagar.me: o handler de rastreamento retornava `true` no evento `checkout_place_order` e sobrescrevia o `false` do gateway, fazendo o pedido ser enviado antes da tokenização do cartão e gerando erro fatal
   - Campos `billing_document` e `billing_sex` (aliases legados do SuperFrete) eram gerados automaticamente e reapareciam mesmo após exclusão, ficando impossíveis de remover no gerenciador de campos. O `billing_sex` (rótulo "Genero") ainda duplicava o campo nativo `billing_gender` ("Gênero"). Ambos foram removidos dos padrões e são limpos automaticamente do registro de campos salvo
+* Recurso adicionado: Exportar e importar as configurações do plugin em arquivo JSON (configurações gerais, campos e condições das etapas; licença e estado de runtime são excluídos do backup)
+* Recurso adicionado: Botão para redefinir os campos do checkout para a configuração padrão no gerenciador de campos
+* Otimizações
+  - Backdrop desfocado atrás do resumo do pedido ao abri-lo em dispositivos móveis (fecha ao clicar fora)
+  - Assets do plugin passam a ser servidos sem minificação
+* Idioma adicionado: Frânces (fr_FR)
 
 Versão 5.5.3 (28/05/2026)
 * Correção de problemas

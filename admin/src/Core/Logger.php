@@ -73,6 +73,11 @@ trait Logger {
         return;
         }
 
+        // Bail out if WooCommerce logging is not available (e.g. WooCommerce inactive).
+        if ( ! function_exists( 'wc_get_logger' ) ) {
+        return;
+        }
+
         $message = is_string( $message ) ? $message : print_r( $message, true );
 
         if ( ! isset( self::$log ) ) {

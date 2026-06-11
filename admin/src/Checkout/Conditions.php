@@ -179,7 +179,12 @@ class Conditions {
         $cart_product_ids = array();
         $cart_product_categories = array();
         $cart_product_attributes = array();
-    
+
+        // Cart may not be available outside the checkout context; return empty details.
+        if ( ! $cart instanceof \WC_Cart ) {
+            return array( $cart_product_ids, $cart_product_categories, $cart_product_attributes );
+        }
+
         foreach ( $cart->get_cart() as $cart_item ) {
             $product = $cart_item['data'];
             $product_id = $product->get_id();

@@ -59,6 +59,7 @@ class Ajax {
 			'dismiss_billing_country_warning'       => array( __CLASS__, 'dismiss_billing_country_warning' ),
 			'flexify_checkout_deactive_license'     => array( $this, 'deactive_license_callback' ),
 			'flexify_checkout_reset_plugin_action'  => array( $this, 'reset_plugin_callback' ),
+			'reset_checkout_fields'                 => array( $this, 'reset_checkout_fields_callback' ),
 			'check_field_availability'              => array( $this, 'check_field_availability_callback' ),
 			'remove_select_option'                  => array( $this, 'remove_select_option_callback' ),
 			'add_new_option_select_live'            => array( $this, 'add_new_option_select_live_callback' ),
@@ -84,9 +85,17 @@ class Ajax {
 		);
 
 		foreach ( $actions as $action => $callback ) {
-			add_action( "wp_ajax_{$action}", $callback );
+			$is_public = in_array( $action, $nopriv_actions, true );
 
-			if ( in_array( $action, $nopriv_actions, true ) ) {
+			// Public actions keep the original callback; every other action only
+			// runs on the admin settings screen, so gate it behind a capability
+			// check to stop lower-privileged logged-in users (e.g. customers)
+			// from reaching administrative handlers.
+			$handler = $is_public ? $callback : self::guard_admin_action( $callback );
+
+			add_action( "wp_ajax_{$action}", $handler );
+
+			if ( $is_public ) {
 				add_action( "wp_ajax_nopriv_{$action}", $callback );
 			}
 		}
@@ -94,6 +103,67 @@ class Ajax {
 		if ( Admin_Options::get_setting( 'enable_autofill_company_info' ) === 'yes' && License::is_valid() ) {
 			add_action( 'wp_ajax_cnpj_autofill_query', array( __CLASS__, 'cnpj_autofill_query_callback' ) );
 			add_action( 'wp_ajax_nopriv_cnpj_autofill_query', array( __CLASS__, 'cnpj_autofill_query_callback' ) );
+		}
+	}
+
+
+	/**
+	 * Wrap an admin AJAX callback with a capability check.
+	 *
+	 * Returns a closure that blocks the request with a JSON error when the
+	 * current user lacks the WooCommerce management capability, otherwise it
+	 * forwards the call to the original handler. Applied to every non-public
+	 * action so customers/subscribers cannot reach administrative handlers.
+	 *
+	 * @since 5.5.5
+	 * @param callable $callback | Original AJAX callback
+	 * @return callable
+	 */
+	private static function guard_admin_action( $callback ) {
+		return function() use ( $callback ) {
+			if ( ! current_user_can( 'manage_woocommerce' ) ) {
+				wp_send_json_error( array(
+					'message' => esc_html__( 'Você não tem permissão para executar esta ação.', 'flexify-checkout-for-woocommerce' ),
+				), 403 );
+			}
+
+			// CSRF protection: the admin nonce is attached to every admin-ajax
+			// request by the settings.js prefilter (field: flexify_admin_nonce).
+			if ( ! check_ajax_referer( 'flexify_checkout_admin_nonce', 'flexify_admin_nonce', false ) ) {
+				wp_send_json_error( array(
+					'message' => esc_html__( 'Falha na verificação de segurança. Atualize a página e tente novamente.', 'flexify-checkout-for-woocommerce' ),
+				), 403 );
+			}
+
+			return call_user_func( $callback );
+		};
+	}
+
+
+	/**
+	 * Guard sensitive admin AJAX handlers against CSRF and privilege escalation.
+	 *
+	 * Verifies both the user capability (so non-admin roles such as customers
+	 * cannot reach administrative actions) and a valid nonce (so the request
+	 * cannot be forged from a third-party page). On failure it sends a JSON
+	 * error and stops execution.
+	 *
+	 * @since 5.5.5
+	 * @param string $nonce_action | Nonce action name
+	 * @param string $nonce_field | POST field that carries the nonce
+	 * @return void
+	 */
+	private static function verify_admin_request( $nonce_action = 'flexify_checkout_admin_nonce', $nonce_field = 'nonce' ) {
+		if ( ! current_user_can( 'manage_woocommerce' ) ) {
+			wp_send_json_error( array(
+				'message' => esc_html__( 'Você não tem permissão para executar esta ação.', 'flexify-checkout-for-woocommerce' ),
+			), 403 );
+		}
+
+		if ( ! check_ajax_referer( $nonce_action, $nonce_field, false ) ) {
+			wp_send_json_error( array(
+				'message' => esc_html__( 'Falha na verificação de segurança. Atualize a página e tente novamente.', 'flexify-checkout-for-woocommerce' ),
+			), 403 );
 		}
 	}
 
@@ -225,8 +295,10 @@ class Ajax {
 	 */
 	public function ajax_save_options_callback() {
 		if ( isset( $_POST['action'] ) && $_POST['action'] === 'flexify_checkout_save_settings' ) {
+			self::verify_admin_request();
+
 			// Convert serialized data into an array
-			parse_str( $_POST['form_data'], $form_data );
+			parse_str( wp_unslash( $_POST['form_data'] ), $form_data );
 
 			$options = get_option( 'flexify_checkout_settings', array() );
 
@@ -737,13 +809,23 @@ class Ajax {
 
 		$file = $_FILES['file'];
 
+		// Verifica erro de upload, tamanho (uma chave de licença é pequena) e origem do arquivo
+		if ( ! isset( $file['error'] ) || $file['error'] !== UPLOAD_ERR_OK || $file['size'] > 1048576 || ! is_uploaded_file( $file['tmp_name'] ) ) {
+			$response = array(
+				'status' => 'error',
+				'message' => __( 'Erro ao carregar o arquivo.', 'flexify-checkout-for-woocommerce' ),
+			);
+
+			wp_send_json( $response );
+		}
+
 		// Verifica se é um arquivo .key
 		if ( pathinfo( $file['name'], PATHINFO_EXTENSION ) !== 'key' ) {
 			$response = array(
 				'status' => 'invalid_file',
 				'message' => __( 'Arquivo inválido. O arquivo deve ser um .crt ou .key.', 'flexify-checkout-for-woocommerce' ),
 			);
-			
+
 			wp_send_json( $response );
 		}
 
@@ -784,12 +866,12 @@ class Ajax {
 	 */
 	public function add_new_font_action_callback() {
 		if ( isset( $_POST['new_font_id'] ) ) {
-			$font_id = strtolower( $_POST['new_font_id'] );
+			$font_id = sanitize_key( strtolower( wp_unslash( $_POST['new_font_id'] ) ) );
 
 			$new_font = array(
 				$font_id => array(
-					'font_name' => $_POST['new_font_name'],
-					'font_url' => $_POST['new_font_url'],
+					'font_name' => isset( $_POST['new_font_name'] ) ? sanitize_text_field( wp_unslash( $_POST['new_font_name'] ) ) : '',
+					'font_url' => isset( $_POST['new_font_url'] ) ? esc_url_raw( wp_unslash( $_POST['new_font_url'] ) ) : '',
 				),
 			);
 
@@ -1761,6 +1843,8 @@ class Ajax {
      */
     public function deactive_license_callback() {
         if ( isset( $_POST['action'] ) && $_POST['action'] === 'flexify_checkout_deactive_license' ) {
+            self::verify_admin_request();
+
             $message = '';
             $deactivation = License::deactive_license( FLEXIFY_CHECKOUT_FILE, $message );
 
@@ -1802,6 +1886,8 @@ class Ajax {
      */
     public function reset_plugin_callback() {
         if ( isset( $_POST['action'] ) && $_POST['action'] === 'flexify_checkout_reset_plugin_action' ) {
+            self::verify_admin_request();
+
             $delete_option = delete_option('flexify_checkout_settings');
 
             if ( $delete_option ) {
@@ -1831,6 +1917,49 @@ class Ajax {
 
             wp_send_json( $response );
         }
+    }
+
+
+	/**
+     * Reset checkout step fields to default on AJAX callback
+     *
+     * @since 5.5.4
+     * @return void
+     */
+    public function reset_checkout_fields_callback() {
+        if ( ! isset( $_POST['action'] ) || $_POST['action'] !== 'reset_checkout_fields' ) {
+            return;
+        }
+
+        if ( ! current_user_can('manage_options') ) {
+            wp_send_json( array(
+                'status' => 'error',
+                'toast_header_title' => esc_html__( 'Ops! Ocorreu um erro.', 'flexify-checkout-for-woocommerce' ),
+                'toast_body_title' => esc_html__( 'Você não tem permissão para redefinir os campos.', 'flexify-checkout-for-woocommerce' ),
+            ) );
+        }
+
+        $default_options = new \MeuMouse\Flexify_Checkout\Admin\Default_Options();
+        $default_fields = $default_options->get_native_checkout_fields();
+
+        // add Brazilian Market on WooCommerce fields if the plugin is active or base country is Brazil
+        if ( class_exists('Extra_Checkout_Fields_For_Brazil') || Fields::get_base_country() === 'BR' ) {
+            $default_fields = array_merge( $default_fields, $default_options->get_brazilian_checkout_fields() );
+        }
+
+        // overwrite stored fields with the default set
+        update_option( 'flexify_checkout_step_fields', maybe_serialize( $default_fields ) );
+
+        // remove orphan checkout conditions that pointed to removed custom fields
+        self::scrub_orphan_checkout_conditions();
+
+        $response = array(
+            'status' => 'success',
+            'toast_header_title' => esc_html__( 'Campos redefinidos', 'flexify-checkout-for-woocommerce' ),
+            'toast_body_title' => esc_html__( 'Os campos da finalização de compras foram redefinidos para o padrão com sucesso!', 'flexify-checkout-for-woocommerce' ),
+        );
+
+        wp_send_json( $response );
     }
 
 
@@ -2295,6 +2424,15 @@ class Ajax {
         }
 
         $file = $_FILES['file'];
+
+        // Check upload error, size (a license key is small) and that the file was actually uploaded
+        if ( ! isset( $file['error'] ) || $file['error'] !== UPLOAD_ERR_OK || $file['size'] > 1048576 || ! is_uploaded_file( $file['tmp_name'] ) ) {
+            wp_send_json( array(
+                'status' => 'error',
+                'toast_header' => __( 'Ops! Ocorreu um erro.', 'flexify-checkout-for-woocommerce' ),
+                'toast_body' => __( 'Erro ao carregar o arquivo.', 'flexify-checkout-for-woocommerce' ),
+            ));
+        }
 
         // Check if it is a .key file
         if ( pathinfo( $file['name'], PATHINFO_EXTENSION ) !== 'key' ) {

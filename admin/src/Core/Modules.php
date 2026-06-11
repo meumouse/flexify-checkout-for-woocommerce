@@ -71,6 +71,12 @@ class Modules {
      * @return void
      */
     public function install_modules_ajax_callback() {
+        if ( ! current_user_can('install_plugins') || ! check_ajax_referer( 'flexify_checkout_admin_nonce', 'nonce', false ) ) {
+            wp_send_json_error( array(
+                'message' => esc_html__( 'Você não tem permissão para instalar plugins.', 'flexify-checkout-for-woocommerce' ),
+            ), 403 );
+        }
+
         if ( isset( $_POST['plugin_url'] ) && isset( $_POST['plugin_slug'] ) ) {
             $plugin_slug = sanitize_text_field( $_POST['plugin_slug'] );
             $plugin_zip = esc_url_raw( $_POST['plugin_url'] );
@@ -271,6 +277,12 @@ class Modules {
      * @return void
      */
     public function activate_plugin_callback() {
+        if ( ! current_user_can('activate_plugins') || ! check_ajax_referer( 'flexify_checkout_admin_nonce', 'nonce', false ) ) {
+            wp_send_json_error( array(
+                'message' => esc_html__( 'Você não tem permissão para ativar plugins.', 'flexify-checkout-for-woocommerce' ),
+            ), 403 );
+        }
+
         if ( isset( $_POST['plugin_slug'] ) ) {
             $plugin_slug = sanitize_text_field( $_POST['plugin_slug'] );
             $activate = activate_plugin( $plugin_slug );

@@ -184,6 +184,7 @@ class Admin_Options {
                     type: 'POST',
                     data: {
                         action: 'dismiss_billing_country_warning',
+                        flexify_admin_nonce: '<?php echo esc_js( wp_create_nonce( 'flexify_checkout_admin_nonce' ) ); ?>',
                     }
                 });
             });
