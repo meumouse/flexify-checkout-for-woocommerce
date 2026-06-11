@@ -44,7 +44,7 @@ msgstr ""
 msgid "<script>%s</script>"
 msgstr ""
 
-#: inc/Core/Ajax.php:2079
+#: inc/Core/Ajax.php:2123
 msgid ""
 "<strong>%s</strong> removido do carrinho. <strong><a "
 "class=\"undo-remove-product\" data-product_id=\"%d\" "
@@ -99,37 +99,37 @@ msgstr ""
 msgid "A extensão cURL está faltando."
 msgstr ""
 
-#: inc/admin/Admin_Options.php:528
+#: inc/Admin/Admin_Options.php:528
 msgid ""
 "A extensão GD está desativada, e é necessária para gerar o QR Code do Pix. "
 "Ative-a em sua hospedagem para habilitar esse recurso."
 msgstr ""
 
-#: inc/Core/Ajax.php:1036
+#: inc/Core/Ajax.php:1037
 msgid "A fonte foi removida da biblioteca."
 msgstr ""
 
-#: inc/Core/Ajax.php:2381
+#: inc/Core/Ajax.php:2425
 msgid "A licença foi ativada com sucesso!"
 msgstr ""
 
-#: inc/Core/Ajax.php:1780
+#: inc/Core/Ajax.php:1781
 msgid "A licença foi desativada"
 msgstr ""
 
-#: inc/Core/Ajax.php:2198
+#: inc/Core/Ajax.php:2242
 msgid "A licença foi sincronizada com sucesso!"
 msgstr ""
 
-#: inc/Core/Ajax.php:2349
+#: inc/Core/Ajax.php:2393
 msgid "A licença informada não é permitida para este produto"
 msgstr ""
 
-#: inc/Core/Ajax.php:1953
+#: inc/Core/Ajax.php:1997
 msgid "A nova opção foi adicionada com sucesso!"
 msgstr ""
 
-#: inc/Core/Ajax.php:1901
+#: inc/Core/Ajax.php:1945
 msgid "A opção foi removida com sucesso!"
 msgstr ""
 
@@ -157,12 +157,12 @@ msgstr ""
 msgid "Ação após expirar"
 msgstr ""
 
-#: inc/Core/Ajax.php:839
-#: inc/Core/Ajax.php:992
+#: inc/Core/Ajax.php:840
+#: inc/Core/Ajax.php:993
 msgid "Ação não permitida"
 msgstr ""
 
-#: inc/admin/Settings/Views/Integrations.php:310
+#: inc/Admin/Settings/Views/Integrations.php:310
 msgid "Access Token"
 msgstr ""
 
@@ -170,7 +170,7 @@ msgstr ""
 msgid "Adicionar"
 msgstr ""
 
-#: inc/Views/Settings/Tabs/Fields.php:201
+#: inc/Views/Settings/Tabs/Fields.php:231
 msgid "Adicionar campo"
 msgstr ""
 
@@ -187,11 +187,11 @@ msgstr ""
 msgid "Adicionar nova opção"
 msgstr ""
 
-#: inc/Views/Settings/Tabs/Fields.php:189
+#: inc/Views/Settings/Tabs/Fields.php:219
 msgid "Adicionar novo campo para finalização de compras"
 msgstr ""
 
-#: inc/Views/Settings/Tabs/Fields.php:183
+#: inc/Views/Settings/Tabs/Fields.php:184
 msgid "Adicionar novos campos"
 msgstr ""
 
@@ -226,7 +226,7 @@ msgstr ""
 msgid "Administrador"
 msgstr ""
 
-#: inc/Core/Ajax.php:2254
+#: inc/Core/Ajax.php:2298
 msgid "Agora todos os recursos estão ativos!"
 msgstr ""
 
@@ -258,10 +258,23 @@ msgstr ""
 msgid "Ao desativar, este campo se tornará não obrigatório."
 msgstr ""
 
-#: inc/Views/Settings/Tabs/About.php:464
+#: inc/Views/Settings/Tabs/About.php:474
+msgid ""
+"Ao importar, as configurações atuais serão substituídas pelas do arquivo "
+"selecionado. Recomendamos exportar um backup antes de continuar."
+msgstr ""
+
+#: inc/Views/Settings/Tabs/About.php:512
 msgid ""
 "Ao redefinir as configurações do plugin, todas opções serão removidas, "
 "voltando ao estado original. Sua licença não será removida."
+msgstr ""
+
+#: inc/Views/Settings/Tabs/Fields.php:206
+msgid ""
+"Ao redefinir os campos, todas as personalizações de etapas, ordem e campos "
+"adicionados serão removidas, voltando à configuração padrão de campos da "
+"finalização de compras."
 msgstr ""
 
 #: inc/Checkout/Fields.php:131
@@ -269,11 +282,11 @@ msgstr ""
 msgid "Apartamento, suíte, unidade etc."
 msgstr ""
 
-#: inc/admin/Default_Options.php:348
+#: inc/Admin/Default_Options.php:348
 msgid "Apartamento, suíte, unidade, etc."
 msgstr ""
 
-#: inc/admin/Settings/Views/Integrations.php:233
+#: inc/Admin/Settings/Views/Integrations.php:233
 msgid "API Secret"
 msgstr ""
 
@@ -316,11 +329,19 @@ msgstr ""
 msgid "Arquivo enviado"
 msgstr ""
 
-#: inc/Core/Ajax.php:2304
+#: inc/Admin/Settings_Import_Export.php:204
+msgid "Arquivo incompatível"
+msgstr ""
+
+#: inc/Admin/Settings_Import_Export.php:196
+msgid "Arquivo inválido"
+msgstr ""
+
+#: inc/Core/Ajax.php:2348
 msgid "Arquivo inválido. O arquivo deve ser extensão .key"
 msgstr ""
 
-#: inc/Core/Ajax.php:744
+#: inc/Core/Ajax.php:745
 msgid "Arquivo inválido. O arquivo deve ser um .crt ou .key."
 msgstr ""
 
@@ -332,19 +353,23 @@ msgstr ""
 msgid "As alterações não serão salvas."
 msgstr ""
 
-#: inc/Core/Ajax.php:966
+#: inc/Core/Ajax.php:967
 msgid "As configurações da fonte foram salvas com sucesso!"
 msgstr ""
 
-#: inc/Core/Ajax.php:381
+#: inc/Core/Ajax.php:382
 msgid "As configurações foram atualizadas!"
 msgstr ""
 
-#: inc/Core/Ajax.php:1821
-msgid "As opções foram redefinidas"
+#: inc/Admin/Settings_Import_Export.php:215
+msgid "As configurações foram importadas com sucesso!"
 msgstr ""
 
 #: inc/Core/Ajax.php:1822
+msgid "As opções foram redefinidas"
+msgstr ""
+
+#: inc/Core/Ajax.php:1823
 msgid "As opções foram redefinidas com sucesso!"
 msgstr ""
 
@@ -356,16 +381,20 @@ msgstr ""
 msgid "Assinatura: %s"
 msgstr ""
 
-#: inc/Core/Ajax.php:2191
+#: inc/Core/Ajax.php:2235
 #: inc/Views/Settings/Tabs/About.php:88
 msgid "Assinatura: Clube M - %s"
 msgstr ""
 
-#: inc/Views/Settings/Tabs/About.php:462
+#: inc/Views/Settings/Tabs/About.php:510
 msgid "Atenção! Você realmente deseja redefinir as configurações?"
 msgstr ""
 
-#: inc/admin/Settings/Views/Integrations.php:293
+#: inc/Views/Settings/Tabs/Fields.php:204
+msgid "Atenção! Você realmente deseja redefinir os campos?"
+msgstr ""
+
+#: inc/Admin/Settings/Views/Integrations.php:293
 msgid "Ativa o envio de eventos para a Meta via Conversions API."
 msgstr ""
 
@@ -385,11 +414,11 @@ msgstr ""
 msgid "Ativar contagem regressiva do checkout"
 msgstr ""
 
-#: inc/admin/Settings/Views/Integrations.php:215
+#: inc/Admin/Settings/Views/Integrations.php:215
 msgid "Ativar GA4"
 msgstr ""
 
-#: inc/admin/Settings/Views/Integrations.php:253
+#: inc/Admin/Settings/Views/Integrations.php:253
 msgid "Ativar Google Ads"
 msgstr ""
 
@@ -397,7 +426,7 @@ msgstr ""
 msgid "Ativar licença"
 msgstr ""
 
-#: inc/admin/Settings/Views/Integrations.php:292
+#: inc/Admin/Settings/Views/Integrations.php:292
 msgid "Ativar Meta"
 msgstr ""
 
@@ -405,10 +434,10 @@ msgstr ""
 msgid "Ativar modo depuração"
 msgstr ""
 
-#: inc/admin/Settings/Views/Integrations.php:412
-#: inc/admin/Settings/Views/Integrations.php:460
-#: inc/admin/Settings/Views/Integrations.php:500
-#: inc/admin/Settings/Views/Integrations.php:595
+#: inc/Admin/Settings/Views/Integrations.php:412
+#: inc/Admin/Settings/Views/Integrations.php:460
+#: inc/Admin/Settings/Views/Integrations.php:500
+#: inc/Admin/Settings/Views/Integrations.php:595
 msgid "Ativar módulo"
 msgstr ""
 
@@ -627,7 +656,7 @@ msgstr ""
 msgid "Atributos específicos:"
 msgstr ""
 
-#: inc/admin/Settings/Views/Integrations.php:495
+#: inc/Admin/Settings/Views/Integrations.php:495
 msgid ""
 "Automatize o envio de mensagens via WhatsApp ao receber eventos no Flexify "
 "Checkout, recupere vendas de maneira mais assertiva. Deixe tudo no fluxo "
@@ -638,7 +667,7 @@ msgstr ""
 msgid "Autor"
 msgstr ""
 
-#: inc/admin/Default_Options.php:533
+#: inc/Admin/Default_Options.php:533
 #: inc/Integrations/Superfrete.php:189
 #: inc/Integrations/Superfrete.php:200
 msgid "Bairro"
@@ -648,7 +677,7 @@ msgstr ""
 msgid "Barra lateral (Padrão)"
 msgstr ""
 
-#: inc/Core/Ajax.php:2182
+#: inc/Core/Ajax.php:2226
 #: inc/Views/Settings/Tabs/About.php:78
 msgid "Básicos"
 msgstr ""
@@ -684,7 +713,7 @@ msgstr ""
 msgid "Campo"
 msgstr ""
 
-#: inc/Core/Ajax.php:1267
+#: inc/Core/Ajax.php:1268
 #: inc/Views/Settings/Tabs/Conditions.php:62
 msgid "Campo %s"
 msgstr ""
@@ -698,21 +727,25 @@ msgstr ""
 msgid "Campo do checkout: *"
 msgstr ""
 
-#: inc/Core/Ajax.php:576
+#: inc/Core/Ajax.php:577
 msgid "Campo removido"
 msgstr ""
 
-#: inc/Core/Ajax.php:1249
+#: inc/Core/Ajax.php:1250
 #: inc/Views/Settings/Tabs/Conditions.php:49
 msgid "Campo: %s"
 msgstr ""
 
-#: inc/admin/Admin_Options.php:287
+#: inc/Admin/Admin_Options.php:287
 msgid "Campos e condições essenciais para o Brasil foram criados com sucesso."
 msgstr ""
 
 #: inc/Views/Settings/Settings_Panel.php:80
 msgid "Campos e etapas"
+msgstr ""
+
+#: inc/Core/Ajax.php:1873
+msgid "Campos redefinidos"
 msgstr ""
 
 #: inc/Views/Settings/Tabs/Styles.php:364
@@ -727,7 +760,7 @@ msgstr ""
 msgid "Categorias específicas:"
 msgstr ""
 
-#: inc/admin/Default_Options.php:465
+#: inc/Admin/Default_Options.php:465
 msgid "Celular"
 msgstr ""
 
@@ -735,7 +768,7 @@ msgstr ""
 msgid "Central de ajuda"
 msgstr ""
 
-#: inc/admin/Default_Options.php:321
+#: inc/Admin/Default_Options.php:321
 msgid "CEP"
 msgstr ""
 
@@ -747,7 +780,7 @@ msgstr ""
 msgid "Change address"
 msgstr ""
 
-#: inc/admin/Settings/Views/Integrations.php:234
+#: inc/Admin/Settings/Views/Integrations.php:234
 msgid ""
 "Chave secreta do Measurement Protocol usada para autenticar envios "
 "server-side."
@@ -757,11 +790,11 @@ msgstr ""
 msgid "CHECKOUT"
 msgstr ""
 
-#: inc/admin/Settings/Views/Integrations.php:148
+#: inc/Admin/Settings/Views/Integrations.php:148
 msgid "Checkout iniciado"
 msgstr ""
 
-#: inc/admin/Default_Options.php:361
+#: inc/Admin/Default_Options.php:361
 msgid "Cidade"
 msgstr ""
 
@@ -783,7 +816,7 @@ msgstr ""
 msgid "Clique aqui para gerar seu arquivo de licença"
 msgstr ""
 
-#: inc/admin/Default_Options.php:437
+#: inc/Admin/Default_Options.php:437
 msgid "CNPJ"
 msgstr ""
 
@@ -807,7 +840,7 @@ msgstr ""
 msgid "Coleção de campos adicionais genéricos."
 msgstr ""
 
-#: inc/Core/Ajax.php:1281
+#: inc/Core/Ajax.php:1282
 #: inc/Views/Settings/Tabs/Conditions.php:76
 #: inc/Views/Settings/Tabs/Conditions.php:234
 msgid "Começa com"
@@ -818,7 +851,7 @@ msgstr ""
 msgid "Comece a digitar seu endereço para pesquisar."
 msgstr ""
 
-#: inc/admin/Settings/Views/Integrations.php:407
+#: inc/Admin/Settings/Views/Integrations.php:407
 msgid ""
 "Comece a receber via Pix e Boleto com aprovação imediata e sem cobrança de "
 "taxas. Exclusivo para clientes Inter Empresas."
@@ -833,7 +866,7 @@ msgstr ""
 msgid "Componente: *"
 msgstr ""
 
-#: inc/admin/Settings/Views/Integrations.php:151
+#: inc/Admin/Settings/Views/Integrations.php:151
 msgid "Compra"
 msgstr ""
 
@@ -845,11 +878,11 @@ msgstr ""
 msgid "Comprar uma licença"
 msgstr ""
 
-#: inc/Core/Ajax.php:1606
+#: inc/Core/Ajax.php:1607
 msgid "Condição atualizada"
 msgstr ""
 
-#: inc/Core/Ajax.php:1607
+#: inc/Core/Ajax.php:1608
 msgid "Condição atualizada com sucesso!"
 msgstr ""
 
@@ -857,13 +890,13 @@ msgstr ""
 msgid "Condição de verificação: *"
 msgstr ""
 
-#: inc/Core/Ajax.php:1536
-#: inc/Core/Ajax.php:1571
+#: inc/Core/Ajax.php:1537
+#: inc/Core/Ajax.php:1572
 msgid "Condição inválida."
 msgstr ""
 
-#: inc/Core/Ajax.php:1547
-#: inc/Core/Ajax.php:1582
+#: inc/Core/Ajax.php:1548
+#: inc/Core/Ajax.php:1583
 msgid "Condição não encontrada."
 msgstr ""
 
@@ -871,7 +904,7 @@ msgstr ""
 msgid "Condição: *"
 msgstr ""
 
-#: inc/Core/Ajax.php:1296
+#: inc/Core/Ajax.php:1297
 #: inc/Views/Settings/Tabs/Conditions.php:88
 msgid "Condição: %s %s"
 msgstr ""
@@ -880,15 +913,15 @@ msgstr ""
 msgid "Condições"
 msgstr ""
 
-#: inc/admin/Settings/Views/Integrations.php:196
+#: inc/Admin/Settings/Views/Integrations.php:196
 msgid "Configurações de rastreio de dados"
 msgstr ""
 
-#: inc/admin/Settings/Views/Integrations.php:189
-#: inc/admin/Settings/Views/Integrations.php:410
-#: inc/admin/Settings/Views/Integrations.php:458
-#: inc/admin/Settings/Views/Integrations.php:498
-#: inc/admin/Settings/Views/Integrations.php:593
+#: inc/Admin/Settings/Views/Integrations.php:189
+#: inc/Admin/Settings/Views/Integrations.php:410
+#: inc/Admin/Settings/Views/Integrations.php:458
+#: inc/Admin/Settings/Views/Integrations.php:498
+#: inc/Admin/Settings/Views/Integrations.php:593
 #: inc/Core/Init.php:556
 #: inc/Views/Settings/Tabs/General.php:179
 msgid "Configurar"
@@ -932,17 +965,17 @@ msgid ""
 "precisar de ajuda para configurar, acesse nossa"
 msgstr ""
 
-#: inc/admin/Settings/Views/Integrations.php:182
+#: inc/Admin/Settings/Views/Integrations.php:182
 msgid ""
 "Configure o GA4, Google Ads e Meta para envio de dados de eventos coletados "
 "no checkout."
 msgstr ""
 
-#: inc/admin/Settings/Views/Integrations.php:286
+#: inc/Admin/Settings/Views/Integrations.php:286
 msgid "Configure o Pixel e o token da Conversions API para envio dos eventos."
 msgstr ""
 
-#: inc/admin/Settings/Views/Integrations.php:209
+#: inc/Admin/Settings/Views/Integrations.php:209
 msgid ""
 "Configure os parâmetros do Google Analytics 4 para envio de eventos de "
 "checkout."
@@ -953,7 +986,7 @@ msgstr ""
 msgid "Contato"
 msgstr ""
 
-#: inc/Core/Ajax.php:1279
+#: inc/Core/Ajax.php:1280
 #: inc/Views/Settings/Tabs/Conditions.php:74
 #: inc/Views/Settings/Tabs/Conditions.php:232
 msgid "Contém"
@@ -967,11 +1000,11 @@ msgstr ""
 msgid "Continuar para"
 msgstr ""
 
-#: inc/admin/Settings/Views/Integrations.php:262
+#: inc/Admin/Settings/Views/Integrations.php:262
 msgid "Conversion ID"
 msgstr ""
 
-#: inc/admin/Settings/Views/Integrations.php:271
+#: inc/Admin/Settings/Views/Integrations.php:271
 msgid "Conversion Label"
 msgstr ""
 
@@ -999,11 +1032,11 @@ msgstr ""
 msgid "Corrija todos os erros e tente novamente."
 msgstr ""
 
-#: inc/admin/Default_Options.php:423
+#: inc/Admin/Default_Options.php:423
 msgid "CPF"
 msgstr ""
 
-#: inc/admin/Admin_Options.php:259
+#: inc/Admin/Admin_Options.php:259
 msgid "Criar campos e condições essenciais"
 msgstr ""
 
@@ -1054,7 +1087,7 @@ msgstr ""
 msgid "CUPOMDEDESCONTO"
 msgstr ""
 
-#: inc/Core/Ajax.php:1592
+#: inc/Core/Ajax.php:1593
 msgid "Dados da condição inválidos."
 msgstr ""
 
@@ -1062,15 +1095,15 @@ msgstr ""
 msgid "Dados inválidos."
 msgstr ""
 
-#: inc/admin/Default_Options.php:493
+#: inc/Admin/Default_Options.php:493
 msgid "Data de nascimento"
 msgstr ""
 
-#: inc/admin/Settings/Views/Integrations.php:247
+#: inc/Admin/Settings/Views/Integrations.php:247
 msgid "Defina os parâmetros de conversão para envio dos eventos ao Google Ads."
 msgstr ""
 
-#: inc/admin/Settings/Views/Integrations.php:334
+#: inc/Admin/Settings/Views/Integrations.php:334
 msgid ""
 "Defina quais eventos do checkout serão enviados para cada plataforma. Os "
 "credenciais acima precisam estar configurados para o disparo acontecer."
@@ -1155,7 +1188,7 @@ msgstr ""
 msgid "Desligado"
 msgstr ""
 
-#: inc/Core/Ajax.php:1286
+#: inc/Core/Ajax.php:1287
 #: inc/Views/Settings/Tabs/Conditions.php:81
 #: inc/Views/Settings/Tabs/Conditions.php:239
 msgid "Desmarcado"
@@ -1175,19 +1208,19 @@ msgstr ""
 msgid "Direita"
 msgstr ""
 
-#: inc/admin/Settings/Views/Integrations.php:154
+#: inc/Admin/Settings/Views/Integrations.php:154
 msgid "Disparado quando o cliente entra no checkout."
 msgstr ""
 
-#: inc/admin/Settings/Views/Integrations.php:156
+#: inc/Admin/Settings/Views/Integrations.php:156
 msgid "Disparado quando o cliente seleciona o método de pagamento e envia o pedido."
 msgstr ""
 
-#: inc/admin/Settings/Views/Integrations.php:155
+#: inc/Admin/Settings/Views/Integrations.php:155
 msgid "Disparado quando o cliente seleciona ou altera o método de entrega."
 msgstr ""
 
-#: inc/admin/Settings/Views/Integrations.php:157
+#: inc/Admin/Settings/Views/Integrations.php:157
 msgid "Disparado quando o pedido é concluído (página de obrigado e/ou status pago)."
 msgstr ""
 
@@ -1207,13 +1240,13 @@ msgstr ""
 msgid "Duração total"
 msgstr ""
 
-#: inc/Core/Ajax.php:1275
+#: inc/Core/Ajax.php:1276
 #: inc/Views/Settings/Tabs/Conditions.php:70
 #: inc/Views/Settings/Tabs/Conditions.php:228
 msgid "É"
 msgstr ""
 
-#: inc/admin/Orders.php:256
+#: inc/Admin/Orders.php:256
 #: woocommerce/common/checkout/form-login.php:106
 msgid "E-mail"
 msgstr ""
@@ -1241,7 +1274,7 @@ msgstr ""
 msgid "em"
 msgstr ""
 
-#: inc/admin/Settings/Views/Integrations.php:537
+#: inc/Admin/Settings/Views/Integrations.php:537
 msgid "Em breve"
 msgstr ""
 
@@ -1249,7 +1282,7 @@ msgstr ""
 msgid "Em breve..."
 msgstr ""
 
-#: inc/admin/Default_Options.php:295
+#: inc/Admin/Default_Options.php:295
 msgid "Empresa"
 msgstr ""
 
@@ -1257,7 +1290,7 @@ msgstr ""
 msgid "Encerrar sessão do checkout"
 msgstr ""
 
-#: inc/admin/Default_Options.php:335
+#: inc/Admin/Default_Options.php:335
 msgid "Endereço"
 msgstr ""
 
@@ -1265,7 +1298,7 @@ msgstr ""
 msgid "Endereço de cobrança"
 msgstr ""
 
-#: inc/admin/Default_Options.php:242
+#: inc/Admin/Default_Options.php:242
 msgid "Endereço de e-mail"
 msgstr ""
 
@@ -1308,7 +1341,7 @@ msgstr ""
 msgid "Enviar para um endereço diferente?"
 msgstr ""
 
-#: inc/Core/Ajax.php:938
+#: inc/Core/Ajax.php:939
 msgid "Envie ao menos um arquivo de fonte (WOFF, WOFF2 ou TTF)."
 msgstr ""
 
@@ -1316,30 +1349,30 @@ msgstr ""
 msgid "Envio"
 msgstr ""
 
-#: inc/Core/Ajax.php:1958
-#: inc/Core/Ajax.php:1967
+#: inc/Core/Ajax.php:2002
+#: inc/Core/Ajax.php:2011
 msgid "Erro ao adicionar"
 msgstr ""
 
-#: inc/Core/Ajax.php:1570
-#: inc/Core/Ajax.php:1581
-#: inc/Core/Ajax.php:1591
-#: inc/Core/Ajax.php:1616
+#: inc/Core/Ajax.php:1571
+#: inc/Core/Ajax.php:1582
+#: inc/Core/Ajax.php:1592
+#: inc/Core/Ajax.php:1617
 msgid "Erro ao atualizar"
 msgstr ""
 
-#: inc/Core/Ajax.php:722
-#: inc/Core/Ajax.php:2284
+#: inc/Core/Ajax.php:723
+#: inc/Core/Ajax.php:2328
 msgid "Erro ao carregar o arquivo. A ação não foi acionada corretamente."
 msgstr ""
 
-#: inc/Core/Ajax.php:732
-#: inc/Core/Ajax.php:2293
+#: inc/Core/Ajax.php:733
+#: inc/Core/Ajax.php:2337
 msgid "Erro ao carregar o arquivo. O arquivo não foi enviado."
 msgstr ""
 
-#: inc/Core/Ajax.php:1535
-#: inc/Core/Ajax.php:1546
+#: inc/Core/Ajax.php:1536
+#: inc/Core/Ajax.php:1547
 msgid "Erro ao editar"
 msgstr ""
 
@@ -1347,26 +1380,26 @@ msgstr ""
 msgid "Erro ao processar a finalização da compra. Por favor, tente novamente."
 msgstr ""
 
-#: inc/Core/Ajax.php:1906
-#: inc/Core/Ajax.php:1915
+#: inc/Core/Ajax.php:1950
+#: inc/Core/Ajax.php:1959
 msgid "Erro ao remover"
 msgstr ""
 
-#: inc/Core/Ajax.php:1002
-#: inc/Core/Ajax.php:1010
-#: inc/Core/Ajax.php:1020
-#: inc/Core/Ajax.php:1043
+#: inc/Core/Ajax.php:1003
+#: inc/Core/Ajax.php:1011
+#: inc/Core/Ajax.php:1021
+#: inc/Core/Ajax.php:1044
 msgid "Erro ao remover fonte"
 msgstr ""
 
-#: inc/Core/Ajax.php:851
-#: inc/Core/Ajax.php:863
-#: inc/Core/Ajax.php:872
-#: inc/Core/Ajax.php:888
-#: inc/Core/Ajax.php:912
-#: inc/Core/Ajax.php:922
-#: inc/Core/Ajax.php:937
-#: inc/Core/Ajax.php:974
+#: inc/Core/Ajax.php:852
+#: inc/Core/Ajax.php:864
+#: inc/Core/Ajax.php:873
+#: inc/Core/Ajax.php:889
+#: inc/Core/Ajax.php:913
+#: inc/Core/Ajax.php:923
+#: inc/Core/Ajax.php:938
+#: inc/Core/Ajax.php:975
 msgid "Erro ao salvar fonte"
 msgstr ""
 
@@ -1383,8 +1416,8 @@ msgstr ""
 msgid "Erro JSON: %s"
 msgstr ""
 
-#: inc/Core/Ajax.php:179
-#: inc/Core/Ajax.php:183
+#: inc/Core/Ajax.php:180
+#: inc/Core/Ajax.php:184
 msgid "Erro:"
 msgstr ""
 
@@ -1405,8 +1438,12 @@ msgstr ""
 msgid "Esquerda"
 msgstr ""
 
-#: inc/admin/Default_Options.php:374
+#: inc/Admin/Default_Options.php:374
 msgid "Estado"
+msgstr ""
+
+#: inc/Admin/Settings_Import_Export.php:205
+msgid "Este arquivo não é uma exportação de configurações do Flexify Checkout."
 msgstr ""
 
 #: inc/Checkout/Fields.php:1045
@@ -1419,7 +1456,7 @@ msgid ""
 "desativado."
 msgstr ""
 
-#: inc/Core/Ajax.php:864
+#: inc/Core/Ajax.php:865
 msgid "Este identificador é reservado para as fontes padrão."
 msgstr ""
 
@@ -1457,13 +1494,28 @@ msgstr ""
 msgid "Etapa do campo"
 msgstr ""
 
-#: inc/admin/Settings/Views/Integrations.php:332
+#: inc/Admin/Settings/Views/Integrations.php:332
 msgid "Eventos por plataforma"
 msgstr ""
 
 #: inc/Core/Assets.php:403
 #: inc/Views/Settings/Tabs/Styles.php:390
 msgid "Excluir"
+msgstr ""
+
+#: inc/Views/Settings/Tabs/About.php:452
+msgid "Exportar configurações"
+msgstr ""
+
+#: inc/Views/Settings/Tabs/About.php:446
+msgid "Exportar e importar configurações:"
+msgstr ""
+
+#: inc/Views/Settings/Tabs/About.php:447
+msgid ""
+"Exporte as configurações do plugin em um arquivo JSON para fazer backup ou "
+"replicar em outra loja. A exportação não inclui a licença nem dados "
+"sensíveis."
 msgstr ""
 
 #: inc/Views/Settings/Tabs/About.php:261
@@ -1474,7 +1526,7 @@ msgstr ""
 msgid "Extensão GD:"
 msgstr ""
 
-#: inc/Core/Ajax.php:913
+#: inc/Core/Ajax.php:914
 msgid "Extensão inválida. Use WOFF, WOFF2 ou TTF."
 msgstr ""
 
@@ -1482,7 +1534,7 @@ msgstr ""
 msgid "Extensão OpenSSL:"
 msgstr ""
 
-#: inc/admin/Settings/Views/Integrations.php:535
+#: inc/Admin/Settings/Views/Integrations.php:535
 msgid ""
 "Facilite o preenchimento do endereço de entrega aos usuários, permitindo "
 "pesquisar seu endereço ou usando recursos de geolocalização com Google Maps."
@@ -1496,7 +1548,7 @@ msgstr ""
 msgid "Falha ao instalar/atualizar o plugin."
 msgstr ""
 
-#: inc/admin/Fonts_Manager.php:277
+#: inc/Admin/Fonts_Manager.php:277
 msgid "Falha ao mover o arquivo de fonte."
 msgstr ""
 
@@ -1504,10 +1556,11 @@ msgstr ""
 msgid "Família de fontes"
 msgstr ""
 
-#: inc/admin/Settings/Views/Integrations.php:197
-#: inc/admin/Settings/Views/Integrations.php:375
+#: inc/Admin/Settings/Views/Integrations.php:197
+#: inc/Admin/Settings/Views/Integrations.php:375
 #: inc/Core/Assets.php:392
 #: inc/Views/Components.php:69
+#: inc/Views/Settings/Tabs/About.php:464
 #: inc/Views/Settings/Tabs/Styles.php:296
 msgid "Fechar"
 msgstr ""
@@ -1524,11 +1577,11 @@ msgstr ""
 msgid "Flexify Checkout"
 msgstr ""
 
-#: inc/admin/Settings/Views/Integrations.php:398
+#: inc/Admin/Settings/Views/Integrations.php:398
 msgid "Flexify Checkout - Inter addon"
 msgstr ""
 
-#: inc/admin/Settings/Views/Integrations.php:446
+#: inc/Admin/Settings/Views/Integrations.php:446
 msgid "Flexify Checkout - Recuperação de carrinhos abandonados"
 msgstr ""
 
@@ -1537,11 +1590,11 @@ msgstr ""
 msgid "Flexify Checkout para WooCommerce"
 msgstr ""
 
-#: inc/Core/Ajax.php:1003
+#: inc/Core/Ajax.php:1004
 msgid "Fonte inválida informada."
 msgstr ""
 
-#: inc/Core/Ajax.php:1021
+#: inc/Core/Ajax.php:1022
 msgid "Fonte não encontrada."
 msgstr ""
 
@@ -1553,15 +1606,15 @@ msgstr ""
 msgid "Fonte personalizada"
 msgstr ""
 
-#: inc/Core/Ajax.php:1035
+#: inc/Core/Ajax.php:1036
 msgid "Fonte removida"
 msgstr ""
 
-#: inc/Core/Ajax.php:965
+#: inc/Core/Ajax.php:966
 msgid "Fonte salva"
 msgstr ""
 
-#: inc/Core/Ajax.php:1011
+#: inc/Core/Ajax.php:1012
 msgid "Fontes padrão não podem ser excluídas."
 msgstr ""
 
@@ -1577,7 +1630,7 @@ msgstr ""
 msgid "Forma de entrega:"
 msgstr ""
 
-#: inc/Core/Ajax.php:1254
+#: inc/Core/Ajax.php:1255
 #: inc/Views/Settings/Tabs/Conditions.php:52
 msgid "Forma de entrega: %s"
 msgstr ""
@@ -1590,7 +1643,7 @@ msgstr ""
 msgid "Forma de pagamento:"
 msgstr ""
 
-#: inc/Core/Ajax.php:1259
+#: inc/Core/Ajax.php:1260
 #: inc/Views/Settings/Tabs/Conditions.php:55
 msgid "Forma de pagamento: %s"
 msgstr ""
@@ -1612,9 +1665,9 @@ msgstr ""
 msgid "Função PHP \"file_get_content\":"
 msgstr ""
 
-#: inc/admin/Settings/Views/Integrations.php:160
-#: inc/admin/Settings/Views/Integrations.php:206
-#: inc/admin/Settings/Views/Integrations.php:207
+#: inc/Admin/Settings/Views/Integrations.php:160
+#: inc/Admin/Settings/Views/Integrations.php:206
+#: inc/Admin/Settings/Views/Integrations.php:207
 msgid "GA4"
 msgstr ""
 
@@ -1622,7 +1675,7 @@ msgstr ""
 msgid "GDPR"
 msgstr ""
 
-#: inc/admin/Default_Options.php:507
+#: inc/Admin/Default_Options.php:507
 msgid "Gênero"
 msgstr ""
 
@@ -1646,9 +1699,9 @@ msgstr ""
 msgid "Gerente de loja"
 msgstr ""
 
-#: inc/admin/Settings/Views/Integrations.php:161
-#: inc/admin/Settings/Views/Integrations.php:244
-#: inc/admin/Settings/Views/Integrations.php:245
+#: inc/Admin/Settings/Views/Integrations.php:161
+#: inc/Admin/Settings/Views/Integrations.php:244
+#: inc/Admin/Settings/Views/Integrations.php:245
 msgid "Google Ads"
 msgstr ""
 
@@ -1658,11 +1711,11 @@ msgstr ""
 msgid "Google Fonts"
 msgstr ""
 
-#: inc/admin/Settings/Views/Integrations.php:534
+#: inc/Admin/Settings/Views/Integrations.php:534
 msgid "Google Maps"
 msgstr ""
 
-#: inc/admin/Settings/Views/Integrations.php:254
+#: inc/Admin/Settings/Views/Integrations.php:254
 msgid ""
 "Habilita o envio dos eventos de checkout para a conta configurada no Google "
 "Ads."
@@ -1672,7 +1725,7 @@ msgstr ""
 msgid "https://seudominio.com/contato"
 msgstr ""
 
-#: inc/admin/Settings/Views/Integrations.php:263
+#: inc/Admin/Settings/Views/Integrations.php:263
 msgid "ID da conversão do Google Ads (exemplo: AW-123456789)."
 msgstr ""
 
@@ -1680,15 +1733,15 @@ msgstr ""
 msgid "ID da opção"
 msgstr ""
 
-#: inc/admin/Settings/Views/Integrations.php:225
+#: inc/Admin/Settings/Views/Integrations.php:225
 msgid "Identificador da propriedade GA4 (exemplo: G-XXXXXXXXXX)."
 msgstr ""
 
-#: inc/admin/Settings/Views/Integrations.php:302
+#: inc/Admin/Settings/Views/Integrations.php:302
 msgid "Identificador do Pixel da Meta vinculado ao seu gerenciador de eventos."
 msgstr ""
 
-#: inc/admin/Admin_Options.php:258
+#: inc/Admin/Admin_Options.php:258
 msgid ""
 "Identificamos que sua loja vende no Brasil, deseja criar os campos e "
 "condições essenciais para integração com formas de pagamento e entregas "
@@ -1703,24 +1756,37 @@ msgstr ""
 msgid "Imagem de cabeçalho"
 msgstr ""
 
+#: inc/Admin/Settings_Import_Export.php:214
+msgid "Importado com sucesso"
+msgstr ""
+
+#: inc/Views/Settings/Tabs/About.php:457
+#: inc/Views/Settings/Tabs/About.php:472
+msgid "Importar configurações"
+msgstr ""
+
+#: inc/Views/Settings/Tabs/About.php:482
+msgid "Importar e substituir"
+msgstr ""
+
 #: inc/Checkout/Steps.php:741
 #: inc/Checkout/Steps.php:783
 msgid "Informações"
 msgstr ""
 
-#: inc/Core/Ajax.php:2197
+#: inc/Core/Ajax.php:2241
 msgid "Informações atualizadas"
 msgstr ""
 
-#: inc/admin/Settings/Views/Integrations.php:149
+#: inc/Admin/Settings/Views/Integrations.php:149
 msgid "Informações de entrega"
 msgstr ""
 
-#: inc/admin/Settings/Views/Integrations.php:150
+#: inc/Admin/Settings/Views/Integrations.php:150
 msgid "Informações de pagamento"
 msgstr ""
 
-#: inc/admin/Orders.php:221
+#: inc/Admin/Orders.php:221
 msgid "Informações do cliente"
 msgstr ""
 
@@ -1764,7 +1830,7 @@ msgid ""
 "API."
 msgstr ""
 
-#: inc/Core/Ajax.php:889
+#: inc/Core/Ajax.php:890
 msgid "Informe a URL de incorporação do Google Fonts."
 msgstr ""
 
@@ -1832,18 +1898,18 @@ msgstr ""
 msgid "Informe sua licença abaixo para desbloquear todos os recursos."
 msgstr ""
 
-#: inc/Core/Ajax.php:852
+#: inc/Core/Ajax.php:853
 msgid "Informe um identificador e um nome válidos para a fonte."
 msgstr ""
 
-#: inc/admin/Default_Options.php:451
+#: inc/Admin/Default_Options.php:451
 msgid "Inscrição Estadual"
 msgstr ""
 
-#: inc/admin/Settings/Views/Integrations.php:414
-#: inc/admin/Settings/Views/Integrations.php:462
-#: inc/admin/Settings/Views/Integrations.php:502
-#: inc/admin/Settings/Views/Integrations.php:597
+#: inc/Admin/Settings/Views/Integrations.php:414
+#: inc/Admin/Settings/Views/Integrations.php:462
+#: inc/Admin/Settings/Views/Integrations.php:502
+#: inc/Admin/Settings/Views/Integrations.php:597
 msgid "Instalar módulo"
 msgstr ""
 
@@ -1851,11 +1917,11 @@ msgstr ""
 msgid "Integrações"
 msgstr ""
 
-#: inc/admin/Default_Options.php:86
+#: inc/Admin/Default_Options.php:86
 msgid "Inter"
 msgstr ""
 
-#: inc/Core/Ajax.php:2181
+#: inc/Core/Ajax.php:2225
 #: inc/Views/Settings/Tabs/About.php:68
 msgid "Inválida"
 msgstr ""
@@ -1873,7 +1939,7 @@ msgstr ""
 msgid "Já tenho uma licença"
 msgstr ""
 
-#: inc/admin/Settings/Views/Integrations.php:494
+#: inc/Admin/Settings/Views/Integrations.php:494
 msgid "Joinotify"
 msgstr ""
 
@@ -1890,7 +1956,7 @@ msgstr ""
 msgid "Largura da imagem de cabeçalho"
 msgstr ""
 
-#: inc/admin/Default_Options.php:110
+#: inc/Admin/Default_Options.php:110
 msgid "Lato"
 msgstr ""
 
@@ -1898,19 +1964,19 @@ msgstr ""
 msgid "Lembrar de mim"
 msgstr ""
 
-#: inc/Core/Ajax.php:2380
+#: inc/Core/Ajax.php:2424
 msgid "Licença ativa"
 msgstr ""
 
-#: inc/Core/Ajax.php:2253
+#: inc/Core/Ajax.php:2297
 msgid "Licença ativada com sucesso."
 msgstr ""
 
-#: inc/Core/Ajax.php:765
+#: inc/Core/Ajax.php:766
 msgid "Licença enviada e decriptografada com sucesso."
 msgstr ""
 
-#: inc/Core/Ajax.php:2192
+#: inc/Core/Ajax.php:2236
 #: inc/Views/Settings/Tabs/About.php:95
 msgid "Licença expira em: %s"
 msgstr ""
@@ -1919,7 +1985,7 @@ msgstr ""
 msgid "Licença expirada"
 msgstr ""
 
-#: inc/Core/Ajax.php:2382
+#: inc/Core/Ajax.php:2426
 msgid "Licença processada com sucesso!"
 msgstr ""
 
@@ -1947,7 +2013,7 @@ msgstr ""
 msgid "Lista de países"
 msgstr ""
 
-#: inc/Core/Ajax.php:1283
+#: inc/Core/Ajax.php:1284
 #: inc/Views/Settings/Tabs/Conditions.php:78
 #: inc/Views/Settings/Tabs/Conditions.php:236
 msgid "Maior que"
@@ -1957,7 +2023,7 @@ msgstr ""
 msgid "Mantendo arquivo atual"
 msgstr ""
 
-#: inc/Core/Ajax.php:1285
+#: inc/Core/Ajax.php:1286
 #: inc/Views/Settings/Tabs/Conditions.php:80
 #: inc/Views/Settings/Tabs/Conditions.php:238
 msgid "Marcado"
@@ -1968,19 +2034,19 @@ msgstr ""
 msgid "Máscara do campo (Opcional)"
 msgstr ""
 
-#: inc/admin/Settings/Views/Integrations.php:224
+#: inc/Admin/Settings/Views/Integrations.php:224
 msgid "Measurement ID"
 msgstr ""
 
-#: inc/Core/Ajax.php:1284
+#: inc/Core/Ajax.php:1285
 #: inc/Views/Settings/Tabs/Conditions.php:79
 #: inc/Views/Settings/Tabs/Conditions.php:237
 msgid "Menor que"
 msgstr ""
 
-#: inc/admin/Settings/Views/Integrations.php:162
-#: inc/admin/Settings/Views/Integrations.php:283
-#: inc/admin/Settings/Views/Integrations.php:284
+#: inc/Admin/Settings/Views/Integrations.php:162
+#: inc/Admin/Settings/Views/Integrations.php:283
+#: inc/Admin/Settings/Views/Integrations.php:284
 msgid "Meta"
 msgstr ""
 
@@ -2004,11 +2070,11 @@ msgstr ""
 msgid "Modo de depuração do WordPress:"
 msgstr ""
 
-#: inc/admin/Default_Options.php:94
+#: inc/Admin/Default_Options.php:94
 msgid "Montserrat"
 msgstr ""
 
-#: inc/Core/Ajax.php:1240
+#: inc/Core/Ajax.php:1241
 #: inc/Views/Settings/Tabs/Conditions.php:41
 #: inc/Views/Settings/Tabs/Conditions.php:139
 msgid "Mostrar"
@@ -2039,6 +2105,10 @@ msgstr ""
 msgid "Mostrar resumo do pedido aberto por padrão"
 msgstr ""
 
+#: inc/Admin/Settings_Import_Export.php:221
+msgid "Nada para importar"
+msgstr ""
+
 #: inc/API/REST_Checkout_Fields.php:210
 msgid "Namespace do Flexify Checkout para campos adicionais."
 msgstr ""
@@ -2051,7 +2121,7 @@ msgstr ""
 msgid "Não"
 msgstr ""
 
-#: inc/Core/Ajax.php:1280
+#: inc/Core/Ajax.php:1281
 #: inc/Views/Settings/Tabs/Conditions.php:75
 #: inc/Views/Settings/Tabs/Conditions.php:233
 msgid "Não contém"
@@ -2062,32 +2132,32 @@ msgstr ""
 msgid "Não disponível"
 msgstr ""
 
-#: inc/Core/Ajax.php:1276
+#: inc/Core/Ajax.php:1277
 #: inc/Views/Settings/Tabs/Conditions.php:71
 #: inc/Views/Settings/Tabs/Conditions.php:229
 msgid "Não é"
 msgstr ""
 
-#: inc/Core/Ajax.php:1278
+#: inc/Core/Ajax.php:1279
 #: inc/Views/Settings/Tabs/Conditions.php:73
 #: inc/Views/Settings/Tabs/Conditions.php:231
 msgid "Não está vazio"
 msgstr ""
 
-#: inc/admin/Fonts_Manager.php:214
+#: inc/Admin/Fonts_Manager.php:214
 msgid "Não foi possível criar a pasta para armazenar a fonte."
 msgstr ""
 
-#: inc/admin/Fonts_Manager.php:270
+#: inc/Admin/Fonts_Manager.php:270
 msgid "Não foi possível criar o diretório de fontes."
 msgstr ""
 
-#: inc/Core/Ajax.php:770
-#: inc/Core/Ajax.php:2322
+#: inc/Core/Ajax.php:771
+#: inc/Core/Ajax.php:2366
 msgid "Não foi possível descriptografar o arquivo de licença."
 msgstr ""
 
-#: inc/Core/Ajax.php:1517
+#: inc/Core/Ajax.php:1518
 msgid "Nao foi possivel enviar o e-mail de redefinição. Tente novamente."
 msgstr ""
 
@@ -2095,11 +2165,17 @@ msgstr ""
 msgid "Não foi possível enviar o e-mail de redefinição. Tente novamente."
 msgstr ""
 
-#: inc/Core/Ajax.php:388
+#: inc/Admin/Settings_Import_Export.php:197
+msgid ""
+"Não foi possível ler o arquivo. Verifique se é um JSON de configurações "
+"válido."
+msgstr ""
+
+#: inc/Core/Ajax.php:389
 msgid "Não foi possível salvar as configurações."
 msgstr ""
 
-#: inc/Core/Ajax.php:2210
+#: inc/Core/Ajax.php:2254
 msgid "Não foi possível sincronizar as informações da licença."
 msgstr ""
 
@@ -2109,7 +2185,7 @@ msgid ""
 "Checkout.</strong>"
 msgstr ""
 
-#: inc/Core/Ajax.php:1149
+#: inc/Core/Ajax.php:1150
 msgid "Nenhum atributo encontrado."
 msgstr ""
 
@@ -2121,11 +2197,11 @@ msgstr ""
 msgid "Nenhum resultado encontrado"
 msgstr ""
 
-#: inc/Core/Ajax.php:1190
+#: inc/Core/Ajax.php:1191
 msgid "Nenhum usuário encontrado."
 msgstr ""
 
-#: inc/Core/Ajax.php:1108
+#: inc/Core/Ajax.php:1109
 msgid "Nenhuma categoria encontrada."
 msgstr ""
 
@@ -2137,7 +2213,7 @@ msgstr ""
 msgid "Nenhuma licença informada"
 msgstr ""
 
-#: inc/Core/Ajax.php:1076
+#: inc/Core/Ajax.php:1077
 msgid "Nenhuma produto encontrado."
 msgstr ""
 
@@ -2145,7 +2221,7 @@ msgstr ""
 msgid "No shipping options were found for %s."
 msgstr ""
 
-#: inc/admin/Default_Options.php:255
+#: inc/Admin/Default_Options.php:255
 msgid "Nome"
 msgstr ""
 
@@ -2177,7 +2253,7 @@ msgstr ""
 msgid "Notamos que teve problemas de conexão ao tentar ativar sua licença"
 msgstr ""
 
-#: inc/Core/Ajax.php:1952
+#: inc/Core/Ajax.php:1996
 msgid "Nova opção adicionada"
 msgstr ""
 
@@ -2194,16 +2270,16 @@ msgstr ""
 msgid "Número"
 msgstr ""
 
-#: inc/admin/Default_Options.php:520
+#: inc/Admin/Default_Options.php:520
 msgid "Número da residência"
 msgstr ""
 
 #: inc/API/License.php:844
-#: inc/Core/Ajax.php:2190
+#: inc/Core/Ajax.php:2234
 msgid "Nunca expira"
 msgstr ""
 
-#: inc/admin/Default_Options.php:118
+#: inc/Admin/Default_Options.php:118
 msgid "Nunito"
 msgstr ""
 
@@ -2212,15 +2288,19 @@ msgstr ""
 msgid "O %s informado não é válido."
 msgstr ""
 
-#: inc/Core/Ajax.php:2333
+#: inc/Core/Ajax.php:2377
 msgid "O arquivo de licença não contém dados válidos."
 msgstr ""
 
-#: inc/Core/Ajax.php:577
+#: inc/Admin/Settings_Import_Export.php:222
+msgid "O arquivo não continha configurações aplicáveis."
+msgstr ""
+
+#: inc/Core/Ajax.php:578
 msgid "O campo foi removido com sucesso!"
 msgstr ""
 
-#: inc/admin/Admin_Options.php:165
+#: inc/Admin/Admin_Options.php:165
 msgid ""
 "O campo País na finalização de compras está desativado, verifique se seu "
 "gateway de pagamentos depende deste campo para não receber o erro \"Informe "
@@ -2235,7 +2315,7 @@ msgstr ""
 msgid "O cupom foi removido."
 msgstr ""
 
-#: inc/Core/Ajax.php:2341
+#: inc/Core/Ajax.php:2385
 msgid "O domínio de ativação não é permitido."
 msgstr ""
 
@@ -2245,7 +2325,7 @@ msgid ""
 "lugar."
 msgstr ""
 
-#: inc/admin/Admin_Options.php:512
+#: inc/Admin/Admin_Options.php:512
 msgid ""
 "O Flexify Checkout depende do shortcode [woocommerce_checkout] na página de "
 "finalização de compras para funcionar corretamente."
@@ -2278,12 +2358,12 @@ msgstr ""
 msgid "Ocorreu um erro"
 msgstr ""
 
-#: inc/Core/Ajax.php:1787
+#: inc/Core/Ajax.php:1788
 msgid "Ocorreu um erro ao desativar sua licença."
 msgstr ""
 
-#: inc/Core/Ajax.php:585
-#: inc/Core/Ajax.php:1828
+#: inc/Core/Ajax.php:586
+#: inc/Core/Ajax.php:1829
 msgid "Ocorreu um erro ao redefinir as configurações."
 msgstr ""
 
@@ -2297,7 +2377,7 @@ msgid ""
 "Verifique o erro nos logs do WooCommerce."
 msgstr ""
 
-#: inc/Core/Ajax.php:1241
+#: inc/Core/Ajax.php:1242
 #: inc/Views/Settings/Tabs/Conditions.php:42
 #: inc/Views/Settings/Tabs/Conditions.php:140
 #: inc/Views/Settings/Tabs/General.php:231
@@ -2321,7 +2401,7 @@ msgstr ""
 msgid "Ocultar resumo do pedido"
 msgstr ""
 
-#: inc/Core/Ajax.php:1900
+#: inc/Core/Ajax.php:1944
 msgid "Opção removida"
 msgstr ""
 
@@ -2329,36 +2409,36 @@ msgstr ""
 msgid "Opções "
 msgstr ""
 
-#: inc/admin/Default_Options.php:98
+#: inc/Admin/Default_Options.php:98
 msgid "Open Sans"
 msgstr ""
 
-#: inc/Core/Ajax.php:873
+#: inc/Core/Ajax.php:874
 #: inc/Core/Assets.php:396
 msgid "Ops! Essa fonte já existe."
 msgstr ""
 
-#: inc/Core/Ajax.php:1959
+#: inc/Core/Ajax.php:2003
 msgid "Ops! Não foi possível adicionar a nova opção."
 msgstr ""
 
-#: inc/Core/Ajax.php:1617
+#: inc/Core/Ajax.php:1618
 msgid "Ops! Não foi possível atualizar a condição."
 msgstr ""
 
-#: inc/Core/Ajax.php:1472
+#: inc/Core/Ajax.php:1473
 msgid "Ops! Não foi possível criar uma nova condição."
 msgstr ""
 
-#: inc/Core/Ajax.php:1044
+#: inc/Core/Ajax.php:1045
 msgid "Ops! Não foi possível remover a fonte."
 msgstr ""
 
-#: inc/Core/Ajax.php:1907
+#: inc/Core/Ajax.php:1951
 msgid "Ops! Não foi possível remover a opção."
 msgstr ""
 
-#: inc/Core/Ajax.php:975
+#: inc/Core/Ajax.php:976
 msgid "Ops! Não foi possível salvar a fonte."
 msgstr ""
 
@@ -2366,24 +2446,27 @@ msgstr ""
 msgid "Ops! Não há conexão com a internet"
 msgstr ""
 
-#: inc/Core/Ajax.php:1916
-#: inc/Core/Ajax.php:1968
+#: inc/Core/Ajax.php:1960
+#: inc/Core/Ajax.php:2012
 msgid "Ops! O campo não existe ou não é do tipo select."
 msgstr ""
 
-#: inc/Core/Ajax.php:387
-#: inc/Core/Ajax.php:584
-#: inc/Core/Ajax.php:1786
-#: inc/Core/Ajax.php:1827
-#: inc/Core/Ajax.php:2209
-#: inc/Core/Ajax.php:2261
-#: inc/Core/Ajax.php:2283
-#: inc/Core/Ajax.php:2292
-#: inc/Core/Ajax.php:2303
-#: inc/Core/Ajax.php:2321
-#: inc/Core/Ajax.php:2332
-#: inc/Core/Ajax.php:2340
-#: inc/Core/Ajax.php:2348
+#: inc/Admin/Settings_Import_Export.php:173
+#: inc/Admin/Settings_Import_Export.php:183
+#: inc/Core/Ajax.php:388
+#: inc/Core/Ajax.php:585
+#: inc/Core/Ajax.php:1787
+#: inc/Core/Ajax.php:1828
+#: inc/Core/Ajax.php:1852
+#: inc/Core/Ajax.php:2253
+#: inc/Core/Ajax.php:2305
+#: inc/Core/Ajax.php:2327
+#: inc/Core/Ajax.php:2336
+#: inc/Core/Ajax.php:2347
+#: inc/Core/Ajax.php:2365
+#: inc/Core/Ajax.php:2376
+#: inc/Core/Ajax.php:2384
+#: inc/Core/Ajax.php:2392
 #: inc/Core/Modules.php:293
 msgid "Ops! Ocorreu um erro."
 msgstr ""
@@ -2396,6 +2479,12 @@ msgstr ""
 msgid ""
 "Os arquivos enviados serão armazenados em "
 "/wp-content/uploads/flexify-checkout/fonts/."
+msgstr ""
+
+#: inc/Core/Ajax.php:1874
+msgid ""
+"Os campos da finalização de compras foram redefinidos para o padrão com "
+"sucesso!"
 msgstr ""
 
 #: inc/Views/Settings/Tabs/Fields.php:86
@@ -2430,7 +2519,7 @@ msgstr ""
 msgid "Página única"
 msgstr ""
 
-#: inc/admin/Default_Options.php:308
+#: inc/Admin/Default_Options.php:308
 msgid "País"
 msgstr ""
 
@@ -2438,7 +2527,7 @@ msgstr ""
 msgid "País selecionado"
 msgstr ""
 
-#: inc/admin/Settings/Views/Integrations.php:588
+#: inc/Admin/Settings/Views/Integrations.php:588
 msgid "Payments by Payco"
 msgstr ""
 
@@ -2476,7 +2565,7 @@ msgstr ""
 msgid "Permite definir um titulo a ser exibido ao lado da contagem regressiva."
 msgstr ""
 
-#: inc/admin/Settings/Views/Integrations.php:216
+#: inc/Admin/Settings/Views/Integrations.php:216
 msgid ""
 "Permite o envio dos eventos para o GA4 quando a integração estiver "
 "preenchida."
@@ -2515,15 +2604,15 @@ msgstr ""
 msgid "Pesquisar um endereço"
 msgstr ""
 
-#: inc/admin/Default_Options.php:412
+#: inc/Admin/Default_Options.php:412
 msgid "Pessoa Física (CPF)"
 msgstr ""
 
-#: inc/admin/Default_Options.php:416
+#: inc/Admin/Default_Options.php:416
 msgid "Pessoa Jurífica (CNPJ)"
 msgstr ""
 
-#: inc/admin/Settings/Views/Integrations.php:301
+#: inc/Admin/Settings/Views/Integrations.php:301
 msgid "Pixel ID"
 msgstr ""
 
@@ -2539,7 +2628,7 @@ msgstr ""
 msgid "Plugin instalado e ativado."
 msgstr ""
 
-#: inc/admin/Default_Options.php:90
+#: inc/Admin/Default_Options.php:90
 msgid "Poppins"
 msgstr ""
 
@@ -2559,7 +2648,7 @@ msgstr ""
 msgid "Por favor, insira um CPF válido."
 msgstr ""
 
-#: inc/Core/Ajax.php:1501
+#: inc/Core/Ajax.php:1502
 msgid "Por favor, insira um e-mail valido."
 msgstr ""
 
@@ -2596,10 +2685,10 @@ msgstr ""
 msgid "Primeira renovação"
 msgstr ""
 
-#: inc/admin/Settings/Views/Integrations.php:179
-#: inc/admin/Settings/Views/Integrations.php:403
-#: inc/admin/Settings/Views/Integrations.php:451
-#: inc/Core/Ajax.php:2188
+#: inc/Admin/Settings/Views/Integrations.php:179
+#: inc/Admin/Settings/Views/Integrations.php:403
+#: inc/Admin/Settings/Views/Integrations.php:451
+#: inc/Core/Ajax.php:2232
 #: inc/Views/Settings/Settings_Panel.php:127
 #: inc/Views/Settings/Tabs/About.php:18
 #: inc/Views/Settings/Tabs/About.php:76
@@ -2687,7 +2776,7 @@ msgstr ""
 msgid "Quantidade"
 msgstr ""
 
-#: inc/Core/Ajax.php:1269
+#: inc/Core/Ajax.php:1270
 #: inc/Views/Settings/Tabs/Conditions.php:64
 #: inc/Views/Settings/Tabs/Conditions.php:205
 msgid "Quantidade total do carrinho"
@@ -2697,7 +2786,7 @@ msgstr ""
 msgid "Quantidade total do carrinho:"
 msgstr ""
 
-#: inc/admin/Default_Options.php:122
+#: inc/Admin/Default_Options.php:122
 msgid "Quicksand"
 msgstr ""
 
@@ -2705,21 +2794,21 @@ msgstr ""
 msgid "Raio da borda dos elementos"
 msgstr ""
 
-#: inc/admin/Default_Options.php:114
+#: inc/Admin/Default_Options.php:114
 msgid "Raleway"
 msgstr ""
 
-#: inc/admin/Settings/Views/Integrations.php:176
+#: inc/Admin/Settings/Views/Integrations.php:176
 msgid "Rastreamento de dados"
 msgstr ""
 
-#: inc/admin/Settings/Views/Integrations.php:590
+#: inc/Admin/Settings/Views/Integrations.php:590
 msgid ""
 "Receba pagamentos com Pix, Cartão de Crédito, Open Finance e Boleto "
 "Bancário."
 msgstr ""
 
-#: inc/admin/Settings/Views/Integrations.php:455
+#: inc/Admin/Settings/Views/Integrations.php:455
 msgid ""
 "Recupere carrinhos e pedidos abandonados com follow up cadenciado. Envie "
 "notificações via WhatsApp de forma automática e muito mais!"
@@ -2729,7 +2818,11 @@ msgstr ""
 msgid "Recursos:"
 msgstr ""
 
-#: inc/Views/Settings/Tabs/About.php:448
+#: inc/Views/Settings/Tabs/Fields.php:189
+msgid "Redefinir campos para o padrão"
+msgstr ""
+
+#: inc/Views/Settings/Tabs/About.php:496
 msgid "Redefinir configurações"
 msgstr ""
 
@@ -2772,7 +2865,7 @@ msgstr ""
 msgid "Remover este item"
 msgstr ""
 
-#: inc/Views/Settings/Tabs/About.php:474
+#: inc/Views/Settings/Tabs/About.php:522
 msgid "Reportar problemas"
 msgstr ""
 
@@ -2792,11 +2885,11 @@ msgstr ""
 msgid "Retornar à loja"
 msgstr ""
 
-#: inc/admin/Default_Options.php:479
+#: inc/Admin/Default_Options.php:479
 msgid "RG"
 msgstr ""
 
-#: inc/admin/Default_Options.php:106
+#: inc/Admin/Default_Options.php:106
 msgid "Roboto"
 msgstr ""
 
@@ -2804,11 +2897,11 @@ msgstr ""
 msgid "Rodapé personalizado"
 msgstr ""
 
-#: inc/admin/Settings/Views/Integrations.php:272
+#: inc/Admin/Settings/Views/Integrations.php:272
 msgid "Rótulo da ação de conversão criada no Google Ads."
 msgstr ""
 
-#: inc/admin/Default_Options.php:102
+#: inc/Admin/Default_Options.php:102
 msgid "Rubik"
 msgstr ""
 
@@ -2820,7 +2913,7 @@ msgstr ""
 msgid "Salvar fonte"
 msgstr ""
 
-#: inc/Core/Ajax.php:380
+#: inc/Core/Ajax.php:381
 msgid "Salvo com sucesso"
 msgstr ""
 
@@ -2830,7 +2923,7 @@ msgid ""
 "redefinir sua senha."
 msgstr ""
 
-#: inc/Core/Ajax.php:1297
+#: inc/Core/Ajax.php:1298
 #: inc/Views/Settings/Tabs/Conditions.php:91
 msgid "Se: %s %s %s"
 msgstr ""
@@ -2941,7 +3034,8 @@ msgstr ""
 msgid "Sim"
 msgstr ""
 
-#: inc/Views/Settings/Tabs/About.php:468
+#: inc/Views/Settings/Tabs/About.php:516
+#: inc/Views/Settings/Tabs/Fields.php:210
 msgid "Sim, desejo redefinir"
 msgstr ""
 
@@ -2953,7 +3047,7 @@ msgstr ""
 msgid "Sobre"
 msgstr ""
 
-#: inc/admin/Default_Options.php:268
+#: inc/Admin/Default_Options.php:268
 msgid "Sobrenome"
 msgstr ""
 
@@ -2979,11 +3073,11 @@ msgid ""
 "renovação para continuar aproveitando os recursos Pro."
 msgstr ""
 
-#: inc/Core/Ajax.php:1493
+#: inc/Core/Ajax.php:1494
 msgid "Sua sessao expirou. Recarregue a pagina e tente novamente."
 msgstr ""
 
-#: inc/admin/Default_Options.php:166
+#: inc/Admin/Default_Options.php:166
 msgid "Sua sessão termina em:"
 msgstr ""
 
@@ -3004,8 +3098,8 @@ msgstr ""
 msgid "Tamanho máximo de envio do PHP:"
 msgstr ""
 
-#: inc/admin/Default_Options.php:281
-#: inc/admin/Orders.php:255
+#: inc/Admin/Default_Options.php:281
+#: inc/Admin/Orders.php:255
 #: inc/Views/Components.php:343
 msgid "Telefone"
 msgstr ""
@@ -3026,7 +3120,7 @@ msgstr ""
 msgid "Tem certeza que deseja excluir este campo?"
 msgstr ""
 
-#: inc/Core/Ajax.php:1282
+#: inc/Core/Ajax.php:1283
 #: inc/Views/Settings/Tabs/Conditions.php:77
 #: inc/Views/Settings/Tabs/Conditions.php:235
 msgid "Termina com"
@@ -3036,7 +3130,7 @@ msgstr ""
 msgid "Termos e condições ativo por padrão"
 msgstr ""
 
-#: inc/admin/Settings/Views/Integrations.php:319
+#: inc/Admin/Settings/Views/Integrations.php:319
 msgid "Test Event Code (opcional)"
 msgstr ""
 
@@ -3115,7 +3209,7 @@ msgid ""
 "has been entered correctly, or contact us if you need any help."
 msgstr ""
 
-#: inc/Core/Ajax.php:2191
+#: inc/Core/Ajax.php:2235
 #: inc/Views/Settings/Tabs/About.php:92
 msgid "Tipo da licença: %s"
 msgstr ""
@@ -3128,7 +3222,7 @@ msgstr ""
 msgid "Tipo de marca no cabeçalho"
 msgstr ""
 
-#: inc/admin/Default_Options.php:400
+#: inc/Admin/Default_Options.php:400
 msgid "Tipo de Pessoa"
 msgstr ""
 
@@ -3170,7 +3264,7 @@ msgstr ""
 msgid "Todos os produtos (Padrão)"
 msgstr ""
 
-#: inc/Core/Ajax.php:1781
+#: inc/Core/Ajax.php:1782
 msgid "Todos os recursos da versão Pro agora estão desativados!"
 msgstr ""
 
@@ -3178,7 +3272,7 @@ msgstr ""
 msgid "Todos os usuários (Padrão)"
 msgstr ""
 
-#: inc/admin/Settings/Views/Integrations.php:311
+#: inc/Admin/Settings/Views/Integrations.php:311
 msgid "Token de acesso da Conversions API para autenticação das requisições."
 msgstr ""
 
@@ -3222,7 +3316,7 @@ msgstr ""
 msgid "Uma nova versão do plugin <strong>Flexify Checkout</strong> está disponível."
 msgstr ""
 
-#: inc/admin/Default_Options.php:126
+#: inc/Admin/Default_Options.php:126
 msgid "Urbanist"
 msgstr ""
 
@@ -3251,13 +3345,13 @@ msgstr ""
 msgid "Usar este arquivo"
 msgstr ""
 
-#: inc/admin/Settings/Views/Integrations.php:320
+#: inc/Admin/Settings/Views/Integrations.php:320
 msgid ""
 "Use para validar eventos no modo de teste da Meta antes de publicar em "
 "produção."
 msgstr ""
 
-#: inc/Core/Ajax.php:183
+#: inc/Core/Ajax.php:184
 msgid "Usuário é obrigatório."
 msgstr ""
 
@@ -3276,7 +3370,7 @@ msgid ""
 "deixe em branco para não exibir."
 msgstr ""
 
-#: inc/Core/Ajax.php:2187
+#: inc/Core/Ajax.php:2231
 #: inc/Views/Settings/Tabs/About.php:64
 msgid "Válida"
 msgstr ""
@@ -3307,7 +3401,7 @@ msgstr ""
 msgid "Valor mínimo recomendado é 64M"
 msgstr ""
 
-#: inc/Core/Ajax.php:1271
+#: inc/Core/Ajax.php:1272
 #: inc/Views/Settings/Tabs/Conditions.php:66
 #: inc/Views/Settings/Tabs/Conditions.php:206
 msgid "Valor total do carrinho"
@@ -3321,7 +3415,7 @@ msgstr ""
 msgid "Variáveis máximas de entrada do PHP:"
 msgstr ""
 
-#: inc/Core/Ajax.php:1277
+#: inc/Core/Ajax.php:1278
 #: inc/Views/Settings/Tabs/Conditions.php:72
 #: inc/Views/Settings/Tabs/Conditions.php:230
 msgid "Vazio"
@@ -3333,6 +3427,11 @@ msgstr ""
 
 #: inc/Views/Settings/Tabs/Conditions.php:195
 msgid "Verificação"
+msgstr ""
+
+#: inc/Admin/Settings_Import_Export.php:108
+#: inc/Admin/Settings_Import_Export.php:184
+msgid "Verificação de segurança falhou. Recarregue a página e tente novamente."
 msgstr ""
 
 #: inc/API/Updater.php:287
@@ -3359,9 +3458,21 @@ msgstr ""
 msgid "Versão do WordPress:"
 msgstr ""
 
-#: inc/Core/Ajax.php:840
-#: inc/Core/Ajax.php:993
+#: inc/Admin/Settings_Import_Export.php:102
+msgid "Você não tem permissão para exportar as configurações."
+msgstr ""
+
+#: inc/Core/Ajax.php:841
+#: inc/Core/Ajax.php:994
 msgid "Você não tem permissão para gerenciar fontes."
+msgstr ""
+
+#: inc/Admin/Settings_Import_Export.php:174
+msgid "Você não tem permissão para importar as configurações."
+msgstr ""
+
+#: inc/Core/Ajax.php:1853
+msgid "Você não tem permissão para redefinir os campos."
 msgstr ""
 
 #: inc/Views/Settings/Tabs/About.php:143
