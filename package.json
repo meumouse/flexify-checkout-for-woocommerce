@@ -1,0 +1,14 @@
+{
+	"name": "flexify-checkout-for-woocommerce",
+	"private": true,
+	"version": "5.5.4",
+	"scripts": {
+		"build": "node scripts/build.mjs",
+		"build:fast": "node scripts/build.mjs --skip-composer --skip-translations --no-install",
+		"build:translate": "node scripts/build.mjs --translate",
+		"release": "node scripts/build.mjs"
+	},
+	"devDependencies": {
+		"archiver": "^7.0.1"
+	}
+}
