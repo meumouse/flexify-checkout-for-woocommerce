@@ -941,6 +941,7 @@
                     }
 
                     Flexify_Checkout.UI.slideDown( sidebar );
+                    Flexify_Checkout.Sidebar.toggleBackdrop( true );
                 } else {
                     link_hide.style.display = 'none';
                     link_show.style.display = 'block';
@@ -950,6 +951,49 @@
                     } else {
                         Flexify_Checkout.UI.slideUp( sidebar );
                     }
+
+                    Flexify_Checkout.Sidebar.toggleBackdrop( false );
+                }
+            },
+
+            /**
+             * Show or hide the blurred backdrop behind the order summary on mobile
+             *
+             * @since 5.0.2
+             * @param {boolean} show | true to show the backdrop, false to hide it
+             * @return void
+             */
+            toggleBackdrop: function( show ) {
+                var backdrop = document.querySelector('.flexify-checkout__sidebar-backdrop');
+
+                if ( show ) {
+                    if ( ! backdrop ) {
+                        backdrop = document.createElement('div');
+                        backdrop.className = 'flexify-checkout__sidebar-backdrop';
+
+                        // Close the summary when the backdrop is clicked
+                        backdrop.addEventListener('click', function() {
+                            var header = document.querySelector('.flexify-checkout__sidebar-header');
+
+                            if ( header ) {
+                                header.click();
+                            }
+                        });
+
+                        document.body.appendChild(backdrop);
+                    }
+
+                    // Force reflow so the opacity transition runs
+                    void backdrop.offsetWidth;
+                    backdrop.classList.add('flexify-checkout__sidebar-backdrop--visible');
+                } else if ( backdrop ) {
+                    backdrop.classList.remove('flexify-checkout__sidebar-backdrop--visible');
+
+                    setTimeout( function() {
+                        if ( backdrop.parentNode ) {
+                            backdrop.parentNode.removeChild(backdrop);
+                        }
+                    }, 300);
                 }
             },
 
