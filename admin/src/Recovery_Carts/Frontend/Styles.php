@@ -52,7 +52,7 @@ class Styles {
 		<?php $css = ob_get_clean();
 		$css = wp_strip_all_tags( $css );
 
-		printf( __('<style>%s</style>'), $css );
+		printf( '<style>%s</style>', $css );
     }
 
 
