@@ -14,11 +14,13 @@ import { createRouter, createMemoryHistory } from 'vue-router';
 import SettingsPage from '../pages/settings/SettingsPage.vue';
 import LicensePage from '../pages/license/LicensePage.vue';
 import AnalyticsPage from '../pages/recovery/AnalyticsPage.vue';
+import CartsPage from '../pages/recovery/CartsPage.vue';
 
 const routes = [
   { path: '/settings', name: 'settings', component: SettingsPage },
   { path: '/license', name: 'license', component: LicensePage },
   { path: '/analytics', name: 'analytics', component: AnalyticsPage },
+  { path: '/carts', name: 'carts', component: CartsPage },
   { path: '/:pathMatch(.*)*', redirect: '/settings' },
 ];
 

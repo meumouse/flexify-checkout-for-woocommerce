@@ -66,16 +66,15 @@ class Assets {
     public function admin_scripts() {
         $min_file = self::$debug_mode ? '' : '.min';
 
-        // The Analytics page (bare "fc-recovery-carts" slug) is now a Vue SPA;
-        // its assets are enqueued by Core\Settings_Assets via Vite. Skip the
-        // legacy admin assets here so they don't load against a DOM that no
-        // longer exists (and double-load ApexCharts).
-        if (
-            Helpers::check_admin_page('fc-recovery-carts')
+        // Recovery pages migrated to the Vue SPA enqueue their assets via
+        // Core\Settings_Assets (Vite). Skip the legacy admin assets there so
+        // they don't load against a DOM that no longer exists.
+        $is_analytics_page = Helpers::check_admin_page('fc-recovery-carts')
             && ! Helpers::check_admin_page('fc-recovery-carts-list')
             && ! Helpers::check_admin_page('fc-recovery-carts-queue')
-            && ! Helpers::check_admin_page('fc-recovery-carts-settings')
-        ) {
+            && ! Helpers::check_admin_page('fc-recovery-carts-settings');
+
+        if ( $is_analytics_page || Helpers::check_admin_page('fc-recovery-carts-list') ) {
             return;
         }
 

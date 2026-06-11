@@ -47,6 +47,27 @@ export async function apiGet(endpoint) {
 }
 
 /**
+ * Perform a DELETE request against the plugin REST namespace.
+ *
+ * @since 6.0.0
+ * @param {string} endpoint - Endpoint path relative to the REST root.
+ * @return {Promise<Object>} Parsed JSON response.
+ */
+export async function apiDelete(endpoint) {
+  const response = await fetch(buildUrl(endpoint), {
+    method: 'DELETE',
+    headers: buildHeaders(),
+    credentials: 'same-origin',
+  });
+
+  if (!response.ok) {
+    throw new Error(`DELETE ${endpoint} failed (${response.status}).`);
+  }
+
+  return response.json();
+}
+
+/**
  * Perform a multipart/form-data POST request against the plugin REST namespace.
  *
  * @since 6.0.0

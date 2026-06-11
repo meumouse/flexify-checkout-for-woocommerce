@@ -227,14 +227,15 @@ class Admin {
      * @return void
      */
     public function carts_table_page() {
-        global $fc_recovery_carts_table;
-
-        if ( empty( $fc_recovery_carts_table ) ) {
-            $fc_recovery_carts_table = new \MeuMouse\Flexify_Checkout\Recovery_Carts\Views\Carts_Table();
-        }
-
-        $fc_recovery_carts_table->prepare_items();
-        $fc_recovery_carts_table->display_page();
+        // "Todos os carrinhos" is now a Vue SPA route (/carts) backed by REST.
+        ?>
+        <div class="wrap flexify-checkout-settings-page">
+            <div id="flexify-checkout-settings-app" class="flexify-checkout-settings-app">
+                <div class="skeleton-content" style="width: 950px; height: 100px;"></div>
+                <div class="skeleton-content" style="width: 100%; height: 420px; margin-top: 2rem;"></div>
+            </div>
+        </div>
+        <?php
     }
 
 
