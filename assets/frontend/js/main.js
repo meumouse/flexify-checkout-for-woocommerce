@@ -4876,9 +4876,14 @@
 				$(document.body).on( 'change', 'input.shipping_method', debounced_shipping_emit );
 				$(document.body).on( 'updated_checkout', debounced_shipping_emit );
 
+				// Do not return a truthy value here. WooCommerce decides whether to
+				// submit using triggerHandler('checkout_place_order') !== false, whose
+				// result is the LAST handler that returns a non-undefined value.
+				// Returning `true` would clobber the `false` that client-side gateways
+				// (e.g. Pagar.me) return to defer the submit while they tokenize the
+				// card, causing the order to be sent without the card token.
 				$('form.checkout').on( 'checkout_place_order', () => {
 					this.emitPaymentInfo();
-					return true;
 				});
 			},
 
