@@ -3,9 +3,11 @@ Versão 5.5.5 (11/06/2026)
   - Adicionada verificação de nonce e de permissão nos handlers AJAX sensíveis (salvar configurações, redefinir plugin, desativar licença, instalar e ativar módulos), prevenindo CSRF e escalada de privilégio
   - Todas as ações AJAX do painel administrativo agora exigem a permissão de gerenciamento do WooCommerce, impedindo que usuários sem privilégio (ex.: clientes) as acionem
   - Sanitização dos dados de cadastro de fontes personalizadas
+  - Validação reforçada no envio do arquivo de licença (.key): verificação de erro de envio, tamanho máximo e origem do arquivo
 * Correção de problemas
   - Valor total do botão de finalizar compra não sincronizado com carrinho
   - Prevenção de erro fatal ao registrar logs quando o WooCommerce não está disponível
+  - Prevenção de erro fatal ao avaliar condições de checkout e o cupom automático quando o carrinho ainda não está disponível
 
 Versão 5.5.4 (11/06/2026)
 * Correção de problemas

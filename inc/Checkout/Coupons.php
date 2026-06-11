@@ -63,6 +63,11 @@ class Coupons {
 			return;
 		}
 
+		// Bail out if the cart/session are not available yet (e.g. early or non-standard requests).
+		if ( ! WC() || ! WC()->session || ! WC()->cart ) {
+			return;
+		}
+
 		if ( '1' === WC()->session->get('flexify_dont_auto_apply_coupon_flag') ) {
 			return;
 		}

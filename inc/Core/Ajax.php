@@ -801,13 +801,23 @@ class Ajax {
 
 		$file = $_FILES['file'];
 
+		// Verifica erro de upload, tamanho (uma chave de licença é pequena) e origem do arquivo
+		if ( ! isset( $file['error'] ) || $file['error'] !== UPLOAD_ERR_OK || $file['size'] > 1048576 || ! is_uploaded_file( $file['tmp_name'] ) ) {
+			$response = array(
+				'status' => 'error',
+				'message' => __( 'Erro ao carregar o arquivo.', 'flexify-checkout-for-woocommerce' ),
+			);
+
+			wp_send_json( $response );
+		}
+
 		// Verifica se é um arquivo .key
 		if ( pathinfo( $file['name'], PATHINFO_EXTENSION ) !== 'key' ) {
 			$response = array(
 				'status' => 'invalid_file',
 				'message' => __( 'Arquivo inválido. O arquivo deve ser um .crt ou .key.', 'flexify-checkout-for-woocommerce' ),
 			);
-			
+
 			wp_send_json( $response );
 		}
 
@@ -2406,6 +2416,15 @@ class Ajax {
         }
 
         $file = $_FILES['file'];
+
+        // Check upload error, size (a license key is small) and that the file was actually uploaded
+        if ( ! isset( $file['error'] ) || $file['error'] !== UPLOAD_ERR_OK || $file['size'] > 1048576 || ! is_uploaded_file( $file['tmp_name'] ) ) {
+            wp_send_json( array(
+                'status' => 'error',
+                'toast_header' => __( 'Ops! Ocorreu um erro.', 'flexify-checkout-for-woocommerce' ),
+                'toast_body' => __( 'Erro ao carregar o arquivo.', 'flexify-checkout-for-woocommerce' ),
+            ));
+        }
 
         // Check if it is a .key file
         if ( pathinfo( $file['name'], PATHINFO_EXTENSION ) !== 'key' ) {
