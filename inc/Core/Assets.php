@@ -43,11 +43,17 @@ class Assets {
 
 	/**
 	 * Set min file extension
-	 * 
+	 *
+	 * Always empty: the hand-maintained minified bundles were removed because
+	 * there is no build pipeline to keep them in sync with the source, and
+	 * gzip/brotli already handle on-the-wire compression. Assets are served
+	 * from their unminified source. Kept as a property so enqueue calls stay
+	 * unchanged and a future build step can repopulate it.
+	 *
 	 * @since 5.0.0
 	 * @return string
 	 */
-	public $min_file = WP_DEBUG ? '' : '.min';
+	public $min_file = '';
 
 	/**
 	 * Construct function
