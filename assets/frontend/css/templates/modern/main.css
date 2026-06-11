@@ -306,7 +306,7 @@ body.woocommerce-checkout {
     outline: none;
     width: 100%;
     padding: 16px 32px;
-    color: var(--flexify-checkout-primary);
+    color: #495057;
     background-color: #f8f9fa;
     border-bottom: 1px solid #e5e5e5;
 }
