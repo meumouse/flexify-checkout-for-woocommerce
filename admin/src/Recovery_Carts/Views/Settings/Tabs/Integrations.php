@@ -41,7 +41,7 @@ endif; ?>
             <div class="card text-center p-0 m-xxl-4 m-lg-3 integration-item">
                 <?php if ( isset( $value['comming_soon'] ) && $value['comming_soon'] === true ) : ?>
                     <div class="fcrc-comming-soon">
-                        <?php esc_html_e( 'Em breve...', 'fc-recovery-carts' ); ?>
+                        <?php esc_html_e( 'Em breve...', 'flexify-checkout-for-woocommerce' ); ?>
                     </div>
                 <?php endif; ?>
 
@@ -56,7 +56,7 @@ endif; ?>
                     <p class="card-text fs-sm mb-4"><?php echo esc_html( $value['description'] ); ?></p>
 
                     <?php if ( ! $is_plugin_active ) : ?>
-                        <span class="alert alert-info mb-3"><?php esc_html_e( 'Este plugin precisa estar instalado e ativo para ativar esta integração.', 'fc-recovery-carts' ); ?></span>
+                        <span class="alert alert-info mb-3"><?php esc_html_e( 'Este plugin precisa estar instalado e ativo para ativar esta integração.', 'flexify-checkout-for-woocommerce' ); ?></span>
                     <?php endif; ?>
                     
                     <div class="form-check form-switch w-100 d-flex justify-content-center">

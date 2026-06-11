@@ -160,13 +160,13 @@ class Recovery_Settings extends Abstract_Route {
     private function support_data() {
         return array(
             'time_units' => array(
-                array( 'value' => 'minutes', 'label' => __( 'Minutos', 'fc-recovery-carts' ) ),
-                array( 'value' => 'hours', 'label' => __( 'Horas', 'fc-recovery-carts' ) ),
-                array( 'value' => 'days', 'label' => __( 'Dias', 'fc-recovery-carts' ) ),
+                array( 'value' => 'minutes', 'label' => __( 'Minutos', 'flexify-checkout-for-woocommerce' ) ),
+                array( 'value' => 'hours', 'label' => __( 'Horas', 'flexify-checkout-for-woocommerce' ) ),
+                array( 'value' => 'days', 'label' => __( 'Dias', 'flexify-checkout-for-woocommerce' ) ),
             ),
             'discount_types' => array(
-                array( 'value' => 'percent', 'label' => __( 'Percentual (%)', 'fc-recovery-carts' ) ),
-                array( 'value' => 'fixed_cart', 'label' => __( 'Valor fixo', 'fc-recovery-carts' ) ),
+                array( 'value' => 'percent', 'label' => __( 'Percentual (%)', 'flexify-checkout-for-woocommerce' ) ),
+                array( 'value' => 'fixed_cart', 'label' => __( 'Valor fixo', 'flexify-checkout-for-woocommerce' ) ),
             ),
             'coupons' => $this->get_coupons(),
             'gateways' => $this->get_gateways(),

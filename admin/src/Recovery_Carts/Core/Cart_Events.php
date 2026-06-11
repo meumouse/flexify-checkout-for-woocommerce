@@ -306,7 +306,7 @@ class Cart_Events {
         $cart_id = wp_insert_post( array(
             'post_type' => 'fc-recovery-carts',
             'post_status' => 'shopping',
-            'post_title' => sprintf( __( 'Novo carrinho - %s', 'fc-recovery-carts' ), $current_time ),
+            'post_title' => sprintf( __( 'Novo carrinho - %s', 'flexify-checkout-for-woocommerce' ), $current_time ),
             'meta_input' => array(
                 '_fcrc_cart_items' => $cart_items,
                 '_fcrc_cart_total' => $cart_total,

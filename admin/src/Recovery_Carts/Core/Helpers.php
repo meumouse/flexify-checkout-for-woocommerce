@@ -573,9 +573,9 @@ class Helpers {
      */
     public static function get_formatted_channel_label( $channel ) {
         if ( $channel === 'whatsapp' ) {
-            return esc_html__( 'WhatsApp', 'fc-recovery-carts' );
+            return esc_html__( 'WhatsApp', 'flexify-checkout-for-woocommerce' );
         } elseif ( $channel === 'email' ) {
-            return esc_html__( 'E-mail', 'fc-recovery-carts' );
+            return esc_html__( 'E-mail', 'flexify-checkout-for-woocommerce' );
         }
         
         return ucfirst( $channel );

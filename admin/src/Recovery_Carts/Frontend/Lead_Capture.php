@@ -59,7 +59,7 @@ class Lead_Capture {
         <div class="fcrc-popup-container lead-capture-modal">
             <div class="fcrc-popup-content">
                 <div class="fcrc-popup-header">
-                    <button class="fcrc-popup-close" aria-label="<?php esc_attr_e( 'Fechar', 'fc-recovery-carts' ); ?>"></button>
+                    <button class="fcrc-popup-close" aria-label="<?php esc_attr_e( 'Fechar', 'flexify-checkout-for-woocommerce' ); ?>"></button>
                 </div>
 
                 <div class="fcrc-popup-body">
@@ -82,27 +82,27 @@ class Lead_Capture {
 
                         <div class="fcrc-contact-name-wrapper mb-4">
                             <div class="fcrc-first-name-wrapper">
-                                <label class="form-label"><?php esc_html_e( 'Nome: *', 'fc-recovery-carts' ); ?></label>
-                                <input type="text" class="fcrc-input fcrc-get-first-name" required placeholder="<?php esc_attr_e( 'João', 'fc-recovery-carts' ); ?>" value="<?php echo $first_name ?? ''; ?>">
+                                <label class="form-label"><?php esc_html_e( 'Nome: *', 'flexify-checkout-for-woocommerce' ); ?></label>
+                                <input type="text" class="fcrc-input fcrc-get-first-name" required placeholder="<?php esc_attr_e( 'João', 'flexify-checkout-for-woocommerce' ); ?>" value="<?php echo $first_name ?? ''; ?>">
                             </div>
 
                             <div class="fcrc-last-name-wrapper">
-                                <label class="form-label"><?php esc_html_e( 'Sobrenome: *', 'fc-recovery-carts' ); ?></label>
-                                <input type="text" class="fcrc-input fcrc-get-last-name" required placeholder="<?php esc_attr_e( 'da Silva', 'fc-recovery-carts' ); ?>" value="<?php echo $last_name ?? ''; ?>">
+                                <label class="form-label"><?php esc_html_e( 'Sobrenome: *', 'flexify-checkout-for-woocommerce' ); ?></label>
+                                <input type="text" class="fcrc-input fcrc-get-last-name" required placeholder="<?php esc_attr_e( 'da Silva', 'flexify-checkout-for-woocommerce' ); ?>" value="<?php echo $last_name ?? ''; ?>">
                             </div>
                         </div>
 
                         <div class="fcrc-contact-phone-wrapper mb-4">
                             <div class="me-3 w-100">
-                                <label class="form-label"><?php esc_html_e( 'Telefone / WhatsApp: *', 'fc-recovery-carts' ); ?></label>
-                                <input type="tel" class="fcrc-input fcrc-get-phone" required placeholder="<?php esc_attr_e( '+55 11 91234-5678', 'fc-recovery-carts' ); ?>" value="<?php echo $phone ?? ''; ?>">
+                                <label class="form-label"><?php esc_html_e( 'Telefone / WhatsApp: *', 'flexify-checkout-for-woocommerce' ); ?></label>
+                                <input type="tel" class="fcrc-input fcrc-get-phone" required placeholder="<?php esc_attr_e( '+55 11 91234-5678', 'flexify-checkout-for-woocommerce' ); ?>" value="<?php echo $phone ?? ''; ?>">
                             </div>
                         </div>
 
                         <div class="fcrc-contact-email-wrapper mb-4">
                             <div class="me-3 w-100">
-                                <label class="form-label"><?php esc_html_e( 'Seu melhor e-mail: *', 'fc-recovery-carts' ); ?></label>
-                                <input type="email" class="fcrc-input fcrc-get-email" required placeholder="<?php esc_attr_e( 'joaodasilva@email.com', 'fc-recovery-carts' ); ?>" value="<?php echo $email ?? ''; ?>">
+                                <label class="form-label"><?php esc_html_e( 'Seu melhor e-mail: *', 'flexify-checkout-for-woocommerce' ); ?></label>
+                                <input type="email" class="fcrc-input fcrc-get-email" required placeholder="<?php esc_attr_e( 'joaodasilva@email.com', 'flexify-checkout-for-woocommerce' ); ?>" value="<?php echo $email ?? ''; ?>">
                             </div>
                         </div>
                         

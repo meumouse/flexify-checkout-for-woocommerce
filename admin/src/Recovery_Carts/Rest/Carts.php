@@ -180,13 +180,13 @@ class Carts extends Abstract_Route {
      */
     private function status_label( $status ) {
         $labels = array(
-            'lead' => __( 'Lead', 'fc-recovery-carts' ),
-            'shopping' => __( 'Comprando', 'fc-recovery-carts' ),
-            'abandoned' => __( 'Abandonado', 'fc-recovery-carts' ),
-            'order_abandoned' => __( 'Pedido abandonado', 'fc-recovery-carts' ),
-            'recovered' => __( 'Recuperado', 'fc-recovery-carts' ),
-            'lost' => __( 'Perdido', 'fc-recovery-carts' ),
-            'purchased' => __( 'Comprou', 'fc-recovery-carts' ),
+            'lead' => __( 'Lead', 'flexify-checkout-for-woocommerce' ),
+            'shopping' => __( 'Comprando', 'flexify-checkout-for-woocommerce' ),
+            'abandoned' => __( 'Abandonado', 'flexify-checkout-for-woocommerce' ),
+            'order_abandoned' => __( 'Pedido abandonado', 'flexify-checkout-for-woocommerce' ),
+            'recovered' => __( 'Recuperado', 'flexify-checkout-for-woocommerce' ),
+            'lost' => __( 'Perdido', 'flexify-checkout-for-woocommerce' ),
+            'purchased' => __( 'Comprou', 'flexify-checkout-for-woocommerce' ),
         );
 
         return isset( $labels[ $status ] ) ? $labels[ $status ] : ucfirst( $status );
@@ -200,7 +200,7 @@ class Carts extends Abstract_Route {
      * @return array<int,array{value:string,label:string}>
      */
     private function status_options() {
-        $options = array( array( 'value' => 'all', 'label' => __( 'Todos os status', 'fc-recovery-carts' ) ) );
+        $options = array( array( 'value' => 'all', 'label' => __( 'Todos os status', 'flexify-checkout-for-woocommerce' ) ) );
 
         foreach ( self::STATUSES as $status ) {
             $options[] = array( 'value' => $status, 'label' => $this->status_label( $status ) );

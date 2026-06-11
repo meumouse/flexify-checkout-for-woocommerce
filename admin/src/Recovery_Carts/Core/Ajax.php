@@ -120,7 +120,7 @@ class Ajax {
         // Verify nonce for security
         if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], $this->ajax_nonce_name ) ) {
             wp_send_json_error( array(
-                'message' => esc_html__( 'Requisição inválida ou expirada. Por favor, atualize a página.', 'fc-recovery-carts' )
+                'message' => esc_html__( 'Requisição inválida ou expirada. Por favor, atualize a página.', 'flexify-checkout-for-woocommerce' )
             ));
         }
 
@@ -128,7 +128,7 @@ class Ajax {
         foreach ( $required_params as $param ) {
             if ( ! isset( $_POST[ $param ] ) ) {
                 wp_send_json_error( array(
-                    'message' => sprintf( esc_html__( 'Parâmetro obrigatório ausente: %s', 'fc-recovery-carts' ), $param )
+                    'message' => sprintf( esc_html__( 'Parâmetro obrigatório ausente: %s', 'flexify-checkout-for-woocommerce' ), $param )
                 ));
             }
         }
@@ -179,7 +179,7 @@ class Ajax {
         }
 
         wp_send_json_error( array(
-            'message' => esc_html__( 'Ocorreu um erro interno. Por favor, tente novamente.', 'fc-recovery-carts' ),
+            'message' => esc_html__( 'Ocorreu um erro interno. Por favor, tente novamente.', 'flexify-checkout-for-woocommerce' ),
             'debug' => self::$debug_mode ? $e->getMessage() : null
         ));
     }
@@ -271,7 +271,7 @@ class Ajax {
 
             if ( ! current_user_can( 'manage_options' ) ) {
                 wp_send_json_error( array(
-                    'message' => esc_html__( 'Permissão negada.', 'fc-recovery-carts' )
+                    'message' => esc_html__( 'Permissão negada.', 'flexify-checkout-for-woocommerce' )
                 ));
             }
 
@@ -318,14 +318,14 @@ class Ajax {
             if ( $saved_options ) {
                 $response = array(
                     'status' => 'success',
-                    'toast_header_title' => esc_html__( 'Salvo com sucesso', 'fc-recovery-carts' ),
-                    'toast_body_title' => esc_html__( 'As configurações foram atualizadas!', 'fc-recovery-carts' ),
+                    'toast_header_title' => esc_html__( 'Salvo com sucesso', 'flexify-checkout-for-woocommerce' ),
+                    'toast_body_title' => esc_html__( 'As configurações foram atualizadas!', 'flexify-checkout-for-woocommerce' ),
                 );
             } else {
                 $response = array(
                     'status' => 'error',
-                    'toast_header_title' => esc_html__( 'Ops! Ocorreu um erro.', 'fc-recovery-carts' ),
-                    'toast_body_title' => esc_html__( 'Não foi possível salvar as configurações.', 'fc-recovery-carts' ),
+                    'toast_header_title' => esc_html__( 'Ops! Ocorreu um erro.', 'flexify-checkout-for-woocommerce' ),
+                    'toast_body_title' => esc_html__( 'Não foi possível salvar as configurações.', 'flexify-checkout-for-woocommerce' ),
                 );
             }
 
@@ -359,7 +359,7 @@ class Ajax {
 
             if ( ! current_user_can( 'manage_options' ) ) {
                 wp_send_json_error( array(
-                    'message' => esc_html__( 'Permissão negada.', 'fc-recovery-carts' )
+                    'message' => esc_html__( 'Permissão negada.', 'flexify-checkout-for-woocommerce' )
                 ) );
             }
 
@@ -418,15 +418,15 @@ class Ajax {
             if ( $saved_options ) {
                 $response = array(
                     'status' => 'success',
-                    'toast_header_title' => esc_html__( 'Salvo com sucesso', 'fc-recovery-carts' ),
-                    'toast_body_title' => esc_html__( 'O evento foi adicionado com sucesso!', 'fc-recovery-carts' ),
+                    'toast_header_title' => esc_html__( 'Salvo com sucesso', 'flexify-checkout-for-woocommerce' ),
+                    'toast_body_title' => esc_html__( 'O evento foi adicionado com sucesso!', 'flexify-checkout-for-woocommerce' ),
                     'follow_up_list' => Admin_Components::follow_up_list(),
                 );
             } else {
                 $response = array(
                     'status' => 'error',
-                    'toast_header_title' => esc_html__( 'Ops! Ocorreu um erro', 'fc-recovery-carts' ),
-                    'toast_body_title' => esc_html__( 'Não foi possível adicionar o novo evento.', 'fc-recovery-carts' ),
+                    'toast_header_title' => esc_html__( 'Ops! Ocorreu um erro', 'flexify-checkout-for-woocommerce' ),
+                    'toast_body_title' => esc_html__( 'Não foi possível adicionar o novo evento.', 'flexify-checkout-for-woocommerce' ),
                 );
             }
 
@@ -451,7 +451,7 @@ class Ajax {
 
             if ( ! current_user_can( 'manage_options' ) ) {
                 wp_send_json_error( array(
-                    'message' => esc_html__( 'Permissão negada.', 'fc-recovery-carts' )
+                    'message' => esc_html__( 'Permissão negada.', 'flexify-checkout-for-woocommerce' )
                 ) );
             }
 
@@ -459,7 +459,7 @@ class Ajax {
 
             if ( empty( $event_key ) ) {
                 wp_send_json_error( array(
-                    'message' => esc_html__( 'Chave do evento não especificada.', 'fc-recovery-carts' )
+                    'message' => esc_html__( 'Chave do evento não especificada.', 'flexify-checkout-for-woocommerce' )
                 ) );
             }
 
@@ -477,22 +477,22 @@ class Ajax {
                 if ( $saved_options ) {
                     $response = array(
                         'status' => 'success',
-                        'toast_header_title' => esc_html__( 'Salvo com sucesso', 'fc-recovery-carts' ),
-                        'toast_body_title' => esc_html__( 'O evento foi removido com sucesso!', 'fc-recovery-carts' ),
+                        'toast_header_title' => esc_html__( 'Salvo com sucesso', 'flexify-checkout-for-woocommerce' ),
+                        'toast_body_title' => esc_html__( 'O evento foi removido com sucesso!', 'flexify-checkout-for-woocommerce' ),
                         'follow_up_list' => Admin_Components::follow_up_list(),
                     );
                 } else {
                     $response = array(
                         'status' => 'error',
-                        'toast_header_title' => esc_html__( 'Ops! Ocorreu um erro', 'fc-recovery-carts' ),
-                        'toast_body_title' => esc_html__( 'Não foi possível remover o evento.', 'fc-recovery-carts' ),
+                        'toast_header_title' => esc_html__( 'Ops! Ocorreu um erro', 'flexify-checkout-for-woocommerce' ),
+                        'toast_body_title' => esc_html__( 'Não foi possível remover o evento.', 'flexify-checkout-for-woocommerce' ),
                     );
                 }
             } else {
                 $response = array(
                     'status' => 'error',
-                    'toast_header_title' => esc_html__( 'Ops! Ocorreu um erro', 'fc-recovery-carts' ),
-                    'toast_body_title' => esc_html__( 'Evento não encontrado.', 'fc-recovery-carts' ),
+                    'toast_header_title' => esc_html__( 'Ops! Ocorreu um erro', 'flexify-checkout-for-woocommerce' ),
+                    'toast_body_title' => esc_html__( 'Evento não encontrado.', 'flexify-checkout-for-woocommerce' ),
                 );
             }
 
@@ -515,7 +515,7 @@ class Ajax {
 
             if ( ! current_user_can( 'manage_options' ) ) {
                 wp_send_json_error( array(
-                    'message' => esc_html__( 'Permissão negada.', 'fc-recovery-carts' )
+                    'message' => esc_html__( 'Permissão negada.', 'flexify-checkout-for-woocommerce' )
                 ) );
             }
 
@@ -526,16 +526,16 @@ class Ajax {
             if ( ! $event ) {
                 wp_send_json( array(
                     'status' => 'error',
-                    'toast_header_title' => esc_html__( 'Ops! Ocorreu um erro', 'fc-recovery-carts' ),
-                    'toast_body_title' => esc_html__( 'Evento de follow up não encontrado.', 'fc-recovery-carts' ),
+                    'toast_header_title' => esc_html__( 'Ops! Ocorreu um erro', 'flexify-checkout-for-woocommerce' ),
+                    'toast_body_title' => esc_html__( 'Evento de follow up não encontrado.', 'flexify-checkout-for-woocommerce' ),
                 ) );
             }
 
             if ( empty( $event['channels']['whatsapp'] ) || $event['channels']['whatsapp'] !== 'yes' ) {
                 wp_send_json( array(
                     'status' => 'error',
-                    'toast_header_title' => esc_html__( 'Canal desativado', 'fc-recovery-carts' ),
-                    'toast_body_title' => esc_html__( 'O canal WhatsApp não está ativo para este follow up.', 'fc-recovery-carts' ),
+                    'toast_header_title' => esc_html__( 'Canal desativado', 'flexify-checkout-for-woocommerce' ),
+                    'toast_body_title' => esc_html__( 'O canal WhatsApp não está ativo para este follow up.', 'flexify-checkout-for-woocommerce' ),
                 ) );
             }
 
@@ -544,25 +544,25 @@ class Ajax {
             if ( empty( $test_phone ) ) {
                 wp_send_json( array(
                     'status' => 'error',
-                    'toast_header_title' => esc_html__( 'Telefone não configurado', 'fc-recovery-carts' ),
-                    'toast_body_title' => esc_html__( 'Configure o telefone de teste nas opções da integração Joinotify.', 'fc-recovery-carts' ),
+                    'toast_header_title' => esc_html__( 'Telefone não configurado', 'flexify-checkout-for-woocommerce' ),
+                    'toast_body_title' => esc_html__( 'Configure o telefone de teste nas opções da integração Joinotify.', 'flexify-checkout-for-woocommerce' ),
                 ) );
             }
 
             if ( ! function_exists('joinotify_send_whatsapp_message_text') ) {
                 wp_send_json( array(
                     'status' => 'error',
-                    'toast_header_title' => esc_html__( 'Joinotify indisponível', 'fc-recovery-carts' ),
-                    'toast_body_title' => esc_html__( 'A integração Joinotify não está ativa.', 'fc-recovery-carts' ),
+                    'toast_header_title' => esc_html__( 'Joinotify indisponível', 'flexify-checkout-for-woocommerce' ),
+                    'toast_body_title' => esc_html__( 'A integração Joinotify não está ativa.', 'flexify-checkout-for-woocommerce' ),
                 ) );
             }
 
             $dummy_values = array(
-                '{{ first_name }}' => esc_html__( 'João', 'fc-recovery-carts' ),
-                '{{ last_name }}' => esc_html__( 'da Silva', 'fc-recovery-carts' ),
+                '{{ first_name }}' => esc_html__( 'João', 'flexify-checkout-for-woocommerce' ),
+                '{{ last_name }}' => esc_html__( 'da Silva', 'flexify-checkout-for-woocommerce' ),
                 '{{ recovery_link }}' => home_url( '/?fcrc_recovery=teste123' ),
                 '{{ coupon_code }}' => 'TESTE10',
-                '{{ products_list }}' => esc_html__( 'Produto de exemplo 1, Produto de exemplo 2', 'fc-recovery-carts' ),
+                '{{ products_list }}' => esc_html__( 'Produto de exemplo 1, Produto de exemplo 2', 'flexify-checkout-for-woocommerce' ),
                 '{{ cart_total }}' => function_exists('wc_price') ? html_entity_decode( wp_strip_all_tags( wc_price( 199.90 ) ), ENT_QUOTES | ENT_HTML5, 'UTF-8' ) : '199.90',
             );
 
@@ -583,8 +583,8 @@ class Ajax {
             if ( empty( $sender ) || $sender === 'none' ) {
                 wp_send_json( array(
                     'status' => 'error',
-                    'toast_header_title' => esc_html__( 'Remetente não configurado', 'fc-recovery-carts' ),
-                    'toast_body_title' => esc_html__( 'Selecione um remetente nas opções da integração Joinotify.', 'fc-recovery-carts' ),
+                    'toast_header_title' => esc_html__( 'Remetente não configurado', 'flexify-checkout-for-woocommerce' ),
+                    'toast_body_title' => esc_html__( 'Selecione um remetente nas opções da integração Joinotify.', 'flexify-checkout-for-woocommerce' ),
                 ) );
             }
 
@@ -593,15 +593,15 @@ class Ajax {
             if ( $sent ) {
                 wp_send_json( array(
                     'status' => 'success',
-                    'toast_header_title' => esc_html__( 'Mensagem enviada', 'fc-recovery-carts' ),
-                    'toast_body_title' => sprintf( esc_html__( 'Teste enviado para %s.', 'fc-recovery-carts' ), esc_html( $receiver ) ),
+                    'toast_header_title' => esc_html__( 'Mensagem enviada', 'flexify-checkout-for-woocommerce' ),
+                    'toast_body_title' => sprintf( esc_html__( 'Teste enviado para %s.', 'flexify-checkout-for-woocommerce' ), esc_html( $receiver ) ),
                 ) );
             }
 
             wp_send_json( array(
                 'status' => 'error',
-                'toast_header_title' => esc_html__( 'Falha ao enviar', 'fc-recovery-carts' ),
-                'toast_body_title' => esc_html__( 'Não foi possível enviar a mensagem de teste. Verifique a configuração do Joinotify.', 'fc-recovery-carts' ),
+                'toast_header_title' => esc_html__( 'Falha ao enviar', 'flexify-checkout-for-woocommerce' ),
+                'toast_body_title' => esc_html__( 'Não foi possível enviar a mensagem de teste. Verifique a configuração do Joinotify.', 'flexify-checkout-for-woocommerce' ),
             ) );
         } catch ( \Exception $e ) {
             $this->handle_ajax_exception( __FUNCTION__, $e );
@@ -726,7 +726,7 @@ class Ajax {
             } else {
                 $response = array(
                     'status' => 'error',
-                    'message' => is_wp_error( $cart_id ) ? $cart_id->get_error_message() : esc_html__( 'Falha ao criar carrinho.', 'fc-recovery-carts' ),
+                    'message' => is_wp_error( $cart_id ) ? $cart_id->get_error_message() : esc_html__( 'Falha ao criar carrinho.', 'flexify-checkout-for-woocommerce' ),
                 );
             }
 
@@ -817,7 +817,7 @@ class Ajax {
                 ));
             } else {
                 wp_send_json_error( array(
-                    'message' => esc_html__( 'ID do carrinho inválido.', 'fc-recovery-carts' )
+                    'message' => esc_html__( 'ID do carrinho inválido.', 'flexify-checkout-for-woocommerce' )
                 ));
             }
 
@@ -848,7 +848,7 @@ class Ajax {
 
             if ( empty( $cart_id ) || empty( $country_data ) ) {
                 wp_send_json_error( array(
-                    'message' => esc_html__( 'Dados inválidos.', 'fc-recovery-carts' )
+                    'message' => esc_html__( 'Dados inválidos.', 'flexify-checkout-for-woocommerce' )
                 ));
             }
 
@@ -860,7 +860,7 @@ class Ajax {
             update_post_meta( $cart_id, '_fcrc_location_ip', sanitize_text_field( $country_data['ip'] ?? '' ) );
 
             wp_send_json_success( array(
-                'message' => esc_html__( 'Dados de localização atualizados com sucesso.', 'fc-recovery-carts' )
+                'message' => esc_html__( 'Dados de localização atualizados com sucesso.', 'flexify-checkout-for-woocommerce' )
             ));
         } catch ( \Exception $e ) {
             $this->handle_ajax_exception( __FUNCTION__, $e );

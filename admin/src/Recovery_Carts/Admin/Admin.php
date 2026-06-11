@@ -78,7 +78,7 @@ class Admin {
 
         $schema[] = array(
             'id' => 'recovery',
-            'title' => esc_html__( 'Recuperação', 'fc-recovery-carts' ),
+            'title' => esc_html__( 'Recuperação', 'flexify-checkout-for-woocommerce' ),
             'icon' => '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 3a9 9 0 0 0-9 9H1l3.89 3.89.07.14L9 12H6a7 7 0 1 1 2.05 4.95l-1.42 1.42A9 9 0 1 0 13 3z"></path><path d="M12 8v5l4 2 .75-1.23-3.25-1.92V8z"></path></svg>',
             'layout' => 'cards',
             'cards' => array(
@@ -120,8 +120,8 @@ class Admin {
 
             add_submenu_page(
                 $parent, // parent page slug
-                esc_html__( 'Análises', 'fc-recovery-carts' ), // page title
-                esc_html__( 'Análises', 'fc-recovery-carts' ), // submenu title
+                esc_html__( 'Análises', 'flexify-checkout-for-woocommerce' ), // page title
+                esc_html__( 'Análises', 'flexify-checkout-for-woocommerce' ), // submenu title
                 'manage_woocommerce', // user capabilities
                 'fc-recovery-carts', // page slug
                 array( $this, 'analytics_page' ) // callback
@@ -130,8 +130,8 @@ class Admin {
             // all carts list page
             add_submenu_page(
                 $parent,
-                esc_html__( 'Todos os carrinhos', 'fc-recovery-carts' ),
-                esc_html__( 'Todos os carrinhos', 'fc-recovery-carts' ),
+                esc_html__( 'Todos os carrinhos', 'flexify-checkout-for-woocommerce' ),
+                esc_html__( 'Todos os carrinhos', 'flexify-checkout-for-woocommerce' ),
                 'manage_woocommerce',
                 'fc-recovery-carts-list',
                 array( $this, 'carts_table_page' )
@@ -140,8 +140,8 @@ class Admin {
             // processing queue page
             add_submenu_page(
                 $parent,
-                esc_html__( 'Fila de processamentos', 'fc-recovery-carts' ),
-                esc_html__( 'Fila de processamentos', 'fc-recovery-carts' ),
+                esc_html__( 'Fila de processamentos', 'flexify-checkout-for-woocommerce' ),
+                esc_html__( 'Fila de processamentos', 'flexify-checkout-for-woocommerce' ),
                 'manage_woocommerce',
                 'fc-recovery-carts-queue',
                 array( $this, 'queue_table_page' )
@@ -155,8 +155,8 @@ class Admin {
         // settings now live in Configurações > Recuperação.
         add_submenu_page(
             $parent,
-            esc_html__( 'Recuperação de carrinhos', 'fc-recovery-carts' ),
-            esc_html__( 'Recuperação de carrinhos', 'fc-recovery-carts' ),
+            esc_html__( 'Recuperação de carrinhos', 'flexify-checkout-for-woocommerce' ),
+            esc_html__( 'Recuperação de carrinhos', 'flexify-checkout-for-woocommerce' ),
             'manage_woocommerce',
             'fc-recovery-carts-settings',
             array( $this, 'render_settings_page' )
@@ -341,20 +341,20 @@ class Admin {
      */
     public function register_post_type() {
         $labels = array(
-            'name'               => _x( 'Carrinhos', 'post type general name', 'fc-recovery-carts' ),
-            'singular_name'      => _x( 'Carrinho', 'post type singular name', 'fc-recovery-carts' ),
-            'menu_name'          => _x( 'Carrinhos', 'admin menu', 'fc-recovery-carts' ),
-            'name_admin_bar'     => _x( 'Carrinho', 'add new on admin bar', 'fc-recovery-carts' ),
-            'add_new'            => _x( 'Adicionar novo', 'carrinho', 'fc-recovery-carts' ),
-            'add_new_item'       => __( 'Adicionar novo carrinho', 'fc-recovery-carts' ),
-            'new_item'           => __( 'Novo carrinho', 'fc-recovery-carts' ),
-            'edit_item'          => __( 'Editar carrinho', 'fc-recovery-carts' ),
-            'view_item'          => __( 'Ver carrinho', 'fc-recovery-carts' ),
-            'all_items'          => __( 'Todos os carrinhos', 'fc-recovery-carts' ),
-            'search_items'       => __( 'Pesquisar carrinhos', 'fc-recovery-carts' ),
-            'parent_item_colon'  => __( 'Carrinho pai:', 'fc-recovery-carts' ),
-            'not_found'          => __( 'Nenhum carrinho encontrado.', 'fc-recovery-carts' ),
-            'not_found_in_trash' => __( 'Nenhum carrinho encontrado na lixeira.', 'fc-recovery-carts' )
+            'name'               => _x( 'Carrinhos', 'post type general name', 'flexify-checkout-for-woocommerce' ),
+            'singular_name'      => _x( 'Carrinho', 'post type singular name', 'flexify-checkout-for-woocommerce' ),
+            'menu_name'          => _x( 'Carrinhos', 'admin menu', 'flexify-checkout-for-woocommerce' ),
+            'name_admin_bar'     => _x( 'Carrinho', 'add new on admin bar', 'flexify-checkout-for-woocommerce' ),
+            'add_new'            => _x( 'Adicionar novo', 'carrinho', 'flexify-checkout-for-woocommerce' ),
+            'add_new_item'       => __( 'Adicionar novo carrinho', 'flexify-checkout-for-woocommerce' ),
+            'new_item'           => __( 'Novo carrinho', 'flexify-checkout-for-woocommerce' ),
+            'edit_item'          => __( 'Editar carrinho', 'flexify-checkout-for-woocommerce' ),
+            'view_item'          => __( 'Ver carrinho', 'flexify-checkout-for-woocommerce' ),
+            'all_items'          => __( 'Todos os carrinhos', 'flexify-checkout-for-woocommerce' ),
+            'search_items'       => __( 'Pesquisar carrinhos', 'flexify-checkout-for-woocommerce' ),
+            'parent_item_colon'  => __( 'Carrinho pai:', 'flexify-checkout-for-woocommerce' ),
+            'not_found'          => __( 'Nenhum carrinho encontrado.', 'flexify-checkout-for-woocommerce' ),
+            'not_found_in_trash' => __( 'Nenhum carrinho encontrado na lixeira.', 'flexify-checkout-for-woocommerce' )
         );
     
         // This CPT stores internal recovery-cart records only. It is never shown
@@ -367,7 +367,7 @@ class Admin {
         // product/category listings.
         $args = array(
             'labels'              => $labels,
-            'description'         => __( 'Registros internos de carrinhos de recuperação.', 'fc-recovery-carts' ),
+            'description'         => __( 'Registros internos de carrinhos de recuperação.', 'flexify-checkout-for-woocommerce' ),
             'public'              => false,
             'publicly_queryable'  => false,
             'exclude_from_search' => true,
@@ -447,10 +447,10 @@ class Admin {
      */
     public function register_cron_event_cpt() {
         $labels = array(
-            'name'               => __( 'Cron Events', 'fc-recovery-carts' ),
-            'singular_name'      => __( 'Cron Event', 'fc-recovery-carts' ),
-            'menu_name'          => __( 'Cron Events', 'fc-recovery-carts' ),
-            'name_admin_bar'     => __( 'Cron Event', 'fc-recovery-carts' ),
+            'name'               => __( 'Cron Events', 'flexify-checkout-for-woocommerce' ),
+            'singular_name'      => __( 'Cron Event', 'flexify-checkout-for-woocommerce' ),
+            'menu_name'          => __( 'Cron Events', 'flexify-checkout-for-woocommerce' ),
+            'name_admin_bar'     => __( 'Cron Event', 'flexify-checkout-for-woocommerce' ),
         );
 
         $args = array(
@@ -483,7 +483,7 @@ class Admin {
         }
 
         $class = 'notice notice-warning is-dismissible';
-        $message = __( 'O modo PHP-Cron requer o WP-CLI instalado no servidor. Instale o WP-CLI ou altere o agendador para WP-Cron.', 'fc-recovery-carts' );
+        $message = __( 'O modo PHP-Cron requer o WP-CLI instalado no servidor. Instale o WP-CLI ou altere o agendador para WP-Cron.', 'flexify-checkout-for-woocommerce' );
 
         printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), $message );
     }

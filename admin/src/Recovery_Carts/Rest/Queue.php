@@ -124,8 +124,8 @@ class Queue extends Abstract_Route {
      */
     private function event_label( $key ) {
         $map = array(
-            'fcrc_send_follow_up_message' => __( 'Follow up', 'fc-recovery-carts' ),
-            'fcrc_check_final_cart_status' => __( 'Aguardando pagamento', 'fc-recovery-carts' ),
+            'fcrc_send_follow_up_message' => __( 'Follow up', 'flexify-checkout-for-woocommerce' ),
+            'fcrc_check_final_cart_status' => __( 'Aguardando pagamento', 'flexify-checkout-for-woocommerce' ),
         );
 
         return isset( $map[ $key ] ) ? $map[ $key ] : $key;

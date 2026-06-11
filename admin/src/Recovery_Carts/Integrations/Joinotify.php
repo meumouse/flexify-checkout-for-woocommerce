@@ -60,13 +60,13 @@ class Joinotify extends Integrations_Base {
             }
         endif; ?>
 
-        <button id="fcrc_joinotify_settings_trigger" class="btn btn-outline-primary mb-5"><?php esc_html_e( 'Configurar', 'fc-recovery-carts' ) ?></button>
+        <button id="fcrc_joinotify_settings_trigger" class="btn btn-outline-primary mb-5"><?php esc_html_e( 'Configurar', 'flexify-checkout-for-woocommerce' ) ?></button>
 
         <div id="fcrc_joinotify_settings_container" class="fcrc-popup-container">
             <div class="fcrc-popup-content">
                 <div class="fcrc-popup-header">
-                    <h5 class="fcrc-popup-title"><?php esc_html_e( 'Configurações da integração: Joinotify', 'fc-recovery-carts' ); ?></h5>
-                    <button id="fcrc_joinotify_settings_close" class="btn-close fs-5" aria-label="<?php esc_attr_e( 'Fechar', 'fc-recovery-carts' ); ?>"></button>
+                    <h5 class="fcrc-popup-title"><?php esc_html_e( 'Configurações da integração: Joinotify', 'flexify-checkout-for-woocommerce' ); ?></h5>
+                    <button id="fcrc_joinotify_settings_close" class="btn-close fs-5" aria-label="<?php esc_attr_e( 'Fechar', 'flexify-checkout-for-woocommerce' ); ?>"></button>
                 </div>
 
                 <div class="fcrc-popup-body">
@@ -74,12 +74,12 @@ class Joinotify extends Integrations_Base {
                         <tbody>
                             <tr>
                                 <th class="w-50">
-                                    <?php esc_html_e( 'Remetente das notificações', 'fc-recovery-carts' ); ?>
-                                    <span class="fc-recovery-carts-description"><?php esc_html_e( 'Selecione um remetente que fará o envio das notificações de recuperações de carrinhos e pedidos.', 'fc-recovery-carts' ); ?></span>
+                                    <?php esc_html_e( 'Remetente das notificações', 'flexify-checkout-for-woocommerce' ); ?>
+                                    <span class="fc-recovery-carts-description"><?php esc_html_e( 'Selecione um remetente que fará o envio das notificações de recuperações de carrinhos e pedidos.', 'flexify-checkout-for-woocommerce' ); ?></span>
                                 </th>
                                 <td class="w-50">
                                     <select class="form-select" id="joinotify_sender_phone" name="joinotify_sender_phone">
-                                        <option value="none" <?php selected( $selected_value, 'none', true ) ?>><?php esc_html_e( 'Selecione um remetente', 'fc-recovery-carts' ) ?></option>
+                                        <option value="none" <?php selected( $selected_value, 'none', true ) ?>><?php esc_html_e( 'Selecione um remetente', 'flexify-checkout-for-woocommerce' ) ?></option>
                                         
                                         <?php
                                         if ( is_array( $current_senders ) ) :
@@ -93,8 +93,8 @@ class Joinotify extends Integrations_Base {
 
                             <tr>
                                 <th class="w-50">
-                                    <?php esc_html_e( 'Telefone para teste de follow up', 'fc-recovery-carts' ); ?>
-                                    <span class="fc-recovery-carts-description"><?php esc_html_e( 'Número que receberá as mensagens enviadas pelo botão "Testar" de cada follow up. Informe com DDI + DDD + número (ex: 5511999999999).', 'fc-recovery-carts' ); ?></span>
+                                    <?php esc_html_e( 'Telefone para teste de follow up', 'flexify-checkout-for-woocommerce' ); ?>
+                                    <span class="fc-recovery-carts-description"><?php esc_html_e( 'Número que receberá as mensagens enviadas pelo botão "Testar" de cada follow up. Informe com DDI + DDD + número (ex: 5511999999999).', 'flexify-checkout-for-woocommerce' ); ?></span>
                                 </th>
                                 <td class="w-50">
                                     <input type="text" class="form-control" id="joinotify_test_phone" name="joinotify_test_phone" value="<?php echo esc_attr( Admin::get_setting('joinotify_test_phone') ); ?>" placeholder="5511999999999">

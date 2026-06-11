@@ -53,32 +53,32 @@ class Webhooks {
     public static function get_registered_events() {
         $events = array(
             'cart_abandoned' => array(
-                'label' => esc_html__( 'Carrinho abandonado', 'fc-recovery-carts' ),
-                'description' => esc_html__( 'Disparado quando um carrinho é marcado como abandonado.', 'fc-recovery-carts' ),
+                'label' => esc_html__( 'Carrinho abandonado', 'flexify-checkout-for-woocommerce' ),
+                'description' => esc_html__( 'Disparado quando um carrinho é marcado como abandonado.', 'flexify-checkout-for-woocommerce' ),
             ),
             'order_abandoned' => array(
-                'label' => esc_html__( 'Pedido abandonado', 'fc-recovery-carts' ),
-                'description' => esc_html__( 'Executado quando um pedido permanece pendente e é marcado como abandonado.', 'fc-recovery-carts' ),
+                'label' => esc_html__( 'Pedido abandonado', 'flexify-checkout-for-woocommerce' ),
+                'description' => esc_html__( 'Executado quando um pedido permanece pendente e é marcado como abandonado.', 'flexify-checkout-for-woocommerce' ),
             ),
             'cart_lost' => array(
-                'label' => esc_html__( 'Carrinho perdido', 'fc-recovery-carts' ),
-                'description' => esc_html__( 'Acionado após o término dos follow ups quando o cliente não concluiu o pedido.', 'fc-recovery-carts' ),
+                'label' => esc_html__( 'Carrinho perdido', 'flexify-checkout-for-woocommerce' ),
+                'description' => esc_html__( 'Acionado após o término dos follow ups quando o cliente não concluiu o pedido.', 'flexify-checkout-for-woocommerce' ),
             ),
             'cart_recovered' => array(
-                'label' => esc_html__( 'Carrinho recuperado', 'fc-recovery-carts' ),
-                'description' => esc_html__( 'Executado quando um carrinho abandonado gera um pedido concluído.', 'fc-recovery-carts' ),
+                'label' => esc_html__( 'Carrinho recuperado', 'flexify-checkout-for-woocommerce' ),
+                'description' => esc_html__( 'Executado quando um carrinho abandonado gera um pedido concluído.', 'flexify-checkout-for-woocommerce' ),
             ),
             'purchased_cart' => array(
-                'label' => esc_html__( 'Pedido concluído', 'fc-recovery-carts' ),
-                'description' => esc_html__( 'Disparado quando um pedido é concluído diretamente pelo cliente.', 'fc-recovery-carts' ),
+                'label' => esc_html__( 'Pedido concluído', 'flexify-checkout-for-woocommerce' ),
+                'description' => esc_html__( 'Disparado quando um pedido é concluído diretamente pelo cliente.', 'flexify-checkout-for-woocommerce' ),
             ),
             'lead_collected' => array(
-                'label' => esc_html__( 'Lead capturado', 'fc-recovery-carts' ),
-                'description' => esc_html__( 'Acionado quando os dados de contato são coletados via modal ou checkout.', 'fc-recovery-carts' ),
+                'label' => esc_html__( 'Lead capturado', 'flexify-checkout-for-woocommerce' ),
+                'description' => esc_html__( 'Acionado quando os dados de contato são coletados via modal ou checkout.', 'flexify-checkout-for-woocommerce' ),
             ),
             'follow_up_sent' => array(
-                'label' => esc_html__( 'Follow up enviado', 'fc-recovery-carts' ),
-                'description' => esc_html__( 'Disparado sempre que uma mensagem de follow up é enviada.', 'fc-recovery-carts' ),
+                'label' => esc_html__( 'Follow up enviado', 'flexify-checkout-for-woocommerce' ),
+                'description' => esc_html__( 'Disparado sempre que uma mensagem de follow up é enviada.', 'flexify-checkout-for-woocommerce' ),
             ),
         );
 
