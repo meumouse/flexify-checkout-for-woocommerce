@@ -24,6 +24,19 @@ class Settings_Assets {
      */
     private $entries = array(
         'flexify-checkout-for-woocommerce' => 'src/entries/settings.js',
+        'flexify-checkout-license' => 'src/entries/settings.js',
+    );
+
+
+    /**
+     * Map of page slug to the initial SPA route ("view") opened on mount.
+     *
+     * @since 6.0.0
+     * @var array<string,string>
+     */
+    private $views = array(
+        'flexify-checkout-for-woocommerce' => 'settings',
+        'flexify-checkout-license' => 'license',
     );
 
 
@@ -89,10 +102,13 @@ class Settings_Assets {
 
         wp_enqueue_script( $handle, $assets['script'], array(), $asset_version, true );
 
+        $view = isset( $this->views[ $page ] ) ? $this->views[ $page ] : 'settings';
+
         wp_localize_script( $handle, 'flexifyCheckoutBootstrapConfig', array(
             'restUrl' => esc_url_raw( rest_url('flexify-checkout/v1') ),
             'nonce' => wp_create_nonce('wp_rest'),
             'page' => 'settings',
+            'view' => $view,
             'endpoint' => 'admin/settings',
             'legacyUrl' => esc_url_raw( admin_url('admin.php?page=flexify-checkout-for-woocommerce&legacy=1') ),
         ));

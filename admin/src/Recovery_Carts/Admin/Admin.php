@@ -26,8 +26,9 @@ class Admin {
      * @return void
      */
     public function __construct() {
-        // add admin menu
-        add_action( 'admin_menu', array( $this, 'add_admin_menu' ) );
+        // add admin menu (priority 11: after the core Flexify Checkout top-level
+        // menu is registered at priority 10, so these submenus attach to it)
+        add_action( 'admin_menu', array( $this, 'add_admin_menu' ), 11 );
 
         // update default options on admin_init
         add_action( 'admin_init', array( $this, 'update_default_options' ) );
@@ -53,78 +54,72 @@ class Admin {
 
     
     /**
-     * Add admin menu
-     * 
+     * Add the cart recovery pages as submenus of the dedicated Flexify Checkout
+     * top-level menu (registered by core Settings_Panel at priority 10).
+     *
+     * Analytics, Carts and Queue are shown only when the recovery feature is
+     * enabled (master toggle) and the license is Pro. The recovery settings
+     * screen is a transitional legacy page that will fold into the Vue settings
+     * as a "Recuperação" tab in a later phase.
+     *
      * @since 1.0.0
-     * @version 1.3.0
+     * @version 6.0.0
      * @return void
      */
     public function add_admin_menu() {
-        global $fc_recovery_carts_hook;
+        $parent = 'flexify-checkout-for-woocommerce';
 
-        $fc_recovery_carts_hook = add_menu_page(
-            esc_html__( 'Recuperação de carrinhos abandonados', 'fc-recovery-carts' ), // label
-            esc_html__( 'Carrinhos abandonados', 'fc-recovery-carts' ), // menu label
-            'manage_woocommerce', // capatibilities
-            'fc-recovery-carts', // slug
-            array( $this, 'analytics_page' ), // callback
-            'data:image/svg+xml;base64,' . base64_encode('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 848.15 848.15"><defs><style>.cls-1{fill:#fff;}</style></defs><path class="cls-1" d="M514,116.38c-234.22,0-424.08,189.87-424.08,424.07S279.74,964.53,514,964.53,938,774.67,938,540.45,748.17,116.38,514,116.38Zm171.38,426.1c-141.76.37-257.11,117.69-257.4,259.45H339.72c0-191.79,153.83-347.42,345.62-347.42Zm0-176.64c-141.76.19-266.84,69.9-346,176.13V410.6C431,328.12,551.92,277.5,685.34,277.5Z" transform="translate(-89.88 -116.38)"/></svg>'),
-            5, // menu priority
-        );
+        // Recovery requires Pro; the core "Licença" page handles licensing UX.
+        if ( ! Helpers::is_pro() ) {
+            return;
+        }
 
-        add_action( "load-{$fc_recovery_carts_hook}", array( $this, 'load_screen_options' ) );
+        // Master toggle: only surface the data pages when the feature is on.
+        if ( self::get_switch('enable_cart_recovery') !== 'no' ) {
+            global $fc_recovery_carts_hook;
 
-        // check if Flexify Checkout Pro is active
-        if ( Helpers::is_pro() ) {
-            // Main page as first submenu item with a different name
-            add_submenu_page(
-                'fc-recovery-carts', // parent page slug
+            $fc_recovery_carts_hook = add_submenu_page(
+                $parent, // parent page slug
                 esc_html__( 'Análises', 'fc-recovery-carts' ), // page title
                 esc_html__( 'Análises', 'fc-recovery-carts' ), // submenu title
                 'manage_woocommerce', // user capabilities
-                'fc-recovery-carts', // page slug (same as the main menu page)
+                'fc-recovery-carts', // page slug
                 array( $this, 'analytics_page' ) // callback
             );
 
-            // all carts list page
-            add_submenu_page(
-                'fc-recovery-carts', // parent page slug
-                esc_html__( 'Todos os carrinhos', 'fc-recovery-carts' ), // page title
-                esc_html__( 'Todos os carrinhos', 'fc-recovery-carts' ), // submenu title
-                'manage_woocommerce', // user capabilities
-                'fc-recovery-carts-list', // page slug
-                array( $this, 'carts_table_page' ) // callback
-            );
+            add_action( "load-{$fc_recovery_carts_hook}", array( $this, 'load_screen_options' ) );
 
             // all carts list page
             add_submenu_page(
-                'fc-recovery-carts', // parent page slug
-                esc_html__( 'Fila de processamentos', 'fc-recovery-carts' ), // page title
-                esc_html__( 'Fila de processamentos', 'fc-recovery-carts' ), // submenu title
-                'manage_woocommerce', // user capabilities
-                'fc-recovery-carts-queue', // page slug
-                array( $this, 'queue_table_page' ) // callback
+                $parent,
+                esc_html__( 'Todos os carrinhos', 'fc-recovery-carts' ),
+                esc_html__( 'Todos os carrinhos', 'fc-recovery-carts' ),
+                'manage_woocommerce',
+                'fc-recovery-carts-list',
+                array( $this, 'carts_table_page' )
             );
 
-            // settings page
+            // processing queue page
             add_submenu_page(
-                'fc-recovery-carts', // parent page slug
-                esc_html__( 'Configurações', 'fc-recovery-carts' ), // page title
-                esc_html__( 'Configurações', 'fc-recovery-carts' ), // submenu title
-                'manage_woocommerce', // user capabilities
-                'fc-recovery-carts-settings', // page slug
-                array( $this, 'render_settings_page' ) // callback
-            );
-        } else {
-            add_submenu_page(
-                'fc-recovery-carts', // parent page slug
-                esc_html__( 'Configurações', 'fc-recovery-carts' ), // page title
-                esc_html__( 'Configurações', 'fc-recovery-carts' ), // submenu title
-                'manage_woocommerce', // user capabilities
-                'fc-recovery-carts-settings', // page slug
-                array( $this, 'render_settings_page_required_license' ) // callback
+                $parent,
+                esc_html__( 'Fila de processamentos', 'fc-recovery-carts' ),
+                esc_html__( 'Fila de processamentos', 'fc-recovery-carts' ),
+                'manage_woocommerce',
+                'fc-recovery-carts-queue',
+                array( $this, 'queue_table_page' )
             );
         }
+
+        // Recovery settings (follow-ups, integrations, payment delays). Transitional
+        // legacy screen; folds into the Vue settings as a "Recuperação" tab later.
+        add_submenu_page(
+            $parent,
+            esc_html__( 'Recuperação de carrinhos', 'fc-recovery-carts' ),
+            esc_html__( 'Recuperação de carrinhos', 'fc-recovery-carts' ),
+            'manage_woocommerce',
+            'fc-recovery-carts-settings',
+            array( $this, 'render_settings_page' )
+        );
     }
 
 
@@ -136,9 +131,12 @@ class Admin {
      * @return void
      */
     public function load_screen_options() {
+        // This callback is bound to load-{$fc_recovery_carts_hook}, so it only
+        // runs on the Analytics screen — no need to match a hard-coded id (which
+        // changed once the page became a submenu of the Flexify Checkout menu).
         $screen = get_current_screen();
 
-        if ( ! is_object( $screen ) || $screen->id !== 'toplevel_page_fc-recovery-carts' ) {
+        if ( ! is_object( $screen ) ) {
             return;
         }
 

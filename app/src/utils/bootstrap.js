@@ -102,3 +102,46 @@ export async function mountPage(mountId, component) {
 
   return app.mount(mount);
 }
+
+/**
+ * Mount a routed Vue application (vue-router), resolving its bootstrap payload
+ * via a GET request first. Mirrors mountPage() but installs a router so the
+ * admin SPA can switch between routes (Settings, License) client-side.
+ *
+ * @since 6.0.0
+ * @param {string} mountId - DOM id of the mount point.
+ * @param {Object} rootComponent - Root component rendering <router-view>.
+ * @param {import('vue-router').Router} router - Configured router instance.
+ * @return {Promise<import('vue').App | null>} Mounted app instance or null when unavailable.
+ */
+export async function mountRoutedPage(mountId, rootComponent, router) {
+  const mount = document.getElementById(mountId);
+
+  if (!mount) {
+    return null;
+  }
+
+  const config = readBootstrapConfig();
+  let bootstrap = {};
+
+  if (config) {
+    try {
+      bootstrap = await fetchBootstrap(config);
+    } catch (error) {
+      renderBootstrapError(mount, 'Não foi possível carregar esta página. Recarregue e tente novamente.');
+
+      return null;
+    }
+  }
+
+  const app = createApp(rootComponent, {
+    bootstrap,
+  });
+
+  app.use(createPinia());
+  app.use(router);
+
+  await router.isReady();
+
+  return app.mount(mount);
+}

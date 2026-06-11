@@ -31,26 +31,57 @@ class Settings_Panel {
      * @return void
      */
     public function __construct() {
-        // add submenu on WooCommerce
-        add_action( 'admin_menu', array( $this, 'add_woo_submenu' ) );
+        // register the dedicated top-level admin menu
+        add_action( 'admin_menu', array( $this, 'register_admin_menu' ) );
     }
 
 
     /**
-     * Function for create submenu in WooCommerce
-     * 
+     * Register the dedicated top-level "Flexify Checkout" menu.
+     *
+     * The plugin previously lived as a submenu under WooCommerce; it is now a
+     * top-level menu so the checkout settings, license and the cart recovery
+     * pages share a single dedicated section. The main settings keep the
+     * historical "flexify-checkout-for-woocommerce" slug so existing links and
+     * bookmarks (and the &legacy=1 URL) keep working. Recovery pages
+     * (Analytics, Carts, Queue) are added under this same parent by the
+     * Recovery_Carts feature, after this runs.
+     *
      * @since 1.0.0
-     * @version 5.0.0
-     * @return array
+     * @version 6.0.0
+     * @return void
      */
-    public function add_woo_submenu() {
-        add_submenu_page(
-            'woocommerce', // parent page slug
+    public function register_admin_menu() {
+        $icon_svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1080"><path fill="#a7aaad" d="M513.96,116.38c-234.22,0-424.07,189.86-424.07,424.07c0,234.21,189.86,424.08,424.07,424.08 c234.21,0,424.07-189.86,424.07-424.08C938.03,306.25,748.17,116.38,513.96,116.38z M685.34,542.48 c-141.76,0.37-257.11,117.68-257.41,259.44h-88.21c0-191.79,153.83-347.41,345.62-347.41V542.48z M685.34,365.84 c-141.76,0.2-266.84,69.9-346.06,176.13V410.6c91.73-82.48,212.64-133.1,346.06-133.1V365.84z"/></svg>';
+
+        add_menu_page(
             esc_html__( 'Flexify Checkout para WooCommerce', 'flexify-checkout-for-woocommerce' ), // page title
-            esc_html__( 'Flexify Checkout', 'flexify-checkout-for-woocommerce' ), // submenu title
-            'manage_woocommerce', // user capabilities
-            'flexify-checkout-for-woocommerce', // page slug
-            array( $this, 'render_settings_page' ), // public function for print content page
+            esc_html__( 'Flexify Checkout', 'flexify-checkout-for-woocommerce' ), // menu title
+            'manage_woocommerce', // capability
+            'flexify-checkout-for-woocommerce', // slug (kept for backward compatibility)
+            array( $this, 'render_settings_page' ), // callback
+            'data:image/svg+xml;base64,' . base64_encode( $icon_svg ), // icon
+            58 // position (just below WooCommerce)
+        );
+
+        // Rename the auto-generated first submenu (defaults to the page title) to "Configurações".
+        add_submenu_page(
+            'flexify-checkout-for-woocommerce', // parent slug
+            esc_html__( 'Configurações', 'flexify-checkout-for-woocommerce' ), // page title
+            esc_html__( 'Configurações', 'flexify-checkout-for-woocommerce' ), // submenu title
+            'manage_woocommerce', // capability
+            'flexify-checkout-for-woocommerce', // slug (same as parent)
+            array( $this, 'render_settings_page' ) // callback
+        );
+
+        // License page (Vue SPA, license route).
+        add_submenu_page(
+            'flexify-checkout-for-woocommerce', // parent slug
+            esc_html__( 'Licença', 'flexify-checkout-for-woocommerce' ), // page title
+            esc_html__( 'Licença', 'flexify-checkout-for-woocommerce' ), // submenu title
+            'manage_woocommerce', // capability
+            'flexify-checkout-license', // slug
+            array( $this, 'render_license_page' ) // callback
         );
     }
 
@@ -126,6 +157,42 @@ class Settings_Panel {
 
             return;
         }
+
+        $this->render_app_mount();
+    }
+
+
+    /**
+     * Render the License page.
+     *
+     * Mounts the same Vue SPA; the localized `view` opens it on the license
+     * route. In legacy mode it falls back to the legacy settings screen, where
+     * licensing lives under the "Sobre" tab.
+     *
+     * @since 6.0.0
+     * @return void
+     */
+    public function render_license_page() {
+        if ( \MeuMouse\Flexify_Checkout\Assets\Settings_Assets::is_legacy_mode() ) {
+            $this->render_legacy_settings_page();
+
+            return;
+        }
+
+        $this->render_app_mount();
+    }
+
+
+    /**
+     * Output the Vue SPA mount point with a loading skeleton.
+     *
+     * Shared by the Settings and License pages; the active route is decided by
+     * the `view` localized in flexifyCheckoutBootstrapConfig (see Settings_Assets).
+     *
+     * @since 6.0.0
+     * @return void
+     */
+    private function render_app_mount() {
         ?>
         <div class="wrap flexify-checkout-settings-page">
             <div id="flexify-checkout-settings-app" class="flexify-checkout-settings-app">

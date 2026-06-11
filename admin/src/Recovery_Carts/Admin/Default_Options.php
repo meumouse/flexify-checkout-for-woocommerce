@@ -40,6 +40,7 @@ class Default_Options {
             'time_unit_for_lost_carts' => 'minutes',
             'follow_up_purchase_block_days' => 0,
             'toggle_switchs' => array(
+                'enable_cart_recovery' => 'yes',
                 'enable_modal_add_to_cart' => 'yes',
                 'enable_international_phone_modal' => 'yes',
                 'enable_joinotify_integration' => 'yes',
