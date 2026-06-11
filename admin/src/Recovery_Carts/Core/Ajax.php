@@ -58,9 +58,6 @@ class Ajax {
             'fcrc_add_new_follow_up' => 'fcrc_add_new_follow_up_callback',
             'fcrc_delete_follow_up' => 'fcrc_delete_follow_up_callback',
             'fcrc_send_test_follow_up' => 'fcrc_send_test_follow_up_callback',
-            'fcrc_get_carts_table_changes' => 'fcrc_get_carts_table_changes_callback',
-            'fcrc_refresh_carts_table' => 'fcrc_refresh_carts_table_callback',
-            'fcrc_get_analytics_data' => 'get_analytics_data_callback',
         );
 
         // Define AJAX actions for public (both logged in and not logged in users)
@@ -613,83 +610,6 @@ class Ajax {
 
 
     /**
-     * Lightweight endpoint that returns the timestamp of the last new cart
-     * created with status shopping/lead. Used by the admin carts table JS
-     * to detect changes and trigger a refresh.
-     *
-     * @since 1.4.0
-     * @return void
-     */
-    public function fcrc_get_carts_table_changes_callback() {
-        try {
-            $this->validate_ajax_request();
-
-            if ( ! current_user_can( 'manage_options' ) ) {
-                wp_send_json_error( array(
-                    'message' => esc_html__( 'Permissão negada.', 'fc-recovery-carts' )
-                ) );
-            }
-
-            wp_send_json( array(
-                'status' => 'success',
-                'last_change' => (int) get_option( 'fcrc_carts_table_last_change', 0 ),
-            ) );
-        } catch ( \Exception $e ) {
-            $this->handle_ajax_exception( __FUNCTION__, $e );
-        }
-    }
-
-
-    /**
-     * Re-render the carts list table preserving current filters
-     * (post_status, paged, orderby, order, search) and return the HTML.
-     *
-     * @since 1.4.0
-     * @return void
-     */
-    public function fcrc_refresh_carts_table_callback() {
-        try {
-            $this->validate_ajax_request();
-
-            if ( ! current_user_can( 'manage_options' ) ) {
-                wp_send_json_error( array(
-                    'message' => esc_html__( 'Permissão negada.', 'fc-recovery-carts' )
-                ) );
-            }
-
-            // forward filter params so the table renders with the current view
-            $forwarded = array( 'page', 'post_status', 'paged', 'orderby', 'order', 's', 'fcrc_cart_search' );
-
-            foreach ( $forwarded as $key ) {
-                if ( isset( $_POST[ $key ] ) ) {
-                    $_REQUEST[ $key ] = sanitize_text_field( wp_unslash( $_POST[ $key ] ) );
-                    $_GET[ $key ] = $_REQUEST[ $key ];
-                }
-            }
-
-            if ( ! class_exists('WP_List_Table') ) {
-                require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php';
-            }
-
-            $table = new \MeuMouse\Flexify_Checkout\Recovery_Carts\Views\Carts_Table();
-            $table->prepare_items();
-
-            ob_start();
-            $table->render_table_inner();
-            $html = ob_get_clean();
-
-            wp_send_json( array(
-                'status' => 'success',
-                'last_change' => (int) get_option( 'fcrc_carts_table_last_change', 0 ),
-                'html' => $html,
-            ) );
-        } catch ( \Exception $e ) {
-            $this->handle_ajax_exception( __FUNCTION__, $e );
-        }
-    }
-
-
-    /**
      * Get lead collected
      *
      * @since 1.0.0
@@ -948,64 +868,4 @@ class Ajax {
     }
 
     
-    /**
-     * Get analytics data for analytics dashboard
-     *
-     * @since 1.3.0
-     * @version 1.3.5
-     * @return void
-     */
-    public function get_analytics_data_callback() {
-        try {
-            // Validate request
-            $this->validate_ajax_request();
-
-            if ( ! current_user_can( 'manage_options' ) ) {
-                wp_send_json_error( array(
-                    'message' => esc_html__( 'Não autorizado.', 'fc-recovery-carts' )
-                ) );
-            }
-
-            $period = isset( $_POST['period'] ) ? intval( $_POST['period'] ) : 7;
-            $valid_periods = array();
-            $period_filter = Admin_Components::period_filter();
-
-            // Set valid periods
-            foreach ( $period_filter as $key => $value ) {
-                $valid_periods[] = $key;
-            }
-
-            if ( ! in_array( $period, $valid_periods, true ) ) {
-                $period = 7;
-            }
-
-            // Query status
-            $statuses = array(
-                'lead', 'shopping', 'abandoned', 'order_abandoned', 'recovered', 'lost', 'purchased'
-            );
-
-            $carts_count = array();
-
-            foreach ( $statuses as $status ) {
-                $carts_count[ $status ] = fcrc_get_carts_count_by_status( $status, $period );
-            }
-
-            $recovered_chart_data = fcrc_get_daily_recovered_totals( $period );
-            $recovered_total = array_sum( $recovered_chart_data['series'] );
-
-            wp_send_json_success( array(
-                'status' => 'success',
-                'period' => $period,
-                'counts' => $carts_count,
-                'recovered_total' => $recovered_total,
-                'recovered_chart' => $recovered_chart_data,
-                'total_recovered_widget' => Admin_Components::get_total_recovered( $recovered_total, $period ),
-                'cart_statuses_widget' => Admin_Components::get_cart_status( $period ),
-                'notifications_chart' => fcrc_get_notifications_chart_data( $period ),
-                'notifications_chart_widget' => Admin_Components::render_sent_notifications( $period ),
-            ));
-        } catch ( \Exception $e ) {
-            $this->handle_ajax_exception( __FUNCTION__, $e );
-        }
-    }
 }

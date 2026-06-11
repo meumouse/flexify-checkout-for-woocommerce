@@ -48,9 +48,6 @@ class Admin {
             add_action( 'init', array( $this, 'register_cron_event_cpt' ) );
         }
 
-        // add screen options to carts table
-        add_filter( 'set-screen-option', array( $this, 'set_screen_options' ), 10, 3 );
-
         // flush rewrite rules once per version (never on every request)
         add_action( 'wp_loaded', array( $this, 'maybe_flush_rewrite_rules' ) );
 
@@ -121,7 +118,7 @@ class Admin {
         if ( self::get_switch('enable_cart_recovery') !== 'no' ) {
             global $fc_recovery_carts_hook;
 
-            $fc_recovery_carts_hook = add_submenu_page(
+            add_submenu_page(
                 $parent, // parent page slug
                 esc_html__( 'Análises', 'fc-recovery-carts' ), // page title
                 esc_html__( 'Análises', 'fc-recovery-carts' ), // submenu title
@@ -129,8 +126,6 @@ class Admin {
                 'fc-recovery-carts', // page slug
                 array( $this, 'analytics_page' ) // callback
             );
-
-            add_action( "load-{$fc_recovery_carts_hook}", array( $this, 'load_screen_options' ) );
 
             // all carts list page
             add_submenu_page(
@@ -168,35 +163,6 @@ class Admin {
         );
 
         remove_submenu_page( $parent, 'fc-recovery-carts-settings' );
-    }
-
-
-    /**
-     * Load screen options for carts table
-     * 
-     * @since 1.1.0
-     * @version 1.3.0
-     * @return void
-     */
-    public function load_screen_options() {
-        // This callback is bound to load-{$fc_recovery_carts_hook}, so it only
-        // runs on the Analytics screen — no need to match a hard-coded id (which
-        // changed once the page became a submenu of the Flexify Checkout menu).
-        $screen = get_current_screen();
-
-        if ( ! is_object( $screen ) ) {
-            return;
-        }
-
-        $args = array(
-            'label' => __('Itens por página', 'fc-recovery-carts'),
-            'default' => 20,
-            'option' => 'fc_recovery_carts_per_page',
-        );
-
-        add_screen_option( 'per_page', $args );
-
-        new \MeuMouse\Flexify_Checkout\Recovery_Carts\Views\Carts_Table();
     }
 
 
@@ -279,24 +245,6 @@ class Admin {
             </div>
         </div>
         <?php
-    }
-
-
-    /**
-     * Handles saving and loading screen options
-     * 
-     * @since 1.1.0
-     * @param mixed $status | The current status of the screen option
-     * @param string $option | The option name
-     * @param mixed $value | The option value
-     * @return mixed
-     */
-    public function set_screen_options( $status, $option, $value ) {
-        if ( $option === 'fc_recovery_carts_per_page' ) {
-            return (int) $value;
-        }
-
-        return $status;
     }
 
 
