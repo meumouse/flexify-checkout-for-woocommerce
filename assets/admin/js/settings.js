@@ -14,6 +14,41 @@
     }
 
     /**
+     * Automatically attach the admin nonce to every admin-ajax POST that carries
+     * an "action", so all admin handlers are protected against CSRF without
+     * having to add the nonce to each call by hand. Uses a dedicated field name
+     * (flexify_admin_nonce) so it never collides with handlers that send their
+     * own "nonce" (e.g. fonts). Existing values are never overwritten.
+     *
+     * @since 5.5.5
+     */
+    $.ajaxPrefilter( function( options ) {
+        var admin_nonce = ( params.nonces && params.nonces.admin ) ? params.nonces.admin : '';
+
+        if ( ! admin_nonce || ( options.type || '' ).toUpperCase() !== 'POST' ) {
+            return;
+        }
+
+        if ( ! options.url || options.url.indexOf( 'admin-ajax.php' ) === -1 ) {
+            return;
+        }
+
+        if ( options.data instanceof FormData ) {
+            if ( options.data.has( 'action' ) && ! options.data.has( 'flexify_admin_nonce' ) ) {
+                options.data.append( 'flexify_admin_nonce', admin_nonce );
+            }
+        } else if ( typeof options.data === 'string' ) {
+            if ( /(^|&)action=/.test( options.data ) && options.data.indexOf( 'flexify_admin_nonce=' ) === -1 ) {
+                options.data += '&flexify_admin_nonce=' + encodeURIComponent( admin_nonce );
+            }
+        } else if ( options.data && typeof options.data === 'object' ) {
+            if ( options.data.action && typeof options.data.flexify_admin_nonce === 'undefined' ) {
+                options.data.flexify_admin_nonce = admin_nonce;
+            }
+        }
+    });
+
+    /**
      * Admin controller for Flexify Checkout
      * 
      * @since 5.1.0

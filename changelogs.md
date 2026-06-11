@@ -2,6 +2,7 @@ Versão 5.5.5 (11/06/2026)
 * Segurança
   - Adicionada verificação de nonce e de permissão nos handlers AJAX sensíveis (salvar configurações, redefinir plugin, desativar licença, instalar e ativar módulos), prevenindo CSRF e escalada de privilégio
   - Todas as ações AJAX do painel administrativo agora exigem a permissão de gerenciamento do WooCommerce, impedindo que usuários sem privilégio (ex.: clientes) as acionem
+  - Verificação de nonce (anti-CSRF) estendida automaticamente a todas as requisições AJAX do painel administrativo
   - Sanitização dos dados de cadastro de fontes personalizadas
   - Validação reforçada no envio do arquivo de licença (.key): verificação de erro de envio, tamanho máximo e origem do arquivo
 * Correção de problemas

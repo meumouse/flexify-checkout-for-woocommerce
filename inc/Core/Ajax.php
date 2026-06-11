@@ -127,6 +127,14 @@ class Ajax {
 				), 403 );
 			}
 
+			// CSRF protection: the admin nonce is attached to every admin-ajax
+			// request by the settings.js prefilter (field: flexify_admin_nonce).
+			if ( ! check_ajax_referer( 'flexify_checkout_admin_nonce', 'flexify_admin_nonce', false ) ) {
+				wp_send_json_error( array(
+					'message' => esc_html__( 'Falha na verificação de segurança. Atualize a página e tente novamente.', 'flexify-checkout-for-woocommerce' ),
+				), 403 );
+			}
+
 			return call_user_func( $callback );
 		};
 	}
