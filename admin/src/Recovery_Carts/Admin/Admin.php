@@ -56,6 +56,43 @@ class Admin {
 
         // display notices on settings pages
         add_action( 'admin_notices', array( $this, 'display_settings_notices' ) );
+
+        // add the "Recuperação" tab to the Vue settings schema
+        add_filter( 'Flexify_Checkout/Admin/Settings_Schema', array( $this, 'register_recovery_settings_tab' ) );
+    }
+
+
+    /**
+     * Append the "Recuperação" tab to the Vue settings schema.
+     *
+     * The tab renders the custom "recovery-settings" component, which manages
+     * the common recovery settings through its own REST endpoint. Advanced
+     * editors (follow-ups, coupons, webhooks) stay on the legacy screen, linked
+     * from inside the component.
+     *
+     * @since 6.0.0
+     * @param array $schema Settings schema (list of tabs).
+     * @return array
+     */
+    public function register_recovery_settings_tab( $schema ) {
+        if ( ! is_array( $schema ) || ! Helpers::is_pro() ) {
+            return $schema;
+        }
+
+        $schema[] = array(
+            'id' => 'recovery',
+            'title' => esc_html__( 'Recuperação', 'fc-recovery-carts' ),
+            'icon' => '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 3a9 9 0 0 0-9 9H1l3.89 3.89.07.14L9 12H6a7 7 0 1 1 2.05 4.95l-1.42 1.42A9 9 0 1 0 13 3z"></path><path d="M12 8v5l4 2 .75-1.23-3.25-1.92V8z"></path></svg>',
+            'layout' => 'cards',
+            'cards' => array(
+                array(
+                    'id' => 'recovery-main',
+                    'component' => 'recovery-settings',
+                ),
+            ),
+        );
+
+        return $schema;
     }
 
     
@@ -116,8 +153,11 @@ class Admin {
             );
         }
 
-        // Recovery settings (follow-ups, integrations, payment delays). Transitional
-        // legacy screen; folds into the Vue settings as a "Recuperação" tab later.
+        // Advanced recovery settings (follow-up events, coupons, payment delays,
+        // webhooks). Registered so it stays reachable by URL and from the
+        // "Editor avançado" link inside the Vue "Recuperação" tab, but hidden
+        // from the menu so only the five requested items show. The common
+        // settings now live in Configurações > Recuperação.
         add_submenu_page(
             $parent,
             esc_html__( 'Recuperação de carrinhos', 'fc-recovery-carts' ),
@@ -126,6 +166,8 @@ class Admin {
             'fc-recovery-carts-settings',
             array( $this, 'render_settings_page' )
         );
+
+        remove_submenu_page( $parent, 'fc-recovery-carts-settings' );
     }
 
 

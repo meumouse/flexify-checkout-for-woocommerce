@@ -13,6 +13,7 @@ import ConditionsManager from '../../components/settings/ConditionsManager.vue';
 import IntegrationsList from '../../components/settings/IntegrationsList.vue';
 import EmailProviders from '../../components/settings/EmailProviders.vue';
 import FontsManager from '../../components/settings/FontsManager.vue';
+import RecoverySettings from '../../components/settings/RecoverySettings.vue';
 
 const props = defineProps({
   bootstrap: { type: Object, default: () => ({}) },
@@ -43,6 +44,7 @@ const customComponents = {
   'integrations-list': IntegrationsList,
   'fonts-manager': FontsManager,
   'email-providers': EmailProviders,
+  'recovery-settings': RecoverySettings,
 };
 
 function selectTab(tabId) {
