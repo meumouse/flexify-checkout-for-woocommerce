@@ -165,7 +165,17 @@ class Admin {
      * @return void
      */
     public function analytics_page() {
-        include_once( FC_RECOVERY_CARTS_INC . 'Views/Analytics.php' );
+        // Analytics is now a Vue SPA route (/analytics). Output the same mount
+        // point the settings app uses; Settings_Assets enqueues the bundle on
+        // this page slug and opens it on the analytics view.
+        ?>
+        <div class="wrap flexify-checkout-settings-page">
+            <div id="flexify-checkout-settings-app" class="flexify-checkout-settings-app">
+                <div class="skeleton-content" style="width: 950px; height: 100px;"></div>
+                <div class="skeleton-content" style="width: 100%; height: 360px; margin-top: 2rem;"></div>
+            </div>
+        </div>
+        <?php
     }
 
 

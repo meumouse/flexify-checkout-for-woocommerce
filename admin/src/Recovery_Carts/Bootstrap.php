@@ -160,6 +160,8 @@ class Bootstrap {
             '\MeuMouse\Flexify_Checkout\Recovery_Carts\Frontend\Lead_Capture',
             '\MeuMouse\Flexify_Checkout\Recovery_Carts\Frontend\Styles',
             '\MeuMouse\Flexify_Checkout\Recovery_Carts\Integrations\Joinotify',
+            // REST controllers (flexify-checkout/v1) backing the Vue admin pages.
+            '\MeuMouse\Flexify_Checkout\Recovery_Carts\Rest\Analytics',
         );
 
         return array_merge( $classes, $recovery );

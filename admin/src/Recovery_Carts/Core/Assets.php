@@ -66,6 +66,19 @@ class Assets {
     public function admin_scripts() {
         $min_file = self::$debug_mode ? '' : '.min';
 
+        // The Analytics page (bare "fc-recovery-carts" slug) is now a Vue SPA;
+        // its assets are enqueued by Core\Settings_Assets via Vite. Skip the
+        // legacy admin assets here so they don't load against a DOM that no
+        // longer exists (and double-load ApexCharts).
+        if (
+            Helpers::check_admin_page('fc-recovery-carts')
+            && ! Helpers::check_admin_page('fc-recovery-carts-list')
+            && ! Helpers::check_admin_page('fc-recovery-carts-queue')
+            && ! Helpers::check_admin_page('fc-recovery-carts-settings')
+        ) {
+            return;
+        }
+
         // add scripts on all 'fc-recovery-carts' prefix pages, except 'fc-recovery-carts-list'
         if ( Helpers::check_admin_page('fc-recovery-carts') && ! Helpers::check_admin_page('fc-recovery-carts-list') && ! Helpers::check_admin_page('fc-recovery-carts-queue') ) {
             // check if Flexify Dashboard is active for prevent duplicate Bootstrap files

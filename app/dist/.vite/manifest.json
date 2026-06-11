@@ -1,4 +1,10 @@
 {
+  "node_modules/vue3-apexcharts/dist/apexcharts.ssr.esm-fe46cd2d.js": {
+    "file": "chunks/apexcharts.ssr.esm-fe46cd2d-CEIEYvuU.js",
+    "name": "apexcharts.ssr.esm-fe46cd2d",
+    "src": "node_modules/vue3-apexcharts/dist/apexcharts.ssr.esm-fe46cd2d.js",
+    "isDynamicEntry": true
+  },
   "src/components/fields/CodeEditorField.vue": {
     "file": "chunks/CodeEditorField-C1KWJIy1.js",
     "name": "CodeEditorField",
@@ -14,7 +20,9 @@
     "src": "src/entries/settings.js",
     "isEntry": true,
     "dynamicImports": [
-      "src/components/fields/CodeEditorField.vue"
+      "src/components/fields/CodeEditorField.vue",
+      "node_modules/vue3-apexcharts/dist/apexcharts.ssr.esm-fe46cd2d.js",
+      "node_modules/vue3-apexcharts/dist/apexcharts.ssr.esm-fe46cd2d.js"
     ],
     "css": [
       "styles/settings.css"

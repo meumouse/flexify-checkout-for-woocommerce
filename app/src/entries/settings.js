@@ -12,7 +12,7 @@ import App from '../App.vue';
 import { createAppRouter } from '../router';
 import { mountRoutedPage, readBootstrapConfig } from '../utils/bootstrap';
 
-const allowedViews = ['settings', 'license'];
+const allowedViews = ['settings', 'license', 'analytics'];
 const view = readBootstrapConfig()?.view;
 const initialPath = `/${allowedViews.includes(view) ? view : 'settings'}`;
 

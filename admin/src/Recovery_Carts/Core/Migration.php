@@ -71,11 +71,25 @@ class Migration {
      * @return bool
      */
     public static function is_standalone_active() {
-        if ( ! function_exists('is_plugin_active') ) {
-            include_once ABSPATH . 'wp-admin/includes/plugin.php';
+        if ( function_exists('is_plugin_active') ) {
+            return is_plugin_active( self::STANDALONE_BASENAME );
         }
 
-        return is_plugin_active( self::STANDALONE_BASENAME );
+        // Fallback used when this runs before wp-admin/includes/plugin.php is
+        // loaded (register_classes() at init:99): read the option directly.
+        $active = (array) get_option( 'active_plugins', array() );
+
+        if ( in_array( self::STANDALONE_BASENAME, $active, true ) ) {
+            return true;
+        }
+
+        if ( is_multisite() ) {
+            $network_active = (array) get_site_option( 'active_sitewide_plugins', array() );
+
+            return isset( $network_active[ self::STANDALONE_BASENAME ] );
+        }
+
+        return false;
     }
 
 
@@ -92,6 +106,10 @@ class Migration {
 
         if ( ! self::is_standalone_active() ) {
             return;
+        }
+
+        if ( ! function_exists('deactivate_plugins') ) {
+            include_once ABSPATH . 'wp-admin/includes/plugin.php';
         }
 
         // No data transformation: identifiers are shared. Just retire the addon.
