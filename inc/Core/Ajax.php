@@ -85,9 +85,17 @@ class Ajax {
 		);
 
 		foreach ( $actions as $action => $callback ) {
-			add_action( "wp_ajax_{$action}", $callback );
+			$is_public = in_array( $action, $nopriv_actions, true );
 
-			if ( in_array( $action, $nopriv_actions, true ) ) {
+			// Public actions keep the original callback; every other action only
+			// runs on the admin settings screen, so gate it behind a capability
+			// check to stop lower-privileged logged-in users (e.g. customers)
+			// from reaching administrative handlers.
+			$handler = $is_public ? $callback : self::guard_admin_action( $callback );
+
+			add_action( "wp_ajax_{$action}", $handler );
+
+			if ( $is_public ) {
 				add_action( "wp_ajax_nopriv_{$action}", $callback );
 			}
 		}
@@ -96,6 +104,31 @@ class Ajax {
 			add_action( 'wp_ajax_cnpj_autofill_query', array( __CLASS__, 'cnpj_autofill_query_callback' ) );
 			add_action( 'wp_ajax_nopriv_cnpj_autofill_query', array( __CLASS__, 'cnpj_autofill_query_callback' ) );
 		}
+	}
+
+
+	/**
+	 * Wrap an admin AJAX callback with a capability check.
+	 *
+	 * Returns a closure that blocks the request with a JSON error when the
+	 * current user lacks the WooCommerce management capability, otherwise it
+	 * forwards the call to the original handler. Applied to every non-public
+	 * action so customers/subscribers cannot reach administrative handlers.
+	 *
+	 * @since 5.5.5
+	 * @param callable $callback | Original AJAX callback
+	 * @return callable
+	 */
+	private static function guard_admin_action( $callback ) {
+		return function() use ( $callback ) {
+			if ( ! current_user_can( 'manage_woocommerce' ) ) {
+				wp_send_json_error( array(
+					'message' => esc_html__( 'Você não tem permissão para executar esta ação.', 'flexify-checkout-for-woocommerce' ),
+				), 403 );
+			}
+
+			return call_user_func( $callback );
+		};
 	}
 
 
@@ -815,12 +848,12 @@ class Ajax {
 	 */
 	public function add_new_font_action_callback() {
 		if ( isset( $_POST['new_font_id'] ) ) {
-			$font_id = strtolower( $_POST['new_font_id'] );
+			$font_id = sanitize_key( strtolower( wp_unslash( $_POST['new_font_id'] ) ) );
 
 			$new_font = array(
 				$font_id => array(
-					'font_name' => $_POST['new_font_name'],
-					'font_url' => $_POST['new_font_url'],
+					'font_name' => isset( $_POST['new_font_name'] ) ? sanitize_text_field( wp_unslash( $_POST['new_font_name'] ) ) : '',
+					'font_url' => isset( $_POST['new_font_url'] ) ? esc_url_raw( wp_unslash( $_POST['new_font_url'] ) ) : '',
 				),
 			);
 

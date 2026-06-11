@@ -191,9 +191,11 @@ class License {
             $password = $this->product_key;
         }
 
-        $logger = wc_get_logger();
-        $plugin_log_file = 'flexify-checkout-for-woocommerce-log';
-        $logger->info('(Flexify Checkout para WooCommerce) Response encrypted: ' . print_r( $encrypted, true ), array('source' => $plugin_log_file));
+        if ( function_exists( 'wc_get_logger' ) ) {
+            $logger = wc_get_logger();
+            $plugin_log_file = 'flexify-checkout-for-woocommerce-log';
+            $logger->info('(Flexify Checkout para WooCommerce) Response encrypted: ' . print_r( $encrypted, true ), array('source' => $plugin_log_file));
+        }
 
         if ( is_string( $encrypted ) ) {
             $method = 'aes-256-cbc';
@@ -257,10 +259,12 @@ class License {
         if ( ! empty( $response ) ) {
             $resbk = $response;
             $decrypted_response = $response;
-            $logger = wc_get_logger();
-            $plugin_log_file = 'flexify-checkout-for-woocommerce-log';
+            if ( function_exists( 'wc_get_logger' ) ) {
+                $logger = wc_get_logger();
+                $plugin_log_file = 'flexify-checkout-for-woocommerce-log';
 
-            $logger->info('(Flexify Checkout para WooCommerce) Response: ' . print_r( $response, true ), array('source' => $plugin_log_file));
+                $logger->info('(Flexify Checkout para WooCommerce) Response: ' . print_r( $response, true ), array('source' => $plugin_log_file));
+            }
 
             if ( ! empty( $this->product_key ) ) {
                 // Try to decrypt
@@ -356,10 +360,12 @@ class License {
     
                 $server_response = wp_remote_post( $url, $request_params );
 
-                $logger = wc_get_logger();
-                $plugin_log_file = 'flexify-checkout-for-woocommerce-log';
+                if ( function_exists( 'wc_get_logger' ) ) {
+                    $logger = wc_get_logger();
+                    $plugin_log_file = 'flexify-checkout-for-woocommerce-log';
 
-                $logger->info('(Flexify Checkout para WooCommerce) Request response: ' . print_r( $server_response, true ), array('source' => $plugin_log_file));
+                    $logger->info('(Flexify Checkout para WooCommerce) Request response: ' . print_r( $server_response, true ), array('source' => $plugin_log_file));
+                }
     
                 if ( is_wp_error( $server_response ) ) {
                     $request_params['sslverify'] = false;
@@ -607,9 +613,11 @@ class License {
                 $response = $this->_request( 'product/deactive/' . $this->product_id, $param, $message );
                 update_option('flexify_checkout_license_response_object', $response);
 
-                $logger = wc_get_logger();
-                $plugin_log_file = 'flexify-checkout-for-woocommerce-log';
-                $logger->info('(Flexify Checkout para WooCommerce) Deactive response object: ' . print_r( $response, true ), array('source' => $plugin_log_file));
+                if ( function_exists( 'wc_get_logger' ) ) {
+                    $logger = wc_get_logger();
+                    $plugin_log_file = 'flexify-checkout-for-woocommerce-log';
+                    $logger->info('(Flexify Checkout para WooCommerce) Deactive response object: ' . print_r( $response, true ), array('source' => $plugin_log_file));
+                }
 
                 if ( empty( $response->code ) ) {
                     if ( ! empty( $response->status ) ) {
