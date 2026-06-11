@@ -492,6 +492,7 @@
             this.modalApi.register('#auto_fill_address_api_trigger', '.auto-fill-address-api-container', '.auto-fill-address-api-close');
             this.modalApi.register('#fcw_manage_fonts_trigger', '#fcw_manage_fonts_container', '#fcw_close_fonts_manager');
             this.modalApi.register('#fcw_reset_settings_trigger', '#fcw_reset_settings_container', '#fcw_close_reset');
+            this.modalApi.register('#reset_checkout_fields_trigger', '#reset_checkout_fields_container', '#close_reset_checkout_fields');
             this.modalApi.register('#add_new_checkout_condition_trigger', '#add_new_checkout_condition_container', '#close_add_new_checkout_condition');
             this.modalApi.register('#set_email_providers_trigger', '#set_email_providers_container', '#close_set_email_providers');
             this.modalApi.register('#set_process_purchase_animation_trigger', '#set_process_purchase_animation_container', '#close_set_process_purchase_animation');
@@ -1078,6 +1079,50 @@
                                     location.reload();
                                 }, 1000);
                             } else {
+                                Flexify_Checkout_Admin.displayToast( 'error', response.toast_header_title, response.toast_body_title );
+                            }
+                        } catch (error) {
+                            console.log(error);
+                        }
+                    }
+                });
+            });
+        },
+
+        /**
+         * Reset checkout step fields to default
+         *
+         * @since 5.5.4
+         */
+        resetCheckoutFields: function() {
+            $(document).on('click', '#confirm_reset_checkout_fields', function(e) {
+                e.preventDefault();
+
+                let btn = $(this);
+                let state = Flexify_Checkout_Admin.keepButtonState(btn);
+
+                $.ajax({
+                    url: flexify_checkout_params.ajax_url,
+                    type: 'POST',
+                    data: {
+                        action: 'reset_checkout_fields',
+                    },
+                    beforeSend: function() {
+                        btn.html('<span class="spinner-border spinner-border-sm"></span>');
+                    },
+                    success: function(response) {
+                        try {
+                            if ( response.status === 'success' ) {
+                                btn.html(state.html);
+
+                                Flexify_Checkout_Admin.modalApi.close('#reset_checkout_fields_container');
+                                Flexify_Checkout_Admin.displayToast( 'success', response.toast_header_title, response.toast_body_title );
+
+                                setTimeout( function() {
+                                    location.reload();
+                                }, 1000);
+                            } else {
+                                btn.html(state.html);
                                 Flexify_Checkout_Admin.displayToast( 'error', response.toast_header_title, response.toast_body_title );
                             }
                         } catch (error) {
@@ -3020,6 +3065,7 @@
             this.datepicker();
             this.fieldsManager();
             this.resetSettings();
+            this.resetCheckoutFields();
 			this.themeSelector();
             this.handleConditions();
             this.fontsManager.init();

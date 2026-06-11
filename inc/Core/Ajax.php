@@ -59,6 +59,7 @@ class Ajax {
 			'dismiss_billing_country_warning'       => array( __CLASS__, 'dismiss_billing_country_warning' ),
 			'flexify_checkout_deactive_license'     => array( $this, 'deactive_license_callback' ),
 			'flexify_checkout_reset_plugin_action'  => array( $this, 'reset_plugin_callback' ),
+			'reset_checkout_fields'                 => array( $this, 'reset_checkout_fields_callback' ),
 			'check_field_availability'              => array( $this, 'check_field_availability_callback' ),
 			'remove_select_option'                  => array( $this, 'remove_select_option_callback' ),
 			'add_new_option_select_live'            => array( $this, 'add_new_option_select_live_callback' ),
@@ -1831,6 +1832,49 @@ class Ajax {
 
             wp_send_json( $response );
         }
+    }
+
+
+	/**
+     * Reset checkout step fields to default on AJAX callback
+     *
+     * @since 5.5.4
+     * @return void
+     */
+    public function reset_checkout_fields_callback() {
+        if ( ! isset( $_POST['action'] ) || $_POST['action'] !== 'reset_checkout_fields' ) {
+            return;
+        }
+
+        if ( ! current_user_can('manage_options') ) {
+            wp_send_json( array(
+                'status' => 'error',
+                'toast_header_title' => esc_html__( 'Ops! Ocorreu um erro.', 'flexify-checkout-for-woocommerce' ),
+                'toast_body_title' => esc_html__( 'Você não tem permissão para redefinir os campos.', 'flexify-checkout-for-woocommerce' ),
+            ) );
+        }
+
+        $default_options = new \MeuMouse\Flexify_Checkout\Admin\Default_Options();
+        $default_fields = $default_options->get_native_checkout_fields();
+
+        // add Brazilian Market on WooCommerce fields if the plugin is active or base country is Brazil
+        if ( class_exists('Extra_Checkout_Fields_For_Brazil') || Fields::get_base_country() === 'BR' ) {
+            $default_fields = array_merge( $default_fields, $default_options->get_brazilian_checkout_fields() );
+        }
+
+        // overwrite stored fields with the default set
+        update_option( 'flexify_checkout_step_fields', maybe_serialize( $default_fields ) );
+
+        // remove orphan checkout conditions that pointed to removed custom fields
+        self::scrub_orphan_checkout_conditions();
+
+        $response = array(
+            'status' => 'success',
+            'toast_header_title' => esc_html__( 'Campos redefinidos', 'flexify-checkout-for-woocommerce' ),
+            'toast_body_title' => esc_html__( 'Os campos da finalização de compras foram redefinidos para o padrão com sucesso!', 'flexify-checkout-for-woocommerce' ),
+        );
+
+        wp_send_json( $response );
     }
 
 
