@@ -1,0 +1,484 @@
+<?php
+
+namespace MeuMouse\Flexify_Checkout\Recovery_Carts\Admin;
+
+use MeuMouse\Flexify_Checkout\Recovery_Carts\Core\Helpers;
+use MeuMouse\Flexify_Checkout\Recovery_Carts\Cron\Scheduler_Manager;
+
+// Exit if accessed directly.
+defined('ABSPATH') || exit;
+
+/**
+ * Admin actions class
+ * 
+ * @since 1.0.0
+ * @version 1.3.4
+ * @package MeuMouse\Flexify_Checkout\Recovery_Carts\Admin
+ * @author MeuMouse.com
+ */
+class Admin {
+
+    /**
+     * Construct function
+     * 
+     * @since 1.0.0
+     * @version 1.3.2
+     * @return void
+     */
+    public function __construct() {
+        // add admin menu
+        add_action( 'admin_menu', array( $this, 'add_admin_menu' ) );
+
+        // update default options on admin_init
+        add_action( 'admin_init', array( $this, 'update_default_options' ) );
+
+        // render settings tabs
+        add_action( 'Flexify_Checkout/Recovery_Carts/Settings/Nav_Tabs', array( $this, 'render_settings_tabs' ) );
+
+        // register new post type
+        add_action( 'init', array( $this, 'register_post_type' ) );
+
+        // add screen options to carts table
+        add_filter( 'set-screen-option', array( $this, 'set_screen_options' ), 10, 3 );
+
+        // register queue cron events post type
+        add_action( 'init', array( $this, 'register_cron_event_cpt' ) );
+
+        // flush rewrite rules once per version (never on every request)
+        add_action( 'wp_loaded', array( $this, 'maybe_flush_rewrite_rules' ) );
+
+        // display notices on settings pages
+        add_action( 'admin_notices', array( $this, 'display_settings_notices' ) );
+    }
+
+    
+    /**
+     * Add admin menu
+     * 
+     * @since 1.0.0
+     * @version 1.3.0
+     * @return void
+     */
+    public function add_admin_menu() {
+        global $fc_recovery_carts_hook;
+
+        $fc_recovery_carts_hook = add_menu_page(
+            esc_html__( 'Recuperação de carrinhos abandonados', 'fc-recovery-carts' ), // label
+            esc_html__( 'Carrinhos abandonados', 'fc-recovery-carts' ), // menu label
+            'manage_woocommerce', // capatibilities
+            'fc-recovery-carts', // slug
+            array( $this, 'analytics_page' ), // callback
+            'data:image/svg+xml;base64,' . base64_encode('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 848.15 848.15"><defs><style>.cls-1{fill:#fff;}</style></defs><path class="cls-1" d="M514,116.38c-234.22,0-424.08,189.87-424.08,424.07S279.74,964.53,514,964.53,938,774.67,938,540.45,748.17,116.38,514,116.38Zm171.38,426.1c-141.76.37-257.11,117.69-257.4,259.45H339.72c0-191.79,153.83-347.42,345.62-347.42Zm0-176.64c-141.76.19-266.84,69.9-346,176.13V410.6C431,328.12,551.92,277.5,685.34,277.5Z" transform="translate(-89.88 -116.38)"/></svg>'),
+            5, // menu priority
+        );
+
+        add_action( "load-{$fc_recovery_carts_hook}", array( $this, 'load_screen_options' ) );
+
+        // check if Flexify Checkout Pro is active
+        if ( Helpers::is_pro() ) {
+            // Main page as first submenu item with a different name
+            add_submenu_page(
+                'fc-recovery-carts', // parent page slug
+                esc_html__( 'Análises', 'fc-recovery-carts' ), // page title
+                esc_html__( 'Análises', 'fc-recovery-carts' ), // submenu title
+                'manage_woocommerce', // user capabilities
+                'fc-recovery-carts', // page slug (same as the main menu page)
+                array( $this, 'analytics_page' ) // callback
+            );
+
+            // all carts list page
+            add_submenu_page(
+                'fc-recovery-carts', // parent page slug
+                esc_html__( 'Todos os carrinhos', 'fc-recovery-carts' ), // page title
+                esc_html__( 'Todos os carrinhos', 'fc-recovery-carts' ), // submenu title
+                'manage_woocommerce', // user capabilities
+                'fc-recovery-carts-list', // page slug
+                array( $this, 'carts_table_page' ) // callback
+            );
+
+            // all carts list page
+            add_submenu_page(
+                'fc-recovery-carts', // parent page slug
+                esc_html__( 'Fila de processamentos', 'fc-recovery-carts' ), // page title
+                esc_html__( 'Fila de processamentos', 'fc-recovery-carts' ), // submenu title
+                'manage_woocommerce', // user capabilities
+                'fc-recovery-carts-queue', // page slug
+                array( $this, 'queue_table_page' ) // callback
+            );
+
+            // settings page
+            add_submenu_page(
+                'fc-recovery-carts', // parent page slug
+                esc_html__( 'Configurações', 'fc-recovery-carts' ), // page title
+                esc_html__( 'Configurações', 'fc-recovery-carts' ), // submenu title
+                'manage_woocommerce', // user capabilities
+                'fc-recovery-carts-settings', // page slug
+                array( $this, 'render_settings_page' ) // callback
+            );
+        } else {
+            add_submenu_page(
+                'fc-recovery-carts', // parent page slug
+                esc_html__( 'Configurações', 'fc-recovery-carts' ), // page title
+                esc_html__( 'Configurações', 'fc-recovery-carts' ), // submenu title
+                'manage_woocommerce', // user capabilities
+                'fc-recovery-carts-settings', // page slug
+                array( $this, 'render_settings_page_required_license' ) // callback
+            );
+        }
+    }
+
+
+    /**
+     * Load screen options for carts table
+     * 
+     * @since 1.1.0
+     * @version 1.3.0
+     * @return void
+     */
+    public function load_screen_options() {
+        $screen = get_current_screen();
+
+        if ( ! is_object( $screen ) || $screen->id !== 'toplevel_page_fc-recovery-carts' ) {
+            return;
+        }
+
+        $args = array(
+            'label' => __('Itens por página', 'fc-recovery-carts'),
+            'default' => 20,
+            'option' => 'fc_recovery_carts_per_page',
+        );
+
+        add_screen_option( 'per_page', $args );
+
+        new \MeuMouse\Flexify_Checkout\Recovery_Carts\Views\Carts_Table();
+    }
+
+
+    /**
+     * Render analytics page content
+     * 
+     * @since 1.3.0
+     * @return void
+     */
+    public function analytics_page() {
+        include_once( FC_RECOVERY_CARTS_INC . 'Views/Analytics.php' );
+    }
+
+
+    /**
+     * Render queue table page
+     * 
+     * @since 1.3.0
+     * @return void
+     */
+    public function queue_table_page() {
+        global $fcrc_queue_table;
+
+        if ( empty( $fcrc_queue_table ) ) {
+            $fcrc_queue_table = new \MeuMouse\Flexify_Checkout\Recovery_Carts\Views\Queue_Table();
+        }
+
+        $fcrc_queue_table->prepare_items();
+        $fcrc_queue_table->display_page();
+    }
+
+
+    /**
+     * Render menu page settings
+     * 
+     * @since 1.0.0
+     * @return void
+     */
+    public function render_settings_page() {
+        include_once( FC_RECOVERY_CARTS_INC . 'Views/Settings.php' );
+    }
+
+
+    /**
+     * Render settings page for not Pro users
+     * 
+     * @since 1.0.0
+     * @return void
+     */
+    public function render_settings_page_required_license() {
+        include_once( FC_RECOVERY_CARTS_INC . 'Views/Settings_Info.php' );
+    }
+
+
+    /**
+     * Display table with all carts
+     * 
+     * @since 1.0.0
+     * @version 1.3.0
+     * @return void
+     */
+    public function carts_table_page() {
+        global $fc_recovery_carts_table;
+
+        if ( empty( $fc_recovery_carts_table ) ) {
+            $fc_recovery_carts_table = new \MeuMouse\Flexify_Checkout\Recovery_Carts\Views\Carts_Table();
+        }
+
+        $fc_recovery_carts_table->prepare_items();
+        $fc_recovery_carts_table->display_page();
+    }
+
+
+    /**
+     * Handles saving and loading screen options
+     * 
+     * @since 1.1.0
+     * @param mixed $status | The current status of the screen option
+     * @param string $option | The option name
+     * @param mixed $value | The option value
+     * @return mixed
+     */
+    public function set_screen_options( $status, $option, $value ) {
+        if ( $option === 'fc_recovery_carts_per_page' ) {
+            return (int) $value;
+        }
+
+        return $status;
+    }
+
+
+    /**
+     * Gets the items from the array and inserts them into the option if it is empty,
+     * or adds new items with default value to the option
+     * 
+     * @since 1.0.0
+     * @version 1.3.4
+     * @return void
+     */
+    public function update_default_options() {
+        $default_options = ( new Default_Options() )->set_default_options();
+        $existing_options = get_option( 'flexify_checkout_recovery_carts_settings', array() );
+        
+        if ( empty( $existing_options ) ) {
+            update_option( 'flexify_checkout_recovery_carts_settings', $default_options );
+            return;
+        }
+        
+        $needs_update = false;
+
+        foreach ( $default_options as $key => $default_value ) {
+            if ( ! array_key_exists( $key, $existing_options ) ) {
+                $existing_options[$key] = $default_value;
+                $needs_update = true;
+            }
+        }
+        
+        if ( $needs_update ) {
+            update_option( 'flexify_checkout_recovery_carts_settings', $existing_options );
+        }
+    }
+
+
+    /**
+     * Checks if the option exists and returns the indicated array item
+     * 
+     * @since 1.0.0
+     * @param string $key | Option key
+     * @return mixed | string or false
+     */
+    public static function get_setting( $key ) {
+        $options = get_option('flexify_checkout_recovery_carts_settings', array());
+
+        // check if array key exists and return key
+        if ( isset( $options[$key] ) ) {
+            return $options[$key];
+        }
+
+        return false;
+    }
+
+
+    /**
+     * Get switch option value
+     * 
+     * @since 1.0.0
+     * @param string $key | Option key
+     * @return string
+     */
+    public static function get_switch( $key ) {
+        $options = get_option('flexify_checkout_recovery_carts_settings', array());
+
+        // check if array key exists and return key
+        if ( isset( $options['toggle_switchs'][$key] ) ) {
+            return $options['toggle_switchs'][$key];
+        }
+
+        return false;
+    }
+
+
+    /**
+     * Render settings nav tabs
+     *
+     * @since 1.0.0
+     */
+    public function render_settings_tabs() {
+        $tabs = Components::get_settings_tabs();
+
+        foreach ( $tabs as $tab ) {
+            printf( '<a href="#%1$s" class="nav-tab">%2$s %3$s</a>', esc_attr( $tab['id'] ), $tab['icon'], $tab['label'] );
+        }
+    }
+
+
+    /**
+     * Register "fc-recovery-carts" post type
+     *
+     * @since 1.0.0
+     * @version 1.4.1
+     * @return void
+     */
+    public function register_post_type() {
+        $labels = array(
+            'name'               => _x( 'Carrinhos', 'post type general name', 'fc-recovery-carts' ),
+            'singular_name'      => _x( 'Carrinho', 'post type singular name', 'fc-recovery-carts' ),
+            'menu_name'          => _x( 'Carrinhos', 'admin menu', 'fc-recovery-carts' ),
+            'name_admin_bar'     => _x( 'Carrinho', 'add new on admin bar', 'fc-recovery-carts' ),
+            'add_new'            => _x( 'Adicionar novo', 'carrinho', 'fc-recovery-carts' ),
+            'add_new_item'       => __( 'Adicionar novo carrinho', 'fc-recovery-carts' ),
+            'new_item'           => __( 'Novo carrinho', 'fc-recovery-carts' ),
+            'edit_item'          => __( 'Editar carrinho', 'fc-recovery-carts' ),
+            'view_item'          => __( 'Ver carrinho', 'fc-recovery-carts' ),
+            'all_items'          => __( 'Todos os carrinhos', 'fc-recovery-carts' ),
+            'search_items'       => __( 'Pesquisar carrinhos', 'fc-recovery-carts' ),
+            'parent_item_colon'  => __( 'Carrinho pai:', 'fc-recovery-carts' ),
+            'not_found'          => __( 'Nenhum carrinho encontrado.', 'fc-recovery-carts' ),
+            'not_found_in_trash' => __( 'Nenhum carrinho encontrado na lixeira.', 'fc-recovery-carts' )
+        );
+    
+        // This CPT stores internal recovery-cart records only. It is never shown
+        // on the frontend — recovery links are query args on the checkout page
+        // (?recovery_cart=ID), handled by Helpers::maybe_restore_cart(), and the
+        // record is always looked up by ID. So it must not be public, queryable,
+        // searchable, or own any rewrite rules. Keeping it public previously
+        // leaked its custom statuses into the global WP_Query and registered a
+        // malformed "/fc-recovery-carts" archive rule, breaking WooCommerce
+        // product/category listings.
+        $args = array(
+            'labels'              => $labels,
+            'description'         => __( 'Registros internos de carrinhos de recuperação.', 'fc-recovery-carts' ),
+            'public'              => false,
+            'publicly_queryable'  => false,
+            'exclude_from_search' => true,
+            'show_ui'             => false,
+            'show_in_menu'        => false,
+            'show_in_nav_menus'   => false,
+            'show_in_rest'        => false,
+            'query_var'           => false,
+            'capability_type'     => 'post',
+            'rewrite'             => false,
+            'has_archive'         => false,
+            'hierarchical'        => false,
+            'menu_position'       => null,
+            'supports'            => array( 'title', 'editor', 'author', 'thumbnail', 'custom-fields' ),
+        );
+
+        register_post_type( 'fc-recovery-carts', $args );
+
+        $custom_statuses = array( 'lead', 'shopping', 'abandoned', 'order_abandoned', 'recovered', 'lost', 'purchased' );
+
+        foreach ( $custom_statuses as $status ) {
+            register_post_status( $status, array(
+                'label'                     => ucfirst( $status ),
+                // Must NOT be public. WordPress appends every public status to
+                // the default WP_Query via get_post_stati( array( 'public' => true ) ),
+                // so a public status here leaks into WooCommerce product/category
+                // queries (lead, shopping, abandoned, ...) and empties the catalog.
+                // These statuses are always queried explicitly by post_type, so
+                // they don't need to be public to work.
+                'public'                    => false,
+                'internal'                  => false,
+                // Kept searchable so explicit "post_status => 'any'" queries
+                // (e.g. fcrc_get_notifications_chart_data) still match them.
+                'exclude_from_search'       => false,
+                'show_in_admin_all_list'    => true,
+                'show_in_admin_status_list' => true,
+                'label_count'               => _n_noop( ucfirst( $status ) . ' <span class="count">(%s)</span>', ucfirst( $status ) . ' <span class="count">(%s)</span>' ),
+            ));
+        }
+    }
+
+
+    /**
+     * Flush rewrite rules once after a plugin version change.
+     *
+     * Replaces the previous flush_rewrite_rules() call that ran on every `init`
+     * request — a documented anti-pattern that, depending on plugin/theme load
+     * order, could write an incomplete rule set and drop the WooCommerce
+     * product / product_cat archives. Running on `wp_loaded` guarantees every
+     * post type and taxonomy is already registered, and the version guard makes
+     * it run only once per release: enough to drop the stale "/fc-recovery-carts"
+     * archive rules left behind by previous versions.
+     *
+     * @since 1.4.1
+     * @return void
+     */
+    public function maybe_flush_rewrite_rules() {
+        $option_key = 'fcrc_rewrite_rules_version';
+        $current_version = defined('FC_RECOVERY_CARTS_VERSION') ? FC_RECOVERY_CARTS_VERSION : '';
+
+        if ( get_option( $option_key ) === $current_version ) {
+            return;
+        }
+
+        // soft flush: regenerate the rewrite_rules option without touching .htaccess
+        flush_rewrite_rules( false );
+
+        update_option( $option_key, $current_version );
+    }
+
+
+    /**
+     * Register the Cron Event custom post type
+     *
+     * @since 1.3.0
+     * @return void
+     */
+    public function register_cron_event_cpt() {
+        $labels = array(
+            'name'               => __( 'Cron Events', 'fc-recovery-carts' ),
+            'singular_name'      => __( 'Cron Event', 'fc-recovery-carts' ),
+            'menu_name'          => __( 'Cron Events', 'fc-recovery-carts' ),
+            'name_admin_bar'     => __( 'Cron Event', 'fc-recovery-carts' ),
+        );
+
+        $args = array(
+            'labels'             => $labels,
+            'public'             => false,
+            'show_ui'            => false,
+            'show_in_menu'       => false,
+            'capability_type'    => 'post',
+            'hierarchical'       => false,
+            'supports'           => array( 'title' ),
+            'has_archive'        => false,
+            'show_in_rest'       => false,
+        );
+        
+        register_post_type( 'fcrc-cron-event', $args );
+    }
+
+
+    /**
+     * Display admin notices on plugin settings pages
+     *
+     * @since 1.3.2
+     * @return void
+     */
+    public function display_settings_notices() {
+        $scheduler = self::get_setting('task_scheduler');
+
+        if ( Scheduler_Manager::TYPE_PHP_CRON !== $scheduler || Helpers::has_wp_cli() ) {
+            return;
+        }
+
+        $class = 'notice notice-warning is-dismissible';
+        $message = __( 'O modo PHP-Cron requer o WP-CLI instalado no servidor. Instale o WP-CLI ou altere o agendador para WP-Cron.', 'fc-recovery-carts' );
+
+        printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), $message );
+    }
+}

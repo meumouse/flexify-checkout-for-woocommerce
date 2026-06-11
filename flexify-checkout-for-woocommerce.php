@@ -66,3 +66,10 @@ register_deactivation_hook( __FILE__, function() {
 });
 
 Init::bootstrap( __FILE__, FLEXIFY_CHECKOUT_PLUGIN_VERSION );
+
+/**
+ * Boot the natively-integrated cart recovery feature (formerly the
+ * flexify-checkout-recovery-carts-addon plugin). Must run after
+ * Init::bootstrap() so the FLEXIFY_CHECKOUT_* constants are defined.
+ */
+Recovery_Carts\Bootstrap::register();
