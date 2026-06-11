@@ -1188,15 +1188,17 @@
              * On updated_checkout event. Modify the button html
              *
              * @since 1.0.0
-             * @version 5.0.0
+             * @version 5.5.5
              * @param {object} e | Event object
              * @param {data} data |
              */
 			onUpdatedCheckout: function() {
                 $(document.body).on('updated_checkout', function(e, data) {
-                    if ( data.fragments.flexify.total ) {
-                        Flexify_Checkout.processCheckout.cache.button_html = `${params.i18n.pay} ${data.fragments.flexify.total}`;
-                        $('#place_order').html(Flexify_Checkout.processCheckout.cache.button_html);
+                    if ( data?.fragments?.flexify?.total ) {
+						const total = $('.order-total td:last-of-type').html();
+                        Flexify_Checkout.processCheckout.cache.button_html = `${params.i18n.pay} ` + total;
+                        
+						$('#place_order').html(Flexify_Checkout.processCheckout.cache.button_html);
                     }
 
                     // update fragments on update checkout
