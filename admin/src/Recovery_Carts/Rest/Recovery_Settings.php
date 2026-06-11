@@ -3,19 +3,21 @@
 namespace MeuMouse\Flexify_Checkout\Recovery_Carts\Rest;
 
 use MeuMouse\Flexify_Checkout\Rest\Abstract_Route;
+use MeuMouse\Flexify_Checkout\Recovery_Carts\Core\Helpers;
+use MeuMouse\Flexify_Checkout\Recovery_Carts\Core\Webhooks;
 use WP_REST_Request;
 
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
 
 /**
- * Cart recovery — common settings endpoint.
+ * Cart recovery — full settings endpoint.
  *
- * GET/POST flexify-checkout/v1/recovery/settings. Reads and writes the common,
- * flat recovery settings surfaced in the "Recuperação" tab of the Vue settings
- * (master toggle, scheduler, abandonment window, integrations, styles). The
- * complex editors (follow-up events, payment delays, webhooks, lead modal)
- * stay on the advanced screen, whose URL is returned here.
+ * GET/POST flexify-checkout/v1/recovery/settings. Reads and writes the cart
+ * recovery settings surfaced in the "Recuperação" tab of the Vue settings:
+ * the common flat options plus the complex editors (follow-up events,
+ * payment-method delays, lead modal and webhooks). Replaces the legacy
+ * server-rendered settings screen and its admin-ajax save.
  *
  * Saves are merge-safe: the full flexify_checkout_recovery_carts_settings
  * option is read, only the managed keys are overwritten, then it is stored.
@@ -65,6 +67,20 @@ class Recovery_Settings extends Abstract_Route {
         'primary_color',
         'joinotify_sender_phone',
         'joinotify_test_phone',
+        'select_coupon',
+    );
+
+    /**
+     * Nested array keys managed by this endpoint.
+     *
+     * @since 6.0.0
+     * @var array<int,string>
+     */
+    const ARRAY_KEYS = array(
+        'follow_up_events',
+        'payment_methods',
+        'collect_lead_modal',
+        'webhooks',
     );
 
     /**
@@ -98,12 +114,7 @@ class Recovery_Settings extends Abstract_Route {
 
         return $this->success_response( array(
             'settings' => $this->read_settings(),
-            'time_units' => array(
-                array( 'value' => 'minutes', 'label' => __( 'Minutos', 'fc-recovery-carts' ) ),
-                array( 'value' => 'hours', 'label' => __( 'Horas', 'fc-recovery-carts' ) ),
-                array( 'value' => 'days', 'label' => __( 'Dias', 'fc-recovery-carts' ) ),
-            ),
-            'advanced_url' => admin_url( 'admin.php?page=fc-recovery-carts-settings' ),
+            'support' => $this->support_data(),
         ) );
     }
 
@@ -125,15 +136,110 @@ class Recovery_Settings extends Abstract_Route {
             $settings[ $key ] = isset( $options[ $key ] ) ? $options[ $key ] : '';
         }
 
+        foreach ( self::ARRAY_KEYS as $key ) {
+            $settings[ $key ] = isset( $options[ $key ] ) && is_array( $options[ $key ] ) ? $options[ $key ] : array();
+        }
+
         $settings['toggles'] = array();
 
         foreach ( self::TOGGLE_KEYS as $key ) {
-            // Master toggle defaults to on; the others default to their stored value.
             $default = ( 'enable_cart_recovery' === $key ) ? 'yes' : 'no';
             $settings['toggles'][ $key ] = isset( $toggles[ $key ] ) ? $toggles[ $key ] : $default;
         }
 
         return $settings;
+    }
+
+
+    /**
+     * Supporting data the editor needs (option lists).
+     *
+     * @since 6.0.0
+     * @return array
+     */
+    private function support_data() {
+        return array(
+            'time_units' => array(
+                array( 'value' => 'minutes', 'label' => __( 'Minutos', 'fc-recovery-carts' ) ),
+                array( 'value' => 'hours', 'label' => __( 'Horas', 'fc-recovery-carts' ) ),
+                array( 'value' => 'days', 'label' => __( 'Dias', 'fc-recovery-carts' ) ),
+            ),
+            'discount_types' => array(
+                array( 'value' => 'percent', 'label' => __( 'Percentual (%)', 'fc-recovery-carts' ) ),
+                array( 'value' => 'fixed_cart', 'label' => __( 'Valor fixo', 'fc-recovery-carts' ) ),
+            ),
+            'coupons' => $this->get_coupons(),
+            'gateways' => $this->get_gateways(),
+            'webhook_events' => $this->get_webhook_events(),
+        );
+    }
+
+
+    /**
+     * Existing WooCommerce coupon codes.
+     *
+     * @since 6.0.0
+     * @return array<int,string>
+     */
+    private function get_coupons() {
+        $posts = get_posts( array(
+            'post_type' => 'shop_coupon',
+            'post_status' => 'publish',
+            'posts_per_page' => 200,
+            'orderby' => 'title',
+            'order' => 'ASC',
+            'fields' => 'ids',
+        ) );
+
+        $codes = array();
+
+        foreach ( $posts as $id ) {
+            $codes[] = get_the_title( $id );
+        }
+
+        return $codes;
+    }
+
+
+    /**
+     * Active WooCommerce payment gateways (id + title).
+     *
+     * @since 6.0.0
+     * @return array<int,array{id:string,title:string}>
+     */
+    private function get_gateways() {
+        $gateways = array();
+
+        if ( function_exists('WC') && WC()->payment_gateways ) {
+            foreach ( WC()->payment_gateways->payment_gateways() as $id => $gateway ) {
+                $gateways[] = array(
+                    'id' => (string) $id,
+                    'title' => wp_strip_all_tags( $gateway->get_title() ),
+                );
+            }
+        }
+
+        return $gateways;
+    }
+
+
+    /**
+     * Registered webhook events (key + label).
+     *
+     * @since 6.0.0
+     * @return array<int,array{key:string,label:string}>
+     */
+    private function get_webhook_events() {
+        $events = array();
+
+        foreach ( Webhooks::get_registered_events() as $key => $data ) {
+            $events[] = array(
+                'key' => (string) $key,
+                'label' => isset( $data['label'] ) ? $data['label'] : $key,
+            );
+        }
+
+        return $events;
     }
 
 
@@ -158,6 +264,12 @@ class Recovery_Settings extends Abstract_Route {
 
             $value = $input[ $key ];
             $options[ $key ] = is_scalar( $value ) ? sanitize_text_field( (string) $value ) : '';
+        }
+
+        foreach ( self::ARRAY_KEYS as $key ) {
+            if ( isset( $input[ $key ] ) && is_array( $input[ $key ] ) ) {
+                $options[ $key ] = Helpers::sanitize_array( $input[ $key ] );
+            }
         }
 
         if ( isset( $input['toggles'] ) && is_array( $input['toggles'] ) ) {
