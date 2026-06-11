@@ -1,3 +1,9 @@
+Versão 5.5.5 (11/06/2026)
+* Segurança
+  - Adicionada verificação de nonce e de permissão nos handlers AJAX sensíveis (salvar configurações, redefinir plugin, desativar licença, instalar e ativar módulos), prevenindo CSRF e escalada de privilégio
+* Correção de problemas
+  - Valor total do botão de finalizar compra não sincronizado com carrinho
+
 Versão 5.5.4 (11/06/2026)
 * Correção de problemas
   - Falha na finalização de compra com cartão de crédito via Pagar.me: o handler de rastreamento retornava `true` no evento `checkout_place_order` e sobrescrevia o `false` do gateway, fazendo o pedido ser enviado antes da tokenização do cartão e gerando erro fatal

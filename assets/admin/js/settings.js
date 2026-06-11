@@ -153,6 +153,7 @@
                     data: {
                         action: 'flexify_checkout_save_settings',
                         form_data: settings_form.serialize(),
+                        nonce: ( params.nonces && params.nonces.admin ) ? params.nonces.admin : '',
                     },
                     beforeSend: function() {
                         btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span>');
@@ -1063,6 +1064,7 @@
                     type: 'POST',
                     data: {
                         action: 'flexify_checkout_reset_plugin_action',
+                        nonce: ( params.nonces && params.nonces.admin ) ? params.nonces.admin : '',
                     },
                     beforeSend: function() {
                         btn.html('<span class="spinner-border spinner-border-sm"></span>');
@@ -2489,6 +2491,7 @@
                         type: 'POST',
                         data: {
                             action: 'flexify_checkout_deactive_license',
+                            nonce: ( params.nonces && params.nonces.admin ) ? params.nonces.admin : '',
                         },
                         beforeSend: function() {
                             btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span>');
@@ -2617,6 +2620,7 @@
                             action: 'flexify_checkout_install_modules',
                             plugin_url: plugin_url,
                             plugin_slug: plugin_slug,
+                            nonce: ( params.nonces && params.nonces.admin ) ? params.nonces.admin : '',
                         },
                         beforeSend: function() {
                             btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span>');
@@ -2662,6 +2666,7 @@
                         data: {
                             action: 'flexify_checkout_activate_plugin',
                             plugin_slug: plugin_slug,
+                            nonce: ( params.nonces && params.nonces.admin ) ? params.nonces.admin : '',
                         },
                         beforeSend: function() {
                             btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span>');

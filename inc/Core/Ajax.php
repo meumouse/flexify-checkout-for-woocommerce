@@ -100,6 +100,34 @@ class Ajax {
 
 
 	/**
+	 * Guard sensitive admin AJAX handlers against CSRF and privilege escalation.
+	 *
+	 * Verifies both the user capability (so non-admin roles such as customers
+	 * cannot reach administrative actions) and a valid nonce (so the request
+	 * cannot be forged from a third-party page). On failure it sends a JSON
+	 * error and stops execution.
+	 *
+	 * @since 5.5.5
+	 * @param string $nonce_action | Nonce action name
+	 * @param string $nonce_field | POST field that carries the nonce
+	 * @return void
+	 */
+	private static function verify_admin_request( $nonce_action = 'flexify_checkout_admin_nonce', $nonce_field = 'nonce' ) {
+		if ( ! current_user_can( 'manage_woocommerce' ) ) {
+			wp_send_json_error( array(
+				'message' => esc_html__( 'Você não tem permissão para executar esta ação.', 'flexify-checkout-for-woocommerce' ),
+			), 403 );
+		}
+
+		if ( ! check_ajax_referer( $nonce_action, $nonce_field, false ) ) {
+			wp_send_json_error( array(
+				'message' => esc_html__( 'Falha na verificação de segurança. Atualize a página e tente novamente.', 'flexify-checkout-for-woocommerce' ),
+			), 403 );
+		}
+	}
+
+
+	/**
 	 * Check for inline errors
 	 * 
 	 * @since 1.0.0
@@ -226,8 +254,10 @@ class Ajax {
 	 */
 	public function ajax_save_options_callback() {
 		if ( isset( $_POST['action'] ) && $_POST['action'] === 'flexify_checkout_save_settings' ) {
+			self::verify_admin_request();
+
 			// Convert serialized data into an array
-			parse_str( $_POST['form_data'], $form_data );
+			parse_str( wp_unslash( $_POST['form_data'] ), $form_data );
 
 			$options = get_option( 'flexify_checkout_settings', array() );
 
@@ -1762,6 +1792,8 @@ class Ajax {
      */
     public function deactive_license_callback() {
         if ( isset( $_POST['action'] ) && $_POST['action'] === 'flexify_checkout_deactive_license' ) {
+            self::verify_admin_request();
+
             $message = '';
             $deactivation = License::deactive_license( FLEXIFY_CHECKOUT_FILE, $message );
 
@@ -1803,6 +1835,8 @@ class Ajax {
      */
     public function reset_plugin_callback() {
         if ( isset( $_POST['action'] ) && $_POST['action'] === 'flexify_checkout_reset_plugin_action' ) {
+            self::verify_admin_request();
+
             $delete_option = delete_option('flexify_checkout_settings');
 
             if ( $delete_option ) {
