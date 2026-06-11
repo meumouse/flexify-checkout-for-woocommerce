@@ -23,7 +23,7 @@ class Init {
      * @since 5.4.3
      * @var int
      */
-    const SCHEMA_VERSION = 1;
+    const SCHEMA_VERSION = 2;
 
     /**
      * Option name that stores the cached class registry.
@@ -448,12 +448,52 @@ class Init {
             $admin_options->set_checkout_step_fields();
         }
 
+        // Drop deprecated managed fields that should no longer be regenerated.
+        if ( $needs_migration ) {
+            self::purge_deprecated_step_fields();
+        }
+
         // Safety net: orphan condition cleanup only matters during migration.
         if ( $needs_migration && class_exists( '\MeuMouse\Flexify_Checkout\Core\Ajax' ) ) {
             \MeuMouse\Flexify_Checkout\Core\Ajax::scrub_orphan_checkout_conditions();
         }
 
         update_option( 'flexify_checkout_schema_version', self::SCHEMA_VERSION );
+    }
+
+
+    /**
+     * Remove deprecated managed step fields from the stored registry.
+     *
+     * Some fields (e.g. billing_document and billing_sex, legacy SuperFrete
+     * aliases) were previously registered as plugin defaults and force-merged
+     * on every bootstrap, which made them impossible to delete from the field
+     * manager (billing_sex duplicated the native billing_gender field). They
+     * are no longer part of the defaults, so this cleans any stored copy.
+     *
+     * @since 5.5.4
+     * @return void
+     */
+    public static function purge_deprecated_step_fields() {
+        $deprecated_fields = array( 'billing_document', 'billing_sex' );
+        $step_fields = maybe_unserialize( get_option( 'flexify_checkout_step_fields', array() ) );
+
+        if ( ! is_array( $step_fields ) ) {
+            return;
+        }
+
+        $updated = false;
+
+        foreach ( $deprecated_fields as $field_id ) {
+            if ( isset( $step_fields[ $field_id ] ) ) {
+                unset( $step_fields[ $field_id ] );
+                $updated = true;
+            }
+        }
+
+        if ( $updated ) {
+            update_option( 'flexify_checkout_step_fields', maybe_serialize( $step_fields ) );
+        }
     }
 
 
@@ -580,6 +620,7 @@ class Init {
             '\MeuMouse\Flexify_Checkout\Tracking\Router',
             '\MeuMouse\Flexify_Checkout\API\REST_Checkout_Fields',
             '\MeuMouse\Flexify_Checkout\Admin\Settings\Views\Integrations',
+            '\MeuMouse\Flexify_Checkout\Admin\Settings_Import_Export',
         ));
 
         $manual_classes_map = array();

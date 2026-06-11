@@ -31,6 +31,7 @@ class ComposerStaticInit178be007d0b6d0c39a4c2788c7b3977c
         'MeuMouse\\Flexify_Checkout\\Admin\\Fonts_Manager' => __DIR__ . '/../..' . '/inc/Admin/Fonts_Manager.php',
         'MeuMouse\\Flexify_Checkout\\Admin\\Orders' => __DIR__ . '/../..' . '/inc/Admin/Orders.php',
         'MeuMouse\\Flexify_Checkout\\Admin\\Settings\\Views\\Integrations' => __DIR__ . '/../..' . '/inc/Admin/Settings/Views/Integrations.php',
+        'MeuMouse\\Flexify_Checkout\\Admin\\Settings_Import_Export' => __DIR__ . '/../..' . '/inc/Admin/Settings_Import_Export.php',
         'MeuMouse\\Flexify_Checkout\\Checkout\\Common' => __DIR__ . '/../..' . '/inc/Checkout/Common.php',
         'MeuMouse\\Flexify_Checkout\\Checkout\\Conditions' => __DIR__ . '/../..' . '/inc/Checkout/Conditions.php',
         'MeuMouse\\Flexify_Checkout\\Checkout\\Coupons' => __DIR__ . '/../..' . '/inc/Checkout/Coupons.php',

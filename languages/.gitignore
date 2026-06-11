@@ -1,0 +1,14 @@
+# Dependencies
+node_modules
+
+# API keys
+.env
+.env.local
+.env.*.local
+
+# Lockfile (regenerated on install)
+package-lock.json
+
+# Logs
+*.log
+npm-debug.log*

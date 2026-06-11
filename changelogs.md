@@ -1,3 +1,14 @@
+Versão 5.5.4 (11/06/2026)
+* Correção de problemas
+  - Falha na finalização de compra com cartão de crédito via Pagar.me: o handler de rastreamento retornava `true` no evento `checkout_place_order` e sobrescrevia o `false` do gateway, fazendo o pedido ser enviado antes da tokenização do cartão e gerando erro fatal
+  - Campos `billing_document` e `billing_sex` (aliases legados do SuperFrete) eram gerados automaticamente e reapareciam mesmo após exclusão, ficando impossíveis de remover no gerenciador de campos. O `billing_sex` (rótulo "Genero") ainda duplicava o campo nativo `billing_gender` ("Gênero"). Ambos foram removidos dos padrões e são limpos automaticamente do registro de campos salvo
+* Recurso adicionado: Exportar e importar as configurações do plugin em arquivo JSON (configurações gerais, campos e condições das etapas; licença e estado de runtime são excluídos do backup)
+* Recurso adicionado: Botão para redefinir os campos do checkout para a configuração padrão no gerenciador de campos
+* Otimizações
+  - Backdrop desfocado atrás do resumo do pedido ao abri-lo em dispositivos móveis (fecha ao clicar fora)
+  - Assets do plugin passam a ser servidos sem minificação
+* Idioma adicionado: Frânces (fr_FR)
+
 Versão 5.5.3 (28/05/2026)
 * Correção de problemas
   - Erro fatal na página de agradecimento (template form-pay) quando um produto do pedido era excluído após a compra

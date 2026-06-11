@@ -1,107 +1,14 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Flexify Checkout para WooCommerce\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-17 01:44+0000\n"
-"PO-Revision-Date: 2025-11-17 12:19+0000\n"
-"Last-Translator: \n"
-"Language-Team: Spanish (Spain)\n"
-"Language: es_ES\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: flexify-checkout-for-woocommerce\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Loco https://localise.biz/\n"
-"X-Loco-Version: 2.6.7; wp-6.5.2\n"
-"X-Domain: flexify-checkout-for-woocommerce"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"x-domain: flexify-checkout-for-woocommerce\n"
 
-#: inc/Core/Assets.php:329
-msgid "${count} resultados encontrados"
-msgstr ""
-
-#. %1$s: field name, %2$s finder.eircode.ie URL
-#: inc/Checkout/Fields.php:1126
-#, php-format
-msgid ""
-"%1$s não é válido. Você pode procurar o Eircode correto <a target=\"_blank\" "
-"href=\"%2$s\">aqui</a>."
-msgstr ""
-"%1$s no es válido. Puede buscar el Eircode correcto <a target=\"_blank\" "
-"href=\"%2$s\">aquí</a>."
-
-#. %s: field name
-#: inc/Checkout/Fields.php:1131
-#, php-format
-msgid "%s não é um código postal válido."
-msgstr "%s no es un código postal válido."
-
-#: inc/Checkout/Fields.php:1158
-#, php-format
-msgid "%s não é um endereço de e-mail válido."
-msgstr "%s no es una dirección de correo electrónico válida."
-
-#: inc/Checkout/Fields.php:1140
-#, php-format
-msgid "%s não é um número de telefone válido."
-msgstr "%s no es un número de teléfono válido."
-
-#: inc/Checkout/Fields.php:1100
-#, php-format
-msgid "%s é um campo obrigatório."
-msgstr "%s es un campo obligatorio."
-
-#. ISO 3166-1 alpha-2 country code
-#: inc/Checkout/Fields.php:1118
-#, php-format
+#: inc/Checkout/Fields.php:1129
 msgid "'%s' não é um código de país válido."
 msgstr "'%s' no es un código de país válido."
-
-#: inc/Core/Assets.php:328
-msgid "1 resultado encontrado"
-msgstr ""
-
-#: inc/Core/Ajax.php:1541
-#, php-format
-msgid ""
-"<strong>%s</strong> removido do carrinho. <strong><a class=\"undo-remove-"
-"product\" data-product_id=\"%d\" href=\"#\">Desfazer</a></strong>"
-msgstr ""
-
-#: inc/Core/Init.php:148
-#, fuzzy
-#| msgid ""
-#| "<strong>%s</strong> requer a versão do PHP 7.4 ou maior. Contate o "
-#| "suporte da sua hospedagem para realizar a atualização."
-msgid ""
-"<strong>Flexify Checkout</strong> requer a versão do PHP 7.4 ou maior. "
-"Contate o suporte da sua hospedagem para realizar a atualização."
-msgstr ""
-"<strong>%s</strong> requiere la versión de PHP 7.4 o superior. Contacte con "
-"el soporte de su alojamiento para realizar la actualización."
-
-#: inc/Core/Init.php:204
-#, fuzzy
-#| msgid ""
-#| "<strong>%s</strong> requer a versão do WooCommerce 6.0 ou maior. Faça a "
-#| "atualização do plugin WooCommerce."
-msgid ""
-"<strong>Flexify Checkout</strong> requer a versão do WooCommerce 6.0 ou "
-"maior. Faça a atualização do plugin WooCommerce."
-msgstr ""
-"<strong>%s</strong> requiere la versión de WooCommerce 6.0 o superior. "
-"Realice la actualización del plugin WooCommerce."
-
-#: inc/Core/Init.php:220
-#, fuzzy
-#| msgid ""
-#| "<strong>%s</strong> requer que <strong>WooCommerce</strong> esteja "
-#| "instalado e ativado."
-msgid ""
-"<strong>Flexify Checkout</strong> requer que <strong>WooCommerce</strong> "
-"esteja instalado e ativado."
-msgstr ""
-"<strong>%s</strong> requiere que <strong>WooCommerce</strong> esté instalado "
-"y activado."
 
 #: inc/Views/Settings/Tabs/Styles.php:108
 msgid "[shortcode id=\"100\"]"
@@ -111,56 +18,145 @@ msgstr "[shortcode id=\"100\"]"
 msgid "[shortcode id=\"101\"]"
 msgstr "[shortcode id=\"101\"]"
 
-#: inc/API/License.php:392
+#: inc/Checkout/Fields.php:1137
+msgid ""
+"%1$s não é válido. Você pode procurar o Eircode correto <a "
+"target=\"_blank\" href=\"%2$s\">aqui</a>."
+msgstr ""
+"%1$s no es válido. Puede buscar el Eircode correcto <a target=\"_blank\" "
+"href=\"%2$s\">aquí</a>."
+
+#: inc/Checkout/Fields.php:1111
+msgid "%s é um campo obrigatório."
+msgstr "%s es un campo obligatorio."
+
+#: inc/Checkout/Fields.php:1142
+msgid "%s não é um código postal válido."
+msgstr "%s no es un código postal válido."
+
+#: inc/Checkout/Fields.php:1169
+msgid "%s não é um endereço de e-mail válido."
+msgstr "%s no es una dirección de correo electrónico válida."
+
+#: inc/Checkout/Fields.php:1151
+msgid "%s não é um número de telefone válido."
+msgstr "%s no es un número de teléfono válido."
+
+#: inc/Integrations/Flatsome.php:160
+msgid "<script>%s</script>"
+msgstr "<script>%s</script>"
+
+#: inc/Core/Ajax.php:2123
+msgid ""
+"<strong>%s</strong> removido do carrinho. <strong><a "
+"class=\"undo-remove-product\" data-product_id=\"%d\" "
+"href=\"#\">Desfazer</a></strong>"
+msgstr ""
+"<strong>%s</strong> eliminado del carrito. <strong><a "
+"class=\"undo-remove-product\" data-product_id=\"%d\" "
+"href=\"#\">Deshacer</a></strong>"
+
+#: inc/Core/Init.php:414
+msgid ""
+"<strong>Flexify Checkout</strong> requer a versão do PHP 7.4 ou maior. "
+"Contate o suporte da sua hospedagem para realizar a atualização."
+msgstr ""
+"<strong>%s</strong> requiere la versión de PHP 7.4 o superior. Contacte con "
+"el soporte de su alojamiento para realizar la actualización."
+
+#: inc/Core/Init.php:523
+msgid ""
+"<strong>Flexify Checkout</strong> requer a versão do WooCommerce 6.0 ou "
+"maior. Faça a atualização do plugin WooCommerce."
+msgstr ""
+"<strong>%s</strong> requiere la versión de WooCommerce 6.0 o superior. "
+"Realice la actualización del plugin WooCommerce."
+
+#: inc/Core/Init.php:539
+msgid ""
+"<strong>Flexify Checkout</strong> requer que <strong>WooCommerce</strong> "
+"esteja instalado e ativado."
+msgstr ""
+"<strong>%s</strong> requiere que <strong>WooCommerce</strong> esté "
+"instalado y activado."
+
+#: inc/Integrations/Erede_Loja5.php:80
+#: inc/Integrations/Flatsome.php:150
+#: inc/Views/Styles.php:417
+msgid "<style>%s</style>"
+msgstr "<style>%s</style>"
+
+#: inc/Core/Assets.php:328
+msgid "${count} resultados encontrados"
+msgstr "${count} resultados encontrados"
+
+#: inc/Core/Assets.php:327
+msgid "1 resultado encontrado"
+msgstr "1 resultado encontrado"
+
+#: inc/Views/Settings/Tabs/Styles.php:128
+msgid ""
+"A cor primária define a cor dos elementos que terão ações ou informações na "
+"página de finalização de compras."
+msgstr ""
+"El color primario define el color de los elementos que tendrán acciones o "
+"información en la página de finalización de compra."
+
+#: inc/Views/Settings/Tabs/Styles.php:147
+msgid ""
+"A cor secundária define a cor dos elementos que terão ações ou informações "
+"na página de finalização de compras."
+msgstr ""
+"El color secundario define el color de los elementos que tendrán acciones o "
+"información en la página de finalización de compra."
+
+#: inc/API/License.php:393
 msgid "A extensão cURL está faltando."
 msgstr "Falta la extensión cURL."
 
-#: inc/Admin/Admin_Options.php:196
+#: inc/Admin/Admin_Options.php:528
 msgid ""
 "A extensão GD está desativada, e é necessária para gerar o QR Code do Pix. "
 "Ative-a em sua hospedagem para habilitar esse recurso."
 msgstr ""
-"La extensión GD está desactivada y es necesaria para generar el código QR de "
-"Pix. Actívela en su alojamiento para habilitar esta función."
+"La extensión GD está desactivada y es necesaria para generar el código QR "
+"de Pix. Actívela en su alojamiento para habilitar esta función."
 
-#: inc/Core/Ajax.php:809
+#: inc/Core/Ajax.php:1037
 msgid "A fonte foi removida da biblioteca."
-msgstr ""
+msgstr "La fuente ha sido eliminada de la biblioteca."
 
-#: inc/Core/Ajax.php:1843
+#: inc/Core/Ajax.php:2425
 msgid "A licença foi ativada com sucesso!"
-msgstr ""
+msgstr "¡La licencia se ha activado con éxito!"
 
-#: inc/Core/Ajax.php:1253
+#: inc/Core/Ajax.php:1781
 msgid "A licença foi desativada"
 msgstr "La licencia ha sido desactivada"
 
-#: inc/Core/Ajax.php:1660
+#: inc/Core/Ajax.php:2242
 msgid "A licença foi sincronizada com sucesso!"
-msgstr ""
+msgstr "¡La licencia se ha sincronizado con éxito!"
 
-#: inc/Core/Ajax.php:1811
-#, fuzzy
-#| msgid "A licença informada não é permitida para este produto."
+#: inc/Core/Ajax.php:2393
 msgid "A licença informada não é permitida para este produto"
 msgstr "La licencia no está permitida para este producto."
 
-#: inc/Core/Ajax.php:1426
+#: inc/Core/Ajax.php:1997
 msgid "A nova opção foi adicionada com sucesso!"
-msgstr ""
+msgstr "¡La nueva opción se ha añadido con éxito!"
 
-#: inc/Core/Ajax.php:1374
+#: inc/Core/Ajax.php:1945
 msgid "A opção foi removida com sucesso!"
-msgstr ""
+msgstr "¡La opción se ha eliminado con éxito!"
 
-#: inc/API/Updater.php:240
-#, fuzzy
-#| msgid ""
-#| "A versão do plugin <strong>Flexify Checkout para WooCommerce</strong> é a "
-#| "mais recente."
+#: inc/Checkout/Fields.php:1340
+msgid "A senha da conta e obrigatoria para continuar."
+msgstr "La contraseña de la cuenta es obligatoria para continuar."
+
+#: inc/API/Updater.php:241
 msgid "A versão do plugin <strong>Flexify Checkout</strong> é a mais recente."
-msgstr ""
-"La versión del plugin Flexify Checkout para WooCommerce es la más reciente."
+msgstr "La versión del plugin Flexify Checkout para WooCommerce es la más reciente."
 
 #: inc/Views/Settings/Tabs/About.php:234
 msgid "A versão mínima exigida do PHP é 7.4"
@@ -172,13 +168,26 @@ msgstr "La versión mínima requerida de WooCommerce es 6.0"
 
 #: inc/Views/Settings/Tabs/General.php:57
 msgid "Abrir popup de login automaticamente"
-msgstr ""
+msgstr "Abrir popup de inicio de sesión automáticamente"
+
+#: inc/Views/Settings/Tabs/General.php:224
+msgid "Ação após expirar"
+msgstr "Acción tras expirar"
+
+#: inc/Core/Ajax.php:840
+#: inc/Core/Ajax.php:993
+msgid "Ação não permitida"
+msgstr "Acción no permitida"
+
+#: inc/Admin/Settings/Views/Integrations.php:310
+msgid "Access Token"
+msgstr "Access Token"
 
 #: inc/Views/Settings/Tabs/General.php:117
 msgid "Adicionar"
 msgstr "Añadir"
 
-#: inc/Views/Settings/Tabs/Fields.php:201
+#: inc/Views/Settings/Tabs/Fields.php:231
 msgid "Adicionar campo"
 msgstr "Añadir campo"
 
@@ -186,25 +195,34 @@ msgstr "Añadir campo"
 msgid "Adicionar máscaras para campos"
 msgstr "Añadir máscaras para campos"
 
-#: inc/Core/Assets.php:424 inc/Views/Settings/Tabs/Styles.php:276
+#: inc/Core/Assets.php:406
+#: inc/Views/Settings/Tabs/Styles.php:302
 msgid "Adicionar nova fonte"
 msgstr "Añadir nueva fuente"
 
-#: inc/Views/Components.php:171
+#: inc/Views/Components.php:173
 msgid "Adicionar nova opção"
-msgstr ""
+msgstr "Añadir nueva opción"
 
-#: inc/Views/Settings/Tabs/Fields.php:189
+#: inc/Views/Settings/Tabs/Fields.php:219
 msgid "Adicionar novo campo para finalização de compras"
 msgstr "Añadir nuevo campo para finalización de compras"
 
-#: inc/Views/Settings/Tabs/Fields.php:183
+#: inc/Views/Settings/Tabs/Fields.php:184
 msgid "Adicionar novos campos"
 msgstr "Añadir nuevos campos"
 
-#: inc/Checkout/Steps.php:507
+#: inc/Checkout/Steps.php:512
 msgid "Adicionar observações ao pedido?"
 msgstr "¿Añadir observaciones al pedido?"
+
+#: inc/Views/Settings/Tabs/Styles.php:256
+msgid "Adicione CSS customizado que será aplicado no checkout."
+msgstr "Añade CSS personalizado que se aplicará en el checkout."
+
+#: inc/Views/Settings/Tabs/Styles.php:269
+msgid "Adicione JavaScript customizado que será executado no checkout."
+msgstr "Añade JavaScript personalizado que se ejecutará en el checkout."
 
 #: inc/Views/Settings/Tabs/Styles.php:104
 msgid "Adicione seu cabeçalho personalizado informando o shortcode."
@@ -214,7 +232,8 @@ msgstr "Añada su encabezado personalizado proporcionando el shortcode."
 msgid "Adicione seu rodapé personalizado informando o shortcode."
 msgstr "Añada su pie de página personalizado proporcionando el shortcode."
 
-#: inc/Views/Components.php:218 inc/Views/Components.php:466
+#: inc/Views/Components.php:220
+#: inc/Views/Components.php:468
 msgid ""
 "Adicione uma máscara de preenchimento para este campo, seguindo o padrão "
 "informado pela documentação. (Opcional)"
@@ -222,41 +241,52 @@ msgstr ""
 "Añada una máscara de llenado para este campo, siguiendo el patrón "
 "proporcionado por la documentación. (Opcional)"
 
-#: inc/Views/Settings/Tabs/Conditions.php:308
+#: inc/Views/Settings/Tabs/Conditions.php:314
 msgid "Administrador"
 msgstr "Administrador"
 
-#: inc/Core/Ajax.php:1716
+#: inc/Core/Ajax.php:2298
 msgid "Agora todos os recursos estão ativos!"
-msgstr ""
+msgstr "¡Ahora todos los recursos están activos!"
 
-#: inc/Views/Components.php:291
+#: inc/Views/Components.php:293
 msgid "Aguarde alguns instantes"
-msgstr ""
+msgstr "Por favor, espera unos momentos"
 
 #: inc/Views/Settings/Tabs/Conditions.php:27
 msgid "Ainda não existem condições."
 msgstr "Aún no existen condiciones."
 
-#: inc/Core/Assets.php:419 inc/Views/Settings/Tabs/Styles.php:374
+#: inc/Core/Assets.php:401
+#: inc/Views/Settings/Tabs/Styles.php:400
 msgid "Ainda não há fontes personalizadas cadastradas."
-msgstr ""
+msgstr "Aún no hay fuentes personalizadas registradas."
 
-#: inc/Views/Settings/Tabs/General.php:644
-#: inc/Views/Settings/Tabs/General.php:669
-#: inc/Views/Settings/Tabs/General.php:694
+#: inc/Views/Settings/Tabs/General.php:663
+#: inc/Views/Settings/Tabs/General.php:688
+#: inc/Views/Settings/Tabs/General.php:713
 msgid "Anexe o link ou arquivo da animação Lottie em formato .json"
-msgstr ""
+msgstr "Adjunta el enlace o archivo de la animación Lottie en formato .json"
 
-#: inc/Checkout/Coupons.php:164
+#: inc/Checkout/Coupons.php:165
 msgid "Antes da forma de pagamento"
-msgstr ""
+msgstr "Antes del método de pago"
 
-#: inc/Views/Components.php:107 inc/Views/Components.php:420
+#: inc/Views/Components.php:109
+#: inc/Views/Components.php:422
 msgid "Ao desativar, este campo se tornará não obrigatório."
 msgstr "Al desactivar, este campo se volverá no obligatorio."
 
-#: inc/Views/Settings/Tabs/About.php:464
+#: inc/Views/Settings/Tabs/About.php:474
+msgid ""
+"Ao importar, as configurações atuais serão substituídas pelas do arquivo "
+"selecionado. Recomendamos exportar um backup antes de continuar."
+msgstr ""
+"Al importar, la configuración actual será reemplazada por la del archivo "
+"seleccionado. Recomendamos exportar una copia de seguridad antes de "
+"continuar."
+
+#: inc/Views/Settings/Tabs/About.php:512
 msgid ""
 "Ao redefinir as configurações do plugin, todas opções serão removidas, "
 "voltando ao estado original. Sua licença não será removida."
@@ -264,121 +294,181 @@ msgstr ""
 "Al restablecer las configuraciones del plugin, todas las opciones serán "
 "eliminadas, volviendo al estado original. Su licencia no será eliminada."
 
-#: inc/Checkout/Fields.php:124 inc/Checkout/Fields.php:974
+#: inc/Views/Settings/Tabs/Fields.php:206
+msgid ""
+"Ao redefinir os campos, todas as personalizações de etapas, ordem e campos "
+"adicionados serão removidas, voltando à configuração padrão de campos da "
+"finalização de compras."
+msgstr ""
+"Al restablecer los campos, se eliminarán todas las personalizaciones de "
+"etapas, orden y campos añadidos, volviendo a la configuración "
+"predeterminada de campos de finalización de compra."
+
+#: inc/Checkout/Fields.php:131
+#: inc/Checkout/Fields.php:982
 msgid "Apartamento, suíte, unidade etc."
 msgstr "Apartamento, suite, unidad, etc."
 
-#: inc/Admin/Default_Options.php:288
+#: inc/Admin/Default_Options.php:348
 msgid "Apartamento, suíte, unidade, etc."
 msgstr "Apartamento, suite, unidad, etc."
+
+#: inc/Admin/Settings/Views/Integrations.php:233
+msgid "API Secret"
+msgstr "API Secret"
 
 #: woocommerce/dark/checkout/form-coupon.php:32
 #: woocommerce/modern/checkout/form-coupon.php:32
 msgid "Aplicar"
 msgstr "Aplicar"
 
-#: inc/Views/Settings/Tabs/General.php:549
+#: woocommerce/dark/checkout/form-coupon.php:32
+#: woocommerce/modern/checkout/form-coupon.php:32
+msgid "Aplicar cupom"
+msgstr "Aplicar cupón"
+
+#: inc/Views/Settings/Tabs/General.php:568
 msgid "Aplicar cupom de desconto automaticamente"
 msgstr "Aplicar cupón de descuento automáticamente"
 
-#: inc/Views/Settings/Tabs/General.php:643
+#: inc/Views/Components.php:340
+msgid "Área de texto"
+msgstr "Área de texto"
+
+#: inc/Views/Settings/Tabs/General.php:662
 msgid "Arquivo da animação 1"
-msgstr ""
+msgstr "Archivo de la animación 1"
 
-#: inc/Views/Settings/Tabs/General.php:668
+#: inc/Views/Settings/Tabs/General.php:687
 msgid "Arquivo da animação 2"
-msgstr ""
+msgstr "Archivo de la animación 2"
 
-#: inc/Views/Settings/Tabs/General.php:693
+#: inc/Views/Settings/Tabs/General.php:712
 msgid "Arquivo da animação 3"
-msgstr ""
+msgstr "Archivo de la animación 3"
 
-#: inc/Views/Settings/Tabs/Styles.php:322
+#: inc/Views/Settings/Tabs/Styles.php:348
 msgid "Arquivo de fonte"
-msgstr ""
+msgstr "Archivo de fuente"
 
-#: inc/Core/Assets.php:416 inc/Views/Settings/Tabs/Styles.php:357
+#: inc/Core/Assets.php:398
+#: inc/Views/Settings/Tabs/Styles.php:383
 msgid "Arquivo enviado"
-msgstr ""
+msgstr "Archivo enviado"
 
-#: inc/Core/Ajax.php:1766
+#: inc/Admin/Settings_Import_Export.php:204
+msgid "Arquivo incompatível"
+msgstr "Archivo incompatible"
+
+#: inc/Admin/Settings_Import_Export.php:196
+msgid "Arquivo inválido"
+msgstr "Archivo inválido"
+
+#: inc/Core/Ajax.php:2348
 msgid "Arquivo inválido. O arquivo deve ser extensão .key"
-msgstr ""
+msgstr "Archivo inválido. El archivo debe tener la extensión .key"
 
-#: inc/Core/Ajax.php:517
+#: inc/Core/Ajax.php:745
 msgid "Arquivo inválido. O arquivo deve ser um .crt ou .key."
-msgstr ""
+msgstr "Archivo inválido. El archivo debe ser un .crt o .key."
 
 #: inc/Views/Settings/Tabs/Fields.php:154
 msgid "Arraste e solte o campo para reordenar ou mudar o campo de etapa."
 msgstr "Arrastre y suelte el campo para reordenar o cambiar el campo de etapa."
 
-#: inc/Core/Assets.php:403
+#: inc/Core/Assets.php:385
 msgid "As alterações não serão salvas."
-msgstr ""
+msgstr "Los cambios no se guardarán."
 
-#: inc/Core/Ajax.php:739
+#: inc/Core/Ajax.php:967
 msgid "As configurações da fonte foram salvas com sucesso!"
-msgstr ""
+msgstr "¡Las configuraciones de la fuente se han guardado con éxito!"
 
-#: inc/Core/Ajax.php:363
+#: inc/Core/Ajax.php:382
 msgid "As configurações foram atualizadas!"
 msgstr "¡Las configuraciones han sido actualizadas!"
 
-#: inc/Core/Ajax.php:1294
+#: inc/Admin/Settings_Import_Export.php:215
+msgid "As configurações foram importadas com sucesso!"
+msgstr "¡Las configuraciones se han importado con éxito!"
+
+#: inc/Core/Ajax.php:1822
 msgid "As opções foram redefinidas"
-msgstr ""
+msgstr "Las opciones han sido restablecidas"
 
-#: inc/Core/Ajax.php:1295
+#: inc/Core/Ajax.php:1823
 msgid "As opções foram redefinidas com sucesso!"
-msgstr ""
+msgstr "¡Las opciones se han restablecido con éxito!"
 
-#: inc/Views/Settings/Tabs/Conditions.php:310
+#: inc/Views/Settings/Tabs/Conditions.php:316
 msgid "Assinante"
 msgstr "Suscriptor"
 
 #: inc/Views/Settings/Tabs/About.php:90
-#, php-format
 msgid "Assinatura: %s"
-msgstr ""
+msgstr "Suscripción: %s"
 
-#: inc/Core/Ajax.php:1653 inc/Views/Settings/Tabs/About.php:88
-#, php-format
+#: inc/Core/Ajax.php:2235
+#: inc/Views/Settings/Tabs/About.php:88
 msgid "Assinatura: Clube M - %s"
-msgstr ""
+msgstr "Suscripción: Clube M - %s"
 
-#: inc/Views/Settings/Tabs/About.php:462
+#: inc/Views/Settings/Tabs/About.php:510
 msgid "Atenção! Você realmente deseja redefinir as configurações?"
 msgstr "¡Atención! ¿Realmente desea restablecer las configuraciones?"
 
-#: inc/Views/Settings/Tabs/General.php:601
+#: inc/Views/Settings/Tabs/Fields.php:204
+msgid "Atenção! Você realmente deseja redefinir os campos?"
+msgstr "¡Atención! ¿Realmente deseas restablecer los campos?"
+
+#: inc/Admin/Settings/Views/Integrations.php:293
+msgid "Ativa o envio de eventos para a Meta via Conversions API."
+msgstr "Activa el envío de eventos a Meta a través de la API de Conversiones."
+
+#: inc/Views/Settings/Tabs/General.php:620
 msgid "Ativar animações de processamento de compra"
-msgstr ""
+msgstr "Activar animaciones de procesamiento de compra"
+
+#: inc/Views/Settings/Tabs/General.php:467
+msgid "Ativar API para criação de links de checkout direto"
+msgstr "Activar API para crear enlaces de checkout directo"
 
 #: inc/Views/Settings/Tabs/About.php:13
 msgid "Ativar atualizações automáticas"
-msgstr ""
+msgstr "Activar actualizaciones automáticas"
 
 #: inc/Views/Settings/Tabs/General.php:168
 msgid "Ativar contagem regressiva do checkout"
-msgstr ""
+msgstr "Activar cuenta regresiva del checkout"
+
+#: inc/Admin/Settings/Views/Integrations.php:215
+msgid "Ativar GA4"
+msgstr "Activar GA4"
+
+#: inc/Admin/Settings/Views/Integrations.php:253
+msgid "Ativar Google Ads"
+msgstr "Activar Google Ads"
 
 #: inc/Views/Settings/Tabs/About.php:133
 msgid "Ativar licença"
 msgstr "Activar licencia"
 
+#: inc/Admin/Settings/Views/Integrations.php:292
+msgid "Ativar Meta"
+msgstr "Activar Meta"
+
 #: inc/Views/Settings/Tabs/About.php:45
 msgid "Ativar modo depuração"
-msgstr ""
+msgstr "Activar modo de depuración"
 
-#: inc/Views/Settings/Tabs/Integrations.php:48
-#: inc/Views/Settings/Tabs/Integrations.php:85
-#: inc/Views/Settings/Tabs/Integrations.php:114
-#: inc/Views/Settings/Tabs/Integrations.php:187
+#: inc/Admin/Settings/Views/Integrations.php:412
+#: inc/Admin/Settings/Views/Integrations.php:460
+#: inc/Admin/Settings/Views/Integrations.php:500
+#: inc/Admin/Settings/Views/Integrations.php:595
 msgid "Ativar módulo"
-msgstr ""
+msgstr "Activar módulo"
 
-#: inc/Views/Settings/Tabs/General.php:715
+#: inc/Views/Settings/Tabs/General.php:734
 msgid "Ativar página de agradecimento do Flexify Checkout"
 msgstr "Activar página de agradecimiento de Flexify Checkout"
 
@@ -386,19 +476,19 @@ msgstr "Activar página de agradecimiento de Flexify Checkout"
 msgid "Ativar sugestão de preenchimento do e-mail"
 msgstr "Activar sugerencia de llenado de correo electrónico"
 
-#: inc/Views/Settings/Tabs/General.php:529
+#: inc/Views/Settings/Tabs/General.php:548
 msgid "Ativar telefone internacional"
-msgstr ""
+msgstr "Activar teléfono internacional"
 
 #: inc/Views/Settings/Tabs/General.php:455
 msgid "Ativar validação de endereço por CEP"
-msgstr ""
+msgstr "Activar validación de dirección por código postal"
 
 #: inc/Views/Settings/Tabs/General.php:78
 msgid "Ativar verificação de força da senha do usuário"
 msgstr "Activar verificación de fuerza de la contraseña del usuario"
 
-#: inc/Views/Components.php:94
+#: inc/Views/Components.php:96
 msgid "Ativar/Desativar este campo"
 msgstr "Activar/Desactivar este campo"
 
@@ -408,26 +498,33 @@ msgid ""
 "console do navegador, desativar minificação de scripts e estilos e demais "
 "detalhes para resolução de problemas."
 msgstr ""
+"Activa esta opción para habilitar el modo de depuración y tener acceso a "
+"información en la consola del navegador, desactivar la minificación de "
+"scripts y estilos y otros detalles para la resolución de problemas."
 
 #: inc/Views/Settings/Tabs/About.php:22
 msgid ""
 "Ative essa opção para que o plugin Flexify Checkout seja atualizado "
 "automaticamente sempre que possível."
 msgstr ""
+"Activa esta opción para que el plugin Flexify Checkout se actualice "
+"automáticamente siempre que sea posible."
 
 #: inc/Views/Settings/Tabs/About.php:34
 msgid ""
 "Ative essa opção para que seja exibido uma notificação de atualização "
 "disponível."
 msgstr ""
+"Activa esta opción para que se muestre una notificación de actualización "
+"disponible."
 
-#: inc/Views/Settings/Tabs/General.php:478
+#: inc/Views/Settings/Tabs/General.php:497
 msgid ""
 "Ative esta opção para a opção de termos e condições da última etapa ficar "
 "ativa por padrão, caso exista uma página de termos e condições configurada."
 msgstr ""
-"Active esta opción para que la opción de términos y condiciones de la última "
-"etapa esté activa por defecto, si existe una página de términos y "
+"Active esta opción para que la opción de términos y condiciones de la "
+"última etapa esté activa por defecto, si existe una página de términos y "
 "condiciones configurada."
 
 #: inc/Views/Settings/Tabs/Fields.php:74
@@ -435,10 +532,10 @@ msgid ""
 "Ative esta opção para adicionar máscaras de preenchimento em campos da "
 "finalização de compras."
 msgstr ""
-"Active esta opción para añadir máscaras de llenado en campos de finalización "
-"de compras."
+"Active esta opción para añadir máscaras de llenado en campos de "
+"finalización de compras."
 
-#: inc/Views/Settings/Tabs/General.php:716
+#: inc/Views/Settings/Tabs/General.php:735
 msgid ""
 "Ative esta opção para carregar o modelo de página de agradecimento do "
 "Flexify Checkout."
@@ -462,7 +559,7 @@ msgstr ""
 "Active esta opción para mostrar el botón \"Volver a la tienda\" en la "
 "primera etapa de finalización de compra."
 
-#: inc/Views/Settings/Tabs/General.php:518
+#: inc/Views/Settings/Tabs/General.php:537
 msgid ""
 "Ative esta opção para exibir o botão de remoção do produto do carrinho na "
 "finalização de compras."
@@ -470,31 +567,39 @@ msgstr ""
 "Active esta opción para mostrar el botón de eliminación del producto del "
 "carrito en la finalización de compras."
 
-#: inc/Views/Settings/Tabs/General.php:538
+#: inc/Views/Settings/Tabs/General.php:557
 msgid ""
 "Ative esta opção para exibir o seletor de país no campo de número de "
 "telefone. Útil se você vende para outros países."
 msgstr ""
-"Active esta opción para mostrar el selector de país en el campo de número de "
-"teléfono. Útil si vende a otros países."
+"Active esta opción para mostrar el selector de país en el campo de número "
+"de teléfono. Útil si vende a otros países."
 
-#: inc/Views/Settings/Tabs/General.php:498
+#: inc/Views/Settings/Tabs/General.php:517
 msgid ""
 "Ative esta opção para exibir os seletores de quantidades do produto na "
 "finalização de compras."
 msgstr ""
-"Active esta opción para mostrar los selectores de cantidades del producto en "
-"la finalización de compras."
+"Active esta opción para mostrar los selectores de cantidades del producto "
+"en la finalización de compras."
 
 #: inc/Views/Settings/Tabs/General.php:79
 msgid ""
 "Ative esta opção para forçar a verificação da força de senha na criação da "
 "conta do usuário, na finalização de compras."
 msgstr ""
-"Active esta opción para forzar la verificación de la fuerza de la contraseña "
-"al crear la cuenta del usuario en la finalización de compras."
+"Active esta opción para forzar la verificación de la fuerza de la "
+"contraseña al crear la cuenta del usuario en la finalización de compras."
 
-#: inc/Views/Settings/Tabs/General.php:558
+#: inc/Views/Settings/Tabs/General.php:475
+msgid ""
+"Ative esta opção para habilitar um endpoint para criação de links de "
+"checkout direto via API."
+msgstr ""
+"Activa esta opción para habilitar un endpoint para la creación de enlaces "
+"de checkout directo a través de la API."
+
+#: inc/Views/Settings/Tabs/General.php:577
 msgid ""
 "Ative esta opção para informar um cupom de desconto para ser aplicado "
 "automaticamente na finalização de compra."
@@ -503,8 +608,7 @@ msgstr ""
 "automáticamente en la finalización de compra."
 
 #: inc/Views/Settings/Tabs/Fields.php:24
-msgid ""
-"Ative esta opção para mostrar o campo de observações adicionais no pedido."
+msgid "Ative esta opção para mostrar o campo de observações adicionais no pedido."
 msgstr ""
 "Active esta opción para mostrar el campo de observaciones adicionales en el "
 "pedido."
@@ -522,8 +626,8 @@ msgid ""
 "Ative esta opção para mostrar o resumo do pedido aberto por padrão em "
 "celulares."
 msgstr ""
-"Active esta opción para mostrar el resumen del pedido abierto por defecto en "
-"teléfonos móviles."
+"Active esta opción para mostrar el resumen del pedido abierto por defecto "
+"en teléfonos móviles."
 
 #: inc/Views/Settings/Tabs/Fields.php:138
 msgid ""
@@ -543,19 +647,22 @@ msgstr ""
 
 #: inc/Views/Settings/Tabs/General.php:444
 msgid ""
-"Ative esta opção para permitir que o usuário possa enviar seu pedido para um "
-"endereço diferente do endereço de faturamento."
+"Ative esta opção para permitir que o usuário possa enviar seu pedido para "
+"um endereço diferente do endereço de faturamento."
 msgstr ""
+"Activa esta opción para permitir que el usuario pueda enviar su pedido a "
+"una dirección diferente de la dirección de facturación."
 
-#: inc/Views/Settings/Tabs/General.php:610
-msgid ""
-"Ative esta opção para personalizar a animação de processamento da compra."
+#: inc/Views/Settings/Tabs/General.php:629
+msgid "Ative esta opção para personalizar a animação de processamento da compra."
 msgstr ""
+"Activa esta opción para personalizar la animación de procesamiento de la "
+"compra."
 
 #: inc/Views/Settings/Tabs/General.php:339
 msgid ""
-"Ative esta opção para preencher as informações da empresa automaticamente ao "
-"digitar o CNPJ (Disponível apenas no Brasil)."
+"Ative esta opção para preencher as informações da empresa automaticamente "
+"ao digitar o CNPJ (Disponível apenas no Brasil)."
 msgstr ""
 "Active esta opción para rellenar la información de la empresa "
 "automáticamente al ingresar el CNPJ (Disponible solo en Brasil)."
@@ -573,8 +680,11 @@ msgid ""
 "Ative esta opção para que o popup de login seja aberto automaticamente ao "
 "reconhecer uma conta existente com o e-mail informado."
 msgstr ""
+"Activa esta opción para que el popup de inicio de sesión se abra "
+"automáticamente al reconocer una cuenta existente con el correo electrónico "
+"informado."
 
-#: inc/Views/Settings/Tabs/General.php:588
+#: inc/Views/Settings/Tabs/General.php:607
 msgid ""
 "Ative esta opção para que pedidos de usuários convidados na finalização de "
 "compra sejam atribuídos a usuários existentes."
@@ -592,171 +702,206 @@ msgstr ""
 
 #: inc/Views/Settings/Tabs/Fields.php:94
 msgid "Ative esta opção para remover a etapa de entrega em produtos digitais."
-msgstr ""
-"Active esta opción para eliminar la etapa de entrega en productos digitales."
+msgstr "Active esta opción para eliminar la etapa de entrega en productos digitales."
 
 #: inc/Views/Settings/Tabs/Fields.php:115
 msgid ""
-"Ative esta opção para remover o indicador de etapas do cabeçalho do checkout."
+"Ative esta opção para remover o indicador de etapas do cabeçalho do "
+"checkout."
 msgstr ""
+"Activa esta opción para eliminar el indicador de etapas del encabezado del "
+"checkout."
 
 #: inc/Views/Settings/Tabs/General.php:157
 msgid ""
 "Ative esta opção para remover os controles de quantidade na finalização de "
 "compras em produtos que são vendidos individualmente."
 msgstr ""
+"Activa esta opción para eliminar los controles de cantidad en la "
+"finalización de compras en productos que se venden individualmente."
 
 #: inc/Views/Settings/Tabs/General.php:456
 msgid ""
 "Ative esta opção para validar se a cidade e estado do usuário confere com "
 "CEP de cobrança informado."
 msgstr ""
+"Activa esta opción para validar si la ciudad y estado del usuario coinciden "
+"con el código postal de facturación informado."
 
 #: inc/Views/Settings/Tabs/About.php:189
 msgid "Ativo"
 msgstr "Activo"
 
-#: inc/Views/Settings/Tabs/General.php:579
+#: inc/Views/Settings/Tabs/General.php:598
 msgid "Atribuir pedidos de usuários convidados"
 msgstr "Asignar pedidos de usuarios invitados"
 
-#: inc/Views/Settings/Tabs/Conditions.php:287
+#: inc/Views/Settings/Tabs/Conditions.php:293
 msgid "Atributos específicos"
 msgstr "Atributos específicos"
 
-#: inc/Views/Settings/Tabs/Conditions.php:342
+#: inc/Views/Settings/Tabs/Conditions.php:348
 msgid "Atributos específicos:"
 msgstr "Atributos específicos:"
 
-#: inc/Views/Settings/Tabs/Integrations.php:109
+#: inc/Admin/Settings/Views/Integrations.php:495
 msgid ""
 "Automatize o envio de mensagens via WhatsApp ao receber eventos no Flexify "
 "Checkout, recupere vendas de maneira mais assertiva. Deixe tudo no fluxo "
 "certo sem esforço!"
 msgstr ""
+"Automatiza el envío de mensajes a través de WhatsApp al recibir eventos en "
+"Flexify Checkout, recupera ventas de manera más efectiva. ¡Deja todo en el "
+"flujo correcto sin esfuerzo!"
 
-#: inc/Views/Settings/Tabs/Conditions.php:309
+#: inc/Views/Settings/Tabs/Conditions.php:315
 msgid "Autor"
 msgstr "Autor"
 
-#: inc/Views/Settings/Tabs/General.php:224
-msgid "Ação após expirar"
-msgstr ""
-
-#: inc/Core/Ajax.php:612 inc/Core/Ajax.php:765
-msgid "Ação não permitida"
-msgstr ""
-
-#: inc/Admin/Default_Options.php:473
+#: inc/Admin/Default_Options.php:533
+#: inc/Integrations/Superfrete.php:189
+#: inc/Integrations/Superfrete.php:200
 msgid "Bairro"
 msgstr "Barrio"
 
-#: inc/Checkout/Coupons.php:151
+#: inc/Checkout/Coupons.php:152
 msgid "Barra lateral (Padrão)"
-msgstr ""
+msgstr "Barra lateral (Predeterminado)"
 
-#: inc/Core/Assets.php:231
+#: inc/Core/Ajax.php:2226
+#: inc/Views/Settings/Tabs/About.php:78
+msgid "Básicos"
+msgstr "Básicos"
+
+#: inc/Core/Assets.php:227
 msgid "Bem vindo de volta!"
 msgstr "¡Bienvenido de nuevo!"
 
-#: inc/Views/Components.php:319
+#: inc/Views/Components.php:321
 msgid "billing_"
 msgstr "facturación_"
 
-#: inc/Core/Assets.php:408 inc/Views/Components.php:360
+#: inc/Core/Assets.php:390
+#: inc/Views/Components.php:362
 msgid "BR"
 msgstr "BR"
 
-#: inc/Core/Assets.php:409 inc/Views/Components.php:365
+#: inc/Core/Assets.php:391
+#: inc/Views/Components.php:367
 msgid "Brasil"
 msgstr "Brasil"
-
-#: inc/Core/Ajax.php:1644 inc/Views/Settings/Tabs/About.php:78
-msgid "Básicos"
-msgstr "Básicos"
 
 #: inc/Views/Settings/Tabs/Styles.php:103
 msgid "Cabeçalho personalizado"
 msgstr "Encabezado personalizado"
 
-#: inc/Views/Components.php:344
+#: inc/Views/Components.php:346
 msgid "Caixa de seleção"
-msgstr ""
+msgstr "Caja de selección"
 
-#: inc/Views/Settings/Tabs/Conditions.php:143
-#: inc/Views/Settings/Tabs/Conditions.php:198
+#: inc/Views/Settings/Tabs/Conditions.php:149
+#: inc/Views/Settings/Tabs/Conditions.php:204
 msgid "Campo"
 msgstr "Campo"
 
-#: inc/Core/Ajax.php:1032 inc/Core/Ajax.php:1045
+#: inc/Core/Ajax.php:1268
 #: inc/Views/Settings/Tabs/Conditions.php:62
-#, php-format
 msgid "Campo %s"
 msgstr "Campo %s"
 
-#: inc/Views/Settings/Tabs/Conditions.php:151
-#: inc/Views/Settings/Tabs/Conditions.php:206
+#: inc/API/REST_Checkout_Fields.php:191
+msgid "Campo adicional do checkout (%s)."
+msgstr "Campo adicional del checkout (%s)."
+
+#: inc/Views/Settings/Tabs/Conditions.php:157
+#: inc/Views/Settings/Tabs/Conditions.php:212
 msgid "Campo do checkout: *"
 msgstr "Campo del checkout: *"
 
-#: inc/Core/Ajax.php:403
+#: inc/Core/Ajax.php:577
 msgid "Campo removido"
-msgstr ""
+msgstr "Campo eliminado"
 
+#: inc/Core/Ajax.php:1250
 #: inc/Views/Settings/Tabs/Conditions.php:49
-#, php-format
 msgid "Campo: %s"
 msgstr "Campo: %s"
 
-#: inc/Views/Settings/Settings_Panel.php:79
+#: inc/Admin/Admin_Options.php:287
+msgid "Campos e condições essenciais para o Brasil foram criados com sucesso."
+msgstr "Campos y condiciones esenciales para España se han creado con éxito."
+
+#: inc/Views/Settings/Settings_Panel.php:80
 msgid "Campos e etapas"
 msgstr "Campos y etapas"
 
-#: inc/Views/Settings/Tabs/Styles.php:338
-msgid "Cancelar edição"
-msgstr ""
+#: inc/Core/Ajax.php:1873
+msgid "Campos redefinidos"
+msgstr "Campos restablecidos"
 
-#: inc/Views/Settings/Tabs/Conditions.php:286
+#: inc/Views/Settings/Tabs/Styles.php:364
+msgid "Cancelar edição"
+msgstr "Cancelar edición"
+
+#: inc/Views/Settings/Tabs/Conditions.php:292
 msgid "Categorias específicas"
 msgstr "Categorías específicas"
 
-#: inc/Views/Settings/Tabs/Conditions.php:335
+#: inc/Views/Settings/Tabs/Conditions.php:341
 msgid "Categorias específicas:"
 msgstr "Categorías específicas:"
 
-#: inc/Admin/Default_Options.php:405
+#: inc/Admin/Default_Options.php:465
 msgid "Celular"
 msgstr "Celular"
 
-#: inc/Views/Settings/Settings_Panel.php:134
+#: inc/Views/Settings/Settings_Panel.php:135
 msgid "Central de ajuda"
 msgstr "Centro de ayuda"
 
-#: inc/Admin/Default_Options.php:261
+#: inc/Admin/Default_Options.php:321
 msgid "CEP"
 msgstr "Código postal"
 
-#: inc/Checkout/Fields.php:1454
+#: inc/Checkout/Fields.php:1606
 msgid "CEP inválido."
+msgstr "Código postal inválido."
+
+#: woocommerce/common/cart/cart-shipping.php:65
+msgid "Change address"
+msgstr "Cambiar dirección"
+
+#: inc/Admin/Settings/Views/Integrations.php:234
+msgid ""
+"Chave secreta do Measurement Protocol usada para autenticar envios "
+"server-side."
 msgstr ""
+"Clave secreta del Measurement Protocol utilizada para autenticar envíos del "
+"lado del servidor."
 
 #: inc/Views/Settings/Tabs/Styles.php:95
 msgid "CHECKOUT"
 msgstr "CHECKOUT"
 
-#: inc/Admin/Default_Options.php:301
+#: inc/Admin/Settings/Views/Integrations.php:148
+msgid "Checkout iniciado"
+msgstr "Checkout iniciado"
+
+#: inc/Admin/Default_Options.php:361
 msgid "Cidade"
 msgstr "Ciudad"
 
-#: inc/Views/Components.php:194 inc/Views/Components.php:445
+#: inc/Views/Components.php:196
+#: inc/Views/Components.php:447
 msgid "Classe CSS personalizada do campo (Opcional)"
 msgstr "Clase CSS personalizada del campo (Opcional)"
 
-#: inc/Views/Components.php:205 inc/Views/Components.php:455
+#: inc/Views/Components.php:207
+#: inc/Views/Components.php:457
 msgid "Classe CSS personalizada do título (Opcional)"
 msgstr "Clase CSS personalizada del título (Opcional)"
 
-#: inc/Views/Settings/Tabs/Conditions.php:311
+#: inc/Views/Settings/Tabs/Conditions.php:317
 msgid "Cliente"
 msgstr "Cliente"
 
@@ -764,81 +909,126 @@ msgstr "Cliente"
 msgid "Clique aqui para gerar seu arquivo de licença"
 msgstr "Haga clic aquí para generar su archivo de licencia"
 
-#: inc/Admin/Default_Options.php:377
+#: inc/Admin/Default_Options.php:437
 msgid "CNPJ"
 msgstr "CNPJ"
 
-#: inc/Views/Settings/Tabs/Conditions.php:312
+#: inc/Views/Settings/Tabs/About.php:129
+msgid "Código da licença"
+msgstr "Código de licencia"
+
+#: inc/Views/Settings/Tabs/General.php:588
+msgid "Código do cupom de desconto"
+msgstr "Código del cupón de descuento"
+
+#: inc/Views/Settings/Tabs/Conditions.php:318
 msgid "Colaborador"
 msgstr "Colaborador"
 
-#: inc/Views/Settings/Tabs/Styles.php:300
+#: inc/Views/Settings/Tabs/Styles.php:326
 msgid "Cole a URL gerada pelo Google Fonts para incluir a família desejada."
-msgstr ""
+msgstr "Pega la URL generada por Google Fonts para incluir la familia deseada."
 
-#: inc/Checkout/Steps.php:733 inc/Checkout/Steps.php:775
+#: inc/API/REST_Checkout_Fields.php:216
+msgid "Coleção de campos adicionais genéricos."
+msgstr "Colección de campos adicionales genéricos."
+
+#: inc/Core/Ajax.php:1282
+#: inc/Views/Settings/Tabs/Conditions.php:76
+#: inc/Views/Settings/Tabs/Conditions.php:234
+msgid "Começa com"
+msgstr "Empieza con"
+
+#: inc/Checkout/Steps.php:738
+#: inc/Checkout/Steps.php:780
 msgid "Comece a digitar seu endereço para pesquisar."
 msgstr "Empiece a escribir su dirección para buscar."
 
-#: inc/Views/Settings/Tabs/Integrations.php:43
+#: inc/Admin/Settings/Views/Integrations.php:407
 msgid ""
 "Comece a receber via Pix e Boleto com aprovação imediata e sem cobrança de "
 "taxas. Exclusivo para clientes Inter Empresas."
 msgstr ""
+"Comienza a recibir vía Pix y Boleto con aprobación inmediata y sin cobro de "
+"tasas. Exclusivo para clientes Inter Empresas."
 
-#: inc/Checkout/Steps.php:739 inc/Checkout/Steps.php:781
+#: inc/Checkout/Steps.php:744
+#: inc/Checkout/Steps.php:786
 msgid "Comece com o endereço da sua casa e depois o número da casa."
 msgstr "Empiece con la dirección de su casa y luego el número de la casa."
 
-#: inc/Core/Ajax.php:1059 inc/Views/Settings/Tabs/Conditions.php:76
-#: inc/Views/Settings/Tabs/Conditions.php:228
-msgid "Começa com"
-msgstr "Empieza con"
-
-#: inc/Views/Settings/Tabs/Conditions.php:140
+#: inc/Views/Settings/Tabs/Conditions.php:146
 msgid "Componente: *"
 msgstr "Componente: *"
+
+#: inc/Admin/Settings/Views/Integrations.php:151
+msgid "Compra"
+msgstr "Compra"
 
 #: inc/Views/Settings/Tabs/About.php:121
 msgid "Comprar licença"
 msgstr "Comprar licencia"
 
-#: inc/API/License.php:952
+#: inc/API/License.php:953
 msgid "Comprar uma licença"
 msgstr "Comprar una licencia"
 
-#: inc/Views/Settings/Tabs/Conditions.php:195
+#: inc/Core/Ajax.php:1607
+msgid "Condição atualizada"
+msgstr "Condición actualizada"
+
+#: inc/Core/Ajax.php:1608
+msgid "Condição atualizada com sucesso!"
+msgstr "Condición actualizada con éxito!"
+
+#: inc/Views/Settings/Tabs/Conditions.php:201
 msgid "Condição de verificação: *"
 msgstr "Condición de verificación: *"
 
-#: inc/Core/Ajax.php:1073 inc/Views/Settings/Tabs/Conditions.php:88
-#, php-format
-msgid "Condição: %s %s"
-msgstr "Condición: %s %s"
+#: inc/Core/Ajax.php:1537
+#: inc/Core/Ajax.php:1572
+msgid "Condição inválida."
+msgstr "Condición inválida."
 
-#: inc/Views/Settings/Tabs/Conditions.php:219
+#: inc/Core/Ajax.php:1548
+#: inc/Core/Ajax.php:1583
+msgid "Condição não encontrada."
+msgstr "Condición no encontrada."
+
+#: inc/Views/Settings/Tabs/Conditions.php:225
 msgid "Condição: *"
 msgstr "Condición: *"
 
-#: inc/Views/Settings/Settings_Panel.php:85
+#: inc/Core/Ajax.php:1297
+#: inc/Views/Settings/Tabs/Conditions.php:88
+msgid "Condição: %s %s"
+msgstr "Condición: %s %s"
+
+#: inc/Views/Settings/Settings_Panel.php:86
 msgid "Condições"
 msgstr "Condiciones"
 
-#: inc/Core/Init.php:237 inc/Views/Settings/Tabs/General.php:179
-#: inc/Views/Settings/Tabs/Integrations.php:46
-#: inc/Views/Settings/Tabs/Integrations.php:83
-#: inc/Views/Settings/Tabs/Integrations.php:112
-#: inc/Views/Settings/Tabs/Integrations.php:185
+#: inc/Admin/Settings/Views/Integrations.php:196
+msgid "Configurações de rastreio de dados"
+msgstr "Configuraciones de rastreo de datos"
+
+#: inc/Admin/Settings/Views/Integrations.php:189
+#: inc/Admin/Settings/Views/Integrations.php:410
+#: inc/Admin/Settings/Views/Integrations.php:458
+#: inc/Admin/Settings/Views/Integrations.php:498
+#: inc/Admin/Settings/Views/Integrations.php:593
+#: inc/Core/Init.php:556
+#: inc/Views/Settings/Tabs/General.php:179
 msgid "Configurar"
 msgstr "Configurar"
 
-#: inc/Views/Settings/Tabs/General.php:620
+#: inc/Views/Settings/Tabs/General.php:639
 msgid "Configurar animação"
-msgstr ""
+msgstr "Configurar animación"
 
-#: inc/Views/Settings/Tabs/General.php:625
+#: inc/Views/Settings/Tabs/General.php:644
 msgid "Configurar animação de processamento"
-msgstr ""
+msgstr "Configurar animación de procesamiento"
 
 #: inc/Views/Settings/Tabs/General.php:371
 msgid "Configurar API"
@@ -848,14 +1038,13 @@ msgstr "Configurar API"
 msgid "Configurar API de preenchimento de endereço"
 msgstr "Configurar API de llenado de dirección"
 
-#: inc/Views/Components.php:66
-#, php-format
+#: inc/Views/Components.php:68
 msgid "Configurar campo <strong class=\"field-name\">%s</strong>"
 msgstr "Configurar campo <strong class=\"field-name\">%s</strong>"
 
 #: inc/Views/Settings/Tabs/General.php:184
 msgid "Configurar contagem regressiva"
-msgstr ""
+msgstr "Configurar cuenta regresiva"
 
 #: inc/Views/Settings/Tabs/General.php:99
 msgid "Configurar provedores"
@@ -865,7 +1054,7 @@ msgstr "Configurar proveedores"
 msgid "Configurar sugestão de e-mails"
 msgstr "Configurar sugerencia de correos electrónicos"
 
-#: inc/Views/Settings/Settings_Panel.php:133
+#: inc/Views/Settings/Settings_Panel.php:134
 msgid ""
 "Configure abaixo as opções da finalização de compra do WooCommerce. Se "
 "precisar de ajuda para configurar, acesse nossa"
@@ -873,30 +1062,62 @@ msgstr ""
 "Configure a continuación las opciones de finalización de compra de "
 "WooCommerce. Si necesita ayuda para configurar, acceda a nuestra"
 
-#: inc/Checkout/Steps.php:1006 inc/Checkout/Thankyou.php:178
+#: inc/Admin/Settings/Views/Integrations.php:182
+msgid ""
+"Configure o GA4, Google Ads e Meta para envio de dados de eventos coletados "
+"no checkout."
+msgstr ""
+"Configura el GA4, Google Ads y Meta para el envío de datos de eventos "
+"recogidos en el checkout."
+
+#: inc/Admin/Settings/Views/Integrations.php:286
+msgid "Configure o Pixel e o token da Conversions API para envio dos eventos."
+msgstr ""
+"Configura el Pixel y el token de la Conversions API para el envío de los "
+"eventos."
+
+#: inc/Admin/Settings/Views/Integrations.php:209
+msgid ""
+"Configure os parâmetros do Google Analytics 4 para envio de eventos de "
+"checkout."
+msgstr ""
+"Configura los parámetros de Google Analytics 4 para el envío de eventos de "
+"checkout."
+
+#: inc/Checkout/Steps.php:1014
+#: inc/Checkout/Thankyou.php:303
 msgid "Contato"
 msgstr "Contacto"
 
-#: inc/Checkout/Steps.php:244
-msgid "Continuar"
-msgstr "Continuar"
-
-#: inc/Checkout/Steps.php:251
-msgid "Continuar para"
-msgstr "Continuar para"
-
-#: inc/Core/Ajax.php:1057 inc/Views/Settings/Tabs/Conditions.php:74
-#: inc/Views/Settings/Tabs/Conditions.php:226
+#: inc/Core/Ajax.php:1280
+#: inc/Views/Settings/Tabs/Conditions.php:74
+#: inc/Views/Settings/Tabs/Conditions.php:232
 msgid "Contém"
 msgstr "Contiene"
 
+#: inc/Checkout/Steps.php:249
+msgid "Continuar"
+msgstr "Continuar"
+
+#: inc/Checkout/Steps.php:256
+msgid "Continuar para"
+msgstr "Continuar para"
+
+#: inc/Admin/Settings/Views/Integrations.php:262
+msgid "Conversion ID"
+msgstr "ID de conversión"
+
+#: inc/Admin/Settings/Views/Integrations.php:271
+msgid "Conversion Label"
+msgstr "Etiqueta de conversión"
+
 #: inc/Views/Settings/Tabs/General.php:252
 msgid "Cor de fundo da contagem regressiva"
-msgstr ""
+msgstr "Color de fondo de la cuenta regresiva"
 
 #: inc/Views/Settings/Tabs/General.php:276
 msgid "Cor do texto da contagem regressiva"
-msgstr ""
+msgstr "Color del texto de la cuenta regresiva"
 
 #: inc/Views/Settings/Tabs/Styles.php:165
 msgid "Cor do título dos campos"
@@ -910,27 +1131,31 @@ msgstr "Color primario"
 msgid "Cor secundára"
 msgstr "Color secundario"
 
-#: inc/Core/Assets.php:225
+#: inc/Core/Assets.php:221
 msgid "Corrija todos os erros e tente novamente."
 msgstr "Corrija todos los errores e inténtelo nuevamente."
 
-#: inc/Admin/Default_Options.php:363
+#: inc/Admin/Default_Options.php:423
 msgid "CPF"
 msgstr "DNI"
 
-#: inc/Views/Settings/Tabs/Conditions.php:349
+#: inc/Admin/Admin_Options.php:259
+msgid "Criar campos e condições essenciais"
+msgstr "Crear campos y condiciones esenciales"
+
+#: inc/Views/Settings/Tabs/Conditions.php:355
 msgid "Criar condição"
 msgstr "Crear condición"
 
-#: inc/Checkout/Steps.php:659
+#: inc/Checkout/Steps.php:664
 msgid "Criar uma conta?"
 msgstr "¿Crear una cuenta?"
 
-#: inc/Views/Settings/Tabs/Conditions.php:109
+#: inc/Views/Settings/Tabs/Conditions.php:115
 msgid "Criar uma nova condição"
 msgstr "Crear una nueva condición"
 
-#: inc/Checkout/Steps.php:685
+#: inc/Checkout/Steps.php:690
 msgid ""
 "Crie uma conta inserindo as informações abaixo. Se você já é um cliente, "
 "faça login."
@@ -938,20 +1163,19 @@ msgstr ""
 "Cree una cuenta ingresando la información a continuación. Si ya es cliente, "
 "inicie sesión."
 
-#. %1$s = Opening login link, %2$s = Closing login link.
-#: inc/Checkout/Steps.php:683
+#: inc/Checkout/Steps.php:688
 msgid ""
-"Crie uma conta inserindo as informações abaixo. Se você já é um cliente, por "
-"favor faça %1$login na página da sua conta%2$s."
+"Crie uma conta inserindo as informações abaixo. Se você já é um cliente, "
+"por favor faça %1$login na página da sua conta%2$s."
 msgstr ""
 "Cree una cuenta ingresando la información a continuación. Si ya es cliente, "
 "por favor inicie %1$sesión en su página de cuenta%2$s."
 
-#: inc/Views/Settings/Tabs/Conditions.php:120
+#: inc/Views/Settings/Tabs/Conditions.php:126
 msgid "Crie uma nova condição para finalização de compras"
 msgstr "Cree una nueva condición para finalizar compras"
 
-#: inc/Checkout/Steps.php:688
+#: inc/Checkout/Steps.php:693
 msgid ""
 "Crie uma senha para sua conta, caso seja sua primeira compra. Se já é um "
 "cliente, entre em sua conta para resgatar sua informações pessoais."
@@ -959,65 +1183,98 @@ msgstr ""
 "Cree una contraseña para su cuenta, si es su primera compra. Si ya es un "
 "cliente, inicie sesión para recuperar su información personal."
 
+#: inc/Views/Settings/Tabs/Styles.php:254
+msgid "CSS personalizado"
+msgstr "CSS personalizado"
+
 #: woocommerce/dark/checkout/form-coupon.php:28
 #: woocommerce/modern/checkout/form-coupon.php:28
 msgid "Cupom de desconto"
 msgstr "Cupón de descuento"
 
-#: inc/Views/Settings/Tabs/General.php:573
+#: inc/Views/Settings/Tabs/General.php:592
 msgid "CUPOMDEDESCONTO"
 msgstr "CUPONDEDESCUENTO"
 
-#: inc/Views/Settings/Tabs/About.php:129
-msgid "Código da licença"
-msgstr "Código de licencia"
+#: inc/Core/Ajax.php:1593
+msgid "Dados da condição inválidos."
+msgstr "Datos de la condición inválidos."
 
-#: inc/Views/Settings/Tabs/General.php:569
-msgid "Código do cupom de desconto"
-msgstr "Código del cupón de descuento"
-
-#: inc/API/License.php:733
+#: inc/API/License.php:734
 msgid "Dados inválidos."
 msgstr "Datos inválidos."
 
-#: inc/Admin/Default_Options.php:433
+#: inc/Admin/Default_Options.php:493
 msgid "Data de nascimento"
 msgstr "Fecha de nacimiento"
+
+#: inc/Admin/Settings/Views/Integrations.php:247
+msgid "Defina os parâmetros de conversão para envio dos eventos ao Google Ads."
+msgstr "Define los parámetros de conversión para el envío de eventos a Google Ads."
+
+#: inc/Admin/Settings/Views/Integrations.php:334
+msgid ""
+"Defina quais eventos do checkout serão enviados para cada plataforma. Os "
+"credenciais acima precisam estar configurados para o disparo acontecer."
+msgstr ""
+"Define qué eventos del checkout se enviarán a cada plataforma. Las "
+"credenciales anteriores deben estar configuradas para que se produzca el "
+"disparo."
 
 #: inc/Views/Settings/Tabs/Styles.php:216
 msgid ""
 "Defina qual fonte será aplicada na finalização de compra. Você pode "
 "adicionar novas fontes personalizadas ou do Google Fonts."
 msgstr ""
+"Define qué fuente se aplicará en la finalización de compra. Puedes añadir "
+"nuevas fuentes personalizadas o de Google Fonts."
 
-#: inc/Views/Components.php:121 inc/Views/Components.php:149
-#: inc/Views/Components.php:180 inc/Views/Components.php:432
+#: inc/Views/Components.php:123
+#: inc/Views/Components.php:151
+#: inc/Views/Components.php:182
+#: inc/Views/Components.php:434
 msgid "Define a posição deste campo na finalização de compras."
 msgstr "Define la posición de este campo en la finalización de compras."
 
-#: inc/Views/Components.php:476
+#: inc/Views/Components.php:478
 msgid "Define em qual etapa da finalização de compras o campo será exibido."
-msgstr ""
-"Determina en qué etapa de la finalización de compras se mostrará el campo."
+msgstr "Determina en qué etapa de la finalización de compras se mostrará el campo."
 
-#: inc/Views/Components.php:137
+#: inc/Views/Settings/Tabs/Styles.php:185
+msgid ""
+"Define o raio da borda dos campos, botões e elementos da finalização de "
+"compra."
+msgstr ""
+"Define el radio del borde de los campos, botones y elementos de la "
+"finalización de compra."
+
+#: inc/Views/Settings/Tabs/Styles.php:236
+msgid "Define o tamanho da fonte para tags h2 de subtítulos (Heading 2)."
+msgstr "Define el tamaño de la fuente para etiquetas h2 de subtítulos (Heading 2)."
+
+#: inc/Views/Components.php:139
 msgid "Define o título que será exibido para este campo."
 msgstr "Define el título que se mostrará para este campo."
 
-#: inc/Views/Components.php:120
+#: inc/Views/Components.php:122
 msgid "Definir país padrão"
 msgstr "Definir país predeterminado"
 
 #: inc/Views/Settings/Tabs/General.php:259
 #: inc/Views/Settings/Tabs/General.php:283
 msgid "Definir personalizada"
-msgstr ""
+msgstr "Definir personalizada"
 
-#: inc/Views/Settings/Tabs/Texts.php:22 inc/Views/Settings/Tabs/Texts.php:32
-#: inc/Views/Settings/Tabs/Texts.php:42 inc/Views/Settings/Tabs/Texts.php:52
-#: inc/Views/Settings/Tabs/Texts.php:62 inc/Views/Settings/Tabs/Texts.php:72
-#: inc/Views/Settings/Tabs/Texts.php:82 inc/Views/Settings/Tabs/Texts.php:92
-#: inc/Views/Settings/Tabs/Texts.php:102 inc/Views/Settings/Tabs/Texts.php:112
+#: inc/Views/Settings/Tabs/Texts.php:22
+#: inc/Views/Settings/Tabs/Texts.php:32
+#: inc/Views/Settings/Tabs/Texts.php:42
+#: inc/Views/Settings/Tabs/Texts.php:52
+#: inc/Views/Settings/Tabs/Texts.php:62
+#: inc/Views/Settings/Tabs/Texts.php:72
+#: inc/Views/Settings/Tabs/Texts.php:82
+#: inc/Views/Settings/Tabs/Texts.php:92
+#: inc/Views/Settings/Tabs/Texts.php:102
+#: inc/Views/Settings/Tabs/Texts.php:112
 msgid "Deixe em branco para não exibir."
 msgstr "Deje en blanco para no mostrar."
 
@@ -1029,9 +1286,7 @@ msgstr "Desactivado"
 msgid "Desativar licença"
 msgstr "Desactivar licencia"
 
-#. 1: product name 2: quantity in stock
-#: inc/Checkout/Sidebar.php:373
-#, php-format
+#: inc/Checkout/Sidebar.php:395
 msgid ""
 "Desculpe, não temos \"%1$s\" suficientes em estoque para atender seu pedido "
 "(%2$s disponíveis). Pedimos desculpas por qualquer inconveniente causado."
@@ -1040,41 +1295,63 @@ msgstr ""
 "pedido (%2$s disponibles). Nos disculpamos por cualquier inconveniente "
 "causado."
 
-#: inc/Checkout/Common.php:63
+#: inc/Checkout/Common.php:204
+#: woocommerce/common/checkout/form-pay.php:56
 msgid ""
 "Desculpe, parece que não há métodos de pagamento disponíveis para sua "
 "localização. Entre em contato conosco se precisar de assistência ou desejar "
 "pagar de outra forma."
 msgstr ""
-"Lo sentimos, parece que no hay métodos de pago disponibles para su ubicación."
-" Contáctenos si necesita ayuda o desea pagar de otra manera."
+"Lo sentimos, parece que no hay métodos de pago disponibles para su "
+"ubicación. Contáctenos si necesita ayuda o desea pagar de otra manera."
 
 #: inc/Views/Settings/Tabs/About.php:430
 msgid "Desligado"
 msgstr "Apagado"
 
-#: inc/Core/Ajax.php:1064 inc/Views/Settings/Tabs/Conditions.php:81
-#: inc/Views/Settings/Tabs/Conditions.php:233
+#: inc/Core/Ajax.php:1287
+#: inc/Views/Settings/Tabs/Conditions.php:81
+#: inc/Views/Settings/Tabs/Conditions.php:239
 msgid "Desmarcado"
-msgstr ""
+msgstr "Desmarcado"
 
 #: inc/Views/Settings/Tabs/General.php:216
 msgid "Dias"
-msgstr ""
+msgstr "Días"
 
-#: inc/Checkout/Steps.php:754 inc/Checkout/Steps.php:795
+#: inc/Checkout/Steps.php:759
+#: inc/Checkout/Steps.php:800
 msgid "Digitar endereço manualmente"
 msgstr "Ingresar dirección manualmente"
 
-#: inc/Views/Components.php:186 inc/Views/Components.php:437
+#: inc/Views/Components.php:188
+#: inc/Views/Components.php:439
 msgid "Direita"
 msgstr "Derecha"
 
-#: inc/Checkout/Sidebar.php:168
-msgid "Disponibilidade: Sob encomenda"
-msgstr ""
+#: inc/Admin/Settings/Views/Integrations.php:154
+msgid "Disparado quando o cliente entra no checkout."
+msgstr "Disparado cuando el cliente entra en el checkout."
 
-#: inc/Core/Init.php:258
+#: inc/Admin/Settings/Views/Integrations.php:156
+msgid "Disparado quando o cliente seleciona o método de pagamento e envia o pedido."
+msgstr "Disparado cuando el cliente selecciona el método de pago y envía el pedido."
+
+#: inc/Admin/Settings/Views/Integrations.php:155
+msgid "Disparado quando o cliente seleciona ou altera o método de entrega."
+msgstr "Disparado cuando el cliente selecciona o cambia el método de entrega."
+
+#: inc/Admin/Settings/Views/Integrations.php:157
+msgid "Disparado quando o pedido é concluído (página de obrigado e/ou status pago)."
+msgstr ""
+"Disparado cuando el pedido se completa (página de agradecimiento y/o estado "
+"pagado)."
+
+#: inc/Checkout/Sidebar.php:169
+msgid "Disponibilidade: Sob encomenda"
+msgstr "Disponibilidad: Bajo pedido"
+
+#: inc/Core/Init.php:577
 msgid "Documentação"
 msgstr "Documentación"
 
@@ -1084,168 +1361,221 @@ msgstr "DOMDocument:"
 
 #: inc/Views/Settings/Tabs/General.php:206
 msgid "Duração total"
-msgstr ""
+msgstr "Duración total"
 
-#: inc/Admin/Orders.php:255
+#: inc/Core/Ajax.php:1276
+#: inc/Views/Settings/Tabs/Conditions.php:70
+#: inc/Views/Settings/Tabs/Conditions.php:228
+msgid "É"
+msgstr "Es"
+
+#: inc/Admin/Orders.php:256
+#: woocommerce/common/checkout/form-login.php:106
 msgid "E-mail"
-msgstr ""
+msgstr "Correo electrónico"
 
-#: inc/Checkout/Steps.php:1014 inc/Checkout/Steps.php:1055
-#: inc/Checkout/Steps.php:1072 inc/Core/Assets.php:420
-#: inc/Views/Components.php:53 inc/Views/Settings/Tabs/Styles.php:363
+#: inc/Checkout/Steps.php:1022
+#: inc/Checkout/Steps.php:1063
+#: inc/Checkout/Steps.php:1080
+#: inc/Core/Assets.php:402
+#: inc/Views/Components.php:55
+#: inc/Views/Settings/Tabs/Styles.php:389
 msgid "Editar"
 msgstr "Editar"
 
-#: inc/Core/Assets.php:425
+#: inc/Core/Assets.php:407
 msgid "Editar fonte"
-msgstr ""
+msgstr "Editar fuente"
 
-#: inc/Views/Settings/Tabs/Conditions.php:313
+#: inc/Views/Settings/Tabs/Conditions.php:319
 msgid "Editor"
 msgstr "Editor"
 
-#: inc/Views/Settings/Tabs/Styles.php:81 inc/Views/Settings/Tabs/Styles.php:194
+#: inc/Views/Settings/Tabs/Styles.php:81
+#: inc/Views/Settings/Tabs/Styles.php:194
 #: inc/Views/Settings/Tabs/Styles.php:245
 msgid "em"
 msgstr "en"
 
-#: inc/Views/Settings/Tabs/Integrations.php:140
+#: inc/Admin/Settings/Views/Integrations.php:537
 msgid "Em breve"
-msgstr ""
+msgstr "Próximamente"
 
-#: inc/Views/Components.php:546
+#: inc/Views/Components.php:548
 msgid "Em breve..."
 msgstr "Próximamente..."
 
-#: inc/Admin/Default_Options.php:235
+#: inc/Admin/Default_Options.php:295
 msgid "Empresa"
 msgstr "Empresa"
 
 #: inc/Views/Settings/Tabs/General.php:233
 msgid "Encerrar sessão do checkout"
-msgstr ""
+msgstr "Cerrar sesión del checkout"
 
-#: inc/Admin/Default_Options.php:275
+#: inc/Admin/Default_Options.php:335
 msgid "Endereço"
 msgstr "Dirección"
 
-#: inc/Checkout/Fields.php:811
+#: inc/Checkout/Fields.php:818
 msgid "Endereço de cobrança"
-msgstr ""
+msgstr "Dirección de facturación"
 
-#: inc/Admin/Default_Options.php:182
+#: inc/Admin/Default_Options.php:242
 msgid "Endereço de e-mail"
 msgstr "Dirección de correo electrónico"
 
-#: inc/Checkout/Steps.php:626 inc/Core/Assets.php:227
+#: woocommerce/common/cart/cart-shipping.php:96
+msgid "Enter a different address"
+msgstr "Introduce una dirección diferente"
+
+#: woocommerce/common/cart/cart-shipping.php:75
+msgid "Enter your address to view shipping options."
+msgstr "Introduce tu dirección para ver las opciones de envío."
+
+#: inc/Checkout/Steps.php:631
+#: inc/Core/Assets.php:223
+#: woocommerce/common/checkout/form-login.php:81
 #: woocommerce/dark/checkout/form-checkout.php:44
 #: woocommerce/modern/checkout/form-checkout.php:44
 msgid "Entrar"
 msgstr "Entrar"
 
-#: inc/Checkout/Thankyou.php:422
+#: inc/Checkout/Thankyou.php:552
 msgid "Entrar em contato"
 msgstr "Ponerse en contacto"
 
-#: woocommerce/common/checkout/form-login.php:38
+#: woocommerce/common/checkout/form-login.php:42
 msgid "Entre em sua conta de cliente:"
 msgstr "Inicie sesión en su cuenta de cliente:"
 
-#: inc/Checkout/Steps.php:745 inc/Checkout/Steps.php:787
-#: inc/Checkout/Steps.php:1047 inc/Checkout/Thankyou.php:193
+#: inc/Checkout/Steps.php:750
+#: inc/Checkout/Steps.php:792
+#: inc/Checkout/Steps.php:1055
+#: inc/Checkout/Thankyou.php:318
 msgid "Entrega"
 msgstr "Entrega"
 
-#: inc/Checkout/Steps.php:441
+#: woocommerce/common/checkout/form-login.php:113
+msgid "Enviar link de redefinição"
+msgstr "Enviar enlace de restablecimiento"
+
+#: inc/Checkout/Steps.php:446
 msgid "Enviar para um endereço diferente?"
 msgstr "¿Enviar a una dirección diferente?"
 
-#: inc/Core/Ajax.php:711
+#: inc/Core/Ajax.php:939
 msgid "Envie ao menos um arquivo de fonte (WOFF, WOFF2 ou TTF)."
-msgstr ""
+msgstr "Envía al menos un archivo de fuente (WOFF, WOFF2 o TTF)."
 
-#: inc/Checkout/Thankyou.php:204
+#: inc/Checkout/Thankyou.php:329
 msgid "Envio"
 msgstr "Envío"
 
-#: inc/Core/Ajax.php:1431 inc/Core/Ajax.php:1440
+#: inc/Core/Ajax.php:2002
+#: inc/Core/Ajax.php:2011
 msgid "Erro ao adicionar"
-msgstr ""
+msgstr "Error al añadir"
 
-#: inc/Core/Ajax.php:495 inc/Core/Ajax.php:1746
+#: inc/Core/Ajax.php:1571
+#: inc/Core/Ajax.php:1582
+#: inc/Core/Ajax.php:1592
+#: inc/Core/Ajax.php:1617
+msgid "Erro ao atualizar"
+msgstr "Error al actualizar"
+
+#: inc/Core/Ajax.php:723
+#: inc/Core/Ajax.php:2328
 msgid "Erro ao carregar o arquivo. A ação não foi acionada corretamente."
-msgstr ""
+msgstr "Error al cargar el archivo. La acción no se ha ejecutado correctamente."
 
-#: inc/Core/Ajax.php:505 inc/Core/Ajax.php:1755
+#: inc/Core/Ajax.php:733
+#: inc/Core/Ajax.php:2337
 msgid "Erro ao carregar o arquivo. O arquivo não foi enviado."
-msgstr ""
+msgstr "Error al cargar el archivo. El archivo no se ha enviado."
 
-#: inc/Core/Ajax.php:1379 inc/Core/Ajax.php:1388
+#: inc/Core/Ajax.php:1536
+#: inc/Core/Ajax.php:1547
+msgid "Erro ao editar"
+msgstr "Error al editar"
+
+#: inc/Core/Assets.php:294
+msgid "Erro ao processar a finalização da compra. Por favor, tente novamente."
+msgstr ""
+"Error al procesar la finalización de la compra. Por favor, inténtalo de "
+"nuevo."
+
+#: inc/Core/Ajax.php:1950
+#: inc/Core/Ajax.php:1959
 msgid "Erro ao remover"
-msgstr ""
+msgstr "Error al eliminar"
 
-#: inc/Core/Ajax.php:775 inc/Core/Ajax.php:783 inc/Core/Ajax.php:793
-#: inc/Core/Ajax.php:816
+#: inc/Core/Ajax.php:1003
+#: inc/Core/Ajax.php:1011
+#: inc/Core/Ajax.php:1021
+#: inc/Core/Ajax.php:1044
 msgid "Erro ao remover fonte"
-msgstr ""
+msgstr "Error al eliminar fuente"
 
-#: inc/Core/Ajax.php:624 inc/Core/Ajax.php:636 inc/Core/Ajax.php:645
-#: inc/Core/Ajax.php:661 inc/Core/Ajax.php:685 inc/Core/Ajax.php:695
-#: inc/Core/Ajax.php:710 inc/Core/Ajax.php:747
+#: inc/Core/Ajax.php:852
+#: inc/Core/Ajax.php:864
+#: inc/Core/Ajax.php:873
+#: inc/Core/Ajax.php:889
+#: inc/Core/Ajax.php:913
+#: inc/Core/Ajax.php:923
+#: inc/Core/Ajax.php:938
+#: inc/Core/Ajax.php:975
 msgid "Erro ao salvar fonte"
-msgstr ""
+msgstr "Error al guardar fuente"
 
-#: inc/API/License.php:372 inc/API/License.php:425
+#: inc/API/License.php:373
+#: inc/API/License.php:426
 msgid "Erro cURL 35: Problema de comunicação SSL/TLS."
-msgstr ""
+msgstr "Error cURL 35: Problema de comunicación SSL/TLS."
 
-#: inc/API/License.php:427
-#, php-format
+#: inc/API/License.php:428
 msgid "Erro cURL: %s"
 msgstr "Error cURL: %s"
 
-#: inc/API/License.php:298
-#, php-format
+#: inc/API/License.php:299
 msgid "Erro JSON: %s"
 msgstr "Error JSON: %s"
 
-#: inc/Core/Assets.php:411
-msgid "Escolher animação"
-msgstr ""
+#: inc/Core/Ajax.php:180
+#: inc/Core/Ajax.php:184
+msgid "Erro:"
+msgstr "Error:"
 
-#: inc/Core/Assets.php:400
+#: inc/Core/Assets.php:393
+msgid "Escolher animação"
+msgstr "Elegir animación"
+
+#: inc/Core/Assets.php:382
 msgid "Escolher Imagem de cabeçalho"
 msgstr "Elegir imagen de cabecera"
 
-#: inc/Views/Components.php:185 inc/Views/Components.php:436
+#: woocommerce/common/checkout/form-login.php:85
+msgid "Esqueceu sua senha?"
+msgstr "¿Olvidaste tu contraseña?"
+
+#: inc/Views/Components.php:187
+#: inc/Views/Components.php:438
 msgid "Esquerda"
 msgstr "Izquierda"
 
-#: inc/Admin/Default_Options.php:314
+#: inc/Admin/Default_Options.php:374
 msgid "Estado"
 msgstr "Estado"
 
-#: inc/Checkout/Fields.php:1037
+#: inc/Admin/Settings_Import_Export.php:205
+msgid "Este arquivo não é uma exportação de configurações do Flexify Checkout."
+msgstr "Este archivo no es una exportación de configuraciones de Flexify Checkout."
+
+#: inc/Checkout/Fields.php:1045
 msgid "Este campo é obrigatório"
 msgstr "Este campo es obligatorio"
 
-#: inc/Core/Ajax.php:637
-msgid "Este identificador é reservado para as fontes padrão."
-msgstr ""
-
-#: inc/Views/Components.php:325
-msgid "Este nome e ID do campo já está em uso. Use um outro nome."
-msgstr "Este nombre e ID del campo ya está en uso. Use otro nombre."
-
-#: inc/Views/Settings/Tabs/Styles.php:285
-msgid "Este nome será exibido na lista de seleção de fontes."
-msgstr ""
-
-#: inc/API/License.php:944
-msgid "Este recurso está disponível na versão Pro"
-msgstr "Esta función está disponible en la versión Pro"
-
-#: inc/Views/Components.php:95
+#: inc/Views/Components.php:97
 msgid ""
 "Este é um campo nativo do WooCommerce e não pode ser removido, apenas "
 "desativado."
@@ -1253,29 +1583,70 @@ msgstr ""
 "Este es un campo nativo de WooCommerce y no puede ser eliminado, solo "
 "desactivado."
 
-#: inc/Views/Settings/Tabs/Styles.php:312
-msgid "Estilo da fonte"
-msgstr ""
+#: inc/Core/Ajax.php:865
+msgid "Este identificador é reservado para as fontes padrão."
+msgstr "Este identificador está reservado para las fuentes estándar."
 
-#: inc/Views/Settings/Settings_Panel.php:97
+#: inc/Views/Components.php:327
+msgid "Este nome e ID do campo já está em uso. Use um outro nome."
+msgstr "Este nombre e ID del campo ya está en uso. Use otro nombre."
+
+#: inc/Views/Settings/Tabs/Styles.php:311
+msgid "Este nome será exibido na lista de seleção de fontes."
+msgstr "Este nombre se mostrará en la lista de selección de fuentes."
+
+#: inc/API/License.php:945
+msgid "Este recurso está disponível na versão Pro"
+msgstr "Esta función está disponible en la versión Pro"
+
+#: inc/Views/Settings/Tabs/Styles.php:338
+msgid "Estilo da fonte"
+msgstr "Estilo de la fuente"
+
+#: inc/Views/Settings/Settings_Panel.php:98
 msgid "Estilos"
 msgstr "Estilos"
 
-#: inc/Views/Components.php:480 inc/Views/Settings/Tabs/Fields.php:167
+#: inc/Views/Components.php:482
+#: inc/Views/Settings/Tabs/Fields.php:167
 msgid "Etapa 1 (Contato)"
 msgstr "Etapa 1 (Contacto)"
 
-#: inc/Views/Components.php:481 inc/Views/Settings/Tabs/Fields.php:168
+#: inc/Views/Components.php:483
+#: inc/Views/Settings/Tabs/Fields.php:168
 msgid "Etapa 2 (Entrega)"
 msgstr "Etapa 2 (Entrega)"
 
-#: inc/Views/Components.php:475
+#: inc/Views/Components.php:477
 msgid "Etapa do campo"
 msgstr "Etapa del campo"
 
-#: inc/Core/Assets.php:421 inc/Views/Settings/Tabs/Styles.php:364
+#: inc/Admin/Settings/Views/Integrations.php:332
+msgid "Eventos por plataforma"
+msgstr "Eventos por plataforma"
+
+#: inc/Core/Assets.php:403
+#: inc/Views/Settings/Tabs/Styles.php:390
 msgid "Excluir"
+msgstr "Eliminar"
+
+#: inc/Views/Settings/Tabs/About.php:452
+msgid "Exportar configurações"
+msgstr "Exportar configuraciones"
+
+#: inc/Views/Settings/Tabs/About.php:446
+msgid "Exportar e importar configurações:"
+msgstr "Exportar e importar configuraciones:"
+
+#: inc/Views/Settings/Tabs/About.php:447
+msgid ""
+"Exporte as configurações do plugin em um arquivo JSON para fazer backup ou "
+"replicar em outra loja. A exportação não inclui a licença nem dados "
+"sensíveis."
 msgstr ""
+"Exporte las configuraciones del plugin en un archivo JSON para hacer una "
+"copia de seguridad o replicar en otra tienda. La exportación no incluye la "
+"licencia ni datos sensibles."
 
 #: inc/Views/Settings/Tabs/About.php:261
 msgid "Extensão cURL:"
@@ -1285,154 +1656,141 @@ msgstr "Extensión cURL:"
 msgid "Extensão GD:"
 msgstr "Extensión GD:"
 
-#: inc/Core/Ajax.php:686
+#: inc/Core/Ajax.php:914
 msgid "Extensão inválida. Use WOFF, WOFF2 ou TTF."
-msgstr ""
+msgstr "Extensión inválida. Use WOFF, WOFF2 o TTF."
 
 #: inc/Views/Settings/Tabs/About.php:297
 msgid "Extensão OpenSSL:"
 msgstr "Extensión OpenSSL:"
 
-#. Description of the plugin
-msgid ""
-"Extensão que otimiza a finalização de compras em multi etapas para lojas "
-"WooCommerce."
-msgstr ""
-"Extensión que optimiza la finalización de compras en múltiples etapas para "
-"tiendas WooCommerce."
-
-#: inc/Views/Settings/Tabs/Integrations.php:138
+#: inc/Admin/Settings/Views/Integrations.php:535
 msgid ""
 "Facilite o preenchimento do endereço de entrega aos usuários, permitindo "
 "pesquisar seu endereço ou usando recursos de geolocalização com Google Maps."
 msgstr ""
+"Facilite el llenado de la dirección de entrega a los usuarios, permitiendo "
+"buscar su dirección o utilizando funciones de geolocalización con Google "
+"Maps."
 
-#: inc/Core/Modules.php:154
+#: inc/Core/Modules.php:155
 msgid "Falha ao ativar o plugin."
-msgstr ""
+msgstr "Error al activar el plugin."
 
-#: inc/Core/Modules.php:188
+#: inc/Core/Modules.php:189
 msgid "Falha ao instalar/atualizar o plugin."
-msgstr ""
+msgstr "Error al instalar/actualizar el plugin."
 
 #: inc/Admin/Fonts_Manager.php:277
 msgid "Falha ao mover o arquivo de fonte."
-msgstr ""
+msgstr "Error al mover el archivo de fuente."
 
 #: inc/Views/Settings/Tabs/Styles.php:215
 msgid "Família de fontes"
-msgstr ""
+msgstr "Familia de fuentes"
 
-#: inc/Core/Assets.php:410 inc/Views/Components.php:67
-#: inc/Views/Settings/Tabs/Styles.php:270
+#: inc/Admin/Settings/Views/Integrations.php:197
+#: inc/Admin/Settings/Views/Integrations.php:375
+#: inc/Core/Assets.php:392
+#: inc/Views/Components.php:69
+#: inc/Views/Settings/Tabs/About.php:464
+#: inc/Views/Settings/Tabs/Styles.php:296
 msgid "Fechar"
-msgstr ""
+msgstr "Cerrar"
 
-#: inc/Views/Settings/Tabs/Conditions.php:280
+#: inc/Views/Settings/Tabs/Conditions.php:286
 msgid "Filtro de produtos: *"
 msgstr "Filtro de productos: *"
 
-#: inc/Views/Settings/Tabs/Conditions.php:264
+#: inc/Views/Settings/Tabs/Conditions.php:270
 msgid "Filtros"
 msgstr "Filtros"
 
-#. page title
-#: inc/Views/Settings/Settings_Panel.php:49
+#: inc/Views/Settings/Settings_Panel.php:50
 msgid "Flexify Checkout"
 msgstr "Flexify Checkout"
 
-#: inc/Views/Settings/Tabs/Integrations.php:34
+#: inc/Admin/Settings/Views/Integrations.php:398
 msgid "Flexify Checkout - Inter addon"
-msgstr ""
+msgstr "Flexify Checkout - Inter addon"
 
-#: inc/Views/Settings/Tabs/Integrations.php:71
+#: inc/Admin/Settings/Views/Integrations.php:446
 msgid "Flexify Checkout - Recuperação de carrinhos abandonados"
-msgstr ""
+msgstr "Flexify Checkout - Recuperación de carritos abandonados"
 
-#. parent page slug
-#. Name of the plugin
-#: inc/Views/Settings/Settings_Panel.php:48
-#: inc/Views/Settings/Settings_Panel.php:121
+#: inc/Views/Settings/Settings_Panel.php:49
+#: inc/Views/Settings/Settings_Panel.php:122
 msgid "Flexify Checkout para WooCommerce"
 msgstr "Flexify Checkout para WooCommerce"
 
-#: inc/Core/Ajax.php:776
+#: inc/Core/Ajax.php:1004
 msgid "Fonte inválida informada."
-msgstr ""
+msgstr "Fuente inválida informada."
 
-#: inc/Core/Ajax.php:794
+#: inc/Core/Ajax.php:1022
 msgid "Fonte não encontrada."
-msgstr ""
+msgstr "Fuente no encontrada."
 
-#: inc/Views/Settings/Tabs/Styles.php:366
+#: inc/Views/Settings/Tabs/Styles.php:392
 msgid "Fonte padrão"
-msgstr ""
+msgstr "Fuente predeterminada"
 
-#: inc/Views/Settings/Tabs/Styles.php:292
+#: inc/Views/Settings/Tabs/Styles.php:318
 msgid "Fonte personalizada"
-msgstr ""
+msgstr "Fuente personalizada"
 
-#: inc/Core/Ajax.php:808
+#: inc/Core/Ajax.php:1036
 msgid "Fonte removida"
-msgstr ""
+msgstr "Fuente eliminada"
 
-#: inc/Core/Ajax.php:738
+#: inc/Core/Ajax.php:966
 msgid "Fonte salva"
-msgstr ""
+msgstr "Fuente guardada"
 
-#: inc/Core/Ajax.php:784
+#: inc/Core/Ajax.php:1012
 msgid "Fontes padrão não podem ser excluídas."
-msgstr ""
+msgstr "Las fuentes predeterminadas no se pueden eliminar."
 
-#: inc/Views/Settings/Tabs/Styles.php:345
+#: inc/Views/Settings/Tabs/Styles.php:371
 msgid "Fontes registradas"
-msgstr ""
+msgstr "Fuentes registradas"
 
-#: inc/Views/Settings/Tabs/Conditions.php:145
+#: inc/Views/Settings/Tabs/Conditions.php:151
 msgid "Forma de entrega"
 msgstr "Método de entrega"
 
-#: inc/Core/Ajax.php:1035
-#, php-format
-msgid "Forma de entrega %s"
-msgstr "Método de entrega %s"
-
-#: inc/Views/Settings/Tabs/Conditions.php:164
+#: inc/Views/Settings/Tabs/Conditions.php:170
 msgid "Forma de entrega:"
 msgstr "Método de entrega:"
 
+#: inc/Core/Ajax.php:1255
 #: inc/Views/Settings/Tabs/Conditions.php:52
-#, php-format
 msgid "Forma de entrega: %s"
 msgstr "Método de entrega: %s"
 
-#: inc/Views/Settings/Tabs/Conditions.php:144
+#: inc/Views/Settings/Tabs/Conditions.php:150
 msgid "Forma de pagamento"
 msgstr "Método de pago"
 
-#: inc/Core/Ajax.php:1038
-#, php-format
-msgid "Forma de pagamento %s"
-msgstr "Método de pago %s"
-
-#: inc/Views/Settings/Tabs/Conditions.php:177
+#: inc/Views/Settings/Tabs/Conditions.php:183
 msgid "Forma de pagamento:"
 msgstr "Método de pago:"
 
+#: inc/Core/Ajax.php:1260
 #: inc/Views/Settings/Tabs/Conditions.php:55
-#, php-format
 msgid "Forma de pagamento: %s"
 msgstr "Método de pago: %s"
 
-#: inc/Checkout/Steps.php:887 inc/Checkout/Steps.php:1064
+#: inc/Checkout/Steps.php:895
+#: inc/Checkout/Steps.php:1072
 msgid "Frete"
 msgstr "Envío"
 
-#: inc/Views/Settings/Tabs/Conditions.php:274
+#: inc/Views/Settings/Tabs/Conditions.php:280
 msgid "Função de usuário específica"
 msgstr "Rol de usuario específico"
 
-#: inc/Views/Settings/Tabs/Conditions.php:303
+#: inc/Views/Settings/Tabs/Conditions.php:309
 msgid "Função de usuário específica:"
 msgstr "Rol de usuario específico:"
 
@@ -1440,62 +1798,93 @@ msgstr "Rol de usuario específico:"
 msgid "Função PHP \"file_get_content\":"
 msgstr "Función PHP \"file_get_content\":"
 
-#: inc/Views/Components.php:393
+#: inc/Admin/Settings/Views/Integrations.php:160
+#: inc/Admin/Settings/Views/Integrations.php:206
+#: inc/Admin/Settings/Views/Integrations.php:207
+msgid "GA4"
+msgstr "GA4"
+
+#: inc/Views/Components.php:395
 msgid "GDPR"
 msgstr "RGPD"
 
-#: inc/Views/Settings/Settings_Panel.php:67
+#: inc/Admin/Default_Options.php:507
+msgid "Gênero"
+msgstr "Género"
+
+#: inc/Views/Settings/Settings_Panel.php:68
 msgid "Geral"
 msgstr "General"
 
-#: inc/Views/Settings/Tabs/Styles.php:269
+#: inc/Views/Settings/Tabs/Styles.php:295
 msgid "Gerenciar biblioteca de fontes"
-msgstr ""
+msgstr "Gestionar biblioteca de fuentes"
 
 #: inc/Views/Settings/Tabs/Styles.php:228
 msgid "Gerenciar fontes"
-msgstr ""
+msgstr "Gestionar fuentes"
 
 #: inc/Views/Settings/Tabs/Fields.php:153
 msgid "Gerenciar os campos e etapas da finalização de compras"
 msgstr "Gestionar los campos y etapas de la finalización de compras"
 
-#: inc/Views/Settings/Tabs/Conditions.php:314
+#: inc/Views/Settings/Tabs/Conditions.php:320
 msgid "Gerente de loja"
 msgstr "Gerente de tienda"
 
-#: inc/Core/Assets.php:415 inc/Views/Settings/Tabs/Styles.php:291
-#: inc/Views/Settings/Tabs/Styles.php:357
+#: inc/Admin/Settings/Views/Integrations.php:161
+#: inc/Admin/Settings/Views/Integrations.php:244
+#: inc/Admin/Settings/Views/Integrations.php:245
+msgid "Google Ads"
+msgstr "Google Ads"
+
+#: inc/Core/Assets.php:397
+#: inc/Views/Settings/Tabs/Styles.php:317
+#: inc/Views/Settings/Tabs/Styles.php:383
 msgid "Google Fonts"
-msgstr ""
+msgstr "Google Fonts"
 
-#: inc/Views/Settings/Tabs/Integrations.php:137
+#: inc/Admin/Settings/Views/Integrations.php:534
 msgid "Google Maps"
-msgstr ""
+msgstr "Google Maps"
 
-#: inc/Admin/Default_Options.php:447
-msgid "Gênero"
-msgstr "Género"
-
-#. Author URI of the plugin
+#: inc/Admin/Settings/Views/Integrations.php:254
 msgid ""
-"https://meumouse.com/?"
-"utm_source=wordpress&utm_medium=plugins_list&utm_campaign=flexify_checkout"
+"Habilita o envio dos eventos de checkout para a conta configurada no Google "
+"Ads."
 msgstr ""
+"Habilita el envío de los eventos de checkout a la cuenta configurada en "
+"Google Ads."
 
-#. URI of the plugin
-msgid ""
-"https://meumouse.com/plugins/flexify-checkout-para-woocommerce/?"
-"utm_source=wordpress&utm_medium=plugins_list&utm_campaign=flexify_checkout"
-msgstr ""
-
-#: inc/Views/Settings/Tabs/General.php:743
+#: inc/Views/Settings/Tabs/General.php:762
 msgid "https://seudominio.com/contato"
-msgstr ""
+msgstr "https://seudominio.com/contato"
 
-#: inc/Views/Components.php:387
+#: inc/Admin/Settings/Views/Integrations.php:263
+msgid "ID da conversão do Google Ads (exemplo: AW-123456789)."
+msgstr "ID de conversión de Google Ads (ejemplo: AW-123456789)."
+
+#: inc/Views/Components.php:389
 msgid "ID da opção"
 msgstr "ID de la opción"
+
+#: inc/Admin/Settings/Views/Integrations.php:225
+msgid "Identificador da propriedade GA4 (exemplo: G-XXXXXXXXXX)."
+msgstr "Identificador de la propiedad GA4 (ejemplo: G-XXXXXXXXXX)."
+
+#: inc/Admin/Settings/Views/Integrations.php:302
+msgid "Identificador do Pixel da Meta vinculado ao seu gerenciador de eventos."
+msgstr "Identificador del Pixel de Meta vinculado a su administrador de eventos."
+
+#: inc/Admin/Admin_Options.php:258
+msgid ""
+"Identificamos que sua loja vende no Brasil, deseja criar os campos e "
+"condições essenciais para integração com formas de pagamento e entregas "
+"nacionais?"
+msgstr ""
+"Hemos identificado que su tienda vende en Brasil, ¿desea crear los campos y "
+"condiciones esenciales para la integración con métodos de pago y entregas "
+"nacionales?"
 
 #: inc/Views/Settings/Tabs/Styles.php:40
 msgid "Imagem (Padrão)"
@@ -1505,21 +1894,55 @@ msgstr "Imagen (Predeterminada)"
 msgid "Imagem de cabeçalho"
 msgstr "Imagen de cabecera"
 
-#: inc/Checkout/Steps.php:736 inc/Checkout/Steps.php:778
+#: inc/Admin/Settings_Import_Export.php:214
+msgid "Importado com sucesso"
+msgstr "Importado con éxito"
+
+#: inc/Views/Settings/Tabs/About.php:457
+#: inc/Views/Settings/Tabs/About.php:472
+msgid "Importar configurações"
+msgstr "Importar configuraciones"
+
+#: inc/Views/Settings/Tabs/About.php:482
+msgid "Importar e substituir"
+msgstr "Importar y reemplazar"
+
+#: inc/Checkout/Steps.php:741
+#: inc/Checkout/Steps.php:783
 msgid "Informações"
 msgstr "Informaciones"
 
-#: inc/Core/Ajax.php:1659
+#: inc/Core/Ajax.php:2241
 msgid "Informações atualizadas"
-msgstr ""
+msgstr "Información actualizada"
 
-#: inc/Admin/Orders.php:220
+#: inc/Admin/Settings/Views/Integrations.php:149
+msgid "Informações de entrega"
+msgstr "Información de entrega"
+
+#: inc/Admin/Settings/Views/Integrations.php:150
+msgid "Informações de pagamento"
+msgstr "Información de pago"
+
+#: inc/Admin/Orders.php:221
 msgid "Informações do cliente"
-msgstr ""
+msgstr "Información del cliente"
 
 #: inc/Views/Settings/Tabs/About.php:59
 msgid "Informações sobre a licença:"
 msgstr "Información sobre la licencia:"
+
+#: inc/Views/Settings/Tabs/General.php:253
+msgid "Informe a cor de fundo da barra de contagem regressiva."
+msgstr "Indique el color de fondo de la barra de cuenta regresiva."
+
+#: inc/Views/Settings/Tabs/General.php:277
+msgid "Informe a cor do texto da barra de contagem regressiva."
+msgstr "Indique el color del texto de la barra de cuenta regresiva."
+
+#: inc/Views/Settings/Tabs/Styles.php:166
+msgid "Informe a cor do título dos campos da finalização de compras."
+msgstr "Indique el color del título de los campos de finalización de compra."
 
 #: inc/Views/Settings/Tabs/General.php:411
 msgid ""
@@ -1542,8 +1965,8 @@ msgid ""
 "Informe a propriedade para obter o endereço que é retornado pelo serviço da "
 "API."
 msgstr ""
-"Informe la propiedad para obtener la dirección que retorna el servicio de la "
-"API."
+"Informe la propiedad para obtener la dirección que retorna el servicio de "
+"la API."
 
 #: inc/Views/Settings/Tabs/General.php:420
 msgid ""
@@ -1553,23 +1976,25 @@ msgstr ""
 "Informe la propiedad para obtener el estado que retorna el servicio de la "
 "API."
 
-#: inc/Core/Ajax.php:662
+#: inc/Core/Ajax.php:890
 msgid "Informe a URL de incorporação do Google Fonts."
-msgstr ""
+msgstr "Indique la URL de incorporación de Google Fonts."
 
-#: inc/Views/Components.php:195 inc/Views/Components.php:446
+#: inc/Views/Components.php:197
+#: inc/Views/Components.php:448
 msgid "Informe a(s) classe(s) CSS personalizadas para este campo. (Opcional)"
 msgstr "Informe las clase(s) CSS personalizadas para este campo. (Opcional)"
 
-#: inc/Views/Components.php:206 inc/Views/Components.php:456
+#: inc/Views/Components.php:208
+#: inc/Views/Components.php:458
 msgid ""
-"Informe a(s) classe(s) CSS personalizadas para o título (label) deste campo. "
-"(Opcional)"
+"Informe a(s) classe(s) CSS personalizadas para o título (label) deste "
+"campo. (Opcional)"
 msgstr ""
 "Informe las clase(s) CSS personalizadas para el título (etiqueta) de este "
 "campo. (Opcional)"
 
-#: inc/Views/Settings/Tabs/General.php:570
+#: inc/Views/Settings/Tabs/General.php:589
 msgid ""
 "Informe o código do cupom de desconto que será aplicado automaticamente na "
 "finalização de compra."
@@ -1592,13 +2017,13 @@ msgstr "Informe el enlace de la imagen del encabezado."
 
 #: inc/Views/Settings/Tabs/General.php:112
 msgid ""
-"Informe o nome do novo provedor incluindo a extensão, por exemplo, meumouse."
-"com"
+"Informe o nome do novo provedor incluindo a extensão, por exemplo, "
+"meumouse.com"
 msgstr ""
 "Informe el nombre del nuevo proveedor incluyendo la extensión, por ejemplo, "
 "meumouse.com"
 
-#: inc/Views/Components.php:314
+#: inc/Views/Components.php:316
 msgid ""
 "Informe o nome que será usado no campo em letras minúsculas, usando "
 "underline no lugar dos espaços e após o prefixo \"billing_\"."
@@ -1606,11 +2031,11 @@ msgstr ""
 "Informe el nombre que se usará en el campo en letras minúsculas, usando "
 "guion_bajo en lugar de espacios y después del prefijo \"billing_\"."
 
-#: inc/Views/Settings/Tabs/General.php:634
-#: inc/Views/Settings/Tabs/General.php:659
-#: inc/Views/Settings/Tabs/General.php:684
+#: inc/Views/Settings/Tabs/General.php:653
+#: inc/Views/Settings/Tabs/General.php:678
+#: inc/Views/Settings/Tabs/General.php:703
 msgid "Informe o texto que será exibido na animação 1 de processamento."
-msgstr ""
+msgstr "Indique el texto que se mostrará en la animación 1 de procesamiento."
 
 #: inc/Views/Settings/Tabs/Styles.php:91
 msgid ""
@@ -1620,59 +2045,69 @@ msgstr ""
 "Informe el texto que se mostrará en el encabezado de la página de "
 "finalización de compras."
 
-#: inc/Views/Components.php:410
+#: inc/Views/Components.php:412
 msgid "Informe o título do campo."
 msgstr "Informe el título del campo."
 
+#: woocommerce/common/checkout/form-login.php:103
+msgid "Informe seu e-mail para receber o link de redefinição."
+msgstr "Indique su correo electrónico para recibir el enlace de restablecimiento."
+
 #: inc/Views/Settings/Tabs/About.php:126
 msgid "Informe sua licença abaixo para desbloquear todos os recursos."
-msgstr ""
-"Ingrese su licencia a continuación para desbloquear todas las funciones."
+msgstr "Ingrese su licencia a continuación para desbloquear todas las funciones."
 
-#: inc/Core/Ajax.php:625
+#: inc/Core/Ajax.php:853
 msgid "Informe um identificador e um nome válidos para a fonte."
-msgstr ""
+msgstr "Indique un identificador y un nombre válidos para la fuente."
 
-#: inc/Admin/Default_Options.php:391
+#: inc/Admin/Default_Options.php:451
 msgid "Inscrição Estadual"
 msgstr "Inscripción Estatal"
 
-#: inc/Views/Settings/Tabs/Integrations.php:50
-#: inc/Views/Settings/Tabs/Integrations.php:87
-#: inc/Views/Settings/Tabs/Integrations.php:116
-#: inc/Views/Settings/Tabs/Integrations.php:189
+#: inc/Admin/Settings/Views/Integrations.php:414
+#: inc/Admin/Settings/Views/Integrations.php:462
+#: inc/Admin/Settings/Views/Integrations.php:502
+#: inc/Admin/Settings/Views/Integrations.php:597
 msgid "Instalar módulo"
 msgstr "Instalar módulo"
 
-#: inc/Views/Settings/Settings_Panel.php:91
+#: inc/Views/Settings/Settings_Panel.php:92
 msgid "Integrações"
 msgstr "Integraciones"
 
-#: inc/Admin/Default_Options.php:77
+#: inc/Admin/Default_Options.php:86
 msgid "Inter"
 msgstr "Inter"
 
-#: inc/Core/Ajax.php:1643 inc/Views/Settings/Tabs/About.php:68
+#: inc/Core/Ajax.php:2225
+#: inc/Views/Settings/Tabs/About.php:68
 msgid "Inválida"
 msgstr "Inválida"
 
-#: inc/Views/Settings/Tabs/Styles.php:315
+#: inc/Views/Settings/Tabs/Styles.php:341
 msgid "Itálico"
-msgstr ""
+msgstr "Cursiva"
 
-#: inc/Views/Settings/Tabs/Integrations.php:108
-msgid "Joinotify"
-msgstr ""
-
-#: inc/API/License.php:950
-msgid "Já tenho uma licença"
-msgstr "Ya tengo una licencia"
-
-#: inc/Checkout/Steps.php:610 inc/Checkout/Steps.php:625
+#: inc/Checkout/Steps.php:615
+#: inc/Checkout/Steps.php:630
 msgid "Já é um cliente?"
 msgstr "¿Ya es cliente?"
 
-#: inc/Views/Components.php:187 inc/Views/Components.php:438
+#: inc/API/License.php:951
+msgid "Já tenho uma licença"
+msgstr "Ya tengo una licencia"
+
+#: inc/Admin/Settings/Views/Integrations.php:494
+msgid "Joinotify"
+msgstr "Joinotify"
+
+#: inc/Views/Settings/Tabs/Styles.php:267
+msgid "JS personalizado"
+msgstr "JS personalizado"
+
+#: inc/Views/Components.php:189
+#: inc/Views/Components.php:440
 msgid "Largura completa"
 msgstr "Ancho completo"
 
@@ -1680,36 +2115,38 @@ msgstr "Ancho completo"
 msgid "Largura da imagem de cabeçalho"
 msgstr "Ancho de la imagen del encabezado"
 
-#: inc/Admin/Default_Options.php:101
+#: inc/Admin/Default_Options.php:110
 msgid "Lato"
 msgstr "Lato"
 
-#: inc/Core/Ajax.php:1842
-msgid "Licença ativa"
-msgstr ""
+#: woocommerce/common/checkout/form-login.php:75
+msgid "Lembrar de mim"
+msgstr "Recordarme"
 
-#: inc/Core/Ajax.php:1715
-#, fuzzy
-#| msgid "Licença ativada com sucesso!"
+#: inc/Core/Ajax.php:2424
+msgid "Licença ativa"
+msgstr "Licencia activa"
+
+#: inc/Core/Ajax.php:2297
 msgid "Licença ativada com sucesso."
 msgstr "¡Licencia activada con éxito!"
 
-#: inc/Core/Ajax.php:538
+#: inc/Core/Ajax.php:766
 msgid "Licença enviada e decriptografada com sucesso."
-msgstr ""
+msgstr "Licencia enviada y descifrada con éxito."
 
-#: inc/Core/Ajax.php:1654 inc/Views/Settings/Tabs/About.php:95
-#, php-format
+#: inc/Core/Ajax.php:2236
+#: inc/Views/Settings/Tabs/About.php:95
 msgid "Licença expira em: %s"
 msgstr "Licencia expira en: %s"
 
-#: inc/API/License.php:852
+#: inc/API/License.php:853
 msgid "Licença expirada"
 msgstr "Licencia expirada"
 
-#: inc/Core/Ajax.php:1844
+#: inc/Core/Ajax.php:2426
 msgid "Licença processada com sucesso!"
-msgstr ""
+msgstr "¡Licencia procesada con éxito!"
 
 #: inc/Views/Settings/Tabs/About.php:434
 msgid "Ligado"
@@ -1727,36 +2164,50 @@ msgstr "Límite de tiempo de PHP:"
 msgid "Link da imagem de cabeçalho"
 msgstr "Enlace de la imagen del encabezado"
 
-#: inc/Views/Settings/Tabs/General.php:733
+#: inc/Views/Settings/Tabs/General.php:752
 msgid "Link personalizado"
-msgstr ""
+msgstr "Enlace personalizado"
 
-#: inc/Core/Assets.php:325
+#: inc/Core/Assets.php:324
 msgid "Lista de países"
-msgstr ""
+msgstr "Lista de países"
 
-#: inc/Core/Ajax.php:1061 inc/Views/Settings/Tabs/Conditions.php:78
-#: inc/Views/Settings/Tabs/Conditions.php:230
+#: inc/Core/Ajax.php:1284
+#: inc/Views/Settings/Tabs/Conditions.php:78
+#: inc/Views/Settings/Tabs/Conditions.php:236
 msgid "Maior que"
 msgstr "Mayor que"
 
-#: inc/Core/Assets.php:423
+#: inc/Core/Assets.php:405
 msgid "Mantendo arquivo atual"
-msgstr ""
+msgstr "Manteniendo archivo actual"
 
-#: inc/Core/Ajax.php:1063 inc/Views/Settings/Tabs/Conditions.php:80
-#: inc/Views/Settings/Tabs/Conditions.php:232
+#: inc/Core/Ajax.php:1286
+#: inc/Views/Settings/Tabs/Conditions.php:80
+#: inc/Views/Settings/Tabs/Conditions.php:238
 msgid "Marcado"
-msgstr ""
+msgstr "Marcado"
 
-#: inc/Core/Ajax.php:1062 inc/Views/Settings/Tabs/Conditions.php:79
-#: inc/Views/Settings/Tabs/Conditions.php:231
+#: inc/Views/Components.php:219
+#: inc/Views/Components.php:467
+msgid "Máscara do campo (Opcional)"
+msgstr "Máscara del campo (Opcional)"
+
+#: inc/Admin/Settings/Views/Integrations.php:224
+msgid "Measurement ID"
+msgstr "Measurement ID"
+
+#: inc/Core/Ajax.php:1285
+#: inc/Views/Settings/Tabs/Conditions.php:79
+#: inc/Views/Settings/Tabs/Conditions.php:237
 msgid "Menor que"
 msgstr "Menor que"
 
-#. Author of the plugin
-msgid "MeuMouse.com"
-msgstr "MeuMouse.com"
+#: inc/Admin/Settings/Views/Integrations.php:162
+#: inc/Admin/Settings/Views/Integrations.php:283
+#: inc/Admin/Settings/Views/Integrations.php:284
+msgid "Meta"
+msgstr "Meta"
 
 #: inc/Views/Settings/Tabs/General.php:116
 msgid "meumouse.com"
@@ -1764,26 +2215,27 @@ msgstr "meumouse.com"
 
 #: inc/Views/Settings/Tabs/General.php:215
 msgid "Minutos"
-msgstr ""
+msgstr "Minutos"
 
-#: inc/Views/Settings/Settings_Panel.php:185
+#: inc/Views/Settings/Settings_Panel.php:186
 msgid "Moderno claro"
-msgstr ""
+msgstr "Moderno claro"
 
-#: inc/Views/Settings/Settings_Panel.php:192
+#: inc/Views/Settings/Settings_Panel.php:193
 msgid "Moderno escuro"
-msgstr ""
+msgstr "Moderno oscuro"
 
 #: inc/Views/Settings/Tabs/About.php:188
 msgid "Modo de depuração do WordPress:"
 msgstr "Modo de depuración de WordPress:"
 
-#: inc/Admin/Default_Options.php:85
+#: inc/Admin/Default_Options.php:94
 msgid "Montserrat"
 msgstr "Montserrat"
 
-#: inc/Core/Ajax.php:1024 inc/Views/Settings/Tabs/Conditions.php:41
-#: inc/Views/Settings/Tabs/Conditions.php:133
+#: inc/Core/Ajax.php:1241
+#: inc/Views/Settings/Tabs/Conditions.php:41
+#: inc/Views/Settings/Tabs/Conditions.php:139
 msgid "Mostrar"
 msgstr "Mostrar"
 
@@ -1801,7 +2253,7 @@ msgstr "Mostrar dirección de la tienda física para recogida del pedido Kangu"
 
 #: inc/Views/Settings/Tabs/About.php:33
 msgid "Mostrar notificação de atualização disponível"
-msgstr ""
+msgstr "Mostrar notificación de actualización disponible"
 
 #: woocommerce/dark/checkout/form-checkout.php:55
 #: woocommerce/modern/checkout/form-checkout.php:55
@@ -1812,131 +2264,87 @@ msgstr "Mostrar resumen del pedido"
 msgid "Mostrar resumo do pedido aberto por padrão"
 msgstr "Mostrar resumen del pedido abierto por defecto"
 
-#: inc/Views/Components.php:217 inc/Views/Components.php:465
-msgid "Máscara do campo (Opcional)"
-msgstr "Máscara del campo (Opcional)"
+#: inc/Admin/Settings_Import_Export.php:221
+msgid "Nada para importar"
+msgstr "Nada para importar"
 
-#: inc/Core/Ajax.php:922
-msgid "Nenhum atributo encontrado."
-msgstr "Ningún atributo encontrado."
+#: inc/API/REST_Checkout_Fields.php:210
+msgid "Namespace do Flexify Checkout para campos adicionais."
+msgstr "Namespace de Flexify Checkout para campos adicionales."
 
-#: inc/Core/Assets.php:324
-msgid "Nenhum país selecionado"
-msgstr ""
-
-#: inc/Core/Assets.php:327
-msgid "Nenhum resultado encontrado"
-msgstr ""
-
-#: inc/Core/Ajax.php:963
-msgid "Nenhum usuário encontrado."
-msgstr "Ningún usuario encontrado."
-
-#: inc/Core/Ajax.php:881
-msgid "Nenhuma categoria encontrada."
-msgstr "Ninguna categoría encontrada."
-
-#: inc/Core/Helpers.php:503
-msgid "Nenhuma forma de entrega selecionada"
-msgstr ""
-
-#: inc/Views/Settings/Tabs/About.php:66
-msgid "Nenhuma licença informada"
-msgstr "Ninguna licencia informada"
-
-#: inc/Core/Ajax.php:849
-msgid "Nenhuma produto encontrado."
-msgstr "Ningún producto encontrado."
-
-#: inc/Admin/Default_Options.php:195
-msgid "Nome"
-msgstr "Nombre"
-
-#: inc/Views/Settings/Tabs/Styles.php:283
-msgid "Nome da fonte"
-msgstr "Nombre de la fuente"
-
-#: inc/Views/Components.php:136
-msgid "Nome do campo"
-msgstr "Nombre del campo"
-
-#: inc/Views/Settings/Tabs/General.php:111
-msgid "Nome e extensão do novo provedor"
-msgstr "Nombre y extensión del nuevo proveedor"
-
-#: inc/Views/Components.php:313
-msgid "Nome e ID do campo *"
-msgstr "Nombre e ID del campo *"
-
-#: inc/Views/Settings/Tabs/Styles.php:314
-msgid "Normal"
-msgstr ""
-
-#: inc/Views/Settings/Tabs/About.php:142
-msgid "Notamos que teve problemas de conexão ao tentar ativar sua licença"
-msgstr "Notamos que tuvo problemas de conexión al intentar activar su licencia"
-
-#: inc/Core/Ajax.php:1425
-msgid "Nova opção adicionada"
-msgstr ""
-
-#: inc/Core/Modules.php:310
-msgid "Novo recurso adicionado!"
-msgstr ""
-
-#: inc/API/License.php:843 inc/Core/Ajax.php:1652
-msgid "Nunca expira"
-msgstr "Nunca expira"
-
-#: inc/Admin/Default_Options.php:109
-msgid "Nunito"
-msgstr "Nunito"
-
-#: inc/Views/Settings/Tabs/About.php:184 inc/Views/Settings/Tabs/About.php:250
-#: inc/Views/Settings/Tabs/About.php:266 inc/Views/Settings/Tabs/About.php:284
+#: inc/Views/Settings/Tabs/About.php:184
+#: inc/Views/Settings/Tabs/About.php:250
+#: inc/Views/Settings/Tabs/About.php:266
+#: inc/Views/Settings/Tabs/About.php:284
 #: inc/Views/Settings/Tabs/About.php:302
 msgid "Não"
 msgstr "No"
 
-#: inc/Core/Ajax.php:1058 inc/Views/Settings/Tabs/Conditions.php:75
-#: inc/Views/Settings/Tabs/Conditions.php:227
+#: inc/Core/Ajax.php:1281
+#: inc/Views/Settings/Tabs/Conditions.php:75
+#: inc/Views/Settings/Tabs/Conditions.php:233
 msgid "Não contém"
 msgstr "No contiene"
 
-#: inc/API/License.php:826 inc/Views/Settings/Tabs/About.php:101
+#: inc/API/License.php:827
+#: inc/Views/Settings/Tabs/About.php:101
 msgid "Não disponível"
 msgstr "No disponible"
 
-#: inc/Core/Ajax.php:1056 inc/Views/Settings/Tabs/Conditions.php:73
-#: inc/Views/Settings/Tabs/Conditions.php:225
+#: inc/Core/Ajax.php:1277
+#: inc/Views/Settings/Tabs/Conditions.php:71
+#: inc/Views/Settings/Tabs/Conditions.php:229
+msgid "Não é"
+msgstr "No es"
+
+#: inc/Core/Ajax.php:1279
+#: inc/Views/Settings/Tabs/Conditions.php:73
+#: inc/Views/Settings/Tabs/Conditions.php:231
 msgid "Não está vazio"
 msgstr "No está vacío"
 
 #: inc/Admin/Fonts_Manager.php:214
 msgid "Não foi possível criar a pasta para armazenar a fonte."
-msgstr ""
+msgstr "No se pudo crear la carpeta para almacenar la fuente."
 
 #: inc/Admin/Fonts_Manager.php:270
 msgid "Não foi possível criar o diretório de fontes."
-msgstr ""
+msgstr "No se pudo crear el directorio de fuentes."
 
-#: inc/Core/Ajax.php:543 inc/Core/Ajax.php:1784
+#: inc/Core/Ajax.php:771
+#: inc/Core/Ajax.php:2366
 msgid "Não foi possível descriptografar o arquivo de licença."
-msgstr ""
+msgstr "No se pudo descifrar el archivo de licencia."
 
-#: inc/Core/Ajax.php:370
+#: inc/Core/Ajax.php:1518
+msgid "Nao foi possivel enviar o e-mail de redefinição. Tente novamente."
+msgstr ""
+"No se pudo enviar el correo electrónico de restablecimiento. Inténtalo de "
+"nuevo."
+
+#: inc/Core/Assets.php:230
+msgid "Não foi possível enviar o e-mail de redefinição. Tente novamente."
+msgstr ""
+"No se pudo enviar el correo electrónico de restablecimiento. Inténtalo de "
+"nuevo."
+
+#: inc/Admin/Settings_Import_Export.php:197
+msgid ""
+"Não foi possível ler o arquivo. Verifique se é um JSON de configurações "
+"válido."
+msgstr ""
+"No se pudo leer el archivo. Verifica si es un JSON de configuraciones "
+"válido."
+
+#: inc/Core/Ajax.php:389
 msgid "Não foi possível salvar as configurações."
-msgstr ""
+msgstr "No se pudo guardar las configuraciones."
 
-#: inc/Core/Ajax.php:1672
+#: inc/Core/Ajax.php:2254
 msgid "Não foi possível sincronizar as informações da licença."
-msgstr ""
+msgstr "No se pudo sincronizar la información de la licencia."
 
-#: inc/API/Updater.php:247
-#, fuzzy
-#| msgid ""
-#| "Não foi possível verificar atualizações para o plugin <strong>Flexify "
-#| "Checkout para WooCommerce.</strong>"
+#: inc/API/Updater.php:248
 msgid ""
 "Não foi possível verificar atualizações para o plugin <strong>Flexify "
 "Checkout.</strong>"
@@ -1944,108 +2352,202 @@ msgstr ""
 "No fue posible verificar actualizaciones para el plugin Flexify Checkout "
 "para WooCommerce."
 
-#: inc/Core/Ajax.php:1054 inc/Views/Settings/Tabs/Conditions.php:71
-#: inc/Views/Settings/Tabs/Conditions.php:223
-msgid "Não é"
-msgstr "No es"
+#: inc/Core/Ajax.php:1150
+msgid "Nenhum atributo encontrado."
+msgstr "Ningún atributo encontrado."
 
-#: inc/Views/Components.php:339
+#: inc/Core/Assets.php:323
+msgid "Nenhum país selecionado"
+msgstr "Ningún país seleccionado"
+
+#: inc/Core/Assets.php:326
+msgid "Nenhum resultado encontrado"
+msgstr "Ningún resultado encontrado"
+
+#: inc/Core/Ajax.php:1191
+msgid "Nenhum usuário encontrado."
+msgstr "Ningún usuario encontrado."
+
+#: inc/Core/Ajax.php:1109
+msgid "Nenhuma categoria encontrada."
+msgstr "Ninguna categoría encontrada."
+
+#: inc/Core/Helpers.php:548
+msgid "Nenhuma forma de entrega selecionada"
+msgstr "Ninguna forma de entrega seleccionada"
+
+#: inc/Views/Settings/Tabs/About.php:66
+msgid "Nenhuma licença informada"
+msgstr "Ninguna licencia informada"
+
+#: inc/Core/Ajax.php:1077
+msgid "Nenhuma produto encontrado."
+msgstr "Ningún producto encontrado."
+
+#: woocommerce/common/cart/cart-shipping.php:91
+msgid "No shipping options were found for %s."
+msgstr "No se encontraron opciones de envío para %s."
+
+#: inc/Admin/Default_Options.php:255
+msgid "Nome"
+msgstr "Nombre"
+
+#: inc/Views/Settings/Tabs/Styles.php:309
+msgid "Nome da fonte"
+msgstr "Nombre de la fuente"
+
+#: woocommerce/common/checkout/form-login.php:47
+msgid "Nome de usuário ou email"
+msgstr "Nombre de usuario o email"
+
+#: inc/Views/Components.php:138
+msgid "Nome do campo"
+msgstr "Nombre del campo"
+
+#: inc/Views/Settings/Tabs/General.php:111
+msgid "Nome e extensão do novo provedor"
+msgstr "Nombre y extensión del nuevo proveedor"
+
+#: inc/Views/Components.php:315
+msgid "Nome e ID do campo *"
+msgstr "Nombre e ID del campo *"
+
+#: inc/Views/Settings/Tabs/Styles.php:340
+msgid "Normal"
+msgstr "Normal"
+
+#: inc/Views/Settings/Tabs/About.php:142
+msgid "Notamos que teve problemas de conexão ao tentar ativar sua licença"
+msgstr "Notamos que tuvo problemas de conexión al intentar activar su licencia"
+
+#: inc/Core/Ajax.php:1996
+msgid "Nova opção adicionada"
+msgstr "Nueva opción añadida"
+
+#: inc/Core/Modules.php:311
+msgid "Novo recurso adicionado!"
+msgstr "¡Nuevo recurso añadido!"
+
+#: inc/Integrations/Superfrete.php:189
+#: inc/Integrations/Superfrete.php:200
+msgid "Numero"
+msgstr "Número"
+
+#: inc/Views/Components.php:341
 msgid "Número"
 msgstr "Número"
 
-#: inc/Admin/Default_Options.php:460
+#: inc/Admin/Default_Options.php:520
 msgid "Número da residência"
 msgstr "Número de la residencia"
 
-#: inc/Checkout/Fields.php:1147 inc/Checkout/Fields.php:1153
-#, php-format
+#: inc/API/License.php:844
+#: inc/Core/Ajax.php:2234
+msgid "Nunca expira"
+msgstr "Nunca expira"
+
+#: inc/Admin/Default_Options.php:118
+msgid "Nunito"
+msgstr "Nunito"
+
+#: inc/Checkout/Fields.php:1158
+#: inc/Checkout/Fields.php:1164
 msgid "O %s informado não é válido."
 msgstr "El %s ingresado no es válido."
 
-#: inc/Core/Ajax.php:1795
+#: inc/Core/Ajax.php:2377
 msgid "O arquivo de licença não contém dados válidos."
-msgstr ""
+msgstr "El archivo de licencia no contiene datos válidos."
 
-#: inc/Core/Ajax.php:404
+#: inc/Admin/Settings_Import_Export.php:222
+msgid "O arquivo não continha configurações aplicáveis."
+msgstr "El archivo no contenía configuraciones aplicables."
+
+#: inc/Core/Ajax.php:578
 msgid "O campo foi removido com sucesso!"
-msgstr ""
+msgstr "¡El campo se ha eliminado con éxito!"
 
-#: inc/Admin/Admin_Options.php:141
+#: inc/Admin/Admin_Options.php:165
 msgid ""
 "O campo País na finalização de compras está desativado, verifique se seu "
 "gateway de pagamentos depende deste campo para não receber o erro \"Informe "
 "um endereço para continuar com sua compra.\""
 msgstr ""
-"El campo País al finalizar la compra está deshabilitado, asegúrese de que su "
-"pasarela de pago dependa de este campo para evitar recibir el error "
+"El campo País al finalizar la compra está deshabilitado, asegúrese de que "
+"su pasarela de pago dependa de este campo para evitar recibir el error "
 "\"Ingrese una dirección para continuar con su compra\"."
 
-#: inc/Checkout/Fields.php:1463
+#: inc/Checkout/Fields.php:1625
 msgid "O CEP informado não pertence à cidade/UF selecionados."
-msgstr ""
+msgstr "El código postal informado no pertenece a la ciudad/UF seleccionados."
 
-#: inc/Core/Assets.php:229
+#: inc/Core/Assets.php:225
 msgid "O cupom foi removido."
 msgstr "El cupón ha sido eliminado."
 
-#: inc/Core/Ajax.php:1803
+#: inc/Core/Ajax.php:2385
 msgid "O domínio de ativação não é permitido."
 msgstr "El dominio de activación no está permitido."
 
-#: inc/Compatibility/Legacy_Filters.php:117
-#, php-format
+#: inc/Compatibility/Legacy_Filters.php:118
 msgid ""
 "O filtro \"%1$s\" está obsoleto desde a versão %3$s. Use \"%2$s\" em seu "
 "lugar."
 msgstr ""
+"El filtro \"%1$s\" está obsoleto desde la versión %3$s. Usa \"%2$s\" en su "
+"lugar."
 
-#: inc/Admin/Admin_Options.php:180
+#: inc/Admin/Admin_Options.php:512
 msgid ""
 "O Flexify Checkout depende do shortcode [woocommerce_checkout] na página de "
 "finalização de compras para funcionar corretamente."
 msgstr ""
+"El Flexify Checkout depende del shortcode [woocommerce_checkout] en la "
+"página de finalización de compras para funcionar correctamente."
 
-#: inc/Compatibility/Legacy_Hooks.php:114
-#, php-format
+#: inc/Compatibility/Legacy_Hooks.php:115
 msgid ""
 "O gancho \"%1$s\" está obsoleto desde a versão %3$s. Use \"%2$s\" em seu "
 "lugar."
 msgstr ""
+"El gancho \"%1$s\" está obsoleto desde la versión %3$s. Usa \"%2$s\" en su "
+"lugar."
 
-#: inc/Core/Modules.php:155
+#: inc/Core/Modules.php:156
 msgid "O plugin foi instalado, mas não pôde ser ativado."
-msgstr ""
+msgstr "El plugin se ha instalado, pero no se pudo activar."
 
-#: inc/Checkout/Thankyou.php:73
-#, php-format
+#: inc/Checkout/Thankyou.php:198
 msgid "Obrigado, %s!"
 msgstr "¡Gracias, %s!"
 
-#: inc/Views/Components.php:106 inc/Views/Components.php:419
+#: inc/Views/Components.php:108
+#: inc/Views/Components.php:421
 msgid "Obrigatoriedade do campo"
 msgstr "Obligatoriedad del campo"
 
-#: inc/Core/Assets.php:242
+#: inc/Core/Assets.php:241
 msgid "obrigatório"
 msgstr "obligatorio"
 
-#: inc/Core/Assets.php:232
+#: inc/Core/Assets.php:231
 msgid "Ocorreu um erro"
 msgstr "Ha ocurrido un error"
 
-#: inc/Core/Ajax.php:1260
+#: inc/Core/Ajax.php:1788
 msgid "Ocorreu um erro ao desativar sua licença."
-msgstr ""
+msgstr "Ocurrió un error al desactivar tu licencia."
 
-#: inc/Core/Ajax.php:411 inc/Core/Ajax.php:1301
+#: inc/Core/Ajax.php:586
+#: inc/Core/Ajax.php:1829
 msgid "Ocorreu um erro ao redefinir as configurações."
-msgstr ""
+msgstr "Ocurrió un error al restablecer la configuración."
 
-#: inc/Core/Modules.php:189
+#: inc/Core/Modules.php:190
 msgid "Ocorreu um erro ao tentar instalar ou atualizar o plugin."
-msgstr ""
+msgstr "Ocurrió un error al intentar instalar o actualizar el plugin."
 
-#: inc/API/License.php:277
+#: inc/API/License.php:278
 msgid ""
 "Ocorreu um erro na conexão com o servidor de verificação de licenças. "
 "Verifique o erro nos logs do WooCommerce."
@@ -2053,8 +2555,9 @@ msgstr ""
 "Ha ocurrido un error en la conexión con el servidor de verificación de "
 "licencias. Revise el error en los registros de WooCommerce."
 
-#: inc/Core/Ajax.php:1025 inc/Views/Settings/Tabs/Conditions.php:42
-#: inc/Views/Settings/Tabs/Conditions.php:134
+#: inc/Core/Ajax.php:1242
+#: inc/Views/Settings/Tabs/Conditions.php:42
+#: inc/Views/Settings/Tabs/Conditions.php:140
 #: inc/Views/Settings/Tabs/General.php:231
 msgid "Ocultar"
 msgstr "Ocultar"
@@ -2069,228 +2572,292 @@ msgstr "Ocultar campos del mercado brasileño si el país no es Brasil"
 
 #: inc/Views/Settings/Tabs/Fields.php:107
 msgid "Ocultar indicador de etapas"
-msgstr ""
+msgstr "Ocultar indicador de pasos"
 
 #: woocommerce/dark/checkout/form-checkout.php:59
 #: woocommerce/modern/checkout/form-checkout.php:59
 msgid "Ocultar resumo do pedido"
 msgstr "Ocultar resumen del pedido"
 
-#: inc/Admin/Default_Options.php:89
+#: inc/Core/Ajax.php:1944
+msgid "Opção removida"
+msgstr "Opción eliminada"
+
+#: inc/Views/Components.php:150
+msgid "Opções "
+msgstr "Opciones "
+
+#: inc/Admin/Default_Options.php:98
 msgid "Open Sans"
 msgstr "Open Sans"
 
-#: inc/Core/Ajax.php:646 inc/Core/Assets.php:414
+#: inc/Core/Ajax.php:874
+#: inc/Core/Assets.php:396
 msgid "Ops! Essa fonte já existe."
 msgstr "¡Ops! Esa fuente ya existe."
 
-#: inc/Core/Ajax.php:1432
+#: inc/Core/Ajax.php:2003
 msgid "Ops! Não foi possível adicionar a nova opção."
-msgstr ""
+msgstr "¡Ops! No se pudo añadir la nueva opción."
 
-#: inc/Core/Ajax.php:1085
+#: inc/Core/Ajax.php:1618
+msgid "Ops! Não foi possível atualizar a condição."
+msgstr "¡Ops! No se pudo actualizar la condición."
+
+#: inc/Core/Ajax.php:1473
 msgid "Ops! Não foi possível criar uma nova condição."
 msgstr "¡Ops! No fue posible crear una nueva condición."
 
-#: inc/Core/Ajax.php:817
+#: inc/Core/Ajax.php:1045
 msgid "Ops! Não foi possível remover a fonte."
-msgstr ""
+msgstr "¡Ops! No se pudo eliminar la fuente."
 
-#: inc/Core/Ajax.php:1380
+#: inc/Core/Ajax.php:1951
 msgid "Ops! Não foi possível remover a opção."
-msgstr ""
+msgstr "¡Ops! No se pudo eliminar la opción."
 
-#: inc/Core/Ajax.php:748
+#: inc/Core/Ajax.php:976
 msgid "Ops! Não foi possível salvar a fonte."
-msgstr ""
+msgstr "¡Ops! No se pudo guardar la fuente."
 
-#: inc/Core/Assets.php:402
+#: inc/Core/Assets.php:384
 msgid "Ops! Não há conexão com a internet"
-msgstr ""
+msgstr "¡Ops! No hay conexión a Internet."
 
-#: inc/Core/Ajax.php:1389 inc/Core/Ajax.php:1441
+#: inc/Core/Ajax.php:1960
+#: inc/Core/Ajax.php:2012
 msgid "Ops! O campo não existe ou não é do tipo select."
-msgstr ""
+msgstr "El campo no existe o no es del tipo select."
 
-#: inc/Core/Ajax.php:369 inc/Core/Ajax.php:410 inc/Core/Ajax.php:1259
-#: inc/Core/Ajax.php:1300 inc/Core/Ajax.php:1671 inc/Core/Ajax.php:1723
-#: inc/Core/Ajax.php:1745 inc/Core/Ajax.php:1754 inc/Core/Ajax.php:1765
-#: inc/Core/Ajax.php:1783 inc/Core/Ajax.php:1794 inc/Core/Ajax.php:1802
-#: inc/Core/Ajax.php:1810 inc/Core/Modules.php:292
+#: inc/Admin/Settings_Import_Export.php:173
+#: inc/Admin/Settings_Import_Export.php:183
+#: inc/Core/Ajax.php:388
+#: inc/Core/Ajax.php:585
+#: inc/Core/Ajax.php:1787
+#: inc/Core/Ajax.php:1828
+#: inc/Core/Ajax.php:1852
+#: inc/Core/Ajax.php:2253
+#: inc/Core/Ajax.php:2305
+#: inc/Core/Ajax.php:2327
+#: inc/Core/Ajax.php:2336
+#: inc/Core/Ajax.php:2347
+#: inc/Core/Ajax.php:2365
+#: inc/Core/Ajax.php:2376
+#: inc/Core/Ajax.php:2384
+#: inc/Core/Ajax.php:2392
+#: inc/Core/Modules.php:293
 msgid "Ops! Ocorreu um erro."
 msgstr "¡Ops! Ha ocurrido un error."
 
-#: inc/Core/Ajax.php:1373
-msgid "Opção removida"
-msgstr ""
-
-#: inc/Views/Components.php:148
-msgid "Opções "
-msgstr ""
-
-#: inc/Views/Settings/Tabs/Styles.php:289
+#: inc/Views/Settings/Tabs/Styles.php:315
 msgid "Origem da fonte"
-msgstr ""
+msgstr "Origen de la fuente"
 
-#: inc/Views/Settings/Tabs/Styles.php:334
+#: inc/Views/Settings/Tabs/Styles.php:360
 msgid ""
-"Os arquivos enviados serão armazenados em /wp-content/uploads/flexify-"
-"checkout/fonts/."
+"Os arquivos enviados serão armazenados em "
+"/wp-content/uploads/flexify-checkout/fonts/."
 msgstr ""
+"Los archivos enviados se almacenarán en "
+"/wp-content/uploads/flexify-checkout/fonts/."
+
+#: inc/Core/Ajax.php:1874
+msgid ""
+"Os campos da finalização de compras foram redefinidos para o padrão com "
+"sucesso!"
+msgstr ""
+"¡Los campos de finalización de compras se han restablecido a la "
+"configuración predeterminada con éxito!"
 
 #: inc/Views/Settings/Tabs/Fields.php:86
 msgid "Otimizar para produtos digitais"
 msgstr "Optimizar para productos digitales"
 
-#: inc/Core/Assets.php:417 inc/Views/Settings/Tabs/Styles.php:358
+#: inc/Core/Assets.php:399
+#: inc/Views/Settings/Tabs/Styles.php:384
 msgid "Padrão"
-msgstr ""
+msgstr "Predeterminado"
 
-#: inc/Checkout/Steps.php:566 inc/Checkout/Thankyou.php:213
+#: inc/Checkout/Steps.php:571
+#: inc/Checkout/Thankyou.php:338
 msgid "Pagamento"
 msgstr "Pago"
 
-#: inc/Core/Assets.php:228
+#: inc/Core/Assets.php:224
 msgid "Pagar"
 msgstr "Pagar"
 
-#: inc/Core/Helpers.php:371 woocommerce/common/checkout/form-pay.php:43
+#: inc/Core/Helpers.php:373
+#: woocommerce/common/checkout/form-pay.php:44
+#: woocommerce/common/checkout/form-pay.php:80
 msgid "Pagar pelo pedido"
 msgstr "Pagar por el pedido"
 
-#: inc/Views/Settings/Tabs/Integrations.php:180
-msgid "Payments by Payco"
-msgstr ""
+#: inc/Views/Settings/Tabs/General.php:746
+msgid "Página de contato"
+msgstr "Página de contacto"
 
-#: inc/Admin/Default_Options.php:248
+#: inc/Views/Settings/Settings_Panel.php:200
+msgid "Página única"
+msgstr "Página única"
+
+#: inc/Admin/Default_Options.php:308
 msgid "País"
 msgstr "País"
 
-#: inc/Core/Assets.php:323
+#: inc/Core/Assets.php:322
 msgid "País selecionado"
-msgstr ""
+msgstr "País seleccionado"
 
-#: inc/Checkout/Thankyou.php:72
-#, php-format
+#: inc/Admin/Settings/Views/Integrations.php:588
+msgid "Payments by Payco"
+msgstr "Payments by Payco"
+
+#: inc/Checkout/Thankyou.php:197
 msgid "Pedido #%s"
 msgstr "Pedido #%s"
 
 #: inc/Views/Settings/Tabs/Fields.php:58
 msgid "Permite alterar a posição do campo de cupom de desconto."
-msgstr ""
+msgstr "Permite cambiar la posición del campo de cupón de descuento."
 
 #: inc/Views/Settings/Tabs/General.php:207
 msgid "Permite definir o tempo limite da contagem regressiva."
-msgstr ""
+msgstr "Permite definir el tiempo límite de la cuenta regresiva."
 
 #: inc/Views/Settings/Tabs/General.php:225
 msgid ""
 "Permite definir o tipo de ação a ser executado após a expiração da contagem "
 "regressiva."
 msgstr ""
+"Permite definir el tipo de acción a ejecutar tras la expiración de la "
+"cuenta regresiva."
 
 #: inc/Views/Settings/Tabs/General.php:242
 msgid ""
 "Permite definir para qual endereço o usuário será redirecionado após a "
 "sessão ser encerrada."
 msgstr ""
+"Permite definir a qué dirección será redirigido el usuario tras finalizar "
+"la sesión."
 
 #: inc/Views/Settings/Tabs/General.php:169
 msgid ""
 "Permite definir um tempo limite para o cliente finalizar a compra ou gerar "
 "urgência na compra."
 msgstr ""
+"Permite definir un tiempo límite para que el cliente complete la compra o "
+"genere urgencia en la compra."
 
 #: inc/Views/Settings/Tabs/General.php:194
 msgid "Permite definir um titulo a ser exibido ao lado da contagem regressiva."
-msgstr ""
+msgstr "Permite definir un título que se mostrará junto a la cuenta regresiva."
 
-#: inc/Views/Settings/Tabs/General.php:489
+#: inc/Admin/Settings/Views/Integrations.php:216
+msgid ""
+"Permite o envio dos eventos para o GA4 quando a integração estiver "
+"preenchida."
+msgstr "Permite el envío de eventos a GA4 cuando la integración esté completada."
+
+#: inc/Views/Settings/Tabs/General.php:508
 msgid "Permitir alterar quantidade de produtos"
 msgstr "Permitir cambiar la cantidad de productos"
 
 #: inc/Views/Settings/Tabs/General.php:436
 msgid "Permitir envio para um endereço diferente"
-msgstr ""
+msgstr "Permitir envío a una dirección diferente"
 
-#: inc/Views/Settings/Tabs/General.php:509
+#: inc/Views/Settings/Tabs/General.php:528
 msgid "Permitir remover produtos do carrinho"
 msgstr "Permitir eliminar productos del carrito"
 
-#: inc/Core/Assets.php:418 inc/Views/Settings/Tabs/Styles.php:358
+#: inc/Core/Assets.php:400
+#: inc/Views/Settings/Tabs/Styles.php:384
 msgid "Personalizada"
-msgstr ""
+msgstr "Personalizada"
 
-#: inc/Views/Settings/Tabs/Conditions.php:121
-msgid ""
-"Personalize componentes da finalização de compras com regras específicas."
+#: inc/Views/Settings/Tabs/Conditions.php:127
+msgid "Personalize componentes da finalização de compras com regras específicas."
 msgstr "Personalice componentes del proceso de compra con reglas específicas."
 
-#: inc/Views/Settings/Tabs/Styles.php:307
+#: inc/Views/Settings/Tabs/Styles.php:333
 msgid "Peso da fonte"
-msgstr ""
+msgstr "Peso de la fuente"
 
-#: inc/Core/Assets.php:326
+#: inc/Core/Assets.php:325
 msgid "Pesquisar"
-msgstr ""
+msgstr "Buscar"
 
-#: inc/Checkout/Steps.php:397
+#: inc/Checkout/Steps.php:402
 msgid "Pesquisar um endereço"
 msgstr "Buscar una dirección"
 
-#: inc/Admin/Default_Options.php:352
+#: inc/Admin/Default_Options.php:412
 msgid "Pessoa Física (CPF)"
-msgstr ""
+msgstr "Persona Física (NIF)"
 
-#: inc/Admin/Default_Options.php:356
+#: inc/Admin/Default_Options.php:416
 msgid "Pessoa Jurífica (CNPJ)"
-msgstr ""
+msgstr "Persona Jurídica (CIF)"
 
-#: inc/Core/Modules.php:309
+#: inc/Admin/Settings/Views/Integrations.php:301
+msgid "Pixel ID"
+msgstr "ID de Pixel"
+
+#: inc/Core/Modules.php:310
 msgid "Plugin ativado com sucesso."
-msgstr ""
+msgstr "Plugin activado con éxito."
+
+#: inc/Core/Modules.php:135
+msgid "Plugin instalado e ativado com sucesso."
+msgstr "Plugin instalado y activado con éxito."
 
 #: inc/Core/Modules.php:134
-msgid "Plugin instalado e ativado com sucesso."
-msgstr ""
-
-#: inc/Core/Modules.php:133
 msgid "Plugin instalado e ativado."
-msgstr ""
+msgstr "Plugin instalado y activado."
 
-#: inc/Admin/Default_Options.php:81
+#: inc/Admin/Default_Options.php:90
 msgid "Poppins"
 msgstr "Poppins"
 
-#: inc/Checkout/Steps.php:750
+#: inc/Checkout/Steps.php:755
 msgid "Por favor insira seu endereço"
 msgstr "Por favor, introduzca su dirección"
 
-#: inc/Checkout/Fields.php:1038
+#: inc/Checkout/Fields.php:1046
 msgid "Por favor insira um número de telefone válido"
 msgstr "Por favor, introduzca un número de teléfono válido"
 
-#: inc/Core/Assets.php:240
+#: inc/Core/Assets.php:239
 msgid "Por favor, insira um CNPJ válido."
 msgstr "Por favor, introduzca un CNPJ válido."
 
-#: inc/Core/Assets.php:237
+#: inc/Core/Assets.php:236
 msgid "Por favor, insira um CPF válido."
 msgstr "Por favor, introduzca un CPF válido."
 
-#: inc/Core/Assets.php:234
+#: inc/Core/Ajax.php:1502
+msgid "Por favor, insira um e-mail valido."
+msgstr "Por favor, introduce un correo electrónico válido."
+
+#: inc/Core/Assets.php:229
+msgid "Por favor, insira um e-mail válido."
+msgstr "Por favor, introduce un correo electrónico válido."
+
+#: inc/Core/Assets.php:233
 msgid "Por favor, insira um número de telefone válido."
 msgstr "Por favor, introduzca un número de teléfono válido."
 
-#: inc/Views/Components.php:179 inc/Views/Components.php:431
+#: inc/Views/Components.php:181
+#: inc/Views/Components.php:433
 msgid "Posição do campo"
 msgstr "Posición del campo"
 
 #: inc/Views/Settings/Tabs/Fields.php:49
 msgid "Posição do campo de cupom de desconto"
-msgstr ""
+msgstr "Posición del campo de cupón de descuento"
 
-#: inc/Checkout/Thankyou.php:422
+#: inc/Checkout/Thankyou.php:552
 msgid "Precisa de ajuda?"
 msgstr "¿Necesita ayuda?"
 
@@ -2302,44 +2869,49 @@ msgstr "Rellenar dirección automáticamente"
 msgid "Preencher informações da empresa automaticamente"
 msgstr "Rellenar automáticamente la información de la empresa"
 
-#. placeholder is a date.
-#: inc/Integrations/Woo_Subscriptions.php:62
+#: inc/Integrations/Woo_Subscriptions.php:69
 msgid "Primeira renovação"
 msgstr "Primera renovación"
 
-#: inc/Core/Ajax.php:1650 inc/Views/Settings/Settings_Panel.php:126
-#: inc/Views/Settings/Tabs/About.php:18 inc/Views/Settings/Tabs/About.php:76
-#: inc/Views/Settings/Tabs/About.php:217 inc/Views/Settings/Tabs/Fields.php:54
-#: inc/Views/Settings/Tabs/Fields.php:91 inc/Views/Settings/Tabs/Fields.php:112
+#: inc/Admin/Settings/Views/Integrations.php:179
+#: inc/Admin/Settings/Views/Integrations.php:403
+#: inc/Admin/Settings/Views/Integrations.php:451
+#: inc/Core/Ajax.php:2232
+#: inc/Views/Settings/Settings_Panel.php:127
+#: inc/Views/Settings/Tabs/About.php:18
+#: inc/Views/Settings/Tabs/About.php:76
+#: inc/Views/Settings/Tabs/About.php:217
+#: inc/Views/Settings/Tabs/Fields.php:54
+#: inc/Views/Settings/Tabs/Fields.php:91
+#: inc/Views/Settings/Tabs/Fields.php:112
 #: inc/Views/Settings/Tabs/Fields.php:134
 #: inc/Views/Settings/Tabs/General.php:62
 #: inc/Views/Settings/Tabs/General.php:336
 #: inc/Views/Settings/Tabs/General.php:357
 #: inc/Views/Settings/Tabs/General.php:441
-#: inc/Views/Settings/Tabs/General.php:474
-#: inc/Views/Settings/Tabs/General.php:494
-#: inc/Views/Settings/Tabs/General.php:514
-#: inc/Views/Settings/Tabs/General.php:534
-#: inc/Views/Settings/Tabs/General.php:554
-#: inc/Views/Settings/Tabs/General.php:584
-#: inc/Views/Settings/Tabs/General.php:606
-#: inc/Views/Settings/Tabs/Integrations.php:39
-#: inc/Views/Settings/Tabs/Integrations.php:76
+#: inc/Views/Settings/Tabs/General.php:472
+#: inc/Views/Settings/Tabs/General.php:493
+#: inc/Views/Settings/Tabs/General.php:513
+#: inc/Views/Settings/Tabs/General.php:533
+#: inc/Views/Settings/Tabs/General.php:553
+#: inc/Views/Settings/Tabs/General.php:573
+#: inc/Views/Settings/Tabs/General.php:603
+#: inc/Views/Settings/Tabs/General.php:625
 msgid "Pro"
 msgstr "Pro"
 
-#: inc/Views/Settings/Tabs/General.php:649
-#: inc/Views/Settings/Tabs/General.php:674
-#: inc/Views/Settings/Tabs/General.php:699
+#: inc/Views/Settings/Tabs/General.php:668
+#: inc/Views/Settings/Tabs/General.php:693
+#: inc/Views/Settings/Tabs/General.php:718
 #: inc/Views/Settings/Tabs/Styles.php:54
 msgid "Procurar"
 msgstr "Buscar"
 
-#: inc/Checkout/Steps.php:452
+#: inc/Checkout/Steps.php:457
 msgid "Procurar um endereço"
 msgstr "Buscar una dirección"
 
-#: inc/Core/Assets.php:226
+#: inc/Core/Assets.php:222
 msgid "Procure um endereço e tente novamente."
 msgstr "Busque una dirección e inténtelo de nuevo."
 
@@ -2347,11 +2919,11 @@ msgstr "Busque una dirección e inténtelo de nuevo."
 msgid "Produto"
 msgstr "Producto"
 
-#: inc/Views/Settings/Tabs/Conditions.php:285
+#: inc/Views/Settings/Tabs/Conditions.php:291
 msgid "Produtos específicos"
 msgstr "Productos específicos"
 
-#: inc/Views/Settings/Tabs/Conditions.php:328
+#: inc/Views/Settings/Tabs/Conditions.php:334
 msgid "Produtos específicos:"
 msgstr "Productos específicos:"
 
@@ -2375,18 +2947,11 @@ msgstr "Propiedad para obtener barrio"
 msgid "Pular página do carrinho"
 msgstr "Saltar página del carrito"
 
-#: inc/Views/Settings/Tabs/Styles.php:80 inc/Views/Settings/Tabs/Styles.php:193
+#: inc/Views/Settings/Tabs/Styles.php:80
+#: inc/Views/Settings/Tabs/Styles.php:193
 #: inc/Views/Settings/Tabs/Styles.php:244
 msgid "px"
 msgstr "px"
-
-#: inc/Views/Settings/Tabs/General.php:727
-msgid "Página de contato"
-msgstr "Página de contacto"
-
-#: inc/Views/Settings/Settings_Panel.php:199
-msgid "Página única"
-msgstr "Página única"
 
 #: inc/Views/Settings/Tabs/Fields.php:37
 msgid ""
@@ -2398,20 +2963,21 @@ msgstr ""
 "podrán ingresar un código de cupón. Sin embargo, puede aplicar un cupón "
 "automáticamente."
 
-#: inc/Integrations/Force_Sells.php:58
+#: inc/Integrations/Force_Sells.php:59
 msgid "Quantidade"
 msgstr "Cantidad"
 
-#: inc/Core/Ajax.php:1047 inc/Views/Settings/Tabs/Conditions.php:64
-#: inc/Views/Settings/Tabs/Conditions.php:199
+#: inc/Core/Ajax.php:1270
+#: inc/Views/Settings/Tabs/Conditions.php:64
+#: inc/Views/Settings/Tabs/Conditions.php:205
 msgid "Quantidade total do carrinho"
 msgstr "Cantidad total del carrito"
 
-#: inc/Views/Settings/Tabs/Conditions.php:256
+#: inc/Views/Settings/Tabs/Conditions.php:262
 msgid "Quantidade total do carrinho:"
 msgstr "Cantidad total del carrito:"
 
-#: inc/Admin/Default_Options.php:113
+#: inc/Admin/Default_Options.php:122
 msgid "Quicksand"
 msgstr "Quicksand"
 
@@ -2419,26 +2985,37 @@ msgstr "Quicksand"
 msgid "Raio da borda dos elementos"
 msgstr "Radio del borde de los elementos"
 
-#: inc/Admin/Default_Options.php:105
+#: inc/Admin/Default_Options.php:114
 msgid "Raleway"
 msgstr "Raleway"
 
-#: inc/Views/Settings/Tabs/Integrations.php:182
-msgid ""
-"Receba pagamentos com Pix, Cartão de Crédito, Open Finance e Boleto Bancário."
-msgstr ""
+#: inc/Admin/Settings/Views/Integrations.php:176
+msgid "Rastreamento de dados"
+msgstr "Seguimiento de datos"
 
-#: inc/Views/Settings/Tabs/Integrations.php:80
+#: inc/Admin/Settings/Views/Integrations.php:590
+msgid ""
+"Receba pagamentos com Pix, Cartão de Crédito, Open Finance e Boleto "
+"Bancário."
+msgstr "Recibe pagos con Pix, Tarjeta de Crédito, Open Finance y Boleto Bancario."
+
+#: inc/Admin/Settings/Views/Integrations.php:455
 msgid ""
 "Recupere carrinhos e pedidos abandonados com follow up cadenciado. Envie "
 "notificações via WhatsApp de forma automática e muito mais!"
 msgstr ""
+"Recupera carritos y pedidos abandonados con seguimiento escalonado. Envía "
+"notificaciones a través de WhatsApp de forma automática y mucho más!"
 
 #: inc/Views/Settings/Tabs/About.php:73
 msgid "Recursos:"
 msgstr "Recursos:"
 
-#: inc/Views/Settings/Tabs/About.php:448
+#: inc/Views/Settings/Tabs/Fields.php:189
+msgid "Redefinir campos para o padrão"
+msgstr "Restablecer campos a los valores predeterminados"
+
+#: inc/Views/Settings/Tabs/About.php:496
 msgid "Redefinir configurações"
 msgstr "Restablecer configuraciones"
 
@@ -2450,40 +3027,50 @@ msgstr "Restablecer configuraciones"
 msgid "Redefinir para cor padrão"
 msgstr "Restablecer al color predeterminado"
 
-#: inc/Views/Settings/Tabs/Conditions.php:125
+#: woocommerce/common/checkout/form-login.php:102
+msgid "Redefinir senha"
+msgstr "Restablecer contraseña"
+
+#: inc/API/Direct_Checkout.php:337
+msgid "Redirecionando..."
+msgstr "Redirigiendo..."
+
+#: inc/Views/Settings/Tabs/Conditions.php:131
 msgid "Regra"
 msgstr "Regla"
 
 #: inc/Views/Settings/Tabs/General.php:232
 msgid "Reiniciar contagem"
-msgstr ""
+msgstr "Reiniciar cuenta"
 
-#: inc/Views/Settings/Tabs/Styles.php:82 inc/Views/Settings/Tabs/Styles.php:195
+#: inc/Views/Settings/Tabs/Styles.php:82
+#: inc/Views/Settings/Tabs/Styles.php:195
 #: inc/Views/Settings/Tabs/Styles.php:246
 msgid "rem"
 msgstr "rem"
 
 #: inc/Views/Settings/Tabs/General.php:156
 msgid "Remover controles de quantidade em produtos vendidos individualmente"
-msgstr ""
+msgstr "Eliminar controles de cantidad en productos vendidos individualmente"
 
-#: inc/Checkout/Sidebar.php:272 inc/Checkout/Sidebar.php:273
+#: inc/Checkout/Sidebar.php:294
+#: inc/Checkout/Sidebar.php:295
 msgid "Remover este item"
 msgstr "Eliminar este ítem"
 
-#: inc/Views/Settings/Tabs/About.php:474
+#: inc/Views/Settings/Tabs/About.php:522
 msgid "Reportar problemas"
 msgstr "Reportar problemas"
 
-#: inc/API/License.php:309
+#: inc/API/License.php:310
 msgid "Resposta desconhecida"
 msgstr "Respuesta desconocida"
 
-#: inc/API/License.php:334
+#: inc/API/License.php:335
 msgid "Resposta vazia."
 msgstr "Respuesta vacía."
 
-#: inc/Integrations/Germanized.php:47
+#: inc/Integrations/Germanized.php:48
 msgid "Resumo do pedido"
 msgstr "Resumen del pedido"
 
@@ -2491,11 +3078,11 @@ msgstr "Resumen del pedido"
 msgid "Retornar à loja"
 msgstr "Volver a la tienda"
 
-#: inc/Admin/Default_Options.php:419
+#: inc/Admin/Default_Options.php:479
 msgid "RG"
 msgstr "Documento de identidad"
 
-#: inc/Admin/Default_Options.php:97
+#: inc/Admin/Default_Options.php:106
 msgid "Roboto"
 msgstr "Roboto"
 
@@ -2503,66 +3090,77 @@ msgstr "Roboto"
 msgid "Rodapé personalizado"
 msgstr "Pie de página personalizado"
 
-#: inc/Admin/Default_Options.php:93
+#: inc/Admin/Settings/Views/Integrations.php:272
+msgid "Rótulo da ação de conversão criada no Google Ads."
+msgstr "Etiqueta de la acción de conversión creada en Google Ads."
+
+#: inc/Admin/Default_Options.php:102
 msgid "Rubik"
 msgstr "Rubik"
 
-#: inc/Views/Settings/Settings_Panel.php:166
+#: inc/Views/Settings/Settings_Panel.php:167
 msgid "Salvar alterações"
-msgstr ""
+msgstr "Guardar cambios"
 
-#: inc/Views/Settings/Tabs/Styles.php:339
+#: inc/Views/Settings/Tabs/Styles.php:365
 msgid "Salvar fonte"
-msgstr ""
+msgstr "Guardar fuente"
 
-#: inc/Core/Ajax.php:362
+#: inc/Core/Ajax.php:381
 msgid "Salvo com sucesso"
 msgstr "Guardado con éxito"
 
-#: inc/Core/Ajax.php:1074 inc/Views/Settings/Tabs/Conditions.php:91
-#, php-format
+#: inc/Core/Assets.php:228
+msgid ""
+"Se o e-mail informado estiver cadastrado, você receberá um link para "
+"redefinir sua senha."
+msgstr ""
+"Si el correo electrónico proporcionado está registrado, recibirás un enlace "
+"para restablecer tu contraseña."
+
+#: inc/Core/Ajax.php:1298
+#: inc/Views/Settings/Tabs/Conditions.php:91
 msgid "Se: %s %s %s"
 msgstr "Si: %s %s %s"
 
-#: inc/Core/Init.php:278
+#: inc/Core/Init.php:597
 msgid "Seja PRO"
 msgstr "Sea PRO"
 
-#: inc/Views/Settings/Tabs/Conditions.php:269
+#: inc/Views/Settings/Tabs/Conditions.php:275
 msgid "Selecionar Usuário/Função *"
 msgstr "Seleccionar Usuario/Rol *"
 
-#: inc/Views/Settings/Tabs/General.php:728
+#: inc/Views/Settings/Tabs/General.php:747
 msgid ""
 "Selecione a página de contato que será exibida aos clientes na finalização "
 "de compra."
 msgstr ""
-"Seleccione la página de contacto que se mostrará a los clientes al finalizar "
-"la compra."
+"Seleccione la página de contacto que se mostrará a los clientes al "
+"finalizar la compra."
 
 #: inc/Views/Settings/Tabs/Styles.php:35
 msgid ""
 "Selecione o tipo de marca que será exibida no cabeçalho da página de "
 "finalização de compra."
 msgstr ""
-"Seleccione el tipo de marca que se mostrará en el encabezado de la página de "
-"finalización de compra."
+"Seleccione el tipo de marca que se mostrará en el encabezado de la página "
+"de finalización de compra."
 
-#: inc/Views/Settings/Tabs/Conditions.php:132
+#: inc/Views/Settings/Tabs/Conditions.php:138
 msgid "Selecione o tipo de regra"
 msgstr "Seleccione el tipo de regla"
 
-#: inc/Views/Components.php:332
+#: inc/Views/Components.php:334
 msgid "Selecione o tipo do campo que será incluído na finalização de compras."
-msgstr ""
-"Seleccione el tipo de campo que se incluirá en la finalización de compras."
+msgstr "Seleccione el tipo de campo que se incluirá en la finalización de compras."
 
-#: inc/Views/Settings/Tabs/Conditions.php:154
-#: inc/Views/Settings/Tabs/Conditions.php:209
+#: inc/Views/Settings/Tabs/Conditions.php:160
+#: inc/Views/Settings/Tabs/Conditions.php:215
 msgid "Selecione um campo do checkout"
 msgstr "Seleccione un campo del checkout"
 
-#: inc/Views/Settings/Tabs/Conditions.php:142
+#: inc/Views/Settings/Tabs/Conditions.php:148
 msgid "Selecione um componente"
 msgstr "Seleccione un componente"
 
@@ -2571,71 +3169,84 @@ msgid "Selecione um tema"
 msgstr "Seleccione un tema"
 
 #: inc/Views/Settings/Tabs/Styles.php:24
-msgid ""
-"Selecione um tema que será carregado na página de finalização de compras."
-msgstr ""
-"Seleccione un tema que se cargará en la página de finalización de compras."
+msgid "Selecione um tema que será carregado na página de finalização de compras."
+msgstr "Seleccione un tema que se cargará en la página de finalización de compras."
 
-#: inc/Views/Settings/Tabs/Conditions.php:221
+#: inc/Views/Settings/Tabs/Conditions.php:227
 msgid "Selecione uma condição"
 msgstr "Seleccione una condición"
 
-#: inc/Views/Settings/Tabs/Conditions.php:197
+#: inc/Views/Settings/Tabs/Conditions.php:203
 msgid "Selecione uma condição de verificação"
 msgstr "Seleccione una condición de verificación"
 
-#: inc/Views/Settings/Tabs/Conditions.php:167
+#: inc/Views/Settings/Tabs/Conditions.php:173
 msgid "Selecione uma forma de entrega"
 msgstr "Seleccione un método de entrega"
 
-#: inc/Views/Settings/Tabs/Conditions.php:180
+#: inc/Views/Settings/Tabs/Conditions.php:186
 msgid "Selecione uma forma de pagamento"
 msgstr "Seleccione un método de pago"
 
-#: inc/Views/Settings/Tabs/Conditions.php:305
+#: inc/Views/Settings/Tabs/Conditions.php:311
 msgid "Selecione uma função de usuário"
 msgstr "Seleccione un rol de usuario"
 
-#: inc/Views/Components.php:343
+#: inc/Views/Components.php:345
 msgid "Seletor/Lista suspensa"
 msgstr "Selector/Lista desplegable"
 
-#: inc/Views/Components.php:340
+#: inc/Views/Components.php:342
+#: woocommerce/common/checkout/form-login.php:53
 msgid "Senha"
 msgstr "Contraseña"
-
-#: inc/Views/Settings/Tabs/About.php:224
-msgid "Servidor"
-msgstr "Servidor"
 
 #: inc/Views/Settings/Tabs/General.php:383
 msgid "Serviço de API para busca de endereço"
 msgstr "Servicio de API para búsqueda de dirección"
 
+#: inc/Views/Settings/Tabs/About.php:224
+msgid "Servidor"
+msgstr "Servidor"
+
 #: woocommerce/common/checkout/empty-cart.php:22
 msgid "Seu carrinho está vazio, visite nossa loja para comprar algum produto."
-msgstr ""
-"Su carrito está vacío, visite nuestra tienda para comprar algún producto."
+msgstr "Su carrito está vacío, visite nuestra tienda para comprar algún producto."
 
-#: inc/Views/Settings/Tabs/About.php:184 inc/Views/Settings/Tabs/About.php:254
-#: inc/Views/Settings/Tabs/About.php:270 inc/Views/Settings/Tabs/About.php:288
+#: woocommerce/common/cart/cart-shipping.php:73
+msgid "Shipping costs are calculated during checkout."
+msgstr "Los costos de envío se calculan durante el proceso de pago."
+
+#: woocommerce/common/cart/cart-shipping.php:67
+msgid "Shipping options will be updated during checkout."
+msgstr "Las opciones de envío se actualizarán durante el proceso de pago."
+
+#: woocommerce/common/cart/cart-shipping.php:64
+msgid "Shipping to %s."
+msgstr "Envío a %s."
+
+#: inc/Views/Settings/Tabs/About.php:184
+#: inc/Views/Settings/Tabs/About.php:254
+#: inc/Views/Settings/Tabs/About.php:270
+#: inc/Views/Settings/Tabs/About.php:288
 #: inc/Views/Settings/Tabs/About.php:306
 msgid "Sim"
 msgstr "Sí"
 
-#: inc/Views/Settings/Tabs/About.php:468
+#: inc/Views/Settings/Tabs/About.php:516
+#: inc/Views/Settings/Tabs/Fields.php:210
 msgid "Sim, desejo redefinir"
 msgstr "Sí, deseo restablecer"
 
 #: inc/Views/Settings/Tabs/About.php:112
 msgid "Sincronizar licença"
-msgstr ""
+msgstr "Sincronizar licencia"
 
-#: inc/Views/Settings/Settings_Panel.php:103
+#: inc/Views/Settings/Settings_Panel.php:104
 msgid "Sobre"
 msgstr "Acerca de"
 
-#: inc/Admin/Default_Options.php:208
+#: inc/Admin/Default_Options.php:268
 msgid "Sobrenome"
 msgstr "Apellido"
 
@@ -2647,22 +3258,32 @@ msgstr "Estado de la licencia:"
 msgid "Status do sistema:"
 msgstr "Estado del sistema:"
 
+#: inc/Integrations/Woo_Subscriptions.php:97
+msgid "Sua assinatura será ativada quando o pagamento for compensado."
+msgstr "Tu suscripción se activará cuando el pago sea compensado."
+
 #: inc/Views/Settings/Tabs/About.php:97
 msgid "Sua chave de licença:"
 msgstr "Su clave de licencia:"
 
-#: inc/API/License.php:921
+#: inc/API/License.php:922
 msgid ""
 "Sua licença do <strong>Flexify Checkout</strong> expirou, realize a "
 "renovação para continuar aproveitando os recursos Pro."
 msgstr ""
+"Tu licencia de <strong>Flexify Checkout</strong> ha expirado, realiza la "
+"renovación para seguir disfrutando de las funciones Pro."
 
-#: inc/Admin/Default_Options.php:157
+#: inc/Core/Ajax.php:1494
+msgid "Sua sessao expirou. Recarregue a pagina e tente novamente."
+msgstr "Tu sesión ha expirado. Recarga la página e inténtalo de nuevo."
+
+#: inc/Admin/Default_Options.php:166
 msgid "Sua sessão termina em:"
-msgstr ""
+msgstr "Tu sesión termina en:"
 
 #: woocommerce/common/checkout/review-order.php:26
-#: woocommerce/common/checkout/review-order.php:56
+#: woocommerce/common/checkout/review-order.php:63
 msgid "Subtotal"
 msgstr "Subtotal"
 
@@ -2678,51 +3299,58 @@ msgstr "Tamaño máximo de publicación de PHP:"
 msgid "Tamanho máximo de envio do PHP:"
 msgstr "Tamaño máximo de envío de PHP:"
 
-#: inc/Admin/Default_Options.php:221 inc/Admin/Orders.php:254
-#: inc/Views/Components.php:341
+#: inc/Admin/Default_Options.php:281
+#: inc/Admin/Orders.php:255
+#: inc/Views/Components.php:343
 msgid "Telefone"
 msgstr "Teléfono"
 
-#: inc/Core/Assets.php:399
+#: inc/Core/Assets.php:381
 msgid "Tem certeza que deseja desativar sua licença?"
 msgstr "¿Está seguro de que desea desactivar su licencia?"
 
-#: inc/Core/Assets.php:422
-msgid "Tem certeza que deseja excluir esta fonte?"
-msgstr ""
-
-#: inc/Core/Assets.php:405
-msgid "Tem certeza que deseja excluir esta opção?"
-msgstr ""
-
 #: inc/Core/Assets.php:404
-msgid "Tem certeza que deseja excluir este campo?"
-msgstr ""
+msgid "Tem certeza que deseja excluir esta fonte?"
+msgstr "¿Estás seguro de que deseas eliminar esta fuente?"
 
-#: inc/Core/Ajax.php:1060 inc/Views/Settings/Tabs/Conditions.php:77
-#: inc/Views/Settings/Tabs/Conditions.php:229
+#: inc/Core/Assets.php:387
+msgid "Tem certeza que deseja excluir esta opção?"
+msgstr "¿Estás seguro de que deseas eliminar esta opción?"
+
+#: inc/Core/Assets.php:386
+msgid "Tem certeza que deseja excluir este campo?"
+msgstr "¿Estás seguro de que deseas eliminar este campo?"
+
+#: inc/Core/Ajax.php:1283
+#: inc/Views/Settings/Tabs/Conditions.php:77
+#: inc/Views/Settings/Tabs/Conditions.php:235
 msgid "Termina com"
 msgstr "Termina con"
 
-#: inc/Views/Settings/Tabs/General.php:469
+#: inc/Views/Settings/Tabs/General.php:488
 msgid "Termos e condições ativo por padrão"
 msgstr "Términos y condiciones activos por defecto"
 
-#: inc/Views/Components.php:337 inc/Views/Settings/Tabs/Styles.php:41
+#: inc/Admin/Settings/Views/Integrations.php:319
+msgid "Test Event Code (opcional)"
+msgstr "Código de evento de prueba (opcional)"
+
+#: inc/Views/Components.php:339
+#: inc/Views/Settings/Tabs/Styles.php:41
 msgid "Texto"
 msgstr "Texto"
 
-#: inc/Views/Settings/Tabs/General.php:633
+#: inc/Views/Settings/Tabs/General.php:652
 msgid "Texto da animação 1"
-msgstr ""
+msgstr "Texto de la animación 1"
 
-#: inc/Views/Settings/Tabs/General.php:658
+#: inc/Views/Settings/Tabs/General.php:677
 msgid "Texto da animação 2"
-msgstr ""
+msgstr "Texto de la animación 2"
 
-#: inc/Views/Settings/Tabs/General.php:683
+#: inc/Views/Settings/Tabs/General.php:702
 msgid "Texto da animação 3"
-msgstr ""
+msgstr "Texto de la animación 3"
 
 #: inc/Views/Settings/Tabs/Texts.php:101
 msgid "Texto do botão de voltar etapas"
@@ -2730,7 +3358,7 @@ msgstr "Texto del botón para retroceder etapas"
 
 #: inc/Views/Settings/Tabs/Texts.php:111
 msgid "Texto do botão para revisitar a loja da página de agradecimento"
-msgstr ""
+msgstr "Texto del botón para volver a la tienda de la página de agradecimiento"
 
 #: inc/Views/Settings/Tabs/Styles.php:90
 msgid "Texto do cabeçalho"
@@ -2772,16 +3400,24 @@ msgstr "Texto informativo de los campos de la etapa de pago"
 msgid "Texto informativo dos itens do carrinho"
 msgstr "Texto informativo de los ítems del carrito"
 
-#: inc/Views/Settings/Settings_Panel.php:73
+#: inc/Views/Settings/Settings_Panel.php:74
 msgid "Textos"
 msgstr "Textos"
 
-#: inc/Core/Ajax.php:1653 inc/Views/Settings/Tabs/About.php:92
-#, php-format
+#: woocommerce/common/cart/cart-shipping.php:78
+msgid ""
+"There are no shipping options available. Please ensure that your address "
+"has been entered correctly, or contact us if you need any help."
+msgstr ""
+"No hay opciones de envío disponibles. Asegúrate de que tu dirección esté "
+"ingresada correctamente o contáctanos si necesitas ayuda."
+
+#: inc/Core/Ajax.php:2235
+#: inc/Views/Settings/Tabs/About.php:92
 msgid "Tipo da licença: %s"
 msgstr "Tipo de licencia: %s"
 
-#: inc/Views/Settings/Tabs/Conditions.php:130
+#: inc/Views/Settings/Tabs/Conditions.php:136
 msgid "Tipo da regra: *"
 msgstr "Tipo de regla: *"
 
@@ -2789,61 +3425,21 @@ msgstr "Tipo de regla: *"
 msgid "Tipo de marca no cabeçalho"
 msgstr "Tipo de marca en el encabezado"
 
-#: inc/Admin/Default_Options.php:340
+#: inc/Admin/Default_Options.php:400
 msgid "Tipo de Pessoa"
 msgstr "Tipo de Persona"
 
-#: inc/Views/Components.php:331
+#: inc/Views/Components.php:333
 msgid "Tipo do campo *"
 msgstr "Tipo de campo *"
 
-#: inc/Views/Settings/Tabs/Conditions.php:283
-msgid "Todas as categorias"
-msgstr "Todas las categorías"
-
-#: inc/Views/Settings/Tabs/Conditions.php:272
-msgid "Todas as funções"
-msgstr "Todos los roles"
-
-#: inc/Views/Settings/Tabs/Conditions.php:284
-msgid "Todos os atributos"
-msgstr "Todos los atributos"
-
-#: inc/Views/Settings/Tabs/Conditions.php:282
-msgid "Todos os produtos (Padrão)"
-msgstr "Todos los productos (Predeterminado)"
-
-#: inc/Core/Ajax.php:1254
-msgid "Todos os recursos da versão Pro agora estão desativados!"
-msgstr ""
-
-#: inc/Views/Settings/Tabs/Conditions.php:271
-msgid "Todos os usuários (Padrão)"
-msgstr "Todos los usuarios (Predeterminado)"
-
-#: inc/Views/Settings/Tabs/General.php:33
-msgid "Tornar imagem de produtos clicáveis"
-msgstr "Hacer que las imágenes de los productos sean clicables"
-
-#: woocommerce/common/checkout/review-order.php:102
-msgid "Total"
-msgstr "Total"
-
-#: inc/Views/Settings/Tabs/Conditions.php:315
-msgid "Tradutor"
-msgstr "Traductor"
-
-#: flexify-checkout-for-woocommerce.php:183
-#: flexify-checkout-for-woocommerce.php:194
-msgid "Trapaceando?"
-msgstr "¿Haciendo trampa?"
-
 #: inc/Views/Settings/Tabs/General.php:193
 msgid "Título da contagem regressiva"
-msgstr ""
+msgstr "Título de la cuenta regresiva"
 
-#: inc/Core/Assets.php:407 inc/Views/Components.php:364
-#: inc/Views/Components.php:392
+#: inc/Core/Assets.php:389
+#: inc/Views/Components.php:366
+#: inc/Views/Components.php:394
 msgid "Título da opção"
 msgstr "Título de la opción"
 
@@ -2851,27 +3447,69 @@ msgstr "Título de la opción"
 msgid "Título das formas de entrega"
 msgstr "Título de los métodos de entrega"
 
-#: inc/Views/Components.php:409
+#: inc/Views/Components.php:411
 msgid "Título do campo *"
 msgstr "Título del campo *"
 
-#: inc/Checkout/Fields.php:1170
+#: inc/Views/Settings/Tabs/Conditions.php:289
+msgid "Todas as categorias"
+msgstr "Todas las categorías"
+
+#: inc/Views/Settings/Tabs/Conditions.php:278
+msgid "Todas as funções"
+msgstr "Todos los roles"
+
+#: inc/Views/Settings/Tabs/Conditions.php:290
+msgid "Todos os atributos"
+msgstr "Todos los atributos"
+
+#: inc/Views/Settings/Tabs/Conditions.php:288
+msgid "Todos os produtos (Padrão)"
+msgstr "Todos los productos (Predeterminado)"
+
+#: inc/Core/Ajax.php:1782
+msgid "Todos os recursos da versão Pro agora estão desativados!"
+msgstr "¡Todos los recursos de la versión Pro ahora están desactivados!"
+
+#: inc/Views/Settings/Tabs/Conditions.php:277
+msgid "Todos os usuários (Padrão)"
+msgstr "Todos los usuarios (Predeterminado)"
+
+#: inc/Admin/Settings/Views/Integrations.php:311
+msgid "Token de acesso da Conversions API para autenticação das requisições."
+msgstr ""
+"Token de acceso de la Conversions API para la autenticación de las "
+"solicitudes."
+
+#: inc/Views/Settings/Tabs/General.php:33
+msgid "Tornar imagem de produtos clicáveis"
+msgstr "Hacer que las imágenes de los productos sean clicables"
+
+#: woocommerce/common/checkout/review-order.php:109
+msgid "Total"
+msgstr "Total"
+
+#: inc/Views/Settings/Tabs/Conditions.php:321
+msgid "Tradutor"
+msgstr "Traductor"
+
+#: inc/Checkout/Fields.php:1181
 msgid ""
-"Uma conta já está registrada com este endereço de e-mail. <a href=\"#\" data-"
-"login>Deseja entrar na sua conta?</a>"
+"Uma conta já está registrada com este endereço de e-mail. <a href=\"#\" "
+"data-login>Deseja entrar na sua conta?</a>"
 msgstr ""
 "Ya hay una cuenta registrada con esta dirección de correo electrónico. <a "
 "href=\"#\" data-login>¿Desea ingresar a su cuenta?</a>"
 
-#: inc/Core/Assets.php:230
+#: inc/Core/Assets.php:226
 msgid ""
-"Uma conta já está registrada com este endereço de e-mail. Gostaria de entrar "
-"nela?"
+"Uma conta já está registrada com este endereço de e-mail. Gostaria de "
+"entrar nela?"
 msgstr ""
 "Ya hay una cuenta registrada con esta dirección de correo electrónico. ¿Le "
 "gustaría ingresar a ella?"
 
-#: inc/API/License.php:946
+#: inc/API/License.php:947
 msgid ""
 "Uma licença permite que você desbloqueie todos os recursos Pro que o plugin "
 "tem a oferecer."
@@ -2879,72 +3517,89 @@ msgstr ""
 "Una licencia le permite desbloquear todas las funciones Pro que el plugin "
 "tiene para ofrecer."
 
-#: inc/API/Updater.php:453
-#, php-format
+#: inc/API/Updater.php:454
 msgid ""
 "Uma nova versão do plugin <strong>Flexify Checkout</strong> (%s) está "
 "disponível. <a href=\"%s\">Atualize agora</a>."
 msgstr ""
+"Una nueva versión del plugin <strong>Flexify Checkout</strong> (%s) está "
+"disponible. <a href=\"%s\">Actualiza ahora</a>."
 
-#: inc/API/Updater.php:226
-#, fuzzy
-#| msgid ""
-#| "Uma nova versão do plugin <strong>Flexify Checkout para "
-#| "WooCommerce</strong> está disponível."
-msgid ""
-"Uma nova versão do plugin <strong>Flexify Checkout</strong> está disponível."
+#: inc/API/Updater.php:227
+msgid "Uma nova versão do plugin <strong>Flexify Checkout</strong> está disponível."
 msgstr ""
 "Una nueva versión del plugin Flexify Checkout para WooCommerce está "
 "disponible."
 
-#: inc/Admin/Default_Options.php:117
+#: inc/Admin/Default_Options.php:126
 msgid "Urbanist"
 msgstr "Urbanist"
 
-#: inc/Views/Components.php:342
+#: inc/Views/Components.php:344
 msgid "URL"
 msgstr "URL"
 
-#: inc/Views/Settings/Tabs/Styles.php:298
+#: inc/Views/Settings/Tabs/Styles.php:324
 msgid "URL de incorporação do Google Fonts"
-msgstr ""
+msgstr "URL de incorporación de Google Fonts"
 
 #: inc/Views/Settings/Tabs/General.php:241
 msgid "URL de redirecionamento"
-msgstr ""
+msgstr "URL de redirección"
 
 #: inc/Views/Settings/Tabs/General.php:258
 #: inc/Views/Settings/Tabs/General.php:282
 msgid "Usar cor padrão"
-msgstr ""
+msgstr "Usar color predeterminado"
 
-#: inc/Core/Assets.php:401
+#: inc/Core/Assets.php:383
 msgid "Usar esta imagem"
 msgstr "Usar esta imagen"
 
-#: inc/Core/Assets.php:412
+#: inc/Core/Assets.php:394
 msgid "Usar este arquivo"
-msgstr ""
+msgstr "Usar este archivo"
 
-#: inc/Views/Settings/Tabs/Conditions.php:273
+#: inc/Admin/Settings/Views/Integrations.php:320
+msgid ""
+"Use para validar eventos no modo de teste da Meta antes de publicar em "
+"produção."
+msgstr ""
+"Utiliza para validar eventos en el modo de prueba de Meta antes de publicar "
+"en producción."
+
+#: inc/Core/Ajax.php:184
+msgid "Usuário é obrigatório."
+msgstr "El usuario es obligatorio."
+
+#: inc/Views/Settings/Tabs/Conditions.php:279
 msgid "Usuários específicos"
 msgstr "Usuarios específicos"
 
-#: inc/Views/Settings/Tabs/Conditions.php:296
+#: inc/Views/Settings/Tabs/Conditions.php:302
 msgid "Usuários específicos:"
 msgstr "Usuarios específicos:"
 
-#: inc/Views/Settings/Tabs/Texts.php:124 inc/Views/Settings/Tabs/Texts.php:142
+#: inc/Views/Settings/Tabs/Texts.php:124
+#: inc/Views/Settings/Tabs/Texts.php:142
 msgid ""
 "Utilize as variáveis abaixo para recuperar as informações de campos. Ou "
 "deixe em branco para não exibir."
 msgstr ""
+"Utiliza las variables a continuación para recuperar la información de los "
+"campos. O déjalo en blanco para no mostrar."
 
-#: inc/Views/Settings/Tabs/Conditions.php:239
+#: inc/Core/Ajax.php:2231
+#: inc/Views/Settings/Tabs/About.php:64
+msgid "Válida"
+msgstr "Válida"
+
+#: inc/Views/Settings/Tabs/Conditions.php:245
 msgid "Valor da condição: *"
 msgstr "Valor de la condición: *"
 
-#: inc/Core/Assets.php:406 inc/Views/Components.php:359
+#: inc/Core/Assets.php:388
+#: inc/Views/Components.php:361
 msgid "Valor da opção"
 msgstr "Valor de la opción"
 
@@ -2960,16 +3615,18 @@ msgstr "El valor mínimo recomendado es 128M"
 msgid "Valor mínimo recomendado é 180"
 msgstr "El valor mínimo recomendado es 180"
 
-#: inc/Views/Settings/Tabs/About.php:327 inc/Views/Settings/Tabs/About.php:415
+#: inc/Views/Settings/Tabs/About.php:327
+#: inc/Views/Settings/Tabs/About.php:415
 msgid "Valor mínimo recomendado é 64M"
 msgstr "El valor mínimo recomendado es 64M"
 
-#: inc/Core/Ajax.php:1049 inc/Views/Settings/Tabs/Conditions.php:66
-#: inc/Views/Settings/Tabs/Conditions.php:200
+#: inc/Core/Ajax.php:1272
+#: inc/Views/Settings/Tabs/Conditions.php:66
+#: inc/Views/Settings/Tabs/Conditions.php:206
 msgid "Valor total do carrinho"
 msgstr "Valor total del carrito"
 
-#: inc/Views/Settings/Tabs/Conditions.php:246
+#: inc/Views/Settings/Tabs/Conditions.php:252
 msgid "Valor total do carrinho:"
 msgstr "Valor total del carrito:"
 
@@ -2977,20 +3634,30 @@ msgstr "Valor total del carrito:"
 msgid "Variáveis máximas de entrada do PHP:"
 msgstr "Variables máximas de entrada de PHP:"
 
-#: inc/Core/Ajax.php:1055 inc/Views/Settings/Tabs/Conditions.php:72
-#: inc/Views/Settings/Tabs/Conditions.php:224
+#: inc/Core/Ajax.php:1278
+#: inc/Views/Settings/Tabs/Conditions.php:72
+#: inc/Views/Settings/Tabs/Conditions.php:230
 msgid "Vazio"
 msgstr "Vacío"
 
-#: inc/API/Updater.php:286
-msgid "Verificar atualizações"
-msgstr "Verificar actualizaciones"
+#: inc/Integrations/Woo_Subscriptions.php:104
+msgid "Veja o status da sua assinatura na <a href=\"%s\">sua conta</a>"
+msgstr "Consulta el estado de tu suscripción en <a href=\"%s\">tu cuenta</a>"
 
-#: inc/Views/Settings/Tabs/Conditions.php:189
+#: inc/Views/Settings/Tabs/Conditions.php:195
 msgid "Verificação"
 msgstr "Verificación"
 
-#: inc/Views/Components.php:388
+#: inc/Admin/Settings_Import_Export.php:108
+#: inc/Admin/Settings_Import_Export.php:184
+msgid "Verificação de segurança falhou. Recarregue a página e tente novamente."
+msgstr "La verificación de seguridad falló. Recarga la página y vuelve a intentarlo."
+
+#: inc/API/Updater.php:287
+msgid "Verificar atualizações"
+msgstr "Verificar actualizaciones"
+
+#: inc/Views/Components.php:390
 msgid "verify_gdpr"
 msgstr "verify_gdpr"
 
@@ -3010,9 +3677,22 @@ msgstr "Versión de WooCommerce:"
 msgid "Versão do WordPress:"
 msgstr "Versión de WordPress:"
 
-#: inc/Core/Ajax.php:613 inc/Core/Ajax.php:766
+#: inc/Admin/Settings_Import_Export.php:102
+msgid "Você não tem permissão para exportar as configurações."
+msgstr "No tienes permiso para exportar la configuración."
+
+#: inc/Core/Ajax.php:841
+#: inc/Core/Ajax.php:994
 msgid "Você não tem permissão para gerenciar fontes."
-msgstr ""
+msgstr "No tienes permiso para gestionar fuentes."
+
+#: inc/Admin/Settings_Import_Export.php:174
+msgid "Você não tem permissão para importar as configurações."
+msgstr "No tienes permiso para importar la configuración."
+
+#: inc/Core/Ajax.php:1853
+msgid "Você não tem permissão para redefinir os campos."
+msgstr "No tienes permiso para restablecer los campos."
 
 #: inc/Views/Settings/Tabs/About.php:143
 msgid ""
@@ -3027,23 +3707,21 @@ msgstr ""
 msgid "Você precisa estar logado para finalizar sua compra."
 msgstr "Necesita estar registrado para finalizar su compra."
 
-#. %s Product title.
-#: inc/Checkout/Sidebar.php:357
-#, php-format
+#: inc/Checkout/Sidebar.php:379
 msgid "Você só pode comprar 1 %s por pedido."
 msgstr "Solo puede comprar 1 %s por pedido."
 
-#: woocommerce/common/checkout/form-pay.php:74
-msgid "Voltar para a conta"
-msgstr "Volver a la cuenta"
-
-#: inc/Checkout/Steps.php:843
+#: inc/Checkout/Steps.php:848
 msgid "Voltar à loja"
 msgstr "Volver a la tienda"
 
-#: inc/Core/Ajax.php:1649 inc/Views/Settings/Tabs/About.php:64
-msgid "Válida"
-msgstr "Válida"
+#: woocommerce/common/checkout/form-pay.php:77
+msgid "Voltar para a conta"
+msgstr "Volver a la cuenta"
+
+#: woocommerce/common/checkout/form-login.php:117
+msgid "Voltar para login"
+msgstr "Volver a iniciar sesión"
 
 #: inc/Views/Settings/Tabs/About.php:192
 msgid "WooCommerce"
@@ -3056,12 +3734,3 @@ msgstr "WordPress"
 #: inc/Views/Settings/Tabs/About.php:183
 msgid "WordPress Multisite:"
 msgstr "Multisitio de WordPress:"
-
-#: inc/Views/Components.php:338
-msgid "Área de texto"
-msgstr "Área de texto"
-
-#: inc/Core/Ajax.php:1053 inc/Views/Settings/Tabs/Conditions.php:70
-#: inc/Views/Settings/Tabs/Conditions.php:222
-msgid "É"
-msgstr "Es"

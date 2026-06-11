@@ -1,4 +1,8 @@
-# Ignore Git files
-composer.*
 .env
 .claude
+
+# Build tooling output
+node_modules/
+release/
+package-lock.json
+composer.lock
