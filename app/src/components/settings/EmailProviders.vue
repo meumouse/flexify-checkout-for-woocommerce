@@ -45,7 +45,7 @@ function removeProvider(provider) {
           aria-label="Remover provedor"
           @click="removeProvider(provider)"
         >
-          <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" /></svg>
+          <BoxIcon name="x" class="h-3.5 w-3.5" />
         </button>
       </span>
     </div>

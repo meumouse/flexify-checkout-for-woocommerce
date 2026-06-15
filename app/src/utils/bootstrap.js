@@ -1,5 +1,19 @@
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
+import BoxIcon from '../components/icons/BoxIcon.vue';
+
+/**
+ * Register app-wide globals (shared icon component) on a Vue app instance.
+ *
+ * @since 6.0.0
+ * @param {import('vue').App} app - Vue application instance.
+ * @return {import('vue').App} The same instance, for chaining.
+ */
+function registerGlobals(app) {
+  app.component('BoxIcon', BoxIcon);
+
+  return app;
+}
 
 /**
  * Read the minimal bootstrap config exposed by WordPress via wp_localize_script.
@@ -98,6 +112,7 @@ export async function mountPage(mountId, component) {
     bootstrap,
   });
 
+  registerGlobals(app);
   app.use(createPinia());
 
   return app.mount(mount);
@@ -138,6 +153,7 @@ export async function mountRoutedPage(mountId, rootComponent, router) {
     bootstrap,
   });
 
+  registerGlobals(app);
   app.use(createPinia());
   app.use(router);
 

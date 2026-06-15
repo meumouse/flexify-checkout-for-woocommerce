@@ -3,11 +3,11 @@ import { useSettingsStore } from '../../stores/useSettingsStore';
 
 const store = useSettingsStore();
 
-function toastIconSvg(type) {
+function toastIcon(type) {
   const icons = {
-    success: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M9.999 13.587 7.7 11.292l-1.412 1.416 3.713 3.705 6.706-6.706-1.414-1.414" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-    error: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M11 11h2v6h-2zm0-4h2v2h-2z" fill="currentColor"/></svg>',
-    info: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M11 10h2v7h-2zm0-4h2v2h-2z" fill="currentColor"/></svg>',
+    success: 'check-circle',
+    error: 'error-circle',
+    info: 'info-circle',
   };
 
   return icons[type] || icons.info;
@@ -44,7 +44,7 @@ function toastProgressClass(type) {
         :class="toast.closing ? 'translate-y-1 opacity-0' : 'translate-y-0 opacity-100'"
       >
         <header class="flex items-center border-0 px-4 py-2 text-sm font-bold" :class="toastHeaderClass(toast.type)">
-          <span class="me-2 inline-flex h-5 w-5 shrink-0 text-current" v-html="toastIconSvg(toast.type)" />
+          <BoxIcon :name="toastIcon(toast.type)" type="solid" class="me-2 h-5 w-5 shrink-0 text-current" />
           <span class="me-auto min-w-0 truncate">{{ toast.title }}</span>
 
           <button
@@ -53,9 +53,7 @@ function toastProgressClass(type) {
             aria-label="Fechar"
             @click="store.dismissToast(toast.id)"
           >
-            <svg class="h-3 w-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none">
-              <path d="M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 1 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 1 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z" fill="currentColor"/>
-            </svg>
+            <BoxIcon name="x" class="h-3.5 w-3.5" />
           </button>
         </header>
 

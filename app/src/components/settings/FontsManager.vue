@@ -163,7 +163,7 @@ const inputClass = 'flexify-field-input w-full rounded-lg border border-gray-300
             aria-label="Remover fonte"
             @click="removeFont(id, font)"
           >
-            <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a1 1 0 011-1h6a1 1 0 011 1v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+            <BoxIcon name="trash" class="h-4 w-4" />
           </button>
         </div>
       </li>

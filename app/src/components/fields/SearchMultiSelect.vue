@@ -73,7 +73,7 @@ function removeItem(item) {
           aria-label="Remover"
           @click="removeItem(item)"
         >
-          <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" /></svg>
+          <BoxIcon name="x" class="h-3.5 w-3.5" />
         </button>
       </span>
     </div>
@@ -99,7 +99,7 @@ function removeItem(item) {
         >
           {{ item.label }}
 
-          <svg v-if="isSelected(item)" class="h-3.5 w-3.5 text-success" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round" /></svg>
+          <BoxIcon v-if="isSelected(item)" name="check" class="h-4 w-4 text-success" />
         </button>
       </li>
     </ul>

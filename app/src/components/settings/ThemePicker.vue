@@ -42,9 +42,7 @@ function selectTheme(theme) {
           v-if="theme.status !== 'active'"
           class="absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 bg-white/85 text-muted"
         >
-          <svg class="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
-            <path d="M6 2h12M6 22h12M7 2v4l5 5 5-5V2M7 22v-4l5-5 5 5v4" stroke-linecap="round" stroke-linejoin="round" />
-          </svg>
+          <BoxIcon name="hourglass" class="h-8 w-8" />
           <span class="text-sm font-medium">Em breve...</span>
         </div>
 

@@ -301,7 +301,7 @@ const inputClass = 'flexify-field-input w-full rounded-lg border border-gray-300
                     aria-label="Mover para cima"
                     @click="moveField(step.id, index, -1)"
                   >
-                    <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 15l-6-6-6 6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                    <BoxIcon name="chevron-up" class="h-4 w-4" />
                   </button>
 
                   <button
@@ -311,7 +311,7 @@ const inputClass = 'flexify-field-input w-full rounded-lg border border-gray-300
                     aria-label="Mover para baixo"
                     @click="moveField(step.id, index, 1)"
                   >
-                    <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                    <BoxIcon name="chevron-down" class="h-4 w-4" />
                   </button>
                 </div>
 
@@ -341,7 +341,7 @@ const inputClass = 'flexify-field-input w-full rounded-lg border border-gray-300
                   aria-label="Remover campo"
                   @click="removeField(fieldId)"
                 >
-                  <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a1 1 0 011-1h6a1 1 0 011 1v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                  <BoxIcon name="trash" class="h-4 w-4" />
                 </button>
               </div>
             </li>
@@ -400,7 +400,7 @@ const inputClass = 'flexify-field-input w-full rounded-lg border border-gray-300
                 aria-label="Remover opção"
                 @click="removeEditorOption(index)"
               >
-                <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                <BoxIcon name="x" class="h-4 w-4" />
               </button>
             </li>
           </ul>
@@ -495,7 +495,7 @@ const inputClass = 'flexify-field-input w-full rounded-lg border border-gray-300
                 aria-label="Remover opção"
                 @click="addForm.options.splice(index, 1)"
               >
-                <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                <BoxIcon name="x" class="h-4 w-4" />
               </button>
             </li>
           </ul>
