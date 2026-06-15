@@ -118,33 +118,39 @@ class Admin {
         if ( self::get_switch('enable_cart_recovery') !== 'no' ) {
             global $fc_recovery_carts_hook;
 
+            // Positions order the whole top-level menu together with the core
+            // Settings_Panel items (Configurações=3, Aplicativos=4, Licença=6).
+            // Page slugs are kept for backward compatibility; only labels change.
             add_submenu_page(
                 $parent, // parent page slug
-                esc_html__( 'Análises', 'flexify-checkout-for-woocommerce' ), // page title
-                esc_html__( 'Análises', 'flexify-checkout-for-woocommerce' ), // submenu title
+                esc_html__( 'Análise', 'flexify-checkout-for-woocommerce' ), // page title
+                esc_html__( 'Análise', 'flexify-checkout-for-woocommerce' ), // submenu title
                 'manage_woocommerce', // user capabilities
                 'fc-recovery-carts', // page slug
-                array( $this, 'analytics_page' ) // callback
+                array( $this, 'analytics_page' ), // callback
+                1 // position
             );
 
             // all carts list page
             add_submenu_page(
                 $parent,
-                esc_html__( 'Todos os carrinhos', 'flexify-checkout-for-woocommerce' ),
-                esc_html__( 'Todos os carrinhos', 'flexify-checkout-for-woocommerce' ),
+                esc_html__( 'Carrinhos Abandonados', 'flexify-checkout-for-woocommerce' ),
+                esc_html__( 'Carrinhos Abandonados', 'flexify-checkout-for-woocommerce' ),
                 'manage_woocommerce',
                 'fc-recovery-carts-list',
-                array( $this, 'carts_table_page' )
+                array( $this, 'carts_table_page' ),
+                2 // position
             );
 
             // processing queue page
             add_submenu_page(
                 $parent,
-                esc_html__( 'Fila de processamentos', 'flexify-checkout-for-woocommerce' ),
-                esc_html__( 'Fila de processamentos', 'flexify-checkout-for-woocommerce' ),
+                esc_html__( 'Fila de Processamentos', 'flexify-checkout-for-woocommerce' ),
+                esc_html__( 'Fila de Processamentos', 'flexify-checkout-for-woocommerce' ),
                 'manage_woocommerce',
                 'fc-recovery-carts-queue',
-                array( $this, 'queue_table_page' )
+                array( $this, 'queue_table_page' ),
+                5 // position
             );
         }
 

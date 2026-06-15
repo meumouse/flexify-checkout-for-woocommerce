@@ -64,14 +64,30 @@ class Settings_Panel {
             7
         );
 
-        // Rename the auto-generated first submenu (defaults to the page title) to "Configurações".
+        // Rename the auto-generated first submenu (defaults to the page title) to
+        // "Configurações". Explicit positions order the whole menu across this
+        // class and the Recovery_Carts feature (which registers Análise,
+        // Carrinhos Abandonados and Fila de Processamentos at positions 1, 2, 5).
         add_submenu_page(
             'flexify-checkout-for-woocommerce', // parent slug
             esc_html__( 'Configurações', 'flexify-checkout-for-woocommerce' ), // page title
             esc_html__( 'Configurações', 'flexify-checkout-for-woocommerce' ), // submenu title
             'manage_woocommerce', // capability
             'flexify-checkout-for-woocommerce', // slug (same as parent)
-            array( $this, 'render_settings_page' ) // callback
+            array( $this, 'render_settings_page' ), // callback
+            3 // position
+        );
+
+        // Apps page (Vue SPA, apps route): the former "Integrações" settings tab
+        // promoted to its own top-level item.
+        add_submenu_page(
+            'flexify-checkout-for-woocommerce', // parent slug
+            esc_html__( 'Aplicativos', 'flexify-checkout-for-woocommerce' ), // page title
+            esc_html__( 'Aplicativos', 'flexify-checkout-for-woocommerce' ), // submenu title
+            'manage_woocommerce', // capability
+            'flexify-checkout-apps', // slug
+            array( $this, 'render_apps_page' ), // callback
+            4 // position
         );
 
         // License page (Vue SPA, license route).
@@ -81,7 +97,8 @@ class Settings_Panel {
             esc_html__( 'Licença', 'flexify-checkout-for-woocommerce' ), // submenu title
             'manage_woocommerce', // capability
             'flexify-checkout-license', // slug
-            array( $this, 'render_license_page' ) // callback
+            array( $this, 'render_license_page' ), // callback
+            6 // position
         );
     }
 
@@ -173,6 +190,27 @@ class Settings_Panel {
      * @return void
      */
     public function render_license_page() {
+        if ( \MeuMouse\Flexify_Checkout\Assets\Settings_Assets::is_legacy_mode() ) {
+            $this->render_legacy_settings_page();
+
+            return;
+        }
+
+        $this->render_app_mount();
+    }
+
+
+    /**
+     * Render the Apps (Aplicativos) page.
+     *
+     * Mounts the same Vue SPA; the localized `view` opens it on the apps route,
+     * which lists the available integrations/addons. In legacy mode it falls
+     * back to the legacy settings screen, where integrations live under a tab.
+     *
+     * @since 6.0.0
+     * @return void
+     */
+    public function render_apps_page() {
         if ( \MeuMouse\Flexify_Checkout\Assets\Settings_Assets::is_legacy_mode() ) {
             $this->render_legacy_settings_page();
 

@@ -5,9 +5,30 @@ import BaseButton from '../buttons/BaseButton.vue';
 import ModalDialog from '../modals/ModalDialog.vue';
 import ToggleSwitch from '../toggles/ToggleSwitch.vue';
 
+const props = defineProps({
+  // When true, render the data-tracking platforms in their own block, visually
+  // separated from the installable apps/addons (used on the Aplicativos page).
+  grouped: { type: Boolean, default: false },
+});
+
 const store = useSettingsStore();
 
 const cards = computed(() => store.integrations);
+
+// Sections drive the layout: a single unlabeled group by default, or two
+// labeled groups (Rastreamento / Aplicativos) when grouped is enabled.
+const sections = computed(() => {
+  const all = cards.value || [];
+
+  if (!props.grouped) {
+    return [{ key: 'all', title: '', cards: all }];
+  }
+
+  return [
+    { key: 'tracking', title: 'Rastreamento', cards: all.filter((card) => card.type === 'tracking') },
+    { key: 'apps', title: 'Aplicativos', cards: all.filter((card) => card.type !== 'tracking') },
+  ].filter((section) => section.cards.length);
+});
 
 // --- Tracking settings modal ---
 
@@ -119,9 +140,12 @@ const inputClass = 'flexify-field-input w-full rounded-lg border border-gray-300
 
 <template>
   <div class="px-2 py-6">
-    <div class="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
+    <section v-for="section in sections" :key="section.key" class="mb-8 last:mb-0">
+      <h3 v-if="section.title" class="mb-4 mt-0 text-[15px] font-semibold text-brand">{{ section.title }}</h3>
+
+      <div class="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
       <div
-        v-for="card in cards"
+        v-for="card in section.cards"
         :key="card.id"
         class="flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white"
       >
@@ -200,7 +224,8 @@ const inputClass = 'flexify-field-input w-full rounded-lg border border-gray-300
           </div>
         </template>
       </div>
-    </div>
+      </div>
+    </section>
 
     <!-- Tracking settings modal -->
     <ModalDialog :open="trackingOpen" title="Configurações de rastreio de dados" size="lg" @close="trackingOpen = false">
