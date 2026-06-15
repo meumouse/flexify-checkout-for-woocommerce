@@ -61,7 +61,7 @@ class Settings_Panel {
             'flexify-checkout-for-woocommerce', // slug (kept for backward compatibility)
             array( $this, 'render_settings_page' ), // callback
             'data:image/svg+xml;base64,' . base64_encode( $icon_svg ), // icon
-            58 // position (just below WooCommerce)
+            7
         );
 
         // Rename the auto-generated first submenu (defaults to the page title) to "Configurações".
