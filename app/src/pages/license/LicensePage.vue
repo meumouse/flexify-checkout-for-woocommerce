@@ -10,8 +10,6 @@
  */
 import { useSettingsStore } from '../../stores/useSettingsStore';
 import LicenseManager from '../../components/settings/LicenseManager.vue';
-import SystemStatus from '../../components/settings/SystemStatus.vue';
-import AboutActions from '../../components/settings/AboutActions.vue';
 
 const store = useSettingsStore();
 </script>
@@ -33,20 +31,12 @@ const store = useSettingsStore();
     </header>
 
     <p class="mb-0 mt-0 text-[14px] leading-6 text-slate-600">
-      Gerencie a sua licença do Flexify Checkout e consulte o status do sistema.
+      Gerencie a sua licença do Flexify Checkout: ative, consulte o status e os detalhes do plano.
     </p>
 
     <main class="mt-6 overflow-hidden rounded-[8px] bg-white shadow-[0_1px_0_rgba(0,0,0,0.02)] ring-1 ring-slate-100">
       <div class="px-10 py-4">
         <LicenseManager />
-
-        <div class="border-t border-slate-100">
-          <SystemStatus />
-        </div>
-
-        <div class="border-t border-slate-100">
-          <AboutActions />
-        </div>
       </div>
     </main>
   </div>

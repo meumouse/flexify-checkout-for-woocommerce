@@ -710,14 +710,6 @@ class Registry {
                     ),
                 ),
                 array(
-                    'id' => 'about-license',
-                    'component' => 'license-manager',
-                ),
-                array(
-                    'id' => 'about-system',
-                    'component' => 'system-status',
-                ),
-                array(
                     'id' => 'about-actions',
                     'component' => 'about-actions',
                 ),

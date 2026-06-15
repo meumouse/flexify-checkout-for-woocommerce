@@ -9,6 +9,7 @@
  */
 import { ref, computed, onMounted } from 'vue';
 import { apiGet, apiDelete } from '../../services/api';
+import SystemStatus from '../../components/settings/SystemStatus.vue';
 
 const loading = ref(true);
 const error = ref('');
@@ -127,5 +128,16 @@ onMounted(load);
       <span class="text-[13px] text-slate-500">Página {{ page }} de {{ totalPages }}</span>
       <button type="button" class="rounded-[8px] border border-slate-200 px-3 py-1.5 text-[13px] disabled:opacity-40" :disabled="page >= totalPages || loading" @click="goTo(page + 1)">Próxima</button>
     </div>
+
+    <section class="mt-8 overflow-hidden rounded-[8px] bg-white ring-1 ring-slate-100">
+      <div class="border-b border-slate-100 px-6 py-4">
+        <h2 class="m-0 text-[15px] font-semibold text-brand">Sistema / Status</h2>
+        <p class="m-0 mt-1 text-[13px] text-slate-500">Detalhes do ambiente do servidor, úteis para diagnóstico técnico.</p>
+      </div>
+
+      <div class="px-6">
+        <SystemStatus />
+      </div>
+    </section>
   </div>
 </template>
