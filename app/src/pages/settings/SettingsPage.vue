@@ -10,7 +10,6 @@ import AboutActions from '../../components/settings/AboutActions.vue';
 import ThemePicker from '../../components/settings/ThemePicker.vue';
 import FieldsManager from '../../components/settings/FieldsManager.vue';
 import ConditionsManager from '../../components/settings/ConditionsManager.vue';
-import IntegrationsList from '../../components/settings/IntegrationsList.vue';
 import EmailProviders from '../../components/settings/EmailProviders.vue';
 import FontsManager from '../../components/settings/FontsManager.vue';
 import RecoverySettings from '../../components/settings/RecoverySettings.vue';
@@ -41,7 +40,6 @@ const customComponents = {
   'theme-picker': ThemePicker,
   'fields-manager': FieldsManager,
   'conditions-manager': ConditionsManager,
-  'integrations-list': IntegrationsList,
   'fonts-manager': FontsManager,
   'email-providers': EmailProviders,
   'recovery-settings': RecoverySettings,
