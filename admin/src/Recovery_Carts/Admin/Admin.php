@@ -119,7 +119,7 @@ class Admin {
             global $fc_recovery_carts_hook;
 
             // Positions order the whole top-level menu together with the core
-            // Settings_Panel items (Configurações=3, Aplicativos=4, Licença=6).
+            // Settings_Panel items (Aplicativos=4, Configurações=5, Licença=6).
             // Page slugs are kept for backward compatibility; only labels change.
             add_submenu_page(
                 $parent, // parent page slug
@@ -150,7 +150,7 @@ class Admin {
                 'manage_woocommerce',
                 'fc-recovery-carts-queue',
                 array( $this, 'queue_table_page' ),
-                5 // position
+                3 // position
             );
         }
 

@@ -67,7 +67,7 @@ class Settings_Panel {
         // Rename the auto-generated first submenu (defaults to the page title) to
         // "Configurações". Explicit positions order the whole menu across this
         // class and the Recovery_Carts feature (which registers Análise,
-        // Carrinhos Abandonados and Fila de Processamentos at positions 1, 2, 5).
+        // Carrinhos Abandonados and Fila de Processamentos at positions 1, 2, 3).
         add_submenu_page(
             'flexify-checkout-for-woocommerce', // parent slug
             esc_html__( 'Configurações', 'flexify-checkout-for-woocommerce' ), // page title
@@ -75,7 +75,7 @@ class Settings_Panel {
             'manage_woocommerce', // capability
             'flexify-checkout-for-woocommerce', // slug (same as parent)
             array( $this, 'render_settings_page' ), // callback
-            3 // position
+            5 // position
         );
 
         // Apps page (Vue SPA, apps route): the former "Integrações" settings tab
