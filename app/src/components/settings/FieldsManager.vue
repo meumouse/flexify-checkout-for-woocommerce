@@ -2,6 +2,7 @@
 import { computed, reactive, ref } from 'vue';
 import { useSettingsStore } from '../../stores/useSettingsStore';
 import BaseButton from '../buttons/BaseButton.vue';
+import BaseSelect from '../fields/BaseSelect.vue';
 import ModalDialog from '../modals/ModalDialog.vue';
 import ToggleSwitch from '../toggles/ToggleSwitch.vue';
 
@@ -11,6 +12,9 @@ const STEPS = [
   { id: '1', title: 'Etapa 1 (Contato)' },
   { id: '2', title: 'Etapa 2 (Entrega)' },
 ];
+
+const stepOptions = STEPS.map((step) => ({ value: step.id, label: step.title }));
+const countryOptions = computed(() => store.runtime?.countries || []);
 
 const FIELD_TYPES = [
   { value: 'text', label: 'Texto' },
@@ -375,11 +379,7 @@ const inputClass = 'flexify-field-input w-full rounded-lg border border-slate-30
 
         <div v-if="editor.isCountryField">
           <label class="mb-1 block text-sm font-medium text-ink">Definir país padrão</label>
-          <select v-model="editor.country" :class="inputClass">
-            <option v-for="country in store.runtime?.countries || []" :key="country.value" :value="country.value">
-              {{ country.label }}
-            </option>
-          </select>
+          <BaseSelect v-model="editor.country" :options="countryOptions" />
         </div>
 
         <div>
@@ -415,16 +415,12 @@ const inputClass = 'flexify-field-input w-full rounded-lg border border-slate-30
         <div class="grid gap-4 sm:grid-cols-2">
           <div>
             <label class="mb-1 block text-sm font-medium text-ink">Posição do campo</label>
-            <select v-model="editor.position" :class="inputClass">
-              <option v-for="position in POSITIONS" :key="position.value" :value="position.value">{{ position.label }}</option>
-            </select>
+            <BaseSelect v-model="editor.position" :options="POSITIONS" />
           </div>
 
           <div>
             <label class="mb-1 block text-sm font-medium text-ink">Etapa do campo</label>
-            <select v-model="editor.step" :class="inputClass">
-              <option v-for="step in STEPS" :key="step.id" :value="step.id">{{ step.title }}</option>
-            </select>
+            <BaseSelect v-model="editor.step" :options="stepOptions" />
           </div>
         </div>
 
@@ -471,9 +467,7 @@ const inputClass = 'flexify-field-input w-full rounded-lg border border-slate-30
         <div class="grid gap-4 sm:grid-cols-2">
           <div>
             <label class="mb-1 block text-sm font-medium text-ink">Tipo do campo *</label>
-            <select v-model="addForm.type" :class="inputClass">
-              <option v-for="type in FIELD_TYPES" :key="type.value" :value="type.value">{{ type.label }}</option>
-            </select>
+            <BaseSelect v-model="addForm.type" :options="FIELD_TYPES" />
           </div>
 
           <div>
@@ -518,16 +512,12 @@ const inputClass = 'flexify-field-input w-full rounded-lg border border-slate-30
         <div class="grid gap-4 sm:grid-cols-2">
           <div>
             <label class="mb-1 block text-sm font-medium text-ink">Posição do campo</label>
-            <select v-model="addForm.position" :class="inputClass">
-              <option v-for="position in POSITIONS" :key="position.value" :value="position.value">{{ position.label }}</option>
-            </select>
+            <BaseSelect v-model="addForm.position" :options="POSITIONS" />
           </div>
 
           <div>
             <label class="mb-1 block text-sm font-medium text-ink">Etapa do campo</label>
-            <select v-model="addForm.step" :class="inputClass">
-              <option v-for="step in STEPS" :key="step.id" :value="step.id">{{ step.title }}</option>
-            </select>
+            <BaseSelect v-model="addForm.step" :options="stepOptions" />
           </div>
         </div>
 

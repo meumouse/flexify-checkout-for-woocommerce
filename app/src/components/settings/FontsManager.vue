@@ -2,7 +2,18 @@
 import { computed, reactive, ref } from 'vue';
 import { useSettingsStore } from '../../stores/useSettingsStore';
 import BaseButton from '../buttons/BaseButton.vue';
+import BaseSelect from '../fields/BaseSelect.vue';
 import ModalDialog from '../modals/ModalDialog.vue';
+
+const FONT_TYPE_OPTIONS = [
+  { value: 'google', label: 'Google Fonts' },
+  { value: 'upload', label: 'Upload de arquivo' },
+];
+
+const FONT_STYLE_OPTIONS = [
+  { value: 'normal', label: 'Normal' },
+  { value: 'italic', label: 'Itálico' },
+];
 
 const store = useSettingsStore();
 
@@ -185,10 +196,7 @@ const inputClass = 'flexify-field-input w-full rounded-lg border border-slate-30
 
         <div>
           <label class="mb-1 block text-sm font-medium text-ink">Tipo da fonte</label>
-          <select v-model="form.fontType" :class="inputClass" :disabled="!form.isNew">
-            <option value="google">Google Fonts</option>
-            <option value="upload">Upload de arquivo</option>
-          </select>
+          <BaseSelect v-model="form.fontType" :options="FONT_TYPE_OPTIONS" :disabled="!form.isNew" />
         </div>
 
         <div v-if="form.fontType === 'google'">
@@ -210,10 +218,7 @@ const inputClass = 'flexify-field-input w-full rounded-lg border border-slate-30
 
             <div>
               <label class="mb-1 block text-sm font-medium text-ink">Estilo</label>
-              <select v-model="form.fontStyle" :class="inputClass">
-                <option value="normal">Normal</option>
-                <option value="italic">Itálico</option>
-              </select>
+              <BaseSelect v-model="form.fontStyle" :options="FONT_STYLE_OPTIONS" />
             </div>
           </div>
 

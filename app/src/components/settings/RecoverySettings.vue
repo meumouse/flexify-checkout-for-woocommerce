@@ -13,6 +13,12 @@ import { ref, reactive, computed, onMounted } from 'vue';
 import { apiGet, apiPost } from '../../services/api';
 import FollowUpEventCard from './recovery/FollowUpEventCard.vue';
 import CouponFields from './recovery/CouponFields.vue';
+import BaseSelect from '../fields/BaseSelect.vue';
+
+const SCHEDULER_OPTIONS = [
+  { value: 'wp_cron', label: 'WP-Cron (padrão)' },
+  { value: 'php_cron', label: 'PHP-Cron' },
+];
 
 const loading = ref(true);
 const saving = ref(false);
@@ -222,10 +228,7 @@ onMounted(load);
         <div class="grid gap-4 border-b border-slate-100 py-4 md:grid-cols-2">
           <label class="block">
             <span class="mb-1 block text-[13px] font-semibold text-brand">Agendador de tarefas</span>
-            <select class="flexify-field-input" v-model="settings.task_scheduler">
-              <option value="wp_cron">WP-Cron (padrão)</option>
-              <option value="php_cron">PHP-Cron</option>
-            </select>
+            <BaseSelect v-model="settings.task_scheduler" :options="SCHEDULER_OPTIONS" />
           </label>
           <label class="block">
             <span class="mb-1 block text-[13px] font-semibold text-brand">Nome padrão do cliente</span>
@@ -235,9 +238,7 @@ onMounted(load);
             <span class="mb-1 block text-[13px] font-semibold text-brand">Tempo para considerar abandonado</span>
             <div class="flex gap-2">
               <input class="flexify-field-input" type="number" min="1" v-model.number="settings.time_for_lost_carts" />
-              <select class="flexify-field-input w-auto" v-model="settings.time_unit_for_lost_carts">
-                <option v-for="u in support.time_units" :key="u.value" :value="u.value">{{ u.label }}</option>
-              </select>
+              <BaseSelect v-model="settings.time_unit_for_lost_carts" :options="support.time_units" size="sm" class="w-32 shrink-0" />
             </div>
           </div>
           <label class="block">
@@ -316,9 +317,7 @@ onMounted(load);
                 <td class="px-4 py-3 text-slate-700">{{ g.title }}</td>
                 <td class="px-4 py-3"><input class="flexify-field-input w-28" type="number" min="0" v-model="settings.payment_methods[g.id].delay_time" /></td>
                 <td class="px-4 py-3">
-                  <select class="flexify-field-input w-auto" v-model="settings.payment_methods[g.id].delay_unit">
-                    <option v-for="u in support.time_units" :key="u.value" :value="u.value">{{ u.label }}</option>
-                  </select>
+                  <BaseSelect v-model="settings.payment_methods[g.id].delay_unit" :options="support.time_units" size="sm" class="w-32" />
                 </td>
               </tr>
             </tbody>

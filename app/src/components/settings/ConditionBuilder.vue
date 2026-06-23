@@ -2,6 +2,7 @@
 import { computed, reactive, watch } from 'vue';
 import { useSettingsStore } from '../../stores/useSettingsStore';
 import BaseButton from '../buttons/BaseButton.vue';
+import BaseSelect from '../fields/BaseSelect.vue';
 import SearchMultiSelect from '../fields/SearchMultiSelect.vue';
 import TagSelect from '../fields/TagSelect.vue';
 
@@ -64,18 +65,36 @@ const LIST_OPERATORS = [
   { value: 'is_not_one_of', label: 'Não é um de' },
 ];
 
+const RULE_MATCH_OPTIONS = [
+  { value: 'all', label: 'todos os grupos' },
+  { value: 'any', label: 'qualquer grupo' },
+];
+
+const GROUP_MATCH_OPTIONS = [
+  { value: 'all', label: 'todas as condições' },
+  { value: 'any', label: 'qualquer condição' },
+];
+
 const NO_VALUE_OPERATORS = ['empty', 'not_empty', 'checked', 'not_checked'];
 const ID_SUBJECTS = ['user', 'product', 'category', 'attribute'];
 const STATIC_SUBJECTS = ['country', 'user_role', 'shipping_region'];
 const SEARCH_TYPE = { user: 'users', product: 'products', category: 'categories', attribute: 'attributes' };
 
-const inputClass = 'flexify-field-input w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-ink focus:border-primary focus:ring-2 focus:ring-primary-100';
+const inputClass = 'w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-ink focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary-100';
 
 const billingFieldOptions = computed(() =>
   Object.entries(store.fields || {})
     .filter(([id]) => id.startsWith('billing_'))
     .map(([id, field]) => ({ value: id, label: field?.label || id })),
 );
+
+const shippingMethodOptions = computed(() => store.runtime?.shipping_methods || []);
+const paymentGatewayOptions = computed(() => store.runtime?.payment_gateways || []);
+
+const discountModes = computed(() => [
+  { value: 'percent', label: 'Percentual (%)' },
+  { value: 'fixed', label: `Valor fixo (${store.runtime?.currency_symbol || 'R$'})` },
+]);
 
 const staticOptions = {
   country: () => store.runtime?.countries || [],
@@ -198,7 +217,11 @@ function operatorsFor(subject) {
   return LIST_OPERATORS;
 }
 
-function onSubjectChange(condition) {
+function onSubjectChange(condition, value) {
+  if (value !== undefined) {
+    condition.subject = value;
+  }
+
   condition.operator = operatorsFor(condition.subject)[0].value;
   condition.value = '';
   condition.field = '';
@@ -432,33 +455,22 @@ async function submit() {
             <div v-if="form.action.type !== 'discount'" class="grid gap-4 sm:grid-cols-2">
               <div>
                 <label class="mb-1 block text-sm font-medium text-ink">Componente</label>
-                <select v-model="form.action.component" :class="inputClass">
-                  <option v-for="option in COMPONENTS" :key="option.value" :value="option.value">{{ option.label }}</option>
-                </select>
+                <BaseSelect v-model="form.action.component" :options="COMPONENTS" />
               </div>
 
               <div v-if="form.action.component === 'field'">
                 <label class="mb-1 block text-sm font-medium text-ink">Campo</label>
-                <select v-model="form.action.field" :class="inputClass">
-                  <option value="">Selecione um campo</option>
-                  <option v-for="option in billingFieldOptions" :key="option.value" :value="option.value">{{ option.label }}</option>
-                </select>
+                <BaseSelect v-model="form.action.field" :options="billingFieldOptions" placeholder="Selecione um campo" />
               </div>
 
               <div v-else-if="form.action.component === 'shipping'">
                 <label class="mb-1 block text-sm font-medium text-ink">Forma de entrega</label>
-                <select v-model="form.action.shipping_method" :class="inputClass">
-                  <option value="">Selecione uma forma de entrega</option>
-                  <option v-for="option in store.runtime?.shipping_methods || []" :key="option.value" :value="option.value">{{ option.label }}</option>
-                </select>
+                <BaseSelect v-model="form.action.shipping_method" :options="shippingMethodOptions" placeholder="Selecione uma forma de entrega" />
               </div>
 
               <div v-else>
                 <label class="mb-1 block text-sm font-medium text-ink">Forma de pagamento</label>
-                <select v-model="form.action.payment_method" :class="inputClass">
-                  <option value="">Selecione uma forma de pagamento</option>
-                  <option v-for="option in store.runtime?.payment_gateways || []" :key="option.value" :value="option.value">{{ option.label }}</option>
-                </select>
+                <BaseSelect v-model="form.action.payment_method" :options="paymentGatewayOptions" placeholder="Selecione uma forma de pagamento" />
               </div>
             </div>
 
@@ -466,10 +478,7 @@ async function submit() {
             <div v-else class="grid gap-4 sm:grid-cols-3">
               <div>
                 <label class="mb-1 block text-sm font-medium text-ink">Tipo</label>
-                <select v-model="form.action.discount.mode" :class="inputClass">
-                  <option value="percent">Percentual (%)</option>
-                  <option value="fixed">Valor fixo ({{ store.runtime?.currency_symbol || 'R$' }})</option>
-                </select>
+                <BaseSelect v-model="form.action.discount.mode" :options="discountModes" />
               </div>
 
               <div>
@@ -494,13 +503,10 @@ async function submit() {
                 <h3 class="m-0 text-sm font-semibold text-ink">Quando isto for verdadeiro</h3>
               </div>
 
-              <label v-if="form.groups.length > 1" class="flex items-center gap-2 text-sm text-slate-500">
-                Atender
-                <select v-model="form.match" class="rounded-lg border border-slate-200 bg-white px-2 py-1 text-sm text-ink">
-                  <option value="all">todos os grupos</option>
-                  <option value="any">qualquer grupo</option>
-                </select>
-              </label>
+              <div v-if="form.groups.length > 1" class="flex items-center gap-2 text-sm text-slate-500">
+                <span>Atender</span>
+                <BaseSelect v-model="form.match" :options="RULE_MATCH_OPTIONS" size="sm" class="w-44" />
+              </div>
             </div>
 
             <div class="flex flex-col gap-3">
@@ -513,13 +519,10 @@ async function submit() {
 
                 <div class="rounded-[10px] border border-slate-200 bg-slate-50/60 p-4">
                   <div class="mb-3 flex items-center justify-between gap-2">
-                    <label class="flex items-center gap-2 text-sm text-slate-500">
-                      Atender
-                      <select v-model="group.match" class="rounded-lg border border-slate-200 bg-white px-2 py-1 text-sm text-ink">
-                        <option value="all">todas as condições</option>
-                        <option value="any">qualquer condição</option>
-                      </select>
-                    </label>
+                    <div class="flex items-center gap-2 text-sm text-slate-500">
+                      <span>Atender</span>
+                      <BaseSelect v-model="group.match" :options="GROUP_MATCH_OPTIONS" size="sm" class="w-48" />
+                    </div>
 
                     <button
                       v-if="form.groups.length > 1"
@@ -539,29 +542,17 @@ async function submit() {
                       </div>
 
                       <div class="flex flex-wrap items-start gap-2 rounded-lg border border-slate-200 bg-white p-2.5">
-                        <select
-                          v-model="condition.subject"
-                          class="min-w-[150px] flex-1 rounded-lg border border-slate-300 bg-white px-2.5 py-2 text-sm text-ink focus:border-primary focus:ring-2 focus:ring-primary-100"
-                          @change="onSubjectChange(condition)"
-                        >
-                          <option v-for="option in SUBJECTS" :key="option.value" :value="option.value">{{ option.label }}</option>
-                        </select>
+                        <div class="min-w-[150px] flex-1">
+                          <BaseSelect v-model="condition.subject" :options="SUBJECTS" size="sm" @update:model-value="(val) => onSubjectChange(condition, val)" />
+                        </div>
 
-                        <select
-                          v-if="condition.subject === 'field'"
-                          v-model="condition.field"
-                          class="min-w-[140px] flex-1 rounded-lg border border-slate-300 bg-white px-2.5 py-2 text-sm text-ink focus:border-primary focus:ring-2 focus:ring-primary-100"
-                        >
-                          <option value="">Campo...</option>
-                          <option v-for="option in billingFieldOptions" :key="option.value" :value="option.value">{{ option.label }}</option>
-                        </select>
+                        <div v-if="condition.subject === 'field'" class="min-w-[140px] flex-1">
+                          <BaseSelect v-model="condition.field" :options="billingFieldOptions" placeholder="Campo..." size="sm" />
+                        </div>
 
-                        <select
-                          v-model="condition.operator"
-                          class="min-w-[120px] flex-1 rounded-lg border border-slate-300 bg-white px-2.5 py-2 text-sm text-ink focus:border-primary focus:ring-2 focus:ring-primary-100"
-                        >
-                          <option v-for="option in operatorsFor(condition.subject)" :key="option.value" :value="option.value">{{ option.label }}</option>
-                        </select>
+                        <div class="min-w-[120px] flex-1">
+                          <BaseSelect v-model="condition.operator" :options="operatorsFor(condition.subject)" size="sm" />
+                        </div>
 
                         <div class="min-w-[160px] flex-[2]">
                           <SearchMultiSelect
@@ -581,7 +572,7 @@ async function submit() {
                             v-model="condition.value"
                             type="number"
                             step="0.01"
-                            class="w-full rounded-lg border border-slate-300 bg-white px-2.5 py-2 text-sm text-ink focus:border-primary focus:ring-2 focus:ring-primary-100"
+                            class="w-full rounded-lg border border-slate-300 bg-white px-2.5 py-2 text-sm text-ink focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary-100"
                             placeholder="Valor"
                           />
 
@@ -589,7 +580,7 @@ async function submit() {
                             v-else-if="valueKind(condition) === 'text'"
                             v-model="condition.value"
                             type="text"
-                            class="w-full rounded-lg border border-slate-300 bg-white px-2.5 py-2 text-sm text-ink focus:border-primary focus:ring-2 focus:ring-primary-100"
+                            class="w-full rounded-lg border border-slate-300 bg-white px-2.5 py-2 text-sm text-ink focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary-100"
                             placeholder="Valor"
                           />
 

@@ -8,6 +8,13 @@
  * @since 6.0.0
  */
 import CouponFields from './CouponFields.vue';
+import BaseSelect from '../../fields/BaseSelect.vue';
+
+const DELAY_TYPE_OPTIONS = [
+  { value: 'minutes', label: 'Minutos' },
+  { value: 'hours', label: 'Horas' },
+  { value: 'days', label: 'Dias' },
+];
 
 const props = defineProps({
   event: { type: Object, required: true },
@@ -58,11 +65,7 @@ const varsHint = 'Variáveis: {{ first_name }}, {{ recovery_link }}, {{ coupon_c
           <span class="mb-1 block text-[13px] font-semibold text-brand">Enviar após</span>
           <div class="flex gap-2">
             <input class="flexify-field-input" type="number" min="1" v-model="event.delay_time" />
-            <select class="flexify-field-input w-auto" v-model="event.delay_type">
-              <option value="minutes">Minutos</option>
-              <option value="hours">Horas</option>
-              <option value="days">Dias</option>
-            </select>
+            <BaseSelect v-model="event.delay_type" :options="DELAY_TYPE_OPTIONS" size="sm" class="w-32 shrink-0" />
           </div>
         </div>
 

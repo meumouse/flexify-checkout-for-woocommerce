@@ -1,5 +1,6 @@
 <script setup>
 import { computed } from 'vue';
+import BaseSelect from './BaseSelect.vue';
 
 const props = defineProps({
   modelValue: { type: [String, Number], default: '' },
@@ -10,29 +11,15 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue']);
 
-const model = computed({
-  get: () => String(props.modelValue ?? ''),
-  set: (value) => emit('update:modelValue', value),
-});
-
 const options = computed(() => (Array.isArray(props.field?.options) ? props.field.options : []));
 </script>
 
 <template>
-  <select
-    v-model="model"
-    :name="name"
+  <BaseSelect
+    :model-value="String(modelValue ?? '')"
+    :options="options"
     :disabled="disabled"
-    class="flexify-field-input w-full max-w-md rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-ink focus:border-primary focus:ring-2 focus:ring-primary-100"
-    :class="disabled ? 'cursor-not-allowed opacity-50' : ''"
-  >
-    <option
-      v-for="option in options"
-      :key="option.value"
-      :value="String(option.value)"
-      :disabled="Boolean(option.disabled)"
-    >
-      {{ option.label }}
-    </option>
-  </select>
+    class="max-w-md"
+    @update:model-value="emit('update:modelValue', $event)"
+  />
 </template>

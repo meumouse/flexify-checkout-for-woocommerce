@@ -10,6 +10,7 @@
  */
 import { ref, computed, onMounted } from 'vue';
 import VueApexCharts from 'vue3-apexcharts';
+import BaseSelect from '../../components/fields/BaseSelect.vue';
 import { apiGet } from '../../services/api';
 
 const loading = ref(true);
@@ -109,8 +110,8 @@ async function load() {
   }
 }
 
-function onPeriodChange(event) {
-  period.value = Number(event.target.value);
+function onPeriodChange(value) {
+  period.value = Number(value);
   load();
 }
 
@@ -124,13 +125,12 @@ onMounted(load);
 
       <h1 class="m-0 text-xl font-semibold text-brand">Análise</h1>
 
-      <select
-        class="flexify-field-input ml-auto w-auto"
-        :value="period"
-        @change="onPeriodChange"
-      >
-        <option v-for="opt in periods" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
-      </select>
+      <BaseSelect
+        class="ml-auto w-48"
+        :model-value="period"
+        :options="periods"
+        @update:model-value="onPeriodChange"
+      />
     </header>
 
     <div v-if="error" class="mt-6 rounded-[8px] bg-danger/10 px-5 py-4 text-[14px] text-danger" role="alert">

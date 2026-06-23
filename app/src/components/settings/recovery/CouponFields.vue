@@ -7,10 +7,30 @@
  *
  * @since 6.0.0
  */
+import { computed } from 'vue';
+import BaseSelect from '../../fields/BaseSelect.vue';
+
 const props = defineProps({
   coupon: { type: Object, required: true },
   coupons: { type: Array, default: () => [] },
 });
+
+const DISCOUNT_TYPE_OPTIONS = [
+  { value: 'percent', label: 'Percentual (%)' },
+  { value: 'fixed_cart', label: 'Valor fixo' },
+];
+
+const EXPIRATION_UNIT_OPTIONS = [
+  { value: '', label: '—' },
+  { value: 'minutes', label: 'Minutos' },
+  { value: 'hours', label: 'Horas' },
+  { value: 'days', label: 'Dias' },
+];
+
+const couponCodeOptions = computed(() => [
+  { value: 'none', label: 'Selecione um cupom de desconto' },
+  ...props.coupons.map((code) => ({ value: code, label: code })),
+]);
 
 function toggle(key) {
   props.coupon[key] = props.coupon[key] === 'yes' ? 'no' : 'yes';
@@ -33,10 +53,7 @@ function toggle(key) {
       <!-- Use an existing coupon -->
       <label v-if="coupon.generate_coupon !== 'yes'" class="block">
         <span class="mb-1 block text-[13px] font-semibold text-brand">Cupom existente</span>
-        <select class="flexify-field-input" v-model="coupon.coupon_code">
-          <option value="none">Selecione um cupom de desconto</option>
-          <option v-for="code in coupons" :key="code" :value="code">{{ code }}</option>
-        </select>
+        <BaseSelect v-model="coupon.coupon_code" :options="couponCodeOptions" />
       </label>
 
       <!-- Generate a new coupon -->
@@ -47,10 +64,7 @@ function toggle(key) {
         </label>
         <label class="block">
           <span class="mb-1 block text-[13px] font-semibold text-brand">Tipo de desconto</span>
-          <select class="flexify-field-input" v-model="coupon.discount_type">
-            <option value="percent">Percentual (%)</option>
-            <option value="fixed_cart">Valor fixo</option>
-          </select>
+          <BaseSelect v-model="coupon.discount_type" :options="DISCOUNT_TYPE_OPTIONS" />
         </label>
         <label class="block">
           <span class="mb-1 block text-[13px] font-semibold text-brand">Valor do desconto</span>
@@ -64,12 +78,7 @@ function toggle(key) {
           <span class="mb-1 block text-[13px] font-semibold text-brand">Expiração</span>
           <div class="flex gap-2">
             <input class="flexify-field-input" type="number" min="0" v-model="coupon.expiration_time" placeholder="Tempo" />
-            <select class="flexify-field-input w-auto" v-model="coupon.expiration_time_unit">
-              <option value="">—</option>
-              <option value="minutes">Minutos</option>
-              <option value="hours">Horas</option>
-              <option value="days">Dias</option>
-            </select>
+            <BaseSelect v-model="coupon.expiration_time_unit" :options="EXPIRATION_UNIT_OPTIONS" size="sm" class="w-32 shrink-0" />
           </div>
         </div>
         <label class="block">

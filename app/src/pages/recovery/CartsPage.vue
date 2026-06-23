@@ -9,6 +9,7 @@
  */
 import { ref, computed, onMounted } from 'vue';
 import { apiGet, apiDelete } from '../../services/api';
+import BaseSelect from '../../components/fields/BaseSelect.vue';
 
 const loading = ref(true);
 const error = ref('');
@@ -105,9 +106,7 @@ onMounted(load);
     </header>
 
     <div class="mt-6 flex flex-wrap items-center gap-3">
-      <select class="flexify-field-input w-auto" v-model="status" @change="applyFilters">
-        <option v-for="opt in statuses" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
-      </select>
+      <BaseSelect class="w-52" v-model="status" :options="statuses" @update:model-value="applyFilters" />
 
       <form class="flex items-center gap-2" @submit.prevent="applyFilters">
         <input

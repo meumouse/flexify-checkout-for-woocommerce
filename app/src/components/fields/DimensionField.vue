@@ -1,6 +1,7 @@
 <script setup>
 import { computed } from 'vue';
 import { useSettingsStore } from '../../stores/useSettingsStore';
+import BaseSelect from './BaseSelect.vue';
 
 const props = defineProps({
   modelValue: { type: [String, Number], default: '' },
@@ -27,22 +28,22 @@ const units = computed(() => (Array.isArray(props.field?.units) ? props.field.un
 </script>
 
 <template>
-  <div class="inline-flex items-stretch overflow-hidden rounded-lg border border-slate-300 bg-white" :class="disabled ? 'opacity-50' : ''">
+  <div class="inline-flex items-stretch gap-2" :class="disabled ? 'opacity-50' : ''">
     <input
       v-model="value"
       type="number"
       step="any"
       :name="name"
       :disabled="disabled"
-      class="flexify-group-control w-20 px-3 py-2.5 text-sm text-ink focus:outline-none"
+      class="w-24 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-ink focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary-100"
     />
 
-    <select
+    <BaseSelect
       v-model="unit"
+      :options="units"
       :disabled="disabled"
-      class="cursor-pointer border-0 border-l border-slate-200 bg-slate-50 px-2 py-2 text-sm text-ink focus:outline-none"
-    >
-      <option v-for="option in units" :key="option.value" :value="option.value">{{ option.label }}</option>
-    </select>
+      size="sm"
+      class="w-28"
+    />
   </div>
 </template>

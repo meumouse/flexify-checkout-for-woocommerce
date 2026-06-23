@@ -1,5 +1,6 @@
 <script setup>
 import { computed } from 'vue';
+import BaseSelect from './BaseSelect.vue';
 
 const props = defineProps({
   modelValue: { type: Array, default: () => [] },
@@ -19,15 +20,12 @@ const availableOptions = computed(() =>
   props.options.filter((option) => !props.modelValue.some((value) => String(value) === String(option.value))),
 );
 
-function addValue(event) {
-  const value = event.target.value;
-
-  if (value === '') {
+function addValue(value) {
+  if (value === '' || value === null || value === undefined) {
     return;
   }
 
   emit('update:modelValue', [...props.modelValue, value]);
-  event.target.value = '';
 }
 
 function removeValue(value) {
@@ -56,13 +54,12 @@ function removeValue(value) {
       </span>
     </div>
 
-    <select
-      class="flexify-field-input w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-ink focus:border-primary focus:ring-2 focus:ring-primary-100"
+    <BaseSelect
+      :model-value="''"
+      :options="availableOptions"
+      :placeholder="availableOptions.length ? placeholder : 'Nenhuma opção disponível'"
       :disabled="!availableOptions.length"
-      @change="addValue"
-    >
-      <option value="">{{ availableOptions.length ? placeholder : 'Nenhuma opção disponível' }}</option>
-      <option v-for="option in availableOptions" :key="option.value" :value="option.value">{{ option.label }}</option>
-    </select>
+      @update:model-value="addValue"
+    />
   </div>
 </template>
