@@ -2,6 +2,39 @@ import { defineStore } from 'pinia';
 import { apiGet, apiPost, apiPostForm } from '../services/api';
 
 /**
+ * Deep clone a plain settings object so the saved baseline can't be mutated
+ * by later edits to the live `settings` reference.
+ *
+ * @param {Object} value - Plain serializable settings object.
+ * @return {Object} An independent copy.
+ */
+function cloneSettings(value) {
+  return value && typeof value === 'object' ? JSON.parse(JSON.stringify(value)) : {};
+}
+
+/**
+ * Stable JSON string with object keys sorted recursively, so two settings
+ * snapshots compare equal regardless of key insertion order.
+ *
+ * @param {*} value - Any serializable value.
+ * @return {string} Canonical JSON representation.
+ */
+function stableStringify(value) {
+  if (Array.isArray(value)) {
+    return `[${value.map(stableStringify).join(',')}]`;
+  }
+
+  if (value && typeof value === 'object') {
+    return `{${Object.keys(value)
+      .sort()
+      .map((key) => `${JSON.stringify(key)}:${stableStringify(value[key])}`)
+      .join(',')}}`;
+  }
+
+  return JSON.stringify(value);
+}
+
+/**
  * Pinia store for the settings app.
  *
  * Holds the settings values, the schema tree and runtime context fetched
@@ -12,12 +45,12 @@ import { apiGet, apiPost, apiPostForm } from '../services/api';
 export const useSettingsStore = defineStore('flexify-checkout-settings', {
   state: () => ({
     settings: {},
+    baseline: {},
     schema: [],
     runtime: {},
     fields: {},
     conditions: [],
     integrations: [],
-    dirty: false,
     saving: false,
     resetting: false,
     exporting: false,
@@ -26,6 +59,16 @@ export const useSettingsStore = defineStore('flexify-checkout-settings', {
   }),
 
   getters: {
+    /**
+     * Whether the live settings differ from the last saved snapshot.
+     *
+     * Compares against the baseline instead of tracking a flag, so reverting a
+     * field back to its original value disables the save button again.
+     */
+    dirty(state) {
+      return stableStringify(state.settings) !== stableStringify(state.baseline);
+    },
+
     isPro(state) {
       return Boolean(state.runtime?.is_pro);
     },
@@ -43,12 +86,11 @@ export const useSettingsStore = defineStore('flexify-checkout-settings', {
       this.fields = this.runtime?.fields && typeof this.runtime.fields === 'object' ? this.runtime.fields : {};
       this.conditions = Array.isArray(this.runtime?.conditions) ? this.runtime.conditions : [];
       this.integrations = Array.isArray(this.runtime?.integrations) ? this.runtime.integrations : [];
-      this.dirty = false;
+      this.baseline = cloneSettings(this.settings);
     },
 
     setSetting(key, value) {
       this.settings = { ...this.settings, [key]: value };
-      this.dirty = true;
     },
 
     /**
@@ -116,7 +158,7 @@ export const useSettingsStore = defineStore('flexify-checkout-settings', {
 
         if (response?.status === 'success') {
           this.settings = response.settings || this.settings;
-          this.dirty = false;
+          this.baseline = cloneSettings(this.settings);
           this.pushToast('success', response.message || 'As configurações foram salvas.');
         } else {
           this.pushToast('error', response?.message || 'Ocorreu um erro ao salvar as configurações.');
@@ -141,7 +183,7 @@ export const useSettingsStore = defineStore('flexify-checkout-settings', {
         if (response?.status === 'success') {
           this.settings = response.settings || this.settings;
           this.runtime = response.runtime || this.runtime;
-          this.dirty = false;
+          this.baseline = cloneSettings(this.settings);
           this.pushToast('success', response.message || 'As opções foram redefinidas com sucesso!');
         } else {
           this.pushToast('error', response?.message || 'Ocorreu um erro ao redefinir as configurações.');
@@ -202,7 +244,7 @@ export const useSettingsStore = defineStore('flexify-checkout-settings', {
         if (response?.status === 'success') {
           this.settings = response.settings || this.settings;
           this.runtime = response.runtime || this.runtime;
-          this.dirty = false;
+          this.baseline = cloneSettings(this.settings);
           this.pushToast('success', response.message || 'As configurações foram importadas com sucesso!', 'Importado com sucesso');
 
           // Import overwrites settings, fields and conditions wholesale; reload
