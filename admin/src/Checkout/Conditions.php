@@ -2,14 +2,21 @@
 
 namespace MeuMouse\Flexify_Checkout\Checkout;
 
+use MeuMouse\Flexify_Checkout\Admin\Settings\Conditions_Store;
+
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
 
 /**
- * Create conditions for checkout components
+ * Evaluate and apply checkout conditions (show / hide / discount).
+ *
+ * Rules carry a single action and a two-level condition tree. See
+ * {@see Conditions_Store} for the persisted shape. This class walks that tree
+ * against the live cart / customer / posted data and applies the matching
+ * action to checkout fields, payment gateways, shipping methods or cart fees.
  *
  * @since 3.5.0
- * @version 5.2.0
+ * @version 6.0.0
  * @package MeuMouse\Flexify_Checkout\Checkout
  * @author MeuMouse.com
  */
@@ -17,9 +24,9 @@ class Conditions {
 
     /**
      * Construct function
-     * 
+     *
      * @since 3.5.0
-     * @version 5.1.0
+     * @version 6.0.0
      * @return void
      */
     public function __construct() {
@@ -32,59 +39,80 @@ class Conditions {
         // Conditions for shipping methods
         add_filter( 'woocommerce_package_rates', array( $this, 'shipping_methods_conditions' ), 10, 2 );
 
+        // Conditional cart discounts (negative fee)
+        add_action( 'woocommerce_cart_calculate_fees', array( $this, 'apply_discount_fees' ), 20, 1 );
+
         // Validate fields with conditions
         add_action( 'woocommerce_after_checkout_validation', array( $this, 'validate_fields' ), 10, 2 );
     }
 
 
     /**
-     * Set custom conditions for checkout fields
-     * 
+     * Get enabled rules filtered by their action target.
+     *
+     * @since 6.0.0
+     * @param string $filter One of: field, shipping, payment, discount.
+     * @return array<int,array<string,mixed>>
+     */
+    public static function get_rules_filtered( $filter ) {
+        $rules = array_filter( Conditions_Store::get_rules(), static function ( $rule ) {
+            return ! empty( $rule['enabled'] );
+        } );
+
+        if ( 'discount' === $filter ) {
+            return array_values( array_filter( $rules, static function ( $rule ) {
+                return isset( $rule['action']['type'] ) && 'discount' === $rule['action']['type'];
+            } ) );
+        }
+
+        return array_values( array_filter( $rules, static function ( $rule ) use ( $filter ) {
+            return isset( $rule['action']['type'], $rule['action']['component'] )
+                && in_array( $rule['action']['type'], array( 'show', 'hide' ), true )
+                && $filter === $rule['action']['component'];
+        } ) );
+    }
+
+
+    /**
+     * Set custom conditions for checkout fields.
+     *
+     * The actual show/hide of a field that depends on other field values is done
+     * live on the client (see app/src/checkout/main.js). Here we only flag the
+     * targeted fields so the front-end script and the required-marker logic work.
+     *
      * @since 3.5.0
+     * @version 6.0.0
      * @param array $fields | Checkout fields
      * @return array $fields
      */
     public function checkout_fields_conditions( $fields ) {
-        $field_conditions = self::filter_component_type('field');
+        $rules = self::get_rules_filtered('field');
 
-        if ( ! is_flexify_checkout() || empty( $field_conditions ) ) {
+        if ( ! is_flexify_checkout() || empty( $rules ) ) {
             return $fields;
         }
 
-        $cart = WC()->cart;
-        list( $cart_product_ids, $cart_product_categories, $cart_product_attributes ) = self::get_cart_product_details( $cart );
+        foreach ( $rules as $rule ) {
+            $target = isset( $rule['action']['field'] ) ? $rule['action']['field'] : '';
 
-        // iterate for each condition
-        foreach ( $field_conditions as $condition_value ) {
-            // iterate for each checkout field
+            if ( '' === $target ) {
+                continue;
+            }
+
             foreach ( $fields as $fieldset_key => $fieldset ) {
-                // iterate for each checkout field id and values
-                foreach ( $fieldset as $field_key => $field ) {
-                    if ( $condition_value['component_field'] === $field_key ) {
-                        if ( $condition_value['type_rule'] === 'show' ) {
-                            $fields[$fieldset_key][$field_key]['required'] = false;
-                            $fields[$fieldset_key][$field_key]['class'][] = 'has-condition';
-                        
-                            // add condition class on label for remove "optional" info
-                            if ( isset( $field['required'] ) && $field['required'] ) {
-                                $fields[$fieldset_key][$field_key]['class'][] = 'required-field';
-                                $fields[$fieldset_key][$field_key]['label_class'] = 'has-condition required-field';
-                            } else {
-                                $fields[$fieldset_key][$field_key]['label_class'] = 'has-condition';
-                            }
-                        } elseif ( $condition_value['type_rule'] === 'hide' ) {
-                            $fields[$fieldset_key][$field_key]['required'] = false;
-                            $fields[$fieldset_key][$field_key]['class'][] = 'has-condition';
+                if ( ! isset( $fieldset[ $target ] ) ) {
+                    continue;
+                }
 
-                            // add condition class on label for remove "optional" info
-                            if ( isset( $field['required'] ) && $field['required'] ) {
-                                $fields[$fieldset_key][$field_key]['class'][] = 'required-field';
-                                $fields[$fieldset_key][$field_key]['label_class'] = 'has-condition required-field';
-                            } else {
-                                $fields[$fieldset_key][$field_key]['label_class'] = 'has-condition';
-                            }
-                        }
-                    }
+                $field = $fieldset[ $target ];
+                $fields[ $fieldset_key ][ $target ]['required'] = false;
+                $fields[ $fieldset_key ][ $target ]['class'][] = 'has-condition';
+
+                if ( isset( $field['required'] ) && $field['required'] ) {
+                    $fields[ $fieldset_key ][ $target ]['class'][] = 'required-field';
+                    $fields[ $fieldset_key ][ $target ]['label_class'] = 'has-condition required-field';
+                } else {
+                    $fields[ $fieldset_key ][ $target ]['label_class'] = 'has-condition';
                 }
             }
         }
@@ -92,40 +120,36 @@ class Conditions {
         return $fields;
     }
 
-    
+
     /**
-     * Set custom conditions for payment gateways
-     * 
+     * Set custom conditions for payment gateways.
+     *
      * @since 3.5.0
-     * @version 5.0.0
+     * @version 6.0.0
      * @param array $available_gateways | Available payment gateways
      * @return array
      */
     public function payment_gateways_conditions( $available_gateways ) {
-        $payment_conditions = self::filter_component_type('payment');
+        $rules = self::get_rules_filtered('payment');
 
-        if ( ! is_flexify_checkout() || empty( $payment_conditions ) ) {
+        if ( ! is_flexify_checkout() || empty( $rules ) ) {
             return $available_gateways;
         }
 
-        $cart = WC()->cart;
-        list( $cart_product_ids, $cart_product_categories, $cart_product_attributes ) = self::get_cart_product_details( $cart );
+        $context = self::build_context();
 
-        // iterate for each condition
-        foreach ( $payment_conditions as $condition_value ) {
-            // iterate for each payment gateway
-            foreach ( $available_gateways as $gateway_id => $gateway) {
-                if ( $condition_value['payment_method'] === $gateway_id ) {
-                    if ( $condition_value['type_rule'] === 'show' ) {
-                        if ( ! self::verify_conditions( $condition_value, $cart, $cart_product_ids, $cart_product_categories, $cart_product_attributes ) ) {
-                            unset( $available_gateways[$gateway_id] );
-                        }
-                    } elseif ( $condition_value['type_rule'] === 'hide' ) {
-                        if ( self::verify_conditions( $condition_value, $cart, $cart_product_ids, $cart_product_categories, $cart_product_attributes ) ) {
-                            unset( $available_gateways[$gateway_id] );
-                        }
-                    }
-                }
+        foreach ( $rules as $rule ) {
+            $gateway_id = isset( $rule['action']['payment_method'] ) ? $rule['action']['payment_method'] : '';
+
+            if ( '' === $gateway_id || ! isset( $available_gateways[ $gateway_id ] ) ) {
+                continue;
+            }
+
+            $matched = self::evaluate_rule( $rule, $context );
+            $type = $rule['action']['type'];
+
+            if ( ( 'show' === $type && ! $matched ) || ( 'hide' === $type && $matched ) ) {
+                unset( $available_gateways[ $gateway_id ] );
             }
         }
 
@@ -134,32 +158,43 @@ class Conditions {
 
 
     /**
-     * Set custom conditions for checkout shipping methods
-     * 
+     * Set custom conditions for checkout shipping methods.
+     *
      * @since 3.5.0
+     * @version 6.0.0
      * @param array $shipping_methods | Package rates
      * @param array $package | Package of cart items
      * @return array $rates
      */
     public function shipping_methods_conditions( $shipping_methods, $package ) {
-        $shipping_conditions = self::filter_component_type('shipping');
+        $rules = self::get_rules_filtered('shipping');
 
-        // If conditions do not match, return all shipping methods
-        if ( ! is_flexify_checkout() || empty( $shipping_conditions ) ) {
+        if ( ! is_flexify_checkout() || empty( $rules ) ) {
             return $shipping_methods;
         }
 
-        $cart = WC()->cart;
-        list( $cart_product_ids, $cart_product_categories, $cart_product_attributes ) = self::get_cart_product_details( $cart );
+        $context = self::build_context( $package );
 
-        // iterate for each condition
-        foreach ( $shipping_conditions as $condition => $condition_value ) {
-            if ( $condition_value['type_rule'] === 'show' ) {
-                $specific_shipping_methods = self::display_specific_shipping_methods( $shipping_methods, $condition_value, $cart, $cart_product_ids, $cart_product_categories, $cart_product_attributes );
-                $shipping_methods = array_intersect_key( $shipping_methods, array_flip( $specific_shipping_methods ) );
-            } elseif ( $condition_value['type_rule'] === 'hide' ) {
-                $methods_to_remove = self::remove_specific_shipping_methods( $shipping_methods, $condition_value, $cart, $cart_product_ids, $cart_product_categories, $cart_product_attributes );
-                $shipping_methods = array_diff_key( $shipping_methods, array_flip( $methods_to_remove ) );
+        foreach ( $rules as $rule ) {
+            $method = isset( $rule['action']['shipping_method'] ) ? $rule['action']['shipping_method'] : '';
+
+            if ( '' === $method ) {
+                continue;
+            }
+
+            $matched = self::evaluate_rule( $rule, $context );
+            $type = $rule['action']['type'];
+
+            foreach ( $shipping_methods as $rate_id => $rate ) {
+                $base = explode( ':', $rate_id )[0];
+
+                if ( $base !== $method ) {
+                    continue;
+                }
+
+                if ( ( 'show' === $type && ! $matched ) || ( 'hide' === $type && $matched ) ) {
+                    unset( $shipping_methods[ $rate_id ] );
+                }
             }
         }
 
@@ -168,331 +203,433 @@ class Conditions {
 
 
     /**
-     * Get cart product details
-     * 
-     * @since 3.5.0
-     * @version 3.6.5
-     * @param object $cart | Cart object
-     * @return array | Product details (IDs, categories, attributes)
+     * Apply conditional discounts as negative cart fees.
+     *
+     * @since 6.0.0
+     * @param \WC_Cart $cart | Cart object
+     * @return void
      */
-    public static function get_cart_product_details( $cart ) {
-        $cart_product_ids = array();
-        $cart_product_categories = array();
-        $cart_product_attributes = array();
-
-        // Cart may not be available outside the checkout context; return empty details.
+    public function apply_discount_fees( $cart ) {
         if ( ! $cart instanceof \WC_Cart ) {
-            return array( $cart_product_ids, $cart_product_categories, $cart_product_attributes );
+            return;
         }
 
-        foreach ( $cart->get_cart() as $cart_item ) {
-            $product = $cart_item['data'];
-            $product_id = $product->get_id();
-            $cart_product_ids[] = $product_id;
-    
-            $product_categories = wp_get_post_terms( $product_id, 'product_cat', array('fields' => 'names') );
-            $cart_product_categories[$product_id] = $product_categories;
-    
-            $product_attributes = $product->get_attributes();
-            $attributes = array();
-    
-            foreach ( $product_attributes as $attribute_key => $attribute ) {
-                if ( is_object( $attribute ) ) {
-                    if ( $attribute->is_taxonomy() ) {
-                        $terms = wc_get_product_terms( $product_id, $attribute->get_name(), array('fields' => 'names') );
-                        $attributes[$attribute->get_name()] = $terms;
-                    } else {
-                        $attributes[$attribute->get_name()] = $attribute->get_name();
-                    }
-                } else {
-                    $attributes[$attribute_key] = $attribute;
-                }
-            }
-    
-            $cart_product_attributes[$product_id] = $attributes;
+        $rules = self::get_rules_filtered('discount');
+
+        if ( empty( $rules ) ) {
+            return;
         }
-    
-        return array( $cart_product_ids, $cart_product_categories, $cart_product_attributes );
-    }
 
+        $context = self::build_context();
+        $context['cart'] = $cart;
 
-    /**
-     * Get specific shipping methods to show
-     * 
-     * @since 3.5.0
-     * @param array $shipping_methods | Available shipping methods
-     * @param array $condition_value | Condition value
-     * @param object $cart | Cart object
-     * @param array $cart_product_ids | Cart product IDs
-     * @param array $cart_product_categories | Cart product categories
-     * @param array $cart_product_attributes | Cart product attributes
-     * @return array | Specific shipping methods to show
-     */
-    public static function display_specific_shipping_methods( $shipping_methods, $condition_value, $cart, $cart_product_ids, $cart_product_categories, $cart_product_attributes ) {
-        $specific_shipping_methods = array();
-        
-        foreach ( $shipping_methods as $shipping_id => $shipping ) {
-            $method_parts = explode(':', $shipping_id);
-            $method_name = $method_parts[0];
-
-            if ( ! self::verify_conditions( $condition_value, $cart, $cart_product_ids, $cart_product_categories, $cart_product_attributes ) ) {
+        foreach ( $rules as $rule ) {
+            if ( ! self::evaluate_rule( $rule, $context ) ) {
                 continue;
             }
 
-            if ( $method_name === $condition_value['shipping_method'] ) {
-                $specific_shipping_methods[] = $shipping_id;
-            }
-        }
+            $discount = isset( $rule['action']['discount'] ) ? $rule['action']['discount'] : array();
+            $value = isset( $discount['value'] ) ? (float) $discount['value'] : 0;
 
-        return $specific_shipping_methods;
+            if ( $value <= 0 ) {
+                continue;
+            }
+
+            $amount = ( ( $discount['mode'] ?? 'percent' ) === 'fixed' )
+                ? $value
+                : ( $cart->get_subtotal() * $value / 100 );
+
+            if ( $amount <= 0 ) {
+                continue;
+            }
+
+            $label = ( isset( $discount['label'] ) && '' !== $discount['label'] )
+                ? $discount['label']
+                : __( 'Desconto', 'flexify-checkout-for-woocommerce' );
+
+            $cart->add_fee( $label, -1 * $amount, false );
+        }
     }
 
 
     /**
-     * Get shipping methods to remove
-     * 
-     * @param array $shipping_methods | Available shipping methods
-     * @param array $condition_value | Condition value
-     * @param object $cart | Cart object
-     * @param array $cart_product_ids | Cart product IDs
-     * @param array $cart_product_categories | Cart product categories
-     * @param array $cart_product_attributes | Cart product attributes
-     * @return array | Methods to remove
+     * Build the evaluation context from the live cart and customer.
+     *
+     * @since 6.0.0
+     * @param array|null $package | Optional shipping package for zone resolution.
+     * @return array<string,mixed>
      */
-    public static function remove_specific_shipping_methods( $shipping_methods, $condition_value, $cart, $cart_product_ids, $cart_product_categories, $cart_product_attributes ) {
-        $methods_to_remove = array();
+    public static function build_context( $package = null ) {
+        $cart = ( function_exists('WC') && WC()->cart ) ? WC()->cart : null;
+        $customer = ( function_exists('WC') && WC()->customer ) ? WC()->customer : null;
 
-        foreach ( $shipping_methods as $shipping_id => $shipping ) {
-            $method_parts = explode(':', $shipping_id);
-            $method_name = $method_parts[0];
+        list( $product_ids, $category_ids, $attribute_ids ) = self::get_cart_term_ids( $cart );
 
-            if ( $method_name === $condition_value['shipping_method'] && self::verify_conditions( $condition_value, $cart, $cart_product_ids, $cart_product_categories, $cart_product_attributes ) ) {
-                $methods_to_remove[] = $shipping_id;
-            }
-        }
+        $shipping_country = $customer ? $customer->get_shipping_country() : '';
+        $billing_country = $customer ? $customer->get_billing_country() : '';
 
-        return $methods_to_remove;
+        return array(
+            'cart' => $cart,
+            'customer' => $customer,
+            'product_ids' => $product_ids,
+            'category_ids' => $category_ids,
+            'attribute_ids' => $attribute_ids,
+            'country' => $shipping_country ?: $billing_country,
+            'zone_id' => self::resolve_zone_id( $package, $customer ),
+        );
     }
 
 
     /**
-     * Verify all conditions
-     * 
-     * @param array $condition_value | Condition value
-     * @param object $cart | Cart object
-     * @param array $cart_product_ids | Cart product IDs
-     * @param array $cart_product_categories | Cart product categories
-     * @param array $cart_product_attributes | Cart product attributes
-     * @return bool | True if all conditions are met, false otherwise
+     * Resolve the matching WooCommerce shipping zone id.
+     *
+     * @since 6.0.0
+     * @param array|null $package | Shipping package, when available.
+     * @param \WC_Customer|null $customer | Customer object.
+     * @return int
      */
-    public static function verify_conditions( $condition_value, $cart, $cart_product_ids, $cart_product_categories, $cart_product_attributes ) {
-        $condition_value_compare = isset( $condition_value['condition_value'] ) ? $condition_value['condition_value'] : '';
-
-        // first condition layer
-        if ( $condition_value['verification_condition'] === 'field' ) {
-            if ( ! self::check_fields_conditions( $condition_value['condition'], $condition_value['verification_condition_field'], $condition_value_compare ) ) {
-                return false;
-            }
-        } elseif ( $condition_value['verification_condition'] === 'qtd_cart_total' ) {
-            if ( ! self::check_cart_conditions( 'qtd_cart_total', $cart, $condition_value['condition'], $condition_value_compare ) ) {
-                return false;
-            }
-        } elseif ( $condition_value['verification_condition'] === 'cart_total_value' ) {
-            if ( ! self::check_cart_conditions( 'cart_total_value', $cart, $condition_value['condition'], $condition_value_compare ) ) {
-                return false;
-            }
+    public static function resolve_zone_id( $package, $customer ) {
+        if ( ! function_exists('wc_get_shipping_zone') ) {
+            return 0;
         }
 
-        // second condition layer
-        if ( isset( $condition_value['specific_user'] ) || isset( $condition_value['specific_role'] ) ) {
-            if ( $condition_value['specific_user'] === 'specific_user' ) {
-                if ( ! self::check_specific_user_or_roles( get_current_user_id(), 'specific_user', $specific_users, $specific_role, $user_roles ) ) {
-                    return false;
+        if ( is_array( $package ) ) {
+            $zone = wc_get_shipping_zone( $package );
+
+            return $zone ? (int) $zone->get_id() : 0;
+        }
+
+        if ( $customer ) {
+            $zone = wc_get_shipping_zone( array(
+                'destination' => array(
+                    'country' => $customer->get_shipping_country(),
+                    'state' => $customer->get_shipping_state(),
+                    'postcode' => $customer->get_shipping_postcode(),
+                ),
+            ) );
+
+            return $zone ? (int) $zone->get_id() : 0;
+        }
+
+        return 0;
+    }
+
+
+    /**
+     * Collect product, category and attribute term ids from the cart.
+     *
+     * @since 6.0.0
+     * @param \WC_Cart|null $cart | Cart object.
+     * @return array{0:array<int,int>,1:array<int,int>,2:array<int,int>}
+     */
+    public static function get_cart_term_ids( $cart ) {
+        $product_ids = array();
+        $category_ids = array();
+        $attribute_ids = array();
+
+        if ( ! $cart instanceof \WC_Cart ) {
+            return array( $product_ids, $category_ids, $attribute_ids );
+        }
+
+        foreach ( $cart->get_cart() as $cart_item ) {
+            $product = isset( $cart_item['data'] ) ? $cart_item['data'] : null;
+
+            if ( ! $product instanceof \WC_Product ) {
+                continue;
+            }
+
+            $product_id = isset( $cart_item['product_id'] ) ? (int) $cart_item['product_id'] : (int) $product->get_id();
+            $product_ids[] = $product_id;
+
+            $cats = wp_get_post_terms( $product_id, 'product_cat', array( 'fields' => 'ids' ) );
+
+            if ( ! is_wp_error( $cats ) ) {
+                $category_ids = array_merge( $category_ids, array_map( 'intval', $cats ) );
+            }
+
+            foreach ( $product->get_attributes() as $attribute ) {
+                if ( is_object( $attribute ) && method_exists( $attribute, 'is_taxonomy' ) && $attribute->is_taxonomy() ) {
+                    $terms = wc_get_product_terms( $product_id, $attribute->get_name(), array( 'fields' => 'ids' ) );
+
+                    if ( ! is_wp_error( $terms ) ) {
+                        $attribute_ids = array_merge( $attribute_ids, array_map( 'intval', $terms ) );
+                    }
                 }
-            } elseif ( $condition_value['specific_role'] === 'specific_role' ) {
-                if ( ! self::check_specific_user_or_roles( get_current_user_id(), 'specific_role', $specific_users, $specific_role, $user_roles ) ) {
-                    return false;
-                }
             }
         }
 
-        // third condition layer
-        if ( isset( $condition_value['specific_products'] ) && $condition_value['specific_products'] === 'specific_products' ) {
-            if ( ! self::check_product_filter( 'specific_products', $cart_product_ids, $condition_value['specific_products'] ) ) {
-                return false;
-            }
-        } elseif ( isset( $condition_value['specific_categories'] ) && $condition_value['specific_categories'] === 'specific_categories' ) {
-            if ( ! self::check_product_filter( 'specific_categories', $cart_product_categories, $condition_value['specific_categories'] ) ) {
-                return false;
-            }
-        } elseif ( isset( $condition_value['specific_attributes'] ) && $condition_value['specific_attributes'] === 'specific_attributes' ) {
-            if ( ! self::check_product_filter( 'specific_attributes', $cart_product_attributes, $condition_value['specific_attributes'] ) ) {
-                return false;
-            }
-        }
-
-        return true;
+        return array(
+            array_values( array_unique( $product_ids ) ),
+            array_values( array_unique( $category_ids ) ),
+            array_values( array_unique( $attribute_ids ) ),
+        );
     }
 
 
     /**
-     * Filter component type
-     * 
-     * @param string $type | Component type
-     * @return array | Filtered component type
-     */
-    public static function filter_component_type( $type ) {
-        $conditions = get_option('flexify_checkout_conditions', array());
-
-        return array_filter($conditions, function ($condition) use ($type) {
-            return isset( $condition['component'] ) && $condition['component'] === $type;
-        });
-    }
-
-    /**
-     * Check specific user function or role for conditions
-     * 
-     * @since 3.5.0
-     * @param int $user_id | Get user ID
-     * @param string $condition | Check condition
-     * @param array $specific_users | Get specific users ID
-     * @param string $specific_role | Get specific user role
-     * @param object $user_roles | Object user roles
+     * Evaluate a full rule (groups joined by all|any).
+     *
+     * @since 6.0.0
+     * @param array<string,mixed> $rule | Rule data.
+     * @param array<string,mixed> $context | Evaluation context.
      * @return bool
      */
-    public static function check_specific_user_or_roles( $user_id, $condition, $specific_users, $specific_role, $user_roles ) {
-        // check application on users or roles
-        if ( $condition === 'specific_user' ) {
-            // Stop if user ID is not in array
-            if ( ! in_array( $user_id, $specific_users ) ) {
-                return false;
-            } else {
+    public static function evaluate_rule( $rule, $context ) {
+        $groups = isset( $rule['groups'] ) ? $rule['groups'] : array();
+
+        if ( empty( $groups ) ) {
+            return true;
+        }
+
+        $any = isset( $rule['match'] ) && 'any' === $rule['match'];
+
+        foreach ( $groups as $group ) {
+            $passed = self::evaluate_group( $group, $context );
+
+            if ( $any && $passed ) {
                 return true;
             }
-        } elseif ( $condition === 'specific_role' ) {
-            // Stop if user role is not in array
-            if ( ! in_array( $specific_role, $user_roles ) ) {
+
+            if ( ! $any && ! $passed ) {
                 return false;
-            } else {
-                return true;
             }
         }
+
+        return ! $any;
     }
 
 
     /**
-     * Check product filters for condition
-     * 
-     * @since 3.5.0
-     * @param string $product_filter | Get product filter type
-     * @param array $product_id | Get product ID for search meets
-     * @param array $specific_products | Get specific products array
-     * @param array $specific_categories | Get specific product categories array
-     * @param array $specific_attributes | Get specific product attributes array
+     * Evaluate a condition group (conditions joined by all|any).
+     *
+     * @since 6.0.0
+     * @param array<string,mixed> $group | Group data.
+     * @param array<string,mixed> $context | Evaluation context.
      * @return bool
      */
-    public static function check_product_filter( $product_filter, $product_id, $specific_products, $specific_categories, $specific_attributes ) {
-        // Verify that the product meets the product filter conditions
-        if ( $product_filter === 'specific_products' ) {
-            $has_product_intersection = array_intersect( $specific_products, $product_id );
+    public static function evaluate_group( $group, $context ) {
+        $conditions = isset( $group['conditions'] ) ? $group['conditions'] : array();
 
-            if ( ! empty( $has_product_intersection ) ) {
+        if ( empty( $conditions ) ) {
+            return true;
+        }
+
+        $any = isset( $group['match'] ) && 'any' === $group['match'];
+
+        foreach ( $conditions as $condition ) {
+            $passed = self::evaluate_condition( $condition, $context );
+
+            if ( $any && $passed ) {
                 return true;
-            } else {
-                return false;
             }
-        } elseif ( $product_filter === 'specific_categories' ) {
-            $product_categories = wp_get_post_terms( $product_id, 'product_cat', array('fields' => 'ids') );
 
-            $has_cat_intersection = array_intersect( $specific_categories, $product_categories );
-
-            if ( ! empty( $has_cat_intersection ) ) {
-                return true;
-            } else {
+            if ( ! $any && ! $passed ) {
                 return false;
-            }
-        } elseif ( $product_filter === 'specific_attributes' ) {
-            $product_attributes = wc_get_product( $product_id )->get_attributes();
-
-            // iterate for each product attribute
-            foreach ( $product_attributes as $attribute => $value ) {
-                $attribute_terms = wc_get_product_terms( $product_id, $attribute, array('fields' => 'ids'));
-
-                $has_attr_intersection = array_intersect( $specific_attributes, $attribute_terms );
-
-                if ( ! empty( $has_attr_intersection ) ) {
-                    return true;
-                } else {
-                    return false;
-                }
             }
         }
+
+        return ! $any;
     }
 
 
     /**
-     * Check condition
-     * 
+     * Evaluate a single condition against the context.
+     *
+     * @since 6.0.0
+     * @param array<string,mixed> $condition | Condition data.
+     * @param array<string,mixed> $context | Evaluation context.
+     * @return bool
+     */
+    public static function evaluate_condition( $condition, $context ) {
+        $subject = isset( $condition['subject'] ) ? $condition['subject'] : '';
+        $operator = isset( $condition['operator'] ) ? $condition['operator'] : 'is';
+        $value = isset( $condition['value'] ) ? $condition['value'] : '';
+        $items = isset( $condition['items'] ) ? (array) $condition['items'] : array();
+        $cart = isset( $context['cart'] ) ? $context['cart'] : null;
+
+        switch ( $subject ) {
+            case 'field':
+                return self::check_fields_conditions( $operator, isset( $condition['field'] ) ? $condition['field'] : '', $value );
+
+            case 'cart_qty':
+                $qty = $cart instanceof \WC_Cart ? $cart->get_cart_contents_count() : 0;
+                return self::check_condition( $operator, $qty, $value );
+
+            case 'cart_total':
+                $total = $cart instanceof \WC_Cart ? $cart->get_cart_contents_total() : 0;
+                return self::check_condition( $operator, $total, $value );
+
+            case 'user':
+                return self::match_list( $operator, array( get_current_user_id() ), $items );
+
+            case 'user_role':
+                $user = wp_get_current_user();
+                $roles = ( $user && isset( $user->roles ) ) ? (array) $user->roles : array();
+                return self::match_list( $operator, $roles, $items );
+
+            case 'product':
+                return self::match_list( $operator, isset( $context['product_ids'] ) ? $context['product_ids'] : array(), $items );
+
+            case 'category':
+                return self::match_list( $operator, isset( $context['category_ids'] ) ? $context['category_ids'] : array(), $items );
+
+            case 'attribute':
+                return self::match_list( $operator, isset( $context['attribute_ids'] ) ? $context['attribute_ids'] : array(), $items );
+
+            case 'country':
+                $country = isset( $context['country'] ) ? $context['country'] : '';
+                return self::match_list( $operator, '' !== $country ? array( $country ) : array(), $items );
+
+            case 'shipping_region':
+                $zone = isset( $context['zone_id'] ) ? (int) $context['zone_id'] : 0;
+                return self::match_list( $operator, array( $zone ), $items );
+        }
+
+        return false;
+    }
+
+
+    /**
+     * Match a haystack against a list of needles using is_one_of / is_not_one_of.
+     *
+     * @since 6.0.0
+     * @param string $operator | Operator (is_one_of|is_not_one_of).
+     * @param array $haystack | Current values.
+     * @param array $needles | Allowed values.
+     * @return bool
+     */
+    public static function match_list( $operator, $haystack, $needles ) {
+        $haystack = array_map( 'strval', (array) $haystack );
+        $needles = array_map( 'strval', (array) $needles );
+
+        if ( empty( $needles ) ) {
+            return false;
+        }
+
+        $intersects = count( array_intersect( $haystack, $needles ) ) > 0;
+
+        return 'is_not_one_of' === $operator ? ! $intersects : $intersects;
+    }
+
+
+    /**
+     * Export field-action rules for the front-end visibility script.
+     *
+     * Non-field conditions are pre-evaluated server-side (server_pass), while
+     * field conditions are evaluated live in the browser.
+     *
+     * @since 6.0.0
+     * @return array<int,array<string,mixed>>
+     */
+    public static function export_field_rules_for_js() {
+        $rules = self::get_rules_filtered('field');
+
+        if ( empty( $rules ) ) {
+            return array();
+        }
+
+        $context = self::build_context();
+        $output = array();
+
+        foreach ( $rules as $rule ) {
+            $groups = array();
+
+            foreach ( $rule['groups'] as $group ) {
+                $conditions = array();
+
+                foreach ( $group['conditions'] as $condition ) {
+                    $entry = array(
+                        'subject' => $condition['subject'],
+                        'field' => isset( $condition['field'] ) ? $condition['field'] : '',
+                        'operator' => $condition['operator'],
+                        'value' => isset( $condition['value'] ) ? $condition['value'] : '',
+                    );
+
+                    if ( 'field' !== $condition['subject'] ) {
+                        $entry['server_pass'] = self::evaluate_condition( $condition, $context );
+                    }
+
+                    $conditions[] = $entry;
+                }
+
+                $groups[] = array(
+                    'match' => $group['match'],
+                    'conditions' => $conditions,
+                );
+            }
+
+            $output[] = array(
+                'id' => $rule['id'],
+                'action' => array(
+                    'type' => $rule['action']['type'],
+                    'field' => isset( $rule['action']['field'] ) ? $rule['action']['field'] : '',
+                ),
+                'match' => $rule['match'],
+                'groups' => $groups,
+            );
+        }
+
+        return $output;
+    }
+
+
+    /**
+     * Check a generic condition operator.
+     *
      * @since 3.5.0
-     * @version 5.2.0
-     * @param string $condition | Check condition
-     * @param string $value | Get condition value
-     * @param string $value_compare | Optional value for compare with $value
+     * @version 6.0.0
+     * @param string $condition | Operator.
+     * @param string $value | Current value.
+     * @param string $value_compare | Optional value to compare against.
      * @return bool
      */
     public static function check_condition( $condition, $value, $value_compare = '' ) {
         switch ( $condition ) {
             case 'is':
-                return $value === $value_compare;
-                
+                return (string) $value === (string) $value_compare;
+
             case 'is_not':
-                return $value !== $value_compare;
-                
+                return (string) $value !== (string) $value_compare;
+
             case 'empty':
                 return empty( $value );
-                
+
             case 'not_empty':
                 return ! empty( $value );
-                
+
             case 'contains':
-                return strpos( $value, $value_compare ) !== false;
-                
+                return '' !== (string) $value_compare && strpos( (string) $value, (string) $value_compare ) !== false;
+
             case 'not_contain':
-                return strpos( $value, $value_compare ) === false;
-                
+                return strpos( (string) $value, (string) $value_compare ) === false;
+
             case 'start_with':
                 if ( version_compare( PHP_VERSION, '8.0.0' ) >= 0 ) {
-                    return str_starts_with( $value, $value_compare );
-                } else {
-                    return strpos( $value, $value_compare ) === 0;
+                    return str_starts_with( (string) $value, (string) $value_compare );
                 }
-                
+
+                return strpos( (string) $value, (string) $value_compare ) === 0;
+
             case 'finish_with':
                 if ( version_compare( PHP_VERSION, '8.0.0' ) >= 0 ) {
-                    return str_ends_with( $value, $value_compare );
-                } else {
-                    $length = strlen( $value_compare );
-                    return substr( $value, -$length ) === $value_compare;
+                    return str_ends_with( (string) $value, (string) $value_compare );
                 }
-                
+
+                $length = strlen( (string) $value_compare );
+                return substr( (string) $value, -$length ) === (string) $value_compare;
+
             case 'bigger_then':
-                return $value > $value_compare;
-                
+                return (float) $value > (float) $value_compare;
+
             case 'less_than':
-                return $value < $value_compare;
+                return (float) $value < (float) $value_compare;
 
             case 'checked':
-                $checked_values = array( '1', 1, 'on', 'yes', 'true', true );
-                return in_array( $value, $checked_values, true );
+                return in_array( $value, array( '1', 1, 'on', 'yes', 'true', true ), true );
 
             case 'not_checked':
-                $checked_values = array( '1', 1, 'on', 'yes', 'true', true );
-                return ! in_array( $value, $checked_values, true );
-                
-            case '':
-                return false;
+                return ! in_array( $value, array( '1', 1, 'on', 'yes', 'true', true ), true );
 
-            case 'none':
             default:
                 return false;
         }
@@ -500,16 +637,20 @@ class Conditions {
 
 
     /**
-     * Check checkout fields conditions
-     * 
+     * Check a checkout field value condition (reads from the current POST).
+     *
      * @since 3.5.0
-     * @version 5.1.0
-     * @param string $condition | Get condition type
-     * @param string $field | Field ID to check condition
-     * @param string $value | Field value to check
+     * @version 6.0.0
+     * @param string $condition | Operator.
+     * @param string $field | Field id.
+     * @param string $value | Value to compare.
      * @return bool
      */
     public static function check_fields_conditions( $condition, $field, $value ) {
+        if ( '' === $field ) {
+            return false;
+        }
+
         $field_value = filter_input( INPUT_POST, $field, FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 
         if ( is_null( $field_value ) ) {
@@ -525,92 +666,45 @@ class Conditions {
 
 
     /**
-     * Check cart conditions
-     * 
-     * @since 3.5.0
-     * @param string $condition_type | Condition type
-     * @param object $cart | Object cart
-     * @param string $condition | Condition for check
-     * @param string $condition_value | Condition value for validate
-     * @return bool
-     */
-    public static function check_cart_conditions( $condition_type, $cart, $condition, $condition_value ) {
-        if ( $condition_type === 'qtd_cart_total' ) {
-            // iterate for each cart item
-            foreach ( $cart->get_cart() as $cart_item_key => $cart_item ) {
-                $quantity = $cart_item['quantity'];
-        
-                // check if condition meets
-                if ( self::check_condition( $condition, $quantity, $condition_value ) ) {
-                    return true;
-                }
-            }
-        } elseif ( $condition_type === 'cart_total_value' ) {
-            // get cart total value
-            $cart_total = $cart->get_cart_contents_total();
-
-            // check if condition meets
-            if ( self::check_condition( $condition, $cart_total, $condition_value ) ) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-
-    /**
-     * Validate checkout fields based on conditions
+     * Validate checkout fields based on conditions (skip required for hidden fields).
      *
      * @since 5.1.0
-     * @version 5.2.0
-     * @param array $data | Posted checkout data
-     * @param object $errors | Validation errors
+     * @version 6.0.0
+     * @param array $data | Posted checkout data.
+     * @param object $errors | Validation errors.
      * @return void
      */
     public function validate_fields( $data, $errors ) {
-        $field_conditions = self::filter_component_type('field');
+        $rules = self::get_rules_filtered('field');
 
-        if ( ! is_flexify_checkout() || empty( $field_conditions ) ) {
+        if ( ! is_flexify_checkout() || empty( $rules ) ) {
             return;
         }
 
-        // helper to remove any errors associated with a field_id, regardless of the code
+        $context = self::build_context();
+
         $remove_field_errors = function( $errors_obj, $field_id ) {
-            $errors_obj->remove("{$field_id}_required");
+            $errors_obj->remove( "{$field_id}_required" );
 
             foreach ( (array) $errors_obj->get_error_codes() as $code ) {
                 $data_arg = $errors_obj->get_error_data( $code );
-                
+
                 if ( is_array( $data_arg ) && isset( $data_arg['id'] ) && $data_arg['id'] === $field_id ) {
                     $errors_obj->remove( $code );
                 }
             }
         };
 
-        foreach ( $field_conditions as $cond ) {
-            $field_key = isset( $cond['component_field'] ) ? $cond['component_field'] : '';
-            $type_rule = isset( $cond['type_rule'] ) ? $cond['type_rule'] : 'none';
-            $check_type = isset( $cond['verification_condition'] ) ? $cond['verification_condition'] : 'none'; // ex.: 'field'
-            $check_field = isset( $cond['verification_condition_field'] ) ? $cond['verification_condition_field'] : '';
-            $operator = isset( $cond['condition'] ) ? $cond['condition'] : '';
-            $expected = isset( $cond['condition_value'] ) ? $cond['condition_value'] : '';
+        foreach ( $rules as $rule ) {
+            $field_key = isset( $rule['action']['field'] ) ? $rule['action']['field'] : '';
 
-            if ( in_array( $operator, array( 'checked', 'not_checked' ), true ) ) {
-                $expected = '';
-            }
-
-            if ( ! $field_key || $check_type !== 'field' || ! $check_field ) {
+            if ( '' === $field_key ) {
                 continue;
             }
 
-            // current value from the conditional field (from the received POST)
-            $posted_value = isset( $data[ $check_field ] ) ? (string) $data[ $check_field ] : '';
-            $condition_met = self::check_condition( $operator, $posted_value, (string) $expected );
-
-            // - type_rule = 'show' => field is only valid when condition_met = true; if false, we treat it as hidden -> do not require
-            // - type_rule = 'hide' => field is valid when condition_met = false; if true, it is hidden -> do not require
-            $should_hide = ( $type_rule === 'show' && ! $condition_met ) || ( $type_rule === 'hide' && $condition_met );
+            $matched = self::evaluate_rule( $rule, $context );
+            $type = $rule['action']['type'];
+            $should_hide = ( 'show' === $type && ! $matched ) || ( 'hide' === $type && $matched );
 
             if ( $should_hide ) {
                 $remove_field_errors( $errors, $field_key );

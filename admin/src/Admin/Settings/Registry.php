@@ -73,10 +73,11 @@ class Registry {
                 'wpf9053_6' => rawurlencode( wp_get_theme()->get('Name') ),
             ), 'https://meumouse.com/reportar-problemas/' ),
             'fields' => Fields_Store::get_fields(),
-            'conditions' => Conditions_Store::get_conditions_for_client(),
+            'conditions' => Conditions_Store::get_rules_for_client(),
             'integrations' => Integrations_Data::get_cards_for_client(),
             'fonts' => Fonts_Manager::get_fonts(),
             'shipping_methods' => self::build_shipping_method_options(),
+            'shipping_zones' => self::build_shipping_zone_options(),
             'payment_gateways' => self::build_payment_gateway_options(),
             'user_roles' => self::build_user_role_options(),
             'currency_symbol' => function_exists('get_woocommerce_currency_symbol') ? get_woocommerce_currency_symbol() : 'R$',
@@ -1070,6 +1071,36 @@ class Registry {
                     'label' => (string) $shipping->method_title,
                 );
             }
+        }
+
+        return $options;
+    }
+
+
+    /**
+     * Build options for the configured WooCommerce shipping zones.
+     *
+     * @since 6.0.0
+     * @return array<int,array<string,string>>
+     */
+    private static function build_shipping_zone_options() {
+        $options = array();
+
+        if ( ! class_exists('\WC_Shipping_Zones') ) {
+            return $options;
+        }
+
+        // "Rest of the World" zone (id 0).
+        $options[] = array(
+            'value' => '0',
+            'label' => __( 'Resto do mundo', 'flexify-checkout-for-woocommerce' ),
+        );
+
+        foreach ( \WC_Shipping_Zones::get_zones() as $zone ) {
+            $options[] = array(
+                'value' => (string) $zone['id'],
+                'label' => (string) $zone['zone_name'],
+            );
         }
 
         return $options;

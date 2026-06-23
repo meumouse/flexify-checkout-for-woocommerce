@@ -25,8 +25,8 @@ store.hydrate(props.bootstrap);
 const activeTab = ref('');
 
 onMounted(() => {
-  const fromHash = window.location.hash.replace('#', '');
-  const validTab = store.schema.find((tab) => tab.id === fromHash);
+  const fromQuery = new URLSearchParams(window.location.search).get('tab') || '';
+  const validTab = store.schema.find((tab) => tab.id === fromQuery);
 
   activeTab.value = validTab ? validTab.id : store.schema[0]?.id || '';
 });
@@ -47,7 +47,12 @@ const customComponents = {
 
 function selectTab(tabId) {
   activeTab.value = tabId;
-  window.location.hash = tabId;
+
+  // Keep the wp-admin ?page= param and any other query, just swap ?tab=.
+  const url = new URL(window.location.href);
+  url.searchParams.set('tab', tabId);
+  url.hash = '';
+  window.history.replaceState(window.history.state, '', url);
 }
 </script>
 

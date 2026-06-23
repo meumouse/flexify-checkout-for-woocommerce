@@ -48,24 +48,20 @@ class Conditions_Update extends Abstract_Route {
         }
 
         $payload = $request->get_json_params();
+        $id = sanitize_text_field( (string) ( $payload['id'] ?? '' ) );
+        $rule = isset( $payload['rule'] ) ? $payload['rule'] : array();
 
-        if ( ! isset( $payload['index'] ) ) {
-            return $this->error_response( __( 'Condição inválida.', 'flexify-checkout-for-woocommerce' ) );
+        if ( '' === $id || empty( $rule['action'] ) ) {
+            return $this->error_response( __( 'Dados da regra inválidos.', 'flexify-checkout-for-woocommerce' ) );
         }
 
-        $condition = Conditions_Store::sanitize_payload( $payload['condition'] ?? array() );
-
-        if ( empty( $condition['type_rule'] ) || 'none' === $condition['type_rule'] ) {
-            return $this->error_response( __( 'Dados da condição inválidos.', 'flexify-checkout-for-woocommerce' ) );
-        }
-
-        if ( ! Conditions_Store::update_condition( $payload['index'], $condition ) ) {
-            return $this->error_response( __( 'Ops! Não foi possível atualizar a condição.', 'flexify-checkout-for-woocommerce' ) );
+        if ( ! Conditions_Store::update_rule( $id, $rule ) ) {
+            return $this->error_response( __( 'Ops! Não foi possível atualizar a regra.', 'flexify-checkout-for-woocommerce' ) );
         }
 
         return $this->success_response( array(
-            'message' => __( 'Condição atualizada com sucesso!', 'flexify-checkout-for-woocommerce' ),
-            'conditions' => Conditions_Store::get_conditions_for_client(),
+            'message' => __( 'Regra atualizada com sucesso!', 'flexify-checkout-for-woocommerce' ),
+            'conditions' => Conditions_Store::get_rules_for_client(),
         ) );
     }
 }

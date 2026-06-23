@@ -43,14 +43,15 @@ class Conditions_Remove extends Abstract_Route {
      */
     public function handle( WP_REST_Request $request ) {
         $payload = $request->get_json_params();
+        $id = sanitize_text_field( (string) ( $payload['id'] ?? '' ) );
 
-        if ( ! isset( $payload['index'] ) || ! Conditions_Store::remove_condition( $payload['index'] ) ) {
-            return $this->error_response( __( 'Ops! Não foi possível excluir a condição.', 'flexify-checkout-for-woocommerce' ) );
+        if ( '' === $id || ! Conditions_Store::remove_rule( $id ) ) {
+            return $this->error_response( __( 'Ops! Não foi possível excluir a regra.', 'flexify-checkout-for-woocommerce' ) );
         }
 
         return $this->success_response( array(
-            'message' => __( 'Condição excluída com sucesso!', 'flexify-checkout-for-woocommerce' ),
-            'conditions' => Conditions_Store::get_conditions_for_client(),
+            'message' => __( 'Regra excluída com sucesso!', 'flexify-checkout-for-woocommerce' ),
+            'conditions' => Conditions_Store::get_rules_for_client(),
         ) );
     }
 }

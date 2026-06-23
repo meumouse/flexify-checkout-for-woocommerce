@@ -338,16 +338,14 @@ export const useSettingsStore = defineStore('flexify-checkout-settings', {
       }
     },
 
-    addCondition(condition) {
-      return this.conditionAction('admin/conditions', { condition });
+    saveCondition(rule, id = null) {
+      return id
+        ? this.conditionAction('admin/conditions/update', { id, rule })
+        : this.conditionAction('admin/conditions', { rule });
     },
 
-    updateCondition(index, condition) {
-      return this.conditionAction('admin/conditions/update', { index, condition });
-    },
-
-    removeCondition(index) {
-      return this.conditionAction('admin/conditions/remove', { index });
+    removeCondition(id) {
+      return this.conditionAction('admin/conditions/remove', { id });
     },
 
     async moduleAction(endpoint, body) {

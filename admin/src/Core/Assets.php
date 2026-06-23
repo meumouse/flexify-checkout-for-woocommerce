@@ -260,7 +260,7 @@ class Assets {
 			'get_all_checkout_fields' => Helpers::export_all_checkout_fields(),
 			'opened_default_order_summary' => Admin_Options::get_setting('display_opened_order_review_mobile'),
 			'enable_animation_process_purchase' => Admin_Options::get_setting('enable_animation_process_purchase'),
-			'field_condition' => Conditions::filter_component_type('field'),
+			'field_condition' => Conditions::export_field_rules_for_js(),
 			'enable_emails_suggestions' => Admin_Options::get_setting('email_providers_suggestion'),
 			'get_email_providers' => Admin_Options::get_setting('set_email_providers'),
 			'enable_field_masks' => Admin_Options::get_setting('enable_field_masks'),

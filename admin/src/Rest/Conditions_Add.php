@@ -48,19 +48,22 @@ class Conditions_Add extends Abstract_Route {
         }
 
         $payload = $request->get_json_params();
-        $condition = Conditions_Store::sanitize_payload( $payload['condition'] ?? array() );
+        $rule = isset( $payload['rule'] ) ? $payload['rule'] : array();
 
-        if ( empty( $condition['type_rule'] ) || 'none' === $condition['type_rule'] ) {
-            return $this->error_response( __( 'Dados da condição inválidos.', 'flexify-checkout-for-woocommerce' ) );
+        if ( empty( $rule['action'] ) ) {
+            return $this->error_response( __( 'Dados da regra inválidos.', 'flexify-checkout-for-woocommerce' ) );
         }
 
-        if ( ! Conditions_Store::add_condition( $condition ) ) {
-            return $this->error_response( __( 'Ops! Não foi possível criar uma nova condição.', 'flexify-checkout-for-woocommerce' ) );
+        $id = Conditions_Store::add_rule( $rule );
+
+        if ( ! $id ) {
+            return $this->error_response( __( 'Ops! Não foi possível criar uma nova regra.', 'flexify-checkout-for-woocommerce' ) );
         }
 
         return $this->success_response( array(
-            'message' => __( 'Condição criada com sucesso!', 'flexify-checkout-for-woocommerce' ),
-            'conditions' => Conditions_Store::get_conditions_for_client(),
+            'message' => __( 'Regra criada com sucesso!', 'flexify-checkout-for-woocommerce' ),
+            'id' => $id,
+            'conditions' => Conditions_Store::get_rules_for_client(),
         ) );
     }
 }

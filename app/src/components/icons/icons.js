@@ -21,6 +21,8 @@ import x from 'boxicons/svg/regular/bx-x.svg?raw';
 import check from 'boxicons/svg/regular/bx-check.svg?raw';
 import chevronUp from 'boxicons/svg/regular/bx-chevron-up.svg?raw';
 import chevronDown from 'boxicons/svg/regular/bx-chevron-down.svg?raw';
+import chevronLeft from 'boxicons/svg/regular/bx-chevron-left.svg?raw';
+import plus from 'boxicons/svg/regular/bx-plus.svg?raw';
 import trash from 'boxicons/svg/regular/bx-trash.svg?raw';
 import reset from 'boxicons/svg/regular/bx-reset.svg?raw';
 import hourglass from 'boxicons/svg/regular/bx-hourglass.svg?raw';
@@ -49,6 +51,8 @@ export default {
   'regular/check': check,
   'regular/chevron-up': chevronUp,
   'regular/chevron-down': chevronDown,
+  'regular/chevron-left': chevronLeft,
+  'regular/plus': plus,
   'regular/trash': trash,
   'regular/reset': reset,
   'regular/hourglass': hourglass,
