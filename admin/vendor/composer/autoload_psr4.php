@@ -6,5 +6,5 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
-    'MeuMouse\\Flexify_Checkout\\' => array($baseDir . '/admin/src'),
+    'MeuMouse\\Flexify_Checkout\\' => array($baseDir . '/src'),
 );

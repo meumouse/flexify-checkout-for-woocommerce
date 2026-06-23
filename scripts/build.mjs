@@ -158,9 +158,9 @@ function installPhpDependencies() {
 	run(
 		'composer',
 		['install', '--no-dev', '--optimize-autoloader', '--no-interaction', '--no-progress'],
-		root,
+		path.join(root, 'admin'),
 	);
-	ok('Production PHP dependencies installed (vendor).');
+	ok('Production PHP dependencies installed (admin/vendor).');
 }
 
 function buildTranslations() {
@@ -197,13 +197,14 @@ async function stageFiles() {
 	await fs.rm(releaseDir, { recursive: true, force: true });
 	await fs.mkdir(stagingDir, { recursive: true });
 
-	// Top-level files. composer.json stays for reference / re-installs.
-	for (const file of [`${slug}.php`, 'README.md', 'license.md', 'changelogs.md', 'composer.json']) {
+	// Top-level files (the entrypoint and docs). composer.json now lives under admin/.
+	for (const file of [`${slug}.php`, 'README.md', 'license.md', 'changelogs.md']) {
 		await copyFile(file);
 	}
 
-	// PHP runtime: source, templates, integrations, production autoloader.
-	for (const dir of ['inc', 'templates', 'woocommerce', 'updater', 'vendor']) {
+	// PHP runtime: the admin/ backend (source + composer.json + production
+	// autoloader under admin/vendor), templates, integrations.
+	for (const dir of ['admin', 'templates', 'woocommerce', 'updater']) {
 		await copyDir(dir, dir, baseFilter);
 	}
 

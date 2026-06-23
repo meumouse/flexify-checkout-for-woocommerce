@@ -33,7 +33,7 @@ const FLEXIFY_CHECKOUT_PLUGIN_VERSION = '6.0.0';
 /**
  * Composer autoload.
  */
-require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/admin/vendor/autoload.php';
 
 /**
  * Legacy shim for backwards compatibility.
