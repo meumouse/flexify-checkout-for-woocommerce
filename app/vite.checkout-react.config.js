@@ -15,6 +15,13 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 export default defineConfig({
   base: './',
   plugins: [react()],
+  define: {
+    // React (and other CJS deps) reference process.env.NODE_ENV, which does not
+    // exist in the browser. Vite's lib/IIFE build does not inject this define
+    // automatically, so the literal leaks into the bundle and throws
+    // "process is not defined". Replace it at build time.
+    'process.env.NODE_ENV': JSON.stringify('production'),
+  },
   build: {
     outDir: resolve(__dirname, 'dist/checkout-react'),
     emptyOutDir: true,
