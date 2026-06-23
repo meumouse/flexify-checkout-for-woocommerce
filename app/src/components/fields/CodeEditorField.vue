@@ -79,9 +79,18 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div
-    ref="host"
-    class="flexify-code-editor w-full overflow-hidden rounded-lg border border-slate-300"
-    :class="disabled ? 'pointer-events-none opacity-60' : ''"
-  />
+  <!--
+    The template ref must not sit on the component root: when this component is
+    loaded through defineAsyncComponent, Vue forwards the root vnode's ref and
+    can call setRef with a null owner instance, throwing
+    "Cannot read properties of null (reading 'refs')". Keeping `host` on an inner
+    element resolves the ref within this component's own render context.
+  -->
+  <div class="w-full">
+    <div
+      ref="host"
+      class="flexify-code-editor w-full overflow-hidden rounded-lg border border-slate-300"
+      :class="disabled ? 'pointer-events-none opacity-60' : ''"
+    />
+  </div>
 </template>
