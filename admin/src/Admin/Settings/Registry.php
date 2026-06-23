@@ -679,7 +679,7 @@ class Registry {
                 array(
                     'id' => 'conditions-manager',
                     'title' => __( 'Gerenciador de condições', 'flexify-checkout-for-woocommerce' ),
-                    'description' => __( 'Exiba ou oculte componentes do checkout com base em regras.', 'flexify-checkout-for-woocommerce' ),
+                    'description' => __( 'Exiba, oculte ou aplique descontos em campos, formas de entrega e pagamento com base em regras condicionais (usuários, produtos, países, regiões de entrega e mais).', 'flexify-checkout-for-woocommerce' ),
                     'component' => 'conditions-manager',
                 ),
             ),

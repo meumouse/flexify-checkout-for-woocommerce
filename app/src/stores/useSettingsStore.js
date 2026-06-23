@@ -52,6 +52,7 @@ export const useSettingsStore = defineStore('flexify-checkout-settings', {
     conditions: [],
     integrations: [],
     saving: false,
+    savingCondition: false,
     resetting: false,
     exporting: false,
     importing: false,
@@ -321,6 +322,8 @@ export const useSettingsStore = defineStore('flexify-checkout-settings', {
     },
 
     async conditionAction(endpoint, body) {
+      this.savingCondition = true;
+
       try {
         const response = await apiPost(endpoint, body);
 
@@ -335,6 +338,8 @@ export const useSettingsStore = defineStore('flexify-checkout-settings', {
         this.pushToast('error', 'Ocorreu um erro ao processar a condição.');
 
         return null;
+      } finally {
+        this.savingCondition = false;
       }
     },
 

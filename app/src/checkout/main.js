@@ -5236,31 +5236,24 @@
 			 * @return {void}
 			 */
 			checkFieldVisibility: function() {
-				const field_conditions = Object.values( params.field_condition || {} );
+				const rules = Array.isArray( params.field_condition ) ? params.field_condition : Object.values( params.field_condition || {} );
 
-				field_conditions.forEach( item => {
-					const $comp = $('#' + item.component_field);
+				rules.forEach( rule => {
+					if ( ! rule || ! rule.action || ! rule.action.field ) {
+						return;
+					}
+
+					const passed = this.evaluateRule( rule );
+					const $comp = $('#' + rule.action.field);
 					const row = $comp.closest('.form-row');
-					const $field = $('#' + item.verification_condition_field);
-					const val = $field.is(':checkbox') ? $field.is(':checked') : $field.val();
-					const passed = this.checkCondition( item.condition, val, item.condition_value );
+					const show = rule.action.type === 'hide' ? ! passed : passed;
 
-					if ( item.type_rule === 'show' && item.verification_condition === 'field' ) {
-						if ( passed ) {
-							$comp.prop('required', true);
-							row.removeClass('temp-hidden').addClass('validate-required required-field').show();
-						} else {
-							$comp.prop('required', false);
-							row.removeClass('required-field woocommerce-invalid validate-required').addClass('temp-hidden').hide();
-						}
-					} else if ( item.type_rule === 'hide' ) {
-						if ( passed ) {
-							$comp.prop('required', false);
-							row.removeClass('required required-field woocommerce-invalid validate-required').addClass('temp-hidden').hide();
-						} else {
-							$comp.prop('required', true);
-							row.removeClass('temp-hidden').addClass('validate-required required-field').show();
-						}
+					if ( show ) {
+						$comp.prop('required', true);
+						row.removeClass('temp-hidden woocommerce-invalid').addClass('validate-required required-field').show();
+					} else {
+						$comp.prop('required', false);
+						row.removeClass('required required-field woocommerce-invalid validate-required').addClass('temp-hidden').hide();
 					}
 				});
 
@@ -5275,16 +5268,101 @@
 			},
 
 			/**
+			 * Evaluate a rule tree (groups joined by rule.match, conditions by group.match)
+			 *
+			 * @since 6.0.0
+			 * @param {object} rule
+			 * @return {boolean}
+			 */
+			evaluateRule: function( rule ) {
+				const groups = Array.isArray( rule.groups ) ? rule.groups : [];
+
+				if ( ! groups.length ) {
+					return true;
+				}
+
+				const any = rule.match === 'any';
+
+				for ( let i = 0; i < groups.length; i++ ) {
+					const passed = this.evaluateGroup( groups[i] );
+
+					if ( any && passed ) return true;
+					if ( ! any && ! passed ) return false;
+				}
+
+				return ! any;
+			},
+
+			/**
+			 * Evaluate a single condition group
+			 *
+			 * @since 6.0.0
+			 * @param {object} group
+			 * @return {boolean}
+			 */
+			evaluateGroup: function( group ) {
+				const conditions = Array.isArray( group.conditions ) ? group.conditions : [];
+
+				if ( ! conditions.length ) {
+					return true;
+				}
+
+				const any = group.match === 'any';
+
+				for ( let i = 0; i < conditions.length; i++ ) {
+					const passed = this.evaluateCondition( conditions[i] );
+
+					if ( any && passed ) return true;
+					if ( ! any && ! passed ) return false;
+				}
+
+				return ! any;
+			},
+
+			/**
+			 * Evaluate a single condition. Field subjects read the live DOM value;
+			 * every other subject uses the server-precomputed pass flag.
+			 *
+			 * @since 6.0.0
+			 * @param {object} condition
+			 * @return {boolean}
+			 */
+			evaluateCondition: function( condition ) {
+				if ( condition.subject !== 'field' ) {
+					return !! condition.server_pass;
+				}
+
+				const $field = $('#' + condition.field);
+
+				if ( ! $field.length ) {
+					return false;
+				}
+
+				const val = $field.is(':checkbox') ? $field.is(':checked') : $field.val();
+
+				return this.checkCondition( condition.operator, val, condition.value );
+			},
+
+			/**
 			 * Initialize module
 			 * 
 			 * @since 5.0.0
 			 */
 			init: function() {
-				const field_conditions = params.field_condition || [];
+				const rules = Array.isArray( params.field_condition ) ? params.field_condition : Object.values( params.field_condition || {} );
+				const selectors = new Set();
 
-				field_conditions.forEach( item => {
-					const selector = '#' + item.verification_condition_field;
+				rules.forEach( rule => {
+					( rule.groups || [] ).forEach( group => {
+						( group.conditions || [] ).forEach( condition => {
+							if ( condition.subject === 'field' && condition.field ) {
+								selectors.add('#' + condition.field);
+							}
+						});
+					});
+				});
 
+				selectors.forEach( selector => {
 					$( document ).on('change input keyup', selector, () => {
 						this.checkFieldVisibility();
 
