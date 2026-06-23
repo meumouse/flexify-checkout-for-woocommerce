@@ -3,7 +3,6 @@
 namespace MeuMouse\Flexify_Checkout\Core;
 
 use MeuMouse\Flexify_Checkout\Admin\Admin_Options;
-use MeuMouse\Flexify_Checkout\Admin\Fonts_Manager;
 use MeuMouse\Flexify_Checkout\API\License;
 use MeuMouse\Flexify_Checkout\Checkout\Themes;
 use MeuMouse\Flexify_Checkout\Checkout\Steps;
@@ -69,7 +68,6 @@ class Assets {
 		$max_priority = defined('PHP_INT_MAX') ? PHP_INT_MAX : 2147483647;
 
 		add_action( 'wp_enqueue_scripts', array( $this, 'frontend_assets' ), $max_priority );
-		add_action( 'admin_enqueue_scripts', array( $this, 'admin_assets' ) );
 
 		// remove password strenght
 		if ( Admin_Options::get_setting('check_password_strenght') !== 'yes' ) {
@@ -433,97 +431,6 @@ class Assets {
 		// Merge into one flat i18n object
 		return array_merge( $countries, $labels );
     }
-
-
-	/**
-	 * Enqueue admin scripts in page settings only
-	 * 
-	 * @since 1.0.0
-	 * @version 5.4.0
-	 * @return void
-	 */
-	public function admin_assets() {
-		// The Vue settings app ships its own Vite-built assets; the legacy
-		// stack below only loads when the classic interface is requested.
-		if ( ! \MeuMouse\Flexify_Checkout\Assets\Settings_Assets::is_legacy_mode() ) {
-			return;
-		}
-
-		// check if is admin settings
-		if ( is_flexify_checkout_admin_settings() ) {
-			wp_enqueue_media();
-			wp_enqueue_script('jquery-ui-sortable');
-			
-			wp_enqueue_style( 'bootstrap-datepicker-styles', $this->assets_url . 'vendor/bootstrap-datepicker/bootstrap-datepicker'. $this->min_file .'.css', array(), $this->version );
-			wp_enqueue_script( 'bootstrap-datepicker', 'https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js', array('jquery'), '1.9.0' );
-			wp_enqueue_script( 'bootstrap-datepicker-translate-pt-br', $this->assets_url . 'vendor/bootstrap-datepicker/bootstrap-datepicker.pt-BR.min.js', array('jquery'), $this->version );
-
-			// codemirror library
-			wp_enqueue_style( 'flexify-checkout-codemirror-styles', $this->assets_url . 'vendor/codemirror/lib/codemirror.css', array(), '5.65.18' );
-			wp_enqueue_style( 'flexify-checkout-codemirror-dracula-theme', $this->assets_url . 'vendor/codemirror/theme/dracula.css', array(), '5.65.18' );
-			wp_enqueue_script( 'flexify-checkout-codemirror-scripts', $this->assets_url . 'vendor/codemirror/lib/codemirror.js', array(),  '5.65.18' );
-			wp_enqueue_script( 'flexify-checkout-codemirror-clike-mode', $this->assets_url . 'vendor/codemirror/mode/clike/clike.js', array(),  '5.65.18' );
-			wp_enqueue_script( 'flexify-checkout-codemirror-css-mode', $this->assets_url . 'vendor/codemirror/mode/css/css.js', array(),  '5.65.18' );
-			wp_enqueue_script( 'flexify-checkout-codemirror-javascript-mode', $this->assets_url . 'vendor/codemirror/mode/javascript/javascript.js', array(),  '5.65.18' );
-			wp_enqueue_script( 'flexify-checkout-codemirror-xml-mode', $this->assets_url . 'vendor/codemirror/mode/xml/xml.js', array(),  '5.65.18' );
-			wp_enqueue_script( 'flexify-checkout-codemirror-matchbrackets-addon', $this->assets_url . 'vendor/codemirror/addon/edit/matchbrackets.js', array(),  '5.65.18' );
-			wp_enqueue_script( 'flexify-checkout-codemirror-activeline-addon', $this->assets_url . 'vendor/codemirror/addon/selection/active-line.js', array(),  '5.65.18' );
-			wp_enqueue_script( 'flexify-checkout-codemirror-matchtags-addon', $this->assets_url . 'vendor/codemirror/addon/edit/matchtags.js', array(),  '5.65.18' );
-			wp_enqueue_script( 'flexify-checkout-codemirror-closebrackets-addon', $this->assets_url . 'vendor/codemirror/addon/edit/closebrackets.js', array(),  '5.65.18' );
-			wp_enqueue_script( 'flexify-checkout-codemirror-autorefresh-addon', $this->assets_url . 'vendor/codemirror/addon/display/autorefresh.js', array(),  '5.65.18' );
-
-			wp_enqueue_script( 'flexify-checkout-admin-scripts', $this->assets_url . 'admin/js/settings'. $this->min_file .'.js', array( 'jquery', 'media-upload', 'jquery-ui-sortable' ), $this->version );
-			wp_enqueue_style( 'flexify-checkout-admin-styles', $this->assets_url . 'admin/css/settings'. $this->min_file .'.css', array(), $this->version );
-
-			if ( ! class_exists('Flexify_Dashboard') ) {
-                wp_enqueue_style( 'bootstrap-grid', $this->assets_url . 'vendor/bootstrap/bootstrap-grid.min.css', array(), '5.3.3' );
-                wp_enqueue_style( 'bootstrap-utilities', $this->assets_url . 'vendor/bootstrap/bootstrap-utilities.min.css', array(), '5.3.3' );
-            }
-		
-			wp_localize_script( 'flexify-checkout-admin-scripts', 'flexify_checkout_params', array(
-				'ajax_url' => admin_url( 'admin-ajax.php' ),
-				'plugin_version' => $this->version,
-				'debug_mode' => defined('FLEXIFY_CHECKOUT_DEBUG_MODE') && FLEXIFY_CHECKOUT_DEBUG_MODE === true ? 'yes' : 'no',
-				'get_array_checkout_fields' => Helpers::get_array_index_checkout_fields(),
-				'i18n' => array(
-					'confirm_deactivate_license' => esc_html__( 'Tem certeza que deseja desativar sua licença?', 'flexify-checkout-for-woocommerce' ),
-					'set_logo_modal_title' => esc_html__( 'Escolher Imagem de cabeçalho', 'flexify-checkout-for-woocommerce' ),
-					'use_this_image_title' => esc_html__( 'Usar esta imagem', 'flexify-checkout-for-woocommerce' ),
-					'offline_toast_header' => esc_html__( 'Ops! Não há conexão com a internet', 'flexify-checkout-for-woocommerce' ),
-                	'offline_toast_body' => esc_html__( 'As alterações não serão salvas.', 'flexify-checkout-for-woocommerce' ),
-					'confirm_exclude_field' => esc_html__( 'Tem certeza que deseja excluir este campo?', 'flexify-checkout-for-woocommerce' ),
-					'confirm_remove_option' => esc_html__( 'Tem certeza que deseja excluir esta opção?', 'flexify-checkout-for-woocommerce' ),
-					'new_option_value' => esc_html__( 'Valor da opção', 'flexify-checkout-for-woocommerce' ),
-					'new_option_title' => esc_html__( 'Título da opção', 'flexify-checkout-for-woocommerce' ),
-					'placeholder_new_option_value' => esc_attr__( 'BR', 'flexify-checkout-for-woocommerce' ),
-					'placeholder_new_option_title' => esc_attr__( 'Brasil', 'flexify-checkout-for-woocommerce' ),
-					'close_aria_label_notice' => esc_attr__( 'Fechar', 'flexify-checkout-for-woocommerce' ),
-					'set_animation_modal_title' => esc_html__( 'Escolher animação', 'flexify-checkout-for-woocommerce' ),
-					'set_animation_button_title' => esc_html__( 'Usar este arquivo', 'flexify-checkout-for-woocommerce' ),
-					'fonts' => array(
-						'font_exists' => esc_html__( 'Ops! Essa fonte já existe.', 'flexify-checkout-for-woocommerce' ),
-						'type_google' => __( 'Google Fonts', 'flexify-checkout-for-woocommerce' ),
-						'type_upload' => __( 'Arquivo enviado', 'flexify-checkout-for-woocommerce' ),
-						'badge_default' => __( 'Padrão', 'flexify-checkout-for-woocommerce' ),
-						'badge_custom' => __( 'Personalizada', 'flexify-checkout-for-woocommerce' ),
-						'empty' => __( 'Ainda não há fontes personalizadas cadastradas.', 'flexify-checkout-for-woocommerce' ),
-						'edit' => __( 'Editar', 'flexify-checkout-for-woocommerce' ),
-						'delete' => __( 'Excluir', 'flexify-checkout-for-woocommerce' ),
-						'confirm_delete' => __( 'Tem certeza que deseja excluir esta fonte?', 'flexify-checkout-for-woocommerce' ),
-						'upload_keep_file' => __( 'Mantendo arquivo atual', 'flexify-checkout-for-woocommerce' ),
-						'form_title_add' => __( 'Adicionar nova fonte', 'flexify-checkout-for-woocommerce' ),
-						'form_title_edit' => __( 'Editar fonte', 'flexify-checkout-for-woocommerce' ),
-					),
-				),
-				'nonces' => array(
-					'admin' => wp_create_nonce('flexify_checkout_admin_nonce'),
-					'fonts' => wp_create_nonce('flexify_checkout_fonts'),
-					'import_export' => wp_create_nonce( \MeuMouse\Flexify_Checkout\Admin\Settings_Import_Export::NONCE_ACTION ),
-				),
-				'fonts_library' => Fonts_Manager::get_fonts(),
-			));
-		}
-	}
 
 
 	/**

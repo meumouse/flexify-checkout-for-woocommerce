@@ -9,6 +9,8 @@ const licenseKey = ref('');
 const activating = ref(false);
 const deactivating = ref(false);
 const syncing = ref(false);
+const altActivating = ref(false);
+const altFileInput = ref(null);
 
 async function activate() {
   if (!licenseKey.value || activating.value) {
@@ -52,6 +54,33 @@ async function sync() {
     syncing.value = false;
   }
 }
+
+function pickAltFile() {
+  if (altActivating.value) {
+    return;
+  }
+
+  altFileInput.value?.click();
+}
+
+async function onAltFileChange(event) {
+  const file = event.target.files?.[0];
+
+  // Reset the input so selecting the same file again re-triggers the change.
+  event.target.value = '';
+
+  if (!file || altActivating.value) {
+    return;
+  }
+
+  altActivating.value = true;
+
+  try {
+    await store.alternativeActivate(file);
+  } finally {
+    altActivating.value = false;
+  }
+}
 </script>
 
 <template>
@@ -85,14 +114,14 @@ async function sync() {
     </div>
 
     <template v-if="!store.license?.is_valid">
-      <p class="m-0 text-xs italic text-gray-500">Informe sua licença abaixo para desbloquear todos os recursos.</p>
+      <p class="m-0 text-xs italic text-slate-500">Informe sua licença abaixo para desbloquear todos os recursos.</p>
 
       <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
         <input
           v-model="licenseKey"
           type="text"
           placeholder="Código da licença"
-          class="flexify-field-input w-full max-w-md rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-ink focus:border-primary focus:ring-2 focus:ring-primary-100"
+          class="flexify-field-input w-full max-w-md rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-ink focus:border-primary focus:ring-2 focus:ring-primary-100"
         />
 
         <BaseButton :loading="activating" @click="activate">Ativar licença</BaseButton>
@@ -106,6 +135,25 @@ async function sync() {
       >
         Comprar licença
       </a>
+
+      <div class="mt-1 flex flex-col gap-2 border-t border-slate-100 pt-4">
+        <span class="text-sm font-semibold text-ink">Ativação alternativa (offline)</span>
+        <p class="m-0 text-xs italic text-slate-500">
+          Caso não consiga ativar pela chave, envie o arquivo <code>.key</code> fornecido pelo suporte.
+        </p>
+
+        <input
+          ref="altFileInput"
+          type="file"
+          accept=".key"
+          class="hidden"
+          @change="onAltFileChange"
+        />
+
+        <BaseButton variant="outline" :loading="altActivating" @click="pickAltFile">
+          Enviar arquivo de licença
+        </BaseButton>
+      </div>
     </template>
 
     <div v-else class="flex flex-wrap gap-3">

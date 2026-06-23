@@ -61,17 +61,6 @@ class Settings_Assets {
 
 
     /**
-     * Whether the legacy settings interface was explicitly requested.
-     *
-     * @since 6.0.0
-     * @return bool
-     */
-    public static function is_legacy_mode() {
-        return isset( $_GET['legacy'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-    }
-
-
-    /**
      * Enqueue the assets produced by Vite for the current admin page.
      *
      * @since 6.0.0
@@ -80,7 +69,7 @@ class Settings_Assets {
     public function enqueue_assets() {
         $page = $this->get_current_page();
 
-        if ( empty( $page ) || ! isset( $this->entries[ $page ] ) || self::is_legacy_mode() ) {
+        if ( empty( $page ) || ! isset( $this->entries[ $page ] ) ) {
             return;
         }
 
@@ -118,7 +107,6 @@ class Settings_Assets {
             'page' => 'settings',
             'view' => $view,
             'endpoint' => 'admin/settings',
-            'legacyUrl' => esc_url_raw( admin_url('admin.php?page=flexify-checkout-for-woocommerce&legacy=1') ),
         ));
     }
 

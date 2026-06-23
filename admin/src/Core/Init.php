@@ -211,7 +211,6 @@ class Init {
             'FLEXIFY_CHECKOUT_ABSPATH' => dirname( $plugin_file ) . '/',
             'FLEXIFY_CHECKOUT_INC_PATH' => $base_dir . 'admin/src/',
             'FLEXIFY_CHECKOUT_TEMPLATES_DIR' => $base_dir . 'templates/',
-            'FLEXIFY_CHECKOUT_SETTINGS_TABS_DIR' => $base_dir . 'admin/src/Views/Settings/Tabs/',
             'FLEXIFY_CHECKOUT_URL' => $base_url,
             'FLEXIFY_CHECKOUT_ASSETS' => $base_url . 'assets/',
         );
@@ -620,11 +619,14 @@ class Init {
             '\MeuMouse\Flexify_Checkout\Tracking\Router',
             '\MeuMouse\Flexify_Checkout\API\REST_Checkout_Fields',
             '\MeuMouse\Flexify_Checkout\Admin\Settings\Views\Integrations',
-            '\MeuMouse\Flexify_Checkout\Admin\Settings_Import_Export',
-            // Settings snapshot import/export over REST (Vue admin), alongside
-            // the legacy admin-ajax handlers kept above for the &legacy=1 screen.
+            // Settings snapshot import/export over REST (Vue admin). The
+            // Settings_Import_Export helper is no longer instantiated — its
+            // build_payload()/apply_payload() are called statically below.
             '\MeuMouse\Flexify_Checkout\Rest\Settings_Export',
             '\MeuMouse\Flexify_Checkout\Rest\Settings_Import',
+            // Offline/manual license activation via uploaded .key file, ported
+            // from the removed legacy admin-ajax handler to a REST endpoint.
+            '\MeuMouse\Flexify_Checkout\Rest\License_Alternative_Activate',
             // Optional React checkout: template swap + public/headless REST API.
             // Listed manually because the cached class registry only scans the
             // Composer classmap (which is hand-maintained, never dump-autoloaded).

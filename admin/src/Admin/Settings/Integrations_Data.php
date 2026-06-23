@@ -48,7 +48,7 @@ class Integrations_Data {
                 'description' => __( 'Comece a receber via Pix e Boleto com aprovação imediata e sem cobrança de taxas. Exclusivo para clientes Inter Empresas.', 'flexify-checkout-for-woocommerce' ),
                 'slug' => 'module-inter-bank-for-flexify-checkout/module-inter-bank-for-flexify-checkout.php',
                 'download_url' => 'https://github.com/meumouse/module-inter-bank-for-flexify-checkout/raw/main/dist/module-inter-bank-for-flexify-checkout.zip',
-                'settings_url' => admin_url('admin.php?page=flexify-checkout-for-woocommerce&legacy=1#integrations'),
+                'settings_url' => admin_url('admin.php?page=flexify-checkout-apps'),
             ) ),
             self::module_card( array(
                 'id' => 'recovery-carts',
