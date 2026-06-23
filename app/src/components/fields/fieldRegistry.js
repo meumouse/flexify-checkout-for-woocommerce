@@ -1,4 +1,3 @@
-import { defineAsyncComponent } from 'vue';
 import ToggleSwitch from '../toggles/ToggleSwitch.vue';
 import TextField from './TextField.vue';
 import NumberField from './NumberField.vue';
@@ -7,9 +6,11 @@ import SelectField from './SelectField.vue';
 import ColorPickerField from './ColorPickerField.vue';
 import DimensionField from './DimensionField.vue';
 import MediaPickerField from './MediaPickerField.vue';
-
-// CodeMirror is heavy, so the code editor is lazy-loaded on first render.
-const CodeEditorField = defineAsyncComponent(() => import('./CodeEditorField.vue'));
+// Imported eagerly (NOT via defineAsyncComponent): the async component wrapper
+// combined with this component's template ref crashes Vue 3.5's setRef with a
+// null owner instance. CodeMirror itself is still lazy-loaded inside the
+// component, so the heavy editor bundle stays out of the initial chunk.
+import CodeEditorField from './CodeEditorField.vue';
 
 const registry = new Map();
 
