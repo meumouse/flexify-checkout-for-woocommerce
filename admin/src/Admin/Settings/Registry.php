@@ -792,6 +792,10 @@ class Registry {
                     'id' => 'about-actions',
                     'component' => 'about-actions',
                 ),
+                array(
+                    'id' => 'about-system',
+                    'component' => 'system-status',
+                ),
             ),
         );
     }

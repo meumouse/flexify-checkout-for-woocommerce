@@ -82,19 +82,19 @@ function removeItem(item) {
       v-model="term"
       type="text"
       :placeholder="placeholder"
-      class="flexify-field-input w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-ink focus:border-primary focus:ring-2 focus:ring-primary-100"
+      class="flexify-field-input w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-ink focus:border-primary focus:ring-2 focus:ring-primary-100"
     />
 
     <div v-if="searching" class="text-xs text-muted">Pesquisando...</div>
 
     <ul
       v-else-if="results.length"
-      class="m-0 flex max-h-44 list-none flex-col gap-0.5 overflow-y-auto rounded-lg border border-gray-200 bg-white p-1"
+      class="m-0 flex max-h-44 list-none flex-col gap-0.5 overflow-y-auto rounded-lg border border-slate-200 bg-white p-1"
     >
       <li v-for="item in results" :key="item.id">
         <button
           type="button"
-          class="flex w-full cursor-pointer items-center justify-between rounded-md border-0 bg-transparent px-2.5 py-1.5 text-left text-sm text-ink hover:bg-gray-100"
+          class="flex w-full cursor-pointer items-center justify-between rounded-md border-0 bg-transparent px-2.5 py-1.5 text-left text-sm text-ink hover:bg-slate-100"
           @click="toggleItem(item)"
         >
           {{ item.label }}

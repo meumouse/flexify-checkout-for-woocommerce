@@ -117,7 +117,7 @@ async function removeFont(id, font) {
   }
 }
 
-const inputClass = 'flexify-field-input w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-ink focus:border-primary focus:ring-2 focus:ring-primary-100';
+const inputClass = 'flexify-field-input w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-ink focus:border-primary focus:ring-2 focus:ring-primary-100';
 </script>
 
 <template>
@@ -126,14 +126,14 @@ const inputClass = 'flexify-field-input w-full rounded-lg border border-gray-300
       <li
         v-for="(font, id) in fonts"
         :key="id"
-        class="flex items-center justify-between gap-3 rounded-lg border border-gray-200 bg-white px-3 py-2"
+        class="flex items-center justify-between gap-3 rounded-lg border border-slate-200 bg-white px-3 py-2"
       >
         <div class="flex min-w-0 items-center gap-2">
           <span class="truncate text-sm text-ink">{{ font.font_name || id }}</span>
 
           <span
             class="shrink-0 rounded-full px-2 py-0.5 text-[10px] font-medium"
-            :class="font.source === 'custom' ? 'bg-primary-100 text-primary' : 'bg-gray-100 text-muted'"
+            :class="font.source === 'custom' ? 'bg-primary-100 text-primary' : 'bg-slate-100 text-muted'"
           >
             {{ font.source === 'custom' ? (font.type === 'upload' ? 'Upload' : 'Google Fonts') : 'Padrão' }}
           </span>
@@ -150,7 +150,7 @@ const inputClass = 'flexify-field-input w-full rounded-lg border border-gray-300
           <button
             v-if="font.source === 'custom'"
             type="button"
-            class="cursor-pointer rounded-lg border border-gray-300 bg-transparent px-2.5 py-1 text-xs font-medium text-ink transition-colors hover:bg-gray-100"
+            class="cursor-pointer rounded-lg border border-slate-300 bg-transparent px-2.5 py-1 text-xs font-medium text-ink transition-colors hover:bg-slate-100"
             @click="openEdit(id, font)"
           >
             Editar

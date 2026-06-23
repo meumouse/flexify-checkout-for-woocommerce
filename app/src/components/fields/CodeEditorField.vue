@@ -81,7 +81,7 @@ onBeforeUnmount(() => {
 <template>
   <div
     ref="host"
-    class="flexify-code-editor w-full overflow-hidden rounded-lg border border-gray-300"
+    class="flexify-code-editor w-full overflow-hidden rounded-lg border border-slate-300"
     :class="disabled ? 'pointer-events-none opacity-60' : ''"
   />
 </template>

@@ -38,7 +38,7 @@ function openMediaLibrary() {
 </script>
 
 <template>
-  <div class="inline-flex w-full max-w-md items-stretch overflow-hidden rounded-lg border border-gray-300 bg-white" :class="disabled ? 'opacity-50' : ''">
+  <div class="inline-flex w-full max-w-md items-stretch overflow-hidden rounded-lg border border-slate-300 bg-white" :class="disabled ? 'opacity-50' : ''">
     <input
       v-model="model"
       type="text"
@@ -50,7 +50,7 @@ function openMediaLibrary() {
     <button
       type="button"
       :disabled="disabled"
-      class="cursor-pointer whitespace-nowrap border-0 border-l border-gray-200 bg-gray-50 px-4 py-2 text-sm font-medium text-ink transition-colors hover:bg-gray-100"
+      class="cursor-pointer whitespace-nowrap border-0 border-l border-slate-200 bg-slate-50 px-4 py-2 text-sm font-medium text-ink transition-colors hover:bg-slate-100"
       @click="openMediaLibrary"
     >
       Procurar

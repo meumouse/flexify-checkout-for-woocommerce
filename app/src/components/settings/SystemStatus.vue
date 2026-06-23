@@ -5,6 +5,7 @@ import { useSettingsStore } from '../../stores/useSettingsStore';
 const store = useSettingsStore();
 
 const system = computed(() => store.runtime?.system || {});
+const phpSettings = computed(() => system.value.php_settings || {});
 
 function parseSize(value) {
   const raw = String(value || '').trim().toUpperCase();
@@ -25,109 +26,112 @@ function parseSize(value) {
   return number;
 }
 
-const phpSettings = computed(() => system.value.php_settings || {});
+const wordpressRows = computed(() => [
+  { label: 'Versão do WordPress', value: system.value.wp_version || '—', status: 'info' },
+  { label: 'WordPress Multisite', value: system.value.multisite ? 'Sim' : 'Não', status: 'info' },
+  { label: 'WP_DEBUG', value: system.value.wp_debug ? 'Ativado' : 'Desativado', status: system.value.wp_debug ? 'warning' : 'success' },
+]);
+
+const pluginRows = computed(() => [
+  {
+    label: 'Versão do Flexify Checkout',
+    value: `${store.runtime?.version || '—'}${store.isPro ? ' Pro' : ''}`,
+    status: 'info',
+  },
+  {
+    label: 'Versão do WooCommerce',
+    value: system.value.wc_version || '—',
+    status: system.value.wc_version ? 'success' : 'warning',
+  },
+]);
 
 const serverRows = computed(() => [
+  { label: 'Versão do PHP', value: system.value.php_version || '—', status: 'success' },
+  { label: 'DOMDocument', value: system.value.extensions?.dom ? 'Sim' : 'Não', status: system.value.extensions?.dom ? 'success' : 'danger' },
+  { label: 'Extensão cURL', value: system.value.extensions?.curl ? 'Sim' : 'Não', status: system.value.extensions?.curl ? 'success' : 'danger' },
+  { label: 'Extensão OpenSSL', value: system.value.extensions?.openssl ? 'Sim' : 'Não', status: system.value.extensions?.openssl ? 'success' : 'danger' },
+  { label: 'Extensão GD', value: system.value.extensions?.gd ? 'Sim' : 'Não', status: system.value.extensions?.gd ? 'success' : 'warning' },
   {
-    label: 'Versão do PHP:',
-    value: system.value.php_version || '—',
-    ok: true,
-    hint: '',
-  },
-  { label: 'DOMDocument:', value: system.value.extensions?.dom ? 'Sim' : 'Não', ok: Boolean(system.value.extensions?.dom) },
-  { label: 'Extensão cURL:', value: system.value.extensions?.curl ? 'Sim' : 'Não', ok: Boolean(system.value.extensions?.curl) },
-  { label: 'Extensão GD:', value: system.value.extensions?.gd ? 'Sim' : 'Não', ok: Boolean(system.value.extensions?.gd) },
-  { label: 'Extensão OpenSSL:', value: system.value.extensions?.openssl ? 'Sim' : 'Não', ok: Boolean(system.value.extensions?.openssl) },
-  {
-    label: 'Tamanho máximo da postagem do PHP:',
+    label: 'post_max_size',
     value: phpSettings.value.post_max_size || '—',
-    ok: parseSize(phpSettings.value.post_max_size) >= 64,
+    status: parseSize(phpSettings.value.post_max_size) >= 64 ? 'success' : 'warning',
     hint: 'Valor mínimo recomendado é 64M',
   },
   {
-    label: 'Limite de tempo do PHP:',
+    label: 'max_execution_time',
     value: phpSettings.value.max_execution_time || '—',
-    ok: Number(phpSettings.value.max_execution_time) === 0 || Number(phpSettings.value.max_execution_time) >= 180,
+    status: Number(phpSettings.value.max_execution_time) === 0 || Number(phpSettings.value.max_execution_time) >= 180 ? 'success' : 'warning',
     hint: 'Valor mínimo recomendado é 180',
   },
   {
-    label: 'Variáveis máximas de entrada do PHP:',
+    label: 'max_input_vars',
     value: phpSettings.value.max_input_vars || '—',
-    ok: Number(phpSettings.value.max_input_vars) >= 10000,
+    status: Number(phpSettings.value.max_input_vars) >= 10000 ? 'success' : 'warning',
     hint: 'Valor mínimo recomendado é 10000',
   },
   {
-    label: 'Limite de memória do PHP:',
+    label: 'memory_limit',
     value: phpSettings.value.memory_limit || '—',
-    ok: parseSize(phpSettings.value.memory_limit) >= 128 || String(phpSettings.value.memory_limit) === '-1',
+    status: parseSize(phpSettings.value.memory_limit) >= 128 || String(phpSettings.value.memory_limit) === '-1' ? 'success' : 'warning',
     hint: 'Valor mínimo recomendado é 128M',
   },
+  { label: 'upload_max_filesize', value: phpSettings.value.upload_max_filesize || '—', status: 'success' },
   {
-    label: 'Tamanho máximo de envio do PHP:',
-    value: phpSettings.value.upload_max_filesize || '—',
-    ok: true,
-  },
-  {
-    label: 'Função PHP "file_get_content":',
+    label: 'allow_url_fopen',
     value: system.value.file_get_content ? 'Ligado' : 'Desligado',
-    ok: Boolean(system.value.file_get_content),
+    status: system.value.file_get_content ? 'success' : 'warning',
   },
 ]);
+
+const columns = computed(() => [
+  { key: 'wordpress', title: 'WordPress', rows: wordpressRows.value },
+  { key: 'plugin', title: 'Flexify Checkout', rows: pluginRows.value },
+  { key: 'server', title: 'Servidor', rows: serverRows.value },
+]);
+
+function statusClass(status) {
+  const map = {
+    success: 'bg-emerald-100 text-emerald-600',
+    warning: 'bg-amber-100 text-amber-700',
+    danger: 'bg-rose-100 text-rose-700',
+    info: 'bg-slate-100 text-slate-600',
+  };
+
+  return map[status] || map.info;
+}
+
+function statusLabel(status) {
+  if (status === 'success') return 'OK';
+  if (status === 'warning') return 'Atenção';
+  if (status === 'danger') return 'Erro';
+  return 'Informações';
+}
 </script>
 
 <template>
-  <div class="flex flex-col gap-5 py-5">
-    <h3 class="m-0 text-sm font-semibold text-brand">Status do sistema:</h3>
+  <div class="space-y-6 py-5">
+    <h3 class="m-0 text-[15px] font-semibold text-slate-800">Estado do sistema:</h3>
 
-    <div>
-      <p class="m-0 mb-2 text-[13px] font-semibold text-brand">WordPress</p>
+    <div class="grid gap-6 lg:grid-cols-3">
+      <div v-for="column in columns" :key="column.key">
+        <h4 class="m-0 text-[14px] font-semibold text-slate-700">{{ column.title }}</h4>
 
-      <div class="flex flex-col gap-2 text-sm text-ink">
-        <div class="flex items-center gap-2">
-          Versão do WordPress:
-          <span class="font-medium">{{ system.wp_version || '—' }}</span>
-        </div>
-        <div class="flex items-center gap-2">
-          WordPress Multisite:
-          <span class="font-medium">{{ system.multisite ? 'Sim' : 'Não' }}</span>
-        </div>
-        <div class="flex items-center gap-2">
-          Modo de depuração do WordPress:
-          <span class="font-medium">{{ system.wp_debug ? 'Ativo' : 'Desativado' }}</span>
-        </div>
-      </div>
-    </div>
-
-    <div>
-      <p class="m-0 mb-2 text-[13px] font-semibold text-brand">WooCommerce</p>
-
-      <div class="flex flex-col gap-2 text-sm text-ink">
-        <div class="flex items-center gap-2">
-          Versão do WooCommerce:
-          <span class="rounded-md bg-success/10 px-2 py-0.5 text-xs font-semibold text-success">{{ system.wc_version || '—' }}</span>
-        </div>
-        <div class="flex items-center gap-2">
-          Versão do Flexify Checkout para WooCommerce:
-          <span class="rounded-md bg-success/10 px-2 py-0.5 text-xs font-semibold text-success">
-            {{ store.runtime?.version }}{{ store.isPro ? ' Pro' : '' }}
-          </span>
-        </div>
-      </div>
-    </div>
-
-    <div>
-      <p class="m-0 mb-2 text-[13px] font-semibold text-brand">Servidor</p>
-
-      <div class="flex flex-col gap-2 text-sm text-ink">
-        <div v-for="row in serverRows" :key="row.label" class="flex flex-wrap items-center gap-2">
-          {{ row.label }}
-          <span
-            class="rounded-md px-2 py-0.5 text-xs font-semibold"
-            :class="row.ok ? 'bg-success/10 text-success' : 'bg-danger/10 text-danger'"
+        <div class="mt-4 space-y-3">
+          <div
+            v-for="row in column.rows"
+            :key="row.label"
+            class="flex items-center justify-between gap-3 border-b border-slate-100 pb-2"
           >
-            {{ row.value }}
-          </span>
-          <span v-if="row.hint && !row.ok" class="text-xs text-muted">{{ row.hint }}</span>
+            <div class="pr-4">
+              <div class="text-[13px] text-slate-500">{{ row.label }}</div>
+              <div class="text-[14px] font-medium text-slate-700">{{ row.value }}</div>
+              <div v-if="row.hint && row.status !== 'success'" class="mt-0.5 text-[11px] text-amber-700">{{ row.hint }}</div>
+            </div>
+
+            <span class="shrink-0 rounded-full px-3 py-1 text-[12px] font-semibold" :class="statusClass(row.status)">
+              {{ statusLabel(row.status) }}
+            </span>
+          </div>
         </div>
       </div>
     </div>

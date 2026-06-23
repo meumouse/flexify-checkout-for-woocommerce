@@ -21,12 +21,12 @@ const emit = defineEmits(['close']);
         role="dialog"
         aria-modal="true"
       >
-        <header class="flex items-center justify-between border-b border-gray-100 px-6 py-4">
+        <header class="flex items-center justify-between border-b border-slate-100 px-6 py-4">
           <h3 class="m-0 text-base font-semibold text-ink">{{ title }}</h3>
 
           <button
             type="button"
-            class="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border-0 bg-transparent text-muted transition-colors hover:bg-gray-100 hover:text-ink"
+            class="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border-0 bg-transparent text-muted transition-colors hover:bg-slate-100 hover:text-ink"
             aria-label="Fechar"
             @click="emit('close')"
           >
@@ -38,7 +38,7 @@ const emit = defineEmits(['close']);
           <slot />
         </div>
 
-        <footer v-if="$slots.footer" class="border-t border-gray-100 px-6 py-4">
+        <footer v-if="$slots.footer" class="border-t border-slate-100 px-6 py-4">
           <slot name="footer" />
         </footer>
       </div>

@@ -35,7 +35,7 @@ function removeProvider(provider) {
       <span
         v-for="provider in providers"
         :key="provider"
-        class="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-ink"
+        class="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-ink"
       >
         {{ provider }}
 
@@ -55,7 +55,7 @@ function removeProvider(provider) {
         v-model="newProvider"
         type="text"
         placeholder="exemplo.com.br"
-        class="flexify-field-input w-full max-w-xs rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-ink focus:border-primary focus:ring-2 focus:ring-primary-100"
+        class="flexify-field-input w-full max-w-xs rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-ink focus:border-primary focus:ring-2 focus:ring-primary-100"
         @keyup.enter="addProvider"
       />
 

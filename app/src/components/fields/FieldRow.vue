@@ -105,7 +105,7 @@ const placeholders = computed(() => (Array.isArray(props.field?.placeholders) ? 
     <ModalDialog v-if="popup" :open="popupOpen" :title="popup.title || popup.button" size="lg" @close="popupOpen = false">
       <component :is="popupComponents[popup.component]" v-if="popup.component && popupComponents[popup.component]" />
 
-      <div v-else-if="Array.isArray(popup.fields)" class="divide-y divide-gray-100">
+      <div v-else-if="Array.isArray(popup.fields)" class="divide-y divide-slate-100">
         <FieldRow v-for="subField in popup.fields" :key="subField.key" :field="subField" />
       </div>
 

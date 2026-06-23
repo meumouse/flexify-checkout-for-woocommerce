@@ -23,7 +23,7 @@ const options = computed(() => (Array.isArray(props.field?.options) ? props.fiel
     v-model="model"
     :name="name"
     :disabled="disabled"
-    class="flexify-field-input w-full max-w-md rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-ink focus:border-primary focus:ring-2 focus:ring-primary-100"
+    class="flexify-field-input w-full max-w-md rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-ink focus:border-primary focus:ring-2 focus:ring-primary-100"
     :class="disabled ? 'cursor-not-allowed opacity-50' : ''"
   >
     <option

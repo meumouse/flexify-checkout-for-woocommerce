@@ -27,7 +27,7 @@ const units = computed(() => (Array.isArray(props.field?.units) ? props.field.un
 </script>
 
 <template>
-  <div class="inline-flex items-stretch overflow-hidden rounded-lg border border-gray-300 bg-white" :class="disabled ? 'opacity-50' : ''">
+  <div class="inline-flex items-stretch overflow-hidden rounded-lg border border-slate-300 bg-white" :class="disabled ? 'opacity-50' : ''">
     <input
       v-model="value"
       type="number"
@@ -40,7 +40,7 @@ const units = computed(() => (Array.isArray(props.field?.units) ? props.field.un
     <select
       v-model="unit"
       :disabled="disabled"
-      class="cursor-pointer border-0 border-l border-gray-200 bg-gray-50 px-2 py-2 text-sm text-ink focus:outline-none"
+      class="cursor-pointer border-0 border-l border-slate-200 bg-slate-50 px-2 py-2 text-sm text-ink focus:outline-none"
     >
       <option v-for="option in units" :key="option.value" :value="option.value">{{ option.label }}</option>
     </select>

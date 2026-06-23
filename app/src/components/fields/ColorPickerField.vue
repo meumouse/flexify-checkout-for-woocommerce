@@ -31,8 +31,8 @@ function resetToDefault() {
 
 <template>
   <div class="inline-flex items-stretch gap-2" :class="disabled ? 'opacity-50' : ''">
-    <div class="inline-flex items-stretch overflow-hidden rounded-lg border border-gray-300 bg-white">
-      <label class="flex cursor-pointer items-center border-r border-gray-200 px-1.5">
+    <div class="inline-flex items-stretch overflow-hidden rounded-lg border border-slate-300 bg-white">
+      <label class="flex cursor-pointer items-center border-r border-slate-200 px-1.5">
         <span class="block h-6 w-9 rounded" :style="{ backgroundColor: modelValue || '#000000' }" />
         <input v-model="model" type="color" :name="name" :disabled="disabled" class="sr-only" />
       </label>
@@ -50,7 +50,7 @@ function resetToDefault() {
       v-if="hasDefault"
       type="button"
       :disabled="disabled"
-      class="flex cursor-pointer items-center justify-center rounded-lg border border-gray-300 bg-white px-2.5 text-muted transition-colors hover:bg-gray-50 hover:text-ink"
+      class="flex cursor-pointer items-center justify-center rounded-lg border border-slate-300 bg-white px-2.5 text-muted transition-colors hover:bg-slate-50 hover:text-ink"
       title="Redefinir para cor padrão"
       aria-label="Redefinir para cor padrão"
       @click="resetToDefault"

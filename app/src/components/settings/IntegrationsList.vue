@@ -135,7 +135,7 @@ async function activateModule(card) {
   }
 }
 
-const inputClass = 'flexify-field-input w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-ink focus:border-primary focus:ring-2 focus:ring-primary-100';
+const inputClass = 'flexify-field-input w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-ink focus:border-primary focus:ring-2 focus:ring-primary-100';
 </script>
 
 <template>
@@ -147,18 +147,18 @@ const inputClass = 'flexify-field-input w-full rounded-lg border border-gray-300
       <div
         v-for="card in section.cards"
         :key="card.id"
-        class="flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white"
+        class="flex flex-col overflow-hidden rounded-lg border border-slate-200 bg-white"
       >
         <!-- Third-party cards keep their legacy HTML rendering -->
         <div v-if="card.type === 'custom'" v-html="card.html" />
 
         <template v-else>
-          <div class="flex items-center justify-center border-b border-gray-200 px-6 py-8">
+          <div class="flex items-center justify-center border-b border-slate-200 px-6 py-8">
             <span class="integration-icon flex h-20 items-center justify-center" v-html="card.icon" />
           </div>
 
           <div class="flex flex-1 flex-col items-center gap-3 px-5 py-6 text-center">
-            <h4 class="m-0 text-base font-semibold leading-snug text-brand">{{ card.title }}</h4>
+            <h4 class="m-0 text-lg font-semibold leading-snug text-slate-700">{{ card.title }}</h4>
 
             <span
               v-if="card.pro && !store.isPro"
@@ -234,7 +234,7 @@ const inputClass = 'flexify-field-input w-full rounded-lg border border-gray-300
           <div class="mb-3 flex items-center justify-between gap-4">
             <div>
               <p class="m-0 text-sm font-semibold text-brand">{{ platform.label }}</p>
-              <p class="m-0 mt-0.5 text-xs italic text-gray-500">{{ platform.description }}</p>
+              <p class="m-0 mt-0.5 text-xs italic text-slate-500">{{ platform.description }}</p>
             </div>
 
             <ToggleSwitch
@@ -260,7 +260,7 @@ const inputClass = 'flexify-field-input w-full rounded-lg border border-gray-300
 
         <section>
           <p class="mb-1 mt-0 text-sm font-semibold text-brand">Eventos por plataforma</p>
-          <p class="m-0 mb-3 text-xs italic text-gray-500">
+          <p class="m-0 mb-3 text-xs italic text-slate-500">
             Defina quais eventos do checkout serão enviados para cada plataforma. As credenciais acima precisam estar configuradas para o disparo acontecer.
           </p>
 
@@ -268,11 +268,11 @@ const inputClass = 'flexify-field-input w-full rounded-lg border border-gray-300
             <div
               v-for="event in TRACKING_EVENTS"
               :key="event.key"
-              class="flex flex-col gap-2 rounded-xl border border-gray-200 p-3 sm:flex-row sm:items-center sm:justify-between"
+              class="flex flex-col gap-2 rounded-xl border border-slate-200 p-3 sm:flex-row sm:items-center sm:justify-between"
             >
               <div>
                 <p class="m-0 text-sm font-medium text-brand">{{ event.label }}</p>
-                <p class="m-0 mt-0.5 text-xs italic text-gray-500">{{ event.description }}</p>
+                <p class="m-0 mt-0.5 text-xs italic text-slate-500">{{ event.description }}</p>
                 <code class="text-[10px] text-muted">{{ event.key }}</code>
               </div>
 
@@ -294,7 +294,7 @@ const inputClass = 'flexify-field-input w-full rounded-lg border border-gray-300
           </div>
         </section>
 
-        <p class="m-0 text-xs italic text-gray-500">
+        <p class="m-0 text-xs italic text-slate-500">
           As alterações deste painel são aplicadas ao clicar em "Salvar alterações" no rodapé da página.
         </p>
       </div>

@@ -264,7 +264,7 @@ async function removeField(fieldId) {
   }
 }
 
-const inputClass = 'flexify-field-input w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-ink focus:border-primary focus:ring-2 focus:ring-primary-100';
+const inputClass = 'flexify-field-input w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-ink focus:border-primary focus:ring-2 focus:ring-primary-100';
 </script>
 
 <template>
@@ -281,7 +281,7 @@ const inputClass = 'flexify-field-input w-full rounded-lg border border-gray-300
         <div
           v-for="step in STEPS"
           :key="step.id"
-          class="rounded-xl border border-gray-200 bg-gray-50/60 p-4"
+          class="rounded-xl border border-slate-200 bg-slate-50/60 p-4"
         >
           <p class="mb-3 mt-0 text-xs font-semibold uppercase tracking-wide text-muted">{{ step.title }}</p>
 
@@ -289,7 +289,7 @@ const inputClass = 'flexify-field-input w-full rounded-lg border border-gray-300
             <li
               v-for="([fieldId, field], index) in (step.id === '1' ? stepOne : stepTwo)"
               :key="fieldId"
-              class="flex items-center justify-between gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2"
+              class="flex items-center justify-between gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2"
               :class="field.enabled === 'no' ? 'opacity-60' : ''"
             >
               <div class="flex min-w-0 items-center gap-2">
@@ -319,7 +319,7 @@ const inputClass = 'flexify-field-input w-full rounded-lg border border-gray-300
 
                 <span
                   v-if="field.enabled === 'no'"
-                  class="shrink-0 rounded-full bg-gray-200 px-2 py-0.5 text-[10px] font-medium text-muted"
+                  class="shrink-0 rounded-full bg-slate-200 px-2 py-0.5 text-[10px] font-medium text-muted"
                 >
                   Inativo
                 </span>
@@ -392,7 +392,7 @@ const inputClass = 'flexify-field-input w-full rounded-lg border border-gray-300
 
           <ul class="m-0 mb-2 flex list-none flex-col gap-1.5 p-0">
             <li v-for="(option, index) in editor.options" :key="`${option.value}-${index}`" class="flex items-center gap-2">
-              <code class="rounded bg-gray-100 px-2 py-1 text-xs">{{ option.value }}</code>
+              <code class="rounded bg-slate-100 px-2 py-1 text-xs">{{ option.value }}</code>
               <span class="flex-1 text-sm text-ink">{{ option.text }}</span>
               <button
                 type="button"
@@ -460,7 +460,7 @@ const inputClass = 'flexify-field-input w-full rounded-lg border border-gray-300
         <div>
           <label class="mb-1 block text-sm font-medium text-ink">Nome e ID do campo *</label>
           <div class="flex items-center">
-            <span class="rounded-l-lg border border-r-0 border-gray-300 bg-gray-100 px-3 py-2 text-sm text-muted">billing_</span>
+            <span class="rounded-l-lg border border-r-0 border-slate-300 bg-slate-100 px-3 py-2 text-sm text-muted">billing_</span>
             <input v-model="addForm.id" type="text" :class="inputClass" class="!rounded-l-none" />
           </div>
           <p v-if="addIdInUse" class="m-0 mt-1.5 text-xs text-danger">
@@ -487,7 +487,7 @@ const inputClass = 'flexify-field-input w-full rounded-lg border border-gray-300
 
           <ul class="m-0 mb-2 flex list-none flex-col gap-1.5 p-0">
             <li v-for="(option, index) in addForm.options" :key="`${option.value}-${index}`" class="flex items-center gap-2">
-              <code class="rounded bg-gray-100 px-2 py-1 text-xs">{{ option.value }}</code>
+              <code class="rounded bg-slate-100 px-2 py-1 text-xs">{{ option.value }}</code>
               <span class="flex-1 text-sm text-ink">{{ option.text }}</span>
               <button
                 type="button"

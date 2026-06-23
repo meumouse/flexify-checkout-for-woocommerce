@@ -21,7 +21,7 @@ function selectTheme(theme) {
   <div class="py-5">
     <div class="w-full sm:w-[340px] sm:pr-8">
       <span class="text-[13px] font-semibold leading-snug text-brand">Selecione um tema</span>
-      <p class="m-0 mt-1 text-xs italic leading-relaxed text-gray-500">
+      <p class="m-0 mt-1 text-xs italic leading-relaxed text-slate-500">
         Selecione um tema que será carregado na página de finalização de compras.
       </p>
     </div>
@@ -33,7 +33,7 @@ function selectTheme(theme) {
         type="button"
         class="relative w-64 overflow-hidden rounded-xl border-2 bg-white p-0 text-left transition-all"
         :class="[
-          current === theme.value ? 'border-primary shadow-sm' : 'border-gray-200',
+          current === theme.value ? 'border-primary shadow-sm' : 'border-slate-200',
           theme.status === 'active' ? 'cursor-pointer hover:border-primary-300' : 'cursor-not-allowed',
         ]"
         @click="selectTheme(theme)"
@@ -46,8 +46,8 @@ function selectTheme(theme) {
           <span class="text-sm font-medium">Em breve...</span>
         </div>
 
-        <div v-if="theme.icon" class="theme-preview flex min-h-[150px] items-center justify-center bg-gray-50" v-html="theme.icon" />
-        <div v-else class="min-h-[150px] bg-gray-50" />
+        <div v-if="theme.icon" class="theme-preview flex min-h-[150px] items-center justify-center bg-slate-50" v-html="theme.icon" />
+        <div v-else class="min-h-[150px] bg-slate-50" />
 
         <div class="px-4 py-3 text-center">
           <span class="text-sm font-semibold text-brand">{{ theme.label }}</span>

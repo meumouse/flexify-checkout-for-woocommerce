@@ -216,7 +216,7 @@ async function remove(item) {
   }
 }
 
-const inputClass = 'flexify-field-input w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-ink focus:border-primary focus:ring-2 focus:ring-primary-100';
+const inputClass = 'flexify-field-input w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-ink focus:border-primary focus:ring-2 focus:ring-primary-100';
 </script>
 
 <template>
@@ -240,7 +240,7 @@ const inputClass = 'flexify-field-input w-full rounded-lg border border-gray-300
         <li
           v-for="item in store.conditions"
           :key="item.index"
-          class="flex items-center justify-between gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3"
+          class="flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3"
         >
           <div class="min-w-0">
             <p class="m-0 truncate text-sm font-medium text-ink">{{ item.summary?.line_1 }}</p>
@@ -250,7 +250,7 @@ const inputClass = 'flexify-field-input w-full rounded-lg border border-gray-300
           <div class="flex shrink-0 items-center gap-1.5">
             <button
               type="button"
-              class="cursor-pointer rounded-lg border border-gray-300 bg-transparent px-2.5 py-1 text-xs font-medium text-ink transition-colors hover:bg-gray-100"
+              class="cursor-pointer rounded-lg border border-slate-300 bg-transparent px-2.5 py-1 text-xs font-medium text-ink transition-colors hover:bg-slate-100"
               @click="openEdit(item)"
             >
               Editar
