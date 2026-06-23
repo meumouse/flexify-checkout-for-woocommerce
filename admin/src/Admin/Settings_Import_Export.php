@@ -65,10 +65,14 @@ class Settings_Import_Export {
     /**
      * Build the export payload from the current configuration options.
      *
+     * Static so the REST export endpoint can reuse it without re-instantiating
+     * this class (which would re-register the legacy admin-ajax hooks).
+     *
      * @since 5.5.4
+     * @version 6.0.0
      * @return array
      */
-    public function build_payload() {
+    public static function build_payload() {
         $data = array();
 
         foreach ( self::OPTION_GROUPS as $option => $args ) {
@@ -108,7 +112,7 @@ class Settings_Import_Export {
             wp_die( esc_html__( 'Verificação de segurança falhou. Recarregue a página e tente novamente.', 'flexify-checkout-for-woocommerce' ), '', array( 'response' => 403 ) );
         }
 
-        $payload = $this->build_payload();
+        $payload = self::build_payload();
         $json = wp_json_encode( $payload, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES );
 
         $site_slug = sanitize_title( wp_parse_url( home_url(), PHP_URL_HOST ) ?: 'site' );
@@ -128,11 +132,15 @@ class Settings_Import_Export {
     /**
      * Apply an imported settings snapshot, overwriting the current option groups.
      *
+     * Static so the REST import endpoint can reuse it without re-instantiating
+     * this class (which would re-register the legacy admin-ajax hooks).
+     *
      * @since 5.5.4
+     * @version 6.0.0
      * @param array $data Map of option name => value from a valid payload.
      * @return bool True when at least one option group was written.
      */
-    public function apply_payload( $data ) {
+    public static function apply_payload( $data ) {
         $applied = false;
 
         foreach ( self::OPTION_GROUPS as $option => $args ) {
@@ -206,7 +214,7 @@ class Settings_Import_Export {
             ) );
         }
 
-        $applied = $this->apply_payload( $payload['data'] );
+        $applied = self::apply_payload( $payload['data'] );
 
         if ( $applied ) {
             wp_send_json( array(

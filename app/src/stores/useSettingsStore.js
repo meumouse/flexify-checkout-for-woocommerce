@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { apiPost, apiPostForm } from '../services/api';
+import { apiGet, apiPost, apiPostForm } from '../services/api';
 
 /**
  * Pinia store for the settings app.
@@ -20,6 +20,8 @@ export const useSettingsStore = defineStore('flexify-checkout-settings', {
     dirty: false,
     saving: false,
     resetting: false,
+    exporting: false,
+    importing: false,
     toasts: [],
   }),
 
@@ -148,6 +150,73 @@ export const useSettingsStore = defineStore('flexify-checkout-settings', {
         this.pushToast('error', 'Ocorreu um erro ao redefinir as configurações.');
       } finally {
         this.resetting = false;
+      }
+    },
+
+    async exportSettings() {
+      if (this.exporting) {
+        return;
+      }
+
+      this.exporting = true;
+
+      try {
+        const response = await apiGet('admin/settings/export');
+
+        if (response?.status !== 'success' || !response.payload) {
+          this.pushToast('error', response?.message || 'Não foi possível exportar as configurações.');
+
+          return;
+        }
+
+        const json = JSON.stringify(response.payload, null, 2);
+        const blob = new Blob([json], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+
+        link.href = url;
+        link.download = response.filename || 'flexify-checkout-settings.json';
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(url);
+
+        this.pushToast('success', 'As configurações foram exportadas com sucesso!', 'Exportado com sucesso');
+      } catch (error) {
+        this.pushToast('error', 'Não foi possível exportar as configurações.');
+      } finally {
+        this.exporting = false;
+      }
+    },
+
+    async importSettings(payload) {
+      if (this.importing) {
+        return;
+      }
+
+      this.importing = true;
+
+      try {
+        const response = await apiPost('admin/settings/import', { payload });
+
+        if (response?.status === 'success') {
+          this.settings = response.settings || this.settings;
+          this.runtime = response.runtime || this.runtime;
+          this.dirty = false;
+          this.pushToast('success', response.message || 'As configurações foram importadas com sucesso!', 'Importado com sucesso');
+
+          // Import overwrites settings, fields and conditions wholesale; reload
+          // so every store slice reflects the imported snapshot.
+          if (response.reload) {
+            window.setTimeout(() => window.location.reload(), 1200);
+          }
+        } else {
+          this.pushToast('error', response?.message || 'Não foi possível importar as configurações.');
+        }
+      } catch (error) {
+        this.pushToast('error', 'Não foi possível importar as configurações.');
+      } finally {
+        this.importing = false;
       }
     },
 

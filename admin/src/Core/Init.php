@@ -621,6 +621,10 @@ class Init {
             '\MeuMouse\Flexify_Checkout\API\REST_Checkout_Fields',
             '\MeuMouse\Flexify_Checkout\Admin\Settings\Views\Integrations',
             '\MeuMouse\Flexify_Checkout\Admin\Settings_Import_Export',
+            // Settings snapshot import/export over REST (Vue admin), alongside
+            // the legacy admin-ajax handlers kept above for the &legacy=1 screen.
+            '\MeuMouse\Flexify_Checkout\Rest\Settings_Export',
+            '\MeuMouse\Flexify_Checkout\Rest\Settings_Import',
             // Optional React checkout: template swap + public/headless REST API.
             // Listed manually because the cached class registry only scans the
             // Composer classmap (which is hand-maintained, never dump-autoloaded).
