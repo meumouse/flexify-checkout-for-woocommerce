@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * The React checkout renders inside a clean WP page template (template-react.php).
+ * Scope a few resets to the mount root so the active theme cannot leak in.
+ */
+#flexify-react-checkout {
+  --fc-primary: #141d26;
+  --fc-primary-hover: #33404d;
+  color: #102033;
+  font-family: inherit;
+  line-height: 1.5;
+}
+
+#flexify-react-checkout *,
+#flexify-react-checkout *::before,
+#flexify-react-checkout *::after {
+  box-sizing: border-box;
+}
+
+.fc-primary-bg {
+  background-color: var(--fc-primary);
+}
+
+.fc-primary-bg:hover {
+  background-color: var(--fc-primary-hover);
+}
+
+.fc-primary-text {
+  color: var(--fc-primary);
+}

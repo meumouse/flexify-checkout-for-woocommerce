@@ -223,6 +223,15 @@ class Default_Options {
             'custom_css_checkout' => '',
             'custom_js_checkout' => '',
             'direct_checkout_api' => 'yes',
+            // React checkout (optional new frontend). When disabled the classic
+            // server-rendered checkout is served unchanged.
+            'enable_react_checkout' => 'no',
+            'enable_whatsapp_login' => 'no',
+            'whatsapp_login_sender' => '',
+            'enable_google_address_search' => 'no',
+            'google_maps_api_key' => '',
+            'enable_payment_split' => 'no',
+            'enable_headless_checkout_api' => 'no',
         ));
     }
 

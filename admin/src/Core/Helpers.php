@@ -19,6 +19,30 @@ defined('ABSPATH') || exit;
 class Helpers {
 
 	/**
+	 * Whether the optional React checkout frontend is active.
+	 *
+	 * Requires the master toggle enabled and a valid license. When it returns
+	 * false the classic server-rendered checkout is served unchanged, so a
+	 * lapsed license safely falls back to the legacy checkout instead of
+	 * leaving the store without a checkout.
+	 *
+	 * @since 6.0.0
+	 * @return bool
+	 */
+	public static function is_react_checkout_enabled() {
+		$enabled = Admin_Options::get_setting('enable_react_checkout') === 'yes' && License::is_valid();
+
+		/**
+		 * Filter whether the React checkout is enabled.
+		 *
+		 * @since 6.0.0
+		 * @param bool $enabled Resolved enabled state.
+		 */
+		return (bool) apply_filters( 'Flexify_Checkout/React_Checkout/Is_Enabled', $enabled );
+	}
+
+
+	/**
 	 * Get details fields for first step checkout
 	 *
 	 * @since 1.0.0

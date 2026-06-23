@@ -621,6 +621,17 @@ class Init {
             '\MeuMouse\Flexify_Checkout\API\REST_Checkout_Fields',
             '\MeuMouse\Flexify_Checkout\Admin\Settings\Views\Integrations',
             '\MeuMouse\Flexify_Checkout\Admin\Settings_Import_Export',
+            // Optional React checkout: template swap + public/headless REST API.
+            // Listed manually because the cached class registry only scans the
+            // Composer classmap (which is hand-maintained, never dump-autoloaded).
+            '\MeuMouse\Flexify_Checkout\Checkout\React_Checkout',
+            '\MeuMouse\Flexify_Checkout\Rest\Checkout_Config',
+            '\MeuMouse\Flexify_Checkout\Rest\Checkout_Rules',
+            '\MeuMouse\Flexify_Checkout\Rest\Public_Settings',
+            '\MeuMouse\Flexify_Checkout\Rest\WhatsApp_Send',
+            '\MeuMouse\Flexify_Checkout\Rest\WhatsApp_Verify',
+            '\MeuMouse\Flexify_Checkout\Rest\Address_Autocomplete',
+            '\MeuMouse\Flexify_Checkout\Rest\Address_Details',
         ));
 
         $manual_classes_map = array();

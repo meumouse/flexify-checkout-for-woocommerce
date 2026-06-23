@@ -33,6 +33,7 @@ import listPlus from 'boxicons/svg/regular/bx-list-plus.svg?raw';
 import filterAlt from 'boxicons/svg/regular/bx-filter-alt.svg?raw';
 import palette from 'boxicons/svg/regular/bx-palette.svg?raw';
 import infoCircle from 'boxicons/svg/regular/bx-info-circle.svg?raw';
+import rocket from 'boxicons/svg/regular/bx-rocket.svg?raw';
 
 // Solid (filled) — badges and status indicators.
 import starSolid from 'boxicons/svg/solid/bxs-star.svg?raw';
@@ -58,6 +59,7 @@ export default {
   'regular/filter-alt': filterAlt,
   'regular/palette': palette,
   'regular/info-circle': infoCircle,
+  'regular/rocket': rocket,
   'solid/star': starSolid,
   'solid/check-circle': checkCircleSolid,
   'solid/error-circle': errorCircleSolid,

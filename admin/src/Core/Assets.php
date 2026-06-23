@@ -9,6 +9,7 @@ use MeuMouse\Flexify_Checkout\Checkout\Themes;
 use MeuMouse\Flexify_Checkout\Checkout\Steps;
 use MeuMouse\Flexify_Checkout\Checkout\Fields;
 use MeuMouse\Flexify_Checkout\Checkout\Conditions;
+use MeuMouse\Flexify_Checkout\Checkout\Headless_Data;
 use MeuMouse\Flexify_Checkout\Views\Styles;
 use MeuMouse\Flexify_Checkout\Validations\ISO3166;
 
@@ -139,6 +140,14 @@ class Assets {
 
 		// Remove theme global styles
 		wp_dequeue_style('global-styles');
+
+		// When the React checkout is active on the checkout step, enqueue the
+		// React bundle instead of the legacy stack and bail out early.
+		if ( is_flexify_checkout() && Helpers::is_react_checkout_enabled() ) {
+			$this->react_checkout_assets();
+
+			return;
+		}
 
 		// enqueue checkout theme styles
 		wp_enqueue_style( 'flexify-checkout-theme', $this->assets_url . 'frontend/css/templates/' . $theme . '/main'. $this->min_file .'.css', array(), $this->version, false );
@@ -299,6 +308,98 @@ class Assets {
 
 		// send params to frontend
 		wp_localize_script( 'flexify-checkout-for-woocommerce', 'flexify_checkout_params', $params );
+	}
+
+
+	/**
+	 * Enqueue and localize the React checkout bundle.
+	 *
+	 * Built by app/vite.checkout-react.config.js into app/dist/checkout-react/.
+	 * The app reads the localized flexify_react_checkout object, talks to the
+	 * WooCommerce Store API (cart/totals/place-order) and the flexify-checkout/v1
+	 * endpoints (rules, WhatsApp login, address search).
+	 *
+	 * @since 6.0.0
+	 * @return void
+	 */
+	public function react_checkout_assets() {
+		$settings = get_option('flexify_checkout_settings');
+
+		// React app styles (emitted by the Vite lib build) + dynamic color vars.
+		wp_enqueue_style(
+			'flexify-react-checkout',
+			FLEXIFY_CHECKOUT_URL . 'app/dist/checkout-react/main.css',
+			array(),
+			Scripts::get_asset_version('checkout-react/main.css')
+		);
+
+		if ( is_array( $settings ) ) {
+			wp_add_inline_style( 'flexify-react-checkout', Styles::render_dynamic_styles( $settings ) );
+
+			if ( ! empty( $settings['custom_css_checkout'] ) ) {
+				wp_add_inline_style( 'flexify-react-checkout', trim( (string) $settings['custom_css_checkout'] ) );
+			}
+		}
+
+		wp_enqueue_script(
+			'flexify-react-checkout',
+			FLEXIFY_CHECKOUT_URL . 'app/dist/checkout-react/main.js',
+			array(),
+			Scripts::get_asset_version('checkout-react/main.js'),
+			true
+		);
+
+		/**
+		 * Filter the data localized for the React checkout app.
+		 *
+		 * @since 6.0.0
+		 * @param array $data Localized data.
+		 */
+		$data = apply_filters( 'Flexify_Checkout/React_Checkout/Script_Data', array(
+			'rest_url' => esc_url_raw( rest_url('flexify-checkout/v1/') ),
+			'store_api_url' => esc_url_raw( rest_url('wc/store/v1/') ),
+			'wp_rest_nonce' => wp_create_nonce('wp_rest'),
+			'store_api_nonce' => wp_create_nonce('wc_store_api'),
+			'ajax_url' => admin_url('admin-ajax.php'),
+			'is_user_logged_in' => is_user_logged_in(),
+			'base_country' => Fields::get_base_country(),
+			'currency' => function_exists('get_woocommerce_currency') ? get_woocommerce_currency() : 'BRL',
+			'currency_symbol' => function_exists('get_woocommerce_currency_symbol') ? get_woocommerce_currency_symbol() : 'R$',
+			'urls' => array(
+				'checkout' => wc_get_checkout_url(),
+				'cart' => function_exists('wc_get_cart_url') ? wc_get_cart_url() : home_url('/'),
+				'shop' => Helpers::get_shop_page_url(),
+				'order_received' => wc_get_checkout_url(),
+			),
+			'config' => Headless_Data::get_checkout_config(),
+			'rules' => Headless_Data::get_checkout_rules(),
+			'settings' => Headless_Data::get_public_settings(),
+			'flags' => array(
+				'whatsapp_login' => Headless_Data::is_whatsapp_login_available(),
+				'address_search' => Headless_Data::is_address_search_available(),
+				'split_payment' => Admin_Options::get_setting('enable_payment_split') === 'yes',
+			),
+			'i18n' => array(
+				'contact' => __( 'Contato', 'flexify-checkout-for-woocommerce' ),
+				'shipping' => __( 'Entrega', 'flexify-checkout-for-woocommerce' ),
+				'payment' => __( 'Pagamento', 'flexify-checkout-for-woocommerce' ),
+				'order_summary' => __( 'Resumo do pedido', 'flexify-checkout-for-woocommerce' ),
+				'continue' => __( 'Continuar', 'flexify-checkout-for-woocommerce' ),
+				'back' => __( 'Voltar', 'flexify-checkout-for-woocommerce' ),
+				'place_order' => __( 'Finalizar compra', 'flexify-checkout-for-woocommerce' ),
+				'apply' => __( 'Aplicar', 'flexify-checkout-for-woocommerce' ),
+				'coupon_placeholder' => __( 'Cupom de desconto', 'flexify-checkout-for-woocommerce' ),
+				'login_whatsapp' => __( 'Entrar com WhatsApp', 'flexify-checkout-for-woocommerce' ),
+				'send_code' => __( 'Enviar código', 'flexify-checkout-for-woocommerce' ),
+				'verify_code' => __( 'Verificar código', 'flexify-checkout-for-woocommerce' ),
+				'search_address' => __( 'Pesquisar endereço', 'flexify-checkout-for-woocommerce' ),
+				'loading' => __( 'Carregando…', 'flexify-checkout-for-woocommerce' ),
+				'empty_cart' => __( 'Seu carrinho está vazio.', 'flexify-checkout-for-woocommerce' ),
+				'generic_error' => __( 'Ocorreu um erro. Tente novamente.', 'flexify-checkout-for-woocommerce' ),
+			),
+		));
+
+		wp_localize_script( 'flexify-react-checkout', 'flexify_react_checkout', $data );
 	}
 
 
