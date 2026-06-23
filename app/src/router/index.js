@@ -3,8 +3,8 @@
  *
  * Uses memory history on purpose: the Flexify Checkout admin lives inside
  * wp-admin where the URL query string (?page=) drives navigation between WP
- * submenu pages, and SettingsPage already owns the location hash for its tab
- * deep-linking. Memory history gives us real route components / <router-view>
+ * submenu pages, and SettingsPage already owns the ?tab= query param for its
+ * tab deep-linking. Memory history gives us real route components / <router-view>
  * without hijacking either. The initial route is provided by the page that
  * mounts the app (see entries/settings.js) from the localized `view`.
  *
