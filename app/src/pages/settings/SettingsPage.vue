@@ -8,7 +8,6 @@ import LicenseManager from '../../components/settings/LicenseManager.vue';
 import SystemStatus from '../../components/settings/SystemStatus.vue';
 import AboutActions from '../../components/settings/AboutActions.vue';
 import ThemePicker from '../../components/settings/ThemePicker.vue';
-import FieldsManager from '../../components/settings/FieldsManager.vue';
 import ConditionsManager from '../../components/settings/ConditionsManager.vue';
 import CheckoutBuilderManager from '../../components/settings/CheckoutBuilderManager.vue';
 import EmailProviders from '../../components/settings/EmailProviders.vue';
@@ -95,7 +94,6 @@ const customComponents = {
   'system-status': SystemStatus,
   'about-actions': AboutActions,
   'theme-picker': ThemePicker,
-  'fields-manager': FieldsManager,
   'conditions-manager': ConditionsManager,
   'checkout-builder': CheckoutBuilderManager,
   'fonts-manager': FontsManager,

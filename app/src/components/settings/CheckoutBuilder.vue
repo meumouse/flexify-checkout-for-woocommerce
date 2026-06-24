@@ -34,6 +34,29 @@ const COMPONENT_META = {
 
 const ADD_COMPONENTS = ['order_bump', 'banner', 'reviews', 'html', 'coupon', 'summary', 'notes'];
 
+const FIELD_TYPES = [
+  { value: 'text', label: 'Texto' },
+  { value: 'textarea', label: 'Área de texto' },
+  { value: 'number', label: 'Número' },
+  { value: 'password', label: 'Senha' },
+  { value: 'phone', label: 'Telefone' },
+  { value: 'url', label: 'URL' },
+  { value: 'email', label: 'E-mail' },
+  { value: 'select', label: 'Seletor/Lista' },
+  { value: 'checkbox', label: 'Caixa de seleção' },
+];
+
+const POSITIONS = [
+  { value: 'left', label: 'Esquerda' },
+  { value: 'right', label: 'Direita' },
+  { value: 'full', label: 'Largura completa' },
+];
+
+const ENABLED_OPTIONS = [
+  { value: 'yes', label: 'Ativo' },
+  { value: 'no', label: 'Inativo' },
+];
+
 const REVIEW_SOURCES = [
   { value: 'product', label: 'Avaliações do produto' },
   { value: 'manual', label: 'Depoimentos manuais' },
@@ -84,6 +107,13 @@ const draft = reactive({ version: 1, steps: [] });
 const selected = reactive({ stepId: '', itemId: '' });
 const addMenuStepId = ref('');
 
+// Field-records draft (id => full record), edited live; committed on Save via
+// the field REST endpoints. New/removed ids are tracked for the save sequence.
+const fieldsDraft = reactive({});
+const newFieldIds = reactive(new Set());
+const deletedFieldIds = reactive(new Set());
+const expanded = reactive({});
+
 const runtime = computed(() => store.runtime || {});
 const fieldCatalog = computed(() => store.fieldCatalog || []);
 const fieldOptions = computed(() => fieldCatalog.value.map((field) => ({ value: field.value, label: field.label })));
@@ -114,7 +144,7 @@ function targetFromSelection() {
 
 function pushLayout() {
   if (frameReady.value) {
-    postToFrame({ type: 'fc-builder:layout', layout: buildPayload() });
+    postToFrame({ type: 'fc-builder:layout', layout: buildPayload(), fields: buildFieldOverrides() });
   }
 }
 
@@ -177,7 +207,7 @@ onBeforeUnmount(() => {
 });
 
 watch(
-  () => draft,
+  [() => draft, () => fieldsDraft],
   () => {
     if (pushTimer) {
       clearTimeout(pushTimer);
@@ -206,10 +236,45 @@ function cloneLayout() {
   draft.version = copy.version || 1;
   draft.steps = Array.isArray(copy.steps) ? copy.steps : [];
 
+  // Clone the full field records so the inspector can edit them live.
+  Object.keys(fieldsDraft).forEach((id) => delete fieldsDraft[id]);
+  Object.entries(store.fields || {}).forEach(([id, record]) => {
+    fieldsDraft[id] = JSON.parse(JSON.stringify(record));
+  });
+
+  newFieldIds.clear();
+  deletedFieldIds.clear();
+
+  // Expand every step by default in the layers tree.
+  Object.keys(expanded).forEach((id) => delete expanded[id]);
+  draft.steps.forEach((step) => {
+    expanded[step.id] = true;
+  });
+
   const first = draft.steps[0];
   selected.stepId = first ? first.id : '';
   selected.itemId = '';
   addMenuStepId.value = '';
+}
+
+/**
+ * Normalize the field-records draft to the React checkout field shape, so the
+ * iframe can render label/type/required/options edits live. Disabled fields are
+ * included (the editor keeps them visible/selectable).
+ */
+function buildFieldOverrides() {
+  return Object.entries(fieldsDraft).map(([id, f]) => ({
+    id,
+    type: f.type || 'text',
+    label: f.label || '',
+    step: String(f.step || '1'),
+    position: f.position || 'full',
+    priority: String(f.priority || '0'),
+    required: f.required === 'yes',
+    enabled: f.enabled !== 'no',
+    input_mask: f.input_mask || '',
+    options: Array.isArray(f.options) ? f.options : [],
+  }));
 }
 
 watch(
@@ -234,6 +299,43 @@ const selectedItem = computed(() => {
   return (selectedStep.value.items || []).find((item) => item.id === selected.itemId) || null;
 });
 
+// The full field record (from the draft) behind the selected field item.
+const selectedFieldRecord = computed(() => {
+  const item = selectedItem.value;
+
+  return item && item.kind === 'field' ? (fieldsDraft[item.field_id] || null) : null;
+});
+
+const selectedFieldIsNative = computed(() => selectedFieldRecord.value?.source === 'native');
+const selectedFieldIsCountry = computed(() => {
+  const id = selectedItem.value?.field_id;
+
+  return id === 'billing_country' || id === 'shipping_country';
+});
+
+const countryOptions = computed(() => store.runtime?.countries || []);
+const newFieldOption = reactive({ value: '', text: '' });
+
+function addFieldOption() {
+  const record = selectedFieldRecord.value;
+
+  if (!record || !newFieldOption.value) {
+    return;
+  }
+
+  if (!Array.isArray(record.options)) {
+    record.options = [];
+  }
+
+  record.options.push({ value: newFieldOption.value, text: newFieldOption.text });
+  newFieldOption.value = '';
+  newFieldOption.text = '';
+}
+
+function removeFieldOption(index) {
+  selectedFieldRecord.value?.options?.splice(index, 1);
+}
+
 // Ensure a selected field item has a style object so the inspector can v-model it.
 watch(selectedItem, (item) => {
   if (item && item.kind === 'field' && !item.style) {
@@ -252,9 +354,114 @@ function selectItem(step, item) {
 }
 
 function fieldLabel(fieldId) {
+  // Prefer the live draft record so renamed labels show immediately in the tree.
+  if (fieldsDraft[fieldId]?.label) {
+    return fieldsDraft[fieldId].label;
+  }
+
   const found = fieldCatalog.value.find((field) => field.value === fieldId);
 
   return found ? found.label : fieldId;
+}
+
+function toggleExpand(id) {
+  expanded[id] = !expanded[id];
+}
+
+// Bucket a step type to the legacy field step ('1' contact, '2' delivery/payment).
+function stepFieldBucket(step) {
+  if (step.type === 'shipping' || step.type === 'payment') {
+    return '2';
+  }
+
+  return '1';
+}
+
+/**
+ * Create a brand-new custom field (billing_<slug>) in a step. The record lives
+ * in the draft until Save; shows live via the override push.
+ */
+function createNewField(step) {
+  addMenuStepId.value = '';
+
+  const name = window.prompt('Nome do novo campo (ex.: Apelido):', '');
+
+  if (!name) {
+    return;
+  }
+
+  const slug = String(name)
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, '_')
+    .replace(/[^a-z0-9_]/g, '');
+
+  const id = slug ? `billing_${slug}` : '';
+
+  if (!id) {
+    store.pushToast('error', 'Informe um nome válido para o campo.');
+
+    return;
+  }
+
+  if (fieldsDraft[id] || (store.fields || {})[id]) {
+    store.pushToast('error', 'Já existe um campo com esse nome.');
+
+    return;
+  }
+
+  fieldsDraft[id] = {
+    id,
+    type: 'text',
+    label: String(name).trim(),
+    position: 'full',
+    classes: '',
+    label_classes: '',
+    required: 'no',
+    priority: '0',
+    source: 'added',
+    enabled: 'yes',
+    step: stepFieldBucket(step),
+    options: [],
+    input_mask: '',
+  };
+
+  newFieldIds.add(id);
+
+  const item = { id: genId('it'), kind: 'field', field_id: id, order: step.items.length };
+  step.items.push(item);
+  selectItem(step, item);
+}
+
+/**
+ * Delete a field entirely (record + every placement across steps). Native Woo
+ * fields can only be disabled, not removed.
+ */
+function deleteField(fieldId) {
+  const record = fieldsDraft[fieldId];
+
+  if (!record || record.source === 'native') {
+    return;
+  }
+
+  if (!window.confirm(`Excluir o campo "${record.label || fieldId}"? Ele será removido de todas as etapas.`)) {
+    return;
+  }
+
+  // Remove every layout item that references this field.
+  draft.steps.forEach((step) => {
+    step.items = (step.items || []).filter((item) => !(item.kind === 'field' && item.field_id === fieldId));
+  });
+
+  delete fieldsDraft[fieldId];
+
+  if (newFieldIds.has(fieldId)) {
+    newFieldIds.delete(fieldId);
+  } else {
+    deletedFieldIds.add(fieldId);
+  }
+
+  selected.itemId = '';
 }
 
 // --- Steps ---
@@ -497,22 +704,131 @@ function buildPayload() {
   };
 }
 
-const saving = computed(() => store.savingLayout);
+const committing = ref(false);
+const saving = computed(() => store.savingLayout || committing.value);
+
+// Field props persisted via the field endpoints (NOT step/priority, which the
+// layout save owns through sync_fields_from_layout).
+const FIELD_SAVE_PROPS = ['enabled', 'required', 'label', 'classes', 'label_classes', 'position', 'input_mask', 'type', 'country'];
+
+function fieldRecordDiffers(id) {
+  const draftRecord = fieldsDraft[id];
+  const original = (store.fields || {})[id];
+
+  if (!draftRecord || !original) {
+    return false;
+  }
+
+  if (FIELD_SAVE_PROPS.some((prop) => (draftRecord[prop] ?? '') !== (original[prop] ?? ''))) {
+    return true;
+  }
+
+  return JSON.stringify(draftRecord.options || null) !== JSON.stringify(original.options || null);
+}
+
+function fieldSavePayload(id) {
+  const record = fieldsDraft[id];
+  const payload = {};
+
+  FIELD_SAVE_PROPS.forEach((prop) => {
+    if (record[prop] !== undefined) {
+      payload[prop] = record[prop];
+    }
+  });
+
+  if (record.type === 'select' || record.type === 'checkbox') {
+    payload.options = Array.isArray(record.options) ? record.options : [];
+  }
+
+  return payload;
+}
 
 async function save() {
   if (saving.value) {
     return;
   }
 
-  const response = await store.saveLayout(buildPayload());
+  committing.value = true;
 
-  if (response?.status === 'success') {
-    cloneLayout();
+  try {
+    // 1. CREATE new fields (must precede edits — save_fields ignores unknown ids).
+    for (const id of newFieldIds) {
+      if (deletedFieldIds.has(id)) {
+        continue;
+      }
 
-    // Reload the preview to pull server-resolved data (order bump product,
-    // resolved product reviews) into the live render.
-    frameReady.value = false;
-    previewFrame.value?.contentWindow?.location?.reload();
+      const record = fieldsDraft[id];
+      const response = await store.addField({
+        id,
+        type: record.type || 'text',
+        label: record.label || '',
+        required: record.required || 'no',
+        position: record.position || 'full',
+        classes: record.classes || '',
+        label_classes: record.label_classes || '',
+        input_mask: record.input_mask || '',
+        step: record.step || '1',
+        options: Array.isArray(record.options) ? record.options : undefined,
+      });
+
+      if (response?.status !== 'success') {
+        committing.value = false;
+
+        return;
+      }
+    }
+
+    // 2. EDIT existing fields whose props changed.
+    const updates = {};
+
+    Object.keys(fieldsDraft).forEach((id) => {
+      if (newFieldIds.has(id) || deletedFieldIds.has(id) || !(store.fields || {})[id]) {
+        return;
+      }
+
+      if (fieldRecordDiffers(id)) {
+        updates[id] = fieldSavePayload(id);
+      }
+    });
+
+    if (Object.keys(updates).length) {
+      const response = await store.saveFields(updates);
+
+      if (response?.status !== 'success') {
+        committing.value = false;
+
+        return;
+      }
+    }
+
+    // 3. DELETE removed (existing) fields.
+    for (const id of deletedFieldIds) {
+      if (newFieldIds.has(id)) {
+        continue;
+      }
+
+      const response = await store.removeField(id);
+
+      if (response?.status !== 'success') {
+        committing.value = false;
+
+        return;
+      }
+    }
+
+    // 4. SAVE layout (sync_fields_from_layout rewrites step/priority last).
+    const response = await store.saveLayout(buildPayload());
+
+    if (response?.status === 'success') {
+      cloneLayout();
+
+      // Reload the preview to pull server-resolved data (order bump product,
+      // resolved product reviews) into the live render.
+      frameReady.value = false;
+      previewFrame.value?.contentWindow?.location?.reload();
+    }
+  } finally {
+    committing.value = false;
   }
 }
 </script>
@@ -546,10 +862,10 @@ async function save() {
 
       <!-- Body: 3 regions -->
       <div class="grid flex-1 grid-cols-1 overflow-hidden lg:grid-cols-[300px_minmax(0,1fr)_340px]">
-        <!-- Steps rail -->
+        <!-- Layers tree (steps -> elements) -->
         <aside class="flex flex-col overflow-y-auto border-r border-slate-200 bg-white">
           <div class="flex items-center justify-between gap-2 border-b border-slate-100 px-4 py-3">
-            <p class="m-0 text-xs font-semibold uppercase tracking-wide text-muted">Etapas</p>
+            <p class="m-0 text-xs font-semibold uppercase tracking-wide text-muted">Estrutura</p>
             <button
               type="button"
               class="inline-flex cursor-pointer items-center gap-1 rounded-lg border border-primary-200 bg-white px-2 py-1 text-xs font-medium text-primary transition hover:bg-primary-50"
@@ -560,49 +876,95 @@ async function save() {
             </button>
           </div>
 
-          <ul class="m-0 flex list-none flex-col gap-2 p-3">
+          <ul class="m-0 flex list-none flex-col gap-1 p-2">
             <li v-for="(step, index) in draft.steps" :key="step.id">
+              <!-- Step row -->
               <div
-                class="cursor-pointer rounded-xl border bg-white px-3 py-2.5 transition"
+                class="group flex items-center gap-1 rounded-lg border px-1.5 py-1.5 transition"
                 :class="[
-                  selected.stepId === step.id && !selected.itemId ? 'border-primary ring-2 ring-primary-100' : 'border-slate-200 hover:border-slate-300',
+                  selected.stepId === step.id && !selected.itemId ? 'border-primary bg-primary-50/40' : 'border-transparent hover:bg-slate-50',
                   step.enabled === false ? 'opacity-60' : '',
                 ]"
-                @click="selectStep(step)"
               >
-                <div class="flex items-center justify-between gap-2">
-                  <div class="flex min-w-0 items-center gap-2">
-                    <BoxIcon :name="STEP_META[step.type].icon" class="h-4 w-4 shrink-0 text-slate-400" />
-                    <span class="truncate text-sm font-medium text-ink">{{ step.label || STEP_META[step.type].label }}</span>
+                <button
+                  type="button"
+                  class="cursor-pointer border-0 bg-transparent p-0.5 text-muted hover:text-ink"
+                  :class="(step.items || []).length ? '' : 'invisible'"
+                  :aria-label="expanded[step.id] ? 'Recolher' : 'Expandir'"
+                  @click.stop="toggleExpand(step.id)"
+                >
+                  <BoxIcon :name="expanded[step.id] ? 'chevron-down' : 'chevron-right'" class="h-4 w-4" />
+                </button>
+
+                <button type="button" class="flex min-w-0 flex-1 cursor-pointer items-center gap-2 border-0 bg-transparent text-left" @click="selectStep(step)">
+                  <BoxIcon :name="STEP_META[step.type].icon" class="h-4 w-4 shrink-0 text-slate-400" />
+                  <span class="truncate text-sm font-medium text-ink">{{ step.label || STEP_META[step.type].label }}</span>
+                </button>
+
+                <div class="flex shrink-0 items-center gap-0.5 opacity-0 transition group-hover:opacity-100" :class="selected.stepId === step.id ? 'opacity-100' : ''">
+                  <ToggleSwitch v-model="step.enabled" :true-value="true" :false-value="false" size="sm" aria-label="Etapa ativa" />
+
+                  <button type="button" class="cursor-pointer border-0 bg-transparent p-0.5 text-muted hover:text-ink disabled:opacity-30" :disabled="!canMoveStep(index, -1)" aria-label="Mover para cima" @click.stop="moveStep(index, -1)">
+                    <BoxIcon name="chevron-up" class="h-4 w-4" />
+                  </button>
+                  <button type="button" class="cursor-pointer border-0 bg-transparent p-0.5 text-muted hover:text-ink disabled:opacity-30" :disabled="!canMoveStep(index, 1)" aria-label="Mover para baixo" @click.stop="moveStep(index, 1)">
+                    <BoxIcon name="chevron-down" class="h-4 w-4" />
+                  </button>
+
+                  <!-- Add element menu -->
+                  <div class="relative">
+                    <button type="button" class="cursor-pointer border-0 bg-transparent p-0.5 text-primary hover:text-primary-700" aria-label="Adicionar elemento" @click.stop="toggleAddMenu(step)">
+                      <BoxIcon name="plus" class="h-4 w-4" />
+                    </button>
+                    <div v-if="addMenuStepId === step.id" class="absolute right-0 z-20 mt-1 w-52 overflow-hidden rounded-xl border border-slate-200 bg-white py-1 shadow-lg">
+                      <button type="button" class="flex w-full cursor-pointer items-center gap-2 border-0 bg-transparent px-3 py-2 text-left text-sm text-ink hover:bg-slate-50" @click.stop="createNewField(step)">
+                        <BoxIcon name="plus" class="h-4 w-4 text-slate-400" />
+                        Novo campo
+                      </button>
+                      <button type="button" class="flex w-full cursor-pointer items-center gap-2 border-0 bg-transparent px-3 py-2 text-left text-sm text-ink hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50" :disabled="!fieldOptions.length" @click.stop="addFieldItem(step)">
+                        <BoxIcon name="text" class="h-4 w-4 text-slate-400" />
+                        Campo existente
+                      </button>
+                      <div class="my-1 border-t border-slate-100" />
+                      <button v-for="component in ADD_COMPONENTS" :key="component" type="button" class="flex w-full cursor-pointer items-center gap-2 border-0 bg-transparent px-3 py-2 text-left text-sm text-ink hover:bg-slate-50" @click.stop="addComponentItem(step, component)">
+                        <BoxIcon :name="COMPONENT_META[component].icon" class="h-4 w-4 text-slate-400" />
+                        {{ COMPONENT_META[component].label }}
+                      </button>
+                    </div>
                   </div>
 
-                  <div class="flex shrink-0 items-center gap-0.5">
-                    <button
-                      type="button"
-                      class="cursor-pointer border-0 bg-transparent p-0.5 text-muted hover:text-ink disabled:cursor-not-allowed disabled:opacity-30"
-                      :disabled="!canMoveStep(index, -1)"
-                      aria-label="Mover etapa para cima"
-                      @click.stop="moveStep(index, -1)"
-                    >
-                      <BoxIcon name="chevron-up" class="h-4 w-4" />
-                    </button>
-                    <button
-                      type="button"
-                      class="cursor-pointer border-0 bg-transparent p-0.5 text-muted hover:text-ink disabled:cursor-not-allowed disabled:opacity-30"
-                      :disabled="!canMoveStep(index, 1)"
-                      aria-label="Mover etapa para baixo"
-                      @click.stop="moveStep(index, 1)"
-                    >
-                      <BoxIcon name="chevron-down" class="h-4 w-4" />
-                    </button>
-                  </div>
+                  <button v-if="step.type === 'custom'" type="button" class="cursor-pointer border-0 bg-transparent p-0.5 text-danger/70 hover:text-danger" aria-label="Excluir etapa" @click.stop="removeStep(step)">
+                    <BoxIcon name="trash" class="h-4 w-4" />
+                  </button>
                 </div>
-
-                <p class="m-0 mt-1 pl-6 text-[11px] text-muted">
-                  {{ (step.items || []).length }} {{ (step.items || []).length === 1 ? 'item' : 'itens' }}
-                  <span v-if="step.type !== 'custom'"> · semântica</span>
-                </p>
               </div>
+
+              <!-- Item children -->
+              <ul v-if="expanded[step.id] && (step.items || []).length" class="m-0 ml-4 flex list-none flex-col gap-0.5 border-l border-slate-100 py-0.5 pl-2">
+                <li
+                  v-for="(item, itemIndex) in step.items"
+                  :key="item.id"
+                  class="group flex items-center gap-1 rounded-lg px-1.5 py-1 transition"
+                  :class="selected.itemId === item.id ? 'bg-primary-50/60 text-primary' : 'hover:bg-slate-50'"
+                >
+                  <button type="button" class="flex min-w-0 flex-1 cursor-pointer items-center gap-2 border-0 bg-transparent text-left" @click="selectItem(step, item)">
+                    <BoxIcon :name="itemMeta(item).icon" class="h-3.5 w-3.5 shrink-0" :class="selected.itemId === item.id ? 'text-primary' : 'text-slate-400'" />
+                    <span class="truncate text-[13px] text-ink">{{ itemMeta(item).label }}</span>
+                  </button>
+
+                  <div class="flex shrink-0 items-center gap-0.5 opacity-0 transition group-hover:opacity-100" :class="selected.itemId === item.id ? 'opacity-100' : ''">
+                    <button type="button" class="cursor-pointer border-0 bg-transparent p-0.5 text-muted hover:text-ink disabled:opacity-30" :disabled="itemIndex === 0" aria-label="Mover para cima" @click.stop="moveItem(step, itemIndex, -1)">
+                      <BoxIcon name="chevron-up" class="h-3.5 w-3.5" />
+                    </button>
+                    <button type="button" class="cursor-pointer border-0 bg-transparent p-0.5 text-muted hover:text-ink disabled:opacity-30" :disabled="itemIndex === step.items.length - 1" aria-label="Mover para baixo" @click.stop="moveItem(step, itemIndex, 1)">
+                      <BoxIcon name="chevron-down" class="h-3.5 w-3.5" />
+                    </button>
+                    <button type="button" class="cursor-pointer border-0 bg-transparent p-0.5 text-danger/70 hover:text-danger" aria-label="Remover" @click.stop="removeItem(step, item)">
+                      <BoxIcon name="trash" class="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                </li>
+              </ul>
             </li>
           </ul>
         </aside>
@@ -619,43 +981,16 @@ async function save() {
               </h3>
             </div>
 
-            <!-- Add item menu -->
-            <div v-if="selectedStep" class="relative">
-              <button
-                type="button"
-                class="inline-flex cursor-pointer items-center gap-1 rounded-lg bg-primary px-3 py-2 text-xs font-semibold text-white transition hover:bg-primary-700"
-                @click="toggleAddMenu(selectedStep)"
-              >
-                <BoxIcon name="plus" class="h-3.5 w-3.5" />
-                Adicionar
-              </button>
-
-              <div
-                v-if="addMenuStepId === selectedStep.id"
-                class="absolute right-0 z-10 mt-1 w-52 overflow-hidden rounded-xl border border-slate-200 bg-white py-1 shadow-lg"
-              >
-                <button
-                  type="button"
-                  class="flex w-full cursor-pointer items-center gap-2 border-0 bg-transparent px-3 py-2 text-left text-sm text-ink hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
-                  :disabled="!fieldOptions.length"
-                  @click="addFieldItem(selectedStep)"
-                >
-                  <BoxIcon name="text" class="h-4 w-4 text-slate-400" />
-                  Campo do formulário
-                </button>
-                <div class="my-1 border-t border-slate-100" />
-                <button
-                  v-for="component in ADD_COMPONENTS"
-                  :key="component"
-                  type="button"
-                  class="flex w-full cursor-pointer items-center gap-2 border-0 bg-transparent px-3 py-2 text-left text-sm text-ink hover:bg-slate-50"
-                  @click="addComponentItem(selectedStep, component)"
-                >
-                  <BoxIcon :name="COMPONENT_META[component].icon" class="h-4 w-4 text-slate-400" />
-                  {{ COMPONENT_META[component].label }}
-                </button>
-              </div>
-            </div>
+            <!-- Quick add a new field to the selected step -->
+            <button
+              v-if="selectedStep"
+              type="button"
+              class="inline-flex cursor-pointer items-center gap-1 rounded-lg bg-primary px-3 py-2 text-xs font-semibold text-white transition hover:bg-primary-700"
+              @click="createNewField(selectedStep)"
+            >
+              <BoxIcon name="plus" class="h-3.5 w-3.5" />
+              Novo campo
+            </button>
           </div>
 
           <div class="relative flex-1">
@@ -725,10 +1060,83 @@ async function save() {
             </div>
 
             <!-- Field item -->
-            <template v-if="selectedItem.kind === 'field' && selectedItem.style">
+            <template v-if="selectedItem.kind === 'field' && selectedFieldRecord && selectedItem.style">
+              <!-- Field record (CRUD) -->
               <div>
-                <label class="mb-1 block text-xs font-medium text-ink">Campo</label>
-                <BaseSelect v-model="selectedItem.field_id" :options="fieldOptions" placeholder="Selecionar campo" />
+                <label class="mb-1 block text-xs font-medium text-ink">Rótulo</label>
+                <input v-model="selectedFieldRecord.label" type="text" :class="inputClass" />
+              </div>
+
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="mb-1 block text-xs font-medium text-ink">Tipo</label>
+                  <BaseSelect v-model="selectedFieldRecord.type" :options="FIELD_TYPES" size="sm" :disabled="selectedFieldIsNative" />
+                </div>
+                <div>
+                  <label class="mb-1 block text-xs font-medium text-ink">Estado</label>
+                  <BaseSelect v-model="selectedFieldRecord.enabled" :options="ENABLED_OPTIONS" size="sm" />
+                </div>
+              </div>
+
+              <div class="flex items-center justify-between gap-2">
+                <span class="text-xs font-medium text-ink">Obrigatório</span>
+                <ToggleSwitch v-model="selectedFieldRecord.required" true-value="yes" false-value="no" />
+              </div>
+
+              <div v-if="selectedFieldIsCountry">
+                <label class="mb-1 block text-xs font-medium text-ink">País padrão</label>
+                <BaseSelect v-model="selectedFieldRecord.country" :options="countryOptions" size="sm" placeholder="Selecionar país" />
+              </div>
+
+              <div>
+                <label class="mb-1 block text-xs font-medium text-ink">Máscara (opcional)</label>
+                <input v-model="selectedFieldRecord.input_mask" type="text" :class="inputClass" placeholder="(00) 00000-0000" />
+              </div>
+
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="mb-1 block text-xs font-medium text-ink">Classe CSS</label>
+                  <input v-model="selectedFieldRecord.classes" type="text" :class="inputClass" />
+                </div>
+                <div>
+                  <label class="mb-1 block text-xs font-medium text-ink">Classe do rótulo</label>
+                  <input v-model="selectedFieldRecord.label_classes" type="text" :class="inputClass" />
+                </div>
+              </div>
+
+              <!-- Options editor (select / checkbox) -->
+              <div v-if="(selectedFieldRecord.type === 'select' || selectedFieldRecord.type === 'checkbox') && selectedItem.field_id !== 'billing_country'">
+                <label class="mb-1 block text-xs font-medium text-ink">Opções</label>
+                <ul class="m-0 mb-2 flex list-none flex-col gap-1.5 p-0">
+                  <li v-for="(option, index) in selectedFieldRecord.options" :key="index" class="flex items-center gap-2">
+                    <code class="rounded bg-slate-100 px-2 py-1 text-xs">{{ option.value }}</code>
+                    <span class="flex-1 truncate text-sm text-ink">{{ option.text }}</span>
+                    <button type="button" class="cursor-pointer rounded border border-danger/30 bg-transparent px-1.5 py-1 text-danger hover:bg-danger/10" aria-label="Remover opção" @click="removeFieldOption(index)">
+                      <BoxIcon name="x" class="h-3.5 w-3.5" />
+                    </button>
+                  </li>
+                </ul>
+                <div class="flex items-center gap-2">
+                  <input v-model="newFieldOption.value" type="text" placeholder="Valor" :class="inputClass" class="!w-24" />
+                  <input v-model="newFieldOption.text" type="text" placeholder="Título" :class="inputClass" />
+                  <button type="button" class="shrink-0 cursor-pointer rounded-lg border border-primary-200 bg-white px-2.5 py-2 text-xs font-medium text-primary hover:bg-primary-50" @click="addFieldOption">
+                    Add
+                  </button>
+                </div>
+              </div>
+
+              <button
+                v-if="!selectedFieldIsNative"
+                type="button"
+                class="inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg border border-danger/30 bg-transparent px-3 py-2 text-xs font-medium text-danger transition hover:bg-danger/10"
+                @click="deleteField(selectedItem.field_id)"
+              >
+                <BoxIcon name="trash" class="h-4 w-4" />
+                Excluir campo
+              </button>
+
+              <div class="border-t border-slate-100 pt-3">
+                <p class="m-0 mb-2 text-[11px] font-semibold uppercase tracking-wide text-muted">Estilo</p>
               </div>
 
               <div class="grid grid-cols-2 gap-3">
@@ -789,9 +1197,6 @@ async function save() {
                 </div>
               </div>
 
-              <p class="m-0 rounded-lg bg-slate-50 px-3 py-2 text-[11px] text-muted">
-                Rótulo, obrigatoriedade e máscara são editados no <strong>Gerenciador de campos</strong>.
-              </p>
             </template>
 
             <!-- Order bump -->

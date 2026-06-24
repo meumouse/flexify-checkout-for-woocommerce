@@ -541,15 +541,7 @@ class Registry {
                     'component' => 'checkout-builder',
                     'fields' => array(
                         self::field_toggle( 'enable_checkout_builder', __( 'Ativar o construtor de checkout', 'flexify-checkout-for-woocommerce' ), __( 'Aplica o layout montado no construtor ao checkout React. Quando desativado, o checkout usa as etapas padrão.', 'flexify-checkout-for-woocommerce' ), array( 'pro' => true ) ),
-                    ),
-                ),
-                array(
-                    'id' => 'fields-manager',
-                    'title' => __( 'Gerenciador de campos', 'flexify-checkout-for-woocommerce' ),
-                    'description' => __( 'Adicione, edite, ordene e remova campos das etapas do checkout.', 'flexify-checkout-for-woocommerce' ),
-                    'component' => 'fields-manager',
-                    'fields' => array(
-                        self::field_toggle( 'enable_manage_fields', __( 'Gerenciar os campos e etapas da finalização de compras', 'flexify-checkout-for-woocommerce' ), __( 'Aplica as personalizações de campos configuradas abaixo no checkout.', 'flexify-checkout-for-woocommerce' ), array( 'pro' => true ) ),
+                        self::field_toggle( 'enable_manage_fields', __( 'Gerenciar os campos e etapas da finalização de compras', 'flexify-checkout-for-woocommerce' ), __( 'Aplica as personalizações de campos (criadas no construtor) ao checkout.', 'flexify-checkout-for-woocommerce' ), array( 'pro' => true ) ),
                     ),
                 ),
                 array(

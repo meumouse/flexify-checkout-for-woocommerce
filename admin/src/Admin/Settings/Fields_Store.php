@@ -33,7 +33,15 @@ class Fields_Store {
      * @since 6.0.0
      * @var string[]
      */
-    const EDITABLE_PROPS = array( 'enabled', 'required', 'label', 'classes', 'label_classes', 'position', 'input_mask', 'priority', 'step', 'country' );
+    const EDITABLE_PROPS = array( 'enabled', 'required', 'label', 'classes', 'label_classes', 'position', 'input_mask', 'priority', 'step', 'country', 'type' );
+
+    /**
+     * Field input types accepted from the manager / builder UI.
+     *
+     * @since 6.0.0
+     * @var string[]
+     */
+    const ALLOWED_TYPES = array( 'text', 'textarea', 'number', 'password', 'phone', 'tel', 'url', 'email', 'select', 'checkbox' );
 
 
     /**
@@ -82,6 +90,8 @@ class Fields_Store {
 
                 if ( in_array( $prop, array( 'enabled', 'required' ), true ) ) {
                     $value = ( 'yes' === $value ) ? 'yes' : 'no';
+                } elseif ( 'type' === $prop ) {
+                    $value = in_array( $value, self::ALLOWED_TYPES, true ) ? $value : 'text';
                 } else {
                     $value = sanitize_text_field( (string) $value );
                 }
@@ -151,9 +161,11 @@ class Fields_Store {
             }
         }
 
+        $type = sanitize_text_field( (string) ( $data['type'] ?? 'text' ) );
+
         $fields[ $field_id ] = array(
             'id' => $field_id,
-            'type' => sanitize_text_field( (string) ( $data['type'] ?? 'text' ) ),
+            'type' => in_array( $type, self::ALLOWED_TYPES, true ) ? $type : 'text',
             'label' => sanitize_text_field( (string) ( $data['label'] ?? '' ) ),
             'position' => sanitize_text_field( (string) ( $data['position'] ?? 'full' ) ),
             'classes' => sanitize_text_field( (string) ( $data['classes'] ?? '' ) ),
@@ -162,7 +174,7 @@ class Fields_Store {
             'priority' => (string) absint( $data['priority'] ?? ( count( $fields ) + 1 ) ),
             'source' => 'added',
             'enabled' => 'yes',
-            'step' => in_array( (string) ( $data['step'] ?? '1' ), array( '1', '2' ), true ) ? (string) $data['step'] : '1',
+            'step' => in_array( (string) ( $data['step'] ?? '1' ), array( '1', '2' ), true ) ? (string) ( $data['step'] ?? '1' ) : '1',
             'options' => $options,
             'input_mask' => sanitize_text_field( (string) ( $data['input_mask'] ?? '' ) ),
         );
