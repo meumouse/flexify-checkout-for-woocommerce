@@ -259,11 +259,14 @@ function EditorApp() {
  * sticky order summary (desktop) / bottom sheet (mobile).
  */
 function CheckoutShell({ stepLabels, activeIndex, isLast, busy, error, onBack, onNext, onPlaceOrder, children }) {
+  const { cart } = useCheckout();
+  const totals = (cart && cart.totals) || {};
   const nextStepLabel = stepLabels[activeIndex + 1] || '';
   const nextLabel = nextStepLabel
     ? `${t('continue', 'Continuar')} para ${nextStepLabel.toLowerCase()}`
     : t('continue', 'Continuar');
   const backLabel = activeIndex === 0 ? t('back_to_shop', 'Voltar à loja') : t('back', 'Voltar');
+  const payLabel = `${t('pay', 'Pagar')} ${formatPrice(totals.total_price, totals)}`;
 
   return (
     <div className="pb-10">
@@ -298,7 +301,7 @@ function CheckoutShell({ stepLabels, activeIndex, isLast, busy, error, onBack, o
                 {busy
                   ? t('loading', 'Carregando…')
                   : isLast
-                    ? t('place_order', 'Finalizar compra')
+                    ? payLabel
                     : nextLabel}
               </button>
             </div>
