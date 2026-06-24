@@ -153,14 +153,11 @@ class Admin {
                 3 // position
             );
 
-            // Analytics, Carts and Queue are now folded into the Vue settings as
-            // sub-views of the "Recuperação" tab (RecoveryManager). The pages stay
-            // registered so deep links and the SPA asset enqueue keep resolving by
-            // slug, but they are hidden from the menu so the recovery feature lives
-            // under a single Configurações tab.
-            remove_submenu_page( $parent, 'fc-recovery-carts' );
-            remove_submenu_page( $parent, 'fc-recovery-carts-list' );
-            remove_submenu_page( $parent, 'fc-recovery-carts-queue' );
+            // Analytics, Carts and Queue stay registered as visible submenu items
+            // of the Flexify Checkout top-level menu (positions 1-3). They are also
+            // reachable as sub-views of the Vue "Recuperação" settings tab, but the
+            // dedicated menu entries remain so each page has its own slug-based deep
+            // link in the WordPress menu.
         }
 
         // Advanced recovery settings (follow-up events, coupons, payment delays,
