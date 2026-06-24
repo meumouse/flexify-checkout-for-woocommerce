@@ -11,14 +11,9 @@
  */
 import { ref, reactive, computed, onMounted } from 'vue';
 import { apiGet, apiPost } from '../../services/api';
-import FollowUpEventCard from './recovery/FollowUpEventCard.vue';
+import FollowUpBuilder from './recovery/FollowUpBuilder.vue';
 import CouponFields from './recovery/CouponFields.vue';
 import BaseSelect from '../fields/BaseSelect.vue';
-
-const SCHEDULER_OPTIONS = [
-  { value: 'wp_cron', label: 'WP-Cron (padrão)' },
-  { value: 'php_cron', label: 'PHP-Cron' },
-];
 
 const loading = ref(true);
 const saving = ref(false);
@@ -45,18 +40,16 @@ const support = reactive({
 });
 
 const SCALARS = [
-  'task_scheduler', 'time_for_lost_carts', 'time_unit_for_lost_carts',
-  'follow_up_purchase_block_days', 'fallback_first_name', 'primary_color',
+  'time_for_lost_carts', 'time_unit_for_lost_carts',
+  'follow_up_purchase_block_days', 'fallback_first_name',
   'joinotify_sender_phone', 'joinotify_test_phone', 'select_coupon',
 ];
 
 const settings = reactive({
-  task_scheduler: 'wp_cron',
   time_for_lost_carts: 15,
   time_unit_for_lost_carts: 'minutes',
   follow_up_purchase_block_days: 0,
   fallback_first_name: 'Cliente',
-  primary_color: '#008aff',
   joinotify_sender_phone: 'none',
   joinotify_test_phone: '',
   select_coupon: 'none',
@@ -85,15 +78,8 @@ function couponDefault() {
   };
 }
 
-function newEvent() {
-  return {
-    enabled: 'yes', title: 'Nova mensagem', message: '',
-    delay_time: 1, delay_type: 'hours',
-    send_window: { start_time: '', end_time: '' },
-    channels: { email: 'no', whatsapp: 'yes' },
-    coupon: couponDefault(),
-  };
-}
+const builderOpen = ref(false);
+const editingKey = ref(null);
 
 const followUpList = computed(() =>
   Object.keys(settings.follow_up_events).map((key) => ({ key, event: settings.follow_up_events[key] }))
@@ -101,18 +87,62 @@ const followUpList = computed(() =>
 
 const whatsappEnabled = computed(() => settings.toggles.enable_joinotify_integration === 'yes');
 
+const editingEvent = computed(() =>
+  editingKey.value !== null ? settings.follow_up_events[editingKey.value] || null : null
+);
+
+const DELAY_UNIT_SHORT = { minutes: 'min', hours: 'h', days: 'd' };
+
 function toggle(key) {
   settings.toggles[key] = settings.toggles[key] === 'yes' ? 'no' : 'yes';
 }
 
-function addFollowUp() {
-  const key = `custom_${Object.keys(settings.follow_up_events).length + 1}_${followUpList.value.length}`;
-  settings.follow_up_events[key] = newEvent();
-  activeSection.value = 'followups';
+function toggleFollowUp(key) {
+  const event = settings.follow_up_events[key];
+
+  if (event) {
+    event.enabled = event.enabled === 'yes' ? 'no' : 'yes';
+  }
+}
+
+function followUpSummary(event) {
+  const unit = DELAY_UNIT_SHORT[event.delay_type] || '';
+  const when = `Enviar após ${event.delay_time || 0} ${unit}`.trim();
+  const channels = [];
+
+  if (event.channels?.whatsapp === 'yes') channels.push('WhatsApp');
+  if (event.channels?.email === 'yes') channels.push('E-mail');
+
+  return channels.length ? `${when} • ${channels.join(', ')}` : when;
+}
+
+function openCreateFollowUp() {
+  editingKey.value = null;
+  builderOpen.value = true;
+}
+
+function openEditFollowUp(key) {
+  editingKey.value = key;
+  builderOpen.value = true;
+}
+
+function closeBuilder() {
+  builderOpen.value = false;
+  editingKey.value = null;
+}
+
+function saveFollowUp(event) {
+  if (editingKey.value !== null && settings.follow_up_events[editingKey.value]) {
+    settings.follow_up_events[editingKey.value] = event;
+  } else {
+    settings.follow_up_events[`custom_${Date.now()}`] = event;
+  }
 }
 
 function removeFollowUp(key) {
-  delete settings.follow_up_events[key];
+  if (window.confirm('Tem certeza que deseja remover este follow-up?')) {
+    delete settings.follow_up_events[key];
+  }
 }
 
 function ensurePaymentDefaults() {
@@ -206,10 +236,6 @@ onMounted(load);
 
         <div class="grid gap-4 border-b border-slate-100 py-4 md:grid-cols-2">
           <label class="block">
-            <span class="mb-1 block text-[13px] font-semibold text-brand">Agendador de tarefas</span>
-            <BaseSelect v-model="settings.task_scheduler" :options="SCHEDULER_OPTIONS" />
-          </label>
-          <label class="block">
             <span class="mb-1 block text-[13px] font-semibold text-brand">Nome padrão do cliente</span>
             <input class="flexify-field-input" type="text" v-model="settings.fallback_first_name" />
           </label>
@@ -248,11 +274,8 @@ onMounted(load);
           </div>
         </div>
 
-        <div class="flex items-center gap-3 py-4">
-          <span class="text-[13px] font-semibold text-brand">Cor primária</span>
-          <input type="color" v-model="settings.primary_color" class="h-9 w-12 cursor-pointer rounded border border-slate-200" />
-          <input type="text" v-model="settings.primary_color" class="flexify-field-input w-32" />
-          <label class="ml-4 flex items-center gap-2 text-[14px] text-slate-700">
+        <div class="py-4">
+          <label class="flex items-center gap-2 text-[14px] text-slate-700">
             <input type="checkbox" :checked="settings.toggles.enable_get_location_from_ip === 'yes'" @change="toggle('enable_get_location_from_ip')" />
             Obter localização do cliente pelo IP
           </label>
@@ -261,21 +284,64 @@ onMounted(load);
 
       <!-- Follow-ups -->
       <section v-show="activeSection === 'followups'">
-        <div class="mb-3 flex items-center justify-between">
+        <div class="mb-4 flex items-center justify-between gap-3">
           <p class="m-0 text-[13px] text-slate-500">Mensagens enviadas automaticamente após o abandono do carrinho.</p>
-          <button type="button" class="rounded-[8px] bg-primary px-4 py-2 text-[13px] font-semibold text-white" @click="addFollowUp">Adicionar follow-up</button>
+          <button type="button" class="inline-flex items-center gap-1.5 rounded-[8px] bg-primary px-4 py-2 text-[13px] font-semibold text-white" @click="openCreateFollowUp">
+            <BoxIcon name="plus" class="h-4 w-4" />
+            Adicionar follow-up
+          </button>
         </div>
-        <div class="grid gap-4">
-          <p v-if="!followUpList.length" class="text-[14px] text-slate-500">Nenhum follow-up configurado.</p>
-          <FollowUpEventCard
+
+        <div
+          v-if="!followUpList.length"
+          class="rounded-xl border border-dashed border-slate-300 bg-slate-50/60 px-4 py-10 text-center"
+        >
+          <p class="m-0 text-sm font-medium text-ink">Nenhum follow-up configurado</p>
+          <p class="m-0 mt-1 text-xs text-muted">Crie sua primeira mensagem de recuperação.</p>
+        </div>
+
+        <ul v-else class="m-0 flex list-none flex-col gap-2 p-0">
+          <li
             v-for="item in followUpList"
             :key="item.key"
-            :event="item.event"
-            :coupons="support.coupons"
-            :whatsapp-enabled="whatsappEnabled"
-            @remove="removeFollowUp(item.key)"
-          />
-        </div>
+            class="flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 transition hover:border-slate-300"
+            :class="item.event.enabled === 'no' ? 'opacity-60' : ''"
+          >
+            <div class="min-w-0">
+              <p class="m-0 truncate text-sm font-medium text-ink">{{ item.event.title || 'Mensagem' }}</p>
+              <p class="m-0 mt-0.5 truncate text-xs text-muted">{{ followUpSummary(item.event) }}</p>
+            </div>
+
+            <div class="flex shrink-0 items-center gap-1.5">
+              <label class="mr-1 inline-flex cursor-pointer items-center" :title="item.event.enabled === 'no' ? 'Inativo' : 'Ativo'">
+                <input
+                  type="checkbox"
+                  class="peer sr-only"
+                  :checked="item.event.enabled !== 'no'"
+                  @change="toggleFollowUp(item.key)"
+                />
+                <span class="relative h-5 w-9 rounded-full bg-slate-300 transition-colors peer-checked:bg-primary after:absolute after:left-0.5 after:top-0.5 after:h-4 after:w-4 after:rounded-full after:bg-white after:transition-transform peer-checked:after:translate-x-4" />
+              </label>
+
+              <button
+                type="button"
+                class="cursor-pointer rounded-lg border border-slate-300 bg-transparent px-2.5 py-1 text-xs font-medium text-ink transition-colors hover:bg-slate-100"
+                @click="openEditFollowUp(item.key)"
+              >
+                Editar
+              </button>
+
+              <button
+                type="button"
+                class="cursor-pointer rounded-lg border border-danger/30 bg-transparent px-2 py-1 text-danger transition-colors hover:bg-danger/10"
+                aria-label="Remover follow-up"
+                @click="removeFollowUp(item.key)"
+              >
+                <BoxIcon name="trash" class="h-4 w-4" />
+              </button>
+            </div>
+          </li>
+        </ul>
       </section>
 
       <!-- Payments -->
@@ -351,5 +417,14 @@ onMounted(load);
         <span v-if="saved" class="text-[13px] font-semibold text-success">Configurações salvas!</span>
       </div>
     </template>
+
+    <FollowUpBuilder
+      :open="builderOpen"
+      :event="editingEvent"
+      :coupons="support.coupons"
+      :whatsapp-enabled="whatsappEnabled"
+      @save="saveFollowUp"
+      @close="closeBuilder"
+    />
   </div>
 </template>

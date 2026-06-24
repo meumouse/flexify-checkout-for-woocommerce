@@ -54,18 +54,18 @@ class Admin {
         // display notices on settings pages
         add_action( 'admin_notices', array( $this, 'display_settings_notices' ) );
 
-        // add the "Recuperação" tab to the Vue settings schema
+        // inject the recovery settings card into the "Carrinho" tab of the Vue settings
         add_filter( 'Flexify_Checkout/Admin/Settings_Schema', array( $this, 'register_recovery_settings_tab' ) );
     }
 
 
     /**
-     * Append the "Recuperação" tab to the Vue settings schema.
+     * Inject the recovery settings card into the "Carrinho" tab of the Vue settings.
      *
-     * The tab renders the custom "recovery-settings" component, which manages
-     * the common recovery settings through its own REST endpoint. Advanced
-     * editors (follow-ups, coupons, webhooks) stay on the legacy screen, linked
-     * from inside the component.
+     * The card renders the custom "recovery-settings" component, which manages
+     * the cart recovery settings through its own REST endpoint. It lives under
+     * the existing "Carrinho" tab instead of a dedicated tab; the data pages
+     * (Análise, Carrinhos, Fila) remain as their own top-level submenus.
      *
      * @since 6.0.0
      * @param array $schema Settings schema (list of tabs).
@@ -76,18 +76,24 @@ class Admin {
             return $schema;
         }
 
-        $schema[] = array(
-            'id' => 'recovery',
-            'title' => esc_html__( 'Recuperação', 'flexify-checkout-for-woocommerce' ),
-            'icon' => '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 3a9 9 0 0 0-9 9H1l3.89 3.89.07.14L9 12H6a7 7 0 1 1 2.05 4.95l-1.42 1.42A9 9 0 1 0 13 3z"></path><path d="M12 8v5l4 2 .75-1.23-3.25-1.92V8z"></path></svg>',
-            'layout' => 'cards',
-            'cards' => array(
-                array(
-                    'id' => 'recovery-main',
-                    'component' => 'recovery-settings',
-                ),
-            ),
+        $card = array(
+            'id' => 'cart-recovery',
+            'title' => esc_html__( 'Recuperação de carrinhos', 'flexify-checkout-for-woocommerce' ),
+            'description' => esc_html__( 'Configure o rastreamento de carrinhos abandonados, mensagens de follow-up e o modal de captura de leads.', 'flexify-checkout-for-woocommerce' ),
+            'component' => 'recovery-settings',
         );
+
+        foreach ( $schema as $index => $tab ) {
+            if ( isset( $tab['id'] ) && 'cart' === $tab['id'] ) {
+                if ( ! isset( $schema[ $index ]['cards'] ) || ! is_array( $schema[ $index ]['cards'] ) ) {
+                    $schema[ $index ]['cards'] = array();
+                }
+
+                $schema[ $index ]['cards'][] = $card;
+
+                return $schema;
+            }
+        }
 
         return $schema;
     }

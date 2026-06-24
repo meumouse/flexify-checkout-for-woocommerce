@@ -13,7 +13,7 @@ import ConditionsManager from '../../components/settings/ConditionsManager.vue';
 import CheckoutBuilderManager from '../../components/settings/CheckoutBuilderManager.vue';
 import EmailProviders from '../../components/settings/EmailProviders.vue';
 import FontsManager from '../../components/settings/FontsManager.vue';
-import RecoveryManager from '../../components/settings/RecoveryManager.vue';
+import RecoverySettings from '../../components/settings/RecoverySettings.vue';
 import WebhooksManager from '../../components/settings/WebhooksManager.vue';
 
 const props = defineProps({
@@ -100,7 +100,7 @@ const customComponents = {
   'checkout-builder': CheckoutBuilderManager,
   'fonts-manager': FontsManager,
   'email-providers': EmailProviders,
-  'recovery-settings': RecoveryManager,
+  'recovery-settings': RecoverySettings,
   'webhooks-manager': WebhooksManager,
 };
 

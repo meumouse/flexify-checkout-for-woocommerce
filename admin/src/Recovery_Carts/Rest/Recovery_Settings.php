@@ -58,12 +58,10 @@ class Recovery_Settings extends Abstract_Route {
      * @var array<int,string>
      */
     const SCALAR_KEYS = array(
-        'task_scheduler',
         'time_for_lost_carts',
         'time_unit_for_lost_carts',
         'follow_up_purchase_block_days',
         'fallback_first_name',
-        'primary_color',
         'joinotify_sender_phone',
         'joinotify_test_phone',
         'select_coupon',
