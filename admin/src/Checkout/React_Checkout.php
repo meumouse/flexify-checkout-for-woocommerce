@@ -35,6 +35,46 @@ class React_Checkout {
 
         // Mark the body so styles can target the React checkout.
         add_filter( 'body_class', array( $this, 'add_body_class' ) );
+
+        // Add a "Edit checkout" shortcut to the admin bar, on the checkout page.
+        add_action( 'admin_bar_menu', array( $this, 'add_admin_bar_link' ), 100 );
+    }
+
+
+    /**
+     * Add a top admin-bar shortcut that opens the live builder, shown only on
+     * the checkout page to users who can manage WooCommerce.
+     *
+     * @since 6.0.0
+     * @param \WP_Admin_Bar $wp_admin_bar Admin bar instance.
+     * @return void
+     */
+    public function add_admin_bar_link( $wp_admin_bar ) {
+        if ( is_admin() || ! function_exists('is_flexify_checkout') || ! is_flexify_checkout() ) {
+            return;
+        }
+
+        if ( ! current_user_can('manage_woocommerce') ) {
+            return;
+        }
+
+        $url = add_query_arg(
+            array(
+                'page' => 'flexify-checkout-for-woocommerce',
+                'tab' => 'fields',
+                'flexify_open_builder' => '1',
+            ),
+            admin_url('admin.php')
+        );
+
+        $wp_admin_bar->add_node( array(
+            'id' => 'flexify-checkout-editor',
+            'title' => '<span class="ab-icon dashicons dashicons-edit" style="top:2px;"></span>' . esc_html__( 'Editor Flexify Checkout', 'flexify-checkout-for-woocommerce' ),
+            'href' => esc_url( $url ),
+            'meta' => array(
+                'title' => __( 'Abrir o construtor de checkout', 'flexify-checkout-for-woocommerce' ),
+            ),
+        ) );
     }
 
 

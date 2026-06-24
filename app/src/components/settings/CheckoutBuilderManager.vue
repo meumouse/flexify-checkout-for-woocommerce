@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useSettingsStore } from '../../stores/useSettingsStore';
 import BaseButton from '../buttons/BaseButton.vue';
 import CheckoutBuilder from './CheckoutBuilder.vue';
@@ -7,6 +7,20 @@ import CheckoutBuilder from './CheckoutBuilder.vue';
 const store = useSettingsStore();
 
 const builderOpen = ref(false);
+
+// Auto-open when arriving from the front-end "Editor Flexify Checkout" admin
+// bar shortcut (?flexify_open_builder=1), then strip the flag from the URL.
+onMounted(() => {
+  const params = new URLSearchParams(window.location.search);
+
+  if (params.get('flexify_open_builder') === '1' && store.isPro) {
+    builderOpen.value = true;
+
+    params.delete('flexify_open_builder');
+    const query = params.toString();
+    window.history.replaceState(window.history.state, '', `${window.location.pathname}${query ? `?${query}` : ''}`);
+  }
+});
 
 const steps = computed(() => store.layout?.steps || []);
 
