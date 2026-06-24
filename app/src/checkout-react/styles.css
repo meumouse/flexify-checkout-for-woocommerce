@@ -8,11 +8,11 @@
  *
  * The accent color is driven by the merchant's "primary color" setting, injected
  * as `--fc-primary` / `--fc-primary-hover` by Core\Assets. The green defaults
- * below match the reference storefront design and apply when no color is set.
+ * below (#22c55e) apply when no color is set.
  */
 #flexify-react-checkout {
-  --fc-primary: #2d7860;
-  --fc-primary-hover: #1f5c47;
+  --fc-primary: #22c55e;
+  --fc-primary-hover: #16a34a;
   --fc-primary-soft: color-mix(in srgb, var(--fc-primary) 12%, #ffffff);
   --fc-primary-tint: color-mix(in srgb, var(--fc-primary) 6%, #ffffff);
   color: #102033;
