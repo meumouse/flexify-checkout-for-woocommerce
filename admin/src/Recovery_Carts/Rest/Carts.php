@@ -58,6 +58,8 @@ class Carts extends Abstract_Route {
         'per_page' => array( 'type' => 'integer', 'default' => 20, 'sanitize_callback' => 'absint' ),
         'status' => array( 'type' => 'string', 'default' => 'all', 'sanitize_callback' => 'sanitize_key' ),
         'search' => array( 'type' => 'string', 'default' => '', 'sanitize_callback' => 'sanitize_text_field' ),
+        'date_from' => array( 'type' => 'string', 'default' => '', 'sanitize_callback' => 'sanitize_text_field' ),
+        'date_to' => array( 'type' => 'string', 'default' => '', 'sanitize_callback' => 'sanitize_text_field' ),
     );
 
 
@@ -73,24 +75,22 @@ class Carts extends Abstract_Route {
         $per_page = min( 100, max( 1, absint( $request->get_param('per_page') ) ) );
         $status = sanitize_key( (string) $request->get_param('status') );
         $search = sanitize_text_field( (string) $request->get_param('search') );
+        $date_from = sanitize_text_field( (string) $request->get_param('date_from') );
+        $date_to = sanitize_text_field( (string) $request->get_param('date_to') );
+
+        // Filters shared by the list query and the per-status counts, so the tab
+        // badges reflect the same search/date scope as the rows shown below.
+        $base_args = self::base_query_args( $search, $date_from, $date_to );
 
         $post_status = ( $status && in_array( $status, self::STATUSES, true ) ) ? array( $status ) : self::STATUSES;
 
-        $query_args = array(
-            'post_type' => 'fc-recovery-carts',
+        $query = new WP_Query( array_merge( $base_args, array(
             'post_status' => $post_status,
             'posts_per_page' => $per_page,
             'paged' => $page,
-            'orderby' => 'date',
-            'order' => 'DESC',
             'no_found_rows' => false,
-        );
+        ) ) );
 
-        if ( '' !== $search ) {
-            $query_args['s'] = $search;
-        }
-
-        $query = new WP_Query( $query_args );
         $items = array();
 
         foreach ( $query->posts as $post ) {
@@ -104,7 +104,91 @@ class Carts extends Abstract_Route {
             'page' => $page,
             'per_page' => $per_page,
             'statuses' => $this->status_options(),
+            'counts' => $this->count_by_status( $base_args ),
         ) );
+    }
+
+
+    /**
+     * Build the shared WP_Query args (post type + search + date range) reused by
+     * the list query, the per-status counts and the bulk-delete resolver.
+     *
+     * @since 6.0.0
+     * @param string $search Free-text search term.
+     * @param string $date_from Start date (Y-m-d) or empty.
+     * @param string $date_to End date (Y-m-d) or empty.
+     * @return array
+     */
+    public static function base_query_args( $search, $date_from, $date_to ) {
+        $args = array(
+            'post_type' => 'fc-recovery-carts',
+            'orderby' => 'date',
+            'order' => 'DESC',
+        );
+
+        if ( '' !== $search ) {
+            $args['s'] = $search;
+        }
+
+        $date_query = self::build_date_query( $date_from, $date_to );
+
+        if ( $date_query ) {
+            $args['date_query'] = $date_query;
+        }
+
+        return $args;
+    }
+
+
+    /**
+     * Build a post_date date_query clause from the from/to range.
+     *
+     * @since 6.0.0
+     * @param string $from Start date (Y-m-d) or empty.
+     * @param string $to End date (Y-m-d) or empty.
+     * @return array Empty when no valid bound is given.
+     */
+    public static function build_date_query( $from, $to ) {
+        $clause = array( 'inclusive' => true );
+
+        if ( $from && preg_match( '/^\d{4}-\d{2}-\d{2}$/', $from ) ) {
+            $clause['after'] = $from . ' 00:00:00';
+        }
+
+        if ( $to && preg_match( '/^\d{4}-\d{2}-\d{2}$/', $to ) ) {
+            $clause['before'] = $to . ' 23:59:59';
+        }
+
+        return count( $clause ) > 1 ? array( $clause ) : array();
+    }
+
+
+    /**
+     * Count carts per status within the current search/date scope.
+     *
+     * Powers the filter tab badges ("Todos N", "Abandonado N", …). The "all"
+     * key is the sum across every status.
+     *
+     * @since 6.0.0
+     * @param array $base_args Shared query args from {@see base_query_args()}.
+     * @return array<string,int>
+     */
+    private function count_by_status( $base_args ) {
+        $counts = array( 'all' => 0 );
+
+        foreach ( self::STATUSES as $status ) {
+            $query = new WP_Query( array_merge( $base_args, array(
+                'post_status' => array( $status ),
+                'posts_per_page' => 1,
+                'fields' => 'ids',
+                'no_found_rows' => false,
+            ) ) );
+
+            $counts[ $status ] = (int) $query->found_posts;
+            $counts['all'] += (int) $query->found_posts;
+        }
+
+        return $counts;
     }
 
 

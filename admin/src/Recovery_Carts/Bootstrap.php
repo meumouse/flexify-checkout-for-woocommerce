@@ -164,8 +164,10 @@ class Bootstrap {
             '\MeuMouse\Flexify_Checkout\Recovery_Carts\Rest\Analytics',
             '\MeuMouse\Flexify_Checkout\Recovery_Carts\Rest\Carts',
             '\MeuMouse\Flexify_Checkout\Recovery_Carts\Rest\Cart_Delete',
+            '\MeuMouse\Flexify_Checkout\Recovery_Carts\Rest\Cart_Bulk_Delete',
             '\MeuMouse\Flexify_Checkout\Recovery_Carts\Rest\Queue',
             '\MeuMouse\Flexify_Checkout\Recovery_Carts\Rest\Queue_Delete',
+            '\MeuMouse\Flexify_Checkout\Recovery_Carts\Rest\Queue_Bulk_Delete',
             '\MeuMouse\Flexify_Checkout\Recovery_Carts\Rest\Recovery_Settings',
         );
 
