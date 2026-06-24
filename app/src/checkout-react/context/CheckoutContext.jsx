@@ -22,6 +22,7 @@ export function CheckoutProvider({ children }) {
   const [cart, setCart] = useState(null);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
+  const [placingOrder, setPlacingOrder] = useState(false);
   const [error, setError] = useState('');
   const [billing, setBilling] = useState(emptyAddress);
   const [extraFields, setExtraFields] = useState({});
@@ -104,24 +105,35 @@ export function CheckoutProvider({ children }) {
 
   const placeOrder = useCallback(
     () => withBusy(async () => {
-      const payload = {
-        billing_address: billing,
-        shipping_address: billing,
-        payment_method: selectedGateway,
-        customer_note: customerNote,
-        extensions: { 'flexify-checkout': { fields: extraFields } },
-      };
+      // Show the purchase animation overlay for the whole submission. It stays up
+      // through the redirect; only a non-navigating result or an error clears it.
+      setPlacingOrder(true);
 
-      const result = await storeApi.placeOrder(payload);
-      const redirect = result?.payment_result?.redirect_url;
+      try {
+        const payload = {
+          billing_address: billing,
+          shipping_address: billing,
+          payment_method: selectedGateway,
+          customer_note: customerNote,
+          extensions: { 'flexify-checkout': { fields: extraFields } },
+        };
 
-      if (redirect) {
-        window.location.href = redirect;
-      } else if (result?.order_id) {
-        window.location.href = (config.urls?.order_received || config.urls?.checkout || '/');
+        const result = await storeApi.placeOrder(payload);
+        const redirect = result?.payment_result?.redirect_url;
+
+        if (redirect) {
+          window.location.href = redirect;
+        } else if (result?.order_id) {
+          window.location.href = (config.urls?.order_received || config.urls?.checkout || '/');
+        } else {
+          setPlacingOrder(false);
+        }
+
+        return result;
+      } catch (e) {
+        setPlacingOrder(false);
+        throw e;
       }
-
-      return result;
     }),
     [billing, selectedGateway, customerNote, extraFields, withBusy],
   );
@@ -131,6 +143,7 @@ export function CheckoutProvider({ children }) {
       cart,
       loading,
       busy,
+      placingOrder,
       error,
       setError,
       billing,
@@ -151,7 +164,7 @@ export function CheckoutProvider({ children }) {
       placeOrder,
     }),
     [
-      cart, loading, busy, error, billing, extraFields, selectedGateway, customerNote,
+      cart, loading, busy, placingOrder, error, billing, extraFields, selectedGateway, customerNote,
       loadCart, applyCoupon, removeCoupon, updateItemQuantity, removeItem, updateAddress, selectShippingRate, placeOrder,
     ],
   );

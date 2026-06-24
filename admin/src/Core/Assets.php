@@ -357,6 +357,11 @@ class Assets {
 			}
 		}
 
+		// Lordicon web component player, used by the React purchase animation overlay.
+		if ( Admin_Options::get_setting('enable_animation_process_purchase') === 'yes' && License::is_valid() ) {
+			wp_enqueue_script( 'lordicon-player', 'https://cdn.lordicon.com/lordicon.js', array(), null, true );
+		}
+
 		wp_enqueue_script(
 			'flexify-react-checkout',
 			FLEXIFY_CHECKOUT_URL . 'app/dist/checkout-react/main.js',
@@ -396,6 +401,24 @@ class Assets {
 			'config' => Headless_Data::get_checkout_config(),
 			'rules' => Headless_Data::get_checkout_rules(),
 			'settings' => Headless_Data::get_public_settings(),
+			'purchase_animation' => array(
+				'enabled' => Admin_Options::get_setting('enable_animation_process_purchase') === 'yes' && License::is_valid(),
+				'wait_text' => __( 'Aguarde alguns instantes', 'flexify-checkout-for-woocommerce' ),
+				'items' => array(
+					array(
+						'file' => esc_url( Admin_Options::get_setting('animation_process_purchase_file_1') ),
+						'text' => Admin_Options::get_setting('text_animation_process_purchase_1'),
+					),
+					array(
+						'file' => esc_url( Admin_Options::get_setting('animation_process_purchase_file_2') ),
+						'text' => Admin_Options::get_setting('text_animation_process_purchase_2'),
+					),
+					array(
+						'file' => esc_url( Admin_Options::get_setting('animation_process_purchase_file_3') ),
+						'text' => Admin_Options::get_setting('text_animation_process_purchase_3'),
+					),
+				),
+			),
 			'flags' => array(
 				'whatsapp_login' => Headless_Data::is_whatsapp_login_available(),
 				'address_search' => Headless_Data::is_address_search_available(),

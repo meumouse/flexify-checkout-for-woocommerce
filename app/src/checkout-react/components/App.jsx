@@ -6,6 +6,7 @@ import { isEditor, onParentMessage, emitReady, emitSelect } from '../lib/editorB
 import { MESSAGE_PREFIX } from '../lib/editorBridge.js';
 import { formatPrice } from '../lib/format.js';
 import OrderSummary from './OrderSummary.jsx';
+import PurchaseAnimation from './PurchaseAnimation.jsx';
 import StepRenderer from './StepRenderer.jsx';
 import ContactStep from './steps/ContactStep.jsx';
 import ShippingStep from './steps/ShippingStep.jsx';
@@ -259,7 +260,7 @@ function EditorApp() {
  * sticky order summary (desktop) / bottom sheet (mobile).
  */
 function CheckoutShell({ stepLabels, activeIndex, isLast, busy, error, onBack, onNext, onPlaceOrder, children }) {
-  const { cart } = useCheckout();
+  const { cart, placingOrder } = useCheckout();
   const totals = (cart && cart.totals) || {};
   const nextStepLabel = stepLabels[activeIndex + 1] || '';
   const nextLabel = nextStepLabel
@@ -316,6 +317,8 @@ function CheckoutShell({ stepLabels, activeIndex, isLast, busy, error, onBack, o
       </div>
 
       <MobileCartSheet />
+
+      <PurchaseAnimation active={placingOrder} />
     </div>
   );
 }

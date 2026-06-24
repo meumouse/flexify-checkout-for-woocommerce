@@ -265,6 +265,13 @@ class Components {
 	 * @return void
 	 */
 	public static function add_processing_purchase_animation() {
+		// The React checkout renders (and animates) its own overlay component, so
+		// skip the legacy markup there — otherwise it leaks as unstyled text in the
+		// footer (no legacy CSS/JS/lordicon is loaded on the React template).
+		if ( Helpers::is_react_checkout_enabled() || Helpers::is_builder_preview() ) {
+			return;
+		}
+
 		if ( Admin_Options::get_setting('enable_animation_process_purchase') === 'yes' && License::is_valid() && ! Helpers::is_thankyou_page() ) : ?>
 			<div id="flexify_checkout_purchase_animation" class="purchase-animations-group">
 				<div class="animations-content">
