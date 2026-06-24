@@ -4,6 +4,7 @@ import { useCheckout } from '../context/CheckoutContext.jsx';
 import { hasLayout, layoutSteps, setFieldOverrides } from '../lib/layout.js';
 import { isEditor, onParentMessage, emitReady, emitSelect } from '../lib/editorBridge.js';
 import { MESSAGE_PREFIX } from '../lib/editorBridge.js';
+import { applyTheme } from '../lib/theme.js';
 import { formatPrice } from '../lib/format.js';
 import OrderSummary from './OrderSummary.jsx';
 import PurchaseAnimation from './PurchaseAnimation.jsx';
@@ -206,6 +207,8 @@ function EditorApp() {
         setActiveStepId(msg.stepId || '');
       } else if (kind === 'select') {
         setSelected(msg.target || null);
+      } else if (kind === 'theme') {
+        applyTheme(msg.theme || null);
       }
     });
 

@@ -38,6 +38,23 @@ class React_Checkout {
 
         // Add a "Edit checkout" shortcut to the admin bar, on the checkout page.
         add_action( 'admin_bar_menu', array( $this, 'add_admin_bar_link' ), 100 );
+
+        // Hide the WP admin bar inside the live builder preview so the iframe
+        // shows a clean checkout.
+        add_action( 'wp', array( $this, 'maybe_hide_admin_bar' ) );
+    }
+
+
+    /**
+     * Hide the admin bar when rendering the builder preview iframe.
+     *
+     * @since 6.0.0
+     * @return void
+     */
+    public function maybe_hide_admin_bar() {
+        if ( Helpers::is_builder_preview() ) {
+            add_filter( 'show_admin_bar', '__return_false' );
+        }
     }
 
 

@@ -55,6 +55,18 @@ class Default_Options {
             'set_primary_color' => '#141D26',
             'set_primary_color_on_hover' => '#33404D',
             'set_placeholder_color' => '#33404D',
+            // Checkout theme palette (React checkout). Drive the --fc-* CSS vars.
+            'set_secondary_color' => '#64748B',
+            'set_success_color' => '#22C55E',
+            'set_warning_color' => '#F59E0B',
+            'set_danger_color' => '#EF4444',
+            'set_info_color' => '#3B82F6',
+            // Global checkout style controls (px-based, React checkout).
+            'checkout_border_radius' => '8',
+            'checkout_base_font_size' => '16',
+            'checkout_field_height' => '48',
+            'checkout_bg_color' => '#FFFFFF',
+            'checkout_text_color' => '#102033',
             'flexify_checkout_theme' => 'modern',
             'input_border_radius' => '0.375',
             'unit_input_border_radius' => 'rem',

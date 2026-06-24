@@ -15,7 +15,21 @@
   --fc-primary-hover: #16a34a;
   --fc-primary-soft: color-mix(in srgb, var(--fc-primary) 12%, #ffffff);
   --fc-primary-tint: color-mix(in srgb, var(--fc-primary) 6%, #ffffff);
-  color: #102033;
+  /* Theme palette (driven by the builder / settings, injected by Core\Assets). */
+  --fc-secondary: #64748b;
+  --fc-success: #22c55e;
+  --fc-warning: #f59e0b;
+  --fc-danger: #ef4444;
+  --fc-info: #3b82f6;
+  /* Global style controls. */
+  --fc-radius: 8px;
+  --fc-font-size: 16px;
+  --fc-field-height: 48px;
+  --fc-bg: #ffffff;
+  --fc-text: #102033;
+  color: var(--fc-text);
+  background-color: var(--fc-bg);
+  font-size: var(--fc-font-size);
   font-family: inherit;
   line-height: 1.5;
 }
@@ -87,6 +101,47 @@
 #flexify-react-checkout .bg-primary-50,
 #flexify-react-checkout .hover\:bg-primary-50:hover {
   background-color: var(--fc-primary-soft) !important;
+}
+
+/*
+ * Semantic palette remaps (success / warning / danger / info / secondary),
+ * scoped to the checkout mount so the merchant's palette drives real elements
+ * (error text, success badges, rating stars, etc.). Admin Vue is unaffected.
+ */
+#flexify-react-checkout .text-danger { color: var(--fc-danger) !important; }
+#flexify-react-checkout .bg-danger { background-color: var(--fc-danger) !important; }
+#flexify-react-checkout .border-danger { border-color: var(--fc-danger) !important; }
+#flexify-react-checkout .bg-red-50 { background-color: color-mix(in srgb, var(--fc-danger) 10%, #ffffff) !important; }
+
+#flexify-react-checkout .text-success { color: var(--fc-success) !important; }
+#flexify-react-checkout .bg-success { background-color: var(--fc-success) !important; }
+#flexify-react-checkout .border-success { border-color: var(--fc-success) !important; }
+
+#flexify-react-checkout .text-warning,
+#flexify-react-checkout .text-amber-400 { color: var(--fc-warning) !important; }
+#flexify-react-checkout .bg-warning { background-color: var(--fc-warning) !important; }
+
+#flexify-react-checkout .text-info { color: var(--fc-info) !important; }
+#flexify-react-checkout .bg-info { background-color: var(--fc-info) !important; }
+
+.fc-secondary-bg { background-color: var(--fc-secondary); }
+.fc-secondary-text { color: var(--fc-secondary); }
+.fc-secondary-border { border-color: var(--fc-secondary); }
+
+/*
+ * Global radius + field height. ID-scoped so it overrides the Tailwind utility
+ * classes (rounded-*, h-12) the components ship with, giving one global control.
+ */
+#flexify-react-checkout .rounded-lg,
+#flexify-react-checkout .rounded-xl,
+#flexify-react-checkout .rounded-2xl {
+  border-radius: var(--fc-radius);
+}
+
+#flexify-react-checkout input:not([type='checkbox']):not([type='radio']):not([type='color']),
+#flexify-react-checkout select {
+  height: var(--fc-field-height);
+  border-radius: var(--fc-radius);
 }
 
 /* Reservation / session countdown bar. */

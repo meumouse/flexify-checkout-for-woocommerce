@@ -6,6 +6,7 @@ import BaseSelect from '../fields/BaseSelect.vue';
 import ToggleSwitch from '../toggles/ToggleSwitch.vue';
 import SearchMultiSelect from '../fields/SearchMultiSelect.vue';
 import MediaPickerField from '../fields/MediaPickerField.vue';
+import FontsManager from './FontsManager.vue';
 
 const props = defineProps({
   open: { type: Boolean, default: false },
@@ -100,6 +101,16 @@ const FIELD_ICON_OPTIONS = [
   { value: 'search', label: 'Busca' },
 ];
 
+const PALETTE_FIELDS = [
+  { key: 'primary', label: 'Primária' },
+  { key: 'primary_hover', label: 'Primária (hover)' },
+  { key: 'secondary', label: 'Secundária' },
+  { key: 'success', label: 'Sucesso' },
+  { key: 'warning', label: 'Aviso' },
+  { key: 'danger', label: 'Perigo' },
+  { key: 'info', label: 'Informação' },
+];
+
 const inputClass = 'w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-ink focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary-100';
 
 // --- Draft state ---
@@ -118,6 +129,96 @@ const expanded = reactive({});
 const runtime = computed(() => store.runtime || {});
 const fieldCatalog = computed(() => store.fieldCatalog || []);
 const fieldOptions = computed(() => fieldCatalog.value.map((field) => ({ value: field.value, label: field.label })));
+
+// --- Theme draft (palette + globals + font), persisted to settings on Save ---
+
+// themeDraft key -> settings key.
+const THEME_KEYS = {
+  primary: 'set_primary_color',
+  primary_hover: 'set_primary_color_on_hover',
+  secondary: 'set_secondary_color',
+  success: 'set_success_color',
+  warning: 'set_warning_color',
+  danger: 'set_danger_color',
+  info: 'set_info_color',
+  radius: 'checkout_border_radius',
+  font_size: 'checkout_base_font_size',
+  field_height: 'checkout_field_height',
+  bg: 'checkout_bg_color',
+  text: 'checkout_text_color',
+  font: 'set_font_family',
+};
+
+const themeDraft = reactive({});
+
+function cloneTheme() {
+  const settings = store.settings || {};
+
+  Object.entries(THEME_KEYS).forEach(([key, settingKey]) => {
+    themeDraft[key] = settings[settingKey] ?? '';
+  });
+}
+
+const availableFonts = computed(() => {
+  const fonts = store.settings?.font_family || store.runtime?.fonts || {};
+
+  return Object.entries(fonts).map(([id, cfg]) => ({ value: id, label: cfg?.font_name || id }));
+});
+
+// Build the @import/@font-face CSS + family name for the active font.
+function fontPayload(fontId) {
+  const fonts = store.settings?.font_family || store.runtime?.fonts || {};
+  const cfg = fonts[fontId];
+
+  if (!cfg) {
+    return { family: '', css: '' };
+  }
+
+  const family = cfg.font_name || fontId;
+  let css = '';
+
+  if (cfg.font_url) {
+    css = `@import url('${cfg.font_url}');`;
+  } else if (Array.isArray(cfg.font_files) && cfg.font_files.length) {
+    css = cfg.font_files
+      .map((file) => {
+        const url = file?.url || file?.file || file;
+
+        return url ? `@font-face{font-family:'${family}';src:url('${url}');font-weight:${cfg.font_weight || 400};font-style:${cfg.font_style || 'normal'};font-display:swap;}` : '';
+      })
+      .join('');
+  }
+
+  return { family, css };
+}
+
+function buildThemeMessage() {
+  return {
+    colors: {
+      primary: themeDraft.primary,
+      primary_hover: themeDraft.primary_hover,
+      secondary: themeDraft.secondary,
+      success: themeDraft.success,
+      warning: themeDraft.warning,
+      danger: themeDraft.danger,
+      info: themeDraft.info,
+    },
+    globals: {
+      radius: themeDraft.radius,
+      font_size: themeDraft.font_size,
+      field_height: themeDraft.field_height,
+      bg: themeDraft.bg,
+      text: themeDraft.text,
+    },
+    font: fontPayload(themeDraft.font),
+  };
+}
+
+function pushTheme() {
+  if (frameReady.value) {
+    postToFrame({ type: 'fc-builder:theme', theme: buildThemeMessage() });
+  }
+}
 
 // --- Live preview iframe bridge ---
 
@@ -215,6 +316,7 @@ function markReady() {
   frameReady.value = true;
   pushLayout();
   pushSelection();
+  pushTheme();
 }
 
 function onFrameLoad() {
@@ -259,6 +361,19 @@ watch(
   { deep: true },
 );
 
+let themeTimer = null;
+watch(
+  () => themeDraft,
+  () => {
+    if (themeTimer) {
+      clearTimeout(themeTimer);
+    }
+
+    themeTimer = setTimeout(pushTheme, 250);
+  },
+  { deep: true },
+);
+
 watch(
   () => [selected.stepId, selected.itemId],
   () => pushSelection(),
@@ -285,6 +400,8 @@ function cloneLayout() {
 
   newFieldIds.clear();
   deletedFieldIds.clear();
+
+  cloneTheme();
 
   // Expand every step by default in the layers tree.
   Object.keys(expanded).forEach((id) => delete expanded[id]);
@@ -384,12 +501,22 @@ watch(selectedItem, (item) => {
   }
 });
 
+const themePanel = ref(false);
+
+function selectTheme() {
+  themePanel.value = true;
+  selected.stepId = '';
+  selected.itemId = '';
+}
+
 function selectStep(step) {
+  themePanel.value = false;
   selected.stepId = step.id;
   selected.itemId = '';
 }
 
 function selectItem(step, item) {
+  themePanel.value = false;
   selected.stepId = step.id;
   selected.itemId = item.id;
 }
@@ -792,6 +919,26 @@ async function save() {
   committing.value = true;
 
   try {
+    // 0. THEME: write the draft into settings and persist them.
+    let themeChanged = false;
+
+    Object.entries(THEME_KEYS).forEach(([key, settingKey]) => {
+      if ((store.settings[settingKey] ?? '') !== (themeDraft[key] ?? '')) {
+        store.settings[settingKey] = themeDraft[key];
+        themeChanged = true;
+      }
+    });
+
+    if (themeChanged) {
+      const response = await store.save();
+
+      if (response?.status === 'error') {
+        committing.value = false;
+
+        return;
+      }
+    }
+
     // 1. CREATE new fields (must precede edits — save_fields ignores unknown ids).
     for (const id of newFieldIds) {
       if (deletedFieldIds.has(id)) {
@@ -914,6 +1061,19 @@ async function save() {
             >
               <BoxIcon name="plus" class="h-3.5 w-3.5" />
               Etapa
+            </button>
+          </div>
+
+          <!-- Theme entry -->
+          <div class="px-2 pt-2">
+            <button
+              type="button"
+              class="flex w-full cursor-pointer items-center gap-2 rounded-lg border px-2.5 py-2 text-left transition"
+              :class="themePanel ? 'border-primary bg-primary-50/40' : 'border-slate-200 hover:bg-slate-50'"
+              @click="selectTheme"
+            >
+              <BoxIcon name="palette" class="h-4 w-4 shrink-0 text-primary" />
+              <span class="text-sm font-medium text-ink">Tema do checkout</span>
             </button>
           </div>
 
@@ -1062,8 +1222,66 @@ async function save() {
 
         <!-- Inspector -->
         <aside class="overflow-y-auto border-l border-slate-200 bg-white px-4 py-5">
+          <!-- Theme inspector -->
+          <div v-if="themePanel" class="flex flex-col gap-5">
+            <div class="flex items-center gap-2 border-b border-slate-100 pb-3">
+              <BoxIcon name="palette" class="h-4 w-4 text-primary" />
+              <p class="m-0 text-sm font-semibold text-ink">Tema do checkout</p>
+            </div>
+
+            <!-- Palette -->
+            <div>
+              <p class="m-0 mb-2 text-[11px] font-semibold uppercase tracking-wide text-muted">Paleta de cores</p>
+              <div class="flex flex-col gap-2">
+                <div v-for="color in PALETTE_FIELDS" :key="color.key" class="flex items-center justify-between gap-2">
+                  <span class="text-xs font-medium text-ink">{{ color.label }}</span>
+                  <input v-model="themeDraft[color.key]" type="color" class="h-8 w-14 cursor-pointer rounded border border-slate-300" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Typography -->
+            <div>
+              <p class="m-0 mb-2 text-[11px] font-semibold uppercase tracking-wide text-muted">Tipografia</p>
+              <label class="mb-1 block text-xs font-medium text-ink">Fonte ativa</label>
+              <BaseSelect v-model="themeDraft.font" :options="availableFonts" size="sm" placeholder="Selecionar fonte" />
+              <label class="mb-1 mt-3 block text-xs font-medium text-ink">Tamanho da fonte base (px)</label>
+              <input v-model="themeDraft.font_size" type="number" min="12" max="22" :class="inputClass" />
+
+              <details class="mt-3 rounded-lg border border-slate-200">
+                <summary class="cursor-pointer px-3 py-2 text-xs font-medium text-ink">Gerenciar fontes (adicionar / enviar)</summary>
+                <div class="border-t border-slate-100 p-3">
+                  <FontsManager />
+                </div>
+              </details>
+            </div>
+
+            <!-- Global -->
+            <div>
+              <p class="m-0 mb-2 text-[11px] font-semibold uppercase tracking-wide text-muted">Global</p>
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="mb-1 block text-xs font-medium text-ink">Raio (px)</label>
+                  <input v-model="themeDraft.radius" type="number" min="0" max="40" :class="inputClass" />
+                </div>
+                <div>
+                  <label class="mb-1 block text-xs font-medium text-ink">Altura dos campos (px)</label>
+                  <input v-model="themeDraft.field_height" type="number" min="36" max="72" :class="inputClass" />
+                </div>
+              </div>
+              <div class="mt-3 flex items-center justify-between gap-2">
+                <span class="text-xs font-medium text-ink">Cor de fundo</span>
+                <input v-model="themeDraft.bg" type="color" class="h-8 w-14 cursor-pointer rounded border border-slate-300" />
+              </div>
+              <div class="mt-2 flex items-center justify-between gap-2">
+                <span class="text-xs font-medium text-ink">Cor do texto</span>
+                <input v-model="themeDraft.text" type="color" class="h-8 w-14 cursor-pointer rounded border border-slate-300" />
+              </div>
+            </div>
+          </div>
+
           <!-- Item inspector -->
-          <div v-if="selectedItem && selectedStep" class="flex flex-col gap-4">
+          <div v-else-if="selectedItem && selectedStep" class="flex flex-col gap-4">
             <div class="flex items-center justify-between gap-2 border-b border-slate-100 pb-3">
               <div class="flex min-w-0 items-center gap-2">
                 <BoxIcon :name="itemMeta(selectedItem).icon" class="h-4 w-4 shrink-0 text-primary" />

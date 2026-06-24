@@ -11,6 +11,21 @@ import config from '../config.js';
 const PREFIX = 'fc-builder:';
 
 /**
+ * Origin of the parent (admin) window, derived from the referrer. The admin
+ * page may be on a different scheme/host than this checkout iframe, so we use
+ * it as the postMessage target and don't rely on strict origin equality.
+ *
+ * @returns {string}
+ */
+function parentOrigin() {
+  try {
+    return document.referrer ? new URL(document.referrer).origin : '*';
+  } catch (e) {
+    return '*';
+  }
+}
+
+/**
  * Whether the checkout is rendered in live builder editor mode.
  *
  * @returns {boolean}
@@ -27,10 +42,9 @@ export function isEditor() {
  */
 export function onParentMessage(handler) {
   const listener = (event) => {
-    if (event.origin !== window.location.origin) {
-      return;
-    }
-
+    // The parent origin may differ (scheme/host); trust the source window and
+    // the namespaced message type instead of strict origin equality. The render
+    // itself is admin-capability + nonce gated server-side.
     if (event.source !== window.parent) {
       return;
     }
@@ -59,7 +73,7 @@ export function postToParent(msg) {
     return;
   }
 
-  window.parent.postMessage(msg, window.location.origin);
+  window.parent.postMessage(msg, parentOrigin());
 }
 
 /**

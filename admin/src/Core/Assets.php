@@ -335,17 +335,43 @@ class Assets {
 		if ( is_array( $settings ) ) {
 			wp_add_inline_style( 'flexify-react-checkout', Styles::render_dynamic_styles( $settings ) );
 
-			// Drive the React checkout accent color from the merchant's primary color.
-			$primary = Admin_Options::get_setting('set_primary_color');
-			$primary_hover = Admin_Options::get_setting('set_primary_color_on_hover');
+			// Drive the React checkout theme (palette + globals) from settings, so
+			// the initial paint is correct without JS. The builder pushes the same
+			// values live over postMessage while editing.
 			$accent_vars = '';
 
-			if ( ! empty( $primary ) ) {
-				$accent_vars .= '--fc-primary:' . esc_attr( $primary ) . ';';
+			$color_map = array(
+				'--fc-primary' => 'set_primary_color',
+				'--fc-primary-hover' => 'set_primary_color_on_hover',
+				'--fc-secondary' => 'set_secondary_color',
+				'--fc-success' => 'set_success_color',
+				'--fc-warning' => 'set_warning_color',
+				'--fc-danger' => 'set_danger_color',
+				'--fc-info' => 'set_info_color',
+				'--fc-bg' => 'checkout_bg_color',
+				'--fc-text' => 'checkout_text_color',
+			);
+
+			foreach ( $color_map as $css_var => $setting_key ) {
+				$value = Admin_Options::get_setting( $setting_key );
+
+				if ( ! empty( $value ) ) {
+					$accent_vars .= $css_var . ':' . esc_attr( $value ) . ';';
+				}
 			}
 
-			if ( ! empty( $primary_hover ) ) {
-				$accent_vars .= '--fc-primary-hover:' . esc_attr( $primary_hover ) . ';';
+			$px_map = array(
+				'--fc-radius' => 'checkout_border_radius',
+				'--fc-font-size' => 'checkout_base_font_size',
+				'--fc-field-height' => 'checkout_field_height',
+			);
+
+			foreach ( $px_map as $css_var => $setting_key ) {
+				$value = Admin_Options::get_setting( $setting_key );
+
+				if ( $value !== '' && $value !== null ) {
+					$accent_vars .= $css_var . ':' . esc_attr( (int) $value ) . 'px;';
+				}
 			}
 
 			if ( $accent_vars !== '' ) {
