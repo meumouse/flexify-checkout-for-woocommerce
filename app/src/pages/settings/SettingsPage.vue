@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, ref } from 'vue';
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { useSettingsStore } from '../../stores/useSettingsStore';
 import FieldRow from '../../components/fields/FieldRow.vue';
 import BaseButton from '../../components/buttons/BaseButton.vue';
@@ -24,14 +24,69 @@ store.hydrate(props.bootstrap);
 
 const activeTab = ref('');
 
+const tabsScroller = ref(null);
+const canScrollLeft = ref(false);
+const canScrollRight = ref(false);
+
+function updateScrollIndicators() {
+  const el = tabsScroller.value;
+
+  if (!el) {
+    return;
+  }
+
+  const maxScroll = el.scrollWidth - el.clientWidth;
+
+  canScrollLeft.value = el.scrollLeft > 1;
+  canScrollRight.value = el.scrollLeft < maxScroll - 1;
+}
+
+function scrollTabs(direction) {
+  const el = tabsScroller.value;
+
+  if (!el) {
+    return;
+  }
+
+  el.scrollBy({ left: direction * Math.max(el.clientWidth * 0.7, 160), behavior: 'smooth' });
+}
+
+let resizeObserver = null;
+
 onMounted(() => {
   const fromQuery = new URLSearchParams(window.location.search).get('tab') || '';
   const validTab = store.schema.find((tab) => tab.id === fromQuery);
 
   activeTab.value = validTab ? validTab.id : store.schema[0]?.id || '';
+
+  nextTick(updateScrollIndicators);
+
+  if (typeof ResizeObserver !== 'undefined' && tabsScroller.value) {
+    resizeObserver = new ResizeObserver(updateScrollIndicators);
+    resizeObserver.observe(tabsScroller.value);
+  }
+});
+
+onBeforeUnmount(() => {
+  if (resizeObserver) {
+    resizeObserver.disconnect();
+    resizeObserver = null;
+  }
 });
 
 const currentTab = computed(() => store.schema.find((tab) => tab.id === activeTab.value) || null);
+
+watch(activeTab, (id) => {
+  nextTick(() => {
+    const el = tabsScroller.value?.querySelector(`[data-tab-id="${id}"]`);
+
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', inline: 'nearest', block: 'nearest' });
+    }
+
+    updateScrollIndicators();
+  });
+});
 
 const customComponents = {
   'license-manager': LicenseManager,
@@ -82,19 +137,64 @@ function selectTab(tabId) {
       >Central de ajuda</a>
     </p>
 
-    <nav class="mt-8 flex w-fit max-w-full flex-wrap overflow-hidden rounded-[8px] bg-[#e7edf5] p-0.5">
-      <button
-        v-for="tab in store.schema"
-        :key="tab.id"
-        type="button"
-        class="flexify-tab flex min-w-[130px] cursor-pointer items-center justify-center gap-2 rounded-none px-5 py-4 text-[13px] font-semibold uppercase tracking-wide transition first:rounded-l-[8px] last:rounded-r-[8px]"
-        :class="activeTab === tab.id ? 'active bg-primary text-white shadow-sm' : 'bg-transparent text-slate-600 hover:bg-[#d0dce9] hover:text-slate-800'"
-        @click="selectTab(tab.id)"
+    <div class="relative mt-8 w-full max-w-full">
+      <!-- Indicador / botão de rolagem à esquerda -->
+      <transition name="fade">
+        <button
+          v-if="canScrollLeft"
+          type="button"
+          aria-label="Rolar abas para a esquerda"
+          class="absolute left-0 top-1/2 z-20 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-md transition hover:text-primary"
+          @click="scrollTabs(-1)"
+        >
+          <BoxIcon name="chevron-left" class="h-5 w-5" />
+        </button>
+      </transition>
+
+      <!-- Gradiente de borda esquerda -->
+      <div
+        v-show="canScrollLeft"
+        class="pointer-events-none absolute inset-y-0 left-0 z-10 w-10 rounded-l-[8px] bg-gradient-to-r from-[#e7edf5] to-transparent"
+      />
+
+      <nav
+        ref="tabsScroller"
+        class="flexify-tabs-scroller flex w-full flex-nowrap overflow-x-auto rounded-[8px] bg-[#e7edf5] p-0.5"
+        @scroll.passive="updateScrollIndicators"
       >
-        <BoxIcon v-if="tab.icon" :name="tab.icon" class="h-[18px] w-[18px] shrink-0" />
-        <span>{{ tab.title }}</span>
-      </button>
-    </nav>
+        <button
+          v-for="tab in store.schema"
+          :key="tab.id"
+          type="button"
+          :data-tab-id="tab.id"
+          class="flexify-tab flex min-w-[130px] shrink-0 cursor-pointer items-center justify-center gap-2 rounded-none px-5 py-4 text-[13px] font-semibold uppercase tracking-wide transition first:rounded-l-[8px] last:rounded-r-[8px]"
+          :class="activeTab === tab.id ? 'active bg-primary text-white shadow-sm' : 'bg-transparent text-slate-600 hover:bg-[#d0dce9] hover:text-slate-800'"
+          @click="selectTab(tab.id)"
+        >
+          <BoxIcon v-if="tab.icon" :name="tab.icon" class="h-[18px] w-[18px] shrink-0" />
+          <span>{{ tab.title }}</span>
+        </button>
+      </nav>
+
+      <!-- Gradiente de borda direita -->
+      <div
+        v-show="canScrollRight"
+        class="pointer-events-none absolute inset-y-0 right-0 z-10 w-10 rounded-r-[8px] bg-gradient-to-l from-[#e7edf5] to-transparent"
+      />
+
+      <!-- Indicador / botão de rolagem à direita -->
+      <transition name="fade">
+        <button
+          v-if="canScrollRight"
+          type="button"
+          aria-label="Rolar abas para a direita"
+          class="absolute right-0 top-1/2 z-20 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-md transition hover:text-primary"
+          @click="scrollTabs(1)"
+        >
+          <BoxIcon name="chevron-right" class="h-5 w-5" />
+        </button>
+      </transition>
+    </div>
 
     <main v-if="currentTab" class="mt-6 overflow-hidden rounded-[8px] bg-white shadow-[0_1px_0_rgba(0,0,0,0.02)] ring-1 ring-slate-100">
       <div class="px-10 py-4">
@@ -135,5 +235,26 @@ function selectTab(tabId) {
 
 .flexify-tab:first-child {
   border-left: none;
+}
+
+/* Rolagem horizontal sem barra visível */
+.flexify-tabs-scroller {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  scroll-behavior: smooth;
+}
+
+.flexify-tabs-scroller::-webkit-scrollbar {
+  display: none;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.15s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>
