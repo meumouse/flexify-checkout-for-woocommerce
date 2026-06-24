@@ -52,7 +52,12 @@ import note from 'boxicons/svg/regular/bx-note.svg?raw';
 import creditCard from 'boxicons/svg/regular/bx-credit-card.svg?raw';
 import packageIcon from 'boxicons/svg/regular/bx-package.svg?raw';
 import gift from 'boxicons/svg/regular/bx-gift.svg?raw';
-import broadcast from 'boxicons/svg/regular/bx-broadcast.svg?raw';
+
+// Webhook glyph: Boxicons (2.1.4, latest on npm) has no webhook icon, so this
+// is the canonical three-node webhook mark, authored as strokes. Each path
+// carries its own fill="none"/stroke="currentColor" so it renders correctly
+// even though <BoxIcon> applies fill:currentColor to fill-based Boxicons SVGs.
+const webhook = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M18 16.98h-5.99c-1.1 0-1.95.94-2.48 1.9A4 4 0 0 1 2 17c.01-.7.2-1.4.57-2"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="m6 17 3.13-5.78c.53-.97.1-2.18-.5-3.1a4 4 0 1 1 6.89-4.06"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="m12 6 3.13 5.73C15.66 12.7 16.9 13 18 13a4 4 0 0 1 0 8"/></svg>';
 
 // Solid (filled) — badges and status indicators.
 import starSolid from 'boxicons/svg/solid/bxs-star.svg?raw';
@@ -96,7 +101,7 @@ export default {
   'regular/credit-card': creditCard,
   'regular/package': packageIcon,
   'regular/gift': gift,
-  'regular/broadcast': broadcast,
+  'regular/webhook': webhook,
   'solid/star': starSolid,
   'solid/check-circle': checkCircleSolid,
   'solid/error-circle': errorCircleSolid,

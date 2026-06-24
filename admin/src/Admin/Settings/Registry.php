@@ -720,7 +720,7 @@ class Registry {
         return array(
             'id' => 'webhooks',
             'title' => __( 'Webhooks', 'flexify-checkout-for-woocommerce' ),
-            'icon' => 'broadcast',
+            'icon' => 'webhook',
             'layout' => 'cards',
             'cards' => array(
                 array(
