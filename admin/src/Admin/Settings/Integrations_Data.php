@@ -72,7 +72,7 @@ class Integrations_Data {
             ) ),
             array(
                 'id' => 'google-maps',
-                'type' => 'soon',
+                'type' => 'app',
                 'priority' => 40,
                 'pro' => false,
                 'title' => __( 'Google Maps', 'flexify-checkout-for-woocommerce' ),

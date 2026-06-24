@@ -221,7 +221,6 @@ class Registry {
     public static function get_schema() {
         $schema = array(
             self::tab_general(),
-            self::tab_react_checkout(),
             self::tab_cart(),
             self::tab_account(),
             self::tab_fields(),
@@ -250,6 +249,7 @@ class Registry {
      */
     private static function tab_general() {
         $shop_card_fields = array(
+            self::field_toggle( 'enable_react_checkout', __( 'Ativar checkout em React (beta)', 'flexify-checkout-for-woocommerce' ), __( 'Substitui a finalização de compra clássica por uma interface em React que consome a WooCommerce Store API. Requer licença válida.', 'flexify-checkout-for-woocommerce' ), array( 'pro' => true ) ),
             self::field_toggle( 'enable_back_to_shop_button', __( 'Mostrar botão Voltar à loja', 'flexify-checkout-for-woocommerce' ), __( 'Ative esta opção para exibir o botão "Voltar à loja" na primeira etapa de finalização de compra.', 'flexify-checkout-for-woocommerce' ) ),
             self::field_toggle( 'enable_skip_cart_page', __( 'Pular página do carrinho', 'flexify-checkout-for-woocommerce' ), __( 'Ative esta opção para redirecionar o usuário da página de carrinho para a finalização de compra automaticamente.', 'flexify-checkout-for-woocommerce' ) ),
             self::field_toggle( 'display_opened_order_review_mobile', __( 'Mostrar resumo do pedido aberto por padrão', 'flexify-checkout-for-woocommerce' ), __( 'Ative esta opção para mostrar o resumo do pedido aberto por padrão em celulares.', 'flexify-checkout-for-woocommerce' ) ),
@@ -332,84 +332,6 @@ class Registry {
                             'visible_when' => array( array( 'field' => 'enable_auto_apply_coupon_code', 'equals' => 'yes' ) ),
                         ) ),
                         self::field_toggle( 'direct_checkout_api', __( 'Ativar API para criação de links de checkout direto', 'flexify-checkout-for-woocommerce' ), __( 'Ative esta opção para habilitar um endpoint para criação de links de checkout direto via API.', 'flexify-checkout-for-woocommerce' ), array( 'pro' => true ) ),
-                    ),
-                ),
-            ),
-        );
-    }
-
-
-    /**
-     * React checkout tab definition.
-     *
-     * Controls the optional React-based checkout frontend, the WhatsApp login
-     * (Joinotify), the Google Maps address search, the split-payment slot and
-     * the public headless checkout API. All behaviors degrade gracefully: with
-     * the master toggle off, the classic server-rendered checkout is served.
-     *
-     * @since 6.0.0
-     * @return array<string,mixed>
-     */
-    private static function tab_react_checkout() {
-        return array(
-            'id' => 'react-checkout',
-            'title' => __( 'Checkout React', 'flexify-checkout-for-woocommerce' ),
-            'icon' => 'rocket',
-            'layout' => 'cards',
-            'cards' => array(
-                array(
-                    'id' => 'react-checkout-mode',
-                    'title' => __( 'Modo de checkout', 'flexify-checkout-for-woocommerce' ),
-                    'description' => __( 'Ative o novo checkout em React. Quando desativado, o checkout clássico é mantido sem alterações.', 'flexify-checkout-for-woocommerce' ),
-                    'fields' => array(
-                        self::field_toggle( 'enable_react_checkout', __( 'Ativar checkout em React (beta)', 'flexify-checkout-for-woocommerce' ), __( 'Substitui a finalização de compra clássica por uma interface em React que consome a WooCommerce Store API. Requer licença válida.', 'flexify-checkout-for-woocommerce' ), array( 'pro' => true ) ),
-                    ),
-                ),
-                array(
-                    'id' => 'react-checkout-login',
-                    'title' => __( 'Login via WhatsApp', 'flexify-checkout-for-woocommerce' ),
-                    'description' => __( 'Permite que o cliente entre/identifique-se com um código enviado pelo WhatsApp (requer o plugin Joinotify ativo).', 'flexify-checkout-for-woocommerce' ),
-                    'fields' => array(
-                        self::field_toggle( 'enable_whatsapp_login', __( 'Ativar login via WhatsApp', 'flexify-checkout-for-woocommerce' ), __( 'Exibe a opção de entrar por código do WhatsApp no checkout React. Sem o Joinotify ativo, a opção é ocultada automaticamente.', 'flexify-checkout-for-woocommerce' ), array(
-                            'pro' => true,
-                            'visible_when' => array( array( 'field' => 'enable_react_checkout', 'equals' => 'yes' ) ),
-                        ) ),
-                        self::field_text( 'whatsapp_login_sender', __( 'Remetente do WhatsApp (DDI+DDD+número)', 'flexify-checkout-for-woocommerce' ), __( 'Número remetente registrado no Joinotify que enviará os códigos. Deixe em branco para usar o primeiro remetente configurado.', 'flexify-checkout-for-woocommerce' ), array(
-                            'placeholder' => '5511999999999',
-                            'visible_when' => array(
-                                array( 'field' => 'enable_react_checkout', 'equals' => 'yes' ),
-                                array( 'field' => 'enable_whatsapp_login', 'equals' => 'yes' ),
-                            ),
-                        ) ),
-                    ),
-                ),
-                array(
-                    'id' => 'react-checkout-address',
-                    'title' => __( 'Busca de endereço (Google Maps)', 'flexify-checkout-for-woocommerce' ),
-                    'description' => __( 'Pesquisa de endereço com autocompletar do Google Places. Sem a chave configurada, o checkout usa o preenchimento por CEP.', 'flexify-checkout-for-woocommerce' ),
-                    'fields' => array(
-                        self::field_toggle( 'enable_google_address_search', __( 'Ativar busca de endereço com Google Maps', 'flexify-checkout-for-woocommerce' ), __( 'Usa a Places API (New) para sugerir endereços e descobrir o CEP. A chave é usada apenas no servidor (proxy).', 'flexify-checkout-for-woocommerce' ), array(
-                            'pro' => true,
-                            'visible_when' => array( array( 'field' => 'enable_react_checkout', 'equals' => 'yes' ) ),
-                        ) ),
-                        self::field_text( 'google_maps_api_key', __( 'Chave da API do Google Maps/Places', 'flexify-checkout-for-woocommerce' ), __( 'Chave com a "Places API (New)" habilitada. Mantida no servidor — nunca é enviada ao navegador.', 'flexify-checkout-for-woocommerce' ), array(
-                            'visible_when' => array(
-                                array( 'field' => 'enable_react_checkout', 'equals' => 'yes' ),
-                                array( 'field' => 'enable_google_address_search', 'equals' => 'yes' ),
-                            ),
-                        ) ),
-                    ),
-                ),
-                array(
-                    'id' => 'react-checkout-extra',
-                    'title' => __( 'Pagamentos e API headless', 'flexify-checkout-for-woocommerce' ),
-                    'description' => __( 'Recursos avançados do checkout React.', 'flexify-checkout-for-woocommerce' ),
-                    'fields' => array(
-                        self::field_toggle( 'enable_payment_split', __( 'Ativar interface de Split de pagamentos', 'flexify-checkout-for-woocommerce' ), __( 'Exibe a área de Split de pagamentos no passo de pagamento (a lógica é fornecida por um addon futuro).', 'flexify-checkout-for-woocommerce' ), array(
-                            'pro' => true,
-                            'visible_when' => array( array( 'field' => 'enable_react_checkout', 'equals' => 'yes' ) ),
-                        ) ),
-                        self::field_toggle( 'enable_headless_checkout_api', __( 'Expor API pública de regras do checkout (headless)', 'flexify-checkout-for-woocommerce' ), __( 'Disponibiliza GET /wp-json/flexify-checkout/v1/checkout/config, /checkout/rules e /settings para storefronts headless.', 'flexify-checkout-for-woocommerce' ), array( 'pro' => true ) ),
                     ),
                 ),
             ),

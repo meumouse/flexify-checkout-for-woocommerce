@@ -1,5 +1,5 @@
 <script setup>
-import { computed, reactive, ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useSettingsStore } from '../../stores/useSettingsStore';
 import BaseButton from '../buttons/BaseButton.vue';
 import ModalDialog from '../modals/ModalDialog.vue';
@@ -135,6 +135,64 @@ async function activateModule(card) {
   }
 }
 
+// --- Per-app settings modals ---
+//
+// Flexify settings that belong conceptually to an integration are configured
+// directly from its card (instead of a dedicated settings tab). The values live
+// in store.settings and are persisted with the page's "Salvar alterações".
+
+const APP_CONFIGS = {
+  joinotify: {
+    button: 'Configurar login WhatsApp',
+    title: 'Login via WhatsApp',
+    description: 'Permite que o cliente entre/identifique-se com um código enviado pelo WhatsApp (requer o plugin Joinotify ativo).',
+    fields: [
+      { key: 'enable_whatsapp_login', type: 'toggle', pro: true, label: 'Ativar login via WhatsApp', help: 'Exibe a opção de entrar por código do WhatsApp no checkout. Sem o Joinotify ativo, a opção é ocultada automaticamente.' },
+      { key: 'whatsapp_login_sender', type: 'text', label: 'Remetente do WhatsApp (DDI+DDD+número)', placeholder: '5511999999999', help: 'Número remetente registrado no Joinotify que enviará os códigos. Deixe em branco para usar o primeiro remetente configurado.', visibleWhen: { field: 'enable_whatsapp_login', equals: 'yes' } },
+    ],
+  },
+  'google-maps': {
+    button: 'Configurar',
+    title: 'Busca de endereço (Google Maps)',
+    description: 'Pesquisa de endereço com autocompletar do Google Places. Sem a chave configurada, o checkout usa o preenchimento por CEP.',
+    fields: [
+      { key: 'enable_google_address_search', type: 'toggle', pro: true, label: 'Ativar busca de endereço com Google Maps', help: 'Usa a Places API (New) para sugerir endereços e descobrir o CEP. A chave é usada apenas no servidor (proxy).' },
+      { key: 'google_maps_api_key', type: 'text', label: 'Chave da API do Google Maps/Places', help: 'Chave com a "Places API (New)" habilitada. Mantida no servidor — nunca é enviada ao navegador.', visibleWhen: { field: 'enable_google_address_search', equals: 'yes' } },
+    ],
+  },
+};
+
+const appConfigOpen = ref('');
+const activeConfig = computed(() => APP_CONFIGS[appConfigOpen.value] || null);
+
+function openConfig(id) {
+  appConfigOpen.value = id;
+}
+
+function closeConfig() {
+  appConfigOpen.value = '';
+}
+
+function settingValue(key) {
+  return store.settings?.[key];
+}
+
+function toggleValue(key) {
+  return store.settings?.[key] === 'yes' ? 'yes' : 'no';
+}
+
+function updateSetting(key, value) {
+  store.setSetting(key, value);
+}
+
+function isConfigFieldVisible(field) {
+  if (!field.visibleWhen) {
+    return true;
+  }
+
+  return String(store.settings?.[field.visibleWhen.field]) === String(field.visibleWhen.equals);
+}
+
 const inputClass = 'flexify-field-input w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-ink focus:border-primary focus:ring-2 focus:ring-primary-100';
 </script>
 
@@ -221,6 +279,16 @@ const inputClass = 'flexify-field-input w-full rounded-lg border border-slate-30
                 Instalar módulo
               </BaseButton>
             </template>
+
+            <!-- Flexify settings owned by this integration (configured inline) -->
+            <BaseButton
+              v-if="APP_CONFIGS[card.id]"
+              variant="outline"
+              size="sm"
+              @click="openConfig(card.id)"
+            >
+              {{ APP_CONFIGS[card.id].button }}
+            </BaseButton>
           </div>
         </template>
       </div>
@@ -302,6 +370,53 @@ const inputClass = 'flexify-field-input w-full rounded-lg border border-slate-30
       <template #footer>
         <div class="flex justify-end">
           <BaseButton variant="secondary" @click="trackingOpen = false">Fechar</BaseButton>
+        </div>
+      </template>
+    </ModalDialog>
+
+    <!-- Per-app settings modal -->
+    <ModalDialog :open="!!activeConfig" :title="activeConfig?.title || ''" @close="closeConfig">
+      <div v-if="activeConfig" class="flex flex-col gap-5">
+        <p class="m-0 text-xs italic text-slate-500">{{ activeConfig.description }}</p>
+
+        <div v-for="field in activeConfig.fields" v-show="isConfigFieldVisible(field)" :key="field.key">
+          <template v-if="field.type === 'toggle'">
+            <div class="flex items-center justify-between gap-4">
+              <div>
+                <p class="m-0 text-sm font-medium text-brand">{{ field.label }}</p>
+                <p v-if="field.help" class="m-0 mt-0.5 text-xs italic text-slate-500">{{ field.help }}</p>
+              </div>
+
+              <ToggleSwitch
+                :model-value="toggleValue(field.key)"
+                :disabled="field.pro && !store.isPro"
+                :aria-label="field.label"
+                @update:model-value="(value) => updateSetting(field.key, value)"
+              />
+            </div>
+          </template>
+
+          <template v-else>
+            <label class="mb-1 block text-xs font-medium text-muted">{{ field.label }}</label>
+            <input
+              :value="settingValue(field.key) || ''"
+              type="text"
+              :placeholder="field.placeholder || ''"
+              :class="inputClass"
+              @input="(event) => updateSetting(field.key, event.target.value)"
+            />
+            <p v-if="field.help" class="m-0 mt-1 text-xs italic text-slate-500">{{ field.help }}</p>
+          </template>
+        </div>
+
+        <p class="m-0 text-xs italic text-slate-500">
+          As alterações deste painel são aplicadas ao clicar em "Salvar alterações" no rodapé da página.
+        </p>
+      </div>
+
+      <template #footer>
+        <div class="flex justify-end">
+          <BaseButton variant="secondary" @click="closeConfig">Fechar</BaseButton>
         </div>
       </template>
     </ModalDialog>
