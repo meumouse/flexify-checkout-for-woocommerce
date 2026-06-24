@@ -2,6 +2,9 @@ import { useCheckout } from '../context/CheckoutContext.jsx';
 import { emitSelect } from '../lib/editorBridge.js';
 import { sameTarget } from './editor/Selectable.jsx';
 import fieldIcon from '../lib/fieldIcons.jsx';
+import Select from './ui/Select.jsx';
+import Checkbox from './ui/Checkbox.jsx';
+import DatePicker from './ui/DatePicker.jsx';
 
 /**
  * Standard WooCommerce Store API address keys. Anything else is treated as a
@@ -55,6 +58,8 @@ export default function FieldRenderer({ field, style = null, editor = false, sel
   };
 
   const isSelect = field.type === 'select' && Array.isArray(field.options) && field.options.length > 0;
+  const isCheckbox = field.type === 'checkbox';
+  const isDate = field.type === 'date';
 
   // Width: style override wins over the field's stored position.
   const width = style?.width || field.position;
@@ -95,6 +100,8 @@ export default function FieldRenderer({ field, style = null, editor = false, sel
       }
     : undefined;
 
+  const isChecked = !!value && value !== '0' && value !== 'false';
+
   return (
     <div
       className={`${colSpan} ${selectableClass}`.trim()}
@@ -102,27 +109,40 @@ export default function FieldRenderer({ field, style = null, editor = false, sel
       data-fc-label={editor ? field.label || field.id : undefined}
       onClick={onSelect}
     >
-      <label className={labelClass} style={labelStyle} htmlFor={`fc-${field.id}`}>
-        {field.label}
-        {field.required && <span className="text-danger"> *</span>}
-      </label>
+      {!isCheckbox && (
+        <label className={labelClass} style={labelStyle} htmlFor={`fc-${field.id}`}>
+          {field.label}
+          {field.required && <span className="text-danger"> *</span>}
+        </label>
+      )}
 
-      {isSelect ? (
-        <select
+      {isCheckbox ? (
+        <Checkbox
           id={`fc-${field.id}`}
-          className={inputClass}
+          checked={isChecked}
+          required={field.required}
+          label={field.label}
+          onChange={(next) => onChange(next ? '1' : '')}
+        />
+      ) : isSelect ? (
+        <Select
+          id={`fc-${field.id}`}
+          value={value}
+          options={field.options}
+          required={field.required}
+          placeholder={placeholder || '—'}
           style={inputStyle}
+          onChange={onChange}
+        />
+      ) : isDate ? (
+        <DatePicker
+          id={`fc-${field.id}`}
           value={value}
           required={field.required}
-          onChange={(e) => onChange(e.target.value)}
-        >
-          <option value="">—</option>
-          {field.options.map((opt) => (
-            <option key={opt.value} value={opt.value}>
-              {opt.text || opt.label || opt.value}
-            </option>
-          ))}
-        </select>
+          placeholder={placeholder || 'dd/mm/aaaa'}
+          style={inputStyle}
+          onChange={onChange}
+        />
       ) : (
         <div className="relative">
           {icon && (

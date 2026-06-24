@@ -41,7 +41,7 @@ class Fields_Store {
      * @since 6.0.0
      * @var string[]
      */
-    const ALLOWED_TYPES = array( 'text', 'textarea', 'number', 'password', 'phone', 'tel', 'url', 'email', 'select', 'checkbox' );
+    const ALLOWED_TYPES = array( 'text', 'textarea', 'number', 'password', 'phone', 'tel', 'url', 'email', 'select', 'checkbox', 'date' );
 
 
     /**

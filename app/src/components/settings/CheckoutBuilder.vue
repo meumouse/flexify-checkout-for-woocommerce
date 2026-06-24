@@ -44,6 +44,7 @@ const FIELD_TYPES = [
   { value: 'email', label: 'E-mail' },
   { value: 'select', label: 'Seletor/Lista' },
   { value: 'checkbox', label: 'Caixa de seleção' },
+  { value: 'date', label: 'Data' },
 ];
 
 const POSITIONS = [
@@ -123,12 +124,26 @@ const fieldOptions = computed(() => fieldCatalog.value.map((field) => ({ value: 
 const previewFrame = ref(null);
 const frameReady = ref(false);
 let pushTimer = null;
+let readyTimer = null;
+
+// The preview iframe is same-site but may differ in scheme/host from the admin
+// page (e.g. wc_get_checkout_url() forcing https). Derive the iframe origin so
+// postMessage targets and origin checks stay correct.
+const previewOrigin = computed(() => {
+  const url = runtime.value.builder_preview_url || '';
+
+  try {
+    return new URL(url, window.location.href).origin;
+  } catch (e) {
+    return window.location.origin;
+  }
+});
 
 function postToFrame(msg) {
   const win = previewFrame.value?.contentWindow;
 
   if (win) {
-    win.postMessage(msg, window.location.origin);
+    win.postMessage(msg, previewOrigin.value);
   }
 }
 
@@ -161,7 +176,8 @@ function pushSelection() {
 }
 
 function onFrameMessage(event) {
-  if (event.origin !== window.location.origin) {
+  // Same-site but possibly different origin (scheme/host) than the admin page.
+  if (event.origin !== previewOrigin.value && event.origin !== window.location.origin) {
     return;
   }
 
@@ -176,9 +192,7 @@ function onFrameMessage(event) {
   }
 
   if (data.type === 'fc-builder:ready') {
-    frameReady.value = true;
-    pushLayout();
-    pushSelection();
+    markReady();
   } else if (data.type === 'fc-builder:select') {
     const target = data.target || {};
     const stepId = target.stepId || '';
@@ -192,9 +206,32 @@ function onFrameMessage(event) {
   }
 }
 
+function markReady() {
+  if (readyTimer) {
+    clearTimeout(readyTimer);
+    readyTimer = null;
+  }
+
+  frameReady.value = true;
+  pushLayout();
+  pushSelection();
+}
+
 function onFrameLoad() {
-  // A reload (e.g. after Save) re-emits ready; reset until then.
-  frameReady.value = false;
+  // Do NOT reset frameReady here: the iframe loads the full WP page (theme +
+  // admin bar), so this `load` event fires AFTER React already emitted `ready`,
+  // and resetting would leave the loading overlay stuck. The Save flow clears
+  // frameReady explicitly before reloading. As a safety net, if the ready
+  // handshake never arrives (e.g. blocked postMessage), clear the overlay.
+  if (readyTimer) {
+    clearTimeout(readyTimer);
+  }
+
+  readyTimer = setTimeout(() => {
+    if (!frameReady.value) {
+      markReady();
+    }
+  }, 4000);
 }
 
 onMounted(() => window.addEventListener('message', onFrameMessage));
@@ -203,6 +240,10 @@ onBeforeUnmount(() => {
 
   if (pushTimer) {
     clearTimeout(pushTimer);
+  }
+
+  if (readyTimer) {
+    clearTimeout(readyTimer);
   }
 });
 
