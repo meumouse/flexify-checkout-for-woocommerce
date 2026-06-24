@@ -207,10 +207,10 @@ class Styles {
 					background-color: <?php echo esc_attr( $settings['set_primary_color'] ); ?>;
 				}
 
-				.flexify-checkout .flexify-button,
-				.flexify-checkout .flexify-button:hover,
-				.button,
-				button {
+				.flexify-checkout:not(.flexify-checkout--react) .flexify-button,
+				.flexify-checkout:not(.flexify-checkout--react) .flexify-button:hover,
+				.flexify-checkout:not(.flexify-checkout--react) .button,
+				.flexify-checkout:not(.flexify-checkout--react) button {
 					background-color: <?php echo esc_attr( $settings['set_primary_color'] ); ?>;
 				}
 
@@ -295,8 +295,10 @@ class Styles {
 			<?php endif;
 
 			if ( $settings['set_primary_color_on_hover'] ) : ?>
-				.flexify-checkout .button:not(.wc-forward,.woocommerce-MyAccount-downloads-file),
-				.flexify-checkout .button:not(.wc-forward,.woocommerce-MyAccount-downloads-file):hover, .button:hover, button:hover {
+				.flexify-checkout:not(.flexify-checkout--react) .button:not(.wc-forward,.woocommerce-MyAccount-downloads-file),
+				.flexify-checkout:not(.flexify-checkout--react) .button:not(.wc-forward,.woocommerce-MyAccount-downloads-file):hover,
+				.flexify-checkout:not(.flexify-checkout--react) .button:hover,
+				.flexify-checkout:not(.flexify-checkout--react) button:hover {
 					background-color: <?php echo esc_attr( $settings['set_primary_color_on_hover'] ); ?>;
 				}
 
