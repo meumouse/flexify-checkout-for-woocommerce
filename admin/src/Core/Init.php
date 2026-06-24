@@ -617,6 +617,12 @@ class Init {
         $manual_classes = apply_filters( 'Flexify_Checkout/Init/Instance_Classes', array(
             '\MeuMouse\Flexify_Checkout\Compatibility\Backward_Compatibility',
             '\MeuMouse\Flexify_Checkout\Tracking\Router',
+            // Global, checkout-wide webhooks: event registry + dispatcher bound to
+            // order/checkout/tracking/account hooks. Core (not admin-only) because
+            // order/payment hooks fire during the frontend/REST checkout request.
+            '\MeuMouse\Flexify_Checkout\Core\Webhooks\Bootstrap_Webhooks',
+            '\MeuMouse\Flexify_Checkout\Rest\Webhooks_Settings',
+            '\MeuMouse\Flexify_Checkout\Rest\Webhooks_Test',
             '\MeuMouse\Flexify_Checkout\API\REST_Checkout_Fields',
             '\MeuMouse\Flexify_Checkout\Admin\Settings\Views\Integrations',
             // Settings snapshot import/export over REST (Vue admin). The

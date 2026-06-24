@@ -52,6 +52,7 @@ import note from 'boxicons/svg/regular/bx-note.svg?raw';
 import creditCard from 'boxicons/svg/regular/bx-credit-card.svg?raw';
 import packageIcon from 'boxicons/svg/regular/bx-package.svg?raw';
 import gift from 'boxicons/svg/regular/bx-gift.svg?raw';
+import broadcast from 'boxicons/svg/regular/bx-broadcast.svg?raw';
 
 // Solid (filled) — badges and status indicators.
 import starSolid from 'boxicons/svg/solid/bxs-star.svg?raw';
@@ -95,6 +96,7 @@ export default {
   'regular/credit-card': creditCard,
   'regular/package': packageIcon,
   'regular/gift': gift,
+  'regular/broadcast': broadcast,
   'solid/star': starSolid,
   'solid/check-circle': checkCircleSolid,
   'solid/error-circle': errorCircleSolid,

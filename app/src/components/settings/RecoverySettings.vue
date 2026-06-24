@@ -30,7 +30,6 @@ const sections = [
   { id: 'general', label: 'Geral' },
   { id: 'followups', label: 'Follow-ups' },
   { id: 'payments', label: 'Formas de pagamento' },
-  { id: 'webhooks', label: 'Webhooks' },
   { id: 'modal', label: 'Modal de captura' },
 ];
 
@@ -43,7 +42,6 @@ const support = reactive({
   discount_types: [],
   coupons: [],
   gateways: [],
-  webhook_events: [],
 });
 
 const SCALARS = [
@@ -77,7 +75,6 @@ const settings = reactive({
     title: '', button_title: '', message: '', triggers_list: '',
     coupon: couponDefault(),
   },
-  webhooks: {},
 });
 
 function couponDefault() {
@@ -126,28 +123,12 @@ function ensurePaymentDefaults() {
   });
 }
 
-function ensureWebhookDefaults() {
-  support.webhook_events.forEach((e) => {
-    if (!Array.isArray(settings.webhooks[e.key])) settings.webhooks[e.key] = [];
-  });
-}
-
-function addWebhook(key) {
-  if (!Array.isArray(settings.webhooks[key])) settings.webhooks[key] = [];
-  settings.webhooks[key].push({ enabled: 'yes', url: '', headers: {} });
-}
-
-function removeWebhook(key, index) {
-  settings.webhooks[key].splice(index, 1);
-}
-
 function applyServerSettings(s) {
   if (!s || typeof s !== 'object') return;
   SCALARS.forEach((k) => { if (s[k] !== undefined && s[k] !== null) settings[k] = s[k]; });
   if (s.toggles) Object.keys(settings.toggles).forEach((k) => { if (s.toggles[k] !== undefined) settings.toggles[k] = s.toggles[k]; });
   settings.follow_up_events = s.follow_up_events && typeof s.follow_up_events === 'object' ? s.follow_up_events : {};
   settings.payment_methods = s.payment_methods && typeof s.payment_methods === 'object' ? s.payment_methods : {};
-  settings.webhooks = s.webhooks && typeof s.webhooks === 'object' ? s.webhooks : {};
   if (s.collect_lead_modal && typeof s.collect_lead_modal === 'object' && Object.keys(s.collect_lead_modal).length) {
     settings.collect_lead_modal = {
       title: s.collect_lead_modal.title || '',
@@ -167,7 +148,6 @@ async function load() {
     if (data.support) Object.assign(support, data.support);
     applyServerSettings(data.settings);
     ensurePaymentDefaults();
-    ensureWebhookDefaults();
   } catch (e) {
     error.value = 'Não foi possível carregar as configurações de recuperação.';
   } finally {
@@ -183,7 +163,6 @@ async function save() {
     const data = await apiPost('recovery/settings', { settings });
     applyServerSettings(data.settings);
     ensurePaymentDefaults();
-    ensureWebhookDefaults();
     saved.value = true;
     setTimeout(() => { saved.value = false; }, 3000);
   } catch (e) {
@@ -322,27 +301,6 @@ onMounted(load);
               </tr>
             </tbody>
           </table>
-        </div>
-      </section>
-
-      <!-- Webhooks -->
-      <section v-show="activeSection === 'webhooks'">
-        <p class="mb-3 text-[13px] text-slate-500">Envie uma requisição POST para uma URL externa quando cada evento ocorrer.</p>
-        <div class="grid gap-4">
-          <div v-for="ev in support.webhook_events" :key="ev.key" class="rounded-[8px] border border-slate-200 p-4">
-            <div class="flex items-center justify-between">
-              <h3 class="m-0 text-[14px] font-semibold text-brand">{{ ev.label }}</h3>
-              <button type="button" class="rounded-[6px] px-2.5 py-1 text-xs font-semibold text-primary hover:bg-primary-100" @click="addWebhook(ev.key)">Adicionar URL</button>
-            </div>
-            <div v-if="settings.webhooks[ev.key] && settings.webhooks[ev.key].length" class="mt-3 grid gap-2">
-              <div v-for="(hook, i) in settings.webhooks[ev.key]" :key="i" class="flex items-center gap-2">
-                <input type="checkbox" :checked="hook.enabled === 'yes'" @change="hook.enabled = hook.enabled === 'yes' ? 'no' : 'yes'" />
-                <input class="flexify-field-input flex-1" type="url" placeholder="https://…" v-model="hook.url" />
-                <button type="button" class="rounded-[6px] px-2.5 py-1 text-xs font-semibold text-danger hover:bg-danger/10" @click="removeWebhook(ev.key, i)">Remover</button>
-              </div>
-            </div>
-            <p v-else class="mt-2 text-[12px] text-slate-400">Nenhuma URL configurada.</p>
-          </div>
         </div>
       </section>
 

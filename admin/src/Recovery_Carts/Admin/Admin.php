@@ -152,6 +152,15 @@ class Admin {
                 array( $this, 'queue_table_page' ),
                 3 // position
             );
+
+            // Analytics, Carts and Queue are now folded into the Vue settings as
+            // sub-views of the "Recuperação" tab (RecoveryManager). The pages stay
+            // registered so deep links and the SPA asset enqueue keep resolving by
+            // slug, but they are hidden from the menu so the recovery feature lives
+            // under a single Configurações tab.
+            remove_submenu_page( $parent, 'fc-recovery-carts' );
+            remove_submenu_page( $parent, 'fc-recovery-carts-list' );
+            remove_submenu_page( $parent, 'fc-recovery-carts-queue' );
         }
 
         // Advanced recovery settings (follow-up events, coupons, payment delays,
@@ -294,6 +303,17 @@ class Admin {
      * @return mixed | string or false
      */
     public static function get_setting( $key ) {
+        // Forward-compat read-through: recovery settings are migrating into the
+        // unified main option under a "recovery" namespace. Prefer the unified
+        // value when present, then fall back to the legacy recovery option.
+        // Writes still target the legacy option until a later migration phase,
+        // so today this simply falls through to the legacy read unchanged.
+        $unified = get_option('flexify_checkout_settings', array());
+
+        if ( is_array( $unified ) && isset( $unified['recovery'][$key] ) ) {
+            return $unified['recovery'][$key];
+        }
+
         $options = get_option('flexify_checkout_recovery_carts_settings', array());
 
         // check if array key exists and return key
@@ -313,6 +333,14 @@ class Admin {
      * @return string
      */
     public static function get_switch( $key ) {
+        // Forward-compat read-through (see get_setting): prefer the unified
+        // option's recovery namespace, then fall back to the legacy option.
+        $unified = get_option('flexify_checkout_settings', array());
+
+        if ( is_array( $unified ) && isset( $unified['recovery']['toggle_switchs'][$key] ) ) {
+            return $unified['recovery']['toggle_switchs'][$key];
+        }
+
         $options = get_option('flexify_checkout_recovery_carts_settings', array());
 
         // check if array key exists and return key

@@ -4,7 +4,6 @@ namespace MeuMouse\Flexify_Checkout\Recovery_Carts\Rest;
 
 use MeuMouse\Flexify_Checkout\Rest\Abstract_Route;
 use MeuMouse\Flexify_Checkout\Recovery_Carts\Core\Helpers;
-use MeuMouse\Flexify_Checkout\Recovery_Carts\Core\Webhooks;
 use WP_REST_Request;
 
 // Exit if accessed directly.
@@ -80,7 +79,6 @@ class Recovery_Settings extends Abstract_Route {
         'follow_up_events',
         'payment_methods',
         'collect_lead_modal',
-        'webhooks',
     );
 
     /**
@@ -170,7 +168,6 @@ class Recovery_Settings extends Abstract_Route {
             ),
             'coupons' => $this->get_coupons(),
             'gateways' => $this->get_gateways(),
-            'webhook_events' => $this->get_webhook_events(),
         );
     }
 
@@ -220,26 +217,6 @@ class Recovery_Settings extends Abstract_Route {
         }
 
         return $gateways;
-    }
-
-
-    /**
-     * Registered webhook events (key + label).
-     *
-     * @since 6.0.0
-     * @return array<int,array{key:string,label:string}>
-     */
-    private function get_webhook_events() {
-        $events = array();
-
-        foreach ( Webhooks::get_registered_events() as $key => $data ) {
-            $events[] = array(
-                'key' => (string) $key,
-                'label' => isset( $data['label'] ) ? $data['label'] : $key,
-            );
-        }
-
-        return $events;
     }
 
 

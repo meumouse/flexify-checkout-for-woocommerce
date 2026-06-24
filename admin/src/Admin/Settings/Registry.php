@@ -229,8 +229,15 @@ class Registry {
             self::tab_texts(),
             self::tab_thankyou(),
             self::tab_styles(),
-            self::tab_about(),
         );
+
+        // Global, checkout-wide webhooks. Pro-gated (webhooks were previously
+        // only available behind the Pro recovery tab).
+        if ( License::is_valid() ) {
+            $schema[] = self::tab_webhooks();
+        }
+
+        $schema[] = self::tab_about();
 
         /**
          * Filter the settings schema before sending it to the Vue app.
@@ -694,6 +701,31 @@ class Registry {
                         self::field_code( 'custom_css_checkout', __( 'CSS personalizado', 'flexify-checkout-for-woocommerce' ), __( 'Adicione CSS customizado que será aplicado no checkout.', 'flexify-checkout-for-woocommerce' ), 'css' ),
                         self::field_code( 'custom_js_checkout', __( 'JS personalizado', 'flexify-checkout-for-woocommerce' ), __( 'Adicione JavaScript customizado que será executado no checkout.', 'flexify-checkout-for-woocommerce' ), 'javascript' ),
                     ),
+                ),
+            ),
+        );
+    }
+
+
+    /**
+     * Webhooks tab definition.
+     *
+     * Renders the global webhooks manager component, which reads/writes its
+     * configuration through its own REST endpoint (flexify-checkout/v1/webhooks).
+     *
+     * @since 6.0.0
+     * @return array<string,mixed>
+     */
+    private static function tab_webhooks() {
+        return array(
+            'id' => 'webhooks',
+            'title' => __( 'Webhooks', 'flexify-checkout-for-woocommerce' ),
+            'icon' => 'broadcast',
+            'layout' => 'cards',
+            'cards' => array(
+                array(
+                    'id' => 'webhooks-manager',
+                    'component' => 'webhooks-manager',
                 ),
             ),
         );

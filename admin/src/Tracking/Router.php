@@ -372,6 +372,18 @@ class Router {
         }
 
         $results = $this->dispatch_to_platforms( $event_name, $payload );
+
+        /**
+         * Fires after a server-side tracking event is dispatched. Backs the
+         * checkout webhooks for begin_checkout / add_shipping_info /
+         * add_payment_info (one bind covers all browser tracking events).
+         *
+         * @since 6.0.0
+         * @param string $event_name Browser event name (fc_*).
+         * @param array  $payload Event payload.
+         */
+        do_action( 'Flexify_Checkout/Tracking/Server_Event', $event_name, $payload );
+
         wp_send_json_success( array( 'results' => $results ) );
     }
 

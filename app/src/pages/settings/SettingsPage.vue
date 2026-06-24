@@ -13,7 +13,8 @@ import ConditionsManager from '../../components/settings/ConditionsManager.vue';
 import CheckoutBuilderManager from '../../components/settings/CheckoutBuilderManager.vue';
 import EmailProviders from '../../components/settings/EmailProviders.vue';
 import FontsManager from '../../components/settings/FontsManager.vue';
-import RecoverySettings from '../../components/settings/RecoverySettings.vue';
+import RecoveryManager from '../../components/settings/RecoveryManager.vue';
+import WebhooksManager from '../../components/settings/WebhooksManager.vue';
 
 const props = defineProps({
   bootstrap: { type: Object, default: () => ({}) },
@@ -99,7 +100,8 @@ const customComponents = {
   'checkout-builder': CheckoutBuilderManager,
   'fonts-manager': FontsManager,
   'email-providers': EmailProviders,
-  'recovery-settings': RecoverySettings,
+  'recovery-settings': RecoveryManager,
+  'webhooks-manager': WebhooksManager,
 };
 
 function selectTab(tabId) {
@@ -198,7 +200,7 @@ function selectTab(tabId) {
       </transition>
     </div>
 
-    <main v-if="currentTab" class="mt-6 overflow-hidden rounded-[8px] bg-white shadow-[0_1px_0_rgba(0,0,0,0.02)] ring-1 ring-slate-100">
+    <main v-if="currentTab" class="mt-6 rounded-[8px] bg-white shadow-[0_1px_0_rgba(0,0,0,0.02)] ring-1 ring-slate-100">
       <div class="px-10 py-4">
         <div
           v-for="(card, index) in currentTab.cards"
@@ -217,7 +219,7 @@ function selectTab(tabId) {
         </div>
       </div>
 
-      <div class="sticky bottom-0 inset-x-0 z-10 border-t border-black/10 bg-white/80 px-10 py-5 backdrop-blur-[5px]">
+      <div class="sticky bottom-0 inset-x-0 z-10 rounded-b-[8px] border-t border-black/10 bg-white/80 px-10 py-5 backdrop-blur-[5px]">
         <BaseButton :disabled="!store.dirty" :loading="store.saving" @click="store.save()">
           <BoxIcon v-if="!store.saving" name="save" class="h-[1.1rem] w-[1.1rem]" />
           Salvar alterações
