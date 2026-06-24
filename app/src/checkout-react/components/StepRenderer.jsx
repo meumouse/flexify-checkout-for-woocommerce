@@ -6,17 +6,29 @@ import AddressSearch from './AddressSearch.jsx';
 import ShippingRates from './ShippingRates.jsx';
 import PaymentMethods from './PaymentMethods.jsx';
 import ContactLogin from './ContactLogin.jsx';
+import Selectable from './editor/Selectable.jsx';
+
+const COMPONENT_LABELS = {
+  order_bump: 'Order bump',
+  html: 'Bloco de conteúdo',
+  coupon: 'Cupom',
+  summary: 'Resumo',
+  notes: 'Observações',
+  banner: 'Banner',
+  reviews: 'Avaliações',
+};
 
 /**
  * Render a builder-defined step: its semantic chrome (login / address search /
  * shipping rates / payment methods, by step type) plus its ordered items.
  *
  * Consecutive field items are grouped into a two-column grid; component items
- * render full width, preserving the operator's ordering.
+ * render full width, preserving the operator's ordering. In editor mode each
+ * field and component is wrapped in a Selectable for live click-to-select.
  *
- * @param {{step:object}} props Layout step.
+ * @param {{step:object, editor?:boolean, selected?:object|null}} props
  */
-export default function StepRenderer({ step }) {
+export default function StepRenderer({ step, editor = false, selected = null }) {
   const items = itemsForStep(step);
   const addressSearch = config.flags && config.flags.address_search;
 
@@ -36,7 +48,7 @@ export default function StepRenderer({ step }) {
       const field = fieldById(item.field_id);
 
       if (field) {
-        fieldBatch.push(field);
+        fieldBatch.push({ field, item });
       }
 
       return;
@@ -47,6 +59,15 @@ export default function StepRenderer({ step }) {
   });
 
   flush();
+
+  const wrap = (target, label, node) =>
+    editor ? (
+      <Selectable target={target} selected={selected} label={label}>
+        {node}
+      </Selectable>
+    ) : (
+      node
+    );
 
   return (
     <div className="space-y-5">
@@ -62,8 +83,15 @@ export default function StepRenderer({ step }) {
         if (block.kind === 'fields') {
           return (
             <div key={`f-${index}`} className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              {block.fields.map((field) => (
-                <FieldRenderer key={field.id} field={field} />
+              {block.fields.map(({ field, item }) => (
+                <FieldRenderer
+                  key={item.id}
+                  field={field}
+                  style={item.style}
+                  editor={editor}
+                  selected={selected}
+                  selectTarget={{ scope: 'item', stepId: step.id, itemId: item.id }}
+                />
               ))}
             </div>
           );
@@ -75,12 +103,18 @@ export default function StepRenderer({ step }) {
           return null;
         }
 
+        const node = (
+          <Component config={block.item.config || {}} product={block.item.product || null} editor={editor} />
+        );
+
         return (
-          <Component
-            key={block.item.id}
-            config={block.item.config || {}}
-            product={block.item.product || null}
-          />
+          <div key={block.item.id}>
+            {wrap(
+              { scope: 'item', stepId: step.id, itemId: block.item.id },
+              COMPONENT_LABELS[block.item.component] || block.item.component,
+              node,
+            )}
+          </div>
         );
       })}
 

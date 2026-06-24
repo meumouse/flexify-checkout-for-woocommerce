@@ -21,6 +21,8 @@ const fallback = {
   settings: {},
   flags: { whatsapp_login: false, address_search: false, split_payment: false },
   i18n: {},
+  editor: false,
+  builder_nonce: '',
 };
 
 const config = { ...fallback, ...(typeof window !== 'undefined' ? window.flexify_react_checkout || {} : {}) };

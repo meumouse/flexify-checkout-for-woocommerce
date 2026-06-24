@@ -1,10 +1,11 @@
 <script setup>
-import { computed, reactive, ref, watch } from 'vue';
+import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue';
 import { useSettingsStore } from '../../stores/useSettingsStore';
 import BaseButton from '../buttons/BaseButton.vue';
 import BaseSelect from '../fields/BaseSelect.vue';
 import ToggleSwitch from '../toggles/ToggleSwitch.vue';
 import SearchMultiSelect from '../fields/SearchMultiSelect.vue';
+import MediaPickerField from '../fields/MediaPickerField.vue';
 
 const props = defineProps({
   open: { type: Boolean, default: false },
@@ -27,9 +28,21 @@ const COMPONENT_META = {
   coupon: { icon: 'gift', label: 'Cupom de desconto' },
   summary: { icon: 'receipt', label: 'Resumo do pedido' },
   notes: { icon: 'note', label: 'Observações' },
+  banner: { icon: 'image', label: 'Banner' },
+  reviews: { icon: 'star', label: 'Avaliações' },
 };
 
-const ADD_COMPONENTS = ['order_bump', 'html', 'coupon', 'summary', 'notes'];
+const ADD_COMPONENTS = ['order_bump', 'banner', 'reviews', 'html', 'coupon', 'summary', 'notes'];
+
+const REVIEW_SOURCES = [
+  { value: 'product', label: 'Avaliações do produto' },
+  { value: 'manual', label: 'Depoimentos manuais' },
+];
+
+const REVIEW_LAYOUTS = [
+  { value: 'list', label: 'Lista' },
+  { value: 'carousel', label: 'Carrossel' },
+];
 
 const HTML_VARIANTS = [
   { value: 'raw', label: 'HTML puro' },
@@ -44,6 +57,25 @@ const ALIGN_OPTIONS = [
   { value: 'right', label: 'Direita' },
 ];
 
+const WIDTH_OPTIONS = [
+  { value: 'left', label: 'Metade (esquerda)' },
+  { value: 'right', label: 'Metade (direita)' },
+  { value: 'full', label: 'Largura total' },
+];
+
+const FIELD_ICON_OPTIONS = [
+  { value: '', label: 'Nenhum' },
+  { value: 'user', label: 'Usuário' },
+  { value: 'envelope', label: 'E-mail' },
+  { value: 'phone', label: 'Telefone' },
+  { value: 'map', label: 'Localização' },
+  { value: 'home', label: 'Endereço' },
+  { value: 'id-card', label: 'Documento' },
+  { value: 'credit-card', label: 'Cartão' },
+  { value: 'calendar', label: 'Data' },
+  { value: 'search', label: 'Busca' },
+];
+
 const inputClass = 'w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-ink focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary-100';
 
 // --- Draft state ---
@@ -52,8 +84,114 @@ const draft = reactive({ version: 1, steps: [] });
 const selected = reactive({ stepId: '', itemId: '' });
 const addMenuStepId = ref('');
 
+const runtime = computed(() => store.runtime || {});
 const fieldCatalog = computed(() => store.fieldCatalog || []);
 const fieldOptions = computed(() => fieldCatalog.value.map((field) => ({ value: field.value, label: field.label })));
+
+// --- Live preview iframe bridge ---
+
+const previewFrame = ref(null);
+const frameReady = ref(false);
+let pushTimer = null;
+
+function postToFrame(msg) {
+  const win = previewFrame.value?.contentWindow;
+
+  if (win) {
+    win.postMessage(msg, window.location.origin);
+  }
+}
+
+function targetFromSelection() {
+  if (!selected.stepId) {
+    return null;
+  }
+
+  return selected.itemId
+    ? { scope: 'item', stepId: selected.stepId, itemId: selected.itemId }
+    : { scope: 'step', stepId: selected.stepId };
+}
+
+function pushLayout() {
+  if (frameReady.value) {
+    postToFrame({ type: 'fc-builder:layout', layout: buildPayload() });
+  }
+}
+
+function pushSelection() {
+  if (!frameReady.value) {
+    return;
+  }
+
+  if (selected.stepId) {
+    postToFrame({ type: 'fc-builder:step', stepId: selected.stepId });
+  }
+
+  postToFrame({ type: 'fc-builder:select', target: targetFromSelection() });
+}
+
+function onFrameMessage(event) {
+  if (event.origin !== window.location.origin) {
+    return;
+  }
+
+  if (event.source !== previewFrame.value?.contentWindow) {
+    return;
+  }
+
+  const data = event.data;
+
+  if (!data || typeof data.type !== 'string') {
+    return;
+  }
+
+  if (data.type === 'fc-builder:ready') {
+    frameReady.value = true;
+    pushLayout();
+    pushSelection();
+  } else if (data.type === 'fc-builder:select') {
+    const target = data.target || {};
+    const stepId = target.stepId || '';
+    const itemId = target.scope === 'item' ? target.itemId || '' : '';
+
+    // Dedupe to avoid bouncing the selection back to the iframe.
+    if (selected.stepId !== stepId || selected.itemId !== itemId) {
+      selected.stepId = stepId;
+      selected.itemId = itemId;
+    }
+  }
+}
+
+function onFrameLoad() {
+  // A reload (e.g. after Save) re-emits ready; reset until then.
+  frameReady.value = false;
+}
+
+onMounted(() => window.addEventListener('message', onFrameMessage));
+onBeforeUnmount(() => {
+  window.removeEventListener('message', onFrameMessage);
+
+  if (pushTimer) {
+    clearTimeout(pushTimer);
+  }
+});
+
+watch(
+  () => draft,
+  () => {
+    if (pushTimer) {
+      clearTimeout(pushTimer);
+    }
+
+    pushTimer = setTimeout(pushLayout, 250);
+  },
+  { deep: true },
+);
+
+watch(
+  () => [selected.stepId, selected.itemId],
+  () => pushSelection(),
+);
 
 function genId(prefix) {
   const rand = (window.crypto?.randomUUID?.() || Math.random().toString(36).slice(2)).replace(/-/g, '').slice(0, 12);
@@ -94,6 +232,13 @@ const selectedItem = computed(() => {
   }
 
   return (selectedStep.value.items || []).find((item) => item.id === selected.itemId) || null;
+});
+
+// Ensure a selected field item has a style object so the inspector can v-model it.
+watch(selectedItem, (item) => {
+  if (item && item.kind === 'field' && !item.style) {
+    item.style = {};
+  }
 });
 
 function selectStep(step) {
@@ -202,9 +347,27 @@ function defaultComponentConfig(component) {
       return { title: '', collapsible: false, hide_coupon: false };
     case 'notes':
       return { label: 'Observações do pedido', placeholder: '', required: false };
+    case 'banner':
+      return { image: '', bg_color: '#0f172a', link: '', title: 'Oferta por tempo limitado', subtitle: '', button_text: '', title_color: '#ffffff', align: 'center', countdown: '' };
+    case 'reviews':
+      return { source: 'product', product_id: 0, items: [], limit: 4, layout: 'list' };
     default:
       return {};
   }
+}
+
+// --- Reviews manual list helpers ---
+
+function addReviewItem(item) {
+  if (!Array.isArray(item.config.items)) {
+    item.config.items = [];
+  }
+
+  item.config.items.push({ author: '', text: '', rating: 5, avatar: '' });
+}
+
+function removeReviewItem(item, index) {
+  item.config.items.splice(index, 1);
 }
 
 function toggleAddMenu(step) {
@@ -273,11 +436,12 @@ function itemMeta(item) {
 
 // --- Order bump product picker ---
 
+// Single-product picker shared by the order bump and the product reviews block.
 const bumpSelection = computed({
   get() {
     const item = selectedItem.value;
 
-    if (!item || item.component !== 'order_bump' || !item.config.product_id) {
+    if (!item || !item.config || !item.config.product_id) {
       return [];
     }
 
@@ -312,7 +476,13 @@ function buildPayload() {
       order: stepIndex,
       items: (step.items || []).map((item, itemIndex) => {
         if (item.kind === 'field') {
-          return { id: item.id, kind: 'field', field_id: item.field_id, order: itemIndex };
+          const field = { id: item.id, kind: 'field', field_id: item.field_id, order: itemIndex };
+
+          if (item.style && Object.keys(item.style).length) {
+            field.style = item.style;
+          }
+
+          return field;
         }
 
         return {
@@ -338,7 +508,11 @@ async function save() {
 
   if (response?.status === 'success') {
     cloneLayout();
-    emit('close');
+
+    // Reload the preview to pull server-resolved data (order bump product,
+    // resolved product reviews) into the live render.
+    frameReady.value = false;
+    previewFrame.value?.contentWindow?.location?.reload();
   }
 }
 </script>
@@ -433,156 +607,190 @@ async function save() {
           </ul>
         </aside>
 
-        <!-- Preview canvas -->
-        <main class="overflow-y-auto bg-slate-100 px-6 py-8">
-          <div v-if="selectedStep" class="mx-auto max-w-md">
-            <div class="mb-4 flex items-center justify-between gap-2">
-              <div class="flex items-center gap-2">
-                <span class="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-xs font-semibold text-white">
-                  {{ draft.steps.indexOf(selectedStep) + 1 }}
-                </span>
-                <h3 class="m-0 text-base font-semibold text-ink">{{ selectedStep.label || STEP_META[selectedStep.type].label }}</h3>
-              </div>
-
-              <!-- Add item menu -->
-              <div class="relative">
-                <button
-                  type="button"
-                  class="inline-flex cursor-pointer items-center gap-1 rounded-lg bg-primary px-3 py-2 text-xs font-semibold text-white transition hover:bg-primary-700"
-                  @click="toggleAddMenu(selectedStep)"
-                >
-                  <BoxIcon name="plus" class="h-3.5 w-3.5" />
-                  Adicionar
-                </button>
-
-                <div
-                  v-if="addMenuStepId === selectedStep.id"
-                  class="absolute right-0 z-10 mt-1 w-52 overflow-hidden rounded-xl border border-slate-200 bg-white py-1 shadow-lg"
-                >
-                  <button
-                    type="button"
-                    class="flex w-full cursor-pointer items-center gap-2 border-0 bg-transparent px-3 py-2 text-left text-sm text-ink hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
-                    :disabled="!fieldOptions.length"
-                    @click="addFieldItem(selectedStep)"
-                  >
-                    <BoxIcon name="text" class="h-4 w-4 text-slate-400" />
-                    Campo do formulário
-                  </button>
-                  <div class="my-1 border-t border-slate-100" />
-                  <button
-                    v-for="component in ADD_COMPONENTS"
-                    :key="component"
-                    type="button"
-                    class="flex w-full cursor-pointer items-center gap-2 border-0 bg-transparent px-3 py-2 text-left text-sm text-ink hover:bg-slate-50"
-                    @click="addComponentItem(selectedStep, component)"
-                  >
-                    <BoxIcon :name="COMPONENT_META[component].icon" class="h-4 w-4 text-slate-400" />
-                    {{ COMPONENT_META[component].label }}
-                  </button>
-                </div>
-              </div>
+        <!-- Live preview (real React checkout in an iframe) -->
+        <main class="relative flex flex-col overflow-hidden bg-slate-100">
+          <div class="flex items-center justify-between gap-2 border-b border-slate-200 bg-white px-4 py-2.5">
+            <div class="flex min-w-0 items-center gap-2">
+              <span v-if="selectedStep" class="flex h-7 w-7 items-center justify-center rounded-full bg-primary text-xs font-semibold text-white">
+                {{ draft.steps.indexOf(selectedStep) + 1 }}
+              </span>
+              <h3 class="m-0 truncate text-sm font-semibold text-ink">
+                {{ selectedStep ? (selectedStep.label || STEP_META[selectedStep.type].label) : 'Pré-visualização ao vivo' }}
+              </h3>
             </div>
 
-            <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-              <p v-if="!(selectedStep.items || []).length" class="m-0 py-8 text-center text-sm text-muted">
-                Nenhum item nesta etapa. Use “Adicionar” para incluir campos e componentes.
-              </p>
+            <!-- Add item menu -->
+            <div v-if="selectedStep" class="relative">
+              <button
+                type="button"
+                class="inline-flex cursor-pointer items-center gap-1 rounded-lg bg-primary px-3 py-2 text-xs font-semibold text-white transition hover:bg-primary-700"
+                @click="toggleAddMenu(selectedStep)"
+              >
+                <BoxIcon name="plus" class="h-3.5 w-3.5" />
+                Adicionar
+              </button>
 
-              <ul v-else class="m-0 flex list-none flex-col gap-2.5 p-0">
-                <li
-                  v-for="(item, index) in selectedStep.items"
-                  :key="item.id"
-                  class="group cursor-pointer rounded-xl border p-3 transition"
-                  :class="selected.itemId === item.id ? 'border-primary ring-2 ring-primary-100' : 'border-slate-200 hover:border-slate-300'"
-                  @click="selectItem(selectedStep, item)"
+              <div
+                v-if="addMenuStepId === selectedStep.id"
+                class="absolute right-0 z-10 mt-1 w-52 overflow-hidden rounded-xl border border-slate-200 bg-white py-1 shadow-lg"
+              >
+                <button
+                  type="button"
+                  class="flex w-full cursor-pointer items-center gap-2 border-0 bg-transparent px-3 py-2 text-left text-sm text-ink hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+                  :disabled="!fieldOptions.length"
+                  @click="addFieldItem(selectedStep)"
                 >
-                  <div class="flex items-center justify-between gap-2">
-                    <div class="flex min-w-0 items-center gap-2">
-                      <BoxIcon :name="itemMeta(item).icon" class="h-4 w-4 shrink-0 text-primary" />
-                      <span class="truncate text-sm font-medium text-ink">{{ itemMeta(item).label }}</span>
-                      <span
-                        v-if="item.kind === 'component'"
-                        class="shrink-0 rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-muted"
-                      >
-                        {{ COMPONENT_META[item.component]?.label }}
-                      </span>
-                    </div>
-
-                    <div class="flex shrink-0 items-center gap-0.5">
-                      <button
-                        type="button"
-                        class="cursor-pointer border-0 bg-transparent p-0.5 text-muted hover:text-ink disabled:opacity-30"
-                        :disabled="index === 0"
-                        aria-label="Mover para cima"
-                        @click.stop="moveItem(selectedStep, index, -1)"
-                      >
-                        <BoxIcon name="chevron-up" class="h-4 w-4" />
-                      </button>
-                      <button
-                        type="button"
-                        class="cursor-pointer border-0 bg-transparent p-0.5 text-muted hover:text-ink disabled:opacity-30"
-                        :disabled="index === selectedStep.items.length - 1"
-                        aria-label="Mover para baixo"
-                        @click.stop="moveItem(selectedStep, index, 1)"
-                      >
-                        <BoxIcon name="chevron-down" class="h-4 w-4" />
-                      </button>
-                      <button
-                        type="button"
-                        class="cursor-pointer border-0 bg-transparent p-0.5 text-danger/70 hover:text-danger"
-                        aria-label="Remover item"
-                        @click.stop="removeItem(selectedStep, item)"
-                      >
-                        <BoxIcon name="trash" class="h-4 w-4" />
-                      </button>
-                    </div>
-                  </div>
-
-                  <!-- Field placeholder preview -->
-                  <div v-if="item.kind === 'field'" class="mt-2 h-8 rounded-lg border border-dashed border-slate-200 bg-slate-50" />
-
-                  <!-- Component previews -->
-                  <div v-else-if="item.component === 'order_bump'" class="mt-2 flex items-center gap-3 rounded-lg border border-emerald-200 bg-emerald-50/60 p-2.5">
-                    <span class="flex h-9 w-9 items-center justify-center rounded-md border border-emerald-300 bg-white">
-                      <BoxIcon name="purchase-tag" class="h-4 w-4 text-emerald-600" />
-                    </span>
-                    <div class="min-w-0">
-                      <p class="m-0 truncate text-xs font-semibold text-ink">{{ item.config.headline || item.product?.name || 'Oferta especial' }}</p>
-                      <p class="m-0 truncate text-[11px] text-muted">{{ item.product?.name || 'Selecione um produto' }}</p>
-                    </div>
-                  </div>
-
-                  <div v-else-if="item.component === 'html'" class="mt-2 rounded-lg border border-dashed border-slate-200 bg-slate-50 p-2 text-[11px] text-muted">
-                    <span v-if="item.config.html">Conteúdo HTML ({{ item.config.variant }})</span>
-                    <span v-else>Bloco de conteúdo vazio</span>
-                  </div>
-
-                  <div v-else class="mt-2 h-6 rounded-lg border border-dashed border-slate-200 bg-slate-50" />
-                </li>
-              </ul>
+                  <BoxIcon name="text" class="h-4 w-4 text-slate-400" />
+                  Campo do formulário
+                </button>
+                <div class="my-1 border-t border-slate-100" />
+                <button
+                  v-for="component in ADD_COMPONENTS"
+                  :key="component"
+                  type="button"
+                  class="flex w-full cursor-pointer items-center gap-2 border-0 bg-transparent px-3 py-2 text-left text-sm text-ink hover:bg-slate-50"
+                  @click="addComponentItem(selectedStep, component)"
+                >
+                  <BoxIcon :name="COMPONENT_META[component].icon" class="h-4 w-4 text-slate-400" />
+                  {{ COMPONENT_META[component].label }}
+                </button>
+              </div>
             </div>
           </div>
 
-          <p v-else class="mt-10 text-center text-sm text-muted">Selecione uma etapa para começar.</p>
+          <div class="relative flex-1">
+            <iframe
+              v-if="runtime.builder_preview_url"
+              ref="previewFrame"
+              :src="runtime.builder_preview_url"
+              class="absolute inset-0 h-full w-full border-0 bg-white"
+              title="Pré-visualização do checkout"
+              @load="onFrameLoad"
+            />
+
+            <div
+              v-else
+              class="absolute inset-0 flex items-center justify-center px-6 text-center text-sm text-muted"
+            >
+              A pré-visualização ao vivo requer o WooCommerce ativo com uma página de checkout.
+            </div>
+
+            <div
+              v-if="runtime.builder_preview_url && !frameReady"
+              class="pointer-events-none absolute inset-0 flex items-center justify-center bg-slate-100/60 text-sm text-muted"
+            >
+              Carregando pré-visualização…
+            </div>
+          </div>
         </main>
 
         <!-- Inspector -->
         <aside class="overflow-y-auto border-l border-slate-200 bg-white px-4 py-5">
           <!-- Item inspector -->
-          <div v-if="selectedItem" class="flex flex-col gap-4">
-            <div class="flex items-center gap-2 border-b border-slate-100 pb-3">
-              <BoxIcon :name="itemMeta(selectedItem).icon" class="h-4 w-4 text-primary" />
-              <p class="m-0 text-sm font-semibold text-ink">{{ itemMeta(selectedItem).label }}</p>
+          <div v-if="selectedItem && selectedStep" class="flex flex-col gap-4">
+            <div class="flex items-center justify-between gap-2 border-b border-slate-100 pb-3">
+              <div class="flex min-w-0 items-center gap-2">
+                <BoxIcon :name="itemMeta(selectedItem).icon" class="h-4 w-4 shrink-0 text-primary" />
+                <p class="m-0 truncate text-sm font-semibold text-ink">{{ itemMeta(selectedItem).label }}</p>
+              </div>
+
+              <div class="flex shrink-0 items-center gap-0.5">
+                <button
+                  type="button"
+                  class="cursor-pointer rounded border-0 bg-transparent p-1 text-muted hover:text-ink disabled:opacity-30"
+                  :disabled="selectedStep.items.indexOf(selectedItem) === 0"
+                  aria-label="Mover para cima"
+                  @click="moveItem(selectedStep, selectedStep.items.indexOf(selectedItem), -1)"
+                >
+                  <BoxIcon name="chevron-up" class="h-4 w-4" />
+                </button>
+                <button
+                  type="button"
+                  class="cursor-pointer rounded border-0 bg-transparent p-1 text-muted hover:text-ink disabled:opacity-30"
+                  :disabled="selectedStep.items.indexOf(selectedItem) === selectedStep.items.length - 1"
+                  aria-label="Mover para baixo"
+                  @click="moveItem(selectedStep, selectedStep.items.indexOf(selectedItem), 1)"
+                >
+                  <BoxIcon name="chevron-down" class="h-4 w-4" />
+                </button>
+                <button
+                  type="button"
+                  class="cursor-pointer rounded border-0 bg-transparent p-1 text-danger/70 hover:text-danger"
+                  aria-label="Remover item"
+                  @click="removeItem(selectedStep, selectedItem)"
+                >
+                  <BoxIcon name="trash" class="h-4 w-4" />
+                </button>
+              </div>
             </div>
 
             <!-- Field item -->
-            <template v-if="selectedItem.kind === 'field'">
+            <template v-if="selectedItem.kind === 'field' && selectedItem.style">
               <div>
                 <label class="mb-1 block text-xs font-medium text-ink">Campo</label>
                 <BaseSelect v-model="selectedItem.field_id" :options="fieldOptions" placeholder="Selecionar campo" />
               </div>
+
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="mb-1 block text-xs font-medium text-ink">Largura</label>
+                  <BaseSelect v-model="selectedItem.style.width" :options="WIDTH_OPTIONS" size="sm" placeholder="Padrão" />
+                </div>
+                <div>
+                  <label class="mb-1 block text-xs font-medium text-ink">Ícone</label>
+                  <BaseSelect v-model="selectedItem.style.icon" :options="FIELD_ICON_OPTIONS" size="sm" />
+                </div>
+              </div>
+
+              <div>
+                <label class="mb-1 block text-xs font-medium text-ink">Placeholder</label>
+                <input v-model="selectedItem.style.placeholder" type="text" :class="inputClass" placeholder="Texto de exemplo" />
+              </div>
+
+              <p class="m-0 text-[11px] font-semibold uppercase tracking-wide text-muted">Rótulo</p>
+              <div class="grid grid-cols-3 gap-3">
+                <div>
+                  <label class="mb-1 block text-[11px] text-muted">Cor</label>
+                  <input v-model="selectedItem.style.label_color" type="color" class="h-9 w-full cursor-pointer rounded-lg border border-slate-300" />
+                </div>
+                <div>
+                  <label class="mb-1 block text-[11px] text-muted">Tamanho</label>
+                  <input v-model.number="selectedItem.style.label_size" type="number" min="8" max="40" :class="inputClass" />
+                </div>
+                <div>
+                  <label class="mb-1 block text-[11px] text-muted">Peso</label>
+                  <input v-model.number="selectedItem.style.label_weight" type="number" min="100" max="900" step="100" :class="inputClass" />
+                </div>
+              </div>
+
+              <p class="m-0 text-[11px] font-semibold uppercase tracking-wide text-muted">Campo de entrada</p>
+              <div class="grid grid-cols-3 gap-3">
+                <div>
+                  <label class="mb-1 block text-[11px] text-muted">Fundo</label>
+                  <input v-model="selectedItem.style.input_bg" type="color" class="h-9 w-full cursor-pointer rounded-lg border border-slate-300" />
+                </div>
+                <div>
+                  <label class="mb-1 block text-[11px] text-muted">Borda</label>
+                  <input v-model="selectedItem.style.input_border" type="color" class="h-9 w-full cursor-pointer rounded-lg border border-slate-300" />
+                </div>
+                <div>
+                  <label class="mb-1 block text-[11px] text-muted">Texto</label>
+                  <input v-model="selectedItem.style.input_color" type="color" class="h-9 w-full cursor-pointer rounded-lg border border-slate-300" />
+                </div>
+              </div>
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="mb-1 block text-[11px] text-muted">Raio (px)</label>
+                  <input v-model.number="selectedItem.style.input_radius" type="number" min="0" max="40" :class="inputClass" />
+                </div>
+                <div>
+                  <label class="mb-1 block text-[11px] text-muted">Espaço abaixo (px)</label>
+                  <input v-model.number="selectedItem.style.margin_bottom" type="number" min="0" max="80" :class="inputClass" />
+                </div>
+              </div>
+
               <p class="m-0 rounded-lg bg-slate-50 px-3 py-2 text-[11px] text-muted">
-                As propriedades do campo (rótulo, obrigatoriedade, máscara, posição) são editadas no <strong>Gerenciador de campos</strong>.
+                Rótulo, obrigatoriedade e máscara são editados no <strong>Gerenciador de campos</strong>.
               </p>
             </template>
 
@@ -671,6 +879,109 @@ async function save() {
               <div class="flex items-center justify-between gap-2">
                 <span class="text-xs font-medium text-ink">Obrigatório</span>
                 <ToggleSwitch v-model="selectedItem.config.required" :true-value="true" :false-value="false" />
+              </div>
+            </template>
+
+            <!-- Banner -->
+            <template v-else-if="selectedItem.component === 'banner'">
+              <div>
+                <label class="mb-1 block text-xs font-medium text-ink">Imagem de fundo</label>
+                <MediaPickerField v-model="selectedItem.config.image" :field="{ label: 'Imagem do banner' }" />
+              </div>
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="mb-1 block text-xs font-medium text-ink">Cor de fundo</label>
+                  <input v-model="selectedItem.config.bg_color" type="color" class="h-9 w-full cursor-pointer rounded-lg border border-slate-300" />
+                </div>
+                <div>
+                  <label class="mb-1 block text-xs font-medium text-ink">Cor do texto</label>
+                  <input v-model="selectedItem.config.title_color" type="color" class="h-9 w-full cursor-pointer rounded-lg border border-slate-300" />
+                </div>
+              </div>
+              <div>
+                <label class="mb-1 block text-xs font-medium text-ink">Título</label>
+                <input v-model="selectedItem.config.title" type="text" :class="inputClass" />
+              </div>
+              <div>
+                <label class="mb-1 block text-xs font-medium text-ink">Subtítulo</label>
+                <input v-model="selectedItem.config.subtitle" type="text" :class="inputClass" />
+              </div>
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="mb-1 block text-xs font-medium text-ink">Texto do botão</label>
+                  <input v-model="selectedItem.config.button_text" type="text" :class="inputClass" />
+                </div>
+                <div>
+                  <label class="mb-1 block text-xs font-medium text-ink">Alinhamento</label>
+                  <BaseSelect v-model="selectedItem.config.align" :options="ALIGN_OPTIONS" size="sm" />
+                </div>
+              </div>
+              <div>
+                <label class="mb-1 block text-xs font-medium text-ink">Link (opcional)</label>
+                <input v-model="selectedItem.config.link" type="url" :class="inputClass" placeholder="https://" />
+              </div>
+              <div>
+                <label class="mb-1 block text-xs font-medium text-ink">Contador regressivo até</label>
+                <input v-model="selectedItem.config.countdown" type="datetime-local" :class="inputClass" />
+              </div>
+            </template>
+
+            <!-- Reviews -->
+            <template v-else-if="selectedItem.component === 'reviews'">
+              <div>
+                <label class="mb-1 block text-xs font-medium text-ink">Origem das avaliações</label>
+                <BaseSelect v-model="selectedItem.config.source" :options="REVIEW_SOURCES" size="sm" />
+              </div>
+
+              <div v-if="selectedItem.config.source === 'product'">
+                <label class="mb-1 block text-xs font-medium text-ink">Produto</label>
+                <SearchMultiSelect v-model="bumpSelection" type="products" placeholder="Buscar produto..." />
+              </div>
+
+              <div v-else class="flex flex-col gap-3">
+                <div
+                  v-for="(review, index) in selectedItem.config.items"
+                  :key="index"
+                  class="rounded-lg border border-slate-200 p-3"
+                >
+                  <div class="mb-2 flex items-center justify-between">
+                    <span class="text-xs font-semibold text-muted">Depoimento {{ index + 1 }}</span>
+                    <button
+                      type="button"
+                      class="cursor-pointer rounded border-0 bg-transparent p-0.5 text-danger/70 hover:text-danger"
+                      aria-label="Remover depoimento"
+                      @click="removeReviewItem(selectedItem, index)"
+                    >
+                      <BoxIcon name="trash" class="h-4 w-4" />
+                    </button>
+                  </div>
+                  <input v-model="review.author" type="text" :class="inputClass" class="mb-2" placeholder="Autor" />
+                  <textarea v-model="review.text" rows="2" :class="inputClass" class="mb-2" placeholder="Depoimento" />
+                  <div class="grid grid-cols-2 gap-2">
+                    <input v-model.number="review.rating" type="number" min="0" max="5" :class="inputClass" placeholder="Nota" />
+                    <MediaPickerField v-model="review.avatar" :field="{ label: 'Avatar' }" />
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  class="inline-flex cursor-pointer items-center justify-center gap-1 rounded-lg border border-primary-200 bg-white px-3 py-2 text-xs font-medium text-primary transition hover:bg-primary-50"
+                  @click="addReviewItem(selectedItem)"
+                >
+                  <BoxIcon name="plus" class="h-3.5 w-3.5" />
+                  Adicionar depoimento
+                </button>
+              </div>
+
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="mb-1 block text-xs font-medium text-ink">Quantidade</label>
+                  <input v-model.number="selectedItem.config.limit" type="number" min="1" max="20" :class="inputClass" />
+                </div>
+                <div>
+                  <label class="mb-1 block text-xs font-medium text-ink">Layout</label>
+                  <BaseSelect v-model="selectedItem.config.layout" :options="REVIEW_LAYOUTS" size="sm" />
+                </div>
               </div>
             </template>
           </div>

@@ -43,6 +43,32 @@ class Helpers {
 
 
 	/**
+	 * Whether the current request is an admin-only live builder preview.
+	 *
+	 * Forces the React checkout to render (even when the public toggle is off)
+	 * so the visual builder can embed the real checkout in an iframe. Requires
+	 * a logged-in shop manager AND a valid nonce, so real shoppers and bots can
+	 * never trigger the forced React render.
+	 *
+	 * @since 6.0.0
+	 * @return bool
+	 */
+	public static function is_builder_preview() {
+		if ( ! function_exists('is_flexify_checkout') || ! is_flexify_checkout() ) {
+			return false;
+		}
+
+		if ( ! current_user_can('manage_woocommerce') ) {
+			return false;
+		}
+
+		$nonce = isset( $_GET['flexify_builder'] ) ? sanitize_text_field( wp_unslash( $_GET['flexify_builder'] ) ) : '';
+
+		return (bool) wp_verify_nonce( $nonce, 'flexify_builder_preview' );
+	}
+
+
+	/**
 	 * Get details fields for first step checkout
 	 *
 	 * @since 1.0.0

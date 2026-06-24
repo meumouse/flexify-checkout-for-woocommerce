@@ -10,7 +10,7 @@ import storeApi from '../../api/storeApi.js';
  *
  * @param {{config:object, product:object}} props Block config + resolved product.
  */
-export default function OrderBump({ config = {}, product = null }) {
+export default function OrderBump({ config = {}, product = null, editor = false }) {
   const { cart, loadCart } = useCheckout();
   const [pending, setPending] = useState(false);
   const autoAdded = useRef(false);
@@ -57,8 +57,9 @@ export default function OrderBump({ config = {}, product = null }) {
   };
 
   // Honor default_checked once, only if the product isn't already in the cart.
+  // Never mutate the cart while previewing inside the builder.
   useEffect(() => {
-    if (autoAdded.current || !config.default_checked || !productId) {
+    if (editor || autoAdded.current || !config.default_checked || !productId) {
       return;
     }
 
@@ -74,7 +75,13 @@ export default function OrderBump({ config = {}, product = null }) {
     return null;
   }
 
-  const toggle = () => (inCart ? remove() : add());
+  const toggle = () => {
+    if (editor) {
+      return;
+    }
+
+    return inCart ? remove() : add();
+  };
   const accent = config.highlight_color || '#16a34a';
 
   return (

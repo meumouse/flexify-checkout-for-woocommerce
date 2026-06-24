@@ -52,7 +52,7 @@ class Layout_Store {
      * @since 6.0.0
      * @var string[]
      */
-    const COMPONENTS = array( 'order_bump', 'html', 'coupon', 'summary', 'notes' );
+    const COMPONENTS = array( 'order_bump', 'html', 'coupon', 'summary', 'notes', 'banner', 'reviews' );
 
     /**
      * Map a step type to the legacy field "step" bucket ('1' contact, '2' delivery).
@@ -267,12 +267,22 @@ class Layout_Store {
                 return null;
             }
 
-            return array(
+            $field = array(
                 'id' => $id,
                 'kind' => 'field',
                 'field_id' => $field_id,
                 'order' => 0,
             );
+
+            if ( isset( $incoming['style'] ) && is_array( $incoming['style'] ) ) {
+                $style = self::sanitize_field_style( $incoming['style'] );
+
+                if ( ! empty( $style ) ) {
+                    $field['style'] = $style;
+                }
+            }
+
+            return $field;
         }
 
         $component = in_array( $incoming['component'] ?? '', self::COMPONENTS, true ) ? $incoming['component'] : '';
@@ -288,6 +298,66 @@ class Layout_Store {
             'config' => self::sanitize_component_config( $component, $incoming['config'] ?? array() ),
             'order' => 0,
         );
+    }
+
+
+    /**
+     * Sanitize a field item's per-placement style overrides.
+     *
+     * Only keys that are actually set are returned, so an empty style object is
+     * dropped upstream. Numeric values explicitly allow 0 (e.g. radius/margin).
+     *
+     * @since 6.0.0
+     * @param array<string,mixed> $style Raw style data.
+     * @return array<string,mixed>
+     */
+    public static function sanitize_field_style( $style ) {
+        $style = is_array( $style ) ? $style : array();
+        $out = array();
+
+        // Colors.
+        foreach ( array( 'label_color', 'input_bg', 'input_border', 'input_color' ) as $key ) {
+            if ( isset( $style[ $key ] ) && '' !== $style[ $key ] ) {
+                $color = sanitize_hex_color( (string) $style[ $key ] );
+
+                if ( $color ) {
+                    $out[ $key ] = $color;
+                }
+            }
+        }
+
+        // Numeric values (allow 0 where it makes sense).
+        $numeric = array(
+            'label_size' => array( 8, 40 ),
+            'label_weight' => array( 100, 900 ),
+            'input_radius' => array( 0, 40 ),
+            'margin_bottom' => array( 0, 80 ),
+        );
+
+        foreach ( $numeric as $key => $bounds ) {
+            if ( isset( $style[ $key ] ) && is_numeric( $style[ $key ] ) ) {
+                $out[ $key ] = max( $bounds[0], min( $bounds[1], (int) $style[ $key ] ) );
+            }
+        }
+
+        // Width override.
+        if ( isset( $style['width'] ) && in_array( $style['width'], array( 'left', 'right', 'full' ), true ) ) {
+            $out['width'] = $style['width'];
+        }
+
+        // Placeholder.
+        if ( isset( $style['placeholder'] ) && '' !== $style['placeholder'] ) {
+            $out['placeholder'] = sanitize_text_field( (string) $style['placeholder'] );
+        }
+
+        // Leading icon (allowlist).
+        $icons = array( '', 'user', 'envelope', 'phone', 'map', 'home', 'id-card', 'credit-card', 'calendar', 'search' );
+
+        if ( isset( $style['icon'] ) && in_array( $style['icon'], $icons, true ) && '' !== $style['icon'] ) {
+            $out['icon'] = $style['icon'];
+        }
+
+        return $out;
     }
 
 
@@ -340,9 +410,61 @@ class Layout_Store {
                     'placeholder' => sanitize_text_field( (string) ( $config['placeholder'] ?? '' ) ),
                     'required' => ! empty( $config['required'] ),
                 );
+
+            case 'banner':
+                return array(
+                    'image' => esc_url_raw( (string) ( $config['image'] ?? '' ) ),
+                    'bg_color' => sanitize_hex_color( (string) ( $config['bg_color'] ?? '' ) ) ?: '',
+                    'link' => esc_url_raw( (string) ( $config['link'] ?? '' ) ),
+                    'title' => sanitize_text_field( (string) ( $config['title'] ?? '' ) ),
+                    'subtitle' => sanitize_text_field( (string) ( $config['subtitle'] ?? '' ) ),
+                    'button_text' => sanitize_text_field( (string) ( $config['button_text'] ?? '' ) ),
+                    'title_color' => sanitize_hex_color( (string) ( $config['title_color'] ?? '' ) ) ?: '',
+                    'align' => in_array( $config['align'] ?? '', array( 'left', 'center', 'right' ), true ) ? $config['align'] : 'center',
+                    'countdown' => self::sanitize_datetime( (string) ( $config['countdown'] ?? '' ) ),
+                );
+
+            case 'reviews':
+                $source = in_array( $config['source'] ?? '', array( 'product', 'manual' ), true ) ? $config['source'] : 'manual';
+                $items = array();
+
+                foreach ( (array) ( $config['items'] ?? array() ) as $item ) {
+                    if ( ! is_array( $item ) ) {
+                        continue;
+                    }
+
+                    $items[] = array(
+                        'author' => sanitize_text_field( (string) ( $item['author'] ?? '' ) ),
+                        'text' => sanitize_textarea_field( (string) ( $item['text'] ?? '' ) ),
+                        'rating' => max( 0, min( 5, absint( $item['rating'] ?? 5 ) ) ),
+                        'avatar' => esc_url_raw( (string) ( $item['avatar'] ?? '' ) ),
+                    );
+                }
+
+                return array(
+                    'source' => $source,
+                    'product_id' => absint( $config['product_id'] ?? 0 ),
+                    'items' => $items,
+                    'limit' => max( 1, min( 20, absint( $config['limit'] ?? 5 ) ) ),
+                    'layout' => in_array( $config['layout'] ?? '', array( 'list', 'carousel' ), true ) ? $config['layout'] : 'list',
+                );
         }
 
         return array();
+    }
+
+
+    /**
+     * Sanitize a `datetime-local` value (YYYY-MM-DDTHH:MM), else empty.
+     *
+     * @since 6.0.0
+     * @param string $value Raw datetime.
+     * @return string
+     */
+    public static function sanitize_datetime( $value ) {
+        $value = (string) $value;
+
+        return preg_match( '/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/', $value ) ? $value : '';
     }
 
 

@@ -75,6 +75,7 @@ class Registry {
             'fields' => Fields_Store::get_fields(),
             'conditions' => Conditions_Store::get_rules_for_client(),
             'layout' => Layout_Store::get_layout_for_client(),
+            'builder_preview_url' => function_exists('wc_get_checkout_url') ? add_query_arg( 'flexify_builder', wp_create_nonce('flexify_builder_preview'), wc_get_checkout_url() ) : '',
             'integrations' => Integrations_Data::get_cards_for_client(),
             'fonts' => Fonts_Manager::get_fonts(),
             'shipping_methods' => self::build_shipping_method_options(),

@@ -65,6 +65,8 @@ async function request(path, { method = 'GET', body } = {}) {
 export const storeApi = {
   getCart: () => request('cart'),
   addItem: (id, quantity = 1) => request('cart/add-item', { method: 'POST', body: { id: Number(id), quantity: Number(quantity) || 1 } }),
+  getReviews: (productId, perPage = 5) =>
+    request(`products/reviews?product_id=${Number(productId)}&per_page=${Number(perPage) || 5}&orderby=date`),
   applyCoupon: (code) => request('cart/apply-coupon', { method: 'POST', body: { code } }),
   removeCoupon: (code) => request('cart/remove-coupon', { method: 'POST', body: { code } }),
   updateItem: (key, quantity) => request('cart/update-item', { method: 'POST', body: { key, quantity } }),

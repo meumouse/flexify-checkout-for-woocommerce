@@ -31,3 +31,49 @@
 .fc-primary-text {
   color: var(--fc-primary);
 }
+
+/*
+ * Live builder editor chrome. Only present when the checkout runs inside the
+ * admin builder iframe (editor mode).
+ */
+.fc-editor-selectable {
+  position: relative;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: outline-color 0.12s ease, box-shadow 0.12s ease;
+  outline: 2px dashed transparent;
+  outline-offset: 2px;
+}
+
+.fc-editor-selectable:hover {
+  outline-color: #93c5fd;
+}
+
+.fc-editor-selectable.is-selected {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+}
+
+.fc-editor-selectable.is-selected::after {
+  content: attr(data-fc-label);
+  position: absolute;
+  top: -10px;
+  left: 8px;
+  transform: translateY(-100%);
+  background: #2563eb;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  padding: 3px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* Editor mode disables real interactions on a few controls. */
+.fc-editor-mode button[disabled] {
+  cursor: not-allowed;
+}

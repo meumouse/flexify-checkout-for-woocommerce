@@ -82,8 +82,10 @@ class React_Checkout {
      * @return bool
      */
     public function should_render() {
-        return function_exists('is_flexify_checkout')
-            && is_flexify_checkout()
-            && Helpers::is_react_checkout_enabled();
+        if ( ! function_exists('is_flexify_checkout') || ! is_flexify_checkout() ) {
+            return false;
+        }
+
+        return Helpers::is_react_checkout_enabled() || Helpers::is_builder_preview();
     }
 }

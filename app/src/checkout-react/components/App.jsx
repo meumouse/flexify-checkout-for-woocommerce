@@ -1,7 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import config, { t } from '../config.js';
 import { useCheckout } from '../context/CheckoutContext.jsx';
 import { hasLayout, layoutSteps } from '../lib/layout.js';
+import { isEditor, onParentMessage, emitReady, emitSelect } from '../lib/editorBridge.js';
+import { MESSAGE_PREFIX } from '../lib/editorBridge.js';
 import OrderSummary from './OrderSummary.jsx';
 import StepRenderer from './StepRenderer.jsx';
 import ContactStep from './steps/ContactStep.jsx';
@@ -19,7 +21,80 @@ const STEP_LABELS = [
  * otherwise renders the default hardcoded three-step flow.
  */
 export default function App() {
+  if (isEditor()) {
+    return <EditorApp />;
+  }
+
   return hasLayout() ? <BuilderCheckout /> : <DefaultCheckout />;
+}
+
+/**
+ * Live builder editor: renders the real checkout driven by the layout pushed
+ * from the admin builder (postMessage), with selectable fields/components and
+ * no real order placement. Cart-dependent blocks degrade gracefully.
+ */
+function EditorApp() {
+  const [layout, setLayout] = useState(() => config.rules?.layout || { version: 1, steps: [] });
+  const [activeStepId, setActiveStepId] = useState('');
+  const [selected, setSelected] = useState(null);
+
+  useEffect(() => {
+    const off = onParentMessage((msg) => {
+      const kind = msg.type.slice(MESSAGE_PREFIX.length);
+
+      if (kind === 'layout' && msg.layout) {
+        setLayout(msg.layout);
+      } else if (kind === 'step') {
+        setActiveStepId(msg.stepId || '');
+      } else if (kind === 'select') {
+        setSelected(msg.target || null);
+      }
+    });
+
+    emitReady();
+
+    return off;
+  }, []);
+
+  const steps = (layout.steps || [])
+    .filter((step) => step.enabled !== false)
+    .slice()
+    .sort((a, b) => Number(a.order || 0) - Number(b.order || 0));
+
+  if (!steps.length) {
+    return <div className="p-10 text-center text-slate-500">Adicione uma etapa para começar.</div>;
+  }
+
+  const active = steps.find((step) => step.id === activeStepId) || steps[0];
+  const activeIndex = steps.indexOf(active);
+  const isLast = activeIndex === steps.length - 1;
+
+  const goTo = (index) => {
+    const next = steps[Math.max(0, Math.min(index, steps.length - 1))];
+
+    if (next) {
+      setActiveStepId(next.id);
+    }
+  };
+
+  return (
+    <div className="fc-editor-mode">
+      <CheckoutShell
+        stepLabels={steps.map((step, i) => step.label || STEP_LABELS[i] || `Etapa ${i + 1}`)}
+        activeIndex={activeIndex}
+        isLast={isLast}
+        busy={false}
+        error=""
+        onBack={() => goTo(activeIndex - 1)}
+        onNext={() => goTo(activeIndex + 1)}
+        onPlaceOrder={() => {}}
+      >
+        <div onClick={() => emitSelect({ scope: 'step', stepId: active.id })}>
+          <StepRenderer step={active} editor selected={selected} />
+        </div>
+      </CheckoutShell>
+    </div>
+  );
 }
 
 /**

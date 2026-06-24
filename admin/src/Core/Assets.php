@@ -139,9 +139,10 @@ class Assets {
 		// Remove theme global styles
 		wp_dequeue_style('global-styles');
 
-		// When the React checkout is active on the checkout step, enqueue the
-		// React bundle instead of the legacy stack and bail out early.
-		if ( is_flexify_checkout() && Helpers::is_react_checkout_enabled() ) {
+		// When the React checkout is active on the checkout step — or an admin is
+		// previewing it inside the live builder — enqueue the React bundle instead
+		// of the legacy stack and bail out early.
+		if ( is_flexify_checkout() && ( Helpers::is_react_checkout_enabled() || Helpers::is_builder_preview() ) ) {
 			$this->react_checkout_assets();
 
 			return;
@@ -396,6 +397,15 @@ class Assets {
 				'generic_error' => __( 'Ocorreu um erro. Tente novamente.', 'flexify-checkout-for-woocommerce' ),
 			),
 		));
+
+		// Live builder preview: force editor mode and always feed the current
+		// layout (even when the public toggle is off), so the admin can design
+		// the checkout before enabling it for shoppers.
+		if ( Helpers::is_builder_preview() ) {
+			$data['editor'] = true;
+			$data['builder_nonce'] = wp_create_nonce('flexify_builder_save');
+			$data['rules']['layout'] = \MeuMouse\Flexify_Checkout\Admin\Settings\Layout_Store::get_layout_for_react();
+		}
 
 		wp_localize_script( 'flexify-react-checkout', 'flexify_react_checkout', $data );
 	}
