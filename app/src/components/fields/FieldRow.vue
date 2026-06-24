@@ -56,30 +56,30 @@ const placeholders = computed(() => (Array.isArray(props.field?.placeholders) ? 
 <template>
   <div
     v-if="store.isFieldVisible(field)"
-    class="grid items-start gap-6 py-6 lg:grid-cols-[minmax(0,420px)_minmax(0,520px)]"
+    class="grid items-start gap-6 py-6 lg:grid-cols-[minmax(0,450px)_minmax(0,560px)]"
     :class="String(field.type) === 'code-editor' ? '' : 'lg:items-center'"
   >
     <div>
       <div class="flex items-start gap-2">
-        <h3 class="m-0 text-[15px] font-semibold leading-snug text-slate-800">{{ field.label }}</h3>
+        <h3 class="m-0 text-[16px] font-semibold leading-snug text-slate-800">{{ field.label }}</h3>
 
         <span
           v-if="field.pro && !store.isPro"
-          class="inline-flex shrink-0 items-center gap-1 rounded-full bg-primary-100 px-2 py-0.5 text-[10px] font-semibold text-primary"
+          class="inline-flex shrink-0 items-center gap-1 rounded-full bg-primary-100 px-2 py-0.5 text-[11px] font-semibold text-primary"
         >
           <BoxIcon name="star" type="solid" class="h-2.5 w-2.5" />
           Pro
         </span>
       </div>
 
-      <p v-if="field.description" class="m-0 mt-1 max-w-xl text-[13px] leading-5 text-slate-500">
+      <p v-if="field.description" class="m-0 mt-1 max-w-xl text-[14px] leading-5 text-slate-500">
         {{ field.description }}
       </p>
 
       <div v-if="placeholders.length" class="mt-3 flex flex-col gap-1">
         <div v-for="hint in placeholders" :key="hint.token" class="flex items-baseline gap-2">
-          <code class="rounded bg-slate-100 px-1.5 py-0.5 text-[11px] text-slate-600">{{ hint.token }}</code>
-          <span class="text-[11px] text-slate-500">{{ hint.description }}</span>
+          <code class="rounded bg-slate-100 px-1.5 py-0.5 text-[12px] text-slate-600">{{ hint.token }}</code>
+          <span class="text-[12px] text-slate-500">{{ hint.description }}</span>
         </div>
       </div>
     </div>
