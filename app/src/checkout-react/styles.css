@@ -5,10 +5,16 @@
 /*
  * The React checkout renders inside a clean WP page template (template-react.php).
  * Scope a few resets to the mount root so the active theme cannot leak in.
+ *
+ * The accent color is driven by the merchant's "primary color" setting, injected
+ * as `--fc-primary` / `--fc-primary-hover` by Core\Assets. The green defaults
+ * below match the reference storefront design and apply when no color is set.
  */
 #flexify-react-checkout {
-  --fc-primary: #141d26;
-  --fc-primary-hover: #33404d;
+  --fc-primary: #2d7860;
+  --fc-primary-hover: #1f5c47;
+  --fc-primary-soft: color-mix(in srgb, var(--fc-primary) 12%, #ffffff);
+  --fc-primary-tint: color-mix(in srgb, var(--fc-primary) 6%, #ffffff);
   color: #102033;
   font-family: inherit;
   line-height: 1.5;
@@ -20,6 +26,7 @@
   box-sizing: border-box;
 }
 
+/* Solid accent (buttons, active stepper, badges). */
 .fc-primary-bg {
   background-color: var(--fc-primary);
 }
@@ -30,6 +37,71 @@
 
 .fc-primary-text {
   color: var(--fc-primary);
+}
+
+.fc-primary-border {
+  border-color: var(--fc-primary);
+}
+
+/* Soft accent (selected cards, discount text, soft badges, "Aplicar" button). */
+.fc-soft-bg {
+  background-color: var(--fc-primary-soft);
+}
+
+.fc-soft-bg:hover {
+  background-color: color-mix(in srgb, var(--fc-primary) 18%, #ffffff);
+}
+
+.fc-tint-bg {
+  background-color: var(--fc-primary-tint);
+}
+
+/* Serif italic section headings ("Dados do titular da compra", etc.). */
+.fc-heading {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-style: italic;
+  font-weight: 500;
+}
+
+/*
+ * Remap the (shared, blue) Tailwind `primary` utilities to the green accent var,
+ * but ONLY inside the checkout mount — the admin Vue app shares the same config
+ * and must keep its own primary. Covers every primary utility used by the app.
+ */
+#flexify-react-checkout .border-primary,
+#flexify-react-checkout .focus\:border-primary:focus,
+#flexify-react-checkout .focus-within\:border-primary:focus-within {
+  border-color: var(--fc-primary) !important;
+}
+
+#flexify-react-checkout .text-primary {
+  color: var(--fc-primary) !important;
+}
+
+#flexify-react-checkout .ring-primary-100,
+#flexify-react-checkout .focus\:ring-primary-100:focus,
+#flexify-react-checkout .focus-within\:ring-primary-100:focus-within {
+  --tw-ring-color: var(--fc-primary-soft) !important;
+}
+
+#flexify-react-checkout .bg-primary-50,
+#flexify-react-checkout .hover\:bg-primary-50:hover {
+  background-color: var(--fc-primary-soft) !important;
+}
+
+/* Reservation / session countdown bar. */
+.fc-reservation-bar {
+  background-color: var(--fc-primary);
+  color: #ffffff;
+}
+
+/* Mobile cart bottom sheet. */
+.fc-sheet-backdrop {
+  background: rgba(15, 32, 51, 0.45);
+}
+
+.fc-sheet-panel {
+  box-shadow: 0 -18px 50px rgba(16, 32, 51, 0.18);
 }
 
 /*

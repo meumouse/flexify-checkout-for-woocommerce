@@ -75,6 +75,16 @@ export function CheckoutProvider({ children }) {
   const applyCoupon = useCallback((code) => withBusy(async () => setCart(await storeApi.applyCoupon(code))), [withBusy]);
   const removeCoupon = useCallback((code) => withBusy(async () => setCart(await storeApi.removeCoupon(code))), [withBusy]);
 
+  const updateItemQuantity = useCallback(
+    (key, quantity) => withBusy(async () => setCart(await storeApi.updateItem(key, Math.max(1, Number(quantity) || 1)))),
+    [withBusy],
+  );
+
+  const removeItem = useCallback(
+    (key) => withBusy(async () => setCart(await storeApi.removeItem(key))),
+    [withBusy],
+  );
+
   const updateAddress = useCallback(
     (patch) => withBusy(async () => {
       const next = { ...billing, ...patch };
@@ -134,13 +144,15 @@ export function CheckoutProvider({ children }) {
       loadCart,
       applyCoupon,
       removeCoupon,
+      updateItemQuantity,
+      removeItem,
       updateAddress,
       selectShippingRate,
       placeOrder,
     }),
     [
       cart, loading, busy, error, billing, extraFields, selectedGateway, customerNote,
-      loadCart, applyCoupon, removeCoupon, updateAddress, selectShippingRate, placeOrder,
+      loadCart, applyCoupon, removeCoupon, updateItemQuantity, removeItem, updateAddress, selectShippingRate, placeOrder,
     ],
   );
 

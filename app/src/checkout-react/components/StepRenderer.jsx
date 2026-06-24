@@ -1,4 +1,4 @@
-import config from '../config.js';
+import config, { t } from '../config.js';
 import { fieldById, itemsForStep } from '../lib/layout.js';
 import blockRegistry from '../lib/blockRegistry.js';
 import FieldRenderer from './FieldRenderer.jsx';
@@ -6,7 +6,9 @@ import AddressSearch from './AddressSearch.jsx';
 import ShippingRates from './ShippingRates.jsx';
 import PaymentMethods from './PaymentMethods.jsx';
 import ContactLogin from './ContactLogin.jsx';
+import StepSummary from './StepSummary.jsx';
 import Selectable from './editor/Selectable.jsx';
+import { MapPinIcon } from './ui/Icons.jsx';
 
 const COMPONENT_LABELS = {
   order_bump: 'Order bump',
@@ -26,9 +28,9 @@ const COMPONENT_LABELS = {
  * render full width, preserving the operator's ordering. In editor mode each
  * field and component is wrapped in a Selectable for live click-to-select.
  *
- * @param {{step:object, editor?:boolean, selected?:object|null}} props
+ * @param {{step:object, editor?:boolean, selected?:object|null, onEdit?:(type:string)=>void}} props
  */
-export default function StepRenderer({ step, editor = false, selected = null }) {
+export default function StepRenderer({ step, editor = false, selected = null, onEdit = null }) {
   const items = itemsForStep(step);
   const addressSearch = config.flags && config.flags.address_search;
 
@@ -45,7 +47,7 @@ export default function StepRenderer({ step, editor = false, selected = null }) 
 
   items.forEach((item) => {
     if (item.kind === 'field') {
-      const field = fieldById(item.field_id);
+      const field = fieldById(item.field_id, { editor });
 
       if (field) {
         fieldBatch.push({ field, item });
@@ -72,12 +74,26 @@ export default function StepRenderer({ step, editor = false, selected = null }) 
   return (
     <div className="space-y-5">
       {step.type === 'contact' && <ContactLogin />}
-      {step.type === 'shipping' && addressSearch && (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <AddressSearch />
-        </div>
+
+      {step.type === 'shipping' && (
+        <>
+          <StepSummary sections={['contact']} onEdit={onEdit} />
+          <h2 className="fc-heading text-xl text-slate-800">{t('shipping_address', 'Endereço de entrega')}</h2>
+          {addressSearch && (
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <AddressSearch />
+            </div>
+          )}
+        </>
       )}
-      {step.type === 'payment' && <PaymentMethods />}
+
+      {step.type === 'payment' && (
+        <>
+          <StepSummary sections={['contact', 'shipping', 'frete']} onEdit={onEdit} />
+          <h2 className="fc-heading text-xl text-slate-800">{t('payment_methods', 'Formas de pagamento')}</h2>
+          <PaymentMethods />
+        </>
+      )}
 
       {blocks.map((block, index) => {
         if (block.kind === 'fields') {

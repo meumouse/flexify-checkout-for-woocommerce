@@ -335,6 +335,23 @@ class Assets {
 		if ( is_array( $settings ) ) {
 			wp_add_inline_style( 'flexify-react-checkout', Styles::render_dynamic_styles( $settings ) );
 
+			// Drive the React checkout accent color from the merchant's primary color.
+			$primary = Admin_Options::get_setting('set_primary_color');
+			$primary_hover = Admin_Options::get_setting('set_primary_color_on_hover');
+			$accent_vars = '';
+
+			if ( ! empty( $primary ) ) {
+				$accent_vars .= '--fc-primary:' . esc_attr( $primary ) . ';';
+			}
+
+			if ( ! empty( $primary_hover ) ) {
+				$accent_vars .= '--fc-primary-hover:' . esc_attr( $primary_hover ) . ';';
+			}
+
+			if ( $accent_vars !== '' ) {
+				wp_add_inline_style( 'flexify-react-checkout', '#flexify-react-checkout{' . $accent_vars . '}' );
+			}
+
 			if ( ! empty( $settings['custom_css_checkout'] ) ) {
 				wp_add_inline_style( 'flexify-react-checkout', trim( (string) $settings['custom_css_checkout'] ) );
 			}
@@ -364,6 +381,12 @@ class Assets {
 			'base_country' => Fields::get_base_country(),
 			'currency' => function_exists('get_woocommerce_currency') ? get_woocommerce_currency() : 'BRL',
 			'currency_symbol' => function_exists('get_woocommerce_currency_symbol') ? get_woocommerce_currency_symbol() : 'R$',
+			'logo' => $this->get_checkout_logo(),
+			'reservation' => array(
+				'enabled' => Admin_Options::get_setting('enable_checkout_countdown') === 'yes',
+				'minutes' => $this->get_reservation_minutes(),
+				'title' => Admin_Options::get_setting('checkout_countdown_title'),
+			),
 			'urls' => array(
 				'checkout' => wc_get_checkout_url(),
 				'cart' => function_exists('wc_get_cart_url') ? wc_get_cart_url() : home_url('/'),
@@ -383,8 +406,25 @@ class Assets {
 				'shipping' => __( 'Entrega', 'flexify-checkout-for-woocommerce' ),
 				'payment' => __( 'Pagamento', 'flexify-checkout-for-woocommerce' ),
 				'order_summary' => __( 'Resumo do pedido', 'flexify-checkout-for-woocommerce' ),
+				'cart' => __( 'Carrinho', 'flexify-checkout-for-woocommerce' ),
 				'continue' => __( 'Continuar', 'flexify-checkout-for-woocommerce' ),
+				'continue_to_shipping' => __( 'Continuar para entrega', 'flexify-checkout-for-woocommerce' ),
+				'continue_to_payment' => __( 'Continuar para pagamento', 'flexify-checkout-for-woocommerce' ),
 				'back' => __( 'Voltar', 'flexify-checkout-for-woocommerce' ),
+				'back_to_shop' => __( 'Voltar à loja', 'flexify-checkout-for-woocommerce' ),
+				'edit' => __( 'Editar', 'flexify-checkout-for-woocommerce' ),
+				'step' => __( 'Etapa', 'flexify-checkout-for-woocommerce' ),
+				'reserved_for' => __( 'Seus produtos foram reservados por:', 'flexify-checkout-for-woocommerce' ),
+				'view_summary' => __( 'Ver resumo do pedido', 'flexify-checkout-for-woocommerce' ),
+				'contact_title' => __( 'Dados do titular da compra', 'flexify-checkout-for-woocommerce' ),
+				'shipping_address' => __( 'Endereço de entrega', 'flexify-checkout-for-woocommerce' ),
+				'new_address' => __( 'Novo endereço', 'flexify-checkout-for-woocommerce' ),
+				'shipping_methods' => __( 'Formas de entrega', 'flexify-checkout-for-woocommerce' ),
+				'payment_methods' => __( 'Formas de pagamento', 'flexify-checkout-for-woocommerce' ),
+				'order_notes' => __( 'Observações do pedido', 'flexify-checkout-for-woocommerce' ),
+				'subtotal' => __( 'Subtotal', 'flexify-checkout-for-woocommerce' ),
+				'discount' => __( 'Desconto', 'flexify-checkout-for-woocommerce' ),
+				'total' => __( 'Total', 'flexify-checkout-for-woocommerce' ),
 				'place_order' => __( 'Finalizar compra', 'flexify-checkout-for-woocommerce' ),
 				'apply' => __( 'Aplicar', 'flexify-checkout-for-woocommerce' ),
 				'coupon_placeholder' => __( 'Cupom de desconto', 'flexify-checkout-for-woocommerce' ),
@@ -408,6 +448,64 @@ class Assets {
 		}
 
 		wp_localize_script( 'flexify-react-checkout', 'flexify_react_checkout', $data );
+	}
+
+
+	/**
+	 * Resolve the checkout header logo URL.
+	 *
+	 * Prefers the plugin's configured checkout logo, falling back to the theme
+	 * custom logo. Returns an empty string when none is set.
+	 *
+	 * @since 6.0.0
+	 * @return string
+	 */
+	private function get_checkout_logo() {
+		$logo = Helpers::get_logo_image();
+
+		if ( ! empty( $logo ) ) {
+			return esc_url_raw( $logo );
+		}
+
+		$custom_logo_id = get_theme_mod('custom_logo');
+
+		if ( $custom_logo_id ) {
+			$url = wp_get_attachment_image_url( (int) $custom_logo_id, 'full' );
+
+			if ( $url ) {
+				return esc_url_raw( $url );
+			}
+		}
+
+		return '';
+	}
+
+
+	/**
+	 * Reservation countdown duration in minutes, derived from the checkout
+	 * countdown settings (value + unit).
+	 *
+	 * @since 6.0.0
+	 * @return int
+	 */
+	private function get_reservation_minutes() {
+		$value = (int) Admin_Options::get_setting('checkout_countdown_value');
+
+		if ( $value <= 0 ) {
+			$value = 15;
+		}
+
+		$unit = Admin_Options::get_setting('checkout_countdown_unit');
+
+		if ( $unit === 'hours' ) {
+			return $value * 60;
+		}
+
+		if ( $unit === 'seconds' ) {
+			return max( 1, (int) round( $value / 60 ) );
+		}
+
+		return $value;
 	}
 
 

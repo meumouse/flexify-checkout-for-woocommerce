@@ -31,9 +31,9 @@ export function fieldBinding(fieldId) {
   return { scope: 'extra', key: fieldId };
 }
 
-const labelClass = 'block text-sm font-medium text-slate-700 mb-1';
+const labelClass = 'block text-sm font-medium text-slate-700 mb-1.5';
 const inputClass =
-  'w-full rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none focus:border-primary focus:ring-4 focus:ring-primary-100 transition';
+  'w-full h-12 rounded-lg border border-slate-200 px-3 text-sm text-slate-800 outline-none focus:border-primary focus:ring-2 focus:ring-primary-100 transition';
 
 /**
  * Render a single checkout field, applying per-placement style overrides and,
@@ -83,7 +83,10 @@ export default function FieldRenderer({ field, style = null, editor = false, sel
   const placeholder = style?.placeholder || '';
 
   const isSelected = editor && sameTarget(selected, selectTarget);
-  const selectableClass = editor ? `fc-editor-selectable ${isSelected ? 'is-selected' : ''}` : '';
+  const disabledInEditor = editor && field.enabled === false;
+  const selectableClass = editor
+    ? `fc-editor-selectable ${isSelected ? 'is-selected' : ''} ${disabledInEditor ? 'opacity-50' : ''}`
+    : '';
 
   const onSelect = editor
     ? (event) => {

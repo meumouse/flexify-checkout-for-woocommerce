@@ -15,6 +15,8 @@ const fallback = {
   base_country: 'BR',
   currency: 'BRL',
   currency_symbol: 'R$',
+  logo: '',
+  reservation: { enabled: false, minutes: 15, title: '' },
   urls: {},
   config: { gateways: [], required_fields: [], split_payment: false },
   rules: { fields: [], steps: [] },

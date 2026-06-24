@@ -6,5 +6,9 @@ import OrderSummary from '../OrderSummary.jsx';
  * @param {{config:object}} props Block config.
  */
 export default function SummaryBlock({ config = {} }) {
-  return <OrderSummary hideCoupon={!!config.hide_coupon} title={config.title || undefined} />;
+  return (
+    <div className="rounded-2xl border border-slate-200 bg-white p-5">
+      <OrderSummary hideCoupon={!!config.hide_coupon} title={config.title || undefined} />
+    </div>
+  );
 }

@@ -21,10 +21,10 @@ export default function CouponForm() {
   };
 
   return (
-    <div className="mt-4">
+    <div>
       <form className="flex gap-2" onSubmit={submit}>
         <input
-          className="flex-1 rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none focus:border-primary focus:ring-4 focus:ring-primary-100"
+          className="h-12 flex-1 rounded-lg border border-slate-200 px-4 text-sm outline-none transition focus:border-primary focus:ring-4 focus:ring-primary-100"
           type="text"
           placeholder={t('coupon_placeholder', 'Cupom de desconto')}
           value={code}
@@ -32,20 +32,27 @@ export default function CouponForm() {
         />
         <button
           type="submit"
-          disabled={busy}
-          className="rounded-lg fc-primary-bg px-4 py-2 text-sm font-semibold text-white disabled:opacity-60"
+          disabled={busy || !code.trim()}
+          className="fc-soft-bg fc-primary-text rounded-lg px-6 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60"
         >
           {t('apply', 'Aplicar')}
         </button>
       </form>
 
       {coupons.length > 0 && (
-        <ul className="mt-2 space-y-1">
+        <ul className="mt-3 space-y-2">
           {coupons.map((c) => (
-            <li key={c.code} className="flex items-center justify-between text-sm text-slate-600">
-              <span>🏷️ {c.code}</span>
-              <button type="button" className="text-danger hover:underline" onClick={() => removeCoupon(c.code)}>
-                ✕
+            <li
+              key={c.code}
+              className="flex items-center justify-between rounded-md border border-slate-200 px-3 py-2 text-sm"
+            >
+              <span className="font-medium text-slate-700">{c.code}</span>
+              <button
+                type="button"
+                className="text-slate-400 transition-colors hover:text-danger"
+                onClick={() => removeCoupon(c.code)}
+              >
+                Remover
               </button>
             </li>
           ))}
