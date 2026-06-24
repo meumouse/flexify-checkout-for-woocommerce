@@ -3,7 +3,7 @@ import { useCheckout } from '../context/CheckoutContext.jsx';
 import { formatPrice } from '../lib/format.js';
 import CouponForm from './CouponForm.jsx';
 
-export default function OrderSummary() {
+export default function OrderSummary({ hideCoupon = false, title } = {}) {
   const { cart } = useCheckout();
 
   if (!cart) {
@@ -15,7 +15,7 @@ export default function OrderSummary() {
 
   return (
     <section className="rounded-xl border border-slate-100 bg-white p-5 shadow-soft">
-      <h2 className="mb-4 text-base font-semibold text-slate-800">{t('order_summary', 'Resumo do pedido')}</h2>
+      <h2 className="mb-4 text-base font-semibold text-slate-800">{title || t('order_summary', 'Resumo do pedido')}</h2>
 
       {items.length === 0 ? (
         <p className="text-sm text-slate-500">{t('empty_cart', 'Seu carrinho está vazio.')}</p>
@@ -42,7 +42,7 @@ export default function OrderSummary() {
         </ul>
       )}
 
-      <CouponForm />
+      {!hideCoupon && <CouponForm />}
 
       <div className="mt-4 space-y-1 border-t border-slate-100 pt-4 text-sm">
         <Row label="Subtotal" value={formatPrice(totals.total_items, totals)} />

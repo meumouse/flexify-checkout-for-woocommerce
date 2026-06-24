@@ -74,6 +74,7 @@ class Registry {
             ), 'https://meumouse.com/reportar-problemas/' ),
             'fields' => Fields_Store::get_fields(),
             'conditions' => Conditions_Store::get_rules_for_client(),
+            'layout' => Layout_Store::get_layout_for_client(),
             'integrations' => Integrations_Data::get_cards_for_client(),
             'fonts' => Fonts_Manager::get_fonts(),
             'shipping_methods' => self::build_shipping_method_options(),
@@ -525,6 +526,15 @@ class Registry {
             'icon' => 'list-plus',
             'layout' => 'cards',
             'cards' => array(
+                array(
+                    'id' => 'checkout-builder',
+                    'title' => __( 'Construtor de checkout', 'flexify-checkout-for-woocommerce' ),
+                    'description' => __( 'Monte visualmente as etapas, campos e componentes do checkout React (order bump, blocos de conteúdo, cupom, resumo e observações) com pré-visualização ao vivo.', 'flexify-checkout-for-woocommerce' ),
+                    'component' => 'checkout-builder',
+                    'fields' => array(
+                        self::field_toggle( 'enable_checkout_builder', __( 'Ativar o construtor de checkout', 'flexify-checkout-for-woocommerce' ), __( 'Aplica o layout montado no construtor ao checkout React. Quando desativado, o checkout usa as etapas padrão.', 'flexify-checkout-for-woocommerce' ), array( 'pro' => true ) ),
+                    ),
+                ),
                 array(
                     'id' => 'fields-manager',
                     'title' => __( 'Gerenciador de campos', 'flexify-checkout-for-woocommerce' ),

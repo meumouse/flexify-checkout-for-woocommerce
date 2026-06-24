@@ -41,6 +41,17 @@ import infoCircle from 'boxicons/svg/regular/bx-info-circle.svg?raw';
 import rocket from 'boxicons/svg/regular/bx-rocket.svg?raw';
 import exportIcon from 'boxicons/svg/regular/bx-export.svg?raw';
 import importIcon from 'boxicons/svg/regular/bx-import.svg?raw';
+// Checkout builder.
+import layout from 'boxicons/svg/regular/bx-layout.svg?raw';
+import move from 'boxicons/svg/regular/bx-move.svg?raw';
+import cog from 'boxicons/svg/regular/bx-cog.svg?raw';
+import purchaseTag from 'boxicons/svg/regular/bx-purchase-tag.svg?raw';
+import code from 'boxicons/svg/regular/bx-code.svg?raw';
+import receipt from 'boxicons/svg/regular/bx-receipt.svg?raw';
+import note from 'boxicons/svg/regular/bx-note.svg?raw';
+import creditCard from 'boxicons/svg/regular/bx-credit-card.svg?raw';
+import packageIcon from 'boxicons/svg/regular/bx-package.svg?raw';
+import gift from 'boxicons/svg/regular/bx-gift.svg?raw';
 
 // Solid (filled) — badges and status indicators.
 import starSolid from 'boxicons/svg/solid/bxs-star.svg?raw';
@@ -74,6 +85,16 @@ export default {
   'regular/rocket': rocket,
   'regular/export': exportIcon,
   'regular/import': importIcon,
+  'regular/layout': layout,
+  'regular/move': move,
+  'regular/cog': cog,
+  'regular/purchase-tag': purchaseTag,
+  'regular/code': code,
+  'regular/receipt': receipt,
+  'regular/note': note,
+  'regular/credit-card': creditCard,
+  'regular/package': packageIcon,
+  'regular/gift': gift,
   'solid/star': starSolid,
   'solid/check-circle': checkCircleSolid,
   'solid/error-circle': errorCircleSolid,

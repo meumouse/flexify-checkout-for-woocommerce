@@ -126,6 +126,12 @@ class Headless_Data {
             'field_masks' => Admin_Options::get_setting('enable_field_masks') === 'yes',
         );
 
+        // Emit the visual builder layout only when the operator opted in and an
+        // explicit layout exists. Otherwise React falls back to its default steps.
+        if ( Admin_Options::get_setting('enable_checkout_builder') === 'yes' && \MeuMouse\Flexify_Checkout\Admin\Settings\Layout_Store::has_saved_layout() ) {
+            $rules['layout'] = \MeuMouse\Flexify_Checkout\Admin\Settings\Layout_Store::get_layout_for_react();
+        }
+
         /**
          * Filter the checkout rules payload.
          *

@@ -10,6 +10,7 @@ import AboutActions from '../../components/settings/AboutActions.vue';
 import ThemePicker from '../../components/settings/ThemePicker.vue';
 import FieldsManager from '../../components/settings/FieldsManager.vue';
 import ConditionsManager from '../../components/settings/ConditionsManager.vue';
+import CheckoutBuilderManager from '../../components/settings/CheckoutBuilderManager.vue';
 import EmailProviders from '../../components/settings/EmailProviders.vue';
 import FontsManager from '../../components/settings/FontsManager.vue';
 import RecoverySettings from '../../components/settings/RecoverySettings.vue';
@@ -95,6 +96,7 @@ const customComponents = {
   'theme-picker': ThemePicker,
   'fields-manager': FieldsManager,
   'conditions-manager': ConditionsManager,
+  'checkout-builder': CheckoutBuilderManager,
   'fonts-manager': FontsManager,
   'email-providers': EmailProviders,
   'recovery-settings': RecoverySettings,

@@ -50,9 +50,12 @@ export const useSettingsStore = defineStore('flexify-checkout-settings', {
     runtime: {},
     fields: {},
     conditions: [],
+    layout: { version: 1, steps: [] },
+    fieldCatalog: [],
     integrations: [],
     saving: false,
     savingCondition: false,
+    savingLayout: false,
     resetting: false,
     exporting: false,
     importing: false,
@@ -86,6 +89,10 @@ export const useSettingsStore = defineStore('flexify-checkout-settings', {
       this.runtime = bootstrap?.runtime && typeof bootstrap.runtime === 'object' ? bootstrap.runtime : {};
       this.fields = this.runtime?.fields && typeof this.runtime.fields === 'object' ? this.runtime.fields : {};
       this.conditions = Array.isArray(this.runtime?.conditions) ? this.runtime.conditions : [];
+      this.layout = this.runtime?.layout && Array.isArray(this.runtime.layout.steps)
+        ? { version: this.runtime.layout.version || 1, steps: this.runtime.layout.steps }
+        : { version: 1, steps: [] };
+      this.fieldCatalog = Array.isArray(this.runtime?.layout?.field_catalog) ? this.runtime.layout.field_catalog : [];
       this.integrations = Array.isArray(this.runtime?.integrations) ? this.runtime.integrations : [];
       this.baseline = cloneSettings(this.settings);
     },
@@ -351,6 +358,52 @@ export const useSettingsStore = defineStore('flexify-checkout-settings', {
 
     removeCondition(id) {
       return this.conditionAction('admin/conditions/remove', { id });
+    },
+
+    /**
+     * Reload the checkout builder layout + field catalog from the server.
+     */
+    async loadLayout() {
+      try {
+        const response = await apiGet('admin/layout');
+
+        if (response?.status === 'success' && response.layout) {
+          this.layout = { version: response.layout.version || 1, steps: response.layout.steps || [] };
+          this.fieldCatalog = Array.isArray(response.field_catalog) ? response.field_catalog : this.fieldCatalog;
+        }
+
+        return response;
+      } catch (error) {
+        return null;
+      }
+    },
+
+    /**
+     * Persist the checkout builder layout. Refreshes the layout, field catalog
+     * and the (synced) field map so the Fields Manager stays consistent.
+     */
+    async saveLayout(layout) {
+      this.savingLayout = true;
+
+      try {
+        const response = await apiPost('admin/layout', { layout });
+
+        if (response?.status === 'success' && response.layout) {
+          this.layout = { version: response.layout.version || 1, steps: response.layout.steps || [] };
+          this.fieldCatalog = Array.isArray(response.field_catalog) ? response.field_catalog : this.fieldCatalog;
+          this.fields = response.fields || this.fields;
+        }
+
+        this.pushToast(response?.status === 'success' ? 'success' : 'error', response?.message || '');
+
+        return response;
+      } catch (error) {
+        this.pushToast('error', 'Ocorreu um erro ao salvar o construtor de checkout.');
+
+        return null;
+      } finally {
+        this.savingLayout = false;
+      }
     },
 
     async moduleAction(endpoint, body) {

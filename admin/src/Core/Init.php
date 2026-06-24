@@ -638,6 +638,10 @@ class Init {
             '\MeuMouse\Flexify_Checkout\Rest\WhatsApp_Verify',
             '\MeuMouse\Flexify_Checkout\Rest\Address_Autocomplete',
             '\MeuMouse\Flexify_Checkout\Rest\Address_Details',
+            // Visual checkout builder: layout REST + legacy step bridge.
+            '\MeuMouse\Flexify_Checkout\Rest\Layout_Get',
+            '\MeuMouse\Flexify_Checkout\Rest\Layout_Save',
+            '\MeuMouse\Flexify_Checkout\Checkout\Legacy_Layout_Bridge',
         ));
 
         $manual_classes_map = array();

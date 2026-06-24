@@ -226,6 +226,10 @@ class Default_Options {
             // React checkout (optional new frontend). When disabled the classic
             // server-rendered checkout is served unchanged.
             'enable_react_checkout' => 'no',
+            // Visual checkout builder (layout of steps/fields/components for the
+            // React checkout). When disabled the React checkout uses its default
+            // hardcoded steps.
+            'enable_checkout_builder' => 'no',
             'enable_whatsapp_login' => 'no',
             'whatsapp_login_sender' => '',
             'enable_google_address_search' => 'no',
