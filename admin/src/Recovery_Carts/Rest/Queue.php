@@ -220,7 +220,7 @@ class Queue extends Abstract_Route {
      * @return array<int,array{value:string,label:string}>
      */
     private function event_options() {
-        $options = array( array( 'value' => 'all', 'label' => __( 'Todos os eventos', 'flexify-checkout-for-woocommerce' ) ) );
+        $options = array( array( 'value' => 'all', 'label' => __( 'All events', 'flexify-checkout-for-woocommerce' ) ) );
 
         foreach ( self::EVENTS as $event ) {
             $options[] = array( 'value' => $event, 'label' => $this->event_label( $event ) );
@@ -268,7 +268,7 @@ class Queue extends Abstract_Route {
     private function event_label( $key ) {
         $map = array(
             'fcrc_send_follow_up_message' => __( 'Follow up', 'flexify-checkout-for-woocommerce' ),
-            'fcrc_check_final_cart_status' => __( 'Aguardando pagamento', 'flexify-checkout-for-woocommerce' ),
+            'fcrc_check_final_cart_status' => __( 'Awaiting payment', 'flexify-checkout-for-woocommerce' ),
         );
 
         return isset( $map[ $key ] ) ? $map[ $key ] : $key;

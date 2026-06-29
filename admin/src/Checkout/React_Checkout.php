@@ -86,10 +86,10 @@ class React_Checkout {
 
         $wp_admin_bar->add_node( array(
             'id' => 'flexify-checkout-editor',
-            'title' => '<span class="ab-icon dashicons dashicons-edit" style="top:2px;"></span>' . esc_html__( 'Editor Flexify Checkout', 'flexify-checkout-for-woocommerce' ),
+            'title' => '<span class="ab-icon dashicons dashicons-edit" style="top:2px;"></span>' . esc_html__( 'Flexify Checkout Editor', 'flexify-checkout-for-woocommerce' ),
             'href' => esc_url( $url ),
             'meta' => array(
-                'title' => __( 'Abrir o construtor de checkout', 'flexify-checkout-for-woocommerce' ),
+                'title' => __( 'Open the checkout builder', 'flexify-checkout-for-woocommerce' ),
             ),
         ) );
     }

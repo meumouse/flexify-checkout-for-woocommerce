@@ -47,27 +47,27 @@ class Fonts_Delete extends Abstract_Route {
         $font_id = isset( $payload['font_id'] ) ? sanitize_key( (string) $payload['font_id'] ) : '';
 
         if ( empty( $font_id ) ) {
-            return $this->error_response( __( 'Fonte inválida informada.', 'flexify-checkout-for-woocommerce' ) );
+            return $this->error_response( __( 'Invalid font specified.', 'flexify-checkout-for-woocommerce' ) );
         }
 
         if ( Fonts_Manager::is_builtin_font( $font_id ) ) {
-            return $this->error_response( __( 'Fontes padrão não podem ser excluídas.', 'flexify-checkout-for-woocommerce' ) );
+            return $this->error_response( __( 'Default fonts cannot be deleted.', 'flexify-checkout-for-woocommerce' ) );
         }
 
         $fonts = Fonts_Manager::get_fonts();
 
         if ( ! isset( $fonts[ $font_id ] ) ) {
-            return $this->error_response( __( 'Fonte não encontrada.', 'flexify-checkout-for-woocommerce' ) );
+            return $this->error_response( __( 'Font not found.', 'flexify-checkout-for-woocommerce' ) );
         }
 
         if ( ! Fonts_Manager::delete_font( $font_id ) ) {
-            return $this->error_response( __( 'Ops! Não foi possível remover a fonte.', 'flexify-checkout-for-woocommerce' ) );
+            return $this->error_response( __( 'Oops! Could not remove the font.', 'flexify-checkout-for-woocommerce' ) );
         }
 
         Fonts_Manager::maybe_reset_selected_font( $font_id );
 
         return $this->success_response( array(
-            'message' => __( 'A fonte foi removida da biblioteca.', 'flexify-checkout-for-woocommerce' ),
+            'message' => __( 'The font has been removed from the library.', 'flexify-checkout-for-woocommerce' ),
             'fonts' => Fonts_Manager::get_fonts(),
             'current_font' => Admin_Options::get_setting('set_font_family'),
         ) );

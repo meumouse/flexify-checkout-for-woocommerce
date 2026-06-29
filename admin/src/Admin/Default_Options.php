@@ -175,7 +175,7 @@ class Default_Options {
             'checkout_countdown_value' => '15',
             'checkout_countdown_unit' => 'minutes',
             'checkout_countdown_action' => 'hide',
-            'checkout_countdown_title' => esc_html__( 'Sua sessão termina em:', 'flexify-checkout-for-woocommerce' ),
+            'checkout_countdown_title' => esc_html__( 'Your session ends in:', 'flexify-checkout-for-woocommerce' ),
             'checkout_countdown_redirect_url' => home_url('/'),
             'countdown_background_type' => 'primary',
             'countdown_background_color' => '#141D26',
@@ -264,7 +264,7 @@ class Default_Options {
             'billing_email' => array(
                 'id' => 'billing_email',
                 'type' => 'email',
-                'label' => esc_html__( 'Endereço de e-mail', 'flexify-checkout-for-woocommerce' ),
+                'label' => esc_html__( 'Email address', 'flexify-checkout-for-woocommerce' ),
                 'position' => 'full',
                 'classes' => '',
                 'label_classes' => '',
@@ -277,7 +277,7 @@ class Default_Options {
             'billing_first_name' => array(
                 'id' => 'billing_first_name',
                 'type' => 'text',
-                'label' => esc_html__( 'Nome', 'flexify-checkout-for-woocommerce' ),
+                'label' => esc_html__( 'Name', 'flexify-checkout-for-woocommerce' ),
                 'position' => 'left',
                 'classes' => '',
                 'label_classes' => '',
@@ -290,7 +290,7 @@ class Default_Options {
             'billing_last_name' => array(
                 'id' => 'billing_last_name',
                 'type' => 'text',
-                'label' => esc_html__( 'Sobrenome', 'flexify-checkout-for-woocommerce' ),
+                'label' => esc_html__( 'Last name', 'flexify-checkout-for-woocommerce' ),
                 'position' => 'right',
                 'classes' => '',
                 'label_classes' => '',
@@ -303,7 +303,7 @@ class Default_Options {
             'billing_phone' => array(
                 'id' => 'billing_phone',
                 'type' => 'tel',
-                'label' => esc_html__( 'Telefone', 'flexify-checkout-for-woocommerce' ),
+                'label' => esc_html__( 'Phone', 'flexify-checkout-for-woocommerce' ),
                 'position' => 'full',
                 'classes' => '',
                 'label_classes' => '',
@@ -317,7 +317,7 @@ class Default_Options {
             'billing_company' => array(
                 'id' => 'billing_company',
                 'type' => 'text',
-                'label' => esc_html__( 'Empresa', 'flexify-checkout-for-woocommerce' ),
+                'label' => esc_html__( 'Company', 'flexify-checkout-for-woocommerce' ),
                 'position' => 'full',
                 'classes' => '',
                 'label_classes' => '',
@@ -330,7 +330,7 @@ class Default_Options {
             'billing_country' => array(
                 'id' => 'billing_country',
                 'type' => 'select',
-                'label' => esc_html__( 'País', 'flexify-checkout-for-woocommerce' ),
+                'label' => esc_html__( 'Country', 'flexify-checkout-for-woocommerce' ),
                 'position' => 'full',
                 'classes' => '',
                 'label_classes' => '',
@@ -343,7 +343,7 @@ class Default_Options {
             'billing_postcode' => array(
                 'id' => 'billing_postcode',
                 'type' => 'tel',
-                'label' => esc_html__( 'CEP', 'flexify-checkout-for-woocommerce' ),
+                'label' => esc_html__( 'ZIP Code', 'flexify-checkout-for-woocommerce' ),
                 'position' => 'full',
                 'classes' => '',
                 'label_classes' => '',
@@ -357,7 +357,7 @@ class Default_Options {
             'billing_address_1' => array(
                 'id' => 'billing_address_1',
                 'type' => 'text',
-                'label' => esc_html__( 'Endereço', 'flexify-checkout-for-woocommerce' ),
+                'label' => esc_html__( 'Address', 'flexify-checkout-for-woocommerce' ),
                 'position' => 'left',
                 'classes' => '',
                 'label_classes' => '',
@@ -370,7 +370,7 @@ class Default_Options {
             'billing_address_2' => array(
                 'id' => 'billing_address_2',
                 'type' => 'text',
-                'label' => esc_html__( 'Apartamento, suíte, unidade, etc.', 'flexify-checkout-for-woocommerce' ),
+                'label' => esc_html__( 'Apartment, suite, unit, etc.', 'flexify-checkout-for-woocommerce' ),
                 'position' => 'right',
                 'classes' => '',
                 'label_classes' => '',
@@ -383,7 +383,7 @@ class Default_Options {
             'billing_city' => array(
                 'id' => 'billing_city',
                 'type' => 'text',
-                'label' => esc_html__( 'Cidade', 'flexify-checkout-for-woocommerce' ),
+                'label' => esc_html__( 'City', 'flexify-checkout-for-woocommerce' ),
                 'position' => 'left',
                 'classes' => '',
                 'label_classes' => '',
@@ -396,7 +396,7 @@ class Default_Options {
             'billing_state' => array(
                 'id' => 'billing_state',
                 'type' => 'select',
-                'label' => esc_html__( 'Estado', 'flexify-checkout-for-woocommerce' ),
+                'label' => esc_html__( 'State', 'flexify-checkout-for-woocommerce' ),
                 'position' => 'right',
                 'classes' => '',
                 'label_classes' => '',
@@ -422,7 +422,7 @@ class Default_Options {
             'billing_persontype' => array(
                 'id' => 'billing_persontype',
                 'type' => 'select',
-                'label' => esc_html__( 'Tipo de Pessoa', 'flexify-checkout-for-woocommerce' ),
+                'label' => esc_html__( 'Person Type', 'flexify-checkout-for-woocommerce' ),
                 'position' => 'full',
                 'classes' => '',
                 'label_classes' => '',
@@ -434,11 +434,11 @@ class Default_Options {
                 'options' => array(
                     array(
                         'value' => '1',
-                        'text' => esc_html__( 'Pessoa Física (CPF)', 'flexify-checkout-for-woocommerce' ),
+                        'text' => esc_html__( 'Individual (CPF)', 'flexify-checkout-for-woocommerce' ),
                     ),
                     array(
                         'value' => '2',
-                        'text' => esc_html__( 'Pessoa Jurífica (CNPJ)', 'flexify-checkout-for-woocommerce' ),
+                        'text' => esc_html__( 'Legal Entity (CNPJ)', 'flexify-checkout-for-woocommerce' ),
                     ),
                 ),
             ),
@@ -473,7 +473,7 @@ class Default_Options {
             'billing_ie' => array(
                 'id' => 'billing_ie',
                 'type' => 'tel',
-                'label' => esc_html__( 'Inscrição Estadual', 'flexify-checkout-for-woocommerce' ),
+                'label' => esc_html__( 'State Registration', 'flexify-checkout-for-woocommerce' ),
                 'position' => 'full',
                 'classes' => '',
                 'label_classes' => '',
@@ -487,7 +487,7 @@ class Default_Options {
             'billing_cellphone' => array(
                 'id' => 'billing_cellphone',
                 'type' => 'tel',
-                'label' => esc_html__( 'Celular', 'flexify-checkout-for-woocommerce' ),
+                'label' => esc_html__( 'Cell phone', 'flexify-checkout-for-woocommerce' ),
                 'position' => 'full',
                 'classes' => '',
                 'label_classes' => '',
@@ -515,7 +515,7 @@ class Default_Options {
             'billing_birthdate' => array(
                 'id' => 'billing_birthdate',
                 'type' => 'tel',
-                'label' => esc_html__( 'Data de nascimento', 'flexify-checkout-for-woocommerce' ),
+                'label' => esc_html__( 'Date of birth', 'flexify-checkout-for-woocommerce' ),
                 'position' => 'full',
                 'classes' => '',
                 'label_classes' => '',
@@ -529,7 +529,7 @@ class Default_Options {
             'billing_gender' => array(
                 'id' => 'billing_gender',
                 'type' => 'select',
-                'label' => esc_html__( 'Gênero', 'flexify-checkout-for-woocommerce' ),
+                'label' => esc_html__( 'Gender', 'flexify-checkout-for-woocommerce' ),
                 'position' => 'full',
                 'classes' => '',
                 'label_classes' => '',
@@ -542,7 +542,7 @@ class Default_Options {
             'billing_number' => array(
                 'id' => 'billing_number',
                 'type' => 'text',
-                'label' => esc_html__( 'Número da residência', 'flexify-checkout-for-woocommerce' ),
+                'label' => esc_html__( 'House number', 'flexify-checkout-for-woocommerce' ),
                 'position' => 'right',
                 'classes' => '',
                 'label_classes' => '',
@@ -555,7 +555,7 @@ class Default_Options {
             'billing_neighborhood' => array(
                 'id' => 'billing_neighborhood',
                 'type' => 'text',
-                'label' => esc_html__( 'Bairro', 'flexify-checkout-for-woocommerce' ),
+                'label' => esc_html__( 'Neighborhood', 'flexify-checkout-for-woocommerce' ),
                 'position' => 'left',
                 'classes' => '',
                 'label_classes' => '',

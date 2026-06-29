@@ -135,13 +135,13 @@ class Fields_Store {
         $field_id = isset( $data['id'] ) ? sanitize_key( (string) $data['id'] ) : '';
 
         if ( '' === $field_id || 0 !== strpos( $field_id, 'billing_' ) ) {
-            return new \WP_Error( 'invalid_field_id', __( 'Informe um ID de campo válido com o prefixo billing_.', 'flexify-checkout-for-woocommerce' ) );
+            return new \WP_Error( 'invalid_field_id', __( 'Enter a valid field ID with the billing_ prefix.', 'flexify-checkout-for-woocommerce' ) );
         }
 
         $fields = self::get_fields();
 
         if ( isset( $fields[ $field_id ] ) ) {
-            return new \WP_Error( 'field_exists', __( 'Este nome e ID do campo já está em uso. Use um outro nome.', 'flexify-checkout-for-woocommerce' ) );
+            return new \WP_Error( 'field_exists', __( 'This field name and ID are already in use. Use another name.', 'flexify-checkout-for-woocommerce' ) );
         }
 
         $options = null;
@@ -197,11 +197,11 @@ class Fields_Store {
         $fields = self::get_fields();
 
         if ( ! isset( $fields[ $field_id ] ) ) {
-            return new \WP_Error( 'field_not_found', __( 'O campo informado não foi encontrado.', 'flexify-checkout-for-woocommerce' ) );
+            return new \WP_Error( 'field_not_found', __( 'The given field was not found.', 'flexify-checkout-for-woocommerce' ) );
         }
 
         if ( isset( $fields[ $field_id ]['source'] ) && 'native' === $fields[ $field_id ]['source'] ) {
-            return new \WP_Error( 'field_is_native', __( 'Campos nativos do WooCommerce não podem ser removidos, apenas desativados.', 'flexify-checkout-for-woocommerce' ) );
+            return new \WP_Error( 'field_is_native', __( 'Native WooCommerce fields cannot be removed, only disabled.', 'flexify-checkout-for-woocommerce' ) );
         }
 
         unset( $fields[ $field_id ] );

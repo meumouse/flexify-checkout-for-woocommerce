@@ -188,7 +188,7 @@ class REST_Checkout_Fields {
 
 		foreach ( $field_ids as $field_id ) {
 			$field_schema = array(
-				'description' => sprintf( __( 'Campo adicional do checkout (%s).', 'flexify-checkout-for-woocommerce' ), $field_id ),
+				'description' => sprintf( __( 'Additional checkout field (%s).', 'flexify-checkout-for-woocommerce' ), $field_id ),
 				'type' => array( 'string', 'null' ),
 				'context' => array( 'view', 'edit' ),
 			);
@@ -207,13 +207,13 @@ class REST_Checkout_Fields {
 		}
 
 		$schema['properties']['flexify_checkout'] = array(
-			'description' => __( 'Namespace do Flexify Checkout para campos adicionais.', 'flexify-checkout-for-woocommerce' ),
+			'description' => __( 'Flexify Checkout namespace for additional fields.', 'flexify-checkout-for-woocommerce' ),
 			'type' => 'object',
 			'context' => array( 'view', 'edit' ),
 			'readonly' => true,
 			'properties' => array(
 				'fields' => array(
-					'description' => __( 'Coleção de campos adicionais genéricos.', 'flexify-checkout-for-woocommerce' ),
+					'description' => __( 'Collection of generic additional fields.', 'flexify-checkout-for-woocommerce' ),
 					'type' => 'object',
 					'context' => array( 'view', 'edit' ),
 					'additionalProperties' => array(

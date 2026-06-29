@@ -46,11 +46,11 @@ class Settings_Reset extends Abstract_Route {
         $reset = Repository::reset_settings();
 
         if ( ! $reset ) {
-            return $this->error_response( __( 'Ocorreu um erro ao redefinir as configurações.', 'flexify-checkout-for-woocommerce' ) );
+            return $this->error_response( __( 'An error occurred while resetting the settings.', 'flexify-checkout-for-woocommerce' ) );
         }
 
         return $this->success_response( array(
-            'message' => __( 'As opções foram redefinidas com sucesso!', 'flexify-checkout-for-woocommerce' ),
+            'message' => __( 'Options have been successfully reset!', 'flexify-checkout-for-woocommerce' ),
             'settings' => Repository::get_settings(),
             'runtime' => Registry::get_runtime_data(),
         ) );

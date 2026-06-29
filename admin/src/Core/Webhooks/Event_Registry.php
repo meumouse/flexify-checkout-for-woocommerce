@@ -32,11 +32,11 @@ class Event_Registry {
      */
     public static function get_categories() {
         $categories = array(
-            'order'    => esc_html__( 'Pedido', 'flexify-checkout-for-woocommerce' ),
+            'order'    => esc_html__( 'Order', 'flexify-checkout-for-woocommerce' ),
             'checkout' => esc_html__( 'Checkout', 'flexify-checkout-for-woocommerce' ),
-            'tracking' => esc_html__( 'Rastreamento', 'flexify-checkout-for-woocommerce' ),
-            'recovery' => esc_html__( 'Recuperação', 'flexify-checkout-for-woocommerce' ),
-            'account'  => esc_html__( 'Conta', 'flexify-checkout-for-woocommerce' ),
+            'tracking' => esc_html__( 'Tracking', 'flexify-checkout-for-woocommerce' ),
+            'recovery' => esc_html__( 'Recovery', 'flexify-checkout-for-woocommerce' ),
+            'account'  => esc_html__( 'Account', 'flexify-checkout-for-woocommerce' ),
         );
 
         /**
@@ -59,92 +59,92 @@ class Event_Registry {
         return array(
             // Pedido
             'order_created' => array(
-                'label' => esc_html__( 'Pedido criado', 'flexify-checkout-for-woocommerce' ),
-                'description' => esc_html__( 'Disparado quando um pedido é criado na finalização de compra.', 'flexify-checkout-for-woocommerce' ),
+                'label' => esc_html__( 'Order created', 'flexify-checkout-for-woocommerce' ),
+                'description' => esc_html__( 'Triggered when an order is created at checkout.', 'flexify-checkout-for-woocommerce' ),
                 'category' => 'order',
                 'hook' => 'woocommerce_checkout_order_processed',
             ),
             'payment_complete' => array(
-                'label' => esc_html__( 'Pagamento concluído', 'flexify-checkout-for-woocommerce' ),
-                'description' => esc_html__( 'Disparado quando o pagamento de um pedido é confirmado.', 'flexify-checkout-for-woocommerce' ),
+                'label' => esc_html__( 'Payment completed', 'flexify-checkout-for-woocommerce' ),
+                'description' => esc_html__( 'Triggered when an order\'s payment is confirmed.', 'flexify-checkout-for-woocommerce' ),
                 'category' => 'order',
                 'hook' => 'woocommerce_payment_complete',
             ),
             'order_processing' => array(
-                'label' => esc_html__( 'Pedido em processamento', 'flexify-checkout-for-woocommerce' ),
-                'description' => esc_html__( 'Disparado quando um pedido entra no status "processando".', 'flexify-checkout-for-woocommerce' ),
+                'label' => esc_html__( 'Order processing', 'flexify-checkout-for-woocommerce' ),
+                'description' => esc_html__( 'Triggered when an order enters the "processing" status.', 'flexify-checkout-for-woocommerce' ),
                 'category' => 'order',
                 'hook' => 'woocommerce_order_status_processing',
             ),
             'order_completed' => array(
-                'label' => esc_html__( 'Pedido concluído', 'flexify-checkout-for-woocommerce' ),
-                'description' => esc_html__( 'Disparado quando um pedido entra no status "concluído".', 'flexify-checkout-for-woocommerce' ),
+                'label' => esc_html__( 'Completed order', 'flexify-checkout-for-woocommerce' ),
+                'description' => esc_html__( 'Triggered when an order enters the "completed" status.', 'flexify-checkout-for-woocommerce' ),
                 'category' => 'order',
                 'hook' => 'woocommerce_order_status_completed',
             ),
             'order_cancelled' => array(
-                'label' => esc_html__( 'Pedido cancelado', 'flexify-checkout-for-woocommerce' ),
-                'description' => esc_html__( 'Disparado quando um pedido entra no status "cancelado".', 'flexify-checkout-for-woocommerce' ),
+                'label' => esc_html__( 'Cancelled order', 'flexify-checkout-for-woocommerce' ),
+                'description' => esc_html__( 'Triggered when an order enters the "cancelled" status.', 'flexify-checkout-for-woocommerce' ),
                 'category' => 'order',
                 'hook' => 'woocommerce_order_status_cancelled',
             ),
             'order_refunded' => array(
-                'label' => esc_html__( 'Pedido reembolsado', 'flexify-checkout-for-woocommerce' ),
-                'description' => esc_html__( 'Disparado quando um pedido entra no status "reembolsado".', 'flexify-checkout-for-woocommerce' ),
+                'label' => esc_html__( 'Refunded order', 'flexify-checkout-for-woocommerce' ),
+                'description' => esc_html__( 'Triggered when an order enters the "refunded" status.', 'flexify-checkout-for-woocommerce' ),
                 'category' => 'order',
                 'hook' => 'woocommerce_order_status_refunded',
             ),
             'order_status_changed' => array(
-                'label' => esc_html__( 'Status do pedido alterado', 'flexify-checkout-for-woocommerce' ),
-                'description' => esc_html__( 'Disparado em qualquer mudança de status do pedido, com os status de origem e destino.', 'flexify-checkout-for-woocommerce' ),
+                'label' => esc_html__( 'Order status changed', 'flexify-checkout-for-woocommerce' ),
+                'description' => esc_html__( 'Triggered on any order status change, with the source and target statuses.', 'flexify-checkout-for-woocommerce' ),
                 'category' => 'order',
                 'hook' => 'woocommerce_order_status_changed',
             ),
 
             // Checkout
             'thankyou' => array(
-                'label' => esc_html__( 'Página de agradecimento', 'flexify-checkout-for-woocommerce' ),
-                'description' => esc_html__( 'Disparado uma única vez quando o cliente chega à página de agradecimento do pedido.', 'flexify-checkout-for-woocommerce' ),
+                'label' => esc_html__( 'Thank-you page', 'flexify-checkout-for-woocommerce' ),
+                'description' => esc_html__( 'Triggered once when the customer reaches the order thank-you page.', 'flexify-checkout-for-woocommerce' ),
                 'category' => 'checkout',
                 'hook' => 'woocommerce_thankyou',
             ),
             'countdown_expired' => array(
-                'label' => esc_html__( 'Contagem regressiva expirada', 'flexify-checkout-for-woocommerce' ),
-                'description' => esc_html__( 'Disparado quando a contagem regressiva do checkout expira e a sessão é destruída.', 'flexify-checkout-for-woocommerce' ),
+                'label' => esc_html__( 'Countdown expired', 'flexify-checkout-for-woocommerce' ),
+                'description' => esc_html__( 'Triggered when the checkout countdown expires and the session is destroyed.', 'flexify-checkout-for-woocommerce' ),
                 'category' => 'checkout',
                 'hook' => 'Flexify_Checkout/Countdown/Session_Destroyed',
             ),
 
             // Rastreamento
             'purchase' => array(
-                'label' => esc_html__( 'Compra (rastreamento)', 'flexify-checkout-for-woocommerce' ),
-                'description' => esc_html__( 'Disparado no evento de compra do rastreamento server-side.', 'flexify-checkout-for-woocommerce' ),
+                'label' => esc_html__( 'Purchase (tracking)', 'flexify-checkout-for-woocommerce' ),
+                'description' => esc_html__( 'Triggered on the purchase event of server-side tracking.', 'flexify-checkout-for-woocommerce' ),
                 'category' => 'tracking',
                 'hook' => 'Flexify_Checkout/Tracking/Server_Purchase',
             ),
             'begin_checkout' => array(
-                'label' => esc_html__( 'Início do checkout', 'flexify-checkout-for-woocommerce' ),
-                'description' => esc_html__( 'Disparado quando o cliente inicia a finalização de compra.', 'flexify-checkout-for-woocommerce' ),
+                'label' => esc_html__( 'Checkout start', 'flexify-checkout-for-woocommerce' ),
+                'description' => esc_html__( 'Triggered when the customer starts the checkout.', 'flexify-checkout-for-woocommerce' ),
                 'category' => 'tracking',
                 'hook' => 'Flexify_Checkout/Tracking/Server_Event',
             ),
             'add_shipping_info' => array(
-                'label' => esc_html__( 'Informações de entrega', 'flexify-checkout-for-woocommerce' ),
-                'description' => esc_html__( 'Disparado quando o cliente informa os dados de entrega.', 'flexify-checkout-for-woocommerce' ),
+                'label' => esc_html__( 'Delivery information', 'flexify-checkout-for-woocommerce' ),
+                'description' => esc_html__( 'Triggered when the customer provides the shipping details.', 'flexify-checkout-for-woocommerce' ),
                 'category' => 'tracking',
                 'hook' => 'Flexify_Checkout/Tracking/Server_Event',
             ),
             'add_payment_info' => array(
-                'label' => esc_html__( 'Informações de pagamento', 'flexify-checkout-for-woocommerce' ),
-                'description' => esc_html__( 'Disparado quando o cliente informa os dados de pagamento.', 'flexify-checkout-for-woocommerce' ),
+                'label' => esc_html__( 'Payment information', 'flexify-checkout-for-woocommerce' ),
+                'description' => esc_html__( 'Triggered when the customer provides the payment details.', 'flexify-checkout-for-woocommerce' ),
                 'category' => 'tracking',
                 'hook' => 'Flexify_Checkout/Tracking/Server_Event',
             ),
 
             // Conta
             'whatsapp_verified' => array(
-                'label' => esc_html__( 'WhatsApp verificado', 'flexify-checkout-for-woocommerce' ),
-                'description' => esc_html__( 'Disparado quando um cliente verifica o número de WhatsApp no login do checkout.', 'flexify-checkout-for-woocommerce' ),
+                'label' => esc_html__( 'WhatsApp verified', 'flexify-checkout-for-woocommerce' ),
+                'description' => esc_html__( 'Triggered when a customer verifies their WhatsApp number at checkout login.', 'flexify-checkout-for-woocommerce' ),
                 'category' => 'account',
                 'hook' => 'Flexify_Checkout/React_Checkout/WhatsApp_Logged_In',
             ),

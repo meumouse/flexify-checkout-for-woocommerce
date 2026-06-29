@@ -60,17 +60,17 @@ class Modules_Activate extends Abstract_Route {
         $plugin_slug = isset( $payload['slug'] ) ? sanitize_text_field( (string) $payload['slug'] ) : '';
 
         if ( '' === $plugin_slug ) {
-            return $this->error_response( __( 'Dados do módulo inválidos.', 'flexify-checkout-for-woocommerce' ) );
+            return $this->error_response( __( 'Invalid module data.', 'flexify-checkout-for-woocommerce' ) );
         }
 
         $activate = activate_plugin( $plugin_slug );
 
         if ( is_wp_error( $activate ) ) {
-            return $this->error_response( __( 'Não foi possível ativar o plugin.', 'flexify-checkout-for-woocommerce' ) );
+            return $this->error_response( __( 'Could not activate the plugin.', 'flexify-checkout-for-woocommerce' ) );
         }
 
         return $this->success_response( array(
-            'message' => __( 'Plugin ativado com sucesso.', 'flexify-checkout-for-woocommerce' ),
+            'message' => __( 'Plugin activated successfully.', 'flexify-checkout-for-woocommerce' ),
             'integrations' => Integrations_Data::get_cards_for_client(),
         ) );
     }

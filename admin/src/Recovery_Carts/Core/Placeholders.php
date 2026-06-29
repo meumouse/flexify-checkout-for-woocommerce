@@ -35,7 +35,7 @@ class Placeholders {
          */
         return apply_filters( 'Flexify_Checkout/Recovery_Carts/Register_Placeholders', array(
             '{{ first_name }}' => array(
-                'title' => esc_html__( 'Primeiro nome', 'flexify-checkout-for-woocommerce' ),
+                'title' => esc_html__( 'First name', 'flexify-checkout-for-woocommerce' ),
                 'callback' => function( $cart_id, $event ) {
                     $fallback = Admin::get_setting( 'fallback_first_name' );
                     $cart_data = get_post_meta( $cart_id );
@@ -44,7 +44,7 @@ class Placeholders {
                 },
             ),
             '{{ last_name }}' => array(
-                'title' => esc_html__( 'Sobrenome', 'flexify-checkout-for-woocommerce' ),
+                'title' => esc_html__( 'Last name', 'flexify-checkout-for-woocommerce' ),
                 'callback' => function( $cart_id, $event ) {
                     $cart_data = get_post_meta( $cart_id );
 
@@ -52,13 +52,13 @@ class Placeholders {
                 },
             ),
             '{{ recovery_link }}' => array(
-                'title' => esc_html__( 'Link de recuperação do carrinho', 'flexify-checkout-for-woocommerce' ),
+                'title' => esc_html__( 'Cart recovery link', 'flexify-checkout-for-woocommerce' ),
                 'callback' => function( $cart_id, $event ) {
                     return Helpers::generate_recovery_cart_link( $cart_id );
                 },
             ),
             '{{ coupon_code }}' => array(
-                'title' => esc_html__( 'Código do cupom', 'flexify-checkout-for-woocommerce' ),
+                'title' => esc_html__( 'Coupon code', 'flexify-checkout-for-woocommerce' ),
                 'callback' => function( $cart_id, $event ) {
                     if ( isset( $event['coupon']['generate_coupon'] ) && $event['coupon']['generate_coupon'] === 'yes' ) {
                         // generate coupon code and save on cart post meta
@@ -71,7 +71,7 @@ class Placeholders {
                 },
             ),
             '{{ products_list }}' => array(
-                'title' => esc_html__( 'Lista de produtos no carrinho ou pedido, separados por vírgula', 'flexify-checkout-for-woocommerce' ),
+                'title' => esc_html__( 'List of products in the cart or order, separated by comma', 'flexify-checkout-for-woocommerce' ),
                 'callback' => function( $cart_id, $event ) {
                     // retrieve products list
                     $items = get_post_meta( $cart_id, '_fcrc_cart_items', true );
@@ -96,7 +96,7 @@ class Placeholders {
                 },
             ),
             '{{ cart_total }}' => array(
-                'title' => esc_html__( 'Valor total do carrinho', 'flexify-checkout-for-woocommerce' ),
+                'title' => esc_html__( 'Total cart value', 'flexify-checkout-for-woocommerce' ),
                 'callback' => function( $cart_id, $event ) {
                     $total = (float) get_post_meta( $cart_id, '_fcrc_cart_total', true );
 

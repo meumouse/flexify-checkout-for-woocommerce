@@ -44,7 +44,7 @@ class Fields_Add extends Abstract_Route {
      */
     public function handle( WP_REST_Request $request ) {
         if ( ! License::is_valid() ) {
-            return $this->error_response( __( 'O gerenciador de campos requer uma licença Pro ativa.', 'flexify-checkout-for-woocommerce' ) );
+            return $this->error_response( __( 'The fields manager requires an active Pro license.', 'flexify-checkout-for-woocommerce' ) );
         }
 
         $payload = $request->get_json_params();
@@ -56,7 +56,7 @@ class Fields_Add extends Abstract_Route {
         }
 
         return $this->success_response( array(
-            'message' => __( 'Novo campo para finalização de compras adicionado com sucesso!', 'flexify-checkout-for-woocommerce' ),
+            'message' => __( 'New checkout field added successfully!', 'flexify-checkout-for-woocommerce' ),
             'fields' => $result,
         ) );
     }

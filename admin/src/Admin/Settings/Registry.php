@@ -258,72 +258,72 @@ class Registry {
      */
     private static function tab_general() {
         $shop_card_fields = array(
-            self::field_toggle( 'enable_react_checkout', __( 'Ativar checkout em React (beta)', 'flexify-checkout-for-woocommerce' ), __( 'Substitui a finalização de compra clássica por uma interface em React que consome a WooCommerce Store API. Requer licença válida.', 'flexify-checkout-for-woocommerce' ), array( 'pro' => true ) ),
-            self::field_toggle( 'enable_back_to_shop_button', __( 'Mostrar botão Voltar à loja', 'flexify-checkout-for-woocommerce' ), __( 'Ative esta opção para exibir o botão "Voltar à loja" na primeira etapa de finalização de compra.', 'flexify-checkout-for-woocommerce' ) ),
-            self::field_toggle( 'enable_skip_cart_page', __( 'Pular página do carrinho', 'flexify-checkout-for-woocommerce' ), __( 'Ative esta opção para redirecionar o usuário da página de carrinho para a finalização de compra automaticamente.', 'flexify-checkout-for-woocommerce' ) ),
-            self::field_toggle( 'display_opened_order_review_mobile', __( 'Mostrar resumo do pedido aberto por padrão', 'flexify-checkout-for-woocommerce' ), __( 'Ative esta opção para mostrar o resumo do pedido aberto por padrão em celulares.', 'flexify-checkout-for-woocommerce' ) ),
-            self::field_toggle( 'enable_checkout_countdown', __( 'Ativar contagem regressiva do checkout', 'flexify-checkout-for-woocommerce' ), __( 'Permite definir um tempo limite para o cliente finalizar a compra ou gerar urgência na compra.', 'flexify-checkout-for-woocommerce' ), array(
+            self::field_toggle( 'enable_react_checkout', __( 'Enable React checkout (beta)', 'flexify-checkout-for-woocommerce' ), __( 'Replaces the classic checkout with a React interface that consumes the WooCommerce Store API. Requires a valid license.', 'flexify-checkout-for-woocommerce' ), array( 'pro' => true ) ),
+            self::field_toggle( 'enable_back_to_shop_button', __( 'Show Back to Shop button', 'flexify-checkout-for-woocommerce' ), __( 'Enable this option to display the "Back to shop" button at the first step of checkout.', 'flexify-checkout-for-woocommerce' ) ),
+            self::field_toggle( 'enable_skip_cart_page', __( 'Skip cart page', 'flexify-checkout-for-woocommerce' ), __( 'Enable this option to automatically redirect the user from the cart page to checkout.', 'flexify-checkout-for-woocommerce' ) ),
+            self::field_toggle( 'display_opened_order_review_mobile', __( 'Show order summary open by default', 'flexify-checkout-for-woocommerce' ), __( 'Enable this option to show the order summary open by default on mobile devices.', 'flexify-checkout-for-woocommerce' ) ),
+            self::field_toggle( 'enable_checkout_countdown', __( 'Enable checkout countdown', 'flexify-checkout-for-woocommerce' ), __( 'Allows setting a time limit for the customer to complete the purchase or create urgency.', 'flexify-checkout-for-woocommerce' ), array(
                 'popup' => array(
-                    'button' => __( 'Configurar', 'flexify-checkout-for-woocommerce' ),
-                    'title' => __( 'Configurar contagem regressiva', 'flexify-checkout-for-woocommerce' ),
+                    'button' => __( 'Configure', 'flexify-checkout-for-woocommerce' ),
+                    'title' => __( 'Configure countdown', 'flexify-checkout-for-woocommerce' ),
                     'fields' => array(
-                        self::field_text( 'checkout_countdown_title', __( 'Título da contagem regressiva', 'flexify-checkout-for-woocommerce' ), __( 'Permite definir um titulo a ser exibido ao lado da contagem regressiva.', 'flexify-checkout-for-woocommerce' ) ),
-                        self::field_dimension( 'checkout_countdown_value', 'checkout_countdown_unit', __( 'Duração total', 'flexify-checkout-for-woocommerce' ), __( 'Permite definir o tempo limite da contagem regressiva.', 'flexify-checkout-for-woocommerce' ), array(
-                            array( 'value' => 'minutes', 'label' => __( 'Minutos', 'flexify-checkout-for-woocommerce' ) ),
-                            array( 'value' => 'days', 'label' => __( 'Dias', 'flexify-checkout-for-woocommerce' ) ),
+                        self::field_text( 'checkout_countdown_title', __( 'Countdown title', 'flexify-checkout-for-woocommerce' ), __( 'Allows setting a title to be displayed next to the countdown.', 'flexify-checkout-for-woocommerce' ) ),
+                        self::field_dimension( 'checkout_countdown_value', 'checkout_countdown_unit', __( 'Total duration', 'flexify-checkout-for-woocommerce' ), __( 'Allows setting the countdown time limit.', 'flexify-checkout-for-woocommerce' ), array(
+                            array( 'value' => 'minutes', 'label' => __( 'Minutes', 'flexify-checkout-for-woocommerce' ) ),
+                            array( 'value' => 'days', 'label' => __( 'Days', 'flexify-checkout-for-woocommerce' ) ),
                         ) ),
-                        self::field_select( 'checkout_countdown_action', __( 'Ação após expirar', 'flexify-checkout-for-woocommerce' ), __( 'Permite definir o tipo de ação a ser executado após a expiração da contagem regressiva.', 'flexify-checkout-for-woocommerce' ), array(
-                            array( 'value' => 'hide', 'label' => __( 'Ocultar', 'flexify-checkout-for-woocommerce' ) ),
-                            array( 'value' => 'restart', 'label' => __( 'Reiniciar contagem', 'flexify-checkout-for-woocommerce' ) ),
-                            array( 'value' => 'logout', 'label' => __( 'Encerrar sessão do checkout', 'flexify-checkout-for-woocommerce' ) ),
+                        self::field_select( 'checkout_countdown_action', __( 'Action after expiry', 'flexify-checkout-for-woocommerce' ), __( 'Allows defining the type of action to be executed after the countdown expires.', 'flexify-checkout-for-woocommerce' ), array(
+                            array( 'value' => 'hide', 'label' => __( 'Hide', 'flexify-checkout-for-woocommerce' ) ),
+                            array( 'value' => 'restart', 'label' => __( 'Restart countdown', 'flexify-checkout-for-woocommerce' ) ),
+                            array( 'value' => 'logout', 'label' => __( 'End checkout session', 'flexify-checkout-for-woocommerce' ) ),
                         ) ),
-                        self::field_text( 'checkout_countdown_redirect_url', __( 'URL de redirecionamento', 'flexify-checkout-for-woocommerce' ), __( 'Permite definir para qual endereço o usuário será redirecionado após a sessão ser encerrada.', 'flexify-checkout-for-woocommerce' ), array(
+                        self::field_text( 'checkout_countdown_redirect_url', __( 'Redirect URL', 'flexify-checkout-for-woocommerce' ), __( 'Allows defining which address the user will be redirected to after the session ends.', 'flexify-checkout-for-woocommerce' ), array(
                             'type' => 'url',
                             'visible_when' => array( array( 'field' => 'checkout_countdown_action', 'equals' => 'logout' ) ),
                         ) ),
-                        self::field_select( 'countdown_background_type', __( 'Cor de fundo da contagem regressiva', 'flexify-checkout-for-woocommerce' ), __( 'Informe a cor de fundo da barra de contagem regressiva.', 'flexify-checkout-for-woocommerce' ), array(
-                            array( 'value' => 'primary', 'label' => __( 'Usar cor padrão', 'flexify-checkout-for-woocommerce' ) ),
-                            array( 'value' => 'custom', 'label' => __( 'Definir personalizada', 'flexify-checkout-for-woocommerce' ) ),
+                        self::field_select( 'countdown_background_type', __( 'Countdown background color', 'flexify-checkout-for-woocommerce' ), __( 'Enter the background color of the countdown bar.', 'flexify-checkout-for-woocommerce' ), array(
+                            array( 'value' => 'primary', 'label' => __( 'Use default color', 'flexify-checkout-for-woocommerce' ) ),
+                            array( 'value' => 'custom', 'label' => __( 'Set custom', 'flexify-checkout-for-woocommerce' ) ),
                         ) ),
-                        self::field_color( 'countdown_background_color', __( 'Cor de fundo personalizada', 'flexify-checkout-for-woocommerce' ), '', array(
+                        self::field_color( 'countdown_background_color', __( 'Custom background color', 'flexify-checkout-for-woocommerce' ), '', array(
                             'default' => '#141D26',
                             'visible_when' => array( array( 'field' => 'countdown_background_type', 'equals' => 'custom' ) ),
                         ) ),
-                        self::field_select( 'countdown_font_color_type', __( 'Cor do texto da contagem regressiva', 'flexify-checkout-for-woocommerce' ), __( 'Informe a cor do texto da barra de contagem regressiva.', 'flexify-checkout-for-woocommerce' ), array(
-                            array( 'value' => 'default', 'label' => __( 'Usar cor padrão', 'flexify-checkout-for-woocommerce' ) ),
-                            array( 'value' => 'custom', 'label' => __( 'Definir personalizada', 'flexify-checkout-for-woocommerce' ) ),
+                        self::field_select( 'countdown_font_color_type', __( 'Countdown text color', 'flexify-checkout-for-woocommerce' ), __( 'Enter the text color of the countdown bar.', 'flexify-checkout-for-woocommerce' ), array(
+                            array( 'value' => 'default', 'label' => __( 'Use default color', 'flexify-checkout-for-woocommerce' ) ),
+                            array( 'value' => 'custom', 'label' => __( 'Set custom', 'flexify-checkout-for-woocommerce' ) ),
                         ) ),
-                        self::field_color( 'countdown_font_color', __( 'Cor do texto personalizada', 'flexify-checkout-for-woocommerce' ), '', array(
+                        self::field_color( 'countdown_font_color', __( 'Custom text color', 'flexify-checkout-for-woocommerce' ), '', array(
                             'default' => '#ffffff',
                             'visible_when' => array( array( 'field' => 'countdown_font_color_type', 'equals' => 'custom' ) ),
                         ) ),
                     ),
                 ),
             ) ),
-            self::field_toggle( 'enable_animation_process_purchase', __( 'Ativar animações de processamento de compra', 'flexify-checkout-for-woocommerce' ), __( 'Ative esta opção para personalizar a animação de processamento da compra.', 'flexify-checkout-for-woocommerce' ), array(
+            self::field_toggle( 'enable_animation_process_purchase', __( 'Enable purchase processing animations', 'flexify-checkout-for-woocommerce' ), __( 'Enable this option to customize the purchase processing animation.', 'flexify-checkout-for-woocommerce' ), array(
                 'pro' => true,
                 'popup' => array(
-                    'button' => __( 'Configurar animação', 'flexify-checkout-for-woocommerce' ),
-                    'title' => __( 'Configurar animação de processamento', 'flexify-checkout-for-woocommerce' ),
+                    'button' => __( 'Configure animation', 'flexify-checkout-for-woocommerce' ),
+                    'title' => __( 'Configure processing animation', 'flexify-checkout-for-woocommerce' ),
                     'fields' => array(
-                        self::field_text( 'text_animation_process_purchase_1', __( 'Texto da animação 1', 'flexify-checkout-for-woocommerce' ), __( 'Informe o texto que será exibido na animação 1 de processamento.', 'flexify-checkout-for-woocommerce' ) ),
-                        self::field_media( 'animation_process_purchase_file_1', __( 'Arquivo da animação 1', 'flexify-checkout-for-woocommerce' ), __( 'Anexe o link ou arquivo da animação Lottie em formato .json', 'flexify-checkout-for-woocommerce' ) ),
-                        self::field_text( 'text_animation_process_purchase_2', __( 'Texto da animação 2', 'flexify-checkout-for-woocommerce' ), __( 'Informe o texto que será exibido na animação 2 de processamento.', 'flexify-checkout-for-woocommerce' ) ),
-                        self::field_media( 'animation_process_purchase_file_2', __( 'Arquivo da animação 2', 'flexify-checkout-for-woocommerce' ), __( 'Anexe o link ou arquivo da animação Lottie em formato .json', 'flexify-checkout-for-woocommerce' ) ),
-                        self::field_text( 'text_animation_process_purchase_3', __( 'Texto da animação 3', 'flexify-checkout-for-woocommerce' ), __( 'Informe o texto que será exibido na animação 3 de processamento.', 'flexify-checkout-for-woocommerce' ) ),
-                        self::field_media( 'animation_process_purchase_file_3', __( 'Arquivo da animação 3', 'flexify-checkout-for-woocommerce' ), __( 'Anexe o link ou arquivo da animação Lottie em formato .json', 'flexify-checkout-for-woocommerce' ) ),
+                        self::field_text( 'text_animation_process_purchase_1', __( 'Animation text 1', 'flexify-checkout-for-woocommerce' ), __( 'Enter the text that will be displayed in processing animation 1.', 'flexify-checkout-for-woocommerce' ) ),
+                        self::field_media( 'animation_process_purchase_file_1', __( 'Animation file 1', 'flexify-checkout-for-woocommerce' ), __( 'Attach the Lottie animation link or file in .json format', 'flexify-checkout-for-woocommerce' ) ),
+                        self::field_text( 'text_animation_process_purchase_2', __( 'Animation text 2', 'flexify-checkout-for-woocommerce' ), __( 'Enter the text that will be displayed in processing animation 2.', 'flexify-checkout-for-woocommerce' ) ),
+                        self::field_media( 'animation_process_purchase_file_2', __( 'Animation file 2', 'flexify-checkout-for-woocommerce' ), __( 'Attach the Lottie animation link or file in .json format', 'flexify-checkout-for-woocommerce' ) ),
+                        self::field_text( 'text_animation_process_purchase_3', __( 'Animation text 3', 'flexify-checkout-for-woocommerce' ), __( 'Enter the text that will be displayed in processing animation 3.', 'flexify-checkout-for-woocommerce' ) ),
+                        self::field_media( 'animation_process_purchase_file_3', __( 'Animation file 3', 'flexify-checkout-for-woocommerce' ), __( 'Attach the Lottie animation link or file in .json format', 'flexify-checkout-for-woocommerce' ) ),
                     ),
                 ),
             ) ),
         );
 
         if ( class_exists('Kangu_Shipping_Method') ) {
-            $shop_card_fields[] = self::field_toggle( 'enable_display_local_pickup_kangu', __( 'Mostrar endereço da loja física para retirada da encomenda Kangu', 'flexify-checkout-for-woocommerce' ), __( 'Ative esta opção para mostrar o endereço da sua loja como ponto de retirada da encomenda Kangu.', 'flexify-checkout-for-woocommerce' ) );
+            $shop_card_fields[] = self::field_toggle( 'enable_display_local_pickup_kangu', __( 'Show physical store address for Kangu order pickup', 'flexify-checkout-for-woocommerce' ), __( 'Enable this option to show your store\'s address as the Kangu order pickup point.', 'flexify-checkout-for-woocommerce' ) );
         }
 
         return array(
             'id' => 'general',
-            'title' => __( 'Geral', 'flexify-checkout-for-woocommerce' ),
+            'title' => __( 'General', 'flexify-checkout-for-woocommerce' ),
             'icon' => 'slider-alt',
             'layout' => 'cards',
             'cards' => array(
@@ -334,13 +334,13 @@ class Registry {
                 array(
                     'id' => 'general-checkout',
                     'fields' => array(
-                        self::field_toggle( 'enable_terms_is_checked_default', __( 'Termos e condições ativo por padrão', 'flexify-checkout-for-woocommerce' ), __( 'Ative esta opção para a opção de termos e condições da última etapa ficar ativa por padrão, caso exista uma página de termos e condições configurada.', 'flexify-checkout-for-woocommerce' ), array( 'pro' => true ) ),
-                        self::field_toggle( 'enable_auto_apply_coupon_code', __( 'Aplicar cupom de desconto automaticamente', 'flexify-checkout-for-woocommerce' ), __( 'Ative esta opção para informar um cupom de desconto para ser aplicado automaticamente na finalização de compra.', 'flexify-checkout-for-woocommerce' ), array( 'pro' => true ) ),
-                        self::field_text( 'coupon_code_for_auto_apply', __( 'Código do cupom de desconto', 'flexify-checkout-for-woocommerce' ), __( 'Informe o código do cupom de desconto que será aplicado automaticamente na finalização de compra.', 'flexify-checkout-for-woocommerce' ), array(
+                        self::field_toggle( 'enable_terms_is_checked_default', __( 'Terms and conditions active by default', 'flexify-checkout-for-woocommerce' ), __( 'Enable this option for the terms and conditions option of the last step to be active by default, if a terms and conditions page is configured.', 'flexify-checkout-for-woocommerce' ), array( 'pro' => true ) ),
+                        self::field_toggle( 'enable_auto_apply_coupon_code', __( 'Apply discount coupon automatically', 'flexify-checkout-for-woocommerce' ), __( 'Enable this option to specify a discount coupon to be applied automatically at checkout.', 'flexify-checkout-for-woocommerce' ), array( 'pro' => true ) ),
+                        self::field_text( 'coupon_code_for_auto_apply', __( 'Discount coupon code', 'flexify-checkout-for-woocommerce' ), __( 'Please provide the discount coupon code that will be automatically applied at checkout.', 'flexify-checkout-for-woocommerce' ), array(
                             'placeholder' => 'CUPOMDEDESCONTO',
                             'visible_when' => array( array( 'field' => 'enable_auto_apply_coupon_code', 'equals' => 'yes' ) ),
                         ) ),
-                        self::field_toggle( 'direct_checkout_api', __( 'Ativar API para criação de links de checkout direto', 'flexify-checkout-for-woocommerce' ), __( 'Ative esta opção para habilitar um endpoint para criação de links de checkout direto via API.', 'flexify-checkout-for-woocommerce' ), array( 'pro' => true ) ),
+                        self::field_toggle( 'direct_checkout_api', __( 'Enable API for direct checkout link creation', 'flexify-checkout-for-woocommerce' ), __( 'Enable this option to enable an endpoint for direct checkout link creation via API.', 'flexify-checkout-for-woocommerce' ), array( 'pro' => true ) ),
                     ),
                 ),
             ),
@@ -360,17 +360,17 @@ class Registry {
     private static function tab_cart() {
         return array(
             'id' => 'cart',
-            'title' => __( 'Carrinho', 'flexify-checkout-for-woocommerce' ),
+            'title' => __( 'Cart', 'flexify-checkout-for-woocommerce' ),
             'icon' => 'cart',
             'layout' => 'cards',
             'cards' => array(
                 array(
                     'id' => 'cart-products',
                     'fields' => array(
-                        self::field_toggle( 'enable_link_image_products', __( 'Tornar imagem de produtos clicáveis', 'flexify-checkout-for-woocommerce' ), __( 'Ative esta opção para permitir que o usuário acesse o produto ao clicar na imagem do produto.', 'flexify-checkout-for-woocommerce' ) ),
-                        self::field_toggle( 'enable_change_product_quantity', __( 'Permitir alterar quantidade de produtos', 'flexify-checkout-for-woocommerce' ), __( 'Ative esta opção para exibir os seletores de quantidades do produto na finalização de compras.', 'flexify-checkout-for-woocommerce' ), array( 'pro' => true ) ),
-                        self::field_toggle( 'enable_remove_product_cart', __( 'Permitir remover produtos do carrinho', 'flexify-checkout-for-woocommerce' ), __( 'Ative esta opção para exibir o botão de remoção do produto do carrinho na finalização de compras.', 'flexify-checkout-for-woocommerce' ), array( 'pro' => true ) ),
-                        self::field_toggle( 'enable_remove_quantity_select', __( 'Remover controles de quantidade em produtos vendidos individualmente', 'flexify-checkout-for-woocommerce' ), __( 'Ative esta opção para remover os controles de quantidade na finalização de compras em produtos que são vendidos individualmente.', 'flexify-checkout-for-woocommerce' ) ),
+                        self::field_toggle( 'enable_link_image_products', __( 'Make product images clickable', 'flexify-checkout-for-woocommerce' ), __( 'Enable this option to allow the user to access the product by clicking on the product image.', 'flexify-checkout-for-woocommerce' ) ),
+                        self::field_toggle( 'enable_change_product_quantity', __( 'Allow changing product quantities', 'flexify-checkout-for-woocommerce' ), __( 'Enable this option to display the product quantity selectors at checkout.', 'flexify-checkout-for-woocommerce' ), array( 'pro' => true ) ),
+                        self::field_toggle( 'enable_remove_product_cart', __( 'Allow removing products from cart', 'flexify-checkout-for-woocommerce' ), __( 'Enable this option to display the product removal button from the cart at checkout.', 'flexify-checkout-for-woocommerce' ), array( 'pro' => true ) ),
+                        self::field_toggle( 'enable_remove_quantity_select', __( 'Remove quantity controls on individually sold products', 'flexify-checkout-for-woocommerce' ), __( 'Enable this option to remove quantity controls at checkout for products that are sold individually.', 'flexify-checkout-for-woocommerce' ) ),
                     ),
                 ),
             ),
@@ -390,23 +390,23 @@ class Registry {
     private static function tab_account() {
         return array(
             'id' => 'account',
-            'title' => __( 'Conta & Acesso', 'flexify-checkout-for-woocommerce' ),
+            'title' => __( 'Account & Access', 'flexify-checkout-for-woocommerce' ),
             'icon' => 'user',
             'layout' => 'cards',
             'cards' => array(
                 array(
                     'id' => 'account-access',
                     'fields' => array(
-                        self::field_toggle( 'auto_display_login_modal', __( 'Abrir popup de login automaticamente', 'flexify-checkout-for-woocommerce' ), __( 'Ative esta opção para que o popup de login seja aberto automaticamente ao reconhecer uma conta existente com o e-mail informado.', 'flexify-checkout-for-woocommerce' ), array( 'pro' => true ) ),
-                        self::field_toggle( 'check_password_strenght', __( 'Ativar verificação de força da senha do usuário', 'flexify-checkout-for-woocommerce' ), __( 'Ative esta opção para forçar a verificação da força de senha na criação da conta do usuário, na finalização de compras.', 'flexify-checkout-for-woocommerce' ) ),
-                        self::field_toggle( 'email_providers_suggestion', __( 'Ativar sugestão de preenchimento do e-mail', 'flexify-checkout-for-woocommerce' ), __( 'Ative esta opção para exibir a sugestão do provedor de e-mail, na finalização de compras.', 'flexify-checkout-for-woocommerce' ), array(
+                        self::field_toggle( 'auto_display_login_modal', __( 'Automatically open login popup', 'flexify-checkout-for-woocommerce' ), __( 'Enable this option so the login popup opens automatically when an existing account is recognized for the provided email.', 'flexify-checkout-for-woocommerce' ), array( 'pro' => true ) ),
+                        self::field_toggle( 'check_password_strenght', __( 'Enable user password strength verification', 'flexify-checkout-for-woocommerce' ), __( 'Enable this option to enforce password strength verification when creating a user account during checkout.', 'flexify-checkout-for-woocommerce' ) ),
+                        self::field_toggle( 'email_providers_suggestion', __( 'Enable email autofill suggestion', 'flexify-checkout-for-woocommerce' ), __( 'Enable this option to display the email provider suggestion during checkout.', 'flexify-checkout-for-woocommerce' ), array(
                             'popup' => array(
-                                'button' => __( 'Configurar provedores', 'flexify-checkout-for-woocommerce' ),
-                                'title' => __( 'Configurar sugestão de e-mails', 'flexify-checkout-for-woocommerce' ),
+                                'button' => __( 'Configure providers', 'flexify-checkout-for-woocommerce' ),
+                                'title' => __( 'Configure email suggestions', 'flexify-checkout-for-woocommerce' ),
                                 'component' => 'email-providers',
                             ),
                         ) ),
-                        self::field_toggle( 'enable_assign_guest_orders', __( 'Atribuir pedidos de usuários convidados', 'flexify-checkout-for-woocommerce' ), __( 'Ative esta opção para que pedidos de usuários convidados na finalização de compra sejam atribuídos a usuários existentes.', 'flexify-checkout-for-woocommerce' ), array( 'pro' => true ) ),
+                        self::field_toggle( 'enable_assign_guest_orders', __( 'Assign orders from guest users', 'flexify-checkout-for-woocommerce' ), __( 'Enable this option so that guest user orders at checkout are assigned to existing users.', 'flexify-checkout-for-woocommerce' ), array( 'pro' => true ) ),
                     ),
                 ),
             ),
@@ -426,18 +426,18 @@ class Registry {
     private static function tab_thankyou() {
         return array(
             'id' => 'thankyou',
-            'title' => __( 'Página de Agradecimento', 'flexify-checkout-for-woocommerce' ),
+            'title' => __( 'Thank-you Page', 'flexify-checkout-for-woocommerce' ),
             'icon' => 'like',
             'layout' => 'cards',
             'cards' => array(
                 array(
                     'id' => 'thankyou-main',
                     'fields' => array(
-                        self::field_toggle( 'enable_thankyou_page_template', __( 'Ativar página de agradecimento do Flexify Checkout', 'flexify-checkout-for-woocommerce' ), __( 'Ative esta opção para carregar o modelo de página de agradecimento do Flexify Checkout.', 'flexify-checkout-for-woocommerce' ) ),
-                        self::field_select( 'contact_page_thankyou', __( 'Página de contato', 'flexify-checkout-for-woocommerce' ), __( 'Selecione a página de contato que será exibida aos clientes na finalização de compra.', 'flexify-checkout-for-woocommerce' ), self::build_pages_options(), array(
+                        self::field_toggle( 'enable_thankyou_page_template', __( 'Activate Flexify Checkout thank you page', 'flexify-checkout-for-woocommerce' ), __( 'Enable this option to load the Flexify Checkout thank you page model.', 'flexify-checkout-for-woocommerce' ) ),
+                        self::field_select( 'contact_page_thankyou', __( 'Contact page', 'flexify-checkout-for-woocommerce' ), __( 'Select the contact page that will be displayed to customers at checkout.', 'flexify-checkout-for-woocommerce' ), self::build_pages_options(), array(
                             'visible_when' => array( array( 'field' => 'enable_thankyou_page_template', 'equals' => 'yes' ) ),
                         ) ),
-                        self::field_text( 'contact_page_thankyou_custom_link', __( 'Link personalizado de contato', 'flexify-checkout-for-woocommerce' ), '', array(
+                        self::field_text( 'contact_page_thankyou_custom_link', __( 'Custom contact link', 'flexify-checkout-for-woocommerce' ), '', array(
                             'type' => 'url',
                             'visible_when' => array(
                                 array( 'field' => 'enable_thankyou_page_template', 'equals' => 'yes' ),
@@ -458,38 +458,38 @@ class Registry {
      * @return array<string,mixed>
      */
     private static function tab_texts() {
-        $empty_hint = __( 'Deixe em branco para não exibir.', 'flexify-checkout-for-woocommerce' );
-        $review_hint = __( 'Utilize as variáveis abaixo para recuperar as informações de campos. Ou deixe em branco para não exibir.', 'flexify-checkout-for-woocommerce' );
+        $empty_hint = __( 'Leave blank to not display.', 'flexify-checkout-for-woocommerce' );
+        $review_hint = __( 'Use the variables below to retrieve field information. Or leave blank to not display.', 'flexify-checkout-for-woocommerce' );
         $placeholders = self::build_placeholder_hints();
 
         return array(
             'id' => 'texts',
-            'title' => __( 'Textos', 'flexify-checkout-for-woocommerce' ),
+            'title' => __( 'Texts', 'flexify-checkout-for-woocommerce' ),
             'icon' => 'text',
             'layout' => 'cards',
             'cards' => array(
                 array(
                     'id' => 'texts-steps',
                     'fields' => array(
-                        self::field_text( 'text_header_step_1', __( 'Texto informativo dos campos da etapa de contato', 'flexify-checkout-for-woocommerce' ), $empty_hint ),
-                        self::field_text( 'text_shipping_methods_label', __( 'Título das formas de entrega', 'flexify-checkout-for-woocommerce' ), $empty_hint ),
-                        self::field_text( 'text_header_step_2', __( 'Texto informativo dos campos da etapa de entrega', 'flexify-checkout-for-woocommerce' ), $empty_hint ),
-                        self::field_text( 'text_header_step_3', __( 'Texto informativo dos campos da etapa de pagamento', 'flexify-checkout-for-woocommerce' ), $empty_hint ),
-                        self::field_text( 'text_header_sidebar_right', __( 'Texto informativo dos itens do carrinho', 'flexify-checkout-for-woocommerce' ), $empty_hint ),
-                        self::field_text( 'text_check_step_1', __( 'Texto informativo do verificador da etapa de contato', 'flexify-checkout-for-woocommerce' ), $empty_hint ),
-                        self::field_text( 'text_check_step_2', __( 'Texto informativo do verificador da etapa de entrega', 'flexify-checkout-for-woocommerce' ), $empty_hint ),
-                        self::field_text( 'text_check_step_3', __( 'Texto informativo do verificador da etapa de pagamento', 'flexify-checkout-for-woocommerce' ), $empty_hint ),
-                        self::field_text( 'text_previous_step_button', __( 'Texto do botão de voltar etapas', 'flexify-checkout-for-woocommerce' ), $empty_hint ),
-                        self::field_text( 'text_view_shop_thankyou', __( 'Texto do botão para revisitar a loja da página de agradecimento', 'flexify-checkout-for-woocommerce' ), $empty_hint ),
+                        self::field_text( 'text_header_step_1', __( 'Informational text of the contact stage fields', 'flexify-checkout-for-woocommerce' ), $empty_hint ),
+                        self::field_text( 'text_shipping_methods_label', __( 'Delivery methods title', 'flexify-checkout-for-woocommerce' ), $empty_hint ),
+                        self::field_text( 'text_header_step_2', __( 'Informational text of the delivery stage fields', 'flexify-checkout-for-woocommerce' ), $empty_hint ),
+                        self::field_text( 'text_header_step_3', __( 'Informational text of the payment stage fields', 'flexify-checkout-for-woocommerce' ), $empty_hint ),
+                        self::field_text( 'text_header_sidebar_right', __( 'Informational text of the cart items', 'flexify-checkout-for-woocommerce' ), $empty_hint ),
+                        self::field_text( 'text_check_step_1', __( 'Informational text of the contact stage verifier', 'flexify-checkout-for-woocommerce' ), $empty_hint ),
+                        self::field_text( 'text_check_step_2', __( 'Informational text of the delivery stage verifier', 'flexify-checkout-for-woocommerce' ), $empty_hint ),
+                        self::field_text( 'text_check_step_3', __( 'Informational text of the payment stage verifier', 'flexify-checkout-for-woocommerce' ), $empty_hint ),
+                        self::field_text( 'text_previous_step_button', __( 'Text of the button to go back steps', 'flexify-checkout-for-woocommerce' ), $empty_hint ),
+                        self::field_text( 'text_view_shop_thankyou', __( 'Text of the button to revisit the store on the thank-you page', 'flexify-checkout-for-woocommerce' ), $empty_hint ),
                     ),
                 ),
                 array(
                     'id' => 'texts-reviews',
                     'fields' => array(
-                        self::field_textarea( 'text_contact_customer_review', __( 'Texto do resumo de informações de contato', 'flexify-checkout-for-woocommerce' ), $review_hint, array(
+                        self::field_textarea( 'text_contact_customer_review', __( 'Text of the contact information summary', 'flexify-checkout-for-woocommerce' ), $review_hint, array(
                             'placeholders' => $placeholders,
                         ) ),
-                        self::field_textarea( 'text_shipping_customer_review', __( 'Texto do resumo de informações de entrega', 'flexify-checkout-for-woocommerce' ), $review_hint, array(
+                        self::field_textarea( 'text_shipping_customer_review', __( 'Text of the delivery information summary', 'flexify-checkout-for-woocommerce' ), $review_hint, array(
                             'placeholders' => $placeholders,
                         ) ),
                     ),
@@ -530,64 +530,64 @@ class Registry {
     private static function tab_fields() {
         return array(
             'id' => 'fields',
-            'title' => __( 'Campos e etapas', 'flexify-checkout-for-woocommerce' ),
+            'title' => __( 'Fields and stages', 'flexify-checkout-for-woocommerce' ),
             'icon' => 'list-plus',
             'layout' => 'cards',
             'cards' => array(
                 array(
                     'id' => 'checkout-builder',
-                    'title' => __( 'Construtor de checkout', 'flexify-checkout-for-woocommerce' ),
-                    'description' => __( 'Monte visualmente as etapas, campos e componentes do checkout React (order bump, blocos de conteúdo, cupom, resumo e observações) com pré-visualização ao vivo.', 'flexify-checkout-for-woocommerce' ),
+                    'title' => __( 'Checkout builder', 'flexify-checkout-for-woocommerce' ),
+                    'description' => __( 'Visually build the steps, fields and components of the React checkout (order bump, content blocks, coupon, summary and notes) with live preview.', 'flexify-checkout-for-woocommerce' ),
                     'component' => 'checkout-builder',
                     'fields' => array(
-                        self::field_toggle( 'enable_checkout_builder', __( 'Ativar o construtor de checkout', 'flexify-checkout-for-woocommerce' ), __( 'Aplica o layout montado no construtor ao checkout React. Quando desativado, o checkout usa as etapas padrão.', 'flexify-checkout-for-woocommerce' ), array( 'pro' => true ) ),
-                        self::field_toggle( 'enable_manage_fields', __( 'Gerenciar os campos e etapas da finalização de compras', 'flexify-checkout-for-woocommerce' ), __( 'Aplica as personalizações de campos (criadas no construtor) ao checkout.', 'flexify-checkout-for-woocommerce' ), array( 'pro' => true ) ),
+                        self::field_toggle( 'enable_checkout_builder', __( 'Enable the checkout builder', 'flexify-checkout-for-woocommerce' ), __( 'Applies the layout built in the builder to the React checkout. When disabled, the checkout uses the default steps.', 'flexify-checkout-for-woocommerce' ), array( 'pro' => true ) ),
+                        self::field_toggle( 'enable_manage_fields', __( 'Manage the fields and stages of the checkout', 'flexify-checkout-for-woocommerce' ), __( 'Applies the field customizations (created in the builder) to the checkout.', 'flexify-checkout-for-woocommerce' ), array( 'pro' => true ) ),
                     ),
                 ),
                 array(
                     'id' => 'fields-options',
-                    'title' => __( 'Opções de campos', 'flexify-checkout-for-woocommerce' ),
-                    'description' => __( 'Comportamentos gerais dos campos do formulário.', 'flexify-checkout-for-woocommerce' ),
+                    'title' => __( 'Field options', 'flexify-checkout-for-woocommerce' ),
+                    'description' => __( 'General behaviors of the form fields.', 'flexify-checkout-for-woocommerce' ),
                     'fields' => array(
-                        self::field_toggle( 'enable_aditional_notes', __( 'Mostrar campo de observações adicionais', 'flexify-checkout-for-woocommerce' ), __( 'Exibe o campo de observações do pedido.', 'flexify-checkout-for-woocommerce' ) ),
-                        self::field_toggle( 'enable_field_masks', __( 'Adicionar máscaras aos campos', 'flexify-checkout-for-woocommerce' ), __( 'Aplica máscaras de digitação (CPF, CEP, telefone...).', 'flexify-checkout-for-woocommerce' ) ),
-                        self::field_toggle( 'enable_optimize_for_digital_products', __( 'Otimizar para produtos digitais', 'flexify-checkout-for-woocommerce' ), __( 'Oculta campos de entrega quando o carrinho contém apenas produtos virtuais.', 'flexify-checkout-for-woocommerce' ), array( 'pro' => true ) ),
-                        self::field_toggle( 'hide_header_stepper_buttons', __( 'Ocultar indicador de etapas', 'flexify-checkout-for-woocommerce' ), __( 'Remove o stepper do cabeçalho do checkout.', 'flexify-checkout-for-woocommerce' ), array( 'pro' => true ) ),
-                        self::field_toggle( 'enable_unset_wcbcf_fields_not_brazil', __( 'Ocultar campos brasileiros para outros países', 'flexify-checkout-for-woocommerce' ), __( 'Oculta campos do Brazilian Market quando o país não é Brasil.', 'flexify-checkout-for-woocommerce' ), array( 'pro' => true ) ),
+                        self::field_toggle( 'enable_aditional_notes', __( 'Show additional observations field', 'flexify-checkout-for-woocommerce' ), __( 'Displays the order notes field.', 'flexify-checkout-for-woocommerce' ) ),
+                        self::field_toggle( 'enable_field_masks', __( 'Add masks to fields', 'flexify-checkout-for-woocommerce' ), __( 'Applies input masks (CPF, ZIP code, phone...).', 'flexify-checkout-for-woocommerce' ) ),
+                        self::field_toggle( 'enable_optimize_for_digital_products', __( 'Optimize for digital products', 'flexify-checkout-for-woocommerce' ), __( 'Hides shipping fields when the cart contains only virtual products.', 'flexify-checkout-for-woocommerce' ), array( 'pro' => true ) ),
+                        self::field_toggle( 'hide_header_stepper_buttons', __( 'Hide step indicator', 'flexify-checkout-for-woocommerce' ), __( 'Removes the stepper from the checkout header.', 'flexify-checkout-for-woocommerce' ), array( 'pro' => true ) ),
+                        self::field_toggle( 'enable_unset_wcbcf_fields_not_brazil', __( 'Hide Brazilian fields for other countries', 'flexify-checkout-for-woocommerce' ), __( 'Hides Brazilian Market fields when the country is not Brazil.', 'flexify-checkout-for-woocommerce' ), array( 'pro' => true ) ),
                     ),
                 ),
                 array(
                     'id' => 'fields-address',
-                    'title' => __( 'Endereço', 'flexify-checkout-for-woocommerce' ),
-                    'description' => __( 'Preenchimento, validação e comportamento dos campos de endereço.', 'flexify-checkout-for-woocommerce' ),
+                    'title' => __( 'Address', 'flexify-checkout-for-woocommerce' ),
+                    'description' => __( 'Filling, validation and behavior of the address fields.', 'flexify-checkout-for-woocommerce' ),
                     'fields' => array(
-                        self::field_toggle( 'enable_autofill_company_info', __( 'Preencher informações da empresa automaticamente', 'flexify-checkout-for-woocommerce' ), __( 'Ative esta opção para preencher as informações da empresa automaticamente ao digitar o CNPJ (Disponível apenas no Brasil).', 'flexify-checkout-for-woocommerce' ), array( 'pro' => true ) ),
-                        self::field_toggle( 'enable_fill_address', __( 'Preencher endereço automaticamente', 'flexify-checkout-for-woocommerce' ), __( 'Ative esta opção para preencher os campos de entrega ao digitar o CEP (Recomendado), (Disponível apenas no Brasil).', 'flexify-checkout-for-woocommerce' ), array(
+                        self::field_toggle( 'enable_autofill_company_info', __( 'Automatically fill in company information', 'flexify-checkout-for-woocommerce' ), __( 'Enable this option to automatically fill in the company information when entering the CNPJ (Available only in Brazil).', 'flexify-checkout-for-woocommerce' ), array( 'pro' => true ) ),
+                        self::field_toggle( 'enable_fill_address', __( 'Automatically fill in address', 'flexify-checkout-for-woocommerce' ), __( 'Enable this option to fill in the delivery fields when entering the ZIP code (Recommended), (Available only in Brazil).', 'flexify-checkout-for-woocommerce' ), array(
                             'pro' => true,
                             'popup' => array(
-                                'button' => __( 'Configurar API', 'flexify-checkout-for-woocommerce' ),
-                                'title' => __( 'Configurar API de preenchimento de endereço', 'flexify-checkout-for-woocommerce' ),
+                                'button' => __( 'Configure API', 'flexify-checkout-for-woocommerce' ),
+                                'title' => __( 'Configure address fill API', 'flexify-checkout-for-woocommerce' ),
                                 'fields' => array(
-                                    self::field_text( 'get_address_api_service', __( 'Serviço de API para busca de endereço', 'flexify-checkout-for-woocommerce' ), __( 'Informe o endereço da API para obter o endereço do usuário através do seu CEP em formato JSON. Use a variável {postcode} para informar o CEP.', 'flexify-checkout-for-woocommerce' ) ),
-                                    self::field_text( 'api_auto_fill_address_param', __( 'Propriedade de obtenção de endereço', 'flexify-checkout-for-woocommerce' ), __( 'Informe a propriedade para obter o endereço que é retornado pelo serviço da API.', 'flexify-checkout-for-woocommerce' ) ),
-                                    self::field_text( 'api_auto_fill_address_neightborhood_param', __( 'Propriedade de obtenção do bairro', 'flexify-checkout-for-woocommerce' ), __( 'Informe a propriedade para obter o bairro que é retornado pelo serviço da API.', 'flexify-checkout-for-woocommerce' ) ),
-                                    self::field_text( 'api_auto_fill_address_city_param', __( 'Propriedade de obtenção de cidade', 'flexify-checkout-for-woocommerce' ), __( 'Informe a propriedade para obter a cidade que é retornado pelo serviço da API.', 'flexify-checkout-for-woocommerce' ) ),
-                                    self::field_text( 'api_auto_fill_address_state_param', __( 'Propriedade de obtenção de estado', 'flexify-checkout-for-woocommerce' ), __( 'Informe a propriedade para obter o estado que é retornado pelo serviço da API.', 'flexify-checkout-for-woocommerce' ) ),
+                                    self::field_text( 'get_address_api_service', __( 'API service for address lookup', 'flexify-checkout-for-woocommerce' ), __( 'Please provide the API address to obtain the user\'s address through their ZIP code in JSON format. Use the variable {postcode} to specify the ZIP code.', 'flexify-checkout-for-woocommerce' ) ),
+                                    self::field_text( 'api_auto_fill_address_param', __( 'Address retrieval property', 'flexify-checkout-for-woocommerce' ), __( 'Please provide the property to obtain the address that is returned by the API service.', 'flexify-checkout-for-woocommerce' ) ),
+                                    self::field_text( 'api_auto_fill_address_neightborhood_param', __( 'Neighborhood retrieval property', 'flexify-checkout-for-woocommerce' ), __( 'Please provide the property to obtain the neighborhood that is returned by the API service.', 'flexify-checkout-for-woocommerce' ) ),
+                                    self::field_text( 'api_auto_fill_address_city_param', __( 'City retrieval property', 'flexify-checkout-for-woocommerce' ), __( 'Please provide the property to obtain the city that is returned by the API service.', 'flexify-checkout-for-woocommerce' ) ),
+                                    self::field_text( 'api_auto_fill_address_state_param', __( 'State retrieval property', 'flexify-checkout-for-woocommerce' ), __( 'Please provide the property to obtain the state that is returned by the API service.', 'flexify-checkout-for-woocommerce' ) ),
                                 ),
                             ),
                         ) ),
-                        self::field_toggle( 'enable_shipping_to_different_address', __( 'Permitir envio para um endereço diferente', 'flexify-checkout-for-woocommerce' ), __( 'Ative esta opção para permitir que o usuário possa enviar seu pedido para um endereço diferente do endereço de faturamento.', 'flexify-checkout-for-woocommerce' ), array( 'pro' => true ) ),
-                        self::field_toggle( 'validate_address_by_postcode', __( 'Ativar validação de endereço por CEP', 'flexify-checkout-for-woocommerce' ), __( 'Ative esta opção para validar se a cidade e estado do usuário confere com CEP de cobrança informado.', 'flexify-checkout-for-woocommerce' ) ),
-                        self::field_toggle( 'enable_ddi_phone_field', __( 'Ativar telefone internacional', 'flexify-checkout-for-woocommerce' ), __( 'Ative esta opção para exibir o seletor de país no campo de número de telefone. Útil se você vende para outros países.', 'flexify-checkout-for-woocommerce' ), array( 'pro' => true ) ),
+                        self::field_toggle( 'enable_shipping_to_different_address', __( 'Allow shipping to a different address', 'flexify-checkout-for-woocommerce' ), __( 'Enable this option to allow the user to send their order to a different address from the billing address.', 'flexify-checkout-for-woocommerce' ), array( 'pro' => true ) ),
+                        self::field_toggle( 'validate_address_by_postcode', __( 'Enable address validation by ZIP code', 'flexify-checkout-for-woocommerce' ), __( 'Enable this option to validate if the user\'s city and state match the provided billing ZIP code.', 'flexify-checkout-for-woocommerce' ) ),
+                        self::field_toggle( 'enable_ddi_phone_field', __( 'Enable international phone', 'flexify-checkout-for-woocommerce' ), __( 'Enable this option to display the country selector in the phone number field. Useful if you sell to other countries.', 'flexify-checkout-for-woocommerce' ), array( 'pro' => true ) ),
                     ),
                 ),
                 array(
                     'id' => 'fields-coupon',
-                    'title' => __( 'Campo de cupom', 'flexify-checkout-for-woocommerce' ),
-                    'description' => __( 'Visibilidade e posição do campo de cupom de desconto.', 'flexify-checkout-for-woocommerce' ),
+                    'title' => __( 'Coupon field', 'flexify-checkout-for-woocommerce' ),
+                    'description' => __( 'Visibility and position of the discount coupon field.', 'flexify-checkout-for-woocommerce' ),
                     'fields' => array(
-                        self::field_toggle( 'enable_hide_coupon_code_field', __( 'Ocultar campo de cupom de desconto', 'flexify-checkout-for-woocommerce' ), '' ),
-                        self::field_select( 'render_coupon_field_hook', __( 'Posição do campo de cupom', 'flexify-checkout-for-woocommerce' ), '', self::build_coupon_position_options(), array( 'pro' => true ) ),
+                        self::field_toggle( 'enable_hide_coupon_code_field', __( 'Hide discount coupon field', 'flexify-checkout-for-woocommerce' ), '' ),
+                        self::field_select( 'render_coupon_field_hook', __( 'Coupon field position', 'flexify-checkout-for-woocommerce' ), '', self::build_coupon_position_options(), array( 'pro' => true ) ),
                     ),
                 ),
             ),
@@ -604,14 +604,14 @@ class Registry {
     private static function tab_conditions() {
         return array(
             'id' => 'conditions',
-            'title' => __( 'Condições', 'flexify-checkout-for-woocommerce' ),
+            'title' => __( 'Conditions', 'flexify-checkout-for-woocommerce' ),
             'icon' => 'filter-alt',
             'layout' => 'custom',
             'cards' => array(
                 array(
                     'id' => 'conditions-manager',
-                    'title' => __( 'Gerenciador de condições', 'flexify-checkout-for-woocommerce' ),
-                    'description' => __( 'Exiba, oculte ou aplique descontos em campos, formas de entrega e pagamento com base em regras condicionais (usuários, produtos, países, regiões de entrega e mais).', 'flexify-checkout-for-woocommerce' ),
+                    'title' => __( 'Conditions manager', 'flexify-checkout-for-woocommerce' ),
+                    'description' => __( 'Show, hide or apply discounts on fields, shipping and payment methods based on conditional rules (users, products, countries, shipping regions and more).', 'flexify-checkout-for-woocommerce' ),
                     'component' => 'conditions-manager',
                 ),
             ),
@@ -634,7 +634,7 @@ class Registry {
 
         return array(
             'id' => 'styles',
-            'title' => __( 'Estilos', 'flexify-checkout-for-woocommerce' ),
+            'title' => __( 'Styles', 'flexify-checkout-for-woocommerce' ),
             'icon' => 'palette',
             'layout' => 'cards',
             'cards' => array(
@@ -645,21 +645,21 @@ class Registry {
                 array(
                     'id' => 'styles-header',
                     'fields' => array(
-                        self::field_select( 'checkout_header_type', __( 'Tipo de marca no cabeçalho', 'flexify-checkout-for-woocommerce' ), __( 'Selecione o tipo de marca que será exibida no cabeçalho da página de finalização de compra.', 'flexify-checkout-for-woocommerce' ), array(
-                            array( 'value' => 'logo', 'label' => __( 'Imagem (Padrão)', 'flexify-checkout-for-woocommerce' ) ),
-                            array( 'value' => 'text', 'label' => __( 'Texto', 'flexify-checkout-for-woocommerce' ) ),
+                        self::field_select( 'checkout_header_type', __( 'Type of brand in the header', 'flexify-checkout-for-woocommerce' ), __( 'Select the type of brand that will be displayed in the header of the checkout page.', 'flexify-checkout-for-woocommerce' ), array(
+                            array( 'value' => 'logo', 'label' => __( 'Image (Default)', 'flexify-checkout-for-woocommerce' ) ),
+                            array( 'value' => 'text', 'label' => __( 'Text', 'flexify-checkout-for-woocommerce' ) ),
                         ) ),
-                        self::field_media( 'search_image_header_checkout', __( 'Imagem de cabeçalho', 'flexify-checkout-for-woocommerce' ), '', array(
+                        self::field_media( 'search_image_header_checkout', __( 'Header image', 'flexify-checkout-for-woocommerce' ), '', array(
                             'visible_when' => array( array( 'field' => 'checkout_header_type', 'equals' => 'logo' ) ),
                         ) ),
-                        self::field_text( 'logo_header_link', __( 'Link da imagem de cabeçalho', 'flexify-checkout-for-woocommerce' ), __( 'Informe o link da imagem do cabeçalho.', 'flexify-checkout-for-woocommerce' ), array(
+                        self::field_text( 'logo_header_link', __( 'Header image link', 'flexify-checkout-for-woocommerce' ), __( 'Please provide the header image link.', 'flexify-checkout-for-woocommerce' ), array(
                             'type' => 'url',
                             'visible_when' => array( array( 'field' => 'checkout_header_type', 'equals' => 'logo' ) ),
                         ) ),
-                        self::field_dimension( 'header_width_image_checkout', 'unit_header_width_image_checkout', __( 'Largura da imagem de cabeçalho', 'flexify-checkout-for-woocommerce' ), '', $unit_options, array(
+                        self::field_dimension( 'header_width_image_checkout', 'unit_header_width_image_checkout', __( 'Header image width', 'flexify-checkout-for-woocommerce' ), '', $unit_options, array(
                             'visible_when' => array( array( 'field' => 'checkout_header_type', 'equals' => 'logo' ) ),
                         ) ),
-                        self::field_text( 'text_brand_checkout_header', __( 'Texto do cabeçalho', 'flexify-checkout-for-woocommerce' ), __( 'Informe o texto que será exibido no cabeçalho da página de finalização de compras.', 'flexify-checkout-for-woocommerce' ), array(
+                        self::field_text( 'text_brand_checkout_header', __( 'Header text', 'flexify-checkout-for-woocommerce' ), __( 'Please provide the text that will be displayed in the header of the checkout page.', 'flexify-checkout-for-woocommerce' ), array(
                             'placeholder' => 'CHECKOUT',
                             'visible_when' => array( array( 'field' => 'checkout_header_type', 'equals' => 'text' ) ),
                         ) ),
@@ -668,10 +668,10 @@ class Registry {
                 array(
                     'id' => 'styles-shortcodes',
                     'fields' => array(
-                        self::field_text( 'shortcode_header', __( 'Cabeçalho personalizado', 'flexify-checkout-for-woocommerce' ), __( 'Adicione seu cabeçalho personalizado informando o shortcode.', 'flexify-checkout-for-woocommerce' ), array(
+                        self::field_text( 'shortcode_header', __( 'Custom Header', 'flexify-checkout-for-woocommerce' ), __( 'Add your custom header using the shortcode.', 'flexify-checkout-for-woocommerce' ), array(
                             'placeholder' => '[shortcode id="100"]',
                         ) ),
-                        self::field_text( 'shortcode_footer', __( 'Rodapé personalizado', 'flexify-checkout-for-woocommerce' ), __( 'Adicione seu rodapé personalizado informando o shortcode.', 'flexify-checkout-for-woocommerce' ), array(
+                        self::field_text( 'shortcode_footer', __( 'Custom Footer', 'flexify-checkout-for-woocommerce' ), __( 'Add your custom footer using the shortcode.', 'flexify-checkout-for-woocommerce' ), array(
                             'placeholder' => '[shortcode id="101"]',
                         ) ),
                     ),
@@ -679,20 +679,20 @@ class Registry {
                 array(
                     'id' => 'styles-appearance',
                     'fields' => array(
-                        self::field_color( 'set_primary_color', __( 'Cor primária', 'flexify-checkout-for-woocommerce' ), __( 'A cor primária define a cor dos elementos que terão ações ou informações na página de finalização de compras.', 'flexify-checkout-for-woocommerce' ), array( 'default' => '#141D26' ) ),
-                        self::field_color( 'set_primary_color_on_hover', __( 'Cor secundára', 'flexify-checkout-for-woocommerce' ), __( 'A cor secundária define a cor dos elementos que terão ações ou informações na página de finalização de compras.', 'flexify-checkout-for-woocommerce' ), array( 'default' => '#33404D' ) ),
-                        self::field_color( 'set_placeholder_color', __( 'Cor do título dos campos', 'flexify-checkout-for-woocommerce' ), __( 'Informe a cor do título dos campos da finalização de compras.', 'flexify-checkout-for-woocommerce' ), array( 'default' => '#33404D' ) ),
-                        self::field_dimension( 'input_border_radius', 'unit_input_border_radius', __( 'Raio da borda dos elementos', 'flexify-checkout-for-woocommerce' ), __( 'Define o raio da borda dos campos, botões e elementos da finalização de compra.', 'flexify-checkout-for-woocommerce' ), $unit_options ),
-                        self::field_select( 'set_font_family', __( 'Família de fontes', 'flexify-checkout-for-woocommerce' ), __( 'Defina qual fonte será aplicada na finalização de compra. Você pode adicionar novas fontes personalizadas ou do Google Fonts.', 'flexify-checkout-for-woocommerce' ), self::build_font_options(), array(
+                        self::field_color( 'set_primary_color', __( 'Primary color', 'flexify-checkout-for-woocommerce' ), __( 'The primary color defines the color of elements that will have actions or information on the checkout page.', 'flexify-checkout-for-woocommerce' ), array( 'default' => '#141D26' ) ),
+                        self::field_color( 'set_primary_color_on_hover', __( 'Secondary color', 'flexify-checkout-for-woocommerce' ), __( 'The secondary color defines the color of elements that will have actions or information on the checkout page.', 'flexify-checkout-for-woocommerce' ), array( 'default' => '#33404D' ) ),
+                        self::field_color( 'set_placeholder_color', __( 'Field title color', 'flexify-checkout-for-woocommerce' ), __( 'Enter the color of the field titles for checkout.', 'flexify-checkout-for-woocommerce' ), array( 'default' => '#33404D' ) ),
+                        self::field_dimension( 'input_border_radius', 'unit_input_border_radius', __( 'Element border radius', 'flexify-checkout-for-woocommerce' ), __( 'Define the border radius of fields, buttons, and checkout elements.', 'flexify-checkout-for-woocommerce' ), $unit_options ),
+                        self::field_select( 'set_font_family', __( 'Font family', 'flexify-checkout-for-woocommerce' ), __( 'Define which font will be applied at checkout. You can add new custom fonts or from Google Fonts.', 'flexify-checkout-for-woocommerce' ), self::build_font_options(), array(
                             'popup' => array(
-                                'button' => __( 'Gerenciar fontes', 'flexify-checkout-for-woocommerce' ),
-                                'title' => __( 'Gerenciar fontes', 'flexify-checkout-for-woocommerce' ),
+                                'button' => __( 'Manage sources', 'flexify-checkout-for-woocommerce' ),
+                                'title' => __( 'Manage sources', 'flexify-checkout-for-woocommerce' ),
                                 'component' => 'fonts-manager',
                             ),
                         ) ),
-                        self::field_dimension( 'h2_size', 'h2_size_unit', __( 'Tamanho do h2', 'flexify-checkout-for-woocommerce' ), __( 'Define o tamanho da fonte para tags h2 de subtítulos (Heading 2).', 'flexify-checkout-for-woocommerce' ), $unit_options ),
-                        self::field_code( 'custom_css_checkout', __( 'CSS personalizado', 'flexify-checkout-for-woocommerce' ), __( 'Adicione CSS customizado que será aplicado no checkout.', 'flexify-checkout-for-woocommerce' ), 'css' ),
-                        self::field_code( 'custom_js_checkout', __( 'JS personalizado', 'flexify-checkout-for-woocommerce' ), __( 'Adicione JavaScript customizado que será executado no checkout.', 'flexify-checkout-for-woocommerce' ), 'javascript' ),
+                        self::field_dimension( 'h2_size', 'h2_size_unit', __( 'H2 size', 'flexify-checkout-for-woocommerce' ), __( 'Set the font size for h2 subtitle tags (Heading 2).', 'flexify-checkout-for-woocommerce' ), $unit_options ),
+                        self::field_code( 'custom_css_checkout', __( 'Custom CSS', 'flexify-checkout-for-woocommerce' ), __( 'Add custom CSS that will be applied at checkout.', 'flexify-checkout-for-woocommerce' ), 'css' ),
+                        self::field_code( 'custom_js_checkout', __( 'Custom JS', 'flexify-checkout-for-woocommerce' ), __( 'Add custom JavaScript that will be executed at checkout.', 'flexify-checkout-for-woocommerce' ), 'javascript' ),
                     ),
                 ),
             ),
@@ -734,16 +734,16 @@ class Registry {
     private static function tab_about() {
         return array(
             'id' => 'about',
-            'title' => __( 'Sobre', 'flexify-checkout-for-woocommerce' ),
+            'title' => __( 'About', 'flexify-checkout-for-woocommerce' ),
             'icon' => 'info-circle',
             'layout' => 'cards',
             'cards' => array(
                 array(
                     'id' => 'about-updates',
                     'fields' => array(
-                        self::field_toggle( 'enable_auto_updates', __( 'Ativar atualizações automáticas', 'flexify-checkout-for-woocommerce' ), __( 'Ative essa opção para que o plugin Flexify Checkout seja atualizado automaticamente sempre que possível.', 'flexify-checkout-for-woocommerce' ), array( 'pro' => true ) ),
-                        self::field_toggle( 'enable_update_notices', __( 'Mostrar notificação de atualização disponível', 'flexify-checkout-for-woocommerce' ), __( 'Ative essa opção para que seja exibido uma notificação de atualização disponível.', 'flexify-checkout-for-woocommerce' ) ),
-                        self::field_toggle( 'enable_debug_mode', __( 'Ativar modo depuração', 'flexify-checkout-for-woocommerce' ), __( 'Ative essa opção para ativar o modo depuração e ter acesso a informações no console do navegador, desativar minificação de scripts e estilos e demais detalhes para resolução de problemas.', 'flexify-checkout-for-woocommerce' ) ),
+                        self::field_toggle( 'enable_auto_updates', __( 'Enable automatic updates', 'flexify-checkout-for-woocommerce' ), __( 'Enable this option so the Flexify Checkout plugin is updated automatically whenever possible.', 'flexify-checkout-for-woocommerce' ), array( 'pro' => true ) ),
+                        self::field_toggle( 'enable_update_notices', __( 'Show available update notice', 'flexify-checkout-for-woocommerce' ), __( 'Enable this option to display an available update notification.', 'flexify-checkout-for-woocommerce' ) ),
+                        self::field_toggle( 'enable_debug_mode', __( 'Enable debug mode', 'flexify-checkout-for-woocommerce' ), __( 'Enable this option to turn on debug mode and access information in the browser console, disable script and style minification, and other details for troubleshooting.', 'flexify-checkout-for-woocommerce' ) ),
                     ),
                 ),
                 array(
@@ -1050,7 +1050,7 @@ class Registry {
         // "Rest of the World" zone (id 0).
         $options[] = array(
             'value' => '0',
-            'label' => __( 'Resto do mundo', 'flexify-checkout-for-woocommerce' ),
+            'label' => __( 'Rest of the world', 'flexify-checkout-for-woocommerce' ),
         );
 
         foreach ( \WC_Shipping_Zones::get_zones() as $zone ) {
@@ -1094,14 +1094,14 @@ class Registry {
      */
     private static function build_user_role_options() {
         $translations = array(
-            'administrator' => __( 'Administrador', 'flexify-checkout-for-woocommerce' ),
-            'author' => __( 'Autor', 'flexify-checkout-for-woocommerce' ),
-            'subscriber' => __( 'Assinante', 'flexify-checkout-for-woocommerce' ),
-            'customer' => __( 'Cliente', 'flexify-checkout-for-woocommerce' ),
-            'contributor' => __( 'Colaborador', 'flexify-checkout-for-woocommerce' ),
+            'administrator' => __( 'Administrator', 'flexify-checkout-for-woocommerce' ),
+            'author' => __( 'Author', 'flexify-checkout-for-woocommerce' ),
+            'subscriber' => __( 'Subscriber', 'flexify-checkout-for-woocommerce' ),
+            'customer' => __( 'Customer', 'flexify-checkout-for-woocommerce' ),
+            'contributor' => __( 'Collaborator', 'flexify-checkout-for-woocommerce' ),
             'editor' => __( 'Editor', 'flexify-checkout-for-woocommerce' ),
-            'shop_manager' => __( 'Gerente de loja', 'flexify-checkout-for-woocommerce' ),
-            'translator' => __( 'Tradutor', 'flexify-checkout-for-woocommerce' ),
+            'shop_manager' => __( 'Store manager', 'flexify-checkout-for-woocommerce' ),
+            'translator' => __( 'Translator', 'flexify-checkout-for-woocommerce' ),
         );
 
         $options = array();
@@ -1127,7 +1127,7 @@ class Registry {
         $options = array(
             array(
                 'value' => 'custom_link',
-                'label' => __( 'Link personalizado', 'flexify-checkout-for-woocommerce' ),
+                'label' => __( 'Custom link', 'flexify-checkout-for-woocommerce' ),
             ),
         );
 

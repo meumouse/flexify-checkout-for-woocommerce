@@ -48,14 +48,14 @@ class Layout_Save extends Abstract_Route {
      */
     public function handle( WP_REST_Request $request ) {
         if ( ! License::is_valid() ) {
-            return $this->error_response( __( 'O construtor de checkout requer uma licença Pro ativa.', 'flexify-checkout-for-woocommerce' ) );
+            return $this->error_response( __( 'The checkout builder requires an active Pro license.', 'flexify-checkout-for-woocommerce' ) );
         }
 
         $payload = $request->get_json_params();
         $layout = isset( $payload['layout'] ) && is_array( $payload['layout'] ) ? $payload['layout'] : null;
 
         if ( null === $layout || empty( $layout['steps'] ) ) {
-            return $this->error_response( __( 'Dados do layout inválidos.', 'flexify-checkout-for-woocommerce' ) );
+            return $this->error_response( __( 'Invalid layout data.', 'flexify-checkout-for-woocommerce' ) );
         }
 
         Layout_Store::save_layout( $layout );
@@ -63,7 +63,7 @@ class Layout_Save extends Abstract_Route {
         $client = Layout_Store::get_layout_for_client();
 
         return $this->success_response( array(
-            'message' => __( 'Construtor de checkout salvo com sucesso!', 'flexify-checkout-for-woocommerce' ),
+            'message' => __( 'Checkout builder saved successfully!', 'flexify-checkout-for-woocommerce' ),
             'layout' => array(
                 'version' => $client['version'],
                 'steps' => $client['steps'],

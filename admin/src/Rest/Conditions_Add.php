@@ -44,24 +44,24 @@ class Conditions_Add extends Abstract_Route {
      */
     public function handle( WP_REST_Request $request ) {
         if ( ! License::is_valid() ) {
-            return $this->error_response( __( 'O gerenciador de condições requer uma licença Pro ativa.', 'flexify-checkout-for-woocommerce' ) );
+            return $this->error_response( __( 'The conditions manager requires an active Pro license.', 'flexify-checkout-for-woocommerce' ) );
         }
 
         $payload = $request->get_json_params();
         $rule = isset( $payload['rule'] ) ? $payload['rule'] : array();
 
         if ( empty( $rule['action'] ) ) {
-            return $this->error_response( __( 'Dados da regra inválidos.', 'flexify-checkout-for-woocommerce' ) );
+            return $this->error_response( __( 'Invalid rule data.', 'flexify-checkout-for-woocommerce' ) );
         }
 
         $id = Conditions_Store::add_rule( $rule );
 
         if ( ! $id ) {
-            return $this->error_response( __( 'Ops! Não foi possível criar uma nova regra.', 'flexify-checkout-for-woocommerce' ) );
+            return $this->error_response( __( 'Oops! Could not create a new rule.', 'flexify-checkout-for-woocommerce' ) );
         }
 
         return $this->success_response( array(
-            'message' => __( 'Regra criada com sucesso!', 'flexify-checkout-for-woocommerce' ),
+            'message' => __( 'Rule created successfully!', 'flexify-checkout-for-woocommerce' ),
             'id' => $id,
             'conditions' => Conditions_Store::get_rules_for_client(),
         ) );

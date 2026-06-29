@@ -27,7 +27,7 @@ class Coupons {
     public static function generate_wc_coupon( $coupon_data, $cart_id ) {
         if ( empty( $coupon_data ) || ! isset( $coupon_data['discount_type'], $coupon_data['discount_value'] ) ) {
             error_log( 'Coupon data is empty or missing required fields.' );
-            return new \WP_Error( 'missing_data', __( 'Dados insuficientes para criar o cupom.', 'flexify-checkout-for-woocommerce' ) );
+            return new \WP_Error( 'missing_data', __( 'Insufficient data to create the coupon.', 'flexify-checkout-for-woocommerce' ) );
         }
 
         $discount_value = floatval( $coupon_data['discount_value'] );
@@ -36,7 +36,7 @@ class Coupons {
         if ( $discount_value <= 0 ) {
             return new \WP_Error(
                 'invalid_discount_value',
-                __( 'O valor do desconto deve ser maior que zero para gerar um cupom.', 'flexify-checkout-for-woocommerce' )
+                __( 'The discount value must be greater than zero to generate a coupon.', 'flexify-checkout-for-woocommerce' )
             );
         }
     
@@ -58,7 +58,7 @@ class Coupons {
         if ( $query->have_posts() ) {
             error_log( 'Coupon already exists.' );
             
-            return new \WP_Error( 'duplicate_coupon', __( 'O cupom já existe.', 'flexify-checkout-for-woocommerce' ) );
+            return new \WP_Error( 'duplicate_coupon', __( 'The coupon already exists.', 'flexify-checkout-for-woocommerce' ) );
         }
 
         // reset query

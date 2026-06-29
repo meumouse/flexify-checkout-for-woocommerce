@@ -28,7 +28,7 @@ class Components {
         return apply_filters( 'Flexify_Checkout/Recovery_Carts/Admin/Register_Settings_Tabs', array(
             'general' => array(
                 'id' => 'general',
-                'label' => esc_html__('Geral', 'flexify-checkout-for-woocommerce'),
+                'label' => esc_html__('General', 'flexify-checkout-for-woocommerce'),
                 'icon' => '<svg class="fc-recovery-carts-tab-icon" xmlns="http://www.w3.org/2000/svg"><path d="M7.5 14.5c-1.58 0-2.903 1.06-3.337 2.5H2v2h2.163c.434 1.44 1.757 2.5 3.337 2.5s2.903-1.06 3.337-2.5H22v-2H10.837c-.434-1.44-1.757-2.5-3.337-2.5zm0 5c-.827 0-1.5-.673-1.5-1.5s.673-1.5 1.5-1.5S9 17.173 9 18s-.673 1.5-1.5 1.5zm9-11c-1.58 0-2.903 1.06-3.337 2.5H2v2h11.163c.434 1.44 1.757 2.5 3.337 2.5s2.903-1.06 3.337-2.5H22v-2h-2.163c-.434-1.44-1.757-2.5-3.337-2.5zm0 5c-.827 0-1.5-.673-1.5-1.5s.673-1.5 1.5-1.5 1.5.673 1.5 1.5-.673 1.5-1.5 1.5z"></path><path d="M12.837 5C12.403 3.56 11.08 2.5 9.5 2.5S6.597 3.56 6.163 5H2v2h4.163C6.597 8.44 7.92 9.5 9.5 9.5s2.903-1.06 3.337-2.5h9.288V5h-9.288zM9.5 7.5C8.673 7.5 8 6.827 8 6s.673-1.5 1.5-1.5S11 5.173 11 6s-.673 1.5-1.5 1.5z"></path></svg>',
                 'file' => FC_RECOVERY_CARTS_INC . 'Views/Settings/Tabs/General.php',
             ),
@@ -40,13 +40,13 @@ class Components {
             ),
             'payment_methods' => array(
                 'id' => 'payment_methods',
-                'label' => esc_html__('Formas de pagamento', 'flexify-checkout-for-woocommerce'),
+                'label' => esc_html__('Payment methods', 'flexify-checkout-for-woocommerce'),
                 'icon' => '<svg class="fc-recovery-carts-tab-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M20 4H4c-1.103 0-2 .897-2 2v12c0 1.103.897 2 2 2h16c1.103 0 2-.897 2-2V6c0-1.103-.897-2-2-2zM4 6h16v2H4V6zm0 12v-6h16.001l.001 6H4z"></path><path d="M6 14h6v2H6z"></path></svg>',
                 'file' => FC_RECOVERY_CARTS_INC . 'Views/Settings/Tabs/Payment_Methods.php',
             ),
             'integrations' => array(
                 'id' => 'integrations',
-                'label' => esc_html__('Integrações', 'flexify-checkout-for-woocommerce'),
+                'label' => esc_html__('Integrations', 'flexify-checkout-for-woocommerce'),
                 'icon' => '<svg class="fc-recovery-carts-tab-icon"><path d="M3 8h2v5c0 2.206 1.794 4 4 4h2v5h2v-5h2c2.206 0 4-1.794 4-4V8h2V6H3v2zm4 0h10v5c0 1.103-.897 2-2 2H9c-1.103 0-2-.897-2-2V8zm0-6h2v3H7zm8 0h2v3h-2z"></path></svg>',
                 'file' => FC_RECOVERY_CARTS_INC . 'Views/Settings/Tabs/Integrations.php',
             ),
@@ -58,7 +58,7 @@ class Components {
             ),
             'styles' => array(
                 'id' => 'styles',
-                'label' => esc_html__('Estilos', 'flexify-checkout-for-woocommerce'),
+                'label' => esc_html__('Styles', 'flexify-checkout-for-woocommerce'),
                 'icon' => '<svg class="fc-recovery-carts-tab-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.4 2.096a10.08 10.08 0 0 0-8.937 3.331A10.054 10.054 0 0 0 2.096 13.4c.53 3.894 3.458 7.207 7.285 8.246a9.982 9.982 0 0 0 2.618.354l.142-.001a3.001 3.001 0 0 0 2.516-1.426 2.989 2.989 0 0 0 .153-2.879l-.199-.416a1.919 1.919 0 0 1 .094-1.912 2.004 2.004 0 0 1 2.576-.755l.412.197c.412.198.85.299 1.301.299A3.022 3.022 0 0 0 22 12.14a9.935 9.935 0 0 0-.353-2.76c-1.04-3.826-4.353-6.754-8.247-7.284zm5.158 10.909-.412-.197c-1.828-.878-4.07-.198-5.135 1.494-.738 1.176-.813 2.576-.204 3.842l.199.416a.983.983 0 0 1-.051.961.992.992 0 0 1-.844.479h-.112a8.061 8.061 0 0 1-2.095-.283c-3.063-.831-5.403-3.479-5.826-6.586-.321-2.355.352-4.623 1.893-6.389a8.002 8.002 0 0 1 7.16-2.664c3.107.423 5.755 2.764 6.586 5.826.198.73.293 1.474.282 2.207-.012.807-.845 1.183-1.441.894z"></path><circle cx="7.5" cy="14.5" r="1.5"></circle><circle cx="7.5" cy="10.5" r="1.5"></circle><circle cx="10.5" cy="7.5" r="1.5"></circle><circle cx="14.5" cy="7.5" r="1.5"></circle></svg>',
                 'file' => FC_RECOVERY_CARTS_INC . 'Views/Settings/Tabs/Styles.php',
             ),
@@ -87,24 +87,24 @@ class Components {
 
                             <div class="d-flex align-items-center">
                                 <div class="edit-follow-up-actions">
-                                    <button id="fcrc_edit_follow_up_<?php esc_attr_e( $key ) ?>" class="btn btn-sm btn-outline-primary edit-follow-up-item"><?php esc_html_e( 'Editar', 'flexify-checkout-for-woocommerce' ); ?></button>
+                                    <button id="fcrc_edit_follow_up_<?php esc_attr_e( $key ) ?>" class="btn btn-sm btn-outline-primary edit-follow-up-item"><?php esc_html_e( 'Edit', 'flexify-checkout-for-woocommerce' ); ?></button>
 
                                     <div id="fcrc_edit_follow_up_container_<?php esc_attr_e( $key ) ?>" class="fcrc-popup-container edit-follow-up-container" data-follow-up-item="<?php esc_attr_e( $key ) ?>">
                                         <div class="fcrc-popup-content">
                                             <div class="fcrc-popup-header">
-                                                <h5 class="fcrc-popup-title"><?php esc_html_e( 'Editar evento de follow up', 'flexify-checkout-for-woocommerce' ); ?></h5>
-                                                <button id="fcrc_edit_follow_up_close_<?php esc_attr_e( $key ) ?>" class="btn-close edit-follow-up-close fs-5 " aria-label="<?php esc_attr_e( 'Fechar', 'flexify-checkout-for-woocommerce' ); ?>"></button>
+                                                <h5 class="fcrc-popup-title"><?php esc_html_e( 'Edit follow-up event', 'flexify-checkout-for-woocommerce' ); ?></h5>
+                                                <button id="fcrc_edit_follow_up_close_<?php esc_attr_e( $key ) ?>" class="btn-close edit-follow-up-close fs-5 " aria-label="<?php esc_attr_e( 'Close', 'flexify-checkout-for-woocommerce' ); ?>"></button>
                                             </div>
 
                                             <div class="fcrc-popup-body">
                                                 <div class="mb-5">
-                                                    <label class="form-label text-left"><?php esc_html_e( 'Nome do evento: *', 'flexify-checkout-for-woocommerce' ); ?></label>
-                                                    <input type="text" class="form-control get-follow-up-title" name="follow_up_events[<?php esc_attr_e( $key ) ?>][title]" value="<?php esc_attr_e( $follow_up['title'] ); ?>" placeholder="<?php esc_attr_e( 'Nome do evento', 'flexify-checkout-for-woocommerce' ); ?>">
+                                                    <label class="form-label text-left"><?php esc_html_e( 'Event name: *', 'flexify-checkout-for-woocommerce' ); ?></label>
+                                                    <input type="text" class="form-control get-follow-up-title" name="follow_up_events[<?php esc_attr_e( $key ) ?>][title]" value="<?php esc_attr_e( $follow_up['title'] ); ?>" placeholder="<?php esc_attr_e( 'Event name', 'flexify-checkout-for-woocommerce' ); ?>">
                                                 </div>
 
                                                 <div class="mb-5">
-                                                    <label class="form-label text-left"><?php esc_html_e( 'Mensagem: *', 'flexify-checkout-for-woocommerce' ); ?></label>
-                                                    <textarea class="form-control get-follow-up-message add-emoji-picker" name="follow_up_events[<?php esc_attr_e( $key ) ?>][message]" placeholder="<?php esc_attr_e( 'Mensagem que será enviada', 'flexify-checkout-for-woocommerce' ); ?>"><?php echo esc_textarea( $follow_up['message'] ) ?></textarea>
+                                                    <label class="form-label text-left"><?php esc_html_e( 'Message: *', 'flexify-checkout-for-woocommerce' ); ?></label>
+                                                    <textarea class="form-control get-follow-up-message add-emoji-picker" name="follow_up_events[<?php esc_attr_e( $key ) ?>][message]" placeholder="<?php esc_attr_e( 'Message that will be sent', 'flexify-checkout-for-woocommerce' ); ?>"><?php echo esc_textarea( $follow_up['message'] ) ?></textarea>
                                                 </div>
 
                                                 <div class="placeholders mb-5">
@@ -112,7 +112,7 @@ class Components {
                                                 </div>
 
                                                 <div class="mb-5">
-                                                    <label class="form-label text-left mb-3"><?php esc_html_e( 'Canal da notificação: *', 'flexify-checkout-for-woocommerce' ); ?></label>
+                                                    <label class="form-label text-left mb-3"><?php esc_html_e( 'Notification channel: *', 'flexify-checkout-for-woocommerce' ); ?></label>
                                                     
                                                     <div class="d-flex align-items-center">
                                                         <span class="fs-6 me-3"><?php esc_html_e( 'WhatsApp (Joinotify)', 'flexify-checkout-for-woocommerce' ); ?></span>
@@ -125,31 +125,31 @@ class Components {
                                                 </div>
 
                                                 <div class="mb-5">
-                                                    <label class="form-label text-left mb-3"><?php esc_html_e( 'Intervalo de envio (horário):', 'flexify-checkout-for-woocommerce' ); ?></label>
+                                                    <label class="form-label text-left mb-3"><?php esc_html_e( 'Sending interval (time):', 'flexify-checkout-for-woocommerce' ); ?></label>
 
                                                     <div class="row">
                                                         <div class="col">
-                                                            <label class="form-label text-left"><?php esc_html_e( 'Início', 'flexify-checkout-for-woocommerce' ); ?></label>
+                                                            <label class="form-label text-left"><?php esc_html_e( 'Start', 'flexify-checkout-for-woocommerce' ); ?></label>
                                                             <input type="time" class="form-control" name="follow_up_events[<?php esc_attr_e( $key ) ?>][send_window][start_time]" value="<?php esc_attr_e( $follow_up['send_window']['start_time'] ?? '' ); ?>" placeholder="<?php esc_attr_e( '08:00', 'flexify-checkout-for-woocommerce' ); ?>">
                                                         </div>
 
                                                         <div class="col">
-                                                            <label class="form-label text-left"><?php esc_html_e( 'Fim', 'flexify-checkout-for-woocommerce' ); ?></label>
+                                                            <label class="form-label text-left"><?php esc_html_e( 'End', 'flexify-checkout-for-woocommerce' ); ?></label>
                                                             <input type="time" class="form-control" name="follow_up_events[<?php esc_attr_e( $key ) ?>][send_window][end_time]" value="<?php esc_attr_e( $follow_up['send_window']['end_time'] ?? '' ); ?>" placeholder="<?php esc_attr_e( '20:00', 'flexify-checkout-for-woocommerce' ); ?>">
                                                         </div>
                                                     </div>
                                                 </div>
 
                                                 <div class="mb-5">
-                                                    <label class="form-label text-left mb-3"><?php esc_html_e( 'Atraso: *', 'flexify-checkout-for-woocommerce' ); ?></label>
+                                                    <label class="form-label text-left mb-3"><?php esc_html_e( 'Delay: *', 'flexify-checkout-for-woocommerce' ); ?></label>
 
                                                     <div class="input-group get-delay-info">
                                                         <input type="number" class="form-control get-delay-time" name="follow_up_events[<?php esc_attr_e( $key ) ?>][delay_time]" min="0" placeholder="<?php esc_attr_e( '1', 'flexify-checkout-for-woocommerce' ); ?>" value="<?php esc_attr_e( $follow_up['delay_time'] ?? '' ); ?>">
 
                                                         <select class="form-select get-delay-unit" name="follow_up_events[<?php esc_attr_e( $key ) ?>][delay_type]">
-                                                            <option value="minutes" <?php selected( $follow_up['delay_type'] ?? '', 'minutes' ); ?>><?php esc_html_e( 'Minutos', 'flexify-checkout-for-woocommerce' ); ?></option>
-                                                            <option value="hours" <?php selected( $follow_up['delay_type'] ?? '', 'hours' ); ?>><?php esc_html_e( 'Horas', 'flexify-checkout-for-woocommerce' ); ?></option>
-                                                            <option value="days" <?php selected( $follow_up['delay_type'] ?? '', 'days' ); ?>><?php esc_html_e( 'Dias', 'flexify-checkout-for-woocommerce' ); ?></option>
+                                                            <option value="minutes" <?php selected( $follow_up['delay_type'] ?? '', 'minutes' ); ?>><?php esc_html_e( 'Minutes', 'flexify-checkout-for-woocommerce' ); ?></option>
+                                                            <option value="hours" <?php selected( $follow_up['delay_type'] ?? '', 'hours' ); ?>><?php esc_html_e( 'Hours', 'flexify-checkout-for-woocommerce' ); ?></option>
+                                                            <option value="days" <?php selected( $follow_up['delay_type'] ?? '', 'days' ); ?>><?php esc_html_e( 'Days', 'flexify-checkout-for-woocommerce' ); ?></option>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -158,8 +158,8 @@ class Components {
                                     </div>
                                 </div>
 
-                                <button class="btn btn-sm btn-outline-secondary test-follow-up-item ms-3" data-follow-up-item="<?php esc_attr_e( $key ) ?>" title="<?php esc_attr_e( 'Enviar mensagem de teste para o telefone configurado nas opções do Joinotify', 'flexify-checkout-for-woocommerce' ); ?>">
-                                    <?php esc_html_e( 'Testar', 'flexify-checkout-for-woocommerce' ); ?>
+                                <button class="btn btn-sm btn-outline-secondary test-follow-up-item ms-3" data-follow-up-item="<?php esc_attr_e( $key ) ?>" title="<?php esc_attr_e( 'Send a test message to the phone configured in the Joinotify options', 'flexify-checkout-for-woocommerce' ); ?>">
+                                    <?php esc_html_e( 'Test', 'flexify-checkout-for-woocommerce' ); ?>
                                 </button>
 
                                 <button class="btn btn-icon btn-outline-danger delete-follow-up-item ms-3" data-follow-up-item="<?php esc_attr_e( $key ) ?>">
@@ -173,7 +173,7 @@ class Components {
                 <?php endforeach; ?>
             </ul>
         <?php else : ?>
-            <div class="alert alert-info w-fit"><?php esc_html_e( 'Nenhum evento de follow up adicionado ainda.', 'flexify-checkout-for-woocommerce' ); ?></div>
+            <div class="alert alert-info w-fit"><?php esc_html_e( 'No follow-up event added yet.', 'flexify-checkout-for-woocommerce' ); ?></div>
         <?php endif; ?>
 
         <?php return ob_get_clean();
@@ -195,7 +195,7 @@ class Components {
 
         <div class="message-placeholders w-fit">
             <label class="form-label text-left mb-3">
-                <?php echo esc_html__( 'Variáveis de texto:', 'flexify-checkout-for-woocommerce' ); ?>
+                <?php echo esc_html__( 'Text variables:', 'flexify-checkout-for-woocommerce' ); ?>
             </label>
 
             <?php foreach ( $placeholders as $placeholder => $data ) : ?>
@@ -227,17 +227,17 @@ class Components {
 
         <div class="coupon-form-wrapper">
             <div class="enable-send-coupon-wrapper mb-4 d-flex align-items-center">
-                <label class="form-label text-left me-3"><?php esc_html_e( 'Ativar envio de cupom:', 'flexify-checkout-for-woocommerce' ); ?></label>
+                <label class="form-label text-left me-3"><?php esc_html_e( 'Enable coupon sending:', 'flexify-checkout-for-woocommerce' ); ?></label>
                 <input type="checkbox" class="toggle-switch toggle-switch-sm enable-send-coupon" name="<?php printf( '%s[coupon][enabled]', $index ); ?>" value="yes" <?php checked( $send_coupon === 'yes' ); ?>>
             </div>
 
             <div class="generate-coupon-wrapper mb-4 d-flex align-items-center">
-                <label class="form-label text-left me-3"><?php esc_html_e( 'Gerar cupom automaticamente:', 'flexify-checkout-for-woocommerce' ); ?></label>
+                <label class="form-label text-left me-3"><?php esc_html_e( 'Generate coupon automatically:', 'flexify-checkout-for-woocommerce' ); ?></label>
                 <input type="checkbox" class="toggle-switch toggle-switch-sm enable-generate-coupon" name="<?php printf( '%s[coupon][generate_coupon]', $index ); ?>" value="yes" <?php checked( $generate_coupon === 'yes' ); ?>>
             </div>
 
             <div class="coupon-preset-wrapper mb-4">
-                <label class="form-label text-left mb-3"><?php esc_html_e( 'Cupom de desconto: *', 'flexify-checkout-for-woocommerce' ); ?></label>
+                <label class="form-label text-left mb-3"><?php esc_html_e( 'Discount coupon: *', 'flexify-checkout-for-woocommerce' ); ?></label>
 
                 <?php $coupons = get_posts( array(
                     'post_type' => 'shop_coupon',
@@ -246,7 +246,7 @@ class Components {
                 )); ?>
 
                 <select name="<?php printf( '%s[coupon][coupon_code]', $index ); ?>" class="form-select get-coupon-code">
-                    <option value="none" <?php selected( $settings['coupon_code'] ?? '', 'none', true ) ?>><?php esc_html_e( 'Selecione um cupom de desconto', 'flexify-checkout-for-woocommerce' ); ?></option>
+                    <option value="none" <?php selected( $settings['coupon_code'] ?? '', 'none', true ) ?>><?php esc_html_e( 'Select a discount coupon', 'flexify-checkout-for-woocommerce' ); ?></option>
 
                     <?php foreach ( $coupons as $coupon ) : 
                         $coupon_code = get_the_title( $coupon->ID ); ?>
@@ -257,53 +257,53 @@ class Components {
             </div>
 
             <div class="coupon-prefix-wrapper mb-4">
-                <label class="form-label text-left mb-3"><?php esc_html_e( 'Prefixo do cupom: *', 'flexify-checkout-for-woocommerce' ); ?></label>
-                <input type="text" class="form-control get-coupon-prefix" name="<?php printf( '%s[coupon][coupon_prefix]', $index ); ?>" value="<?php esc_attr_e( $settings['coupon_prefix'] ?? '' ); ?>" placeholder="<?php esc_attr_e( 'CUPOM_', 'flexify-checkout-for-woocommerce' ); ?>">
+                <label class="form-label text-left mb-3"><?php esc_html_e( 'Coupon prefix: *', 'flexify-checkout-for-woocommerce' ); ?></label>
+                <input type="text" class="form-control get-coupon-prefix" name="<?php printf( '%s[coupon][coupon_prefix]', $index ); ?>" value="<?php esc_attr_e( $settings['coupon_prefix'] ?? '' ); ?>" placeholder="<?php esc_attr_e( 'COUPON_', 'flexify-checkout-for-woocommerce' ); ?>">
             </div>
 
             <div class="discount-type-wrapper mb-4">
-                <label class="form-label text-left mb-3"><?php esc_html_e( 'Tipo do desconto: *', 'flexify-checkout-for-woocommerce' ); ?></label>
+                <label class="form-label text-left mb-3"><?php esc_html_e( 'Discount type: *', 'flexify-checkout-for-woocommerce' ); ?></label>
 
                 <select class="form-select get-coupon-type" name="<?php printf( '%s[coupon][discount_type]', $index ); ?>">
-                    <option value="fixed_cart" <?php selected( $settings['discount_type'] ?? '', 'fixed_cart' ); ?>><?php esc_html_e( 'Valor fixo', 'flexify-checkout-for-woocommerce' ); ?></option>
-                    <option value="percent" <?php selected( $settings['discount_type'] ?? '', 'percent' ); ?>><?php esc_html_e( 'Percentual (%)', 'flexify-checkout-for-woocommerce' ); ?></option>
+                    <option value="fixed_cart" <?php selected( $settings['discount_type'] ?? '', 'fixed_cart' ); ?>><?php esc_html_e( 'Fixed value', 'flexify-checkout-for-woocommerce' ); ?></option>
+                    <option value="percent" <?php selected( $settings['discount_type'] ?? '', 'percent' ); ?>><?php esc_html_e( 'Percentage (%)', 'flexify-checkout-for-woocommerce' ); ?></option>
                 </select>
             </div>
 
             <div class="coupon-value-wrapper mb-4">
-                <label class="form-label text-left mb-3"><?php esc_html_e( 'Valor do cupom: *', 'flexify-checkout-for-woocommerce' ); ?></label>
+                <label class="form-label text-left mb-3"><?php esc_html_e( 'Coupon value: *', 'flexify-checkout-for-woocommerce' ); ?></label>
                 <input type="number" class="form-control get-coupon-value" name="<?php printf( '%s[coupon][discount_value]', $index ); ?>" value="<?php esc_attr_e( $settings['discount_value'] ?? '' ); ?>">
             </div>
 
             <div class="coupon-allow-free-shipping-wrapper mb-4 d-flex align-items-center">
-                <label class="form-label text-left me-3"><?php esc_html_e( 'Permitir frete grátis:', 'flexify-checkout-for-woocommerce' ); ?></label>
+                <label class="form-label text-left me-3"><?php esc_html_e( 'Allow free shipping:', 'flexify-checkout-for-woocommerce' ); ?></label>
                 <input type="checkbox" class="toggle-switch toggle-switch-sm get-coupon-allow-free-shipping" name="<?php printf( '%s[coupon][allow_free_shipping]', $index ); ?>" value="yes" <?php checked( $allow_free_shipping === 'yes' ); ?>>
             </div>
 
             <div class="coupon-expire-time-wrapper mb-4">
-                <label class="form-label text-left mb-3"><?php esc_html_e( 'Tempo de expiração do cupom: *', 'flexify-checkout-for-woocommerce' ); ?></label>
+                <label class="form-label text-left mb-3"><?php esc_html_e( 'Coupon expiration time: *', 'flexify-checkout-for-woocommerce' ); ?></label>
 
                 <div class="input-group">
                     <input type="number" class="form-control get-coupon-expire-time" name="<?php printf( '%s[coupon][expiration_time]', $index ); ?>" value="<?php esc_attr_e( $settings['expiration_time'] ?? '' ); ?>">
                     
                     <select name="<?php printf( '%s[coupon][expiration_time_unit]', $index ); ?>" class="form-select get-coupon-expire-time-type">
-                        <option value="minutes" <?php selected( $settings['expiration_time_unit'] ?? '', 'minutes' ); ?>><?php esc_html_e( 'Minutos', 'flexify-checkout-for-woocommerce' ); ?></option>
-                        <option value="hours" <?php selected( $settings['expiration_time_unit'] ?? '', 'hours' ); ?>><?php esc_html_e( 'Horas', 'flexify-checkout-for-woocommerce' ); ?></option>
-                        <option value="days" <?php selected( $settings['expiration_time_unit'] ?? '', 'days' ); ?>><?php esc_html_e( 'Dias', 'flexify-checkout-for-woocommerce' ); ?></option>
+                        <option value="minutes" <?php selected( $settings['expiration_time_unit'] ?? '', 'minutes' ); ?>><?php esc_html_e( 'Minutes', 'flexify-checkout-for-woocommerce' ); ?></option>
+                        <option value="hours" <?php selected( $settings['expiration_time_unit'] ?? '', 'hours' ); ?>><?php esc_html_e( 'Hours', 'flexify-checkout-for-woocommerce' ); ?></option>
+                        <option value="days" <?php selected( $settings['expiration_time_unit'] ?? '', 'days' ); ?>><?php esc_html_e( 'Days', 'flexify-checkout-for-woocommerce' ); ?></option>
                     </select>
                 </div>
             </div>
 
             <div class="restrictions-wrapper mb-4">
-                <span class="d-block text-left mb-4 fs-6"><?php esc_html_e( 'Restrições:', 'flexify-checkout-for-woocommerce' ); ?></span>
+                <span class="d-block text-left mb-4 fs-6"><?php esc_html_e( 'Restrictions:', 'flexify-checkout-for-woocommerce' ); ?></span>
 
                 <div class="mb-3">
-                    <label class="form-label text-left mb-3"><?php esc_html_e( 'Limite de uso por cupom:', 'flexify-checkout-for-woocommerce' ); ?></label>
+                    <label class="form-label text-left mb-3"><?php esc_html_e( 'Usage limit per coupon:', 'flexify-checkout-for-woocommerce' ); ?></label>
                     <input type="number" class="get-coupon-limit-usage form-control" name="<?php printf( '%s[coupon][limit_usages]', $index ); ?>" value="<?php esc_attr_e( $settings['limit_usages'] ?? '' ); ?>">
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label text-left mb-3"><?php esc_html_e( 'Limite de uso por cliente:', 'flexify-checkout-for-woocommerce' ); ?></label>
+                    <label class="form-label text-left mb-3"><?php esc_html_e( 'Usage limit per customer:', 'flexify-checkout-for-woocommerce' ); ?></label>
                     <input type="number" class="get-coupon-limit-usage-per-user form-control" name="<?php printf( '%s[coupon][limit_usages_per_user]', $index ); ?>" value="<?php esc_attr_e( $settings['limit_usages_per_user'] ?? '' ); ?>">
                 </div>
             </div>
@@ -326,9 +326,9 @@ class Components {
 
         // Delay time units
         $time_units = array(
-            'minutes' => esc_html__( 'Minutos', 'flexify-checkout-for-woocommerce' ),
-            'hours' => esc_html__( 'Horas', 'flexify-checkout-for-woocommerce' ),
-            'days' => esc_html__( 'Dias', 'flexify-checkout-for-woocommerce' ),
+            'minutes' => esc_html__( 'Minutes', 'flexify-checkout-for-woocommerce' ),
+            'hours' => esc_html__( 'Hours', 'flexify-checkout-for-woocommerce' ),
+            'days' => esc_html__( 'Days', 'flexify-checkout-for-woocommerce' ),
         );
 
         ob_start(); ?>
@@ -370,8 +370,8 @@ class Components {
 
         <div class="fcrc-analytics-widget total-recovered-widget">
             <div class="fcrc-analytics-widget-header">
-                <span class="fcrc-widget-title"><?php printf( __( 'Total recuperado %s', 'flexify-checkout-for-woocommerce' ), wc_price( $total ) ); ?></span>
-                <span class="fcrc-widget-description"><?php printf( __( 'Dados relacionados aos últimos %d dias', 'flexify-checkout-for-woocommerce' ), $period ); ?></span>
+                <span class="fcrc-widget-title"><?php printf( __( 'Total recovered %s', 'flexify-checkout-for-woocommerce' ), wc_price( $total ) ); ?></span>
+                <span class="fcrc-widget-description"><?php printf( __( 'Data related to the last %d days', 'flexify-checkout-for-woocommerce' ), $period ); ?></span>
             </div>
 
             <div class="fcrc-analytics-widget-body">
@@ -397,11 +397,11 @@ class Components {
          * @return array
          */
         return apply_filters( 'Flexify_Checkout/Recovery_Carts/Analytics/Period_Filter', array(
-            7 => esc_html__( '7 dias', 'flexify-checkout-for-woocommerce' ),
-            15 => esc_html__( '15 dias', 'flexify-checkout-for-woocommerce' ),
-            30 => esc_html__( '30 dias', 'flexify-checkout-for-woocommerce' ),
-            90 => esc_html__( '90 dias', 'flexify-checkout-for-woocommerce' ),
-            365 => esc_html__( '365 dias', 'flexify-checkout-for-woocommerce' ),
+            7 => esc_html__( '7 days', 'flexify-checkout-for-woocommerce' ),
+            15 => esc_html__( '15 days', 'flexify-checkout-for-woocommerce' ),
+            30 => esc_html__( '30 days', 'flexify-checkout-for-woocommerce' ),
+            90 => esc_html__( '90 days', 'flexify-checkout-for-woocommerce' ),
+            365 => esc_html__( '365 days', 'flexify-checkout-for-woocommerce' ),
         ));
     }
 
@@ -418,40 +418,40 @@ class Components {
 
         <div class="fcrc-analytics-widget cart-status-widget">
             <div class="fcrc-analytics-widget-header">
-                <span class="fcrc-widget-title"><?php esc_html_e( 'Status de carrinhos e pedidos', 'flexify-checkout-for-woocommerce' ); ?></span>
-                <span class="fcrc-widget-description"><?php printf( __( 'Dados relacionados aos últimos %d dias', 'flexify-checkout-for-woocommerce' ), $period ); ?></span>
+                <span class="fcrc-widget-title"><?php esc_html_e( 'Cart and order status', 'flexify-checkout-for-woocommerce' ); ?></span>
+                <span class="fcrc-widget-description"><?php printf( __( 'Data related to the last %d days', 'flexify-checkout-for-woocommerce' ), $period ); ?></span>
             </div>
 
             <div class="fcrc-analytics-widget-body">
                 <div class="fcrc-carts-group">
                     <div class="fcrc-carts-group-item shopping">
                         <span class="fcrc-cart-item-title">0</span>
-                        <span class="fcrc-cart-item-description"><?php esc_html_e( 'Carrinhos ativos', 'flexify-checkout-for-woocommerce' ); ?></span>
+                        <span class="fcrc-cart-item-description"><?php esc_html_e( 'Active carts', 'flexify-checkout-for-woocommerce' ); ?></span>
                     </div>
 
                     <div class="fcrc-carts-group-item abandoned">
                         <span class="fcrc-cart-item-title">0</span>
-                        <span class="fcrc-cart-item-description"><?php esc_html_e( 'Carrinhos abandonados', 'flexify-checkout-for-woocommerce' ); ?></span>
+                        <span class="fcrc-cart-item-description"><?php esc_html_e( 'Abandoned carts', 'flexify-checkout-for-woocommerce' ); ?></span>
                     </div>
 
                     <div class="fcrc-carts-group-item recovered">
                         <span class="fcrc-cart-item-title">0</span>
-                        <span class="fcrc-cart-item-description"><?php esc_html_e( 'Carrinhos recuperados', 'flexify-checkout-for-woocommerce' ); ?></span>
+                        <span class="fcrc-cart-item-description"><?php esc_html_e( 'Recovered carts', 'flexify-checkout-for-woocommerce' ); ?></span>
                     </div>
 
                     <div class="fcrc-carts-group-item lost">
                         <span class="fcrc-cart-item-title">0</span>
-                        <span class="fcrc-cart-item-description"><?php esc_html_e( 'Carrinhos perdidos', 'flexify-checkout-for-woocommerce' ); ?></span>
+                        <span class="fcrc-cart-item-description"><?php esc_html_e( 'Lost carts', 'flexify-checkout-for-woocommerce' ); ?></span>
                     </div>
 
                     <div class="fcrc-carts-group-item leads">
                         <span class="fcrc-cart-item-title">0</span>
-                        <span class="fcrc-cart-item-description"><?php esc_html_e( 'Visitantes capturados', 'flexify-checkout-for-woocommerce' ); ?></span>
+                        <span class="fcrc-cart-item-description"><?php esc_html_e( 'Captured visitors', 'flexify-checkout-for-woocommerce' ); ?></span>
                     </div>
 
                     <div class="fcrc-carts-group-item order_abandoned">
                         <span class="fcrc-cart-item-title">0</span>
-                        <span class="fcrc-cart-item-description"><?php esc_html_e( 'Pedidos abandonados', 'flexify-checkout-for-woocommerce' ); ?></span>
+                        <span class="fcrc-cart-item-description"><?php esc_html_e( 'Abandoned orders', 'flexify-checkout-for-woocommerce' ); ?></span>
                     </div>
                 </div>
             </div
@@ -473,8 +473,8 @@ class Components {
 
         <div class="fcrc-analytics-widget cart-status-widget">
             <div class="fcrc-analytics-widget-header">
-                <span class="fcrc-widget-title"><?php esc_html_e( 'Notificações de follow up enviadas', 'flexify-checkout-for-woocommerce' ); ?></span>
-                <span class="fcrc-widget-description"><?php printf( __( 'Dados relacionados aos últimos %d dias', 'flexify-checkout-for-woocommerce' ), $period ); ?></span>
+                <span class="fcrc-widget-title"><?php esc_html_e( 'Follow-up notifications sent', 'flexify-checkout-for-woocommerce' ); ?></span>
+                <span class="fcrc-widget-description"><?php printf( __( 'Data related to the last %d days', 'flexify-checkout-for-woocommerce' ), $period ); ?></span>
             </div>
 
             <div class="fcrc-analytics-widget-body">

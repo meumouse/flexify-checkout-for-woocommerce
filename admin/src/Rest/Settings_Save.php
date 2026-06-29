@@ -46,13 +46,13 @@ class Settings_Save extends Abstract_Route {
         $settings = isset( $payload['settings'] ) && is_array( $payload['settings'] ) ? $payload['settings'] : array();
 
         if ( empty( $settings ) ) {
-            return $this->error_response( __( 'Nenhuma configuração recebida.', 'flexify-checkout-for-woocommerce' ) );
+            return $this->error_response( __( 'No settings received.', 'flexify-checkout-for-woocommerce' ) );
         }
 
         $saved = Repository::save_settings( $settings );
 
         return $this->success_response( array(
-            'message' => __( 'As configurações foram salvas.', 'flexify-checkout-for-woocommerce' ),
+            'message' => __( 'The settings have been saved.', 'flexify-checkout-for-woocommerce' ),
             'settings' => $saved,
         ) );
     }

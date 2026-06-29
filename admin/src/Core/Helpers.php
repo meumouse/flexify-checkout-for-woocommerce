@@ -420,7 +420,7 @@ class Helpers {
 	 * @return string
 	 */
 	public static function get_order_pay_btn_text( $order ) {
-		return esc_html__( 'Pagar pelo pedido', 'flexify-checkout-for-woocommerce' ) . ' - ' . wc_price( $order->get_total() );
+		return esc_html__( 'Pay for the order', 'flexify-checkout-for-woocommerce' ) . ' - ' . wc_price( $order->get_total() );
 	}
 
 
@@ -595,7 +595,7 @@ class Helpers {
 	 */
 	public static function get_selected_shipping_method_name() {
 		$current_shipping_method = WC()->session->get('chosen_shipping_methods');
-		$selected_method_name = __( 'Nenhuma forma de entrega selecionada', 'flexify-checkout-for-woocommerce' );
+		$selected_method_name = __( 'No shipping method selected', 'flexify-checkout-for-woocommerce' );
 		
 		if ( $current_shipping_method && ! empty( $current_shipping_method[0] ) ) {
 			$chosen_method_id = $current_shipping_method[0];

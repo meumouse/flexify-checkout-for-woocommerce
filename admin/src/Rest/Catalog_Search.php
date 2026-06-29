@@ -58,7 +58,7 @@ class Catalog_Search extends Abstract_Route {
                 $items = $this->search_users( $term );
                 break;
             default:
-                return $this->error_response( __( 'Tipo de busca inválido.', 'flexify-checkout-for-woocommerce' ) );
+                return $this->error_response( __( 'Invalid search type.', 'flexify-checkout-for-woocommerce' ) );
         }
 
         return $this->success_response( array(

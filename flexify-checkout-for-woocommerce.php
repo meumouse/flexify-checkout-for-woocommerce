@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Plugin Name: 			Flexify Checkout para WooCommerce
- * Description: 			Extensão que otimiza a finalização de compras em multi etapas para lojas WooCommerce.
+ * Plugin Name: 			Flexify Checkout for WooCommerce
+ * Description: 			Extension that optimizes multi-step checkout for WooCommerce stores.
  * Plugin URI: 				https://meumouse.com/plugins/flexify-checkout-para-woocommerce/?utm_source=wordpress&utm_medium=plugins_list&utm_campaign=flexify_checkout
  * Requires Plugins: 		woocommerce
  * Author: 					MeuMouse.com
@@ -15,7 +15,7 @@
  * Text Domain: 			flexify-checkout-for-woocommerce
  * Domain Path: 			/languages
  * 
- * @package					Flexify Checkout para WooCommerce - MeuMouse.com
+ * @package					Flexify Checkout for WooCommerce - MeuMouse.com
  * @author					MeuMouse.com
  * @copyright 				2026 MeuMouse.com
  * @license 				Proprietary - See license.md for details

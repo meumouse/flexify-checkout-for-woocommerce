@@ -109,7 +109,7 @@ class Address_Autocomplete extends Abstract_Route {
         ) );
 
         if ( is_wp_error( $response ) ) {
-            return $this->error_response( __( 'Não foi possível buscar o endereço.', 'flexify-checkout-for-woocommerce' ) );
+            return $this->error_response( __( 'Could not look up the address.', 'flexify-checkout-for-woocommerce' ) );
         }
 
         $data = json_decode( wp_remote_retrieve_body( $response ), true );

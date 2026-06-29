@@ -162,7 +162,7 @@ class Admin_Options {
 
         if ( $is_disabled && ! $hide_notice ) {
             $class = 'notice notice-error is-dismissible';
-            $message = esc_html__( 'O campo País na finalização de compras está desativado, verifique se seu gateway de pagamentos depende deste campo para não receber o erro "Informe um endereço para continuar com sua compra."', 'flexify-checkout-for-woocommerce' );
+            $message = esc_html__( 'The Country field at checkout is disabled, check if your payment gateway ', 'flexify-checkout-for-woocommerce' );
             
             printf( '<div id="billing-country-warning" class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), $message );
         }
@@ -256,8 +256,8 @@ class Admin_Options {
         );
 
         $class = 'notice notice-warning';
-        $message = esc_html__( 'Identificamos que sua loja vende no Brasil, deseja criar os campos e condições essenciais para integração com formas de pagamento e entregas nacionais?', 'flexify-checkout-for-woocommerce' );
-        $link_label = esc_html__( 'Criar campos e condições essenciais', 'flexify-checkout-for-woocommerce' );
+        $message = esc_html__( 'We have identified that your store sells in Brazil, do you want to create the essential fields and conditions for integration with national payment and delivery methods?', 'flexify-checkout-for-woocommerce' );
+        $link_label = esc_html__( 'Create essential fields and conditions', 'flexify-checkout-for-woocommerce' );
 
         printf( '<div class="%1$s"><p>%2$s <a href="%3$s">%4$s</a></p></div>', esc_attr( $class ), $message, esc_url( $setup_url ), $link_label );
     }
@@ -285,7 +285,7 @@ class Admin_Options {
         }
 
         $class = 'notice notice-success is-dismissible';
-        $message = esc_html__( 'Campos e condições essenciais para o Brasil foram criados com sucesso.', 'flexify-checkout-for-woocommerce' );
+        $message = esc_html__( 'Essential fields and conditions for Brazil have been created successfully.', 'flexify-checkout-for-woocommerce' );
 
         printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), $message );
     }
@@ -510,7 +510,7 @@ class Admin_Options {
 	public static function check_for_checkout_shortcode() {
 		if ( ! Helpers::has_shortcode_checkout() ) {
 			$class = 'notice notice-error is-dismissible';
-			$message = __( 'O Flexify Checkout depende do shortcode [woocommerce_checkout] na página de finalização de compras para funcionar corretamente.', 'flexify-checkout-for-woocommerce' );
+			$message = __( 'Flexify Checkout depends on the [woocommerce_checkout] shortcode (or the [flexify_checkout] fallback) on the checkout page to work correctly.', 'flexify-checkout-for-woocommerce' );
 
 			printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), $message );
 		}
@@ -526,7 +526,7 @@ class Admin_Options {
 	public static function missing_gd_extension_notice() {
 		if ( ! extension_loaded('gd') && Admin_Options::get_setting('enable_inter_bank_pix_api') === 'yes' ) {
 			$class = 'notice notice-error is-dismissible';
-			$message = __( 'A extensão GD está desativada, e é necessária para gerar o QR Code do Pix. Ative-a em sua hospedagem para habilitar esse recurso.', 'flexify-checkout-for-woocommerce' );
+			$message = __( 'The GD extension is disabled and is required to generate the Pix QR Code. Enable it in your hosting to activate this feature.', 'flexify-checkout-for-woocommerce' );
 
 			printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), $message );
 		}

@@ -25,11 +25,11 @@ if ( ! wc_coupons_enabled() ) { // @codingStandardsIgnoreLine.
 <div class="checkout_coupon woocommerce-form-coupon">
 	<div class="woocommerce-form-coupon__inner">
 		<p class="form-row form-row-first">
-			<label for="coupon_code" class=""><?php esc_html_e( 'Cupom de desconto', 'flexify-checkout-for-woocommerce' ); ?></label>
+			<label for="coupon_code" class=""><?php esc_html_e( 'Discount coupon', 'flexify-checkout-for-woocommerce' ); ?></label>
 			<input type="text" name="coupon_code" class="input-text" id="coupon_code" value="" />
 		</p>
 		<p class="form-row form-row-last">
-			<button type="submit" class="button flexify-coupon-button flexify-coupon-button--disabled" name="apply_coupon" value="<?php esc_attr_e( 'Aplicar cupom', 'flexify-checkout-for-woocommerce' ); ?>"><?php esc_html_e( 'Aplicar', 'flexify-checkout-for-woocommerce' ); ?></button>
+			<button type="submit" class="button flexify-coupon-button flexify-coupon-button--disabled" name="apply_coupon" value="<?php esc_attr_e( 'Apply coupon', 'flexify-checkout-for-woocommerce' ); ?>"><?php esc_html_e( 'Apply', 'flexify-checkout-for-woocommerce' ); ?></button>
 		</p>
 		<div class="clear"></div>
 	</div>

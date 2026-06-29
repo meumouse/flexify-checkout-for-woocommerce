@@ -46,11 +46,11 @@ class Conditions_Remove extends Abstract_Route {
         $id = sanitize_text_field( (string) ( $payload['id'] ?? '' ) );
 
         if ( '' === $id || ! Conditions_Store::remove_rule( $id ) ) {
-            return $this->error_response( __( 'Ops! Não foi possível excluir a regra.', 'flexify-checkout-for-woocommerce' ) );
+            return $this->error_response( __( 'Oops! Could not delete the rule.', 'flexify-checkout-for-woocommerce' ) );
         }
 
         return $this->success_response( array(
-            'message' => __( 'Regra excluída com sucesso!', 'flexify-checkout-for-woocommerce' ),
+            'message' => __( 'Rule deleted successfully!', 'flexify-checkout-for-woocommerce' ),
             'conditions' => Conditions_Store::get_rules_for_client(),
         ) );
     }

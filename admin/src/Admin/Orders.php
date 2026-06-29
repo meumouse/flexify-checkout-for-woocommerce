@@ -218,7 +218,7 @@ class Orders {
 	 * @return void
 	 */
 	public static function display_custom_fields_in_admin_order( $order ) {
-		echo '<h3>' . esc_html__( 'Informações do cliente', 'flexify-checkout-for-woocommerce' ) . '</h3>';
+		echo '<h3>' . esc_html__( 'Customer information', 'flexify-checkout-for-woocommerce' ) . '</h3>';
 
 		echo '<div class="flexify-checkout-order-fields"><p>';
 
@@ -252,8 +252,8 @@ class Orders {
 			}
 		}
 
-		echo '<strong>' . esc_html__( 'Telefone', 'flexify-checkout-for-woocommerce' ) . ': </strong>' . esc_html( $order->get_billing_phone() ) . '<br>';
-		echo '<strong>' . esc_html__( 'E-mail', 'flexify-checkout-for-woocommerce' ) . ': </strong>' . wp_kses_post( make_clickable( $order->get_billing_email() ) ) . '<br>';
+		echo '<strong>' . esc_html__( 'Phone', 'flexify-checkout-for-woocommerce' ) . ': </strong>' . esc_html( $order->get_billing_phone() ) . '<br>';
+		echo '<strong>' . esc_html__( 'Email', 'flexify-checkout-for-woocommerce' ) . ': </strong>' . wp_kses_post( make_clickable( $order->get_billing_email() ) ) . '<br>';
 		echo '</p></div>';
 	}
 

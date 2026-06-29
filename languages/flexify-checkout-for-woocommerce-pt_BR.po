@@ -3,54 +3,55 @@ msgstr ""
 "Project-Id-Version: flexify-checkout-for-woocommerce\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: pt_BR\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "x-domain: flexify-checkout-for-woocommerce\n"
 
 #: admin/src/Recovery_Carts/Admin/Components.php:147
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/FollowUp.php:83
 msgid "1"
-msgstr ""
+msgstr "1"
 
 #: admin/src/Checkout/Fields.php:1129
 msgid "'%s' is not a valid country code."
-msgstr "'%s' n'est pas un code de pays valide."
+msgstr "'%s' não é um código de país válido."
 
 #: admin/src/Checkout/Fields.php:1137
 msgid ""
 "%1$s is not valid. You can search for the correct Eircode <a "
 "target=\"_blank\" href=\"%2$s\">here</a>."
 msgstr ""
-"%1$s n'est pas valide. Vous pouvez rechercher le bon Eircode <a "
-"target=\"_blank\" href=\"%2$s\">ici</a>."
+"%1$s não é válido. Você pode procurar o Eircode correto <a "
+"target=\"_blank\" href=\"%2$s\">aqui</a>."
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/Webhooks.php:39
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/Webhooks.php:52
 msgid "%d webhook configured"
-msgstr ""
+msgstr "%d webhook configurado"
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/Webhooks.php:52
 msgid "%d webhooks configured"
-msgstr ""
+msgstr "%d webhooks configurados"
 
 #: admin/src/Checkout/Fields.php:1111
 msgid "%s is a required field."
-msgstr "%s est un champ obligatoire."
+msgstr "%s é um campo obrigatório."
 
 #: admin/src/Checkout/Fields.php:1169
 msgid "%s is not a valid email address."
-msgstr "%s n'est pas une adresse e-mail valide."
+msgstr "%s não é um endereço de e-mail válido."
 
 #: admin/src/Checkout/Fields.php:1151
 msgid "%s is not a valid phone number."
-msgstr "%s n'est pas un numéro de téléphone valide."
+msgstr "%s não é um número de telefone válido."
 
 #: admin/src/Checkout/Fields.php:1142
 msgid "%s is not a valid postal code."
-msgstr "%s n'est pas un code postal valide."
+msgstr "%s não é um código postal válido."
 
 #: admin/src/Recovery_Carts/Frontend/Lead_Capture.php:98
 msgid "+1 555 123-4567"
-msgstr ""
+msgstr "+55 11 91234-5678"
 
 #: admin/src/Integrations/Flatsome.php:160
 msgid "<script>%s</script>"
@@ -62,34 +63,33 @@ msgid ""
 "class=\"undo-remove-product\" data-product_id=\"%d\" "
 "href=\"#\">Undo</a></strong>"
 msgstr ""
-"<strong>%s</strong> retiré du panier. <strong><a "
+"<strong>%s</strong> removido do carrinho. <strong><a "
 "class=\"undo-remove-product\" data-product_id=\"%d\" "
-"href=\"#\">Annuler</a></strong>"
+"href=\"#\">Desfazer</a></strong>"
 
 #: admin/src/Core/Init.php:538
 msgid ""
 "<strong>Flexify Checkout</strong> requires <strong>WooCommerce</strong> to "
 "be installed and activated."
 msgstr ""
-"<strong>Flexify Checkout</strong> nécessite que "
-"<strong>WooCommerce</strong> soit installé et activé."
+"<strong>Flexify Checkout</strong> requer que <strong>WooCommerce</strong> "
+"esteja instalado e ativado."
 
 #: admin/src/Core/Init.php:413
 msgid ""
 "<strong>Flexify Checkout</strong> requires PHP version 7.4 or greater. "
 "Please contact your hosting support to upgrade."
 msgstr ""
-"<strong>Flexify Checkout</strong> nécessite la version PHP 7.4 ou "
-"supérieure. Contactez le support de votre hébergement pour effectuer la "
-"mise à jour."
+"<strong>Flexify Checkout</strong> requer a versão do PHP 7.4 ou maior. "
+"Contate o suporte da sua hospedagem para realizar a atualização."
 
 #: admin/src/Core/Init.php:522
 msgid ""
 "<strong>Flexify Checkout</strong> requires WooCommerce version 6.0 or "
 "greater. Please update the WooCommerce plugin."
 msgstr ""
-"<strong>Flexify Checkout</strong> nécessite la version WooCommerce 6.0 ou "
-"supérieure. Mettez à jour le plugin WooCommerce."
+"<strong>Flexify Checkout</strong> requer a versão do WooCommerce 6.0 ou "
+"maior. Faça a atualização do plugin WooCommerce."
 
 #: admin/src/Integrations/Erede_Loja5.php:80
 #: admin/src/Integrations/Flatsome.php:150
@@ -99,93 +99,91 @@ msgstr "<style>%s</style>"
 
 #: admin/src/Core/Assets.php:585
 msgid "${count} results found"
-msgstr "${count} résultats trouvés"
+msgstr "${count} resultados encontrados"
 
 #: admin/src/Recovery_Carts/Admin/Components.php:133
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/FollowUp.php:69
 msgid "08:00"
-msgstr ""
+msgstr "08:00"
 
 #: admin/src/Core/Assets.php:584
 msgid "1 result found"
-msgstr "1 résultat trouvé"
+msgstr "1 resultado encontrado"
 
 #: admin/src/Recovery_Carts/Admin/Components.php:401
 msgid "15 days"
-msgstr ""
+msgstr "15 dias"
 
 #: admin/src/Recovery_Carts/Admin/Components.php:138
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/FollowUp.php:74
 msgid "20:00"
-msgstr ""
+msgstr "20:00"
 
 #: admin/src/Recovery_Carts/Admin/Components.php:402
 msgid "30 days"
-msgstr ""
+msgstr "30 dias"
 
 #: admin/src/Recovery_Carts/Admin/Components.php:404
 msgid "365 days"
-msgstr ""
+msgstr "365 dias"
 
 #: admin/src/Recovery_Carts/Admin/Components.php:400
 msgid "7 days"
-msgstr ""
+msgstr "7 dias"
 
 #: admin/src/Recovery_Carts/Admin/Components.php:403
 msgid "90 days"
-msgstr ""
+msgstr "90 dias"
 
 #: admin/src/API/License.php:955
 msgid ""
 "A license allows you to unlock all the Pro features that the plugin has to "
 "offer."
 msgstr ""
-"Une licence vous permet de débloquer toutes les fonctionnalités Pro que le "
-"plugin a à offrir."
+"Uma licença permite que você desbloqueie todos os recursos Pro que o plugin "
+"tem a oferecer."
 
 #: admin/src/API/Updater.php:454
 msgid ""
 "A new version of the <strong>Flexify Checkout</strong> plugin (%s) is "
 "available. <a href=\"%s\">Update now</a>."
 msgstr ""
-"Une nouvelle version du plugin <strong>Flexify Checkout</strong> (%s) est "
-"disponible. <a href=\"%s\">Mettez à jour maintenant</a>."
+"Uma nova versão do plugin <strong>Flexify Checkout</strong> (%s) está "
+"disponível. <a href=\"%s\">Atualize agora</a>."
 
 #: admin/src/API/Updater.php:227
 msgid "A new version of the <strong>Flexify Checkout</strong> plugin is available."
-msgstr ""
-"Une nouvelle version du plugin <strong>Flexify Checkout</strong> est "
-"disponible."
+msgstr "Uma nova versão do plugin <strong>Flexify Checkout</strong> está disponível."
 
 #: admin/src/Recovery_Carts/Rest/Carts.php:269
 msgid "Abandoned"
-msgstr ""
+msgstr "Abandonado"
 
 #: admin/src/Recovery_Carts/Core/Webhooks.php:73
 msgid "Abandoned cart"
-msgstr ""
+msgstr "Carrinho abandonado"
 
 #: admin/src/Recovery_Carts/Admin/Components.php:434
 msgid "Abandoned carts"
-msgstr ""
+msgstr "Carrinhos abandonados"
 
 #: admin/src/Recovery_Carts/Admin/Admin.php:143
 #: admin/src/Recovery_Carts/Admin/Admin.php:144
 msgid "Abandoned Carts"
-msgstr ""
+msgstr "Carrinhos Abandonados"
 
 #: admin/src/Recovery_Carts/Core/Webhooks.php:79
 #: admin/src/Recovery_Carts/Rest/Carts.php:270
 msgid "Abandoned order"
-msgstr ""
+msgstr "Pedido abandonado"
 
 #: admin/src/Recovery_Carts/Admin/Components.php:454
 msgid "Abandoned orders"
-msgstr ""
+msgstr "Pedidos abandonados"
 
 #: admin/src/Admin/Settings/Registry.php:737
 msgid "About"
-msgstr "À propos"
+msgstr "Sobre"
 
 #: admin/src/Admin/Settings/Views/Integrations.php:310
 msgid "Access Token"
@@ -193,41 +191,43 @@ msgstr "Access Token"
 
 #: admin/src/Admin/Settings/Views/Integrations.php:311
 msgid "Access token for the Conversions API to authenticate requests."
-msgstr "Jeton d'accès de l'API Conversions pour l'authentification des requêtes."
+msgstr "Token de acesso da Conversions API para autenticação das requisições."
 
 #: admin/src/Core/Webhooks/Event_Registry.php:39
 msgid "Account"
-msgstr ""
+msgstr "Conta"
 
 #: admin/src/Admin/Settings/Registry.php:393
 msgid "Account & Access"
-msgstr ""
+msgstr "Conta & Acesso"
 
 #: admin/src/Admin/Settings/Registry.php:275
 msgid "Action after expiry"
-msgstr "Action après expiration"
+msgstr "Ação após expirar"
 
 #: admin/src/Admin/Settings/Registry.php:436
 msgid "Activate Flexify Checkout thank you page"
-msgstr "Activer la page de remerciement de Flexify Checkout"
+msgstr "Ativar página de agradecimento do Flexify Checkout"
 
 #: admin/src/Recovery_Carts/Views/Settings_Info.php:30
 msgid ""
 "Activate the Pro version of Flexify Checkout to unlock this plugin's "
 "settings"
 msgstr ""
+"Ative a versão Pro do Flexify Checkout para liberar as configurações deste "
+"plugin"
 
 #: admin/src/Recovery_Carts/Admin/Components.php:429
 msgid "Active carts"
-msgstr ""
+msgstr "Carrinhos ativos"
 
 #: admin/src/Recovery_Carts/Core/Assets.php:118
 msgid "Activities"
-msgstr ""
+msgstr "Atividades"
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/FollowUp.php:95
 msgid "Add"
-msgstr "Ajouter"
+msgstr "Adicionar"
 
 #: admin/src/Views/Components.php:220
 #: admin/src/Views/Components.php:475
@@ -235,245 +235,247 @@ msgid ""
 "Add a filling mask for this field, following the pattern provided in the "
 "documentation. (Optional)"
 msgstr ""
-"Ajoutez un masque de remplissage pour ce champ, suivant le modèle indiqué "
-"par la documentation. (Optionnel)"
+"Adicione uma máscara de preenchimento para este campo, seguindo o padrão "
+"informado pela documentação. (Opcional)"
 
 #: admin/src/Admin/Settings/Registry.php:694
 msgid "Add custom CSS that will be applied at checkout."
-msgstr "Ajoutez du CSS personnalisé qui sera appliqué au checkout."
+msgstr "Adicione CSS customizado que será aplicado no checkout."
 
 #: admin/src/Admin/Settings/Registry.php:695
 msgid "Add custom JavaScript that will be executed at checkout."
-msgstr "Ajoutez du JavaScript personnalisé qui sera exécuté au checkout."
+msgstr "Adicione JavaScript customizado que será executado no checkout."
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/Webhooks.php:151
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/Webhooks.php:197
 msgid "Add header"
-msgstr ""
+msgstr "Adicionar cabeçalho"
 
 #: admin/src/Admin/Settings/Registry.php:553
 msgid "Add masks to fields"
-msgstr ""
+msgstr "Adicionar máscaras aos campos"
 
 #: admin/src/Recovery_Carts/Admin/Admin.php:386
 msgid "Add new cart"
-msgstr ""
+msgstr "Adicionar novo carrinho"
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/FollowUp.php:26
 msgid "Add new event"
-msgstr ""
+msgstr "Adicionar novo evento"
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/FollowUp.php:31
 msgid "Add new follow-up"
-msgstr ""
+msgstr "Adicionar novo follow up"
 
 #: admin/src/Views/Components.php:173
 msgid "Add new option"
-msgstr "Ajouter une nouvelle option"
+msgstr "Adicionar nova opção"
 
 #: admin/src/Checkout/Steps.php:512
 msgid "Add notes to the order?"
-msgstr "Ajouter des observations à la commande ?"
+msgstr "Adicionar observações ao pedido?"
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/Webhooks.php:88
 msgid "Add webhook"
-msgstr ""
+msgstr "Adicionar webhook"
 
 #: admin/src/Admin/Settings/Registry.php:674
 msgid "Add your custom footer using the shortcode."
-msgstr "Ajoutez votre pied de page personnalisé en indiquant le shortcode."
+msgstr "Adicione seu rodapé personalizado informando o shortcode."
 
 #: admin/src/Admin/Settings/Registry.php:671
 msgid "Add your custom header using the shortcode."
-msgstr "Ajoutez votre en-tête personnalisé en indiquant le shortcode."
+msgstr "Adicione seu cabeçalho personalizado informando o shortcode."
 
 #: admin/src/API/REST_Checkout_Fields.php:191
 msgid "Additional checkout field (%s)."
-msgstr "Champ supplémentaire du checkout (%s)."
+msgstr "Campo adicional do checkout (%s)."
 
 #: admin/src/Admin/Default_Options.php:360
 #: admin/src/Admin/Settings/Registry.php:561
 msgid "Address"
-msgstr "Adresse"
+msgstr "Endereço"
 
 #: admin/src/Admin/Settings/Registry.php:572
 msgid "Address retrieval property"
-msgstr "Propriété d'obtention de l'adresse"
+msgstr "Propriedade de obtenção de endereço"
 
 #: admin/src/Admin/Settings/Registry.php:1097
 msgid "Administrator"
-msgstr "Administrateur"
+msgstr "Administrador"
 
 #: admin/src/Admin/Settings/Conditions_Store.php:672
 msgid "all"
-msgstr ""
+msgstr "todas"
 
 #: admin/src/Recovery_Carts/Admin/Admin.php:390
 msgid "All carts"
-msgstr ""
+msgstr "Todos os carrinhos"
 
 #: admin/src/Recovery_Carts/Rest/Queue.php:223
 msgid "All events"
-msgstr ""
+msgstr "Todos os eventos"
 
 #: admin/src/Recovery_Carts/Rest/Carts.php:287
 msgid "All statuses"
-msgstr ""
+msgstr "Todos os status"
 
 #: admin/src/Admin/Settings/Registry.php:371
 msgid "Allow changing product quantities"
-msgstr "Permet de changer la quantité de produits"
+msgstr "Permitir alterar quantidade de produtos"
 
 #: admin/src/Recovery_Carts/Admin/Components.php:279
 msgid "Allow free shipping:"
-msgstr ""
+msgstr "Permitir frete grátis:"
 
 #: admin/src/Admin/Settings/Registry.php:372
 msgid "Allow removing products from cart"
-msgstr "Permet de retirer des produits du panier"
+msgstr "Permitir remover produtos do carrinho"
 
 #: admin/src/Admin/Settings/Registry.php:579
 msgid "Allow shipping to a different address"
-msgstr "Permet l'envoi à une adresse différente"
+msgstr "Permitir envio para um endereço diferente"
 
 #: admin/src/Admin/Settings/Registry.php:275
 msgid ""
 "Allows defining the type of action to be executed after the countdown "
 "expires."
 msgstr ""
-"Permet de définir le type d'action à exécuter après l'expiration du compte "
-"à rebours."
+"Permite definir o tipo de ação a ser executado após a expiração da contagem "
+"regressiva."
 
 #: admin/src/Admin/Settings/Registry.php:280
 msgid ""
 "Allows defining which address the user will be redirected to after the "
 "session ends."
 msgstr ""
-"Permet de définir l'adresse vers laquelle l'utilisateur sera redirigé après "
-"la fin de la session."
+"Permite definir para qual endereço o usuário será redirecionado após a "
+"sessão ser encerrada."
 
 #: admin/src/Admin/Settings/Views/Integrations.php:216
 msgid "Allows sending events to GA4 when the integration is filled out."
-msgstr "Permet l'envoi des événements vers le GA4 lorsque l'intégration est remplie."
+msgstr ""
+"Permite o envio dos eventos para o GA4 quando a integração estiver "
+"preenchida."
 
 #: admin/src/Admin/Settings/Registry.php:265
 msgid ""
 "Allows setting a time limit for the customer to complete the purchase or "
 "create urgency."
 msgstr ""
-"Permet de définir un délai pour que le client finalise l'achat ou génère "
-"une urgence d'achat."
+"Permite definir um tempo limite para o cliente finalizar a compra ou gerar "
+"urgência na compra."
 
 #: admin/src/Admin/Settings/Registry.php:270
 msgid "Allows setting a title to be displayed next to the countdown."
-msgstr "Permet de définir un titre à afficher à côté du compte à rebours."
+msgstr "Permite definir um titulo a ser exibido ao lado da contagem regressiva."
 
 #: admin/src/Admin/Settings/Registry.php:271
 msgid "Allows setting the countdown time limit."
-msgstr "Permet de définir le délai du compte à rebours."
+msgstr "Permite definir o tempo limite da contagem regressiva."
 
 #: admin/src/Checkout/Steps.php:615
 #: admin/src/Checkout/Steps.php:630
 msgid "Already a customer?"
-msgstr "Vous êtes déjà client ?"
+msgstr "Já é um cliente?"
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/General.php:235
 msgid "Alternative text for when the user's name cannot be retrieved."
-msgstr ""
+msgstr "Texto alternativo para quando não for possível recuperar o nome do usuário."
 
 #: admin/src/Admin/Settings/Conditions_Store.php:669
 msgid "Always (no conditions)"
-msgstr ""
+msgstr "Sempre (sem condições)"
 
 #: admin/src/Checkout/Fields.php:1181
 msgid ""
 "An account is already registered with this email address. <a href=\"#\" "
 "data-login>Would you like to log in to your account?</a>"
 msgstr ""
-"Un compte est déjà enregistré avec cette adresse e-mail. <a href=\"#\" "
-"data-login>Voulez-vous vous connecter à votre compte ?</a>"
+"Uma conta já está registrada com este endereço de e-mail. <a href=\"#\" "
+"data-login>Deseja entrar na sua conta?</a>"
 
 #: admin/src/Core/Assets.php:235
 msgid ""
 "An account is already registered with this email address. Would you like to "
 "log into it?"
 msgstr ""
-"Un compte est déjà enregistré avec cette adresse e-mail. Souhaitez-vous y "
-"accéder ?"
+"Uma conta já está registrada com este endereço de e-mail. Gostaria de "
+"entrar nela?"
 
 #: admin/src/Core/Assets.php:240
 msgid "An error occurred"
-msgstr "Une erreur est survenue"
+msgstr "Ocorreu um erro"
 
 #: admin/src/Rest/License_Activate.php:86
 msgid "An error occurred while activating your license."
-msgstr ""
+msgstr "Ocorreu um erro ao ativar sua licença."
 
 #: admin/src/Rest/License_Deactivate.php:52
 msgid "An error occurred while deactivating your license."
-msgstr "Une erreur est survenue lors de la désactivation de votre licence."
+msgstr "Ocorreu um erro ao desativar sua licença."
 
 #: admin/src/Rest/Settings_Reset.php:49
 msgid "An error occurred while resetting the settings."
-msgstr "Une erreur est survenue lors de la réinitialisation des paramètres."
+msgstr "Ocorreu um erro ao redefinir as configurações."
 
 #: admin/src/Core/Assets.php:486
 msgid "An error occurred. Please try again."
-msgstr ""
+msgstr "Ocorreu um erro. Tente novamente."
 
 #: admin/src/Recovery_Carts/Core/Ajax.php:182
 msgid "An internal error occurred. Please try again."
-msgstr ""
+msgstr "Ocorreu um erro interno. Por favor, tente novamente."
 
 #: admin/src/Recovery_Carts/Admin/Admin.php:132
 #: admin/src/Recovery_Carts/Admin/Admin.php:133
 msgid "Analytics"
-msgstr ""
+msgstr "Análise"
 
 #: admin/src/Recovery_Carts/Core/Assets.php:116
 msgid "Animals & Nature"
-msgstr ""
+msgstr "Animais e Natureza"
 
 #: admin/src/Admin/Settings/Registry.php:310
 msgid "Animation file 1"
-msgstr "Fichier d'animation 1"
+msgstr "Arquivo da animação 1"
 
 #: admin/src/Admin/Settings/Registry.php:312
 msgid "Animation file 2"
-msgstr "Fichier d'animation 2"
+msgstr "Arquivo da animação 2"
 
 #: admin/src/Admin/Settings/Registry.php:314
 msgid "Animation file 3"
-msgstr "Fichier d'animation 3"
+msgstr "Arquivo da animação 3"
 
 #: admin/src/Admin/Settings/Registry.php:309
 msgid "Animation text 1"
-msgstr "Texte de l'animation 1"
+msgstr "Texto da animação 1"
 
 #: admin/src/Admin/Settings/Registry.php:311
 msgid "Animation text 2"
-msgstr "Texte de l'animation 2"
+msgstr "Texto da animação 2"
 
 #: admin/src/Admin/Settings/Registry.php:313
 msgid "Animation text 3"
-msgstr "Texte de l'animation 3"
+msgstr "Texto da animação 3"
 
 #: admin/src/Admin/Settings/Conditions_Store.php:672
 msgid "any"
-msgstr ""
+msgstr "qualquer"
 
 #: admin/src/Checkout/Fields.php:131
 #: admin/src/Checkout/Fields.php:982
 msgid "Apartment, suite, unit etc."
-msgstr "Appartement, suite, unité, etc."
+msgstr "Apartamento, suíte, unidade etc."
 
 #: admin/src/Admin/Default_Options.php:373
 msgid "Apartment, suite, unit, etc."
-msgstr "Appartement, suite, unité, etc."
+msgstr "Apartamento, suíte, unidade, etc."
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/General.php:167
 msgid "API address"
-msgstr ""
+msgstr "Endereço da API"
 
 #: admin/src/Admin/Settings/Views/Integrations.php:233
 msgid "API Secret"
@@ -481,63 +483,65 @@ msgstr "API Secret"
 
 #: admin/src/Admin/Settings/Registry.php:571
 msgid "API service for address lookup"
-msgstr "Service API pour la recherche d'adresse"
+msgstr "Serviço de API para busca de endereço"
 
 #: admin/src/Admin/Settings/Registry.php:553
 msgid "Applies input masks (CPF, ZIP code, phone...)."
-msgstr ""
+msgstr "Aplica máscaras de digitação (CPF, CEP, telefone...)."
 
 #: admin/src/Admin/Settings/Registry.php:544
 msgid "Applies the field customizations (created in the builder) to the checkout."
-msgstr ""
+msgstr "Aplica as personalizações de campos (criadas no construtor) ao checkout."
 
 #: admin/src/Admin/Settings/Registry.php:543
 msgid ""
 "Applies the layout built in the builder to the React checkout. When "
 "disabled, the checkout uses the default steps."
 msgstr ""
+"Aplica o layout montado no construtor ao checkout React. Quando desativado, "
+"o checkout usa as etapas padrão."
 
 #: admin/src/Core/Assets.php:478
 #: woocommerce/dark/checkout/form-coupon.php:32
 #: woocommerce/modern/checkout/form-coupon.php:32
 msgid "Apply"
-msgstr "Appliquer"
+msgstr "Aplicar"
 
 #: admin/src/Admin/Settings/Conditions_Store.php:606
 msgid "Apply %s discount"
-msgstr ""
+msgstr "Aplicar desconto de %s"
 
 #: woocommerce/dark/checkout/form-coupon.php:32
 #: woocommerce/modern/checkout/form-coupon.php:32
 msgid "Apply coupon"
-msgstr "Appliquer le coupon"
+msgstr "Aplicar cupom"
 
 #: admin/src/Admin/Settings/Registry.php:338
 msgid "Apply discount coupon automatically"
-msgstr "Appliquer le coupon de réduction automatiquement"
+msgstr "Aplicar cupom de desconto automaticamente"
 
 #: admin/src/Views/Settings/Settings_Panel.php:75
 #: admin/src/Views/Settings/Settings_Panel.php:76
 msgid "Apps"
-msgstr ""
+msgstr "Aplicativos"
 
 #: admin/src/Recovery_Carts/Core/Assets.php:108
 msgid "Are you sure you want to delete this event?"
-msgstr ""
+msgstr "Tem certeza que deseja excluir este evento?"
 
 #: admin/src/Admin/Settings/Registry.php:409
 msgid "Assign orders from guest users"
-msgstr "Attribuer des commandes aux utilisateurs invités"
+msgstr "Atribuir pedidos de usuários convidados"
 
 #: admin/src/Admin/Settings/Registry.php:310
 #: admin/src/Admin/Settings/Registry.php:312
 #: admin/src/Admin/Settings/Registry.php:314
 msgid "Attach the Lottie animation link or file in .json format"
-msgstr "Joignez le lien ou le fichier de l'animation Lottie au format .json"
+msgstr "Anexe o link ou arquivo da animação Lottie em formato .json"
 
 #: admin/src/Admin/Settings/Registry.php:1098
 msgid "Author"
-msgstr "Auteur"
+msgstr "Autor"
 
 #: admin/src/Admin/Settings/Integrations_Data.php:68
 #: admin/src/Admin/Settings/Views/Integrations.php:495
@@ -545,54 +549,54 @@ msgid ""
 "Automate sending WhatsApp messages when Flexify Checkout events occur, and "
 "recover sales more effectively. Keep everything flowing with no effort!"
 msgstr ""
-"Automatisez l'envoi de messages via WhatsApp lors de la réception "
-"d'événements dans Flexify Checkout, récupérez des ventes de manière plus "
-"efficace. Laissez tout dans le bon flux sans effort !"
+"Automatize o envio de mensagens via WhatsApp ao receber eventos no Flexify "
+"Checkout, recupere vendas de maneira mais assertiva. Deixe tudo no fluxo "
+"certo sem esforço!"
 
 #: admin/src/Admin/Settings/Registry.php:565
 msgid "Automatically fill in address"
-msgstr "Remplir l'adresse automatiquement"
+msgstr "Preencher endereço automaticamente"
 
 #: admin/src/Admin/Settings/Registry.php:564
 msgid "Automatically fill in company information"
-msgstr "Remplir les informations de l'entreprise automatiquement"
+msgstr "Preencher informações da empresa automaticamente"
 
 #: admin/src/Admin/Settings/Registry.php:400
 msgid "Automatically open login popup"
-msgstr "Ouvrir la popup de connexion automatiquement"
+msgstr "Abrir popup de login automaticamente"
 
 #: admin/src/Checkout/Sidebar.php:169
 msgid "Availability: On backorder"
-msgstr "Disponibilité : Sur commande"
+msgstr "Disponibilidade: Sob encomenda"
 
 #: admin/src/Recovery_Carts/Rest/Queue.php:271
 msgid "Awaiting payment"
-msgstr ""
+msgstr "Aguardando pagamento"
 
 #: admin/src/Core/Assets.php:462
 msgid "Back"
-msgstr ""
+msgstr "Voltar"
 
 #: woocommerce/common/checkout/form-pay.php:77
 msgid "Back to account"
-msgstr "Retour au compte"
+msgstr "Voltar para a conta"
 
 #: woocommerce/common/checkout/form-login.php:117
 msgid "Back to login"
-msgstr "Retour à la connexion"
+msgstr "Voltar para login"
 
 #: admin/src/Checkout/Steps.php:848
 #: admin/src/Core/Assets.php:463
 msgid "Back to shop"
-msgstr "Retour à la boutique"
+msgstr "Voltar à loja"
 
 #: admin/src/Checkout/Coupons.php:170
 msgid "Before payment method"
-msgstr "Avant le mode de paiement"
+msgstr "Antes da forma de pagamento"
 
 #: admin/src/Checkout/Fields.php:818
 msgid "Billing address"
-msgstr "Adresse de facturation"
+msgstr "Endereço de cobrança"
 
 #: admin/src/Views/Components.php:328
 msgid "billing_"
@@ -600,50 +604,50 @@ msgstr "billing_"
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/General.php:262
 msgid "Block follow-ups after purchase"
-msgstr ""
+msgstr "Bloquear follow ups após compra"
 
 #: admin/src/Views/Components.php:369
 msgid "BR"
-msgstr "FR"
+msgstr "BR"
 
 #: admin/src/Views/Components.php:374
 msgid "Brazil"
-msgstr "France"
+msgstr "Brasil"
 
 #: admin/src/API/License.php:961
 msgid "Buy a license"
-msgstr "Acheter une licence"
+msgstr "Comprar uma licença"
 
 #: admin/src/Recovery_Carts/Rest/Carts.php:268
 msgid "Buying"
-msgstr ""
+msgstr "Comprando"
 
 #: admin/src/Core/Webhooks/Event_Registry.php:86
 msgid "Cancelled order"
-msgstr ""
+msgstr "Pedido cancelado"
 
 #: admin/src/Recovery_Carts/Admin/Components.php:449
 msgid "Captured visitors"
-msgstr ""
+msgstr "Visitantes capturados"
 
 #: admin/src/Admin/Settings/Registry.php:363
 #: admin/src/Core/Assets.php:458
 msgid "Cart"
-msgstr ""
+msgstr "Carrinho"
 
 #: admin/src/Recovery_Carts/Admin/Components.php:421
 msgid "Cart and order status"
-msgstr ""
+msgstr "Status de carrinhos e pedidos"
 
 #: admin/src/Recovery_Carts/Rest/Cart_Delete.php:51
 msgid "Cart not found."
-msgstr ""
+msgstr "Carrinho não encontrado."
 
 #: admin/src/Recovery_Carts/Admin/Admin.php:81
 #: admin/src/Recovery_Carts/Admin/Admin.php:176
 #: admin/src/Recovery_Carts/Admin/Admin.php:177
 msgid "Cart recovery"
-msgstr ""
+msgstr "Recuperação de carrinhos"
 
 #: admin/src/Recovery_Carts/Core/Migration.php:169
 msgid ""
@@ -651,74 +655,77 @@ msgid ""
 "automatically disabled and can be safely deleted — your data has been "
 "preserved."
 msgstr ""
+"A recuperação de carrinhos agora é nativa do Flexify Checkout. O plugin %s "
+"foi desativado automaticamente e pode ser excluído com segurança — seus "
+"dados foram preservados."
 
 #: admin/src/Recovery_Carts/Core/Placeholders.php:55
 msgid "Cart recovery link"
-msgstr ""
+msgstr "Link de recuperação do carrinho"
 
 #: admin/src/Admin/Default_Options.php:490
 msgid "Cell phone"
-msgstr "Mobile"
+msgstr "Celular"
 
 #: woocommerce/common/cart/cart-shipping.php:65
 msgid "Change address"
-msgstr "Changer d'adresse"
+msgstr "Change address"
 
 #: admin/src/Recovery_Carts/Core/Ajax.php:537
 msgid "Channel disabled"
-msgstr ""
+msgstr "Canal desativado"
 
 #: admin/src/API/Updater.php:287
 msgid "Check for updates"
-msgstr "Vérifier les mises à jour"
+msgstr "Verificar atualizações"
 
 #: admin/src/Integrations/Woo_Subscriptions.php:104
 msgid "Check the status of your subscription in <a href=\"%s\">your account</a>"
-msgstr "Voir le statut de votre abonnement dans <a href=\"%s\">votre compte</a>"
+msgstr "Veja o status da sua assinatura na <a href=\"%s\">sua conta</a>"
 
 #: admin/src/Views/Components.php:353
 msgid "Checkbox"
-msgstr "Case à cocher"
+msgstr "Caixa de seleção"
 
 #: admin/src/Admin/Settings/Conditions_Store.php:700
 msgid "Checked"
-msgstr "Coché"
+msgstr "Marcado"
 
 #: admin/src/Core/Webhooks/Event_Registry.php:36
 msgid "Checkout"
-msgstr ""
+msgstr "Checkout"
 
 #: admin/src/Admin/Settings/Registry.php:539
 msgid "Checkout builder"
-msgstr ""
+msgstr "Construtor de checkout"
 
 #: admin/src/Rest/Layout_Save.php:66
 msgid "Checkout builder saved successfully!"
-msgstr ""
+msgstr "Construtor de checkout salvo com sucesso!"
 
 #: admin/src/Core/Webhooks/Event_Registry.php:126
 msgid "Checkout start"
-msgstr ""
+msgstr "Início do checkout"
 
 #: admin/src/Admin/Settings/Views/Integrations.php:148
 msgid "Checkout started"
-msgstr "Checkout initié"
+msgstr "Checkout iniciado"
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/General.php:33
 msgid "Choose how notifications will be scheduled and processed."
-msgstr ""
+msgstr "Escolha como as notificações serão agendadas e processadas."
 
 #: admin/src/Admin/Default_Options.php:386
 msgid "City"
-msgstr "Ville"
+msgstr "Cidade"
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/General.php:207
 msgid "City name mapping"
-msgstr ""
+msgstr "Mapeamento de nome de cidade"
 
 #: admin/src/Admin/Settings/Registry.php:574
 msgid "City retrieval property"
-msgstr "Propriété d'obtention de la ville"
+msgstr "Propriedade de obtenção de cidade"
 
 #: admin/src/Admin/Settings/Views/Integrations.php:197
 #: admin/src/Admin/Settings/Views/Integrations.php:375
@@ -733,7 +740,7 @@ msgstr "Propriété d'obtention de la ville"
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/Webhooks.php:76
 #: admin/src/Views/Components.php:69
 msgid "Close"
-msgstr "Fermer"
+msgstr "Fechar"
 
 #: admin/src/Admin/Default_Options.php:462
 msgid "CNPJ"
@@ -741,49 +748,49 @@ msgstr "CNPJ"
 
 #: admin/src/Rest/WhatsApp_Verify.php:98
 msgid "Code expired. Request a new one."
-msgstr ""
+msgstr "Código expirado. Solicite um novo."
 
 #: admin/src/Rest/WhatsApp_Send.php:127
 msgid "Code sent via WhatsApp."
-msgstr ""
+msgstr "Código enviado pelo WhatsApp."
 
 #: admin/src/Admin/Settings/Registry.php:1101
 msgid "Collaborator"
-msgstr "Collaborateur"
+msgstr "Colaborador"
 
 #: admin/src/API/REST_Checkout_Fields.php:216
 msgid "Collection of generic additional fields."
-msgstr "Collection de champs supplémentaires génériques."
+msgstr "Coleção de campos adicionais genéricos."
 
 #: admin/src/Admin/Settings/Views/Integrations.php:537
 msgid "Coming soon"
-msgstr "Bientôt"
+msgstr "Em breve"
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/Integrations.php:44
 #: admin/src/Views/Components.php:555
 msgid "Coming soon..."
-msgstr "Bientôt..."
+msgstr "Em breve..."
 
 #: admin/src/Admin/Default_Options.php:320
 msgid "Company"
-msgstr "Entreprise"
+msgstr "Empresa"
 
 #: admin/src/Core/Assets.php:477
 msgid "Complete purchase"
-msgstr ""
+msgstr "Finalizar compra"
 
 #: admin/src/Core/Webhooks/Event_Registry.php:80
 #: admin/src/Recovery_Carts/Core/Webhooks.php:97
 msgid "Completed order"
-msgstr ""
+msgstr "Pedido concluído"
 
 #: admin/src/Admin/Settings/Registry.php:607
 msgid "Conditions"
-msgstr "Conditions"
+msgstr "Condições"
 
 #: admin/src/Admin/Settings/Registry.php:613
 msgid "Conditions manager"
-msgstr ""
+msgstr "Gerenciador de condições"
 
 #: admin/src/Admin/Settings/Registry.php:267
 #: admin/src/Admin/Settings/Views/Integrations.php:189
@@ -796,62 +803,64 @@ msgstr ""
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/General.php:52
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/Webhooks.php:55
 msgid "Configure"
-msgstr "Configurer"
+msgstr "Configurar"
 
 #: admin/src/Recovery_Carts/Admin/Admin.php:82
 msgid ""
 "Configure abandoned cart tracking, follow-up messages and the lead capture "
 "modal."
 msgstr ""
+"Configure o rastreamento de carrinhos abandonados, mensagens de follow-up e "
+"o modal de captura de leads."
 
 #: admin/src/Admin/Settings/Registry.php:569
 msgid "Configure address fill API"
-msgstr "Configurer l'API de remplissage d'adresse"
+msgstr "Configurar API de preenchimento de endereço"
 
 #: admin/src/Admin/Settings/Registry.php:306
 msgid "Configure animation"
-msgstr "Configurer l'animation"
+msgstr "Configurar animação"
 
 #: admin/src/Admin/Settings/Registry.php:568
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/General.php:153
 msgid "Configure API"
-msgstr "Configurer l'API"
+msgstr "Configurar API"
 
 #: admin/src/Admin/Settings/Registry.php:268
 msgid "Configure countdown"
-msgstr "Configurer le compte à rebours"
+msgstr "Configurar contagem regressiva"
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/Payment_Methods.php:21
 msgid "Configure delay time for payment methods"
-msgstr ""
+msgstr "Configurar tempo de atraso para formas de pagamentos"
 
 #: admin/src/Admin/Settings/Registry.php:405
 msgid "Configure email suggestions"
-msgstr "Configurer la suggestion d'e-mails"
+msgstr "Configurar sugestão de e-mails"
 
 #: admin/src/Views/Components.php:68
 msgid "Configure field <strong class=\"field-name\">%s</strong>"
-msgstr "Configurer le champ <strong class=\"field-name\">%s</strong>"
+msgstr "Configurar campo <strong class=\"field-name\">%s</strong>"
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/General.php:158
 msgid "Configure IP collection API"
-msgstr ""
+msgstr "Configurar API de coleta de IP"
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/General.php:57
 msgid "Configure lead capture modal"
-msgstr ""
+msgstr "Configurar modal de coleta de leads"
 
 #: admin/src/Admin/Settings/Registry.php:307
 msgid "Configure processing animation"
-msgstr "Configurer l'animation de traitement"
+msgstr "Configurar animação de processamento"
 
 #: admin/src/Admin/Settings/Registry.php:404
 msgid "Configure providers"
-msgstr "Configurer les fournisseurs"
+msgstr "Configurar provedores"
 
 #: admin/src/Recovery_Carts/Core/Ajax.php:548
 msgid "Configure the test phone in the Joinotify integration options."
-msgstr ""
+msgstr "Configure o telefone de teste nas opções da integração Joinotify."
 
 #: admin/src/Admin/Settings/Layout_Store.php:831
 #: admin/src/Checkout/Steps.php:1014
@@ -859,151 +868,153 @@ msgstr ""
 #: admin/src/Checkout/Thankyou.php:552
 #: admin/src/Core/Assets.php:454
 msgid "Contact"
-msgstr "Contact"
+msgstr "Contato"
 
 #: admin/src/Admin/Settings/Registry.php:437
 msgid "Contact page"
-msgstr "Page de contact"
+msgstr "Página de contato"
 
 #: admin/src/Admin/Settings/Conditions_Store.php:694
 msgid "Contains"
-msgstr "Contient"
+msgstr "Contém"
 
 #: admin/src/Checkout/Steps.php:249
 #: admin/src/Core/Assets.php:459
 msgid "Continue"
-msgstr "Continuer"
+msgstr "Continuar"
 
 #: admin/src/Checkout/Steps.php:256
 msgid "Continue to"
-msgstr "Continuer vers"
+msgstr "Continuar para"
 
 #: admin/src/Core/Assets.php:461
 msgid "Continue to payment"
-msgstr ""
+msgstr "Continuar para pagamento"
 
 #: admin/src/Core/Assets.php:460
 msgid "Continue to shipping"
-msgstr ""
+msgstr "Continuar para entrega"
 
 #: admin/src/Admin/Settings/Views/Integrations.php:262
 msgid "Conversion ID"
-msgstr "ID de conversion"
+msgstr "Conversion ID"
 
 #: admin/src/Admin/Settings/Views/Integrations.php:271
 msgid "Conversion Label"
-msgstr "Étiquette de conversion"
+msgstr "Conversion Label"
 
 #: admin/src/Rest/Modules_Activate.php:69
 msgid "Could not activate the plugin."
-msgstr ""
+msgstr "Não foi possível ativar o plugin."
 
 #: admin/src/Recovery_Carts/Core/Ajax.php:429
 msgid "Could not add the new event."
-msgstr ""
+msgstr "Não foi possível adicionar o novo evento."
 
 #: admin/src/Rest/License_Sync.php:62
 msgid "Could not communicate with the license server."
-msgstr ""
+msgstr "Não foi possível comunicar com o servidor de licenças."
 
 #: admin/src/Admin/Fonts_Manager.php:214
 msgid "Could not create the folder to store the font."
-msgstr "Impossible de créer le dossier pour stocker la police."
+msgstr "Não foi possível criar a pasta para armazenar a fonte."
 
 #: admin/src/Admin/Fonts_Manager.php:270
 msgid "Could not create the fonts directory."
-msgstr "Impossible de créer le répertoire des polices."
+msgstr "Não foi possível criar o diretório de fontes."
 
 #: admin/src/Rest/License_Alternative_Activate.php:81
 msgid "Could not decrypt the license file."
-msgstr "Impossible de déchiffrer le fichier de licence."
+msgstr "Não foi possível descriptografar o arquivo de licença."
 
 #: admin/src/Rest/Address_Details.php:107
 msgid "Could not get the address."
-msgstr ""
+msgstr "Não foi possível obter o endereço."
 
 #: admin/src/Rest/Address_Autocomplete.php:112
 msgid "Could not look up the address."
-msgstr ""
+msgstr "Não foi possível buscar o endereço."
 
 #: admin/src/Rest/Settings_Import.php:69
 msgid "Could not read the file. Please check if it is a valid configuration JSON."
 msgstr ""
-"Impossible de lire le fichier. Vérifiez s'il s'agit d'un JSON de "
-"configurations valide."
+"Não foi possível ler o arquivo. Verifique se é um JSON de configurações "
+"válido."
 
 #: admin/src/Recovery_Carts/Core/Ajax.php:488
 msgid "Could not remove the event."
-msgstr ""
+msgstr "Não foi possível remover o evento."
 
 #: admin/src/Recovery_Carts/Core/Ajax.php:328
 msgid "Could not save the settings."
-msgstr "Impossible d'enregistrer les configurations."
+msgstr "Não foi possível salvar as configurações."
 
 #: admin/src/Core/Ajax.php:282
 #: admin/src/Core/Assets.php:239
 msgid "Could not send the reset email. Please try again."
-msgstr "Impossible d'envoyer l'e-mail de réinitialisation. Veuillez réessayer."
+msgstr "Nao foi possivel enviar o e-mail de redefinição. Tente novamente."
 
 #: admin/src/Recovery_Carts/Core/Ajax.php:604
 msgid "Could not send the test message. Check the Joinotify configuration."
 msgstr ""
+"Não foi possível enviar a mensagem de teste. Verifique a configuração do "
+"Joinotify."
 
 #: admin/src/Admin/Settings/Registry.php:284
 msgid "Countdown background color"
-msgstr "Couleur de fond du compte à rebours"
+msgstr "Cor de fundo da contagem regressiva"
 
 #: admin/src/Core/Webhooks/Event_Registry.php:112
 msgid "Countdown expired"
-msgstr ""
+msgstr "Contagem regressiva expirada"
 
 #: admin/src/Admin/Settings/Registry.php:292
 msgid "Countdown text color"
-msgstr "Couleur du texte du compte à rebours"
+msgstr "Cor do texto da contagem regressiva"
 
 #: admin/src/Admin/Settings/Registry.php:270
 msgid "Countdown title"
-msgstr "Titre du compte à rebours"
+msgstr "Título da contagem regressiva"
 
 #: admin/src/Admin/Default_Options.php:333
 msgid "Country"
-msgstr "Pays"
+msgstr "País"
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/General.php:177
 msgid "Country code mapping"
-msgstr ""
+msgstr "Mapeamento do código do país"
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/General.php:187
 msgid "Country name mapping"
-msgstr ""
+msgstr "Mapeamento de nome de país"
 
 #: admin/src/Recovery_Carts/Core/Placeholders.php:61
 msgid "Coupon code"
-msgstr ""
+msgstr "Código do cupom"
 
 #: admin/src/Recovery_Carts/Admin/Components.php:284
 msgid "Coupon expiration time: *"
-msgstr ""
+msgstr "Tempo de expiração do cupom: *"
 
 #: admin/src/Admin/Settings/Registry.php:586
 msgid "Coupon field"
-msgstr ""
+msgstr "Campo de cupom"
 
 #: admin/src/Admin/Settings/Registry.php:590
 msgid "Coupon field position"
-msgstr ""
+msgstr "Posição do campo de cupom"
 
 #: admin/src/Recovery_Carts/Admin/Components.php:260
 msgid "Coupon prefix: *"
-msgstr ""
+msgstr "Prefixo do cupom: *"
 
 #: admin/src/Recovery_Carts/Admin/Components.php:274
 msgid "Coupon value: *"
-msgstr ""
+msgstr "Valor do cupom: *"
 
 #: admin/src/Recovery_Carts/Admin/Components.php:261
 msgid "COUPON_"
-msgstr ""
+msgstr "CUPOM_"
 
 #: admin/src/Admin/Default_Options.php:448
 msgid "CPF"
@@ -1014,121 +1025,120 @@ msgid ""
 "Create a password for your account if this is your first purchase. If you "
 "are already a customer, log in to retrieve your personal information."
 msgstr ""
-"Créez un mot de passe pour votre compte, si c'est votre premier achat. Si "
-"vous êtes déjà client, connectez-vous à votre compte pour récupérer vos "
-"informations personnelles."
+"Crie uma senha para sua conta, caso seja sua primeira compra. Se já é um "
+"cliente, entre em sua conta para resgatar sua informações pessoais."
 
 #: admin/src/Checkout/Steps.php:688
 msgid ""
 "Create an account by entering the information below. If you are already a "
 "customer, please %1$slog in to your account page%2$s."
 msgstr ""
-"Créez un compte en saisissant les informations ci-dessous. Si vous êtes "
-"déjà client, veuillez %1$vous connecter à la page de votre compte%2$s."
+"Crie uma conta inserindo as informações abaixo. Se você já é um cliente, "
+"por favor faça %1$login na página da sua conta%2$s."
 
 #: admin/src/Checkout/Steps.php:690
 msgid ""
 "Create an account by entering the information below. If you are already a "
 "customer, please log in."
 msgstr ""
-"Créez un compte en saisissant les informations ci-dessous. Si vous êtes "
-"déjà client, connectez-vous."
+"Crie uma conta inserindo as informações abaixo. Se você já é um cliente, "
+"faça login."
 
 #: admin/src/Checkout/Steps.php:664
 msgid "Create an account?"
-msgstr "Créer un compte ?"
+msgstr "Criar uma conta?"
 
 #: admin/src/Admin/Admin_Options.php:260
 msgid "Create essential fields and conditions"
-msgstr "Créer des champs et des conditions essentiels"
+msgstr "Criar campos e condições essenciais"
 
 #: admin/src/Recovery_Carts/Admin/Admin.php:488
 #: admin/src/Recovery_Carts/Admin/Admin.php:490
 msgid "Cron Event"
-msgstr ""
+msgstr "Cron Event"
 
 #: admin/src/Recovery_Carts/Admin/Admin.php:487
 #: admin/src/Recovery_Carts/Admin/Admin.php:489
 msgid "Cron Events"
-msgstr ""
+msgstr "Cron Events"
 
 #: admin/src/API/License.php:379
 #: admin/src/API/License.php:432
 msgid "cURL error 35: SSL/TLS communication issue."
-msgstr "Erreur cURL 35 : Problème de communication SSL/TLS."
+msgstr "Erro cURL 35: Problema de comunicação SSL/TLS."
 
 #: admin/src/API/License.php:434
 msgid "cURL error: %s"
-msgstr "Erreur cURL : %s"
+msgstr "Erro cURL: %s"
 
 #: admin/src/Admin/Settings/Registry.php:288
 msgid "Custom background color"
-msgstr ""
+msgstr "Cor de fundo personalizada"
 
 #: admin/src/Admin/Settings/Registry.php:440
 msgid "Custom contact link"
-msgstr ""
+msgstr "Link personalizado de contato"
 
 #: admin/src/Admin/Settings/Registry.php:694
 msgid "Custom CSS"
-msgstr "CSS personnalisé"
+msgstr "CSS personalizado"
 
 #: admin/src/Views/Components.php:196
 #: admin/src/Views/Components.php:454
 msgid "Custom CSS class for the field (Optional)"
-msgstr "Classe CSS personnalisée du champ (Optionnel)"
+msgstr "Classe CSS personalizada do campo (Opcional)"
 
 #: admin/src/Views/Components.php:207
 #: admin/src/Views/Components.php:464
 msgid "Custom CSS class for the title (Optional)"
-msgstr "Classe CSS personnalisée du titre (Optionnel)"
+msgstr "Classe CSS personalizada do título (Opcional)"
 
 #: admin/src/Admin/Settings/Registry.php:674
 msgid "Custom Footer"
-msgstr "Pied de page personnalisé"
+msgstr "Rodapé personalizado"
 
 #: admin/src/Admin/Settings/Registry.php:671
 msgid "Custom Header"
-msgstr "En-tête personnalisé"
+msgstr "Cabeçalho personalizado"
 
 #: admin/src/Admin/Settings/Registry.php:695
 msgid "Custom JS"
-msgstr "JS personnalisé"
+msgstr "JS personalizado"
 
 #: admin/src/Admin/Settings/Registry.php:1130
 msgid "Custom link"
-msgstr "Lien personnalisé"
+msgstr "Link personalizado"
 
 #: admin/src/Admin/Settings/Registry.php:296
 msgid "Custom text color"
-msgstr ""
+msgstr "Cor do texto personalizada"
 
 #: admin/src/Admin/Settings/Registry.php:1100
 msgid "Customer"
-msgstr "Client"
+msgstr "Cliente"
 
 #: admin/src/Admin/Orders.php:221
 msgid "Customer information"
-msgstr "Informations sur le client"
+msgstr "Informações do cliente"
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/FollowUp.php:20
 msgid "Customize the list of follow-up messages"
-msgstr ""
+msgstr "Personalizar lista de mensagens de acompanhamento (Follow up)"
 
 #: admin/src/Recovery_Carts/Admin/Components.php:374
 #: admin/src/Recovery_Carts/Admin/Components.php:422
 #: admin/src/Recovery_Carts/Admin/Components.php:477
 msgid "Data related to the last %d days"
-msgstr ""
+msgstr "Dados relacionados aos últimos %d dias"
 
 #: admin/src/Admin/Settings/Integrations_Data.php:40
 #: admin/src/Admin/Settings/Views/Integrations.php:176
 msgid "Data tracking"
-msgstr "Suivi des données"
+msgstr "Rastreamento de dados"
 
 #: admin/src/Admin/Default_Options.php:518
 msgid "Date of birth"
-msgstr "Date de naissance"
+msgstr "Data de nascimento"
 
 #: admin/src/Admin/Settings/Registry.php:273
 #: admin/src/Recovery_Carts/Admin/Components.php:152
@@ -1139,56 +1149,53 @@ msgstr "Date de naissance"
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/General.php:254
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/General.php:268
 msgid "Days"
-msgstr "Jours"
+msgstr "Dias"
 
 #: admin/src/Rest/Fonts_Delete.php:54
 msgid "Default fonts cannot be deleted."
-msgstr "Les polices par défaut ne peuvent pas être supprimées."
+msgstr "Fontes padrão não podem ser excluídas."
 
 #: admin/src/Views/Components.php:485
 msgid "Define in which step of the checkout the field will be displayed."
-msgstr "Définir à quelle étape de la finalisation des achats le champ sera affiché."
+msgstr "Define em qual etapa da finalização de compras o campo será exibido."
 
 #: admin/src/Admin/Settings/Registry.php:685
 msgid "Define the border radius of fields, buttons, and checkout elements."
 msgstr ""
-"Définir le rayon des bordures des champs, boutons et éléments de la "
-"finalisation de l'achat."
+"Define o raio da borda dos campos, botões e elementos da finalização de "
+"compra."
 
 #: admin/src/Views/Components.php:123
 #: admin/src/Views/Components.php:151
 #: admin/src/Views/Components.php:182
 #: admin/src/Views/Components.php:441
 msgid "Define the position of this field at checkout."
-msgstr ""
-"Définir la position de ce champ dans le processus de finalisation des "
-"achats."
+msgstr "Define a posição deste campo na finalização de compras."
 
 #: admin/src/Views/Components.php:139
 msgid "Define the title that will be displayed for this field."
-msgstr "Définir le titre qui sera affiché pour ce champ."
+msgstr "Define o título que será exibido para este campo."
 
 #: admin/src/Admin/Settings/Views/Integrations.php:334
 msgid ""
 "Define which checkout events will be sent to each platform. The credentials "
 "above need to be configured for the trigger to occur."
 msgstr ""
-"Définissez quels événements de checkout seront envoyés à chaque plateforme. "
-"Les identifiants ci-dessus doivent être configurés pour que le "
-"déclenchement se produise."
+"Defina quais eventos do checkout serão enviados para cada plataforma. Os "
+"credenciais acima precisam estar configurados para o disparo acontecer."
 
 #: admin/src/Admin/Settings/Registry.php:686
 msgid ""
 "Define which font will be applied at checkout. You can add new custom fonts "
 "or from Google Fonts."
 msgstr ""
-"Définissez quelle police sera appliquée à la finalisation de l'achat. Vous "
-"pouvez ajouter de nouvelles polices personnalisées ou de Google Fonts."
+"Defina qual fonte será aplicada na finalização de compra. Você pode "
+"adicionar novas fontes personalizadas ou do Google Fonts."
 
 #: admin/src/Recovery_Carts/Admin/Components.php:144
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/FollowUp.php:80
 msgid "Delay: *"
-msgstr ""
+msgstr "Atraso: *"
 
 #: admin/src/Admin/Settings/Layout_Store.php:832
 #: admin/src/Checkout/Steps.php:750
@@ -1197,65 +1204,65 @@ msgstr ""
 #: admin/src/Checkout/Thankyou.php:318
 #: admin/src/Core/Assets.php:455
 msgid "Delivery"
-msgstr "Livraison"
+msgstr "Entrega"
 
 #: admin/src/Admin/Settings/Views/Integrations.php:149
 #: admin/src/Core/Webhooks/Event_Registry.php:132
 msgid "Delivery information"
-msgstr "Informations de livraison"
+msgstr "Informações de entrega"
 
 #: admin/src/Admin/Settings/Registry.php:475
 msgid "Delivery methods title"
-msgstr "Titre des méthodes de livraison"
+msgstr "Título das formas de entrega"
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/Webhooks.php:118
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/Webhooks.php:185
 msgid "Delivery URL *"
-msgstr ""
+msgstr "URL de entrega *"
 
 #: admin/src/Checkout/Conditions.php:248
 #: admin/src/Core/Assets.php:475
 msgid "Discount"
-msgstr ""
+msgstr "Desconto"
 
 #: admin/src/Core/Assets.php:479
 #: woocommerce/dark/checkout/form-coupon.php:28
 #: woocommerce/modern/checkout/form-coupon.php:28
 msgid "Discount coupon"
-msgstr "Coupon de réduction"
+msgstr "Cupom de desconto"
 
 #: admin/src/Admin/Settings/Registry.php:339
 msgid "Discount coupon code"
-msgstr "Code du coupon de réduction"
+msgstr "Código do cupom de desconto"
 
 #: admin/src/Recovery_Carts/Admin/Components.php:240
 msgid "Discount coupon: *"
-msgstr ""
+msgstr "Cupom de desconto: *"
 
 #: admin/src/Recovery_Carts/Admin/Components.php:265
 msgid "Discount type: *"
-msgstr ""
+msgstr "Tipo do desconto: *"
 
 #: admin/src/Admin/Settings/Registry.php:552
 msgid "Displays the order notes field."
-msgstr ""
+msgstr "Exibe o campo de observações do pedido."
 
 #: admin/src/Recovery_Carts/Core/Assets.php:113
 msgid "Diversity"
-msgstr ""
+msgstr "Diversidade"
 
 #: admin/src/Core/Init.php:576
 msgid "Documentation"
-msgstr "Documentation"
+msgstr "Documentação"
 
 #: admin/src/Recovery_Carts/Core/Ajax.php:562
 #: admin/src/Recovery_Carts/Frontend/Lead_Capture.php:91
 msgid "Doe"
-msgstr ""
+msgstr "da Silva"
 
 #: admin/src/Admin/Settings/Conditions_Store.php:695
 msgid "Does not contain"
-msgstr "Ne contient pas"
+msgstr "Não contém"
 
 #: admin/src/Checkout/Steps.php:1022
 #: admin/src/Checkout/Steps.php:1063
@@ -1264,23 +1271,23 @@ msgstr "Ne contient pas"
 #: admin/src/Recovery_Carts/Admin/Components.php:90
 #: admin/src/Views/Components.php:55
 msgid "Edit"
-msgstr "Modifier"
+msgstr "Editar"
 
 #: admin/src/Recovery_Carts/Admin/Admin.php:388
 msgid "Edit cart"
-msgstr ""
+msgstr "Editar carrinho"
 
 #: admin/src/Recovery_Carts/Admin/Components.php:95
 msgid "Edit follow-up event"
-msgstr ""
+msgstr "Editar evento de follow up"
 
 #: admin/src/Admin/Settings/Registry.php:1102
 msgid "Editor"
-msgstr "Éditeur"
+msgstr "Editor"
 
 #: admin/src/Admin/Settings/Registry.php:685
 msgid "Element border radius"
-msgstr "Rayon de bord des éléments"
+msgstr "Raio da borda dos elementos"
 
 #: admin/src/Admin/Orders.php:256
 #: admin/src/Recovery_Carts/Core/Helpers.php:578
@@ -1291,15 +1298,15 @@ msgstr "E-mail"
 
 #: admin/src/Admin/Default_Options.php:267
 msgid "Email address"
-msgstr "Adresse e-mail"
+msgstr "Endereço de e-mail"
 
 #: admin/src/Admin/Settings/Conditions_Store.php:692
 msgid "Empty"
-msgstr "Vide"
+msgstr "Vazio"
 
 #: admin/src/API/License.php:339
 msgid "Empty response."
-msgstr "Réponse vide."
+msgstr "Resposta vazia."
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/General.php:23
 msgid ""
@@ -1307,175 +1314,174 @@ msgid ""
 "queue pages in the Flexify Checkout menu. When disabled, these pages are "
 "hidden."
 msgstr ""
+"Ative o rastreamento de carrinhos abandonados e as páginas de Análises, "
+"Todos os carrinhos e Fila de processamentos no menu do Flexify Checkout. Ao "
+"desativar, essas páginas ficam ocultas."
 
 #: admin/src/Admin/Settings/Registry.php:580
 msgid "Enable address validation by ZIP code"
-msgstr "Activer la validation d'adresse par code postal"
+msgstr "Ativar validação de endereço por CEP"
 
 #: admin/src/Admin/Settings/Registry.php:343
 msgid "Enable API for direct checkout link creation"
-msgstr "Activer l'API pour la création de liens de paiement direct"
+msgstr "Ativar API para criação de links de checkout direto"
 
 #: admin/src/Admin/Settings/Registry.php:744
 msgid "Enable automatic updates"
-msgstr "Activer les mises à jour automatiques"
+msgstr "Ativar atualizações automáticas"
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/General.php:22
 msgid "Enable cart recovery"
-msgstr ""
+msgstr "Ativar recuperação de carrinhos"
 
 #: admin/src/Admin/Settings/Registry.php:265
 msgid "Enable checkout countdown"
-msgstr "Activer le compte à rebours du paiement"
+msgstr "Ativar contagem regressiva do checkout"
 
 #: admin/src/Recovery_Carts/Admin/Components.php:230
 msgid "Enable coupon sending:"
-msgstr ""
+msgstr "Ativar envio de cupom:"
 
 #: admin/src/Admin/Settings/Registry.php:746
 msgid "Enable debug mode"
-msgstr "Activer le mode débogage"
+msgstr "Ativar modo depuração"
 
 #: admin/src/Admin/Settings/Registry.php:402
 msgid "Enable email autofill suggestion"
-msgstr "Activer la suggestion de remplissage de l'e-mail"
+msgstr "Ativar sugestão de preenchimento do e-mail"
 
 #: admin/src/Admin/Settings/Views/Integrations.php:215
 msgid "Enable GA4"
-msgstr "Activer GA4"
+msgstr "Ativar GA4"
 
 #: admin/src/Admin/Settings/Views/Integrations.php:253
 msgid "Enable Google Ads"
-msgstr "Activer Google Ads"
+msgstr "Ativar Google Ads"
 
 #: admin/src/Admin/Settings/Registry.php:581
 msgid "Enable international phone"
-msgstr "Activer le téléphone international"
+msgstr "Ativar telefone internacional"
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/General.php:86
 msgid "Enable international phone in the modal"
-msgstr ""
+msgstr "Ativar telefone internacional no modal"
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/General.php:46
 msgid "Enable lead capture modal"
-msgstr ""
+msgstr "Ativar modal de coleta de lead"
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/General.php:147
 msgid "Enable location collection via IP"
-msgstr ""
+msgstr "Ativar coleta de localização através do IP"
 
 #: admin/src/Admin/Settings/Views/Integrations.php:292
 msgid "Enable Meta"
-msgstr "Activer Meta"
+msgstr "Ativar Meta"
 
 #: admin/src/Admin/Settings/Views/Integrations.php:412
 #: admin/src/Admin/Settings/Views/Integrations.php:460
 #: admin/src/Admin/Settings/Views/Integrations.php:500
 #: admin/src/Admin/Settings/Views/Integrations.php:595
 msgid "Enable module"
-msgstr "Activer le module"
+msgstr "Ativar módulo"
 
 #: admin/src/Admin/Settings/Registry.php:303
 msgid "Enable purchase processing animations"
-msgstr "Activer les animations de traitement de l'achat"
+msgstr "Ativar animações de processamento de compra"
 
 #: admin/src/Admin/Settings/Registry.php:261
 msgid "Enable React checkout (beta)"
-msgstr ""
+msgstr "Ativar checkout em React (beta)"
 
 #: admin/src/Admin/Settings/Registry.php:543
 msgid "Enable the checkout builder"
-msgstr ""
+msgstr "Ativar o construtor de checkout"
 
 #: admin/src/Admin/Settings/Registry.php:337
 msgid ""
 "Enable this option for the terms and conditions option of the last step to "
 "be active by default, if a terms and conditions page is configured."
 msgstr ""
-"Activez cette option pour que l'option des termes et conditions de la "
-"dernière étape soit activée par défaut, s'il existe une page de termes et "
-"conditions configurée."
+"Ative esta opção para a opção de termos e condições da última etapa ficar "
+"ativa por padrão, caso exista uma página de termos e condições configurada."
 
 #: admin/src/Admin/Settings/Registry.php:409
 msgid ""
 "Enable this option so that guest user orders at checkout are assigned to "
 "existing users."
 msgstr ""
-"Activez cette option pour que les commandes des utilisateurs invités lors "
-"de la finalisation de l'achat soient attribuées à des utilisateurs "
-"existants."
+"Ative esta opção para que pedidos de usuários convidados na finalização de "
+"compra sejam atribuídos a usuários existentes."
 
 #: admin/src/Admin/Settings/Registry.php:744
 msgid ""
 "Enable this option so the Flexify Checkout plugin is updated automatically "
 "whenever possible."
 msgstr ""
-"Activez cette option pour que le plugin Flexify Checkout soit mis à jour "
-"automatiquement chaque fois que possible."
+"Ative essa opção para que o plugin Flexify Checkout seja atualizado "
+"automaticamente sempre que possível."
 
 #: admin/src/Admin/Settings/Registry.php:400
 msgid ""
 "Enable this option so the login popup opens automatically when an existing "
 "account is recognized for the provided email."
 msgstr ""
-"Activez cette option pour que la popup de connexion s'ouvre automatiquement "
-"en reconnaissant un compte existant avec l'e-mail fourni."
+"Ative esta opção para que o popup de login seja aberto automaticamente ao "
+"reconhecer uma conta existente com o e-mail informado."
 
 #: admin/src/Admin/Settings/Registry.php:370
 msgid ""
 "Enable this option to allow the user to access the product by clicking on "
 "the product image."
 msgstr ""
-"Activez cette option pour permettre à l'utilisateur d'accéder au produit en "
-"cliquant sur l'image du produit."
+"Ative esta opção para permitir que o usuário acesse o produto ao clicar na "
+"imagem do produto."
 
 #: admin/src/Admin/Settings/Registry.php:579
 msgid ""
 "Enable this option to allow the user to send their order to a different "
 "address from the billing address."
 msgstr ""
-"Activez cette option pour permettre à l'utilisateur d'envoyer sa commande à "
-"une adresse différente de l'adresse de facturation."
+"Ative esta opção para permitir que o usuário possa enviar seu pedido para "
+"um endereço diferente do endereço de faturamento."
 
 #: admin/src/Admin/Settings/Registry.php:564
 msgid ""
 "Enable this option to automatically fill in the company information when "
 "entering the CNPJ (Available only in Brazil)."
 msgstr ""
-"Activez cette option pour remplir automatiquement les informations de "
-"l'entreprise en saisissant le CNPJ (Disponible uniquement au Brésil)."
+"Ative esta opção para preencher as informações da empresa automaticamente "
+"ao digitar o CNPJ (Disponível apenas no Brasil)."
 
 #: admin/src/Admin/Settings/Registry.php:263
 msgid ""
 "Enable this option to automatically redirect the user from the cart page to "
 "checkout."
 msgstr ""
-"Activez cette option pour rediriger automatiquement l'utilisateur de la "
-"page du panier vers la finalisation de l'achat."
+"Ative esta opção para redirecionar o usuário da página de carrinho para a "
+"finalização de compra automaticamente."
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/General.php:148
 msgid "Enable this option to collect the user's location through their IP."
-msgstr ""
+msgstr "Ative essa opção coletar a localização do usuário através do seu IP."
 
 #: admin/src/Admin/Settings/Registry.php:303
 msgid "Enable this option to customize the purchase processing animation."
-msgstr ""
-"Activez cette option pour personnaliser l'animation de traitement de "
-"l'achat."
+msgstr "Ative esta opção para personalizar a animação de processamento da compra."
 
 #: admin/src/Admin/Settings/Registry.php:745
 msgid "Enable this option to display an available update notification."
 msgstr ""
-"Activez cette option pour qu'une notification de mise à jour disponible "
-"soit affichée."
+"Ative essa opção para que seja exibido uma notificação de atualização "
+"disponível."
 
 #: admin/src/Admin/Settings/Registry.php:262
 msgid ""
 "Enable this option to display the \"Back to shop\" button at the first step "
 "of checkout."
 msgstr ""
-"Activez cette option pour afficher le bouton \"Retour à la boutique\" à la "
-"première étape de finalisation de l'achat."
+"Ative esta opção para exibir o botão \"Voltar à loja\" na primeira etapa de "
+"finalização de compra."
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/General.php:47
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/Styles.php:21
@@ -1483,76 +1489,81 @@ msgid ""
 "Enable this option to display the contact information collection modal when "
 "the user adds a product to the cart."
 msgstr ""
+"Ative essa opção para exibir o modal de coleta informações de contato "
+"quando o usuário adicionar um produto ao carrinho."
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/General.php:87
 msgid ""
 "Enable this option to display the country list selector inside the lead "
 "capture modal (Recommended)."
 msgstr ""
+"Ative essa opção para exibir o seletor de lista de países dentro do modal "
+"de coleta de leads (Recomendado)."
 
 #: admin/src/Admin/Settings/Registry.php:581
 msgid ""
 "Enable this option to display the country selector in the phone number "
 "field. Useful if you sell to other countries."
 msgstr ""
-"Activez cette option pour afficher le sélecteur de pays dans le champ du "
-"numéro de téléphone. Utile si vous vendez à d'autres pays."
+"Ative esta opção para exibir o seletor de país no campo de número de "
+"telefone. Útil se você vende para outros países."
 
 #: admin/src/Admin/Settings/Registry.php:402
 msgid "Enable this option to display the email provider suggestion during checkout."
 msgstr ""
-"Activez cette option pour afficher la suggestion du fournisseur d'e-mail "
-"lors de la finalisation des achats."
+"Ative esta opção para exibir a sugestão do provedor de e-mail, na "
+"finalização de compras."
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/General.php:97
 msgid ""
 "Enable this option to display the lead capture modal only for logged-in "
 "users."
 msgstr ""
+"Ative essa opção para exibir o modal de coleta de leads apenas para "
+"usuários logados."
 
 #: admin/src/Admin/Settings/Registry.php:371
 msgid "Enable this option to display the product quantity selectors at checkout."
 msgstr ""
-"Activez cette option pour afficher les sélecteurs de quantités du produit "
-"lors de la finalisation des achats."
+"Ative esta opção para exibir os seletores de quantidades do produto na "
+"finalização de compras."
 
 #: admin/src/Admin/Settings/Registry.php:372
 msgid ""
 "Enable this option to display the product removal button from the cart at "
 "checkout."
 msgstr ""
-"Activez cette option pour afficher le bouton de suppression du produit du "
-"panier lors de la finalisation des achats."
+"Ative esta opção para exibir o botão de remoção do produto do carrinho na "
+"finalização de compras."
 
 #: admin/src/Admin/Settings/Registry.php:343
 msgid ""
 "Enable this option to enable an endpoint for direct checkout link creation "
 "via API."
 msgstr ""
-"Activez cette option pour activer un point de terminaison pour la création "
-"de liens de paiement direct via l'API."
+"Ative esta opção para habilitar um endpoint para criação de links de "
+"checkout direto via API."
 
 #: admin/src/Admin/Settings/Registry.php:401
 msgid ""
 "Enable this option to enforce password strength verification when creating "
 "a user account during checkout."
 msgstr ""
-"Activez cette option pour forcer la vérification de la force du mot de "
-"passe lors de la création du compte utilisateur, lors de la finalisation "
-"des achats."
+"Ative esta opção para forçar a verificação da força de senha na criação da "
+"conta do usuário, na finalização de compras."
 
 #: admin/src/Admin/Settings/Registry.php:565
 msgid ""
 "Enable this option to fill in the delivery fields when entering the ZIP "
 "code (Recommended), (Available only in Brazil)."
 msgstr ""
-"Activez cette option pour remplir les champs de livraison en saisissant le "
-"CEP (Recommandé), (Disponible uniquement au Brésil)."
+"Ative esta opção para preencher os campos de entrega ao digitar o CEP "
+"(Recomendado), (Disponível apenas no Brasil)."
 
 #: admin/src/Admin/Settings/Registry.php:436
 msgid "Enable this option to load the Flexify Checkout thank you page model."
 msgstr ""
-"Activez cette option pour charger le modèle de page de remerciement de "
+"Ative esta opção para carregar o modelo de página de agradecimento do "
 "Flexify Checkout."
 
 #: admin/src/Admin/Settings/Registry.php:373
@@ -1560,32 +1571,32 @@ msgid ""
 "Enable this option to remove quantity controls at checkout for products "
 "that are sold individually."
 msgstr ""
-"Activez cette option pour supprimer les contrôles de quantité lors de la "
-"finalisation des achats pour les produits vendus individuellement."
+"Ative esta opção para remover os controles de quantidade na finalização de "
+"compras em produtos que são vendidos individualmente."
 
 #: admin/src/Admin/Settings/Registry.php:264
 msgid ""
 "Enable this option to show the order summary open by default on mobile "
 "devices."
 msgstr ""
-"Activez cette option pour afficher par défaut le résumé de la commande "
-"ouverte sur les mobiles."
+"Ative esta opção para mostrar o resumo do pedido aberto por padrão em "
+"celulares."
 
 #: admin/src/Admin/Settings/Registry.php:321
 msgid ""
 "Enable this option to show your store's address as the Kangu order pickup "
 "point."
 msgstr ""
-"Activez cette option pour afficher l'adresse de votre boutique comme point "
-"de retrait de la commande Kangu."
+"Ative esta opção para mostrar o endereço da sua loja como ponto de retirada "
+"da encomenda Kangu."
 
 #: admin/src/Admin/Settings/Registry.php:338
 msgid ""
 "Enable this option to specify a discount coupon to be applied automatically "
 "at checkout."
 msgstr ""
-"Activez cette option pour indiquer un coupon de réduction à appliquer "
-"automatiquement lors de la finalisation de l'achat."
+"Ative esta opção para informar um cupom de desconto para ser aplicado "
+"automaticamente na finalização de compra."
 
 #: admin/src/Admin/Settings/Registry.php:746
 msgid ""
@@ -1593,53 +1604,53 @@ msgid ""
 "browser console, disable script and style minification, and other details "
 "for troubleshooting."
 msgstr ""
-"Activez cette option pour activer le mode débogage et avoir accès à des "
-"informations dans la console du navigateur, désactiver la minification des "
-"scripts et des styles et d'autres détails pour la résolution de problèmes."
+"Ative essa opção para ativar o modo depuração e ter acesso a informações no "
+"console do navegador, desativar minificação de scripts e estilos e demais "
+"detalhes para resolução de problemas."
 
 #: admin/src/Admin/Settings/Registry.php:580
 msgid ""
 "Enable this option to validate if the user's city and state match the "
 "provided billing ZIP code."
 msgstr ""
-"Activez cette option pour valider si la ville et l'état de l'utilisateur "
-"correspondent au CEP de facturation fourni."
+"Ative esta opção para validar se a cidade e estado do usuário confere com "
+"CEP de cobrança informado."
 
 #: admin/src/Admin/Settings/Registry.php:401
 msgid "Enable user password strength verification"
-msgstr "Activer la vérification de la force du mot de passe de l'utilisateur"
+msgstr "Ativar verificação de força da senha do usuário"
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/Webhooks.php:112
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/Webhooks.php:179
 msgid "Enable webhook"
-msgstr ""
+msgstr "Ativar webhook"
 
 #: admin/src/Views/Components.php:96
 msgid "Enable/Disable this field"
-msgstr "Activer/Désactiver ce champ"
+msgstr "Ativar/Desativar este campo"
 
 #: admin/src/Admin/Settings/Views/Integrations.php:293
 msgid "Enables event sending to Meta via Conversions API."
-msgstr "Active l'envoi d'événements vers Meta via l'API Conversions."
+msgstr "Ativa o envio de eventos para a Meta via Conversions API."
 
 #: admin/src/Admin/Settings/Views/Integrations.php:254
 msgid "Enables sending checkout events to the configured Google Ads account."
 msgstr ""
-"Active l'envoi des événements de checkout vers le compte configuré dans "
-"Google Ads."
+"Habilita o envio dos eventos de checkout para a conta configurada no Google "
+"Ads."
 
 #: admin/src/Recovery_Carts/Admin/Components.php:137
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/FollowUp.php:73
 msgid "End"
-msgstr ""
+msgstr "Fim"
 
 #: admin/src/Admin/Settings/Registry.php:278
 msgid "End checkout session"
-msgstr "Se déconnecter du checkout"
+msgstr "Encerrar sessão do checkout"
 
 #: admin/src/Admin/Settings/Conditions_Store.php:697
 msgid "Ends with"
-msgstr "Se termine par"
+msgstr "Termina com"
 
 #: admin/src/Checkout/Steps.php:631
 #: admin/src/Core/Assets.php:232
@@ -1647,76 +1658,88 @@ msgstr "Se termine par"
 #: woocommerce/dark/checkout/form-checkout.php:44
 #: woocommerce/modern/checkout/form-checkout.php:44
 msgid "Enter"
-msgstr "Se connecter"
+msgstr "Entrar"
 
 #: woocommerce/common/cart/cart-shipping.php:96
 msgid "Enter a different address"
-msgstr "Entrez une adresse différente"
+msgstr "Enter a different address"
 
 #: admin/src/Rest/License_Activate.php:52
 msgid "Enter a license code."
-msgstr ""
+msgstr "Informe um código de licença."
 
 #: admin/src/Admin/Settings/Fields_Store.php:138
 msgid "Enter a valid field ID with the billing_ prefix."
-msgstr ""
+msgstr "Informe um ID de campo válido com o prefixo billing_."
 
 #: admin/src/Rest/Fonts_Save.php:60
 msgid "Enter a valid identifier and name for the font."
-msgstr "Entrez un identifiant et un nom valides pour la source."
+msgstr "Informe um identificador e um nome válidos para a fonte."
 
 #: admin/src/Rest/WhatsApp_Send.php:93
 msgid "Enter a valid phone number."
-msgstr ""
+msgstr "Informe um número de telefone válido."
 
 #: admin/src/Checkout/Steps.php:759
 #: admin/src/Checkout/Steps.php:800
 msgid "Enter address manually"
-msgstr "Saisir l'adresse manuellement"
+msgstr "Digitar endereço manualmente"
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/General.php:168
 msgid ""
 "Enter the API address where the requests will be made; you can use the "
 "{ip_address} variable to reference the user's IP."
 msgstr ""
+"Informe o endereço da API à serem feitas as requisições, podendo ser "
+"utilizado a variável {ip_address} para referenciar o IP do usuário."
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/General.php:208
 msgid ""
 "Enter the API's city name return in JSON object format. For example: "
 "body.city"
 msgstr ""
+"Informe o retorno de nome de cidade da API em formato de objeto JSON. Por "
+"exemplo: body.city"
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/General.php:178
 msgid ""
 "Enter the API's country code return in JSON object format. For example: "
 "body.countryCode"
 msgstr ""
+"Informe o retorno de código de país da API em formato de objeto JSON. Por "
+"exemplo: body.countryCode"
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/General.php:188
 msgid ""
 "Enter the API's country name return in JSON object format. For example: "
 "body.country"
 msgstr ""
+"Informe o retorno de nome de país da API em formato de objeto JSON. Por "
+"exemplo: body.country"
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/General.php:198
 msgid ""
 "Enter the API's state or region name return in JSON object format. For "
 "example: body.regionName"
 msgstr ""
+"Informe o retorno de nome de estado ou região da API em formato de objeto "
+"JSON. Por exemplo: body.regionName"
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/General.php:218
 msgid ""
 "Enter the API's user IP return in JSON object format. For example: "
 "body.query"
 msgstr ""
+"Informe o retorno do IP do usuário da API em formato de objeto JSON. Por "
+"exemplo: body.query"
 
 #: admin/src/Admin/Settings/Registry.php:284
 msgid "Enter the background color of the countdown bar."
-msgstr "Indiquez la couleur de fond de la barre de compte à rebours."
+msgstr "Informe a cor de fundo da barra de contagem regressiva."
 
 #: admin/src/Admin/Settings/Registry.php:684
 msgid "Enter the color of the field titles for checkout."
-msgstr "Indiquez la couleur du titre des champs de finalisation des achats."
+msgstr "Informe a cor do título dos campos da finalização de compras."
 
 #: admin/src/Views/Components.php:208
 #: admin/src/Views/Components.php:465
@@ -1724,187 +1747,187 @@ msgid ""
 "Enter the custom CSS class(es) for the title (label) of this field. "
 "(Optional)"
 msgstr ""
-"Indiquez la ou les classe(s) CSS personnalisées pour le titre (label) de ce "
-"champ. (Optionnel)"
+"Informe a(s) classe(s) CSS personalizadas para o título (label) deste "
+"campo. (Opcional)"
 
 #: admin/src/Views/Components.php:197
 #: admin/src/Views/Components.php:455
 msgid "Enter the custom CSS class(es) for this field. (Optional)"
-msgstr "Indiquez la ou les classe(s) CSS personnalisées pour ce champ. (Optionnel)"
+msgstr "Informe a(s) classe(s) CSS personalizadas para este campo. (Opcional)"
 
 #: admin/src/Rest/Fonts_Save.php:84
 msgid "Enter the Google Fonts embed URL."
-msgstr "Indiquez l'URL d'incorporation de Google Fonts."
+msgstr "Informe a URL de incorporação do Google Fonts."
 
 #: admin/src/Admin/Settings/Registry.php:292
 msgid "Enter the text color of the countdown bar."
-msgstr "Indiquez la couleur du texte de la barre de compte à rebours."
+msgstr "Informe a cor do texto da barra de contagem regressiva."
 
 #: admin/src/Admin/Settings/Registry.php:309
 msgid "Enter the text that will be displayed in processing animation 1."
-msgstr "Entrez le texte qui sera affiché dans l'animation 1 de traitement."
+msgstr "Informe o texto que será exibido na animação 1 de processamento."
 
 #: admin/src/Admin/Settings/Registry.php:311
 msgid "Enter the text that will be displayed in processing animation 2."
-msgstr ""
+msgstr "Informe o texto que será exibido na animação 2 de processamento."
 
 #: admin/src/Admin/Settings/Registry.php:313
 msgid "Enter the text that will be displayed in processing animation 3."
-msgstr ""
+msgstr "Informe o texto que será exibido na animação 3 de processamento."
 
 #: woocommerce/common/cart/cart-shipping.php:75
 msgid "Enter your address to view shipping options."
-msgstr "Entrez votre adresse pour voir les options de livraison."
+msgstr "Enter your address to view shipping options."
 
 #: woocommerce/common/checkout/form-login.php:103
 msgid "Enter your email to receive the reset link."
-msgstr "Entrez votre e-mail pour recevoir le lien de réinitialisation."
+msgstr "Informe seu e-mail para receber o link de redefinição."
 
 #: admin/src/Rest/License_Alternative_Activate.php:63
 msgid "Error loading the file."
-msgstr ""
+msgstr "Erro ao carregar o arquivo."
 
 #: admin/src/Core/Assets.php:303
 msgid "Error processing checkout. Please try again."
-msgstr "Erreur lors du traitement de la commande. Veuillez réessayer."
+msgstr "Erro ao processar a finalização da compra. Por favor, tente novamente."
 
 #: admin/src/Rest/License_Alternative_Activate.php:55
 msgid "Error uploading the file. The file was not sent."
-msgstr "Erreur lors du chargement du fichier. Le fichier n'a pas été envoyé."
+msgstr "Erro ao carregar o arquivo. O arquivo não foi enviado."
 
 #: admin/src/Core/Ajax.php:207
 #: admin/src/Core/Ajax.php:211
 msgid "Error:"
-msgstr "Erreur :"
+msgstr "Erro:"
 
 #: admin/src/Admin/Admin_Options.php:288
 msgid "Essential fields and conditions for Brazil have been created successfully."
-msgstr "Champs et conditions essentiels pour la France ont été créés avec succès."
+msgstr "Campos e condições essenciais para o Brasil foram criados com sucesso."
 
 #: admin/src/Recovery_Carts/Core/Ajax.php:462
 msgid "Event key not specified."
-msgstr ""
+msgstr "Chave do evento não especificada."
 
 #: admin/src/Recovery_Carts/Admin/Components.php:102
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/FollowUp.php:38
 msgid "Event name"
-msgstr ""
+msgstr "Nome do evento"
 
 #: admin/src/Recovery_Carts/Admin/Components.php:101
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/FollowUp.php:37
 msgid "Event name: *"
-msgstr ""
+msgstr "Nome do evento: *"
 
 #: admin/src/Recovery_Carts/Core/Ajax.php:495
 #: admin/src/Recovery_Carts/Rest/Queue_Delete.php:51
 msgid "Event not found."
-msgstr ""
+msgstr "Evento não encontrado."
 
 #: admin/src/Admin/Settings/Views/Integrations.php:332
 msgid "Events by platform"
-msgstr "Événements par plateforme"
+msgstr "Eventos por plataforma"
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/Webhooks.php:135
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/Webhooks.php:214
 msgid "Ex: Authorization"
-msgstr ""
+msgstr "Ex: Authorization"
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/Webhooks.php:139
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/Webhooks.php:218
 msgid "Ex: Bearer 123456"
-msgstr ""
+msgstr "Ex: Bearer 123456"
 
 #: admin/src/Recovery_Carts/Core/Ajax.php:729
 msgid "Failed to create cart."
-msgstr ""
+msgstr "Falha ao criar carrinho."
 
 #: admin/src/Rest/Modules_Install.php:82
 msgid "Failed to install/update the plugin."
-msgstr "Échec de l'installation/mise à jour du plugin."
+msgstr "Falha ao instalar/atualizar o plugin."
 
 #: admin/src/Admin/Fonts_Manager.php:277
 msgid "Failed to move the font file."
-msgstr "Échec du déplacement du fichier de police."
+msgstr "Falha ao mover o arquivo de fonte."
 
 #: admin/src/Recovery_Carts/Core/Ajax.php:603
 msgid "Failed to send"
-msgstr ""
+msgstr "Falha ao enviar"
 
 #: admin/src/Rest/Webhooks_Test.php:84
 msgid "Failed to send the test webhook."
-msgstr ""
+msgstr "Falha ao enviar o webhook de teste."
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/General.php:234
 msgid "Fallback for user name"
-msgstr ""
+msgstr "Fallback para nome do usuário"
 
 #: admin/src/Views/Components.php:219
 #: admin/src/Views/Components.php:474
 msgid "Field mask (Optional)"
-msgstr "Masque du champ (Optionnel)"
+msgstr "Máscara do campo (Opcional)"
 
 #: admin/src/Views/Components.php:138
 msgid "Field name"
-msgstr "Nom du champ"
+msgstr "Nome do campo"
 
 #: admin/src/Views/Components.php:322
 msgid "Field name and ID *"
-msgstr "Nom et ID du champ *"
+msgstr "Nome e ID do campo *"
 
 #: admin/src/Admin/Settings/Registry.php:549
 msgid "Field options"
-msgstr ""
+msgstr "Opções de campos"
 
 #: admin/src/Views/Components.php:181
 #: admin/src/Views/Components.php:440
 msgid "Field position"
-msgstr "Position du champ"
+msgstr "Posição do campo"
 
 #: admin/src/Views/Components.php:108
 #: admin/src/Views/Components.php:428
 msgid "Field requirement"
-msgstr "Champ obligatoire"
+msgstr "Obrigatoriedade do campo"
 
 #: admin/src/Views/Components.php:484
 msgid "Field stage"
-msgstr "Étape du champ"
+msgstr "Etapa do campo"
 
 #: admin/src/Views/Components.php:418
 msgid "Field title *"
-msgstr "Titre du champ *"
+msgstr "Título do campo *"
 
 #: admin/src/Admin/Settings/Registry.php:684
 msgid "Field title color"
-msgstr "Couleur du titre des champs"
+msgstr "Cor do título dos campos"
 
 #: admin/src/Views/Components.php:340
 msgid "Field type *"
-msgstr "Type de champ *"
+msgstr "Tipo do campo *"
 
 #: admin/src/Admin/Settings/Registry.php:533
 msgid "Fields and stages"
-msgstr "Champs et étapes"
+msgstr "Campos e etapas"
 
 #: admin/src/Admin/Settings/Registry.php:562
 msgid "Filling, validation and behavior of the address fields."
-msgstr ""
+msgstr "Preenchimento, validação e comportamento dos campos de endereço."
 
 #: admin/src/Recovery_Carts/Core/Placeholders.php:38
 msgid "First name"
-msgstr ""
+msgstr "Primeiro nome"
 
 #: admin/src/Integrations/Woo_Subscriptions.php:69
 msgid "First renewal"
-msgstr "Première renouvellement"
+msgstr "Primeira renovação"
 
 #: admin/src/Recovery_Carts/Admin/Components.php:268
 #: admin/src/Recovery_Carts/Rest/Recovery_Settings.php:165
 msgid "Fixed value"
-msgstr ""
+msgstr "Valor fixo"
 
 #: admin/src/Recovery_Carts/Core/Assets.php:122
 msgid "Flags"
-msgstr ""
+msgstr "Bandeiras"
 
 #: admin/src/Views/Settings/Settings_Panel.php:49
 msgid "Flexify Checkout"
@@ -1914,11 +1937,11 @@ msgstr "Flexify Checkout"
 #: admin/src/Admin/Settings/Views/Integrations.php:446
 #: admin/src/Recovery_Carts/Views/Settings.php:12
 msgid "Flexify Checkout - Abandoned cart recovery"
-msgstr "Flexify Checkout - Récupération de paniers abandonnés"
+msgstr "Flexify Checkout - Recuperação de carrinhos abandonados"
 
 #: admin/src/Recovery_Carts/Views/Settings_Info.php:10
 msgid "Flexify Checkout - Abandoned cart recovery."
-msgstr ""
+msgstr "Flexify Checkout - Recuperação de carrinhos abandonados."
 
 #: admin/src/Admin/Settings/Integrations_Data.php:47
 #: admin/src/Admin/Settings/Views/Integrations.php:398
@@ -1930,72 +1953,74 @@ msgid ""
 "Flexify Checkout depends on the [woocommerce_checkout] shortcode on the "
 "checkout page to work correctly."
 msgstr ""
-"Le Flexify Checkout dépend du shortcode [woocommerce_checkout] sur la page "
-"de finalisation de commande pour fonctionner correctement."
+"O Flexify Checkout depende do shortcode [woocommerce_checkout] na página de "
+"finalização de compras para funcionar corretamente."
 
 #: admin/src/Checkout/React_Checkout.php:89
 msgid "Flexify Checkout Editor"
-msgstr ""
+msgstr "Editor Flexify Checkout"
 
 #: admin/src/Views/Settings/Settings_Panel.php:48
 msgid "Flexify Checkout for WooCommerce"
-msgstr "Flexify Checkout pour WooCommerce"
+msgstr "Flexify Checkout para WooCommerce"
 
 #: admin/src/API/REST_Checkout_Fields.php:210
 msgid "Flexify Checkout namespace for additional fields."
-msgstr "Namespace de Flexify Checkout pour les champs supplémentaires."
+msgstr "Namespace do Flexify Checkout para campos adicionais."
 
 #: admin/src/Recovery_Carts/Rest/Queue.php:270
 msgid "Follow up"
-msgstr ""
+msgstr "Follow up"
 
 #: admin/src/Recovery_Carts/Admin/Components.php:37
 msgid "Follow Up"
-msgstr ""
+msgstr "Follow Up"
 
 #: admin/src/Recovery_Carts/Core/Ajax.php:530
 msgid "Follow-up event not found."
-msgstr ""
+msgstr "Evento de follow up não encontrado."
 
 #: admin/src/Recovery_Carts/Admin/Components.php:476
 msgid "Follow-up notifications sent"
-msgstr ""
+msgstr "Notificações de follow up enviadas"
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/FollowUp.php:21
 msgid ""
 "Follow-up notifications will be triggered at a predefined time to remind "
 "the user to complete their order."
 msgstr ""
+"As notificações de follow up irão ser disparadas em um tempo pré-definido "
+"para lembrar o usuário de finalizar seu pedido."
 
 #: admin/src/Recovery_Carts/Core/Webhooks.php:109
 msgid "Follow-up sent"
-msgstr ""
+msgstr "Follow up enviado"
 
 #: admin/src/Admin/Settings/Registry.php:686
 msgid "Font family"
-msgstr "Famille de polices"
+msgstr "Família de fontes"
 
 #: admin/src/Rest/Fonts_Delete.php:60
 msgid "Font not found."
-msgstr "Police non trouvée."
+msgstr "Fonte não encontrada."
 
 #: admin/src/Recovery_Carts/Core/Assets.php:117
 msgid "Food & Drink"
-msgstr ""
+msgstr "Comidas e Bebidas"
 
 #: woocommerce/common/checkout/form-login.php:85
 msgid "Forgot your password?"
-msgstr "Vous avez oublié votre mot de passe ?"
+msgstr "Esqueceu sua senha?"
 
 #: admin/src/Checkout/Steps.php:895
 #: admin/src/Checkout/Steps.php:1072
 msgid "Freight"
-msgstr "Frais de port"
+msgstr "Frete"
 
 #: admin/src/Views/Components.php:189
 #: admin/src/Views/Components.php:447
 msgid "Full width"
-msgstr "Largeur complète"
+msgstr "Largura completa"
 
 #: admin/src/Admin/Settings/Views/Integrations.php:160
 #: admin/src/Admin/Settings/Views/Integrations.php:206
@@ -2005,32 +2030,32 @@ msgstr "GA4"
 
 #: admin/src/Admin/Settings/Views/Integrations.php:225
 msgid "GA4 property identifier (e.g., G-XXXXXXXXXX)."
-msgstr "Identifiant de la propriété GA4 (exemple : G-XXXXXXXXXX)."
+msgstr "Identificador da propriedade GA4 (exemplo: G-XXXXXXXXXX)."
 
 #: admin/src/Views/Components.php:402
 msgid "GDPR"
-msgstr "RGPD"
+msgstr "GDPR"
 
 #: admin/src/Admin/Default_Options.php:532
 msgid "Gender"
-msgstr "Genre"
+msgstr "Gênero"
 
 #: admin/src/Admin/Settings/Registry.php:326
 #: admin/src/Recovery_Carts/Admin/Components.php:31
 msgid "General"
-msgstr "Général"
+msgstr "Geral"
 
 #: admin/src/Admin/Settings/Registry.php:550
 msgid "General behaviors of the form fields."
-msgstr ""
+msgstr "Comportamentos gerais dos campos do formulário."
 
 #: admin/src/Recovery_Carts/Admin/Components.php:235
 msgid "Generate coupon automatically:"
-msgstr ""
+msgstr "Gerar cupom automaticamente:"
 
 #: admin/src/Core/Init.php:596
 msgid "Go PRO"
-msgstr "Devenez PRO"
+msgstr "Seja PRO"
 
 #: admin/src/Admin/Settings/Views/Integrations.php:161
 #: admin/src/Admin/Settings/Views/Integrations.php:244
@@ -2040,7 +2065,7 @@ msgstr "Google Ads"
 
 #: admin/src/Admin/Settings/Views/Integrations.php:263
 msgid "Google Ads conversion ID (e.g., AW-123456789)."
-msgstr "ID de conversion Google Ads (exemple : AW-123456789)."
+msgstr "ID da conversão do Google Ads (exemplo: AW-123456789)."
 
 #: admin/src/Admin/Settings/Integrations_Data.php:78
 #: admin/src/Admin/Settings/Views/Integrations.php:534
@@ -2049,76 +2074,76 @@ msgstr "Google Maps"
 
 #: admin/src/Recovery_Carts/Core/Migration.php:177
 msgid "Got it, hide notice"
-msgstr ""
+msgstr "Entendi, ocultar aviso"
 
 #: admin/src/Admin/Settings/Conditions_Store.php:698
 msgid "Greater than"
-msgstr "Supérieur à"
+msgstr "Maior que"
 
 #: admin/src/Admin/Settings/Registry.php:693
 msgid "H2 size"
-msgstr "Taille du h2"
+msgstr "Tamanho do h2"
 
 #: admin/src/Admin/Settings/Registry.php:652
 msgid "Header image"
-msgstr "Image d'en-tête"
+msgstr "Imagem de cabeçalho"
 
 #: admin/src/Admin/Settings/Registry.php:655
 msgid "Header image link"
-msgstr "Lien de l'image d'en-tête"
+msgstr "Link da imagem de cabeçalho"
 
 #: admin/src/Admin/Settings/Registry.php:659
 msgid "Header image width"
-msgstr "Largeur de l'image d'en-tête"
+msgstr "Largura da imagem de cabeçalho"
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/Webhooks.php:134
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/Webhooks.php:213
 msgid "Header key"
-msgstr ""
+msgstr "Chave do cabeçalho"
 
 #: admin/src/Admin/Settings/Registry.php:662
 msgid "Header text"
-msgstr "Texte de l'en-tête"
+msgstr "Texto do cabeçalho"
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/Webhooks.php:138
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/Webhooks.php:217
 msgid "Header value"
-msgstr ""
+msgstr "Valor do cabeçalho"
 
 #: admin/src/Recovery_Carts/Views/Settings.php:17
 #: admin/src/Recovery_Carts/Views/Settings_Info.php:15
 msgid "Help Center"
-msgstr "Centre d'aide"
+msgstr "Central de ajuda"
 
 #: admin/src/Admin/Settings/Conditions_Store.php:596
 #: admin/src/Admin/Settings/Registry.php:276
 msgid "Hide"
-msgstr "Masquer"
+msgstr "Ocultar"
 
 #: admin/src/Admin/Settings/Registry.php:556
 msgid "Hide Brazilian fields for other countries"
-msgstr ""
+msgstr "Ocultar campos brasileiros para outros países"
 
 #: admin/src/Admin/Settings/Registry.php:589
 msgid "Hide discount coupon field"
-msgstr "Masquer le champ de coupon de réduction"
+msgstr "Ocultar campo de cupom de desconto"
 
 #: woocommerce/dark/checkout/form-checkout.php:59
 #: woocommerce/modern/checkout/form-checkout.php:59
 msgid "Hide order summary"
-msgstr "Masquer le résumé de la commande"
+msgstr "Ocultar resumo do pedido"
 
 #: admin/src/Admin/Settings/Registry.php:555
 msgid "Hide step indicator"
-msgstr "Masquer l'indicateur d'étapes"
+msgstr "Ocultar indicador de etapas"
 
 #: admin/src/Admin/Settings/Registry.php:556
 msgid "Hides Brazilian Market fields when the country is not Brazil."
-msgstr ""
+msgstr "Oculta campos do Brazilian Market quando o país não é Brasil."
 
 #: admin/src/Admin/Settings/Registry.php:554
 msgid "Hides shipping fields when the cart contains only virtual products."
-msgstr ""
+msgstr "Oculta campos de entrega quando o carrinho contém apenas produtos virtuais."
 
 #: admin/src/Recovery_Carts/Admin/Components.php:151
 #: admin/src/Recovery_Carts/Admin/Components.php:291
@@ -2127,88 +2152,88 @@ msgstr ""
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/FollowUp.php:87
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/General.php:253
 msgid "Hours"
-msgstr ""
+msgstr "Horas"
 
 #: admin/src/Admin/Default_Options.php:545
 msgid "House number"
-msgstr "Numéro de la résidence"
+msgstr "Número da residência"
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/Webhooks.php:119
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/Webhooks.php:186
 msgid "https://example.com/webhook"
-msgstr ""
+msgstr "https://exemplo.com/webhook"
 
 #: admin/src/API/License.php:959
 msgid "I already have a license"
-msgstr "J'ai déjà une licence"
+msgstr "Já tenho uma licença"
 
 #: admin/src/Core/Assets.php:237
 msgid ""
 "If the provided email is registered, you will receive a link to reset your "
 "password."
 msgstr ""
-"Si l'e-mail fourni est enregistré, vous recevrez un lien pour réinitialiser "
-"votre mot de passe."
+"Se o e-mail informado estiver cadastrado, você receberá um link para "
+"redefinir sua senha."
 
 #: admin/src/Admin/Settings/Registry.php:649
 msgid "Image (Default)"
-msgstr "Image (Par défaut)"
+msgstr "Imagem (Padrão)"
 
 #: admin/src/Admin/Default_Options.php:437
 msgid "Individual (CPF)"
-msgstr "Particulier (CPF)"
+msgstr "Pessoa Física (CPF)"
 
 #: admin/src/Checkout/Steps.php:741
 #: admin/src/Checkout/Steps.php:783
 msgid "Information"
-msgstr "Informations"
+msgstr "Informações"
 
 #: admin/src/Admin/Settings/Registry.php:478
 msgid "Informational text of the cart items"
-msgstr "Texte informatif des articles du panier"
+msgstr "Texto informativo dos itens do carrinho"
 
 #: admin/src/Admin/Settings/Registry.php:474
 msgid "Informational text of the contact stage fields"
-msgstr "Texte informatif des champs de l'étape de contact"
+msgstr "Texto informativo dos campos da etapa de contato"
 
 #: admin/src/Admin/Settings/Registry.php:479
 msgid "Informational text of the contact stage verifier"
-msgstr "Texte informatif du vérificateur de l'étape de contact"
+msgstr "Texto informativo do verificador da etapa de contato"
 
 #: admin/src/Admin/Settings/Registry.php:476
 msgid "Informational text of the delivery stage fields"
-msgstr "Texte informatif des champs de l'étape de livraison"
+msgstr "Texto informativo dos campos da etapa de entrega"
 
 #: admin/src/Admin/Settings/Registry.php:480
 msgid "Informational text of the delivery stage verifier"
-msgstr "Texte informatif du vérificateur de l'étape de livraison"
+msgstr "Texto informativo do verificador da etapa de entrega"
 
 #: admin/src/Admin/Settings/Registry.php:477
 msgid "Informational text of the payment stage fields"
-msgstr "Texte informatif des champs de l'étape de paiement"
+msgstr "Texto informativo dos campos da etapa de pagamento"
 
 #: admin/src/Admin/Settings/Registry.php:481
 msgid "Informational text of the payment stage verifier"
-msgstr "Texte informatif du vérificateur de l'étape de paiement"
+msgstr "Texto informativo do verificador da etapa de pagamento"
 
 #: admin/src/Admin/Settings/Views/Integrations.php:414
 #: admin/src/Admin/Settings/Views/Integrations.php:462
 #: admin/src/Admin/Settings/Views/Integrations.php:502
 #: admin/src/Admin/Settings/Views/Integrations.php:597
 msgid "Install module"
-msgstr "Installer le module"
+msgstr "Instalar módulo"
 
 #: admin/src/Recovery_Carts/Core/Coupons.php:30
 msgid "Insufficient data to create the coupon."
-msgstr ""
+msgstr "Dados insuficientes para criar o cupom."
 
 #: admin/src/Recovery_Carts/Integrations/Joinotify.php:68
 msgid "Integration settings: Joinotify"
-msgstr ""
+msgstr "Configurações da integração: Joinotify"
 
 #: admin/src/Recovery_Carts/Admin/Components.php:49
 msgid "Integrations"
-msgstr "Intégrations"
+msgstr "Integrações"
 
 #: admin/src/Admin/Default_Options.php:98
 msgid "Inter"
@@ -2217,111 +2242,111 @@ msgstr "Inter"
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/Webhooks.php:108
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/Webhooks.php:175
 msgid "Internal name"
-msgstr ""
+msgstr "Nome interno"
 
 #: admin/src/Recovery_Carts/Admin/Admin.php:407
 msgid "Internal records of recovery carts."
-msgstr ""
+msgstr "Registros internos de carrinhos de recuperação."
 
 #: admin/src/Rest/Address_Details.php:87
 msgid "Invalid address."
-msgstr ""
+msgstr "Endereço inválido."
 
 #: admin/src/Recovery_Carts/Core/Ajax.php:820
 msgid "Invalid cart ID."
-msgstr ""
+msgstr "ID do carrinho inválido."
 
 #: admin/src/Rest/WhatsApp_Verify.php:113
 msgid "Invalid code. Please try again."
-msgstr ""
+msgstr "Código inválido. Tente novamente."
 
 #: admin/src/API/License.php:742
 #: admin/src/Recovery_Carts/Core/Ajax.php:851
 msgid "Invalid data."
-msgstr "Données invalides."
+msgstr "Dados inválidos."
 
 #: admin/src/Rest/Webhooks_Test.php:68
 msgid "Invalid event."
-msgstr ""
+msgstr "Evento inválido."
 
 #: admin/src/Rest/Fonts_Save.php:106
 msgid "Invalid extension. Use WOFF, WOFF2, or TTF."
-msgstr "Extension invalide. Utilisez WOFF, WOFF2 ou TTF."
+msgstr "Extensão inválida. Use WOFF, WOFF2 ou TTF."
 
 #: admin/src/Rest/License_Alternative_Activate.php:68
 msgid "Invalid file. The file must have a .key extension."
-msgstr "Fichier invalide. Le fichier doit avoir l'extension .key"
+msgstr "Arquivo inválido. O arquivo deve ser extensão .key"
 
 #: admin/src/Rest/Fonts_Delete.php:50
 msgid "Invalid font specified."
-msgstr "Police invalide renseignée."
+msgstr "Fonte inválida informada."
 
 #: admin/src/Rest/Layout_Save.php:58
 msgid "Invalid layout data."
-msgstr ""
+msgstr "Dados do layout inválidos."
 
 #: admin/src/Rest/Modules_Activate.php:63
 #: admin/src/Rest/Modules_Install.php:65
 msgid "Invalid module data."
-msgstr ""
+msgstr "Dados do módulo inválidos."
 
 #: admin/src/Recovery_Carts/Core/Ajax.php:123
 msgid "Invalid or expired request. Please refresh the page."
-msgstr ""
+msgstr "Requisição inválida ou expirada. Por favor, atualize a página."
 
 #: admin/src/Rest/License_Sync.php:70
 msgid "Invalid response from the license server."
-msgstr ""
+msgstr "Resposta inválida do servidor de licenças."
 
 #: admin/src/Rest/Conditions_Add.php:54
 #: admin/src/Rest/Conditions_Update.php:55
 msgid "Invalid rule data."
-msgstr ""
+msgstr "Dados da regra inválidos."
 
 #: admin/src/Rest/Catalog_Search.php:61
 msgid "Invalid search type."
-msgstr ""
+msgstr "Tipo de busca inválido."
 
 #: admin/src/Rest/Webhooks_Test.php:74
 msgid "Invalid webhook URL."
-msgstr ""
+msgstr "URL do webhook inválida."
 
 #: admin/src/Checkout/Fields.php:1606
 msgid "Invalid ZIP code."
-msgstr "Code postal invalide."
+msgstr "CEP inválido."
 
 #: admin/src/Admin/Settings/Conditions_Store.php:690
 msgid "Is"
-msgstr "C'est"
+msgstr "É"
 
 #: admin/src/Admin/Settings/Conditions_Store.php:703
 msgid "Is not one of"
-msgstr ""
+msgstr "Não é um de"
 
 #: admin/src/Admin/Settings/Conditions_Store.php:702
 msgid "Is one of"
-msgstr ""
+msgstr "É um de"
 
 #: admin/src/Admin/Settings/Conditions_Store.php:691
 msgid "It is not"
-msgstr "Ce n'est pas"
+msgstr "Não é"
 
 #: admin/src/Admin/Settings/Conditions_Store.php:693
 msgid "It is not empty"
-msgstr "N'est pas vide"
+msgstr "Não está vazio"
 
 #: templates/template-react.php:35
 msgid "JavaScript must be enabled to complete the purchase."
-msgstr ""
+msgstr "É necessário habilitar o JavaScript para finalizar a compra."
 
 #: admin/src/Recovery_Carts/Core/Ajax.php:561
 #: admin/src/Recovery_Carts/Frontend/Lead_Capture.php:86
 msgid "John"
-msgstr ""
+msgstr "João"
 
 #: admin/src/Recovery_Carts/Frontend/Lead_Capture.php:105
 msgid "johndoe@email.com"
-msgstr ""
+msgstr "joaodasilva@email.com"
 
 #: admin/src/Admin/Settings/Integrations_Data.php:67
 #: admin/src/Admin/Settings/Views/Integrations.php:494
@@ -2331,24 +2356,24 @@ msgstr "Joinotify"
 
 #: admin/src/Recovery_Carts/Core/Ajax.php:555
 msgid "Joinotify unavailable"
-msgstr ""
+msgstr "Joinotify indisponível"
 
 #: admin/src/API/License.php:303
 msgid "JSON error: %s"
-msgstr "Erreur JSON : %s"
+msgstr "Erro JSON: %s"
 
 #: admin/src/Admin/Settings/Views/Integrations.php:272
 msgid "Label of the conversion action created in Google Ads."
-msgstr "Étiquette de l'action de conversion créée dans Google Ads."
+msgstr "Rótulo da ação de conversão criada no Google Ads."
 
 #: admin/src/Admin/Default_Options.php:293
 #: admin/src/Recovery_Carts/Core/Placeholders.php:47
 msgid "Last name"
-msgstr "Nom de famille"
+msgstr "Sobrenome"
 
 #: admin/src/Recovery_Carts/Frontend/Lead_Capture.php:90
 msgid "Last name: *"
-msgstr ""
+msgstr "Sobrenome: *"
 
 #: admin/src/Admin/Default_Options.php:122
 msgid "Lato"
@@ -2356,99 +2381,101 @@ msgstr "Lato"
 
 #: admin/src/Recovery_Carts/Rest/Carts.php:267
 msgid "Lead"
-msgstr ""
+msgstr "Lead"
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/General.php:66
 msgid "Lead capture modal title"
-msgstr ""
+msgstr "Título do modal de de coleta de leads"
 
 #: admin/src/Recovery_Carts/Core/Webhooks.php:103
 msgid "Lead captured"
-msgstr ""
+msgstr "Lead capturado"
 
 #: admin/src/Admin/Settings/Registry.php:461
 msgid "Leave blank to not display."
-msgstr "Laissez vide pour ne pas afficher."
+msgstr "Deixe em branco para não exibir."
 
 #: admin/src/Views/Components.php:187
 #: admin/src/Views/Components.php:445
 msgid "Left"
-msgstr "Gauche"
+msgstr "Esquerda"
 
 #: admin/src/Admin/Default_Options.php:441
 msgid "Legal Entity (CNPJ)"
-msgstr "Société (CNPJ)"
+msgstr "Pessoa Jurífica (CNPJ)"
 
 #: admin/src/Admin/Settings/Conditions_Store.php:699
 msgid "Less than"
-msgstr "Inférieur à"
+msgstr "Menor que"
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/General.php:245
 msgid "Lets you set the time for a cart to be considered abandoned."
-msgstr ""
+msgstr "Permite definir o tempo para que um carrinho seja considerado abandonado."
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/Payment_Methods.php:22
 msgid ""
 "Lets you set the time for an order to be considered abandoned according to "
 "the payment method."
 msgstr ""
+"Permite definir o tempo para que um pedido seja considerado abandonado de "
+"acordo com a forma de pagamento."
 
 #: admin/src/Views/Settings/Settings_Panel.php:86
 #: admin/src/Views/Settings/Settings_Panel.php:87
 msgid "License"
-msgstr ""
+msgstr "Licença"
 
 #: admin/src/Rest/License_Alternative_Activate.php:125
 msgid "License activated successfully!"
-msgstr "La licence a été activée avec succès !"
+msgstr "A licença foi ativada com sucesso!"
 
 #: admin/src/Rest/License_Activate.php:79
 msgid "License activated successfully. All features are now active!"
-msgstr ""
+msgstr "Licença ativada com sucesso. Agora todos os recursos estão ativos!"
 
 #: admin/src/API/License.php:861
 msgid "License expired"
-msgstr "Licence expirée"
+msgstr "Licença expirada"
 
 #: admin/src/Rest/License_Sync.php:97
 msgid "License synced successfully."
-msgstr ""
+msgstr "Licença sincronizada com sucesso."
 
 #: admin/src/Core/Assets.php:581
 msgid "List of countries"
-msgstr "Liste des pays"
+msgstr "Lista de países"
 
 #: admin/src/Recovery_Carts/Core/Placeholders.php:74
 msgid "List of products in the cart or order, separated by comma"
-msgstr ""
+msgstr "Lista de produtos no carrinho ou pedido, separados por vírgula"
 
 #: admin/src/Core/Assets.php:484
 msgid "Loading…"
-msgstr ""
+msgstr "Carregando…"
 
 #: admin/src/Recovery_Carts/Core/Ajax.php:863
 msgid "Location data updated successfully."
-msgstr ""
+msgstr "Dados de localização atualizados com sucesso."
 
 #: woocommerce/common/checkout/form-login.php:42
 msgid "Log into your customer account:"
-msgstr "Connectez-vous à votre compte client :"
+msgstr "Entre em sua conta de cliente:"
 
 #: admin/src/Core/Assets.php:231
 msgid "Look for an address and try again."
-msgstr "Recherchez une adresse et réessayez."
+msgstr "Procure um endereço e tente novamente."
 
 #: admin/src/Recovery_Carts/Rest/Carts.php:272
 msgid "Lost"
-msgstr ""
+msgstr "Perdido"
 
 #: admin/src/Recovery_Carts/Core/Webhooks.php:85
 msgid "Lost cart"
-msgstr ""
+msgstr "Carrinho perdido"
 
 #: admin/src/Recovery_Carts/Admin/Components.php:444
 msgid "Lost carts"
-msgstr ""
+msgstr "Carrinhos perdidos"
 
 #: admin/src/Admin/Settings/Integrations_Data.php:79
 #: admin/src/Admin/Settings/Views/Integrations.php:535
@@ -2456,56 +2483,55 @@ msgid ""
 "Make it easier for users to fill in the delivery address by allowing "
 "address search or using geolocation features with Google Maps."
 msgstr ""
-"Facilitez le remplissage de l'adresse de livraison pour les utilisateurs, "
-"en leur permettant de rechercher leur adresse ou d'utiliser des "
-"fonctionnalités de géolocalisation avec Google Maps."
+"Facilite o preenchimento do endereço de entrega aos usuários, permitindo "
+"pesquisar seu endereço ou usando recursos de geolocalização com Google Maps."
 
 #: admin/src/Admin/Settings/Registry.php:370
 msgid "Make product images clickable"
-msgstr "Rendre les images des produits cliquables"
+msgstr "Tornar imagem de produtos clicáveis"
 
 #: admin/src/Admin/Settings/Registry.php:688
 #: admin/src/Admin/Settings/Registry.php:689
 msgid "Manage sources"
-msgstr "Gérer les polices"
+msgstr "Gerenciar fontes"
 
 #: admin/src/Admin/Settings/Registry.php:544
 msgid "Manage the fields and stages of the checkout"
-msgstr "Gérer les champs et étapes de la finalisation des achats"
+msgstr "Gerenciar os campos e etapas da finalização de compras"
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/Webhooks.php:85
 msgid "Manage the webhooks registered for this event."
-msgstr ""
+msgstr "Gerencie os webhooks cadastrados para este evento."
 
 #: admin/src/Core/Assets.php:250
 msgid "mandatory"
-msgstr "obligatoire"
+msgstr "obrigatório"
 
 #: admin/src/Admin/Settings/Views/Integrations.php:224
 msgid "Measurement ID"
-msgstr "ID de mesure"
+msgstr "Measurement ID"
 
 #: admin/src/Recovery_Carts/Core/Ajax.php:596
 msgid "Message sent"
-msgstr ""
+msgstr "Mensagem enviada"
 
 #: admin/src/Recovery_Carts/Admin/Components.php:107
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/FollowUp.php:43
 msgid "Message that will be sent"
-msgstr ""
+msgstr "Mensagem que será enviada"
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/General.php:123
 msgid "Message that will be sent to the user when submitting the form data."
-msgstr ""
+msgstr "Mensagem que será enviada ao usuário ao enviar os dados do formulário."
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/General.php:122
 msgid "Message to be sent"
-msgstr ""
+msgstr "Mensagem a ser enviada"
 
 #: admin/src/Recovery_Carts/Admin/Components.php:106
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/FollowUp.php:42
 msgid "Message: *"
-msgstr ""
+msgstr "Mensagem: *"
 
 #: admin/src/Admin/Settings/Views/Integrations.php:162
 #: admin/src/Admin/Settings/Views/Integrations.php:283
@@ -2515,7 +2541,7 @@ msgstr "Meta"
 
 #: admin/src/Admin/Settings/Views/Integrations.php:302
 msgid "Meta Pixel identifier linked to your events manager."
-msgstr "Identifiant du Pixel Meta lié à votre gestionnaire d'événements."
+msgstr "Identificador do Pixel da Meta vinculado ao seu gerenciador de eventos."
 
 #: admin/src/Admin/Settings/Registry.php:272
 #: admin/src/Recovery_Carts/Admin/Components.php:150
@@ -2525,27 +2551,27 @@ msgstr "Identifiant du Pixel Meta lié à votre gestionnaire d'événements."
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/FollowUp.php:86
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/General.php:252
 msgid "Minutes"
-msgstr "Minutes"
+msgstr "Minutos"
 
 #: admin/src/Recovery_Carts/Core/Ajax.php:131
 msgid "Missing required parameter: %s"
-msgstr ""
+msgstr "Parâmetro obrigatório ausente: %s"
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/General.php:76
 msgid "Modal action button title"
-msgstr ""
+msgstr "Título do botão de ação do modal"
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/General.php:106
 msgid "Modal trigger selectors"
-msgstr ""
+msgstr "Seletores de acionamento do modal"
 
 #: admin/src/Views/Settings/Settings_Panel.php:177
 msgid "Modern dark"
-msgstr "Moderne sombre"
+msgstr "Moderno escuro"
 
 #: admin/src/Views/Settings/Settings_Panel.php:170
 msgid "Modern light"
-msgstr "Moderne clair"
+msgstr "Moderno claro"
 
 #: admin/src/Admin/Default_Options.php:106
 msgid "Montserrat"
@@ -2553,125 +2579,125 @@ msgstr "Montserrat"
 
 #: admin/src/Admin/Default_Options.php:280
 msgid "Name"
-msgstr "Nom"
+msgstr "Nome"
 
 #: admin/src/Recovery_Carts/Frontend/Lead_Capture.php:85
 msgid "Name: *"
-msgstr ""
+msgstr "Nome: *"
 
 #: admin/src/Admin/Settings/Fields_Store.php:204
 msgid "Native WooCommerce fields cannot be removed, only disabled."
-msgstr ""
+msgstr "Campos nativos do WooCommerce não podem ser removidos, apenas desativados."
 
 #: admin/src/Checkout/Thankyou.php:552
 msgid "Need help?"
-msgstr "Besoin d'aide ?"
+msgstr "Precisa de ajuda?"
 
 #: admin/src/Admin/Default_Options.php:558
 #: admin/src/Integrations/Superfrete.php:189
 #: admin/src/Integrations/Superfrete.php:200
 msgid "Neighborhood"
-msgstr "Quartier"
+msgstr "Bairro"
 
 #: admin/src/Admin/Settings/Registry.php:573
 msgid "Neighborhood retrieval property"
-msgstr "Propriété d'obtention du quartier"
+msgstr "Propriedade de obtenção do bairro"
 
 #: admin/src/API/License.php:852
 msgid "Never expires"
-msgstr "N'expire jamais"
+msgstr "Nunca expira"
 
 #: admin/src/Core/Assets.php:470
 msgid "New address"
-msgstr ""
+msgstr "Novo endereço"
 
 #: admin/src/Recovery_Carts/Admin/Admin.php:387
 msgid "New cart"
-msgstr ""
+msgstr "Novo carrinho"
 
 #: admin/src/Recovery_Carts/Core/Cart_Events.php:309
 msgid "New cart - %s"
-msgstr ""
+msgstr "Novo carrinho - %s"
 
 #: admin/src/Rest/Fields_Add.php:59
 msgid "New checkout field added successfully!"
-msgstr ""
+msgstr "Novo campo para finalização de compras adicionado com sucesso!"
 
 #: admin/src/Recovery_Carts/Admin/Admin.php:394
 msgid "No cart found in the trash."
-msgstr ""
+msgstr "Nenhum carrinho encontrado na lixeira."
 
 #: admin/src/Recovery_Carts/Admin/Admin.php:393
 msgid "No cart found."
-msgstr ""
+msgstr "Nenhum carrinho encontrado."
 
 #: admin/src/Core/Assets.php:580
 msgid "No country selected"
-msgstr "Aucun pays sélectionné"
+msgstr "Nenhum país selecionado"
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/Webhooks.php:124
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/Webhooks.php:191
 msgid "No custom header added."
-msgstr ""
+msgstr "Nenhum cabeçalho personalizado adicionado."
 
 #: admin/src/Rest/Fields_Save.php:54
 msgid "No field received."
-msgstr ""
+msgstr "Nenhum campo recebido."
 
 #: admin/src/Recovery_Carts/Admin/Components.php:176
 msgid "No follow-up event added yet."
-msgstr ""
+msgstr "Nenhum evento de follow up adicionado ainda."
 
 #: admin/src/Core/Assets.php:583
 msgid "No results found"
-msgstr "Aucun résultat trouvé"
+msgstr "Nenhum resultado encontrado"
 
 #: admin/src/Rest/Settings_Save.php:49
 msgid "No settings received."
-msgstr ""
+msgstr "Nenhuma configuração recebida."
 
 #: admin/src/Core/Helpers.php:598
 msgid "No shipping method selected"
-msgstr "Aucune méthode de livraison sélectionnée"
+msgstr "Nenhuma forma de entrega selecionada"
 
 #: woocommerce/common/cart/cart-shipping.php:91
 msgid "No shipping options were found for %s."
-msgstr "Aucune option d'expédition trouvée pour %s."
+msgstr "No shipping options were found for %s."
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/Webhooks.php:93
 msgid "No webhook configured for this event yet."
-msgstr ""
+msgstr "Nenhum webhook configurado para este evento ainda."
 
 #: admin/src/Rest/WhatsApp_Send.php:117
 msgid "No WhatsApp sender configured."
-msgstr ""
+msgstr "Nenhum remetente do WhatsApp configurado."
 
 #: admin/src/API/License.php:835
 msgid "Not available"
-msgstr "Non disponible"
+msgstr "Não disponível"
 
 #: admin/src/Recovery_Carts/Admin/Components.php:115
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/FollowUp.php:51
 msgid "Notification channel: *"
-msgstr ""
+msgstr "Canal da notificação: *"
 
 #: admin/src/Recovery_Carts/Core/Assets.php:160
 msgid "Notifications"
-msgstr ""
+msgstr "Notificações"
 
 #: admin/src/Recovery_Carts/Integrations/Joinotify.php:77
 msgid "Notifications sender"
-msgstr ""
+msgstr "Remetente das notificações"
 
 #: admin/src/Recovery_Carts/Integrations/Integrations_Base.php:38
 msgid "Notify your users and customers with custom emails from your brand."
-msgstr ""
+msgstr "Notifique seus usuários e clientes com e-mails personalizados da sua marca."
 
 #: admin/src/Integrations/Superfrete.php:189
 #: admin/src/Integrations/Superfrete.php:200
 #: admin/src/Views/Components.php:348
 msgid "Number"
-msgstr "Numéro"
+msgstr "Numero"
 
 #: admin/src/Recovery_Carts/Integrations/Joinotify.php:97
 msgid ""
@@ -2679,6 +2705,8 @@ msgid ""
 "follow-up. Enter it with country code + area code + number (e.g.: "
 "5511999999999)."
 msgstr ""
+"Número que receberá as mensagens enviadas pelo botão \"Testar\" de cada "
+"follow up. Informe com DDI + DDD + número (ex: 5511999999999)."
 
 #: admin/src/Admin/Default_Options.php:130
 msgid "Nunito"
@@ -2686,42 +2714,42 @@ msgstr "Nunito"
 
 #: admin/src/Recovery_Carts/Core/Assets.php:120
 msgid "Objects"
-msgstr ""
+msgstr "Objetos"
 
 #: admin/src/Recovery_Carts/Core/Ajax.php:428
 #: admin/src/Recovery_Carts/Core/Ajax.php:487
 #: admin/src/Recovery_Carts/Core/Ajax.php:494
 #: admin/src/Recovery_Carts/Core/Ajax.php:529
 msgid "Oops! An error occurred"
-msgstr ""
+msgstr "Ops! Ocorreu um erro"
 
 #: admin/src/Recovery_Carts/Core/Ajax.php:327
 msgid "Oops! An error occurred."
-msgstr "Oups ! Une erreur s'est produite."
+msgstr "Ops! Ocorreu um erro."
 
 #: admin/src/Rest/Conditions_Add.php:60
 msgid "Oops! Could not create a new rule."
-msgstr ""
+msgstr "Ops! Não foi possível criar uma nova regra."
 
 #: admin/src/Rest/Conditions_Remove.php:49
 msgid "Oops! Could not delete the rule."
-msgstr ""
+msgstr "Ops! Não foi possível excluir a regra."
 
 #: admin/src/Rest/Fonts_Delete.php:64
 msgid "Oops! Could not remove the font."
-msgstr "Oups ! Impossible de supprimer la police."
+msgstr "Ops! Não foi possível remover a fonte."
 
 #: admin/src/Rest/Fonts_Save.php:140
 msgid "Oops! Could not save the font."
-msgstr "Oups ! Impossible d'enregistrer la police."
+msgstr "Ops! Não foi possível salvar a fonte."
 
 #: admin/src/Rest/Conditions_Update.php:59
 msgid "Oops! Could not update the rule."
-msgstr ""
+msgstr "Ops! Não foi possível atualizar a regra."
 
 #: admin/src/Rest/Fonts_Save.php:72
 msgid "Oops! This font already exists."
-msgstr "Oups ! Cette police existe déjà."
+msgstr "Ops! Essa fonte já existe."
 
 #: admin/src/Admin/Default_Options.php:110
 msgid "Open Sans"
@@ -2729,107 +2757,107 @@ msgstr "Open Sans"
 
 #: admin/src/Checkout/React_Checkout.php:92
 msgid "Open the checkout builder"
-msgstr ""
+msgstr "Abrir o construtor de checkout"
 
 #: admin/src/Admin/Settings/Registry.php:554
 msgid "Optimize for digital products"
-msgstr "Optimiser pour les produits numériques"
+msgstr "Otimizar para produtos digitais"
 
 #: admin/src/Views/Components.php:396
 msgid "Option ID"
-msgstr "ID de l'option"
+msgstr "ID da opção"
 
 #: admin/src/Views/Components.php:373
 #: admin/src/Views/Components.php:401
 msgid "Option title"
-msgstr "Titre de l'option"
+msgstr "Título da opção"
 
 #: admin/src/Views/Components.php:368
 msgid "Option value"
-msgstr "Valeur de l'option"
+msgstr "Valor da opção"
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/Webhooks.php:109
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/Webhooks.php:176
 msgid "Optional identification for the webhook"
-msgstr ""
+msgstr "Identificação opcional para o webhook"
 
 #: admin/src/Views/Components.php:150
 msgid "Options "
-msgstr "Options "
+msgstr "Opções "
 
 #: admin/src/Rest/Settings_Reset.php:53
 msgid "Options have been successfully reset!"
-msgstr "Les options ont été réinitialisées avec succès !"
+msgstr "As opções foram redefinidas com sucesso!"
 
 #: admin/src/Core/Webhooks/Event_Registry.php:35
 msgid "Order"
-msgstr ""
+msgstr "Pedido"
 
 #: admin/src/Checkout/Thankyou.php:197
 msgid "Order #%s"
-msgstr "Commande #%s"
+msgstr "Pedido #%s"
 
 #: admin/src/Core/Webhooks/Event_Registry.php:62
 msgid "Order created"
-msgstr ""
+msgstr "Pedido criado"
 
 #: admin/src/Admin/Settings/Layout_Store.php:757
 #: admin/src/Core/Assets.php:473
 msgid "Order notes"
-msgstr ""
+msgstr "Observações do pedido"
 
 #: admin/src/Core/Webhooks/Event_Registry.php:74
 msgid "Order processing"
-msgstr ""
+msgstr "Pedido em processamento"
 
 #: admin/src/Core/Webhooks/Event_Registry.php:98
 msgid "Order status changed"
-msgstr ""
+msgstr "Status do pedido alterado"
 
 #: admin/src/Core/Assets.php:457
 #: admin/src/Integrations/Germanized.php:48
 msgid "Order summary"
-msgstr "Résumé de la commande"
+msgstr "Resumo do pedido"
 
 #: admin/src/Recovery_Carts/Admin/Admin.php:392
 msgid "Parent cart:"
-msgstr ""
+msgstr "Carrinho pai:"
 
 #: admin/src/Views/Components.php:349
 #: woocommerce/common/checkout/form-login.php:53
 msgid "Password"
-msgstr "Mot de passe"
+msgstr "Senha"
 
 #: admin/src/Core/Assets.php:233
 msgid "Pay"
-msgstr "Payer"
+msgstr "Pagar"
 
 #: admin/src/Core/Helpers.php:423
 #: woocommerce/common/checkout/form-pay.php:44
 #: woocommerce/common/checkout/form-pay.php:80
 msgid "Pay for the order"
-msgstr "Payer la commande"
+msgstr "Pagar pelo pedido"
 
 #: admin/src/Admin/Settings/Layout_Store.php:833
 #: admin/src/Checkout/Steps.php:571
 #: admin/src/Checkout/Thankyou.php:338
 #: admin/src/Core/Assets.php:456
 msgid "Payment"
-msgstr "Paiement"
+msgstr "Pagamento"
 
 #: admin/src/Core/Webhooks/Event_Registry.php:68
 msgid "Payment completed"
-msgstr ""
+msgstr "Pagamento concluído"
 
 #: admin/src/Admin/Settings/Views/Integrations.php:150
 #: admin/src/Core/Webhooks/Event_Registry.php:138
 msgid "Payment information"
-msgstr "Informations de paiement"
+msgstr "Informações de pagamento"
 
 #: admin/src/Core/Assets.php:472
 #: admin/src/Recovery_Carts/Admin/Components.php:43
 msgid "Payment methods"
-msgstr ""
+msgstr "Formas de pagamento"
 
 #: admin/src/Admin/Settings/Integrations_Data.php:85
 #: admin/src/Admin/Settings/Views/Integrations.php:588
@@ -2839,79 +2867,81 @@ msgstr "Payments by Payco"
 #: admin/src/Recovery_Carts/Admin/Components.php:269
 #: admin/src/Recovery_Carts/Rest/Recovery_Settings.php:164
 msgid "Percentage (%)"
-msgstr ""
+msgstr "Percentual (%)"
 
 #: admin/src/Recovery_Carts/Core/Ajax.php:274
 #: admin/src/Recovery_Carts/Core/Ajax.php:362
 #: admin/src/Recovery_Carts/Core/Ajax.php:454
 #: admin/src/Recovery_Carts/Core/Ajax.php:518
 msgid "Permission denied."
-msgstr ""
+msgstr "Permissão negada."
 
 #: admin/src/Admin/Default_Options.php:425
 msgid "Person Type"
-msgstr "Type de personne"
+msgstr "Tipo de Pessoa"
 
 #: admin/src/Admin/Default_Options.php:306
 #: admin/src/Admin/Orders.php:255
 #: admin/src/Views/Components.php:350
 msgid "Phone"
-msgstr "Téléphone"
+msgstr "Telefone"
 
 #: admin/src/Recovery_Carts/Frontend/Lead_Capture.php:97
 msgid "Phone / WhatsApp: *"
-msgstr ""
+msgstr "Telefone / WhatsApp: *"
 
 #: admin/src/Recovery_Carts/Integrations/Joinotify.php:96
 msgid "Phone for follow-up testing"
-msgstr ""
+msgstr "Telefone para teste de follow up"
 
 #: admin/src/Recovery_Carts/Core/Ajax.php:547
 msgid "Phone not configured"
-msgstr ""
+msgstr "Telefone não configurado"
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/General.php:39
 msgid "PHP-Cron"
-msgstr ""
+msgstr "PHP-Cron"
 
 #: admin/src/Recovery_Carts/Admin/Admin.php:523
 msgid ""
 "PHP-Cron mode requires WP-CLI installed on the server. Install WP-CLI or "
 "change the scheduler to WP-Cron."
 msgstr ""
+"O modo PHP-Cron requer o WP-CLI instalado no servidor. Instale o WP-CLI ou "
+"altere o agendador para WP-Cron."
 
 #: admin/src/Admin/Settings/Views/Integrations.php:301
 msgid "Pixel ID"
-msgstr "ID de pixel"
+msgstr "Pixel ID"
 
 #: admin/src/Core/Assets.php:230
 msgid "Please correct all errors and try again."
-msgstr "Corrigez toutes les erreurs et réessayez."
+msgstr "Corrija todos os erros e tente novamente."
 
 #: admin/src/Core/Assets.php:248
 msgid "Please enter a valid CNPJ."
-msgstr "Veuillez saisir un CNPJ valide."
+msgstr "Por favor, insira um CNPJ válido."
 
 #: admin/src/Core/Assets.php:245
 msgid "Please enter a valid CPF."
-msgstr "Veuillez saisir un CPF valide."
+msgstr "Por favor, insira um CPF válido."
 
 #: admin/src/Core/Ajax.php:266
 #: admin/src/Core/Assets.php:238
 msgid "Please enter a valid email."
-msgstr "Veuillez saisir un e-mail valide."
+msgstr "Por favor, insira um e-mail valido."
 
 #: admin/src/Checkout/Fields.php:1046
 msgid "Please enter a valid phone number"
-msgstr "Veuillez saisir un numéro de téléphone valide"
+msgstr "Por favor insira um número de telefone válido"
 
 #: admin/src/Core/Assets.php:242
 msgid "Please enter a valid phone number."
-msgstr "Veuillez saisir un numéro de téléphone valide."
+msgstr "Por favor, insira um número de telefone válido."
 
 #: admin/src/Checkout/Steps.php:755
 msgid "Please enter your address"
-msgstr "Veuillez saisir votre adresse"
+msgstr "Por favor insira seu endereço"
 
 #: admin/src/Admin/Settings/Registry.php:571
 msgid ""
@@ -2919,87 +2949,85 @@ msgid ""
 "ZIP code in JSON format. Use the variable {postcode} to specify the ZIP "
 "code."
 msgstr ""
-"Indiquez l'adresse de l'API pour obtenir l'adresse de l'utilisateur via son "
-"code postal au format JSON. Utilisez la variable {postcode} pour indiquer "
-"le code postal."
+"Informe o endereço da API para obter o endereço do usuário através do seu "
+"CEP em formato JSON. Use a variável {postcode} para informar o CEP."
 
 #: admin/src/Admin/Settings/Registry.php:339
 msgid ""
 "Please provide the discount coupon code that will be automatically applied "
 "at checkout."
 msgstr ""
-"Indiquez le code du coupon de réduction qui sera appliqué automatiquement "
-"lors de la finalisation de l'achat."
+"Informe o código do cupom de desconto que será aplicado automaticamente na "
+"finalização de compra."
 
 #: admin/src/Views/Components.php:419
 msgid "Please provide the field title."
-msgstr "Entrez le titre du champ."
+msgstr "Informe o título do campo."
 
 #: admin/src/Admin/Settings/Registry.php:655
 msgid "Please provide the header image link."
-msgstr "Indiquez le lien de l'image d'en-tête."
+msgstr "Informe o link da imagem do cabeçalho."
 
 #: admin/src/Views/Components.php:323
 msgid ""
 "Please provide the name to be used for the field in lowercase, using "
 "underscores instead of spaces and after the \"billing_\" prefix."
 msgstr ""
-"Entrez le nom qui sera utilisé dans le champ en lettres minuscules, en "
-"utilisant un soulignement à la place des espaces et après le préfixe "
-"\"billing_\"."
+"Informe o nome que será usado no campo em letras minúsculas, usando "
+"underline no lugar dos espaços e após o prefixo \"billing_\"."
 
 #: admin/src/Admin/Settings/Registry.php:572
 msgid ""
 "Please provide the property to obtain the address that is returned by the "
 "API service."
 msgstr ""
-"Indiquez la propriété pour obtenir l'adresse qui est retournée par le "
-"service de l'API."
+"Informe a propriedade para obter o endereço que é retornado pelo serviço da "
+"API."
 
 #: admin/src/Admin/Settings/Registry.php:574
 msgid ""
 "Please provide the property to obtain the city that is returned by the API "
 "service."
 msgstr ""
-"Indiquez la propriété pour obtenir la ville qui est retournée par le "
-"service de l'API."
+"Informe a propriedade para obter a cidade que é retornado pelo serviço da "
+"API."
 
 #: admin/src/Admin/Settings/Registry.php:573
 msgid ""
 "Please provide the property to obtain the neighborhood that is returned by "
 "the API service."
 msgstr ""
-"Indiquez la propriété pour obtenir le quartier qui est retourné par le "
-"service de l'API."
+"Informe a propriedade para obter o bairro que é retornado pelo serviço da "
+"API."
 
 #: admin/src/Admin/Settings/Registry.php:575
 msgid ""
 "Please provide the property to obtain the state that is returned by the API "
 "service."
 msgstr ""
-"Indiquez la propriété pour obtenir l'état qui est retourné par le service "
-"de l'API."
+"Informe a propriedade para obter o estado que é retornado pelo serviço da "
+"API."
 
 #: admin/src/Admin/Settings/Registry.php:662
 msgid ""
 "Please provide the text that will be displayed in the header of the "
 "checkout page."
 msgstr ""
-"Entrez le texte qui sera affiché dans l'en-tête de la page de finalisation "
-"de commande."
+"Informe o texto que será exibido no cabeçalho da página de finalização de "
+"compras."
 
 #: admin/src/Core/Assets.php:432
 #: admin/src/Views/Components.php:300
 msgid "Please wait a few moments"
-msgstr "Veuillez patienter quelques instants"
+msgstr "Aguarde alguns instantes"
 
 #: admin/src/Rest/Modules_Activate.php:73
 msgid "Plugin activated successfully."
-msgstr "Plugin activé avec succès."
+msgstr "Plugin ativado com sucesso."
 
 #: admin/src/Rest/Modules_Install.php:95
 msgid "Plugin installed and activated successfully."
-msgstr "Plugin installé et activé avec succès."
+msgstr "Plugin instalado e ativado com sucesso."
 
 #: admin/src/Admin/Default_Options.php:102
 msgid "Poppins"
@@ -3010,11 +3038,13 @@ msgid ""
 "Prevents sending follow-ups to contacts who have already made a recent "
 "purchase with the same email or phone within a period of days."
 msgstr ""
+"Impede o envio de follow ups para contatos que já fizeram uma compra "
+"recente com o mesmo e-mail ou telefone durante um período de dias."
 
 #: admin/src/Admin/Settings/Registry.php:682
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/Styles.php:20
 msgid "Primary color"
-msgstr "Couleur primaire"
+msgstr "Cor primária"
 
 #: admin/src/Admin/Settings/Views/Integrations.php:179
 #: admin/src/Admin/Settings/Views/Integrations.php:403
@@ -3025,31 +3055,31 @@ msgstr "Pro"
 #: admin/src/Recovery_Carts/Admin/Admin.php:154
 #: admin/src/Recovery_Carts/Admin/Admin.php:155
 msgid "Processing Queue"
-msgstr ""
+msgstr "Fila de Processamentos"
 
 #: woocommerce/common/checkout/review-order.php:25
 msgid "Product"
-msgstr "Produit"
+msgstr "Produto"
 
 #: admin/src/Admin/Settings/Views/Integrations.php:151
 msgid "Purchase"
-msgstr "Achat"
+msgstr "Compra"
 
 #: admin/src/Core/Webhooks/Event_Registry.php:120
 msgid "Purchase (tracking)"
-msgstr ""
+msgstr "Compra (rastreamento)"
 
 #: admin/src/Recovery_Carts/Rest/Carts.php:273
 msgid "Purchased"
-msgstr ""
+msgstr "Comprou"
 
 #: admin/src/Core/Assets.php:468
 msgid "Purchaser details"
-msgstr ""
+msgstr "Dados do titular da compra"
 
 #: admin/src/Integrations/Force_Sells.php:59
 msgid "Quantity"
-msgstr "Quantité"
+msgstr "Quantidade"
 
 #: admin/src/Admin/Default_Options.php:134
 msgid "Quicksand"
@@ -3063,12 +3093,12 @@ msgstr "Raleway"
 #: admin/src/Admin/Settings/Views/Integrations.php:590
 msgid "Receive payments with Pix, Credit Card, Open Finance, and Bank Slip."
 msgstr ""
-"Recevez des paiements avec Pix, Carte de Crédit, Open Finance et Boleto "
+"Receba pagamentos com Pix, Cartão de Crédito, Open Finance e Boleto "
 "Bancário."
 
 #: admin/src/Recovery_Carts/Core/Assets.php:114
 msgid "Recent"
-msgstr ""
+msgstr "Recentes"
 
 #: admin/src/Recovery_Carts/Views/Settings.php:16
 #: admin/src/Recovery_Carts/Views/Settings_Info.php:14
@@ -3076,6 +3106,8 @@ msgid ""
 "Recover abandoned carts and orders with cadenced follow-ups. If you need "
 "help setting it up, visit our"
 msgstr ""
+"Recupere carrinhos e pedidos abandonados com follow up cadenciado. Se "
+"precisar de ajuda para configurar, acesse nossa"
 
 #: admin/src/Admin/Settings/Integrations_Data.php:58
 #: admin/src/Admin/Settings/Views/Integrations.php:455
@@ -3083,99 +3115,99 @@ msgid ""
 "Recover abandoned carts and orders with scheduled follow-ups. Send WhatsApp "
 "notifications automatically and much more!"
 msgstr ""
-"Récupérez les paniers et les commandes abandonnés avec un suivi programmé. "
-"Envoyez des notifications via WhatsApp automatiquement et bien plus encore !"
+"Recupere carrinhos e pedidos abandonados com follow up cadenciado. Envie "
+"notificações via WhatsApp de forma automática e muito mais!"
 
 #: admin/src/Recovery_Carts/Rest/Carts.php:271
 msgid "Recovered"
-msgstr ""
+msgstr "Recuperado"
 
 #: admin/src/Recovery_Carts/Core/Webhooks.php:91
 msgid "Recovered cart"
-msgstr ""
+msgstr "Carrinho recuperado"
 
 #: admin/src/Recovery_Carts/Admin/Components.php:439
 msgid "Recovered carts"
-msgstr ""
+msgstr "Carrinhos recuperados"
 
 #: admin/src/Recovery_Carts/Core/Assets.php:159
 msgid "Recovered value"
-msgstr ""
+msgstr "Valor recuperado"
 
 #: admin/src/Core/Webhooks/Event_Registry.php:38
 msgid "Recovery"
-msgstr ""
+msgstr "Recuperação"
 
 #: admin/src/Admin/Settings/Registry.php:280
 msgid "Redirect URL"
-msgstr "URL de redirection"
+msgstr "URL de redirecionamento"
 
 #: admin/src/API/Direct_Checkout.php:337
 msgid "Redirecting..."
-msgstr "Redirection..."
+msgstr "Redirecionando..."
 
 #: admin/src/Core/Webhooks/Event_Registry.php:92
 msgid "Refunded order"
-msgstr ""
+msgstr "Pedido reembolsado"
 
 #: woocommerce/common/checkout/form-login.php:75
 msgid "Remember me"
-msgstr "Se souvenir de moi"
+msgstr "Lembrar de mim"
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/Webhooks.php:143
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/Webhooks.php:222
 msgid "Remove"
-msgstr ""
+msgstr "Remover"
 
 #: admin/src/Admin/Settings/Registry.php:373
 msgid "Remove quantity controls on individually sold products"
-msgstr ""
-"Supprimer les contrôles de quantité pour les produits vendus "
-"individuellement"
+msgstr "Remover controles de quantidade em produtos vendidos individualmente"
 
 #: admin/src/Checkout/Sidebar.php:294
 #: admin/src/Checkout/Sidebar.php:295
 msgid "Remove this item"
-msgstr "Supprimer cet article"
+msgstr "Remover este item"
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/Webhooks.php:158
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/Webhooks.php:204
 msgid "Remove webhook"
-msgstr ""
+msgstr "Remover webhook"
 
 #: admin/src/Admin/Settings/Registry.php:555
 msgid "Removes the stepper from the checkout header."
-msgstr ""
+msgstr "Remove o stepper do cabeçalho do checkout."
 
 #: admin/src/Admin/Settings/Registry.php:261
 msgid ""
 "Replaces the classic checkout with a React interface that consumes the "
 "WooCommerce Store API. Requires a valid license."
 msgstr ""
+"Substitui a finalização de compra clássica por uma interface em React que "
+"consome a WooCommerce Store API. Requer licença válida."
 
 #: woocommerce/common/checkout/form-login.php:102
 msgid "Reset password"
-msgstr "Réinitialiser le mot de passe"
+msgstr "Redefinir senha"
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/Styles.php:29
 msgid "Reset to default color"
-msgstr "Réinitialiser à la couleur par défaut"
+msgstr "Redefinir para cor padrão"
 
 #: admin/src/Admin/Settings/Registry.php:1053
 msgid "Rest of the world"
-msgstr ""
+msgstr "Resto do mundo"
 
 #: admin/src/Admin/Settings/Registry.php:277
 msgid "Restart countdown"
-msgstr "Réinitialiser le compteur"
+msgstr "Reiniciar contagem"
 
 #: admin/src/Recovery_Carts/Admin/Components.php:298
 msgid "Restrictions:"
-msgstr ""
+msgstr "Restrições:"
 
 #: woocommerce/common/checkout/empty-cart.php:25
 msgid "Return to store"
-msgstr "Retourner à la boutique"
+msgstr "Retornar à loja"
 
 #: admin/src/Admin/Default_Options.php:504
 msgid "RG"
@@ -3184,7 +3216,7 @@ msgstr "RG"
 #: admin/src/Views/Components.php:188
 #: admin/src/Views/Components.php:446
 msgid "Right"
-msgstr "Droite"
+msgstr "Direita"
 
 #: admin/src/Admin/Default_Options.php:118
 msgid "Roboto"
@@ -3196,266 +3228,264 @@ msgstr "Rubik"
 
 #: admin/src/Rest/Conditions_Add.php:64
 msgid "Rule created successfully!"
-msgstr ""
+msgstr "Regra criada com sucesso!"
 
 #: admin/src/Rest/Conditions_Remove.php:53
 msgid "Rule deleted successfully!"
-msgstr ""
+msgstr "Regra excluída com sucesso!"
 
 #: admin/src/Rest/Conditions_Update.php:63
 msgid "Rule updated successfully!"
-msgstr ""
+msgstr "Regra atualizada com sucesso!"
 
 #: admin/src/Recovery_Carts/Core/Webhooks.php:92
 msgid "Run when an abandoned cart generates a completed order."
-msgstr ""
+msgstr "Executado quando um carrinho abandonado gera um pedido concluído."
 
 #: admin/src/Recovery_Carts/Core/Webhooks.php:80
 msgid "Run when an order remains pending and is marked as abandoned."
-msgstr ""
+msgstr "Executado quando um pedido permanece pendente e é marcado como abandonado."
 
 #: admin/src/Recovery_Carts/Core/Ajax.php:565
 msgid "Sample product 1, Sample product 2"
-msgstr ""
+msgstr "Produto de exemplo 1, Produto de exemplo 2"
 
 #: admin/src/Recovery_Carts/Views/Settings.php:54
 msgid "Save changes"
-msgstr "Enregistrer les modifications"
+msgstr "Salvar alterações"
 
 #: admin/src/Recovery_Carts/Core/Ajax.php:321
 #: admin/src/Recovery_Carts/Core/Ajax.php:421
 #: admin/src/Recovery_Carts/Core/Ajax.php:480
 msgid "Saved successfully"
-msgstr "Enregistré avec succès"
+msgstr "Salvo com sucesso"
 
 #: admin/src/Core/Assets.php:582
 #: admin/src/Recovery_Carts/Core/Assets.php:110
 #: admin/src/Recovery_Carts/Core/Assets.php:203
 msgid "Search"
-msgstr "Rechercher"
+msgstr "Pesquisar"
 
 #: admin/src/Core/Assets.php:483
 msgid "Search address"
-msgstr ""
+msgstr "Pesquisar endereço"
 
 #: admin/src/Checkout/Steps.php:402
 msgid "Search an address"
-msgstr "Rechercher une adresse"
+msgstr "Pesquisar um endereço"
 
 #: admin/src/Recovery_Carts/Admin/Admin.php:391
 msgid "Search carts"
-msgstr ""
+msgstr "Pesquisar carrinhos"
 
 #: admin/src/Checkout/Steps.php:457
 msgid "Search for an address"
-msgstr "Rechercher une adresse"
+msgstr "Procurar um endereço"
 
 #: admin/src/Admin/Settings/Registry.php:683
 msgid "Secondary color"
-msgstr "Couleur secondaire"
+msgstr "Cor secundára"
 
 #: admin/src/Admin/Settings/Views/Integrations.php:234
 msgid ""
 "Secret key of the Measurement Protocol used to authenticate server-side "
 "submissions."
 msgstr ""
-"Clé secrète du Measurement Protocol utilisée pour authentifier les envois "
-"côté serveur."
+"Chave secreta do Measurement Protocol usada para autenticar envios "
+"server-side."
 
 #: admin/src/Core/Ajax.php:107
 msgid "Security check failed. Refresh the page and try again."
-msgstr ""
+msgstr "Falha na verificação de segurança. Atualize a página e tente novamente."
 
 #: admin/src/Recovery_Carts/Admin/Components.php:249
 msgid "Select a discount coupon"
-msgstr ""
+msgstr "Selecione um cupom de desconto"
 
 #: admin/src/Recovery_Carts/Integrations/Joinotify.php:82
 msgid "Select a sender"
-msgstr ""
+msgstr "Selecione um remetente"
 
 #: admin/src/Recovery_Carts/Core/Ajax.php:587
 msgid "Select a sender in the Joinotify integration options."
-msgstr ""
+msgstr "Selecione um remetente nas opções da integração Joinotify."
 
 #: admin/src/Recovery_Carts/Integrations/Joinotify.php:78
 msgid "Select a sender that will send the cart and order recovery notifications."
 msgstr ""
+"Selecione um remetente que fará o envio das notificações de recuperações de "
+"carrinhos e pedidos."
 
 #: admin/src/Admin/Settings/Registry.php:437
 msgid "Select the contact page that will be displayed to customers at checkout."
 msgstr ""
-"Sélectionnez la page de contact qui sera affichée aux clients lors de la "
-"finalisation de l'achat."
+"Selecione a página de contato que será exibida aos clientes na finalização "
+"de compra."
 
 #: admin/src/Admin/Settings/Registry.php:648
 msgid ""
 "Select the type of brand that will be displayed in the header of the "
 "checkout page."
 msgstr ""
-"Sélectionnez le type de marque qui sera affiché dans l'en-tête de la page "
-"de finalisation de l'achat."
+"Selecione o tipo de marca que será exibida no cabeçalho da página de "
+"finalização de compra."
 
 #: admin/src/Views/Components.php:341
 msgid "Select the type of field to be included in checkout."
-msgstr ""
-"Sélectionnez le type de champ qui sera inclus dans la finalisation des "
-"achats."
+msgstr "Selecione o tipo do campo que será incluído na finalização de compras."
 
 #: admin/src/Core/Assets.php:579
 msgid "Selected country"
-msgstr "Pays sélectionné"
+msgstr "País selecionado"
 
 #: admin/src/Views/Components.php:352
 msgid "Selector/Dropdown"
-msgstr "Sélecteur/Liste déroulante"
+msgstr "Seletor/Lista suspensa"
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/General.php:107
 msgid ""
 "Selectors are the HTML components that show the modal when hovering over "
 "the element. Example: button[name=\"add-to-cart\"]"
 msgstr ""
+"Os seletores são os componentes HTML que ao passar o mouse sobre o elemento "
+"mostra o modal. Exemplo: button[name=\"add-to-cart\"]"
 
 #: admin/src/Recovery_Carts/Admin/Components.php:161
 msgid "Send a test message to the phone configured in the Joinotify options"
-msgstr ""
+msgstr "Enviar mensagem de teste para o telefone configurado nas opções do Joinotify"
 
 #: admin/src/Rest/Fonts_Save.php:123
 msgid "Send at least one font file (WOFF, WOFF2, or TTF)."
-msgstr "Envoyez au moins un fichier de police (WOFF, WOFF2 ou TTF)."
+msgstr "Envie ao menos um arquivo de fonte (WOFF, WOFF2 ou TTF)."
 
 #: admin/src/Core/Assets.php:481
 msgid "Send code"
-msgstr ""
+msgstr "Enviar código"
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/Webhooks.php:26
 msgid ""
 "Send plugin event data to external services through HTTP requests with "
 "support for custom headers."
 msgstr ""
+"Envie dados dos eventos do plugin para serviços externos através de "
+"requisições HTTP com suporte a cabeçalhos personalizados."
 
 #: woocommerce/common/checkout/form-login.php:113
 msgid "Send reset link"
-msgstr "Envoyer le lien de réinitialisation"
+msgstr "Enviar link de redefinição"
 
 #: admin/src/Checkout/Steps.php:446
 msgid "Send to a different address?"
-msgstr "Envoyer à une adresse différente ?"
+msgstr "Enviar para um endereço diferente?"
 
 #: admin/src/Recovery_Carts/Core/Ajax.php:586
 msgid "Sender not configured"
-msgstr ""
+msgstr "Remetente não configurado"
 
 #: admin/src/Recovery_Carts/Admin/Components.php:128
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/FollowUp.php:64
 msgid "Sending interval (time):"
-msgstr ""
+msgstr "Intervalo de envio (horário):"
 
 #: admin/src/Admin/Settings/Views/Integrations.php:247
 msgid "Set conversion parameters to send events to Google Ads."
-msgstr ""
-"Définissez les paramètres de conversion pour l'envoi des événements à "
-"Google Ads."
+msgstr "Defina os parâmetros de conversão para envio dos eventos ao Google Ads."
 
 #: admin/src/Admin/Settings/Registry.php:286
 #: admin/src/Admin/Settings/Registry.php:294
 msgid "Set custom"
-msgstr "Définir personnalisé"
+msgstr "Definir personalizada"
 
 #: admin/src/Views/Components.php:122
 msgid "Set default country"
-msgstr "Définir le pays par défaut"
+msgstr "Definir país padrão"
 
 #: admin/src/Admin/Settings/Registry.php:693
 msgid "Set the font size for h2 subtitle tags (Heading 2)."
-msgstr ""
-"Définir la taille de la police pour les balises h2 de sous-titres (Heading "
-"2)."
+msgstr "Define o tamanho da fonte para tags h2 de subtítulos (Heading 2)."
 
 #: admin/src/Admin/Settings/Integrations_Data.php:41
 #: admin/src/Admin/Settings/Views/Integrations.php:182
 msgid "Set up GA4, Google Ads, and Meta to send event data collected at checkout."
 msgstr ""
-"Configurez GA4, Google Ads et Meta pour l'envoi de données d'événements "
-"collectées lors du paiement."
+"Configure o GA4, Google Ads e Meta para envio de dados de eventos coletados "
+"no checkout."
 
 #: admin/src/Admin/Settings/Views/Integrations.php:209
 msgid "Set up Google Analytics 4 parameters to send checkout events."
 msgstr ""
-"Configurez les paramètres de Google Analytics 4 pour l'envoi d'événements "
-"de paiement."
+"Configure os parâmetros do Google Analytics 4 para envio de eventos de "
+"checkout."
 
 #: admin/src/Admin/Settings/Views/Integrations.php:286
 msgid "Set up the Pixel and Conversions API token to send events."
-msgstr ""
-"Configurez le Pixel et le token de l'API de conversions pour l'envoi des "
-"événements."
+msgstr "Configure o Pixel e o token da Conversions API para envio dos eventos."
 
 #: admin/src/Views/Settings/Settings_Panel.php:63
 #: admin/src/Views/Settings/Settings_Panel.php:64
 msgid "Settings"
-msgstr ""
+msgstr "Configurações"
 
 #: admin/src/Recovery_Carts/Core/Ajax.php:322
 msgid "Settings have been updated!"
-msgstr "Les paramètres ont été mis à jour !"
+msgstr "As configurações foram atualizadas!"
 
 #: admin/src/Checkout/Thankyou.php:329
 msgid "Shipping"
-msgstr "Expédition"
+msgstr "Envio"
 
 #: admin/src/Core/Assets.php:469
 msgid "Shipping address"
-msgstr ""
+msgstr "Endereço de entrega"
 
 #: woocommerce/common/cart/cart-shipping.php:73
 msgid "Shipping costs are calculated during checkout."
-msgstr "Les frais de livraison sont calculés lors du paiement."
+msgstr "Shipping costs are calculated during checkout."
 
 #: admin/src/Core/Assets.php:471
 msgid "Shipping methods"
-msgstr ""
+msgstr "Formas de entrega"
 
 #: woocommerce/common/cart/cart-shipping.php:67
 msgid "Shipping options will be updated during checkout."
-msgstr "Les options de livraison seront mises à jour lors du paiement."
+msgstr "Shipping options will be updated during checkout."
 
 #: woocommerce/common/cart/cart-shipping.php:64
 msgid "Shipping to %s."
-msgstr "Livraison à %s."
+msgstr "Shipping to %s."
 
 #: admin/src/Admin/Settings/Conditions_Store.php:595
 msgid "Show"
-msgstr "Afficher"
+msgstr "Mostrar"
 
 #: admin/src/Admin/Settings/Registry.php:552
 msgid "Show additional observations field"
-msgstr "Afficher le champ d'observations supplémentaires"
+msgstr "Mostrar campo de observações adicionais"
 
 #: admin/src/Admin/Settings/Registry.php:745
 msgid "Show available update notice"
-msgstr "Afficher la notification de mise à jour disponible"
+msgstr "Mostrar notificação de atualização disponível"
 
 #: admin/src/Admin/Settings/Registry.php:262
 msgid "Show Back to Shop button"
-msgstr "Afficher le bouton Retour à la boutique"
+msgstr "Mostrar botão Voltar à loja"
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/General.php:96
 msgid "Show modal only for logged-in users"
-msgstr ""
+msgstr "Mostrar modal apenas para usuários logados"
 
 #: woocommerce/dark/checkout/form-checkout.php:55
 #: woocommerce/modern/checkout/form-checkout.php:55
 msgid "Show order summary"
-msgstr "Afficher le résumé de la commande"
+msgstr "Mostrar resumo do pedido"
 
 #: admin/src/Admin/Settings/Registry.php:264
 msgid "Show order summary open by default"
-msgstr "Afficher le résumé de la commande ouvert par défaut"
+msgstr "Mostrar resumo do pedido aberto por padrão"
 
 #: admin/src/Admin/Settings/Registry.php:321
 msgid "Show physical store address for Kangu order pickup"
-msgstr "Afficher l'adresse du magasin physique pour le retrait de la commande Kangu"
+msgstr "Mostrar endereço da loja física para retirada da encomenda Kangu"
 
 #: admin/src/Admin/Settings/Registry.php:614
 msgid ""
@@ -3463,26 +3493,29 @@ msgid ""
 "on conditional rules (users, products, countries, shipping regions and "
 "more)."
 msgstr ""
+"Exiba, oculte ou aplique descontos em campos, formas de entrega e pagamento "
+"com base em regras condicionais (usuários, produtos, países, regiões de "
+"entrega e mais)."
 
 #: admin/src/Checkout/Coupons.php:157
 msgid "Sidebar (Default)"
-msgstr "Barre latérale (Par défaut)"
+msgstr "Barra lateral (Padrão)"
 
 #: admin/src/Core/Assets.php:480
 msgid "Sign in with WhatsApp"
-msgstr ""
+msgstr "Entrar com WhatsApp"
 
 #: admin/src/Views/Settings/Settings_Panel.php:184
 msgid "Single page"
-msgstr "Page unique"
+msgstr "Página única"
 
 #: admin/src/Admin/Settings/Registry.php:263
 msgid "Skip cart page"
-msgstr "Passer la page du panier"
+msgstr "Pular página do carrinho"
 
 #: admin/src/Recovery_Carts/Core/Assets.php:115
 msgid "Smileys & People"
-msgstr ""
+msgstr "Sorrisos e Pessoas"
 
 #: admin/src/Checkout/Common.php:204
 #: woocommerce/common/checkout/form-pay.php:56
@@ -3490,23 +3523,22 @@ msgid ""
 "Sorry, it seems there are no payment methods available for your location. "
 "Please contact us if you need assistance or wish to pay in another way."
 msgstr ""
-"Désolé, il semble qu'il n'y ait pas de méthodes de paiement disponibles "
-"pour votre emplacement. Contactez-nous si vous avez besoin d'aide ou si "
-"vous souhaitez payer d'une autre manière."
+"Desculpe, parece que não há métodos de pagamento disponíveis para sua "
+"localização. Entre em contato conosco se precisar de assistência ou desejar "
+"pagar de outra forma."
 
 #: admin/src/Checkout/Sidebar.php:395
 msgid ""
 "Sorry, we do not have enough \"%1$s\" in stock to fulfill your order (%2$s "
 "available). We apologize for any inconvenience caused."
 msgstr ""
-"Désolé, nous n'avons pas assez de \"%1$s\" en stock pour satisfaire votre "
-"commande (%2$s disponibles). Nous nous excusons pour tout inconvénient "
-"causé."
+"Desculpe, não temos \"%1$s\" suficientes em estoque para atender seu pedido "
+"(%2$s disponíveis). Pedimos desculpas por qualquer inconveniente causado."
 
 #: admin/src/Recovery_Carts/Admin/Components.php:132
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/FollowUp.php:68
 msgid "Start"
-msgstr ""
+msgstr "Início"
 
 #: admin/src/Admin/Settings/Integrations_Data.php:48
 #: admin/src/Admin/Settings/Views/Integrations.php:407
@@ -3514,382 +3546,383 @@ msgid ""
 "Start receiving via Pix and Boleto with immediate approval and no fees. "
 "Exclusive for Inter Empresas customers."
 msgstr ""
-"Commencez à recevoir via Pix et Boleto avec approbation immédiate et sans "
-"frais. Exclusif pour les clients Inter Empresas."
+"Comece a receber via Pix e Boleto com aprovação imediata e sem cobrança de "
+"taxas. Exclusivo para clientes Inter Empresas."
 
 #: admin/src/Checkout/Steps.php:738
 #: admin/src/Checkout/Steps.php:780
 msgid "Start typing your address to search."
-msgstr "Commencez à saisir votre adresse pour rechercher."
+msgstr "Comece a digitar seu endereço para pesquisar."
 
 #: admin/src/Checkout/Steps.php:744
 #: admin/src/Checkout/Steps.php:786
 msgid "Start with your home address and then the house number."
-msgstr "Commencez par l'adresse de votre maison puis le numéro de la maison."
+msgstr "Comece com o endereço da sua casa e depois o número da casa."
 
 #: admin/src/Admin/Settings/Conditions_Store.php:696
 msgid "Starts with"
-msgstr "Commence par"
+msgstr "Começa com"
 
 #: admin/src/Admin/Default_Options.php:399
 msgid "State"
-msgstr "État"
+msgstr "Estado"
 
 #: admin/src/Admin/Default_Options.php:476
 msgid "State Registration"
-msgstr "Numéro d'inscription à l'État"
+msgstr "Inscrição Estadual"
 
 #: admin/src/Admin/Settings/Registry.php:575
 msgid "State retrieval property"
-msgstr "Propriété d'obtention de l'état"
+msgstr "Propriedade de obtenção de estado"
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/General.php:197
 msgid "State/region name mapping"
-msgstr ""
+msgstr "Mapeamento de nome de estado/região"
 
 #: admin/src/Core/Assets.php:465
 msgid "Step"
-msgstr ""
+msgstr "Etapa"
 
 #: admin/src/Views/Components.php:489
 msgid "Step 1 (Contact)"
-msgstr "Étape 1 (Contact)"
+msgstr "Etapa 1 (Contato)"
 
 #: admin/src/Views/Components.php:490
 msgid "Step 2 (Delivery)"
-msgstr "Étape 2 (Livraison)"
+msgstr "Etapa 2 (Entrega)"
 
 #: admin/src/Admin/Settings/Registry.php:1103
 msgid "Store manager"
-msgstr "Gestionnaire de boutique"
+msgstr "Gerente de loja"
 
 #: admin/src/Admin/Settings/Registry.php:637
 #: admin/src/Recovery_Carts/Admin/Components.php:61
 msgid "Styles"
-msgstr "Styles"
+msgstr "Estilos"
 
 #: admin/src/Admin/Settings/Registry.php:1099
 msgid "Subscriber"
-msgstr "Abonné"
+msgstr "Assinante"
 
 #: admin/src/Core/Assets.php:474
 #: woocommerce/common/checkout/review-order.php:26
 #: woocommerce/common/checkout/review-order.php:63
 msgid "Subtotal"
-msgstr "Sous-total"
+msgstr "Subtotal"
 
 #: admin/src/Recovery_Carts/Core/Assets.php:121
 msgid "Symbols"
-msgstr ""
+msgstr "Símbolos"
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/General.php:32
 msgid "Task scheduler"
-msgstr ""
+msgstr "Agendador de tarefas"
 
 #: admin/src/Admin/Settings/Registry.php:337
 msgid "Terms and conditions active by default"
-msgstr "Conditions générales activées par défaut"
+msgstr "Termos e condições ativo por padrão"
 
 #: admin/src/Recovery_Carts/Admin/Components.php:162
 msgid "Test"
-msgstr ""
+msgstr "Testar"
 
 #: admin/src/Admin/Settings/Views/Integrations.php:319
 msgid "Test Event Code (optional)"
-msgstr "Code d'événement de test (facultatif)"
+msgstr "Test Event Code (opcional)"
 
 #: admin/src/Recovery_Carts/Core/Ajax.php:597
 msgid "Test sent to %s."
-msgstr ""
+msgstr "Teste enviado para %s."
 
 #: admin/src/Admin/Settings/Registry.php:650
 #: admin/src/Views/Components.php:346
 msgid "Text"
-msgstr "Texte"
+msgstr "Texto"
 
 #: admin/src/Views/Components.php:347
 msgid "Text area"
-msgstr "Zone de texte"
+msgstr "Área de texto"
 
 #: admin/src/Admin/Settings/Registry.php:482
 msgid "Text of the button to go back steps"
-msgstr "Texte du bouton de retour aux étapes"
+msgstr "Texto do botão de voltar etapas"
 
 #: admin/src/Admin/Settings/Registry.php:483
 msgid "Text of the button to revisit the store on the thank-you page"
-msgstr "Texte du bouton pour revisiter la boutique de la page de remerciement"
+msgstr "Texto do botão para revisitar a loja da página de agradecimento"
 
 #: admin/src/Admin/Settings/Registry.php:489
 msgid "Text of the contact information summary"
-msgstr "Texte du résumé des informations de contact"
+msgstr "Texto do resumo de informações de contato"
 
 #: admin/src/Admin/Settings/Registry.php:492
 msgid "Text of the delivery information summary"
-msgstr "Texte du résumé des informations de livraison"
+msgstr "Texto do resumo de informações de entrega"
 
 #: admin/src/Recovery_Carts/Admin/Components.php:198
 msgid "Text variables:"
-msgstr ""
+msgstr "Variáveis de texto:"
 
 #: admin/src/Admin/Settings/Registry.php:467
 msgid "Texts"
-msgstr "Textes"
+msgstr "Textos"
 
 #: admin/src/Checkout/Thankyou.php:198
 msgid "Thank you, %s!"
-msgstr "Merci, %s !"
+msgstr "Obrigado, %s!"
 
 #: admin/src/Core/Webhooks/Event_Registry.php:106
 msgid "Thank-you page"
-msgstr ""
+msgstr "Página de agradecimento"
 
 #: admin/src/Admin/Settings/Registry.php:429
 msgid "Thank-you Page"
-msgstr ""
+msgstr "Página de Agradecimento"
 
 #: admin/src/Compatibility/Legacy_Filters.php:118
 msgid ""
 "The \"%1$s\" filter has been deprecated since version %3$s. Use \"%2$s\" "
 "instead."
 msgstr ""
-"Le filtre \"%1$s\" est obsolète depuis la version %3$s. Utilisez \"%2$s\" à "
-"la place."
+"O filtro \"%1$s\" está obsoleto desde a versão %3$s. Use \"%2$s\" em seu "
+"lugar."
 
 #: admin/src/Compatibility/Legacy_Hooks.php:115
 msgid ""
 "The \"%1$s\" hook has been deprecated since version %3$s. Use \"%2$s\" "
 "instead."
 msgstr ""
-"Le crochet \"%1$s\" est obsolète depuis la version %3$s. Utilisez \"%2$s\" "
-"à la place."
+"O gancho \"%1$s\" está obsoleto desde a versão %3$s. Use \"%2$s\" em seu "
+"lugar."
 
 #: admin/src/Admin/Settings/Conditions_Store.php:634
 msgid "the %s field"
-msgstr ""
+msgstr "o campo %s"
 
 #: admin/src/Admin/Settings/Conditions_Store.php:649
 msgid "the %s payment"
-msgstr ""
+msgstr "o pagamento %s"
 
 #: admin/src/Checkout/Fields.php:1158
 #: admin/src/Checkout/Fields.php:1164
 msgid "The %s provided is not valid."
-msgstr "Le %s renseigné n'est pas valide."
+msgstr "O %s informado não é válido."
 
 #: admin/src/Admin/Settings/Conditions_Store.php:642
 msgid "the %s shipping"
-msgstr ""
+msgstr "a entrega %s"
 
 #: admin/src/Checkout/Fields.php:1340
 msgid "The account password is required to continue."
-msgstr "Le mot de passe du compte est obligatoire pour continuer."
+msgstr "A senha da conta e obrigatoria para continuar."
 
 #: admin/src/Rest/License_Alternative_Activate.php:92
 msgid "The activation domain is not allowed."
-msgstr "Le domaine d'activation n'est pas autorisé."
+msgstr "O domínio de ativação não é permitido."
 
 #: admin/src/Rest/Layout_Get.php:47
 #: admin/src/Rest/Layout_Save.php:51
 msgid "The checkout builder requires an active Pro license."
-msgstr ""
+msgstr "O construtor de checkout requer uma licença Pro ativa."
 
 #: admin/src/Rest/Conditions_Add.php:47
 #: admin/src/Rest/Conditions_Update.php:47
 msgid "The conditions manager requires an active Pro license."
-msgstr ""
+msgstr "O gerenciador de condições requer uma licença Pro ativa."
 
 #: admin/src/Admin/Admin_Options.php:165
 msgid "The Country field at checkout is disabled, check if your payment gateway "
 msgstr ""
-"Le champ Pays à la finalisation des achats est désactivé, vérifiez si votre "
-"passerelle de paiement dépend de ce champ pour ne pas recevoir l'erreur "
-"\"Veuillez fournir une adresse pour continuer votre achat.\""
+"O campo País na finalização de compras está desativado, verifique se seu "
+"gateway de pagamentos depende deste campo para não receber o erro \"Informe "
+"um endereço para continuar com sua compra.\""
 
 #: admin/src/Recovery_Carts/Core/Coupons.php:61
 msgid "The coupon already exists."
-msgstr ""
+msgstr "O cupom já existe."
 
 #: admin/src/Core/Assets.php:234
 msgid "The coupon has been removed."
-msgstr "Le coupon a été supprimé."
+msgstr "O cupom foi removido."
 
 #: admin/src/API/License.php:399
 msgid "The cURL extension is missing."
-msgstr "L'extension cURL est manquante."
+msgstr "A extensão cURL está faltando."
 
 #: admin/src/Recovery_Carts/Core/Coupons.php:39
 msgid "The discount value must be greater than zero to generate a coupon."
-msgstr ""
+msgstr "O valor do desconto deve ser maior que zero para gerar um cupom."
 
 #: admin/src/Recovery_Carts/Core/Ajax.php:422
 msgid "The event was added successfully!"
-msgstr ""
+msgstr "O evento foi adicionado com sucesso!"
 
 #: admin/src/Recovery_Carts/Core/Ajax.php:481
 msgid "The event was removed successfully!"
-msgstr ""
+msgstr "O evento foi removido com sucesso!"
 
 #: admin/src/Rest/Fields_Remove.php:59
 msgid "The field was successfully removed!"
-msgstr "Le champ a été supprimé avec succès !"
+msgstr "O campo foi removido com sucesso!"
 
 #: admin/src/Rest/Fields_Save.php:60
 msgid "The fields have been updated!"
-msgstr ""
+msgstr "Os campos foram atualizados!"
 
 #: admin/src/Rest/Fields_Add.php:47
 #: admin/src/Rest/Fields_Remove.php:47
 #: admin/src/Rest/Fields_Save.php:47
 msgid "The fields manager requires an active Pro license."
-msgstr ""
+msgstr "O gerenciador de campos requer uma licença Pro ativa."
 
 #: admin/src/Rest/Settings_Import.php:79
 msgid "The file did not contain applicable settings."
-msgstr "Le fichier ne contenait pas de configurations applicables."
+msgstr "O arquivo não continha configurações aplicáveis."
 
 #: admin/src/Rest/Fonts_Delete.php:70
 msgid "The font has been removed from the library."
-msgstr "La police a été supprimée de la bibliothèque."
+msgstr "A fonte foi removida da biblioteca."
 
 #: admin/src/Rest/Fonts_Save.php:144
 msgid "The font settings have been saved successfully!"
-msgstr "Les paramètres de la police ont été enregistrés avec succès !"
+msgstr "As configurações da fonte foram salvas com sucesso!"
 
 #: admin/src/Admin/Admin_Options.php:529
 msgid ""
 "The GD extension is disabled and is required to generate the Pix QR Code. "
 "Enable it in your hosting to activate this feature."
 msgstr ""
-"L'extension GD est désactivée et est nécessaire pour générer le QR Code du "
-"Pix. Activez-la dans votre hébergement pour activer cette fonctionnalité."
+"A extensão GD está desativada, e é necessária para gerar o QR Code do Pix. "
+"Ative-a em sua hospedagem para habilitar esse recurso."
 
 #: admin/src/Admin/Settings/Fields_Store.php:200
 msgid "The given field was not found."
-msgstr ""
+msgstr "O campo informado não foi encontrado."
 
 #: admin/src/Recovery_Carts/Core/Ajax.php:556
 msgid "The Joinotify integration is not active."
-msgstr ""
+msgstr "A integração Joinotify não está ativa."
 
 #: admin/src/Rest/License_Alternative_Activate.php:88
 msgid "The license file does not contain valid data."
-msgstr "Le fichier de licence ne contient pas de données valides."
+msgstr "O arquivo de licença não contém dados válidos."
 
 #: admin/src/Rest/License_Deactivate.php:66
 msgid "The license has been deactivated. All Pro version features are now disabled!"
 msgstr ""
+"A licença foi desativada. Todos os recursos da versão Pro agora estão "
+"desativados!"
 
 #: admin/src/Rest/License_Alternative_Activate.php:96
 msgid "The license is not allowed for this product."
-msgstr "La licence indiquée n'est pas autorisée pour ce produit"
+msgstr "A licença informada não é permitida para este produto"
 
 #: admin/src/Rest/Modules_Install.php:89
 msgid "The plugin was installed, but could not be activated."
-msgstr "Le plugin a été installé, mais n'a pas pu être activé."
+msgstr "O plugin foi instalado, mas não pôde ser ativado."
 
 #: admin/src/Admin/Settings/Registry.php:682
 msgid ""
 "The primary color defines the color of elements that will have actions or "
 "information on the checkout page."
 msgstr ""
-"La couleur primaire définit la couleur des éléments qui auront des actions "
-"ou des informations sur la page de finalisation de commande."
+"A cor primária define a cor dos elementos que terão ações ou informações na "
+"página de finalização de compras."
 
 #: admin/src/Checkout/Fields.php:1625
 msgid "The provided ZIP code does not belong to the selected city/state."
-msgstr "Le code postal renseigné n'appartient pas à la ville/UF sélectionnée."
+msgstr "O CEP informado não pertence à cidade/UF selecionados."
 
 #: admin/src/Admin/Settings/Registry.php:683
 msgid ""
 "The secondary color defines the color of elements that will have actions or "
 "information on the checkout page."
 msgstr ""
-"La couleur secondaire définit la couleur des éléments qui auront des "
-"actions ou des informations sur la page de finalisation de commande."
+"A cor secundária define a cor dos elementos que terão ações ou informações "
+"na página de finalização de compras."
 
 #: admin/src/Rest/Settings_Import.php:83
 msgid "The settings have been imported successfully!"
-msgstr "Les paramètres ont été importés avec succès !"
+msgstr "As configurações foram importadas com sucesso!"
 
 #: admin/src/Rest/Settings_Save.php:55
 msgid "The settings have been saved."
-msgstr ""
+msgstr "As configurações foram salvas."
 
 #: admin/src/API/Updater.php:241
 msgid "The version of the Flexify Checkout for WooCommerce plugin is the latest."
-msgstr "La version du plugin <strong>Flexify Checkout</strong> est la plus récente."
+msgstr "A versão do plugin <strong>Flexify Checkout</strong> é a mais recente."
 
 #: admin/src/Recovery_Carts/Core/Ajax.php:538
 msgid "The WhatsApp channel is not active for this follow-up."
-msgstr ""
+msgstr "O canal WhatsApp não está ativo para este follow up."
 
 #: woocommerce/common/cart/cart-shipping.php:78
 msgid ""
 "There are no shipping options available. Please ensure that your address "
 "has been entered correctly, or contact us if you need any help."
 msgstr ""
-"Aucune option d'expédition disponible. Veuillez vous assurer que votre "
-"adresse a été saisie correctement, ou contactez-nous si vous avez besoin "
-"d'aide."
+"There are no shipping options available. Please ensure that your address "
+"has been entered correctly, or contact us if you need any help."
 
 #: admin/src/API/License.php:282
 msgid ""
 "There was an error connecting to the license verification server. Check the "
 "error in the WooCommerce logs."
 msgstr ""
-"Une erreur est survenue lors de la connexion au serveur de vérification des "
-"licences. Vérifiez l'erreur dans les journaux de WooCommerce."
+"Ocorreu um erro na conexão com o servidor de verificação de licenças. "
+"Verifique o erro nos logs do WooCommerce."
 
 #: admin/src/API/License.php:953
 msgid "This feature is available in the Pro version"
-msgstr "Cette fonctionnalité est disponible dans la version Pro"
+msgstr "Este recurso está disponível na versão Pro"
 
 #: admin/src/Checkout/Fields.php:1045
 msgid "This field is required"
-msgstr "Ce champ est obligatoire"
+msgstr "Este campo é obrigatório"
 
 #: admin/src/Admin/Settings/Fields_Store.php:144
 #: admin/src/Views/Components.php:334
 msgid "This field name and ID are already in use. Use another name."
-msgstr "Ce nom et cet ID de champ sont déjà utilisés. Utilisez un autre nom."
+msgstr "Este nome e ID do campo já está em uso. Use um outro nome."
 
 #: admin/src/Rest/Settings_Import.php:73
 msgid "This file is not a Flexify Checkout settings export."
-msgstr "Ce fichier n'est pas une exportation de configurations de Flexify Checkout."
+msgstr "Este arquivo não é uma exportação de configurações do Flexify Checkout."
 
 #: admin/src/Rest/Fonts_Save.php:68
 msgid "This identifier is reserved for standard fonts."
-msgstr "Cet identifiant est réservé pour les sources par défaut."
+msgstr "Este identificador é reservado para as fontes padrão."
 
 #: admin/src/Views/Components.php:97
 msgid "This is a native WooCommerce field and cannot be removed, only disabled."
 msgstr ""
-"Ceci est un champ natif de WooCommerce et ne peut pas être supprimé, "
-"seulement désactivé."
+"Este é um campo nativo do WooCommerce e não pode ser removido, apenas "
+"desativado."
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/Integrations.php:59
 msgid "This plugin must be installed and active to enable this integration."
-msgstr ""
+msgstr "Este plugin precisa estar instalado e ativo para ativar esta integração."
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/General.php:244
 msgid "Time for a cart to be considered abandoned"
-msgstr ""
+msgstr "Tempo para um carrinho ser considerado abandonado"
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/General.php:67
 msgid "Title displayed inside the lead capture modal."
-msgstr ""
+msgstr "Título exibido dentro do modal de coleta de leads."
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/General.php:77
 msgid "Title displayed on the button inside the lead capture modal."
-msgstr ""
+msgstr "Título exibido no botão dentro do modal de coleta de leads."
 
 #: admin/src/Rest/WhatsApp_Send.php:98
 msgid "Too many attempts. Please wait a moment and try again."
-msgstr ""
+msgstr "Muitas tentativas. Aguarde um momento e tente novamente."
 
 #: admin/src/Rest/WhatsApp_Verify.php:106
 msgid "Too many attempts. Request a new code."
-msgstr ""
+msgstr "Muitas tentativas. Solicite um novo código."
 
 #: admin/src/Core/Assets.php:476
 #: woocommerce/common/checkout/review-order.php:109
@@ -3898,149 +3931,155 @@ msgstr "Total"
 
 #: admin/src/Recovery_Carts/Core/Placeholders.php:99
 msgid "Total cart value"
-msgstr "Valeur totale du panier"
+msgstr "Valor total do carrinho"
 
 #: admin/src/Admin/Settings/Registry.php:271
 msgid "Total duration"
-msgstr "Durée totale"
+msgstr "Duração total"
 
 #: admin/src/Recovery_Carts/Admin/Components.php:373
 msgid "Total recovered %s"
-msgstr ""
+msgstr "Total recuperado %s"
 
 #: admin/src/Core/Webhooks/Event_Registry.php:37
 msgid "Tracking"
-msgstr ""
+msgstr "Rastreamento"
 
 #: admin/src/Admin/Settings/Views/Integrations.php:196
 msgid "Tracking data settings"
-msgstr "Paramètres de suivi des données"
+msgstr "Configurações de rastreio de dados"
 
 #: admin/src/Admin/Settings/Registry.php:1104
 msgid "Translator"
-msgstr "Traducteur"
+msgstr "Tradutor"
 
 #: admin/src/Recovery_Carts/Core/Assets.php:119
 msgid "Travel & Places"
-msgstr ""
+msgstr "Viajens e Lugares"
 
 #: admin/src/Recovery_Carts/Core/Webhooks.php:86
 msgid ""
 "Triggered after the follow-ups end when the customer has not completed the "
 "order."
 msgstr ""
+"Acionado após o término dos follow ups quando o cliente não concluiu o "
+"pedido."
 
 #: admin/src/Core/Webhooks/Event_Registry.php:99
 msgid "Triggered on any order status change, with the source and target statuses."
 msgstr ""
+"Disparado em qualquer mudança de status do pedido, com os status de origem "
+"e destino."
 
 #: admin/src/Core/Webhooks/Event_Registry.php:121
 msgid "Triggered on the purchase event of server-side tracking."
-msgstr ""
+msgstr "Disparado no evento de compra do rastreamento server-side."
 
 #: admin/src/Core/Webhooks/Event_Registry.php:107
 msgid "Triggered once when the customer reaches the order thank-you page."
 msgstr ""
+"Disparado uma única vez quando o cliente chega à página de agradecimento do "
+"pedido."
 
 #: admin/src/Recovery_Carts/Core/Webhooks.php:74
 msgid "Triggered when a cart is marked as abandoned."
-msgstr ""
+msgstr "Disparado quando um carrinho é marcado como abandonado."
 
 #: admin/src/Core/Webhooks/Event_Registry.php:147
 msgid "Triggered when a customer verifies their WhatsApp number at checkout login."
 msgstr ""
+"Disparado quando um cliente verifica o número de WhatsApp no login do "
+"checkout."
 
 #: admin/src/Core/Webhooks/Event_Registry.php:87
 msgid "Triggered when an order enters the \"cancelled\" status."
-msgstr ""
+msgstr "Disparado quando um pedido entra no status \"cancelado\"."
 
 #: admin/src/Core/Webhooks/Event_Registry.php:81
 msgid "Triggered when an order enters the \"completed\" status."
-msgstr ""
+msgstr "Disparado quando um pedido entra no status \"concluído\"."
 
 #: admin/src/Core/Webhooks/Event_Registry.php:75
 msgid "Triggered when an order enters the \"processing\" status."
-msgstr ""
+msgstr "Disparado quando um pedido entra no status \"processando\"."
 
 #: admin/src/Core/Webhooks/Event_Registry.php:93
 msgid "Triggered when an order enters the \"refunded\" status."
-msgstr ""
+msgstr "Disparado quando um pedido entra no status \"reembolsado\"."
 
 #: admin/src/Recovery_Carts/Core/Webhooks.php:98
 msgid "Triggered when an order is completed directly by the customer."
-msgstr ""
+msgstr "Disparado quando um pedido é concluído diretamente pelo cliente."
 
 #: admin/src/Core/Webhooks/Event_Registry.php:63
 msgid "Triggered when an order is created at checkout."
-msgstr ""
+msgstr "Disparado quando um pedido é criado na finalização de compra."
 
 #: admin/src/Core/Webhooks/Event_Registry.php:69
 msgid "Triggered when an order's payment is confirmed."
-msgstr ""
+msgstr "Disparado quando o pagamento de um pedido é confirmado."
 
 #: admin/src/Recovery_Carts/Core/Webhooks.php:104
 msgid "Triggered when contact data is collected via modal or checkout."
-msgstr ""
+msgstr "Acionado quando os dados de contato são coletados via modal ou checkout."
 
 #: admin/src/Core/Webhooks/Event_Registry.php:113
 msgid "Triggered when the checkout countdown expires and the session is destroyed."
 msgstr ""
+"Disparado quando a contagem regressiva do checkout expira e a sessão é "
+"destruída."
 
 #: admin/src/Admin/Settings/Views/Integrations.php:154
 msgid "Triggered when the customer enters the checkout."
-msgstr "Déclenché lorsque le client entre dans le processus de finalisation."
+msgstr "Disparado quando o cliente entra no checkout."
 
 #: admin/src/Core/Webhooks/Event_Registry.php:139
 msgid "Triggered when the customer provides the payment details."
-msgstr ""
+msgstr "Disparado quando o cliente informa os dados de pagamento."
 
 #: admin/src/Core/Webhooks/Event_Registry.php:133
 msgid "Triggered when the customer provides the shipping details."
-msgstr ""
+msgstr "Disparado quando o cliente informa os dados de entrega."
 
 #: admin/src/Admin/Settings/Views/Integrations.php:155
 msgid "Triggered when the customer selects or changes the delivery method."
-msgstr "Déclenché lorsque le client sélectionne ou modifie le mode de livraison."
+msgstr "Disparado quando o cliente seleciona ou altera o método de entrega."
 
 #: admin/src/Admin/Settings/Views/Integrations.php:156
 msgid ""
 "Triggered when the customer selects the payment method and submits the "
 "order."
-msgstr ""
-"Déclenché lorsque le client sélectionne le mode de paiement et soumet la "
-"commande."
+msgstr "Disparado quando o cliente seleciona o método de pagamento e envia o pedido."
 
 #: admin/src/Core/Webhooks/Event_Registry.php:127
 msgid "Triggered when the customer starts the checkout."
-msgstr ""
+msgstr "Disparado quando o cliente inicia a finalização de compra."
 
 #: admin/src/Admin/Settings/Views/Integrations.php:157
 msgid "Triggered when the order is completed (thank you page and/or paid status)."
-msgstr ""
-"Déclenché lorsque la commande est complétée (page de remerciement et/ou "
-"statut payé)."
+msgstr "Disparado quando o pedido é concluído (página de obrigado e/ou status pago)."
 
 #: admin/src/Recovery_Carts/Core/Webhooks.php:110
 msgid "Triggered whenever a follow-up message is sent."
-msgstr ""
+msgstr "Disparado sempre que uma mensagem de follow up é enviada."
 
 #: admin/src/Admin/Settings/Registry.php:648
 msgid "Type of brand in the header"
-msgstr "Type de marque dans l'en-tête"
+msgstr "Tipo de marca no cabeçalho"
 
 #: admin/src/API/Updater.php:248
 msgid "Unable to check for updates for Flexify Checkout for WooCommerce plugin."
 msgstr ""
-"Impossible de vérifier les mises à jour pour le plugin <strong>Flexify "
+"Não foi possível verificar atualizações para o plugin <strong>Flexify "
 "Checkout.</strong>"
 
 #: admin/src/Admin/Settings/Conditions_Store.php:701
 msgid "Unchecked"
-msgstr "Désélectionné"
+msgstr "Desmarcado"
 
 #: admin/src/API/License.php:314
 msgid "Unknown response"
-msgstr "Réponse inconnue"
+msgstr "Resposta desconhecida"
 
 #: admin/src/Admin/Default_Options.php:138
 msgid "Urbanist"
@@ -4052,56 +4091,58 @@ msgstr "URL"
 
 #: admin/src/Recovery_Carts/Admin/Components.php:301
 msgid "Usage limit per coupon:"
-msgstr ""
+msgstr "Limite de uso por cupom:"
 
 #: admin/src/Recovery_Carts/Admin/Components.php:306
 msgid "Usage limit per customer:"
-msgstr ""
+msgstr "Limite de uso por cliente:"
 
 #: admin/src/Admin/Settings/Registry.php:285
 #: admin/src/Admin/Settings/Registry.php:293
 msgid "Use default color"
-msgstr "Utiliser la couleur par défaut"
+msgstr "Usar cor padrão"
 
 #: admin/src/Recovery_Carts/Integrations/Integrations_Base.php:27
 msgid ""
 "Use the best and most complete WhatsApp automation builder to notify your "
 "users."
 msgstr ""
+"Use o melhor e mais completo construtor de automações com WhatsApp para "
+"notificar seus usuários."
 
 #: admin/src/Recovery_Carts/Core/Assets.php:111
 msgid "Use the TAB key to quickly insert an emoji"
-msgstr ""
+msgstr "Use a tecla TAB para inserir um emoji rapidamente"
 
 #: admin/src/Admin/Settings/Registry.php:462
 msgid ""
 "Use the variables below to retrieve field information. Or leave blank to "
 "not display."
 msgstr ""
-"Utilisez les variables ci-dessous pour récupérer les informations des "
-"champs. Ou laissez vide pour ne pas afficher."
+"Utilize as variáveis abaixo para recuperar as informações de campos. Ou "
+"deixe em branco para não exibir."
 
 #: admin/src/Admin/Settings/Views/Integrations.php:320
 msgid "Use to validate events in Meta's test mode before publishing to production."
 msgstr ""
-"Utilisez pour valider les événements en mode test de Meta avant de publier "
-"en production."
+"Use para validar eventos no modo de teste da Meta antes de publicar em "
+"produção."
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/General.php:217
 msgid "User IP mapping"
-msgstr ""
+msgstr "Mapeamento de IP do usuário"
 
 #: admin/src/Core/Ajax.php:211
 msgid "User is required."
-msgstr "L'utilisateur est obligatoire."
+msgstr "Usuário é obrigatório."
 
 #: woocommerce/common/checkout/form-login.php:47
 msgid "Username or email"
-msgstr "Nom d'utilisateur ou email"
+msgstr "Nome de usuário ou email"
 
 #: admin/src/Core/Assets.php:482
 msgid "Verify code"
-msgstr ""
+msgstr "Verificar código"
 
 #: admin/src/Views/Components.php:397
 msgid "verify_gdpr"
@@ -4109,21 +4150,24 @@ msgstr "verify_gdpr"
 
 #: admin/src/Recovery_Carts/Admin/Admin.php:389
 msgid "View cart"
-msgstr ""
+msgstr "Ver carrinho"
 
 #: admin/src/Core/Assets.php:467
 msgid "View order summary"
-msgstr ""
+msgstr "Ver resumo do pedido"
 
 #: admin/src/Admin/Settings/Registry.php:587
 msgid "Visibility and position of the discount coupon field."
-msgstr ""
+msgstr "Visibilidade e posição do campo de cupom de desconto."
 
 #: admin/src/Admin/Settings/Registry.php:540
 msgid ""
 "Visually build the steps, fields and components of the React checkout "
 "(order bump, content blocks, coupon, summary and notes) with live preview."
 msgstr ""
+"Monte visualmente as etapas, campos e componentes do checkout React (order "
+"bump, blocos de conteúdo, cupom, resumo e observações) com pré-visualização "
+"ao vivo."
 
 #: admin/src/Admin/Admin_Options.php:259
 msgid ""
@@ -4131,126 +4175,126 @@ msgid ""
 "the essential fields and conditions for integration with national payment "
 "and delivery methods?"
 msgstr ""
-"Nous avons identifié que votre boutique vend au Brésil, souhaitez-vous "
-"créer les champs et conditions essentiels pour l'intégration avec les modes "
-"de paiement et de livraison nationaux ?"
+"Identificamos que sua loja vende no Brasil, deseja criar os campos e "
+"condições essenciais para integração com formas de pagamento e entregas "
+"nacionais?"
 
 #: admin/src/Admin/Settings/Registry.php:715
 #: admin/src/Recovery_Carts/Admin/Components.php:55
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/Webhooks.php:25
 msgid "Webhooks"
-msgstr ""
+msgstr "Webhooks"
 
 #: admin/src/Core/Assets.php:236
 msgid "Welcome back!"
-msgstr "Bienvenue à nouveau !"
+msgstr "Bem vindo de volta!"
 
 #: admin/src/Recovery_Carts/Core/Helpers.php:576
 msgid "WhatsApp"
-msgstr ""
+msgstr "WhatsApp"
 
 #: admin/src/Recovery_Carts/Admin/Components.php:118
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/FollowUp.php:54
 msgid "WhatsApp (Joinotify)"
-msgstr ""
+msgstr "WhatsApp (Joinotify)"
 
 #: admin/src/Core/Webhooks/Event_Registry.php:146
 msgid "WhatsApp verified"
-msgstr ""
+msgstr "WhatsApp verificado"
 
 #: admin/src/Admin/Settings/Conditions_Store.php:675
 msgid "When %1$s of %2$d condition is met"
 msgid_plural "When %1$s of %2$d conditions are met"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Quando %1$s de %2$d condição for atendida"
+msgstr[1] "Quando %1$s de %2$d condições forem atendidas"
 
 #: admin/src/Views/Components.php:109
 #: admin/src/Views/Components.php:429
 msgid "When disabled, this field will become non-mandatory."
-msgstr "En désactivant, ce champ deviendra non obligatoire."
+msgstr "Ao desativar, este campo se tornará não obrigatório."
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/General.php:38
 msgid "WP-Cron (default)"
-msgstr ""
+msgstr "WP-Cron (padrão)"
 
 #: admin/src/Checkout/Sidebar.php:379
 msgid "You can only buy 1 %s per order."
-msgstr "Vous ne pouvez acheter qu'1 %s par commande."
+msgstr "Você só pode comprar 1 %s por pedido."
 
 #: admin/src/Core/Ajax.php:99
 msgid "You do not have permission to perform this action."
-msgstr ""
+msgstr "Você não tem permissão para executar esta ação."
 
 #: woocommerce/dark/checkout/form-checkout.php:43
 #: woocommerce/modern/checkout/form-checkout.php:43
 msgid "You need to be logged in to complete your purchase."
-msgstr "Vous devez être connecté pour finaliser votre achat."
+msgstr "Você precisa estar logado para finalizar sua compra."
 
 #: admin/src/API/License.php:930
 msgid ""
 "Your <strong>Flexify Checkout</strong> license has expired; renew it to "
 "keep enjoying Pro features."
 msgstr ""
-"Votre licence <strong>Flexify Checkout</strong> a expiré, renouvelez-la "
-"pour continuer à profiter des fonctionnalités Pro."
+"Sua licença do <strong>Flexify Checkout</strong> expirou, realize a "
+"renovação para continuar aproveitando os recursos Pro."
 
 #: admin/src/Rest/WhatsApp_Send.php:112
 msgid "Your access code is: %s"
-msgstr ""
+msgstr "Seu código de acesso é: %s"
 
 #: admin/src/Recovery_Carts/Frontend/Lead_Capture.php:104
 msgid "Your best email: *"
-msgstr ""
+msgstr "Seu melhor e-mail: *"
 
 #: woocommerce/common/checkout/empty-cart.php:22
 msgid "Your cart is empty, visit our store to buy some products."
-msgstr "Votre panier est vide, visitez notre boutique pour acheter un produit."
+msgstr "Seu carrinho está vazio, visite nossa loja para comprar algum produto."
 
 #: admin/src/Core/Assets.php:485
 msgid "Your cart is empty."
-msgstr ""
+msgstr "Seu carrinho está vazio."
 
 #: admin/src/Core/Assets.php:466
 msgid "Your products have been reserved for:"
-msgstr ""
+msgstr "Seus produtos foram reservados por:"
 
 #: admin/src/Admin/Default_Options.php:178
 msgid "Your session ends in:"
-msgstr "Votre session se termine dans :"
+msgstr "Sua sessão termina em:"
 
 #: admin/src/Core/Ajax.php:258
 msgid "Your session has expired. Reload the page and try again."
-msgstr "Votre session a expiré. Rechargez la page et réessayez."
+msgstr "Sua sessao expirou. Recarregue a pagina e tente novamente."
 
 #: admin/src/Integrations/Woo_Subscriptions.php:97
 msgid "Your subscription will be activated when the payment is cleared."
-msgstr "Votre abonnement sera activé lorsque le paiement sera compensé."
+msgstr "Sua assinatura será ativada quando o pagamento for compensado."
 
 #: admin/src/Admin/Default_Options.php:346
 msgid "ZIP Code"
-msgstr "Code postal"
+msgstr "CEP"
 
 #: admin/src/Recovery_Carts/Admin/Admin.php:385
 msgctxt "carrinho"
 msgid "Add new"
-msgstr ""
+msgstr "Adicionar novo"
 
 #: admin/src/Recovery_Carts/Admin/Admin.php:384
 msgctxt "add new on admin bar"
 msgid "Cart"
-msgstr ""
+msgstr "Carrinho"
 
 #: admin/src/Recovery_Carts/Admin/Admin.php:382
 msgctxt "post type singular name"
 msgid "Cart"
-msgstr ""
+msgstr "Carrinho"
 
 #: admin/src/Recovery_Carts/Admin/Admin.php:383
 msgctxt "admin menu"
 msgid "Carts"
-msgstr ""
+msgstr "Carrinhos"
 
 #: admin/src/Recovery_Carts/Admin/Admin.php:381
 msgctxt "post type general name"
 msgid "Carts"
-msgstr ""
+msgstr "Carrinhos"

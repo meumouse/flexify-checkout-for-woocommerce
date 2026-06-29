@@ -754,7 +754,7 @@ class Layout_Store {
                 'kind' => 'component',
                 'component' => 'notes',
                 'config' => self::sanitize_component_config( 'notes', array(
-                    'label' => __( 'Observações do pedido', 'flexify-checkout-for-woocommerce' ),
+                    'label' => __( 'Order notes', 'flexify-checkout-for-woocommerce' ),
                 ) ),
                 'order' => 0,
             ),
@@ -828,9 +828,9 @@ class Layout_Store {
      */
     private static function default_label( $type ) {
         $fallbacks = array(
-            'contact' => __( 'Contato', 'flexify-checkout-for-woocommerce' ),
-            'shipping' => __( 'Entrega', 'flexify-checkout-for-woocommerce' ),
-            'payment' => __( 'Pagamento', 'flexify-checkout-for-woocommerce' ),
+            'contact' => __( 'Contact', 'flexify-checkout-for-woocommerce' ),
+            'shipping' => __( 'Delivery', 'flexify-checkout-for-woocommerce' ),
+            'payment' => __( 'Payment', 'flexify-checkout-for-woocommerce' ),
         );
 
         if ( isset( self::TYPE_TO_LABEL_SETTING[ $type ] ) ) {

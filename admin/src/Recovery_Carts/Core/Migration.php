@@ -166,7 +166,7 @@ class Migration {
 
         $message = sprintf(
             /* translators: %s: standalone plugin name */
-            esc_html__( 'A recuperação de carrinhos agora é nativa do Flexify Checkout. O plugin %s foi desativado automaticamente e pode ser excluído com segurança — seus dados foram preservados.', 'flexify-checkout-for-woocommerce' ),
+            esc_html__( 'Cart recovery is now native to Flexify Checkout. The %s plugin has been automatically disabled and can be safely deleted — your data has been preserved.', 'flexify-checkout-for-woocommerce' ),
             '<strong>Flexify Checkout - Recovery Carts</strong>'
         );
 
@@ -174,7 +174,7 @@ class Migration {
             '<div class="notice notice-success is-dismissible"><p>%1$s</p><p><a href="%2$s" class="button button-secondary">%3$s</a></p></div>',
             wp_kses( $message, array( 'strong' => array() ) ),
             esc_url( $dismiss_url ),
-            esc_html__( 'Entendi, ocultar aviso', 'flexify-checkout-for-woocommerce' )
+            esc_html__( 'Got it, hide notice', 'flexify-checkout-for-woocommerce' )
         );
     }
 }

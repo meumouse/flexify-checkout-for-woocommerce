@@ -49,7 +49,7 @@ class License_Deactivate extends Abstract_Route {
         $deactivation = License::deactive_license( FLEXIFY_CHECKOUT_FILE, $message );
 
         if ( ! $deactivation ) {
-            return $this->error_response( __( 'Ocorreu um erro ao desativar sua licença.', 'flexify-checkout-for-woocommerce' ) );
+            return $this->error_response( __( 'An error occurred while deactivating your license.', 'flexify-checkout-for-woocommerce' ) );
         }
 
         delete_option('flexify_checkout_license_key');
@@ -63,7 +63,7 @@ class License_Deactivate extends Abstract_Route {
         delete_transient('flexify_checkout_api_response_cache');
 
         return $this->success_response( array(
-            'message' => __( 'A licença foi desativada. Todos os recursos da versão Pro agora estão desativados!', 'flexify-checkout-for-woocommerce' ),
+            'message' => __( 'The license has been deactivated. All Pro version features are now disabled!', 'flexify-checkout-for-woocommerce' ),
             'runtime' => Registry::get_runtime_data(),
         ) );
     }

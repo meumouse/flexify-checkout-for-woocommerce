@@ -48,7 +48,7 @@ class Cart_Delete extends Abstract_Route {
         $id = absint( $request->get_param('id') );
 
         if ( ! $id || get_post_type( $id ) !== 'fc-recovery-carts' ) {
-            return new \WP_Error( 'fcrc_cart_not_found', __( 'Carrinho não encontrado.', 'flexify-checkout-for-woocommerce' ), array( 'status' => 404 ) );
+            return new \WP_Error( 'fcrc_cart_not_found', __( 'Cart not found.', 'flexify-checkout-for-woocommerce' ), array( 'status' => 404 ) );
         }
 
         wp_delete_post( $id, true );

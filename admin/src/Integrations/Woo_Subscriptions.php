@@ -66,7 +66,7 @@ if ( class_exists('WC_Subscriptions') ) {
 			if ( 0 !== $cart->next_payment_date ) {
 				$first_renewal_date = date_i18n( wc_date_format(), wcs_date_to_time( get_date_from_gmt( $cart->next_payment_date ) ) );
 				// Translators: placeholder is a date.
-				$order_total_html .= '<div class="first-payment-date"><small>' . __( 'Primeira renovação', 'flexify-checkout-for-woocommerce' ) . '<br />' . $first_renewal_date . '</small></div>';
+				$order_total_html .= '<div class="first-payment-date"><small>' . __( 'First renewal', 'flexify-checkout-for-woocommerce' ) . '<br />' . $first_renewal_date . '</small></div>';
 			}
 
 			return $order_total_html;
@@ -94,14 +94,14 @@ if ( class_exists('WC_Subscriptions') ) {
 			if ( $subscription_count ) {
 				foreach ( $subscriptions as $subscription ) {
 					if ( ! $subscription->has_status('active') ) {
-						$thank_you_message .= '<p class="need-payment-message">'. esc_html__( 'Sua assinatura será ativada quando o pagamento for compensado.', 'flexify-checkout-for-woocommerce' ) .'</p>';
+						$thank_you_message .= '<p class="need-payment-message">'. esc_html__( 'Your subscription will be activated when the payment is cleared.', 'flexify-checkout-for-woocommerce' ) .'</p>';
 						break;
 					}
 				}
 			}
 
 			$my_account_subscriptions_url = wc_get_endpoint_url( 'subscriptions', '', wc_get_page_permalink( 'myaccount' ) );
-			$thank_you_message .= '<p class="description">'. sprintf( __( 'Veja o status da sua assinatura na <a href="%s">sua conta</a>', 'flexify-checkout-for-woocommerce' ), esc_url( $my_account_subscriptions_url ) ) .'</p>';
+			$thank_you_message .= '<p class="description">'. sprintf( __( 'Check the status of your subscription in <a href="%s">your account</a>', 'flexify-checkout-for-woocommerce' ), esc_url( $my_account_subscriptions_url ) ) .'</p>';
 			$thank_you_message .= '</div></div>';
 
 			echo $thank_you_message;

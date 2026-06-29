@@ -65,13 +65,13 @@ class Webhooks_Test extends Abstract_Route {
         $endpoint = is_array( $endpoint ) ? $endpoint : array();
 
         if ( ! Event_Registry::has_event( $event_key ) ) {
-            return $this->error_response( esc_html__( 'Evento inválido.', 'flexify-checkout-for-woocommerce' ) );
+            return $this->error_response( esc_html__( 'Invalid event.', 'flexify-checkout-for-woocommerce' ) );
         }
 
         $url = isset( $endpoint['url'] ) ? esc_url_raw( trim( (string) $endpoint['url'] ) ) : '';
 
         if ( $url === '' || ! wp_http_validate_url( $url ) ) {
-            return $this->error_response( esc_html__( 'URL do webhook inválida.', 'flexify-checkout-for-woocommerce' ) );
+            return $this->error_response( esc_html__( 'Invalid webhook URL.', 'flexify-checkout-for-woocommerce' ) );
         }
 
         $result = Dispatcher::send_test( $event_key, array(
@@ -81,7 +81,7 @@ class Webhooks_Test extends Abstract_Route {
 
         if ( empty( $result['ok'] ) ) {
             return $this->error_response(
-                esc_html__( 'Falha ao enviar o webhook de teste.', 'flexify-checkout-for-woocommerce' ),
+                esc_html__( 'Failed to send the test webhook.', 'flexify-checkout-for-woocommerce' ),
                 array( 'http_code' => $result['http_code'] ?? 0, 'error' => $result['error'] ?? '' )
             );
         }

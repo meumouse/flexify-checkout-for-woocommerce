@@ -62,7 +62,7 @@ class Modules_Install extends Abstract_Route {
         $plugin_zip = isset( $payload['download_url'] ) ? esc_url_raw( (string) $payload['download_url'] ) : '';
 
         if ( '' === $plugin_slug || '' === $plugin_zip ) {
-            return $this->error_response( __( 'Dados do módulo inválidos.', 'flexify-checkout-for-woocommerce' ) );
+            return $this->error_response( __( 'Invalid module data.', 'flexify-checkout-for-woocommerce' ) );
         }
 
         $modules = new Modules();
@@ -79,20 +79,20 @@ class Modules_Install extends Abstract_Route {
         ob_end_clean();
 
         if ( is_wp_error( $installed ) || ! $installed ) {
-            return $this->error_response( __( 'Falha ao instalar/atualizar o plugin.', 'flexify-checkout-for-woocommerce' ) );
+            return $this->error_response( __( 'Failed to install/update the plugin.', 'flexify-checkout-for-woocommerce' ) );
         }
 
         $activate = activate_plugin( WP_PLUGIN_DIR . '/' . $plugin_slug );
 
         if ( is_wp_error( $activate ) ) {
             return $this->error_response(
-                __( 'O plugin foi instalado, mas não pôde ser ativado.', 'flexify-checkout-for-woocommerce' ),
+                __( 'The plugin was installed, but could not be activated.', 'flexify-checkout-for-woocommerce' ),
                 array( 'integrations' => Integrations_Data::get_cards_for_client() )
             );
         }
 
         return $this->success_response( array(
-            'message' => __( 'Plugin instalado e ativado com sucesso.', 'flexify-checkout-for-woocommerce' ),
+            'message' => __( 'Plugin installed and activated successfully.', 'flexify-checkout-for-woocommerce' ),
             'integrations' => Integrations_Data::get_cards_for_client(),
         ) );
     }

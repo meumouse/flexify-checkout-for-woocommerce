@@ -145,16 +145,16 @@ class Integrations {
 		$routes = Admin_Options::get_setting( 'tracking_routes' );
 		$routes = is_array( $routes ) ? $routes : array();
 		$event_labels = array(
-			'fc_begin_checkout' => esc_html__( 'Checkout iniciado', 'flexify-checkout-for-woocommerce' ),
-			'fc_add_shipping_info' => esc_html__( 'Informações de entrega', 'flexify-checkout-for-woocommerce' ),
-			'fc_add_payment_info' => esc_html__( 'Informações de pagamento', 'flexify-checkout-for-woocommerce' ),
-			'fc_purchase' => esc_html__( 'Compra', 'flexify-checkout-for-woocommerce' ),
+			'fc_begin_checkout' => esc_html__( 'Checkout started', 'flexify-checkout-for-woocommerce' ),
+			'fc_add_shipping_info' => esc_html__( 'Delivery information', 'flexify-checkout-for-woocommerce' ),
+			'fc_add_payment_info' => esc_html__( 'Payment information', 'flexify-checkout-for-woocommerce' ),
+			'fc_purchase' => esc_html__( 'Purchase', 'flexify-checkout-for-woocommerce' ),
 		);
 		$event_descriptions = array(
-			'fc_begin_checkout' => esc_html__( 'Disparado quando o cliente entra no checkout.', 'flexify-checkout-for-woocommerce' ),
-			'fc_add_shipping_info' => esc_html__( 'Disparado quando o cliente seleciona ou altera o método de entrega.', 'flexify-checkout-for-woocommerce' ),
-			'fc_add_payment_info' => esc_html__( 'Disparado quando o cliente seleciona o método de pagamento e envia o pedido.', 'flexify-checkout-for-woocommerce' ),
-			'fc_purchase' => esc_html__( 'Disparado quando o pedido é concluído (página de obrigado e/ou status pago).', 'flexify-checkout-for-woocommerce' ),
+			'fc_begin_checkout' => esc_html__( 'Triggered when the customer enters the checkout.', 'flexify-checkout-for-woocommerce' ),
+			'fc_add_shipping_info' => esc_html__( 'Triggered when the customer selects or changes the delivery method.', 'flexify-checkout-for-woocommerce' ),
+			'fc_add_payment_info' => esc_html__( 'Triggered when the customer selects the payment method and submits the order.', 'flexify-checkout-for-woocommerce' ),
+			'fc_purchase' => esc_html__( 'Triggered when the order is completed (thank you page and/or paid status).', 'flexify-checkout-for-woocommerce' ),
 		);
 		$matrix_platforms = array(
 			'ga4' => esc_html__( 'GA4', 'flexify-checkout-for-woocommerce' ),
@@ -173,28 +173,28 @@ class Integrations {
 			</div>
 
 			<div class="card-body px-3 py-4 d-flex flex-column align-items-center justify-content-center text-center">
-				<h5 class="card-title pt-0 border-top-0"><?php esc_html_e( 'Rastreamento de dados', 'flexify-checkout-for-woocommerce' ) ?></h5>
+				<h5 class="card-title pt-0 border-top-0"><?php esc_html_e( 'Data tracking', 'flexify-checkout-for-woocommerce' ) ?></h5>
 
 				<?php if ( ! $is_pro ) : ?>
 					<span class="badge pro bg-primary rounded-pill ms-2 mb-3"><?php esc_html_e( 'Pro', 'flexify-checkout-for-woocommerce' ) ?></span>
 				<?php endif; ?>
 
-				<p class="card-text fs-sm mb-4"><?php esc_html_e( 'Configure o GA4, Google Ads e Meta para envio de dados de eventos coletados no checkout.', 'flexify-checkout-for-woocommerce' ) ?></p>
+				<p class="card-text fs-sm mb-4"><?php esc_html_e( 'Set up GA4, Google Ads, and Meta to send event data collected at checkout.', 'flexify-checkout-for-woocommerce' ) ?></p>
 				
 				<div class="d-flex align-items-center justify-content-center w-100 mb-3">
 					<input type="hidden" name="tracking_integrations[__rendered]" value="1" />
 					<input type="checkbox" class="toggle-switch <?php echo ( ! $is_pro ) ? 'pro-version' : ''; ?>" id="tracking_integrations_enabled" name="tracking_integrations[enabled]" value="yes" <?php checked( isset( $settings['enabled'] ) && $settings['enabled'] === 'yes' && $is_pro ); ?> />
 				</div>
 
-				<button id="tracking_integrations_settings" class="btn btn-sm btn-outline-primary <?php echo ( ! $is_pro ) ? 'pro-version' : ''; ?>"><?php esc_html_e( 'Configurar', 'flexify-checkout-for-woocommerce' ) ?></button>
+				<button id="tracking_integrations_settings" class="btn btn-sm btn-outline-primary <?php echo ( ! $is_pro ) ? 'pro-version' : ''; ?>"><?php esc_html_e( 'Configure', 'flexify-checkout-for-woocommerce' ) ?></button>
 			</div>
 		</div>
 
 		<div id="tracking_integrations_container" class="popup-container">
 			<div class="popup-content popup-xg text-left">
 				<div class="popup-header">
-					<h5 class="popup-title"><?php esc_html_e( 'Configurações de rastreio de dados', 'flexify-checkout-for-woocommerce' ) ?></h5>
-					<button id="tracking_integrations_close" class="btn-close fs-lg" aria-label="<?php esc_attr_e( 'Fechar', 'flexify-checkout-for-woocommerce' ); ?>"></button>
+					<h5 class="popup-title"><?php esc_html_e( 'Tracking data settings', 'flexify-checkout-for-woocommerce' ) ?></h5>
+					<button id="tracking_integrations_close" class="btn-close fs-lg" aria-label="<?php esc_attr_e( 'Close', 'flexify-checkout-for-woocommerce' ); ?>"></button>
 				</div>
 
 				<div class="popup-body">
@@ -206,14 +206,14 @@ class Integrations {
 										<img class="tracking-platform-logo" src="<?php echo esc_url( $ga4_logo_url ); ?>" alt="<?php esc_attr_e( 'GA4', 'flexify-checkout-for-woocommerce' ); ?>" />
 										<strong><?php esc_html_e( 'GA4', 'flexify-checkout-for-woocommerce' ) ?></strong>
 									</span>
-									<span class="flexify-checkout-description"><?php esc_html_e( 'Configure os parâmetros do Google Analytics 4 para envio de eventos de checkout.', 'flexify-checkout-for-woocommerce' ) ?></span>
+									<span class="flexify-checkout-description"><?php esc_html_e( 'Set up Google Analytics 4 parameters to send checkout events.', 'flexify-checkout-for-woocommerce' ) ?></span>
 								</th>
 								<td></td>
 							</tr>
 							<tr>
 								<th scope="row">
-									<?php esc_html_e( 'Ativar GA4', 'flexify-checkout-for-woocommerce' ) ?>
-									<span class="flexify-checkout-description"><?php esc_html_e( 'Permite o envio dos eventos para o GA4 quando a integração estiver preenchida.', 'flexify-checkout-for-woocommerce' ) ?></span>
+									<?php esc_html_e( 'Enable GA4', 'flexify-checkout-for-woocommerce' ) ?>
+									<span class="flexify-checkout-description"><?php esc_html_e( 'Allows sending events to GA4 when the integration is filled out.', 'flexify-checkout-for-woocommerce' ) ?></span>
 								</th>
 								<td>
 									<input type="checkbox" class="toggle-switch <?php echo ( ! $is_pro ) ? 'pro-version' : ''; ?>" id="tracking_integrations_ga4_enabled" name="tracking_integrations[ga4][enabled]" value="yes" <?php checked( isset( $ga4['enabled'] ) && $ga4['enabled'] === 'yes' && $is_pro ); ?> />
@@ -222,7 +222,7 @@ class Integrations {
 							<tr>
 								<th scope="row">
 									<?php esc_html_e( 'Measurement ID', 'flexify-checkout-for-woocommerce' ) ?>
-									<span class="flexify-checkout-description"><?php esc_html_e( 'Identificador da propriedade GA4 (exemplo: G-XXXXXXXXXX).', 'flexify-checkout-for-woocommerce' ) ?></span>
+									<span class="flexify-checkout-description"><?php esc_html_e( 'GA4 property identifier (e.g., G-XXXXXXXXXX).', 'flexify-checkout-for-woocommerce' ) ?></span>
 								</th>
 								<td>
 									<input type="text" class="form-control <?php echo ( ! $is_pro ) ? 'pro-version' : ''; ?>" id="tracking_integrations_ga4_measurement_id" name="tracking_integrations[ga4][measurement_id]" value="<?php echo esc_attr( isset( $ga4['measurement_id'] ) ? $ga4['measurement_id'] : '' ); ?>" placeholder="G-XXXXXXXXXX" />
@@ -231,7 +231,7 @@ class Integrations {
 							<tr>
 								<th scope="row">
 									<?php esc_html_e( 'API Secret', 'flexify-checkout-for-woocommerce' ) ?>
-									<span class="flexify-checkout-description"><?php esc_html_e( 'Chave secreta do Measurement Protocol usada para autenticar envios server-side.', 'flexify-checkout-for-woocommerce' ) ?></span>
+									<span class="flexify-checkout-description"><?php esc_html_e( 'Secret key of the Measurement Protocol used to authenticate server-side submissions.', 'flexify-checkout-for-woocommerce' ) ?></span>
 								</th>
 								<td>
 									<input type="text" class="form-control <?php echo ( ! $is_pro ) ? 'pro-version' : ''; ?>" id="tracking_integrations_ga4_api_secret" name="tracking_integrations[ga4][api_secret]" value="<?php echo esc_attr( isset( $ga4['api_secret'] ) ? $ga4['api_secret'] : '' ); ?>" />
@@ -244,14 +244,14 @@ class Integrations {
 										<img class="tracking-platform-logo" src="<?php echo esc_url( $google_ads_logo_url ); ?>" alt="<?php esc_attr_e( 'Google Ads', 'flexify-checkout-for-woocommerce' ); ?>" />
 										<strong><?php esc_html_e( 'Google Ads', 'flexify-checkout-for-woocommerce' ) ?></strong>
 									</span>
-									<span class="flexify-checkout-description"><?php esc_html_e( 'Defina os parâmetros de conversão para envio dos eventos ao Google Ads.', 'flexify-checkout-for-woocommerce' ) ?></span>
+									<span class="flexify-checkout-description"><?php esc_html_e( 'Set conversion parameters to send events to Google Ads.', 'flexify-checkout-for-woocommerce' ) ?></span>
 								</th>
 								<td></td>
 							</tr>
 							<tr>
 								<th scope="row">
-									<?php esc_html_e( 'Ativar Google Ads', 'flexify-checkout-for-woocommerce' ) ?>
-									<span class="flexify-checkout-description"><?php esc_html_e( 'Habilita o envio dos eventos de checkout para a conta configurada no Google Ads.', 'flexify-checkout-for-woocommerce' ) ?></span>
+									<?php esc_html_e( 'Enable Google Ads', 'flexify-checkout-for-woocommerce' ) ?>
+									<span class="flexify-checkout-description"><?php esc_html_e( 'Enables sending checkout events to the configured Google Ads account.', 'flexify-checkout-for-woocommerce' ) ?></span>
 								</th>
 								<td>
 									<input type="checkbox" class="toggle-switch <?php echo ( ! $is_pro ) ? 'pro-version' : ''; ?>" id="tracking_integrations_google_ads_enabled" name="tracking_integrations[google_ads][enabled]" value="yes" <?php checked( isset( $google_ads['enabled'] ) && $google_ads['enabled'] === 'yes' && $is_pro ); ?> />
@@ -260,7 +260,7 @@ class Integrations {
 							<tr>
 								<th scope="row">
 									<?php esc_html_e( 'Conversion ID', 'flexify-checkout-for-woocommerce' ) ?>
-									<span class="flexify-checkout-description"><?php esc_html_e( 'ID da conversão do Google Ads (exemplo: AW-123456789).', 'flexify-checkout-for-woocommerce' ) ?></span>
+									<span class="flexify-checkout-description"><?php esc_html_e( 'Google Ads conversion ID (e.g., AW-123456789).', 'flexify-checkout-for-woocommerce' ) ?></span>
 								</th>
 								<td>
 									<input type="text" class="form-control <?php echo ( ! $is_pro ) ? 'pro-version' : ''; ?>" id="tracking_integrations_google_ads_conversion_id" name="tracking_integrations[google_ads][conversion_id]" value="<?php echo esc_attr( isset( $google_ads['conversion_id'] ) ? $google_ads['conversion_id'] : '' ); ?>" placeholder="AW-123456789" />
@@ -269,7 +269,7 @@ class Integrations {
 							<tr>
 								<th scope="row">
 									<?php esc_html_e( 'Conversion Label', 'flexify-checkout-for-woocommerce' ) ?>
-									<span class="flexify-checkout-description"><?php esc_html_e( 'Rótulo da ação de conversão criada no Google Ads.', 'flexify-checkout-for-woocommerce' ) ?></span>
+									<span class="flexify-checkout-description"><?php esc_html_e( 'Label of the conversion action created in Google Ads.', 'flexify-checkout-for-woocommerce' ) ?></span>
 								</th>
 								<td>
 									<input type="text" class="form-control <?php echo ( ! $is_pro ) ? 'pro-version' : ''; ?>" id="tracking_integrations_google_ads_conversion_label" name="tracking_integrations[google_ads][conversion_label]" value="<?php echo esc_attr( isset( $google_ads['conversion_label'] ) ? $google_ads['conversion_label'] : '' ); ?>" />
@@ -283,14 +283,14 @@ class Integrations {
 										<img class="tracking-platform-logo" src="<?php echo esc_url( $meta_logo_url ); ?>" alt="<?php esc_attr_e( 'Meta', 'flexify-checkout-for-woocommerce' ); ?>" />
 										<strong><?php esc_html_e( 'Meta', 'flexify-checkout-for-woocommerce' ) ?></strong>
 									</span>
-									<span class="flexify-checkout-description"><?php esc_html_e( 'Configure o Pixel e o token da Conversions API para envio dos eventos.', 'flexify-checkout-for-woocommerce' ) ?></span>
+									<span class="flexify-checkout-description"><?php esc_html_e( 'Set up the Pixel and Conversions API token to send events.', 'flexify-checkout-for-woocommerce' ) ?></span>
 								</th>
 								<td></td>
 							</tr>
 							<tr>
 								<th scope="row">
-									<?php esc_html_e( 'Ativar Meta', 'flexify-checkout-for-woocommerce' ) ?>
-									<span class="flexify-checkout-description"><?php esc_html_e( 'Ativa o envio de eventos para a Meta via Conversions API.', 'flexify-checkout-for-woocommerce' ) ?></span>
+									<?php esc_html_e( 'Enable Meta', 'flexify-checkout-for-woocommerce' ) ?>
+									<span class="flexify-checkout-description"><?php esc_html_e( 'Enables event sending to Meta via Conversions API.', 'flexify-checkout-for-woocommerce' ) ?></span>
 								</th>
 								<td>
 									<input type="checkbox" class="toggle-switch <?php echo ( ! $is_pro ) ? 'pro-version' : ''; ?>" id="tracking_integrations_meta_enabled" name="tracking_integrations[meta][enabled]" value="yes" <?php checked( isset( $meta['enabled'] ) && $meta['enabled'] === 'yes' && $is_pro ); ?> />
@@ -299,7 +299,7 @@ class Integrations {
 							<tr>
 								<th scope="row">
 									<?php esc_html_e( 'Pixel ID', 'flexify-checkout-for-woocommerce' ) ?>
-									<span class="flexify-checkout-description"><?php esc_html_e( 'Identificador do Pixel da Meta vinculado ao seu gerenciador de eventos.', 'flexify-checkout-for-woocommerce' ) ?></span>
+									<span class="flexify-checkout-description"><?php esc_html_e( 'Meta Pixel identifier linked to your events manager.', 'flexify-checkout-for-woocommerce' ) ?></span>
 								</th>
 								<td>
 									<input type="text" class="form-control <?php echo ( ! $is_pro ) ? 'pro-version' : ''; ?>" id="tracking_integrations_meta_pixel_id" name="tracking_integrations[meta][pixel_id]" value="<?php echo esc_attr( isset( $meta['pixel_id'] ) ? $meta['pixel_id'] : '' ); ?>" />
@@ -308,7 +308,7 @@ class Integrations {
 							<tr>
 								<th scope="row">
 									<?php esc_html_e( 'Access Token', 'flexify-checkout-for-woocommerce' ) ?>
-									<span class="flexify-checkout-description"><?php esc_html_e( 'Token de acesso da Conversions API para autenticação das requisições.', 'flexify-checkout-for-woocommerce' ) ?></span>
+									<span class="flexify-checkout-description"><?php esc_html_e( 'Access token for the Conversions API to authenticate requests.', 'flexify-checkout-for-woocommerce' ) ?></span>
 								</th>
 								<td>
 									<input type="text" class="form-control <?php echo ( ! $is_pro ) ? 'pro-version' : ''; ?>" id="tracking_integrations_meta_access_token" name="tracking_integrations[meta][access_token]" value="<?php echo esc_attr( isset( $meta['access_token'] ) ? $meta['access_token'] : '' ); ?>" />
@@ -316,8 +316,8 @@ class Integrations {
 							</tr>
 							<tr>
 								<th scope="row">
-									<?php esc_html_e( 'Test Event Code (opcional)', 'flexify-checkout-for-woocommerce' ) ?>
-									<span class="flexify-checkout-description"><?php esc_html_e( 'Use para validar eventos no modo de teste da Meta antes de publicar em produção.', 'flexify-checkout-for-woocommerce' ) ?></span>
+									<?php esc_html_e( 'Test Event Code (optional)', 'flexify-checkout-for-woocommerce' ) ?>
+									<span class="flexify-checkout-description"><?php esc_html_e( 'Use to validate events in Meta\'s test mode before publishing to production.', 'flexify-checkout-for-woocommerce' ) ?></span>
 								</th>
 								<td>
 									<input type="text" class="form-control <?php echo ( ! $is_pro ) ? 'pro-version' : ''; ?>" id="tracking_integrations_meta_test_event_code" name="tracking_integrations[meta][test_event_code]" value="<?php echo esc_attr( isset( $meta['test_event_code'] ) ? $meta['test_event_code'] : '' ); ?>" />
@@ -329,9 +329,9 @@ class Integrations {
 							<tr class="popup-table-section">
 								<th scope="row" colspan="2">
 									<span class="tracking-platform-heading">
-										<strong><?php esc_html_e( 'Eventos por plataforma', 'flexify-checkout-for-woocommerce' ) ?></strong>
+										<strong><?php esc_html_e( 'Events by platform', 'flexify-checkout-for-woocommerce' ) ?></strong>
 									</span>
-									<span class="flexify-checkout-description"><?php esc_html_e( 'Defina quais eventos do checkout serão enviados para cada plataforma. Os credenciais acima precisam estar configurados para o disparo acontecer.', 'flexify-checkout-for-woocommerce' ) ?></span>
+									<span class="flexify-checkout-description"><?php esc_html_e( 'Define which checkout events will be sent to each platform. The credentials above need to be configured for the trigger to occur.', 'flexify-checkout-for-woocommerce' ) ?></span>
 									<input type="hidden" name="tracking_routes[__rendered]" value="1" />
 								</th>
 							</tr>
@@ -372,7 +372,7 @@ class Integrations {
 				</div>
 
 				<div class="popup-footer">
-					<button id="tracking_integrations_close_footer" class="btn btn-light"><?php esc_html_e( 'Fechar', 'flexify-checkout-for-woocommerce' ) ?></button>
+					<button id="tracking_integrations_close_footer" class="btn btn-light"><?php esc_html_e( 'Close', 'flexify-checkout-for-woocommerce' ) ?></button>
 				</div>
 			</div>
 		</div>
@@ -395,7 +395,7 @@ class Integrations {
 			</div>
 			
 			<div class="card-body px-3 py-4 d-flex flex-column align-items-center text-center">
-				<h5 class="card-title pt-0 border-top-0"><?php esc_html_e( 'Flexify Checkout - Inter addon', 'flexify-checkout-for-woocommerce' ) ?></h5>
+				<h5 class="card-title pt-0 border-top-0"><?php esc_html_e( 'Flexify Checkout - Inter add-on', 'flexify-checkout-for-woocommerce' ) ?></h5>
 				
 				<?php if ( ! License::is_valid() ) : ?>
 					<span class="badge pro bg-primary rounded-pill ms-2 mb-3">
@@ -404,14 +404,14 @@ class Integrations {
 					</span>
 				<?php endif; ?>
 
-				<p class="card-text fs-sm mb-4"><?php esc_html_e( 'Comece a receber via Pix e Boleto com aprovação imediata e sem cobrança de taxas. Exclusivo para clientes Inter Empresas.', 'flexify-checkout-for-woocommerce' ) ?></p>
+				<p class="card-text fs-sm mb-4"><?php esc_html_e( 'Start receiving via Pix and Boleto with immediate approval and no fees. Exclusive for Inter Empresas customers.', 'flexify-checkout-for-woocommerce' ) ?></p>
 				
 				<?php if ( is_plugin_active('module-inter-bank-for-flexify-checkout/module-inter-bank-for-flexify-checkout.php') ) : ?>
-					<button id="require_inter_bank_module_trigger" class="btn btn-sm btn-outline-primary <?php echo ( ! License::is_valid() ) ? 'pro-version' : ''; ?>"><?php esc_html_e( 'Configurar', 'flexify-checkout-for-woocommerce' ) ?></button>
+					<button id="require_inter_bank_module_trigger" class="btn btn-sm btn-outline-primary <?php echo ( ! License::is_valid() ) ? 'pro-version' : ''; ?>"><?php esc_html_e( 'Configure', 'flexify-checkout-for-woocommerce' ) ?></button>
 				<?php elseif ( array_key_exists( 'module-inter-bank-for-flexify-checkout/module-inter-bank-for-flexify-checkout.php', get_plugins() ) ) : ?>
-					<button class="btn btn-sm btn-primary activate-plugin <?php echo ( ! License::is_valid() ) ? 'pro-version' : ''; ?>" data-plugin-slug="<?php echo esc_attr('module-inter-bank-for-flexify-checkout/module-inter-bank-for-flexify-checkout.php'); ?>"><?php esc_html_e( 'Ativar módulo', 'flexify-checkout-for-woocommerce' ) ?></button>
+					<button class="btn btn-sm btn-primary activate-plugin <?php echo ( ! License::is_valid() ) ? 'pro-version' : ''; ?>" data-plugin-slug="<?php echo esc_attr('module-inter-bank-for-flexify-checkout/module-inter-bank-for-flexify-checkout.php'); ?>"><?php esc_html_e( 'Enable module', 'flexify-checkout-for-woocommerce' ) ?></button>
 				<?php else : ?>
-					<button class="btn btn-sm btn-primary install-module <?php echo ( ! License::is_valid() ) ? 'pro-version' : ''; ?>" data-plugin-url="https://github.com/meumouse/module-inter-bank-for-flexify-checkout/raw/main/dist/module-inter-bank-for-flexify-checkout.zip" data-plugin-slug="<?php echo esc_attr('module-inter-bank-for-flexify-checkout/module-inter-bank-for-flexify-checkout.php'); ?>"><?php esc_html_e( 'Instalar módulo', 'flexify-checkout-for-woocommerce' ) ?></button>
+					<button class="btn btn-sm btn-primary install-module <?php echo ( ! License::is_valid() ) ? 'pro-version' : ''; ?>" data-plugin-url="https://github.com/meumouse/module-inter-bank-for-flexify-checkout/raw/main/dist/module-inter-bank-for-flexify-checkout.zip" data-plugin-slug="<?php echo esc_attr('module-inter-bank-for-flexify-checkout/module-inter-bank-for-flexify-checkout.php'); ?>"><?php esc_html_e( 'Install module', 'flexify-checkout-for-woocommerce' ) ?></button>
 				<?php endif; ?>
 			</div>
 
@@ -443,7 +443,7 @@ class Integrations {
 			</div>
 			
 			<div class="card-body px-3 py-4 d-flex flex-column align-items-center text-center">
-				<h5 class="card-title pt-0 border-top-0"><?php esc_html_e( 'Flexify Checkout - Recuperação de carrinhos abandonados', 'flexify-checkout-for-woocommerce' ) ?></h5>
+				<h5 class="card-title pt-0 border-top-0"><?php esc_html_e( 'Flexify Checkout - Abandoned cart recovery', 'flexify-checkout-for-woocommerce' ) ?></h5>
 				
 				<?php if ( ! License::is_valid() ) : ?>
 					<span class="badge pro bg-primary rounded-pill ms-2 mb-3">
@@ -452,14 +452,14 @@ class Integrations {
 					</span>
 				<?php endif; ?>
 
-				<p class="card-text fs-sm mb-4"><?php esc_html_e( 'Recupere carrinhos e pedidos abandonados com follow up cadenciado. Envie notificações via WhatsApp de forma automática e muito mais!', 'flexify-checkout-for-woocommerce' ) ?></p>
+				<p class="card-text fs-sm mb-4"><?php esc_html_e( 'Recover abandoned carts and orders with scheduled follow-ups. Send WhatsApp notifications automatically and much more!', 'flexify-checkout-for-woocommerce' ) ?></p>
 				
 				<?php if ( is_plugin_active('flexify-checkout-recovery-carts-addon/flexify-checkout-recovery-carts-addon.php') ) : ?>
-					<a class="btn btn-sm btn-outline-primary <?php echo ( ! License::is_valid() ) ? 'pro-version' : ''; ?>" href="<?php echo admin_url('admin.php?page=fc-recovery-carts-settings') ?>"><?php esc_html_e( 'Configurar', 'flexify-checkout-for-woocommerce' ) ?></a>
+					<a class="btn btn-sm btn-outline-primary <?php echo ( ! License::is_valid() ) ? 'pro-version' : ''; ?>" href="<?php echo admin_url('admin.php?page=fc-recovery-carts-settings') ?>"><?php esc_html_e( 'Configure', 'flexify-checkout-for-woocommerce' ) ?></a>
 				<?php elseif ( array_key_exists( 'flexify-checkout-recovery-carts-addon/flexify-checkout-recovery-carts-addon.php', get_plugins() ) ) : ?>
-					<button class="btn btn-sm btn-primary activate-plugin <?php echo ( ! License::is_valid() ) ? 'pro-version' : ''; ?>" data-plugin-slug="<?php echo esc_attr('flexify-checkout-recovery-carts-addon/flexify-checkout-recovery-carts-addon.php'); ?>"><?php esc_html_e( 'Ativar módulo', 'flexify-checkout-for-woocommerce' ) ?></button>
+					<button class="btn btn-sm btn-primary activate-plugin <?php echo ( ! License::is_valid() ) ? 'pro-version' : ''; ?>" data-plugin-slug="<?php echo esc_attr('flexify-checkout-recovery-carts-addon/flexify-checkout-recovery-carts-addon.php'); ?>"><?php esc_html_e( 'Enable module', 'flexify-checkout-for-woocommerce' ) ?></button>
 				<?php else : ?>
-					<button class="btn btn-sm btn-primary install-module <?php echo ( ! License::is_valid() ) ? 'pro-version' : ''; ?>" data-plugin-url="https://github.com/meumouse/flexify-checkout-recovery-carts-addon/raw/refs/heads/main/dist/flexify-checkout-recovery-carts-addon.zip" data-plugin-slug="<?php echo esc_attr('flexify-checkout-recovery-carts-addon/flexify-checkout-recovery-carts-addon.php'); ?>"><?php esc_html_e( 'Instalar módulo', 'flexify-checkout-for-woocommerce' ) ?></button>
+					<button class="btn btn-sm btn-primary install-module <?php echo ( ! License::is_valid() ) ? 'pro-version' : ''; ?>" data-plugin-url="https://github.com/meumouse/flexify-checkout-recovery-carts-addon/raw/refs/heads/main/dist/flexify-checkout-recovery-carts-addon.zip" data-plugin-slug="<?php echo esc_attr('flexify-checkout-recovery-carts-addon/flexify-checkout-recovery-carts-addon.php'); ?>"><?php esc_html_e( 'Install module', 'flexify-checkout-for-woocommerce' ) ?></button>
 				<?php endif; ?>
 			</div>
 
@@ -492,14 +492,14 @@ class Integrations {
 			
 			<div class="card-body px-3 py-4 d-flex flex-column align-items-center text-center">
 				<h5 class="card-title pt-0 border-top-0"><?php esc_html_e( 'Joinotify', 'flexify-checkout-for-woocommerce' ) ?></h5>
-				<p class="card-text fs-sm mb-4"><?php esc_html_e( 'Automatize o envio de mensagens via WhatsApp ao receber eventos no Flexify Checkout, recupere vendas de maneira mais assertiva. Deixe tudo no fluxo certo sem esforço!', 'flexify-checkout-for-woocommerce' ) ?></p>
+				<p class="card-text fs-sm mb-4"><?php esc_html_e( 'Automate sending WhatsApp messages when Flexify Checkout events occur, and recover sales more effectively. Keep everything flowing with no effort!', 'flexify-checkout-for-woocommerce' ) ?></p>
 
 				<?php if ( is_plugin_active('joinotify/joinotify.php') ) : ?>
-					<a class="btn btn-sm btn-outline-primary <?php echo ( ! License::is_valid() ) ? 'pro-version' : ''; ?>" href="<?php echo admin_url('admin.php?page=joinotify-settings') ?>"><?php esc_html_e( 'Configurar', 'flexify-checkout-for-woocommerce' ) ?></a>
+					<a class="btn btn-sm btn-outline-primary <?php echo ( ! License::is_valid() ) ? 'pro-version' : ''; ?>" href="<?php echo admin_url('admin.php?page=joinotify-settings') ?>"><?php esc_html_e( 'Configure', 'flexify-checkout-for-woocommerce' ) ?></a>
 				<?php elseif ( array_key_exists( 'joinotify/joinotify.php', get_plugins() ) ) : ?>
-					<button class="btn btn-sm btn-primary activate-plugin <?php echo ( ! License::is_valid() ) ? 'pro-version' : ''; ?>" data-plugin-slug="<?php echo esc_attr('joinotify/joinotify.php'); ?>"><?php esc_html_e( 'Ativar módulo', 'flexify-checkout-for-woocommerce' ) ?></button>
+					<button class="btn btn-sm btn-primary activate-plugin <?php echo ( ! License::is_valid() ) ? 'pro-version' : ''; ?>" data-plugin-slug="<?php echo esc_attr('joinotify/joinotify.php'); ?>"><?php esc_html_e( 'Enable module', 'flexify-checkout-for-woocommerce' ) ?></button>
 				<?php else : ?>
-					<button class="btn btn-sm btn-primary install-module <?php echo ( ! License::is_valid() ) ? 'pro-version' : ''; ?>" data-plugin-url="https://github.com/meumouse/joinotify/raw/refs/heads/main/dist/joinotify.zip" data-plugin-slug="<?php echo esc_attr('joinotify/joinotify.php'); ?>"><?php esc_html_e( 'Instalar módulo', 'flexify-checkout-for-woocommerce' ) ?></button>
+					<button class="btn btn-sm btn-primary install-module <?php echo ( ! License::is_valid() ) ? 'pro-version' : ''; ?>" data-plugin-url="https://github.com/meumouse/joinotify/raw/refs/heads/main/dist/joinotify.zip" data-plugin-slug="<?php echo esc_attr('joinotify/joinotify.php'); ?>"><?php esc_html_e( 'Install module', 'flexify-checkout-for-woocommerce' ) ?></button>
 				<?php endif; ?>
 			</div>
 
@@ -532,9 +532,9 @@ class Integrations {
 			
 			<div class="card-body px-3 py-4 d-flex flex-column align-items-center text-center">
 				<h5 class="card-title pt-0 border-top-0"><?php esc_html_e( 'Google Maps', 'flexify-checkout-for-woocommerce' ) ?></h5>
-				<p class="card-text fs-sm mb-4"><?php esc_html_e( 'Facilite o preenchimento do endereço de entrega aos usuários, permitindo pesquisar seu endereço ou usando recursos de geolocalização com Google Maps.', 'flexify-checkout-for-woocommerce' ) ?></p>
+				<p class="card-text fs-sm mb-4"><?php esc_html_e( 'Make it easier for users to fill in the delivery address by allowing address search or using geolocation features with Google Maps.', 'flexify-checkout-for-woocommerce' ) ?></p>
 
-				<div class="badge bg-translucent-primary rounded-pill py-2 px-3 fs-md"><?php esc_html_e( 'Em breve', 'flexify-checkout-for-woocommerce' ) ?></div>
+				<div class="badge bg-translucent-primary rounded-pill py-2 px-3 fs-md"><?php esc_html_e( 'Coming soon', 'flexify-checkout-for-woocommerce' ) ?></div>
 			</div>
 
 			<?php
@@ -587,14 +587,14 @@ class Integrations {
 			<div class="card-body px-3 py-4 d-flex flex-column align-items-center text-center">
 				<h5 class="card-title pt-0 border-top-0"><?php esc_html_e( 'Payments by Payco', 'flexify-checkout-for-woocommerce' ) ?></h5>
 
-				<p class="card-text fs-sm mb-4"><?php esc_html_e( 'Receba pagamentos com Pix, Cartão de Crédito, Open Finance e Boleto Bancário.', 'flexify-checkout-for-woocommerce' ) ?></p>
+				<p class="card-text fs-sm mb-4"><?php esc_html_e( 'Receive payments with Pix, Credit Card, Open Finance, and Bank Slip.', 'flexify-checkout-for-woocommerce' ) ?></p>
 				
 				<?php if ( is_plugin_active('virtuaria-payments-by-payco/virtuaria-payments-by-payco.php') ) : ?>
-					<a class="btn btn-sm btn-outline-primary" href="<?php echo admin_url('admin.php?page=virtuaria_payments_payco') ?>"><?php esc_html_e( 'Configurar', 'flexify-checkout-for-woocommerce' ) ?></a>
+					<a class="btn btn-sm btn-outline-primary" href="<?php echo admin_url('admin.php?page=virtuaria_payments_payco') ?>"><?php esc_html_e( 'Configure', 'flexify-checkout-for-woocommerce' ) ?></a>
 				<?php elseif ( array_key_exists( 'virtuaria-payments-by-payco/virtuaria-payments-by-payco.php', get_plugins() ) ) : ?>
-					<button class="btn btn-sm btn-primary activate-plugin" data-plugin-slug="<?php echo esc_attr('virtuaria-payments-by-payco/virtuaria-payments-by-payco.php'); ?>"><?php esc_html_e( 'Ativar módulo', 'flexify-checkout-for-woocommerce' ) ?></button>
+					<button class="btn btn-sm btn-primary activate-plugin" data-plugin-slug="<?php echo esc_attr('virtuaria-payments-by-payco/virtuaria-payments-by-payco.php'); ?>"><?php esc_html_e( 'Enable module', 'flexify-checkout-for-woocommerce' ) ?></button>
 				<?php else : ?>
-					<button class="btn btn-sm btn-primary install-module" data-plugin-url="https://downloads.wordpress.org/plugin/virtuaria-payments-by-payco.zip" data-plugin-slug="<?php echo esc_attr('virtuaria-payments-by-payco/virtuaria-payments-by-payco.php'); ?>"><?php esc_html_e( 'Instalar módulo', 'flexify-checkout-for-woocommerce' ) ?></button>
+					<button class="btn btn-sm btn-primary install-module" data-plugin-url="https://downloads.wordpress.org/plugin/virtuaria-payments-by-payco.zip" data-plugin-slug="<?php echo esc_attr('virtuaria-payments-by-payco/virtuaria-payments-by-payco.php'); ?>"><?php esc_html_e( 'Install module', 'flexify-checkout-for-woocommerce' ) ?></button>
 				<?php endif; ?>
 			</div>
 

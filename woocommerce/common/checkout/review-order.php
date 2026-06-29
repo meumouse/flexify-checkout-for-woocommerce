@@ -22,7 +22,7 @@ defined('ABSPATH') || exit; ?>
 <table class="shop_table woocommerce-checkout-review-order-table">
 	<thead>
 		<tr>
-			<th class="product-name"><?php esc_html_e( 'Produto', 'flexify-checkout-for-woocommerce' ); ?></th>
+			<th class="product-name"><?php esc_html_e( 'Product', 'flexify-checkout-for-woocommerce' ); ?></th>
 			<th class="product-total"><?php esc_html_e( 'Subtotal', 'flexify-checkout-for-woocommerce' ); ?></th>
 		</tr>
 	</thead>

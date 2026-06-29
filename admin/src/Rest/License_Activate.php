@@ -49,7 +49,7 @@ class License_Activate extends Abstract_Route {
         $license_key = isset( $payload['license_key'] ) ? sanitize_text_field( $payload['license_key'] ) : '';
 
         if ( empty( $license_key ) ) {
-            return $this->error_response( __( 'Informe um código de licença.', 'flexify-checkout-for-woocommerce' ) );
+            return $this->error_response( __( 'Enter a license code.', 'flexify-checkout-for-woocommerce' ) );
         }
 
         // clear response cache first
@@ -76,14 +76,14 @@ class License_Activate extends Abstract_Route {
 
             if ( License::is_valid() ) {
                 return $this->success_response( array(
-                    'message' => __( 'Licença ativada com sucesso. Agora todos os recursos estão ativos!', 'flexify-checkout-for-woocommerce' ),
+                    'message' => __( 'License activated successfully. All features are now active!', 'flexify-checkout-for-woocommerce' ),
                     'runtime' => Registry::get_runtime_data(),
                 ) );
             }
         }
 
         return $this->error_response(
-            ! empty( $message ) ? $message : __( 'Ocorreu um erro ao ativar sua licença.', 'flexify-checkout-for-woocommerce' ),
+            ! empty( $message ) ? $message : __( 'An error occurred while activating your license.', 'flexify-checkout-for-woocommerce' ),
             array( 'runtime' => Registry::get_runtime_data() )
         );
     }

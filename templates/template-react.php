@@ -32,7 +32,7 @@ defined('ABSPATH') || exit;
 
         <div class="flexify-checkout flexify-checkout--react">
             <div id="flexify-react-checkout">
-                <noscript><?php esc_html_e( 'É necessário habilitar o JavaScript para finalizar a compra.', 'flexify-checkout-for-woocommerce' ); ?></noscript>
+                <noscript><?php esc_html_e( 'JavaScript must be enabled to complete the purchase.', 'flexify-checkout-for-woocommerce' ); ?></noscript>
             </div>
         </div>
 

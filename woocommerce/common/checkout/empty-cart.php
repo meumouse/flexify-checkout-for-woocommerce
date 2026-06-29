@@ -19,10 +19,10 @@ defined('ABSPATH') || exit; ?>
 			<div class="flexify-empty-cart__icon"></div>
 		</div>
 		<div class="flexify-empty-cart__text">
-			<p><?php esc_html_e( 'Seu carrinho está vazio, visite nossa loja para comprar algum produto.', 'flexify-checkout-for-woocommerce' ); ?></p>
+			<p><?php esc_html_e( 'Your cart is empty, visit our store to buy some products.', 'flexify-checkout-for-woocommerce' ); ?></p>
 		</div>
 		<div class="flexify-empty-cart__button">
-			<a class="flexify-button flexify-button--reverse flexify-button--emptycart" href="<?php echo esc_url( Helpers::get_shop_page_url() ); ?>"><?php esc_html_e( 'Retornar à loja', 'flexify-checkout-for-woocommerce' ); ?></a>
+			<a class="flexify-button flexify-button--reverse flexify-button--emptycart" href="<?php echo esc_url( Helpers::get_shop_page_url() ); ?>"><?php esc_html_e( 'Return to store', 'flexify-checkout-for-woocommerce' ); ?></a>
 		</div>
 	</div>
 </div>

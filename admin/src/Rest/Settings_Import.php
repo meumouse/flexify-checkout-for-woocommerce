@@ -66,21 +66,21 @@ class Settings_Import extends Abstract_Route {
         $payload = $request->get_param('payload');
 
         if ( ! is_array( $payload ) ) {
-            return $this->error_response( __( 'Não foi possível ler o arquivo. Verifique se é um JSON de configurações válido.', 'flexify-checkout-for-woocommerce' ) );
+            return $this->error_response( __( 'Could not read the file. Please check if it is a valid configuration JSON.', 'flexify-checkout-for-woocommerce' ) );
         }
 
         if ( ! isset( $payload['format'] ) || $payload['format'] !== Settings_Import_Export::FORMAT || ! isset( $payload['data'] ) || ! is_array( $payload['data'] ) ) {
-            return $this->error_response( __( 'Este arquivo não é uma exportação de configurações do Flexify Checkout.', 'flexify-checkout-for-woocommerce' ) );
+            return $this->error_response( __( 'This file is not a Flexify Checkout settings export.', 'flexify-checkout-for-woocommerce' ) );
         }
 
         $applied = Settings_Import_Export::apply_payload( $payload['data'] );
 
         if ( ! $applied ) {
-            return $this->error_response( __( 'O arquivo não continha configurações aplicáveis.', 'flexify-checkout-for-woocommerce' ) );
+            return $this->error_response( __( 'The file did not contain applicable settings.', 'flexify-checkout-for-woocommerce' ) );
         }
 
         return $this->success_response( array(
-            'message' => __( 'As configurações foram importadas com sucesso!', 'flexify-checkout-for-woocommerce' ),
+            'message' => __( 'The settings have been imported successfully!', 'flexify-checkout-for-woocommerce' ),
             'settings' => Repository::get_settings(),
             'runtime' => Registry::get_runtime_data(),
             'reload' => true,

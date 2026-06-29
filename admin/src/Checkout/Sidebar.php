@@ -166,7 +166,7 @@ class Sidebar {
 		$product = $cart_item['data'];
 
 		if ( $product->is_on_backorder( 1 ) ) {
-			$name .= '<br><small class="product-backorder-info">' . esc_html__( 'Disponibilidade: Sob encomenda', 'flexify-checkout-for-woocommerce' ) . '</small>';
+			$name .= '<br><small class="product-backorder-info">' . esc_html__( 'Availability: On backorder', 'flexify-checkout-for-woocommerce' ) . '</small>';
 		}
 
 		return $name;
@@ -291,8 +291,8 @@ class Sidebar {
 					data-cart_item_key="%s"
 					data-product_id="%s"
 					data-product_sku="%s">&times;</a>',
-				esc_html__( 'Remover este item', 'flexify-checkout-for-woocommerce' ),
-				esc_html__( 'Remover este item', 'flexify-checkout-for-woocommerce' ),
+				esc_html__( 'Remove this item', 'flexify-checkout-for-woocommerce' ),
+				esc_html__( 'Remove this item', 'flexify-checkout-for-woocommerce' ),
 				esc_attr( $cart_item_key ),
 				esc_attr( $cart_item['product_id'] ),
 				esc_attr( $product ? $product->get_sku() : '' )
@@ -376,7 +376,7 @@ class Sidebar {
 		// is_sold_individually.
 		if ( $product->is_sold_individually() && $quantity > 1 ) {
 			/* Translators: %s Product title. */
-			$msg = sprintf( esc_html__( 'Você só pode comprar 1 %s por pedido.', 'flexify-checkout-for-woocommerce' ), $product->get_name() );
+			$msg = sprintf( esc_html__( 'You can only buy 1 %s per order.', 'flexify-checkout-for-woocommerce' ), $product->get_name() );
 			
 			$updated = array(
 				'error' => $msg,
@@ -392,7 +392,7 @@ class Sidebar {
 
 			if ( $product->get_stock_quantity() < ( $held_stock + $quantity ) ) {
 				/* translators: 1: product name 2: quantity in stock */
-				$msg = sprintf( __( 'Desculpe, não temos "%1$s" suficientes em estoque para atender seu pedido (%2$s disponíveis). Pedimos desculpas por qualquer inconveniente causado.', 'flexify-checkout-for-woocommerce' ), $product->get_name(), wc_format_stock_quantity_for_display( $product->get_stock_quantity() - $held_stock, $product ) );
+				$msg = sprintf( __( 'Sorry, we do not have enough "%1$s" in stock to fulfill your order (%2$s available). We apologize for any inconvenience caused.', 'flexify-checkout-for-woocommerce' ), $product->get_name(), wc_format_stock_quantity_for_display( $product->get_stock_quantity() - $held_stock, $product ) );
 
 				$updated = array(
 					'error' => $msg,

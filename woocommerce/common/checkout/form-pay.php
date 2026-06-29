@@ -41,7 +41,7 @@ defined('ABSPATH') || exit; ?>
 						endif; ?>
 					</div>
 					
-					<h2 class="flexify-heading flexify-heading--order-pay"><?php esc_html_e( 'Pagar pelo pedido', 'flexify-checkout-for-woocommerce' ); ?></h2>
+					<h2 class="flexify-heading flexify-heading--order-pay"><?php esc_html_e( 'Pay for the order', 'flexify-checkout-for-woocommerce' ); ?></h2>
 					
 					<div id="order_review">
 						<div id="payment">
@@ -53,7 +53,7 @@ defined('ABSPATH') || exit; ?>
 											wc_get_template( 'checkout/payment-method.php', array( 'gateway' => $gateway ) );
 										}
 									} else {
-										echo '<li class="woocommerce-notice woocommerce-notice--info woocommerce-info">' . esc_html( apply_filters( 'woocommerce_no_available_payment_methods_message', esc_html__( 'Desculpe, parece que não há métodos de pagamento disponíveis para sua localização. Entre em contato conosco se precisar de assistência ou desejar pagar de outra forma.', 'flexify-checkout-for-woocommerce' ) ) ) . '</li>';
+										echo '<li class="woocommerce-notice woocommerce-notice--info woocommerce-info">' . esc_html( apply_filters( 'woocommerce_no_available_payment_methods_message', esc_html__( 'Sorry, it seems there are no payment methods available for your location. Please contact us if you need assistance or wish to pay in another way.', 'flexify-checkout-for-woocommerce' ) ) ) . '</li>';
 									}
 									?>
 								</ul>
@@ -74,10 +74,10 @@ defined('ABSPATH') || exit; ?>
 
 								<footer class="flexify-footer flexify-footer--order-pay">
 									<?php if ( Helpers::is_modern_theme() ) : ?>
-										<a class="flexify-step__back" href="<?php echo esc_url( wc_get_account_endpoint_url('orders') ); ?>"><?php esc_html_e( 'Voltar para a conta', 'flexify-checkout-for-woocommerce' ); ?></a>
+										<a class="flexify-step__back" href="<?php echo esc_url( wc_get_account_endpoint_url('orders') ); ?>"><?php esc_html_e( 'Back to account', 'flexify-checkout-for-woocommerce' ); ?></a>
 									<?php endif;
 
-									echo '<button type="submit" class="button alt" id="place_order" data-text="' . esc_attr( Helpers::get_order_pay_btn_text( $order ) ) . '" value="' . esc_html__( 'Pagar pelo pedido', 'flexify-checkout-for-woocommerce' ) . '" data-value="' . esc_attr( $order_button_text ) . '">' . wp_kses_post( $order_button_text ) . '</button>'; ?>
+									echo '<button type="submit" class="button alt" id="place_order" data-text="' . esc_attr( Helpers::get_order_pay_btn_text( $order ) ) . '" value="' . esc_html__( 'Pay for the order', 'flexify-checkout-for-woocommerce' ) . '" data-value="' . esc_attr( $order_button_text ) . '">' . wp_kses_post( $order_button_text ) . '</button>'; ?>
 								</footer>
 
 								<?php

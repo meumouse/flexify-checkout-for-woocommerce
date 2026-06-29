@@ -84,7 +84,7 @@ class Address_Details extends Abstract_Route {
         $place_id = preg_replace( '#^places/#', '', sanitize_text_field( (string) $request->get_param('place_id') ) );
 
         if ( '' === $place_id ) {
-            return $this->error_response( __( 'Endereço inválido.', 'flexify-checkout-for-woocommerce' ) );
+            return $this->error_response( __( 'Invalid address.', 'flexify-checkout-for-woocommerce' ) );
         }
 
         $url = 'https://places.googleapis.com/v1/places/' . rawurlencode( $place_id );
@@ -104,7 +104,7 @@ class Address_Details extends Abstract_Route {
         ) );
 
         if ( is_wp_error( $response ) ) {
-            return $this->error_response( __( 'Não foi possível obter o endereço.', 'flexify-checkout-for-woocommerce' ) );
+            return $this->error_response( __( 'Could not get the address.', 'flexify-checkout-for-woocommerce' ) );
         }
 
         $data = json_decode( wp_remote_retrieve_body( $response ), true );

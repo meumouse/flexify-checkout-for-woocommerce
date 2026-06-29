@@ -23,12 +23,13 @@ flexify-checkout-for-woocommerce-<locale>.po    │
 
 ---
 
-## Idioma-fonte: Português
+## Idioma-fonte: Inglês
 
 > **Atenção.** As strings de origem (`msgid`) do Flexify Checkout estão escritas em
-> **português (pt_BR)** — por exemplo `__( 'A licença foi ativada com sucesso!', ... )`.
+> **inglês (en_US)** — por exemplo `__( 'License activated successfully. All features are now active!', ... )`.
 > Por isso:
-> - `pt_BR` **não** é um alvo de tradução (é o idioma de origem; não precisa de `.po`/`.mo`).
+> - `en_US` **não** é um alvo de tradução (é o idioma de origem; não precisa de `.po`/`.mo`).
+> - `pt_BR` agora é um **alvo de tradução** como qualquer outro idioma.
 > - Prefira o motor de **IA** (`translate:ai`): ele detecta o idioma de origem por string.
 >   O motor Google está configurado para **auto-detectar** a origem (sem `from` fixo), mas a
 >   IA preserva placeholders/HTML/shortcodes com mais fidelidade.
@@ -37,7 +38,7 @@ Os idiomas-alvo ativos são definidos no mapa `LANGUAGES` em `translate-cli.js`:
 
 | Locale  | Código | Idioma                  |
 |---------|--------|-------------------------|
-| `en_US` | `en`   | Inglês (Estados Unidos) |
+| `pt_BR` | `pt`   | Português (Brasil)      |
 | `es_ES` | `es`   | Espanhol (Espanha)      |
 | `fr_FR` | `fr`   | Francês (França)        |
 
@@ -50,7 +51,7 @@ basta descomentá-los para incluí-los nas próximas execuções.
 
 - **Node.js 18+** (usa `fetch` global e ESM nativo).
 - Para tradução automática, uma chave de API:
-  - **OpenAI** (motor de IA, **recomendado** — detecta a origem em português), ou
+  - **OpenAI** (motor de IA, **recomendado** — detecta a origem por string), ou
   - **Google Cloud Translation** (motor padrão, com auto-detecção de origem).
 
 ## Instalação

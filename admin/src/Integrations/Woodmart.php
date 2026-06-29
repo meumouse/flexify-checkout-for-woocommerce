@@ -76,7 +76,7 @@ if ( defined('WOODMART_THEME_DIR') || function_exists('woodmart_theme_setup') ||
 				woodmart_enqueue_inline_style('social-login'); ?>
 
 				<div class="title wd-login-divider social-login-title <?php echo esc_attr( woodmart_get_old_classes('wood-login-divider') ); ?>">
-					<span><?php esc_html_e( 'Ou faça login com', 'woodmart' ); ?></span>
+					<span><?php esc_html_e( 'Or log in with', 'woodmart' ); ?></span>
 				</div>
 
 				<div class="wd-social-login">

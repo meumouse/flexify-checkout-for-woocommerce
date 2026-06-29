@@ -56,7 +56,7 @@ if ( class_exists('WC_Force_Sells') ) {
          */
         public function fix_quantity_markup( $quantity, $cart_item_key ) {
             if ( isset( WC()->cart->cart_contents[$cart_item_key]['forced_by']) ) {
-                return '<div class="force-sells-qty">' . esc_html__('Quantidade', 'flexify-checkout-for-woocommerce') . ':' . WC()->cart->cart_contents[$cart_item_key]['quantity'] . '</div>';
+                return '<div class="force-sells-qty">' . esc_html__('Quantity', 'flexify-checkout-for-woocommerce') . ':' . WC()->cart->cart_contents[$cart_item_key]['quantity'] . '</div>';
             }
 
             return $quantity;

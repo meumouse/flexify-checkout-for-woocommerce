@@ -334,7 +334,7 @@ class Direct_Checkout {
         $ls_key = apply_filters( 'Flexify_Checkout/API/Direct_Checkout/Form_Data_Key', 'flexify_checkout_form_data' );
 
         // Use a simple HTML/JS redirect to execute localStorage injection reliably
-        $html = '<!doctype html><html><head><title>'. esc_html__( 'Redirecionando...', 'flexify-checkout-for-woocommerce' ) .'</title><meta name="robots" content="noindex,nofollow"></head><body><script>';
+        $html = '<!doctype html><html><head><title>'. esc_html__( 'Redirecting...', 'flexify-checkout-for-woocommerce' ) .'</title><meta name="robots" content="noindex,nofollow"></head><body><script>';
         $html .= 'try { var d=' . wp_json_encode( $form_data ) . '; if(d){ localStorage.setItem(' . wp_json_encode( $ls_key ) . ', JSON.stringify(d)); } }catch(e){console.error("Flexify Checkout Error:", e);}';
         $html .= 'window.location.replace(' . wp_json_encode( $final_url ) . ');';
         $html .= '</script></body></html>';

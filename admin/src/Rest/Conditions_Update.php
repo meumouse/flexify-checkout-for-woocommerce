@@ -44,7 +44,7 @@ class Conditions_Update extends Abstract_Route {
      */
     public function handle( WP_REST_Request $request ) {
         if ( ! License::is_valid() ) {
-            return $this->error_response( __( 'O gerenciador de condições requer uma licença Pro ativa.', 'flexify-checkout-for-woocommerce' ) );
+            return $this->error_response( __( 'The conditions manager requires an active Pro license.', 'flexify-checkout-for-woocommerce' ) );
         }
 
         $payload = $request->get_json_params();
@@ -52,15 +52,15 @@ class Conditions_Update extends Abstract_Route {
         $rule = isset( $payload['rule'] ) ? $payload['rule'] : array();
 
         if ( '' === $id || empty( $rule['action'] ) ) {
-            return $this->error_response( __( 'Dados da regra inválidos.', 'flexify-checkout-for-woocommerce' ) );
+            return $this->error_response( __( 'Invalid rule data.', 'flexify-checkout-for-woocommerce' ) );
         }
 
         if ( ! Conditions_Store::update_rule( $id, $rule ) ) {
-            return $this->error_response( __( 'Ops! Não foi possível atualizar a regra.', 'flexify-checkout-for-woocommerce' ) );
+            return $this->error_response( __( 'Oops! Could not update the rule.', 'flexify-checkout-for-woocommerce' ) );
         }
 
         return $this->success_response( array(
-            'message' => __( 'Regra atualizada com sucesso!', 'flexify-checkout-for-woocommerce' ),
+            'message' => __( 'Rule updated successfully!', 'flexify-checkout-for-woocommerce' ),
             'conditions' => Conditions_Store::get_rules_for_client(),
         ) );
     }

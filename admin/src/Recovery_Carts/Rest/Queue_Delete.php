@@ -48,7 +48,7 @@ class Queue_Delete extends Abstract_Route {
         $id = absint( $request->get_param('id') );
 
         if ( ! $id || get_post_type( $id ) !== 'fcrc-cron-event' ) {
-            return new \WP_Error( 'fcrc_event_not_found', __( 'Evento não encontrado.', 'flexify-checkout-for-woocommerce' ), array( 'status' => 404 ) );
+            return new \WP_Error( 'fcrc_event_not_found', __( 'Event not found.', 'flexify-checkout-for-woocommerce' ), array( 'status' => 404 ) );
         }
 
         wp_delete_post( $id, true );

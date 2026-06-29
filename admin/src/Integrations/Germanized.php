@@ -45,7 +45,7 @@ if ( class_exists('WooCommerce_Germanized') ) {
          * Add title to review order for consistency.
          */
         public function compat_gzd_order_review_title() {
-            echo '<h4>' . esc_html__('Resumo do pedido', 'flexify-checkout-for-woocommerce') . '</h4>';
+            echo '<h4>' . esc_html__('Order summary', 'flexify-checkout-for-woocommerce') . '</h4>';
         }
     }
 }

@@ -575,7 +575,7 @@ class Helpers {
         if ( $channel === 'whatsapp' ) {
             return esc_html__( 'WhatsApp', 'flexify-checkout-for-woocommerce' );
         } elseif ( $channel === 'email' ) {
-            return esc_html__( 'E-mail', 'flexify-checkout-for-woocommerce' );
+            return esc_html__( 'Email', 'flexify-checkout-for-woocommerce' );
         }
         
         return ucfirst( $channel );

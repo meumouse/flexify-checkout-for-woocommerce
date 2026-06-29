@@ -44,20 +44,20 @@ class Fields_Save extends Abstract_Route {
      */
     public function handle( WP_REST_Request $request ) {
         if ( ! License::is_valid() ) {
-            return $this->error_response( __( 'O gerenciador de campos requer uma licença Pro ativa.', 'flexify-checkout-for-woocommerce' ) );
+            return $this->error_response( __( 'The fields manager requires an active Pro license.', 'flexify-checkout-for-woocommerce' ) );
         }
 
         $payload = $request->get_json_params();
         $incoming = isset( $payload['fields'] ) && is_array( $payload['fields'] ) ? $payload['fields'] : array();
 
         if ( empty( $incoming ) ) {
-            return $this->error_response( __( 'Nenhum campo recebido.', 'flexify-checkout-for-woocommerce' ) );
+            return $this->error_response( __( 'No field received.', 'flexify-checkout-for-woocommerce' ) );
         }
 
         $fields = Fields_Store::save_fields( $incoming );
 
         return $this->success_response( array(
-            'message' => __( 'Os campos foram atualizados!', 'flexify-checkout-for-woocommerce' ),
+            'message' => __( 'The fields have been updated!', 'flexify-checkout-for-woocommerce' ),
             'fields' => $fields,
         ) );
     }

@@ -592,8 +592,8 @@ class Conditions_Store {
         $type = $action['type'] ?? 'show';
 
         $type_labels = array(
-            'show' => __( 'Mostrar', 'flexify-checkout-for-woocommerce' ),
-            'hide' => __( 'Ocultar', 'flexify-checkout-for-woocommerce' ),
+            'show' => __( 'Show', 'flexify-checkout-for-woocommerce' ),
+            'hide' => __( 'Hide', 'flexify-checkout-for-woocommerce' ),
         );
 
         if ( 'discount' === $type ) {
@@ -603,7 +603,7 @@ class Conditions_Store {
                 ? html_entity_decode( ( function_exists('get_woocommerce_currency_symbol') ? get_woocommerce_currency_symbol() : 'R$' ) ) . ' ' . number_format_i18n( $value, 2 )
                 : rtrim( rtrim( number_format_i18n( $value, 2 ), '0' ), ',.' ) . '%';
 
-            $line_1 = sprintf( __( 'Aplicar desconto de %s', 'flexify-checkout-for-woocommerce' ), $amount );
+            $line_1 = sprintf( __( 'Apply %s discount', 'flexify-checkout-for-woocommerce' ), $amount );
         } else {
             $type_label = $type_labels[ $type ] ?? $type_labels['show'];
             $line_1 = sprintf( '%s %s', $type_label, self::describe_target( $action ) );
@@ -631,7 +631,7 @@ class Conditions_Store {
             $field_id = (string) ( $action['field'] ?? '' );
             $label = isset( $fields['billing'][ $field_id ]['label'] ) ? $fields['billing'][ $field_id ]['label'] : $field_id;
 
-            return sprintf( __( 'o campo %s', 'flexify-checkout-for-woocommerce' ), $label );
+            return sprintf( __( 'the %s field', 'flexify-checkout-for-woocommerce' ), $label );
         }
 
         if ( 'shipping' === $component ) {
@@ -639,14 +639,14 @@ class Conditions_Store {
             $methods = function_exists('WC') && WC()->shipping ? WC()->shipping->get_shipping_methods() : array();
             $title = isset( $methods[ $id ] ) ? $methods[ $id ]->method_title : $id;
 
-            return sprintf( __( 'a entrega %s', 'flexify-checkout-for-woocommerce' ), $title );
+            return sprintf( __( 'the %s shipping', 'flexify-checkout-for-woocommerce' ), $title );
         }
 
         $id = (string) ( $action['payment_method'] ?? '' );
         $gateways = function_exists('WC') && WC()->payment_gateways ? WC()->payment_gateways->payment_gateways() : array();
         $title = isset( $gateways[ $id ] ) ? $gateways[ $id ]->get_title() : $id;
 
-        return sprintf( __( 'o pagamento %s', 'flexify-checkout-for-woocommerce' ), $title );
+        return sprintf( __( 'the %s payment', 'flexify-checkout-for-woocommerce' ), $title );
     }
 
 
@@ -666,13 +666,13 @@ class Conditions_Store {
         }
 
         if ( 0 === $count ) {
-            return __( 'Sempre (sem condições)', 'flexify-checkout-for-woocommerce' );
+            return __( 'Always (no conditions)', 'flexify-checkout-for-woocommerce' );
         }
 
-        $join = ( ( $rule['match'] ?? 'all' ) === 'any' ) ? __( 'qualquer', 'flexify-checkout-for-woocommerce' ) : __( 'todas', 'flexify-checkout-for-woocommerce' );
+        $join = ( ( $rule['match'] ?? 'all' ) === 'any' ) ? __( 'any', 'flexify-checkout-for-woocommerce' ) : __( 'all', 'flexify-checkout-for-woocommerce' );
 
         return sprintf(
-            _n( 'Quando %1$s de %2$d condição for atendida', 'Quando %1$s de %2$d condições forem atendidas', $count, 'flexify-checkout-for-woocommerce' ),
+            _n( 'When %1$s of %2$d condition is met', 'When %1$s of %2$d conditions are met', $count, 'flexify-checkout-for-woocommerce' ),
             $join,
             $count
         );
@@ -687,20 +687,20 @@ class Conditions_Store {
      */
     public static function get_condition_labels() {
         return array(
-            'is' => __( 'É', 'flexify-checkout-for-woocommerce' ),
-            'is_not' => __( 'Não é', 'flexify-checkout-for-woocommerce' ),
-            'empty' => __( 'Vazio', 'flexify-checkout-for-woocommerce' ),
-            'not_empty' => __( 'Não está vazio', 'flexify-checkout-for-woocommerce' ),
-            'contains' => __( 'Contém', 'flexify-checkout-for-woocommerce' ),
-            'not_contain' => __( 'Não contém', 'flexify-checkout-for-woocommerce' ),
-            'start_with' => __( 'Começa com', 'flexify-checkout-for-woocommerce' ),
-            'finish_with' => __( 'Termina com', 'flexify-checkout-for-woocommerce' ),
-            'bigger_then' => __( 'Maior que', 'flexify-checkout-for-woocommerce' ),
-            'less_than' => __( 'Menor que', 'flexify-checkout-for-woocommerce' ),
-            'checked' => __( 'Marcado', 'flexify-checkout-for-woocommerce' ),
-            'not_checked' => __( 'Desmarcado', 'flexify-checkout-for-woocommerce' ),
-            'is_one_of' => __( 'É um de', 'flexify-checkout-for-woocommerce' ),
-            'is_not_one_of' => __( 'Não é um de', 'flexify-checkout-for-woocommerce' ),
+            'is' => __( 'Is', 'flexify-checkout-for-woocommerce' ),
+            'is_not' => __( 'It is not', 'flexify-checkout-for-woocommerce' ),
+            'empty' => __( 'Empty', 'flexify-checkout-for-woocommerce' ),
+            'not_empty' => __( 'It is not empty', 'flexify-checkout-for-woocommerce' ),
+            'contains' => __( 'Contains', 'flexify-checkout-for-woocommerce' ),
+            'not_contain' => __( 'Does not contain', 'flexify-checkout-for-woocommerce' ),
+            'start_with' => __( 'Starts with', 'flexify-checkout-for-woocommerce' ),
+            'finish_with' => __( 'Ends with', 'flexify-checkout-for-woocommerce' ),
+            'bigger_then' => __( 'Greater than', 'flexify-checkout-for-woocommerce' ),
+            'less_than' => __( 'Less than', 'flexify-checkout-for-woocommerce' ),
+            'checked' => __( 'Checked', 'flexify-checkout-for-woocommerce' ),
+            'not_checked' => __( 'Unchecked', 'flexify-checkout-for-woocommerce' ),
+            'is_one_of' => __( 'Is one of', 'flexify-checkout-for-woocommerce' ),
+            'is_not_one_of' => __( 'Is not one of', 'flexify-checkout-for-woocommerce' ),
         );
     }
 }

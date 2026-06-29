@@ -18,11 +18,11 @@ const BATCH_SIZE = 50;
 const DELAY_BETWEEN_BATCHES = 1000;
 const MAX_RETRIES = 3;
 
-// The plugin's source strings are written in Portuguese (pt_BR), so that locale
+// The plugin's source strings are written in English (en_US), so that locale
 // needs no translation file and is intentionally omitted from the targets.
 // Uncomment any extra locale to include it in the next translation run.
 const LANGUAGES = {
-  en_US: { code: "en", name: "English (United States)" },
+  pt_BR: { code: "pt", name: "Portuguese (Brazil)" },
   es_ES: { code: "es", name: "Spanish (Spain)" },
   fr_FR: { code: "fr", name: "French (France)" },
 //  de_DE: { code: "de", name: "German (Germany)" },
@@ -167,8 +167,8 @@ function findStringsToTranslate(
 async function translateBatchWithRetry(stringsToTranslate, targetLangCode, retryCount = 0) {
   try {
     // `from` is intentionally omitted so Google auto-detects the source
-    // language per request — the plugin's source strings are Portuguese, not
-    // English, and a fixed `from:"en"` would corrupt them.
+    // language per request — the plugin's source strings are English (en_US);
+    // letting Google detect avoids corrupting any incidental non-English token.
     const [results] = await translate.translate(stringsToTranslate, {
       to: targetLangCode,
       format: "text",

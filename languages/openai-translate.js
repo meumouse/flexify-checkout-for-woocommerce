@@ -3,9 +3,9 @@
  *
  * Unlike a plain machine-translation service, the model is instructed to
  * preserve sprintf placeholders, HTML markup, shortcodes and brand names, and
- * to detect the source language per string. This matters for Flexify Checkout
- * because the source strings are written in Portuguese (pt_BR) — a fixed
- * `from:"en"` machine translation would corrupt them.
+ * to detect the source language per string. The source strings of Flexify
+ * Checkout are written in English (en_US); detecting per string keeps any
+ * incidental non-English token from being mistranslated.
  *
  * Uses the global `fetch` (Node 18+), so no extra dependency is required.
  */
@@ -26,7 +26,7 @@ function buildSystemPrompt(targetLanguage) {
     `Translate each UI string into ${targetLanguage} (natural, concise, as used in software interfaces).`,
     "",
     "Strict rules:",
-    "- The source strings are usually written in Portuguese (Brazil), but some may already be in English. Detect the language and translate into the target language.",
+    "- The source strings are usually written in English, but some may already be in another language. Detect the language and translate into the target language.",
     `- If a string is already written in ${targetLanguage}, return it unchanged.`,
     "- Preserve EXACTLY, without translating or reordering: sprintf placeholders (%s, %d, %1$s, %2$s, %%), HTML tags and their attributes, HTML entities, URLs, email addresses, WordPress shortcodes (e.g. [shortcode id=\"100\"]) and template tokens such as ${count} or {{ ... }}.",
     "- Keep leading and trailing whitespace, line breaks and surrounding punctuation identical to the source.",

@@ -90,12 +90,12 @@ class WhatsApp_Send extends Abstract_Route {
         $phone = $this->normalize_phone( (string) $request->get_param('phone') );
 
         if ( strlen( $phone ) < 10 ) {
-            return $this->error_response( __( 'Informe um número de telefone válido.', 'flexify-checkout-for-woocommerce' ) );
+            return $this->error_response( __( 'Enter a valid phone number.', 'flexify-checkout-for-woocommerce' ) );
         }
 
         // Rate limit: per IP and per phone.
         if ( $this->is_rate_limited( $phone ) ) {
-            return $this->error_response( __( 'Muitas tentativas. Aguarde um momento e tente novamente.', 'flexify-checkout-for-woocommerce' ) );
+            return $this->error_response( __( 'Too many attempts. Please wait a moment and try again.', 'flexify-checkout-for-woocommerce' ) );
         }
 
         $code = (string) wp_rand( 100000, 999999 );
@@ -109,12 +109,12 @@ class WhatsApp_Send extends Abstract_Route {
         $receiver = function_exists('joinotify_prepare_receiver') ? joinotify_prepare_receiver( $phone ) : $phone;
         $message = sprintf(
             /* translators: %s: one-time access code. */
-            __( 'Seu código de acesso é: %s', 'flexify-checkout-for-woocommerce' ),
+            __( 'Your access code is: %s', 'flexify-checkout-for-woocommerce' ),
             $code
         );
 
         if ( empty( $sender ) ) {
-            return $this->error_response( __( 'Nenhum remetente do WhatsApp configurado.', 'flexify-checkout-for-woocommerce' ) );
+            return $this->error_response( __( 'No WhatsApp sender configured.', 'flexify-checkout-for-woocommerce' ) );
         }
 
         joinotify_send_whatsapp_message_text( $sender, $receiver, $message );
@@ -124,7 +124,7 @@ class WhatsApp_Send extends Abstract_Route {
         }
 
         return $this->success_response( array(
-            'message' => __( 'Código enviado pelo WhatsApp.', 'flexify-checkout-for-woocommerce' ),
+            'message' => __( 'Code sent via WhatsApp.', 'flexify-checkout-for-woocommerce' ),
             'expires_in' => 5 * MINUTE_IN_SECONDS,
         ) );
     }

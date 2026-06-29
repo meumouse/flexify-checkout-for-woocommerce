@@ -224,7 +224,7 @@ class Updater {
     
                 // if the current version is lower than that of the remote server
                 if ( version_compare( $current_version, $latest_version, '<' )) {
-                    $message = __('Uma nova versão do plugin <strong>Flexify Checkout</strong> está disponível.', 'flexify-checkout-for-woocommerce');
+                    $message = __('A new version of the <strong>Flexify Checkout</strong> plugin is available.', 'flexify-checkout-for-woocommerce');
                     $class = 'notice is-dismissible notice-success';
     
                     // Display notice
@@ -238,14 +238,14 @@ class Updater {
                     </script>
                     <?php
                 } elseif ( version_compare( $current_version, $latest_version, '>=' ) ) {
-                    $message = __('A versão do plugin <strong>Flexify Checkout</strong> é a mais recente.', 'flexify-checkout-for-woocommerce');
+                    $message = __('The version of the Flexify Checkout for WooCommerce plugin is the latest.', 'flexify-checkout-for-woocommerce');
                     $class = 'notice is-dismissible notice-success';
     
                     // Display notice
                     printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), $message );
                 }
             } else {
-                $message = __('Não foi possível verificar atualizações para o plugin <strong>Flexify Checkout.</strong>', 'flexify-checkout-for-woocommerce');
+                $message = __('Unable to check for updates for Flexify Checkout for WooCommerce plugin.', 'flexify-checkout-for-woocommerce');
                 $class = 'notice is-dismissible notice-error';
     
                 // Display notice
@@ -284,7 +284,7 @@ class Updater {
      */
     public function add_check_updates_link( $plugin_meta, $plugin_file ) {
         if ( $plugin_file === $this->plugin_slug . '/' . $this->plugin_slug . '.php' ) {
-            $check_updates_link = '<a href="' . esc_url( add_query_arg( 'flexify_checkout_check_updates', '1' ) ) . '">' . esc_html__( 'Verificar atualizações', 'flexify-checkout-for-woocommerce' ) . '</a>';
+            $check_updates_link = '<a href="' . esc_url( add_query_arg( 'flexify_checkout_check_updates', '1' ) ) . '">' . esc_html__( 'Check for updates', 'flexify-checkout-for-woocommerce' ) . '</a>';
             $plugin_meta['flexify_checkout_check_updates'] = $check_updates_link;
         }
         
@@ -451,7 +451,7 @@ class Updater {
         );
 
         $message = sprintf(
-            __( 'Uma nova versão do plugin <strong>Flexify Checkout</strong> (%s) está disponível. <a href="%s">Atualize agora</a>.', 'flexify-checkout-for-woocommerce' ),
+            __( 'A new version of the <strong>Flexify Checkout</strong> plugin (%s) is available. <a href="%s">Update now</a>.', 'flexify-checkout-for-woocommerce' ),
             esc_html( $latest_version ),
             esc_url( $update_url )
         );

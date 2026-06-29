@@ -96,7 +96,7 @@ class Ajax {
 		return function() use ( $callback ) {
 			if ( ! current_user_can( 'manage_woocommerce' ) ) {
 				wp_send_json_error( array(
-					'message' => esc_html__( 'Você não tem permissão para executar esta ação.', 'flexify-checkout-for-woocommerce' ),
+					'message' => esc_html__( 'You do not have permission to perform this action.', 'flexify-checkout-for-woocommerce' ),
 				), 403 );
 			}
 
@@ -104,7 +104,7 @@ class Ajax {
 			// request by the settings.js prefilter (field: flexify_admin_nonce).
 			if ( ! check_ajax_referer( 'flexify_checkout_admin_nonce', 'flexify_admin_nonce', false ) ) {
 				wp_send_json_error( array(
-					'message' => esc_html__( 'Falha na verificação de segurança. Atualize a página e tente novamente.', 'flexify-checkout-for-woocommerce' ),
+					'message' => esc_html__( 'Security check failed. Refresh the page and try again.', 'flexify-checkout-for-woocommerce' ),
 				), 403 );
 			}
 
@@ -204,11 +204,11 @@ class Ajax {
 			$validation_error = apply_filters( 'woocommerce_process_login_errors', $validation_error, $credentials['user_login'], $credentials['user_password'] );
 
 			if ( $validation_error->get_error_code() ) {
-				throw new \Exception( '<strong>' . __( 'Erro:', 'flexify-checkout-for-woocommerce' ) . '</strong> ' . $validation_error->get_error_message() );
+				throw new \Exception( '<strong>' . __( 'Error:', 'flexify-checkout-for-woocommerce' ) . '</strong> ' . $validation_error->get_error_message() );
 			}
 
 			if ( empty( $credentials['user_login'] ) ) {
-				throw new \Exception( '<strong>' . __( 'Erro:', 'flexify-checkout-for-woocommerce' ) . '</strong> ' . __( 'Usuário é obrigatório.', 'flexify-checkout-for-woocommerce' ) );
+				throw new \Exception( '<strong>' . __( 'Error:', 'flexify-checkout-for-woocommerce' ) . '</strong> ' . __( 'User is required.', 'flexify-checkout-for-woocommerce' ) );
 			}
 
 			// On multisite, ensure user exists on current site, if not add them before allowing login.
@@ -255,7 +255,7 @@ class Ajax {
 
 		if ( ! wp_verify_nonce( $nonce, 'flexify-checkout-lostpassword' ) ) {
 			wp_send_json_error( array(
-				'error' => __( 'Sua sessao expirou. Recarregue a pagina e tente novamente.', 'flexify-checkout-for-woocommerce' ),
+				'error' => __( 'Your session has expired. Reload the page and try again.', 'flexify-checkout-for-woocommerce' ),
 			) );
 		}
 
@@ -263,7 +263,7 @@ class Ajax {
 
 		if ( empty( $user_login ) || ! is_email( $user_login ) ) {
 			wp_send_json_error( array(
-				'error' => __( 'Por favor, insira um e-mail valido.', 'flexify-checkout-for-woocommerce' ),
+				'error' => __( 'Please enter a valid email.', 'flexify-checkout-for-woocommerce' ),
 			) );
 		}
 
@@ -279,7 +279,7 @@ class Ajax {
 			}
 
 			wp_send_json_error( array(
-				'error' => __( 'Nao foi possivel enviar o e-mail de redefinição. Tente novamente.', 'flexify-checkout-for-woocommerce' ),
+				'error' => __( 'Could not send the reset email. Please try again.', 'flexify-checkout-for-woocommerce' ),
 			) );
 		}
 
@@ -389,7 +389,7 @@ class Ajax {
 			WC()->cart->remove_cart_item( $cart_item_key );
 
 			$message = sprintf(
-				__( '<strong>%s</strong> removido do carrinho. <strong><a class="undo-remove-product" data-product_id="%d" href="#">Desfazer</a></strong>', 'flexify-checkout-for-woocommerce' ),
+				__( '<strong>%s</strong> removed from cart. <strong><a class="undo-remove-product" data-product_id="%d" href="#">Undo</a></strong>', 'flexify-checkout-for-woocommerce' ),
 				esc_html( $product->get_name() ),
 				$product->get_id()
 			);

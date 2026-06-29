@@ -44,7 +44,7 @@ class Layout_Get extends Abstract_Route {
      */
     public function handle( WP_REST_Request $request ) {
         if ( ! License::is_valid() ) {
-            return $this->error_response( __( 'O construtor de checkout requer uma licença Pro ativa.', 'flexify-checkout-for-woocommerce' ) );
+            return $this->error_response( __( 'The checkout builder requires an active Pro license.', 'flexify-checkout-for-woocommerce' ) );
         }
 
         $payload = Layout_Store::get_layout_for_client();

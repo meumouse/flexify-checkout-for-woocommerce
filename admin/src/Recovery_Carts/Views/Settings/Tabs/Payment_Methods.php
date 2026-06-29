@@ -18,8 +18,8 @@ defined('ABSPATH') || exit; ?>
         <tbody>
             <tr>
                 <th>
-                    <?php esc_html_e( 'Configurar tempo de atraso para formas de pagamentos', 'flexify-checkout-for-woocommerce' ); ?>
-                    <span class="fc-recovery-carts-description"><?php esc_html_e( 'Permite definir o tempo para que um pedido seja considerado abandonado de acordo com a forma de pagamento.', 'flexify-checkout-for-woocommerce' ); ?></span>
+                    <?php esc_html_e( 'Configure delay time for payment methods', 'flexify-checkout-for-woocommerce' ); ?>
+                    <span class="fc-recovery-carts-description"><?php esc_html_e( 'Lets you set the time for an order to be considered abandoned according to the payment method.', 'flexify-checkout-for-woocommerce' ); ?></span>
                 </th>
                 <td>
                     <?php echo Admin_Components::get_payment_methods_delay_options( Admin::get_setting('payment_methods') ); ?>

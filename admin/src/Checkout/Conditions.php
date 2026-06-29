@@ -245,7 +245,7 @@ class Conditions {
 
             $label = ( isset( $discount['label'] ) && '' !== $discount['label'] )
                 ? $discount['label']
-                : __( 'Desconto', 'flexify-checkout-for-woocommerce' );
+                : __( 'Discount', 'flexify-checkout-for-woocommerce' );
 
             $cart->add_fee( $label, -1 * $amount, false );
         }

@@ -194,8 +194,8 @@ class Thankyou {
 				}
 
 				?>
-				<p><?php echo sprintf( esc_html__( 'Pedido #%s', 'flexify-checkout-for-woocommerce' ), esc_html( $order_id ) ); ?></p>
-				<h1><?php echo sprintf( esc_html__( 'Obrigado, %s!', 'flexify-checkout-for-woocommerce' ), esc_html( $order->get_billing_first_name() ) ); ?></h1>	
+				<p><?php echo sprintf( esc_html__( 'Order #%s', 'flexify-checkout-for-woocommerce' ), esc_html( $order_id ) ); ?></p>
+				<h1><?php echo sprintf( esc_html__( 'Thank you, %s!', 'flexify-checkout-for-woocommerce' ), esc_html( $order->get_billing_first_name() ) ); ?></h1>	
 			</div>
 		</div>
 		<?php
@@ -300,7 +300,7 @@ class Thankyou {
 
 		<div class="flexify-review-customer flexify-review-customer--ty">
 			<div class="flexify-review-customer__row flexify-review-customer__row--contact">
-				<div class='flexify-review-customer__label'><label><?php esc_html_e( 'Contato', 'flexify-checkout-for-woocommerce' ); ?></label></div>
+				<div class='flexify-review-customer__label'><label><?php esc_html_e( 'Contact', 'flexify-checkout-for-woocommerce' ); ?></label></div>
 				
 				<div class='flexify-review-customer__content'>
 					<p><?php echo Steps::replace_placeholders( Admin_Options::get_setting('text_contact_customer_review'), Orders::get_order_customer_fragment( $order ), 'billing' ); ?> </p>
@@ -315,7 +315,7 @@ class Thankyou {
 			if ( Admin_Options::get_setting('enable_optimize_for_digital_products') !== 'yes' || order_has_shipping_method( $order ) ) : ?>
 				<div class="flexify-review-customer__row flexify-review-customer__row--address">
 					<div class='flexify-review-customer__label'>
-						<label><?php esc_html_e( 'Entrega', 'flexify-checkout-for-woocommerce' ); ?></label>
+						<label><?php esc_html_e( 'Delivery', 'flexify-checkout-for-woocommerce' ); ?></label>
 					</div>
 
 					<div class='flexify-review-customer__content'>
@@ -326,7 +326,7 @@ class Thankyou {
 
 			<?php if ( order_has_shipping_method( $order ) ) : ?>
 				<div class="flexify-review-customer__row flexify-review-customer__row--shipping-address">
-					<div class='flexify-review-customer__label'><label><?php esc_html_e( 'Envio', 'flexify-checkout-for-woocommerce' ); ?></label></div>
+					<div class='flexify-review-customer__label'><label><?php esc_html_e( 'Shipping', 'flexify-checkout-for-woocommerce' ); ?></label></div>
 					
 					<div class='flexify-review-customer__content'>
 						<p><?php echo Orders::get_order_shipping_methods( $order ); ?><p>
@@ -335,7 +335,7 @@ class Thankyou {
 			<?php endif; ?>
 
 			<div class="flexify-review-customer__row">
-				<div class='flexify-review-customer__label'><label><?php esc_html_e( 'Pagamento', 'flexify-checkout-for-woocommerce' ); ?></label></div>
+				<div class='flexify-review-customer__label'><label><?php esc_html_e( 'Payment', 'flexify-checkout-for-woocommerce' ); ?></label></div>
 				
 				<div class='flexify-review-customer__content'>
 					<p><?php echo $order->get_payment_method_title(); ?></p>
@@ -549,7 +549,7 @@ class Thankyou {
 					
 					echo '<span class="flexift-ty-footer-contact-container">';
 						echo '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="M12 2C6.486 2 2 6.486 2 12v4.143C2 17.167 2.897 18 4 18h1a1 1 0 0 0 1-1v-5.143a1 1 0 0 0-1-1h-.908C4.648 6.987 7.978 4 12 4s7.352 2.987 7.908 6.857H19a1 1 0 0 0-1 1V18c0 1.103-.897 2-2 2h-2v-1h-4v3h6c2.206 0 4-1.794 4-4 1.103 0 2-.833 2-1.857V12c0-5.514-4.486-10-10-10z"></path></svg>';
-						echo sprintf( '<span class="flexify-ty-footer__contact-span">%s <a href="%s">%s</a></span>', esc_html__( 'Precisa de ajuda?', 'flexify-checkout-for-woocommerce' ), esc_url( $contact_page_url ), esc_html__( 'Entrar em contato', 'flexify-checkout-for-woocommerce' ) );
+						echo sprintf( '<span class="flexify-ty-footer__contact-span">%s <a href="%s">%s</a></span>', esc_html__( 'Need help?', 'flexify-checkout-for-woocommerce' ), esc_url( $contact_page_url ), esc_html__( 'Contact', 'flexify-checkout-for-woocommerce' ) );
 					echo '</span>';
 				endif; ?>
 			</span>

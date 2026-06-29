@@ -211,7 +211,7 @@ class Fonts_Manager {
 		$fonts_url = trailingslashit( $upload_dir['baseurl'] ) . 'flexify-checkout/fonts/';
 
 		if ( ! wp_mkdir_p( $fonts_path ) ) {
-			return new WP_Error( 'font_upload_dir_error', __( 'Não foi possível criar a pasta para armazenar a fonte.', 'flexify-checkout-for-woocommerce' ) );
+			return new WP_Error( 'font_upload_dir_error', __( 'Could not create the folder to store the font.', 'flexify-checkout-for-woocommerce' ) );
 		}
 
 		return array(
@@ -267,14 +267,14 @@ class Fonts_Manager {
 		$base_url = trailingslashit( $uploads['baseurl'] ) . 'flexify-checkout/fonts/';
 
 		if ( ! wp_mkdir_p( $base_dir ) ) {
-			return new \WP_Error( 'mkdir_failed', __( 'Não foi possível criar o diretório de fontes.', 'flexify-checkout-for-woocommerce' ) );
+			return new \WP_Error( 'mkdir_failed', __( 'Could not create the fonts directory.', 'flexify-checkout-for-woocommerce' ) );
 		}
 
 		$dest_path = $base_dir . $safe;
 
 		if ( ! @rename( $uploaded['file'], $dest_path ) ) {
 			if ( ! @copy( $uploaded['file'], $dest_path ) ) {
-				return new \WP_Error( 'move_failed', __( 'Falha ao mover o arquivo de fonte.', 'flexify-checkout-for-woocommerce' ) );
+				return new \WP_Error( 'move_failed', __( 'Failed to move the font file.', 'flexify-checkout-for-woocommerce' ) );
 			}
 			
 			@unlink( $uploaded['file'] );

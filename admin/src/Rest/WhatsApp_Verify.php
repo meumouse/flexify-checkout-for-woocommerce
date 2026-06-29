@@ -95,7 +95,7 @@ class WhatsApp_Verify extends Abstract_Route {
         $stored = get_transient( $key );
 
         if ( ! is_array( $stored ) || empty( $stored['hash'] ) ) {
-            return $this->error_response( __( 'Código expirado. Solicite um novo.', 'flexify-checkout-for-woocommerce' ) );
+            return $this->error_response( __( 'Code expired. Request a new one.', 'flexify-checkout-for-woocommerce' ) );
         }
 
         $attempts = (int) ( $stored['attempts'] ?? 0 );
@@ -103,14 +103,14 @@ class WhatsApp_Verify extends Abstract_Route {
         if ( $attempts >= 5 ) {
             delete_transient( $key );
 
-            return $this->error_response( __( 'Muitas tentativas. Solicite um novo código.', 'flexify-checkout-for-woocommerce' ) );
+            return $this->error_response( __( 'Too many attempts. Request a new code.', 'flexify-checkout-for-woocommerce' ) );
         }
 
         if ( ! hash_equals( (string) $stored['hash'], wp_hash( $code ) ) ) {
             $stored['attempts'] = $attempts + 1;
             set_transient( $key, $stored, 5 * MINUTE_IN_SECONDS );
 
-            return $this->error_response( __( 'Código inválido. Tente novamente.', 'flexify-checkout-for-woocommerce' ) );
+            return $this->error_response( __( 'Invalid code. Please try again.', 'flexify-checkout-for-woocommerce' ) );
         }
 
         // Code is valid — consume it.

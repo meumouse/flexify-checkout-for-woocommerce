@@ -201,7 +201,7 @@ class Common {
 	 * @return string
 	 */
 	public function empty_payment_methods_message( $message ) {
-		$message = __( 'Desculpe, parece que não há métodos de pagamento disponíveis para sua localização. Entre em contato conosco se precisar de assistência ou desejar pagar de outra forma.', 'flexify-checkout-for-woocommerce' );
+		$message = __( 'Sorry, it seems there are no payment methods available for your location. Please contact us if you need assistance or wish to pay in another way.', 'flexify-checkout-for-woocommerce' );
 		
 		return $message;
 	}

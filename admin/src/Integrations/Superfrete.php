@@ -186,7 +186,7 @@ class Superfrete {
 
             $fields['shipping'][ $field_id ] = array(
                 'type' => 'text',
-                'label' => $field_id === 'shipping_number' ? esc_html__( 'Numero', 'flexify-checkout-for-woocommerce' ) : esc_html__( 'Bairro', 'flexify-checkout-for-woocommerce' ),
+                'label' => $field_id === 'shipping_number' ? esc_html__( 'Number', 'flexify-checkout-for-woocommerce' ) : esc_html__( 'Neighborhood', 'flexify-checkout-for-woocommerce' ),
                 'required' => true,
                 'class' => array( $field_id === 'shipping_number' ? 'row-last' : 'row-first', 'required', 'validate-required' ),
                 'priority' => $field_id === 'shipping_number' ? 70 : 80,
@@ -197,7 +197,7 @@ class Superfrete {
             if ( ! isset( $fields['billing'][ $field_id ] ) ) {
                 $fields['billing'][ $field_id ] = array(
                     'type' => 'text',
-                    'label' => $field_id === 'billing_number' ? esc_html__( 'Numero', 'flexify-checkout-for-woocommerce' ) : esc_html__( 'Bairro', 'flexify-checkout-for-woocommerce' ),
+                    'label' => $field_id === 'billing_number' ? esc_html__( 'Number', 'flexify-checkout-for-woocommerce' ) : esc_html__( 'Neighborhood', 'flexify-checkout-for-woocommerce' ),
                     'required' => true,
                     'class' => array( $field_id === 'billing_number' ? 'row-last' : 'row-first', 'required', 'validate-required' ),
                     'priority' => $field_id === 'billing_number' ? 110 : 115,

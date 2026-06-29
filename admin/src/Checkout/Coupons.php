@@ -154,7 +154,7 @@ class Coupons {
     public static function get_coupon_field_position() {
         return apply_filters( 'Flexify_Checkout/Checkout/Coupon_Field_Position', array(
             'sidebar' => array(
-                'title' => esc_html__( 'Barra lateral (Padrão)', 'flexify-checkout-for-woocommerce' ),
+                'title' => esc_html__( 'Sidebar (Default)', 'flexify-checkout-for-woocommerce' ),
                 'hook' => 'woocommerce_review_order_before_subtotal',
 				'callback' => function() {
 					?>
@@ -167,7 +167,7 @@ class Coupons {
 				},
             ),
             'before_payment_title' => array(
-                'title' => esc_html__( 'Antes da forma de pagamento', 'flexify-checkout-for-woocommerce' ),
+                'title' => esc_html__( 'Before payment method', 'flexify-checkout-for-woocommerce' ),
                 'hook' => 'Flexify_Checkout/Steps/Payment/Before_Title',
 				'callback' => array( '\MeuMouse\Flexify_Checkout\Checkout\Steps', 'render_coupon_form' ),
             ),

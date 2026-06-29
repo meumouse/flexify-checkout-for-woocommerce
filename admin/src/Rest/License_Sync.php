@@ -59,7 +59,7 @@ class License_Sync extends Abstract_Route {
         if ( is_wp_error( $response ) ) {
             error_log( '[FLEXIFY CHECKOUT] Error on sync licence: ' . print_r( $response, true ) );
 
-            return $this->error_response( __( 'Não foi possível comunicar com o servidor de licenças.', 'flexify-checkout-for-woocommerce' ) );
+            return $this->error_response( __( 'Could not communicate with the license server.', 'flexify-checkout-for-woocommerce' ) );
         }
 
         $response_body = wp_remote_retrieve_body( $response );
@@ -67,7 +67,7 @@ class License_Sync extends Abstract_Route {
         $details = json_decode( $response_body );
 
         if ( 200 !== $response_code || ! $details || ! isset( $details->data ) ) {
-            return $this->error_response( __( 'Resposta inválida do servidor de licenças.', 'flexify-checkout-for-woocommerce' ) );
+            return $this->error_response( __( 'Invalid response from the license server.', 'flexify-checkout-for-woocommerce' ) );
         }
 
         update_option( 'flexify_checkout_license_info', $details );
@@ -94,7 +94,7 @@ class License_Sync extends Abstract_Route {
         delete_transient('flexify_checkout_license_status_cached');
 
         return $this->success_response( array(
-            'message' => __( 'Licença sincronizada com sucesso.', 'flexify-checkout-for-woocommerce' ),
+            'message' => __( 'License synced successfully.', 'flexify-checkout-for-woocommerce' ),
             'runtime' => Registry::get_runtime_data(),
         ) );
     }

@@ -57,7 +57,7 @@ class Fonts_Save extends Abstract_Route {
         $font_type = isset( $params['font_type'] ) ? sanitize_key( (string) $params['font_type'] ) : 'google';
 
         if ( empty( $font_id ) || empty( $font_name ) ) {
-            return $this->error_response( __( 'Informe um identificador e um nome válidos para a fonte.', 'flexify-checkout-for-woocommerce' ) );
+            return $this->error_response( __( 'Enter a valid identifier and name for the font.', 'flexify-checkout-for-woocommerce' ) );
         }
 
         $fonts = Fonts_Manager::get_fonts();
@@ -65,11 +65,11 @@ class Fonts_Save extends Abstract_Route {
         $request_is_new = isset( $params['is_new'] ) ? 'yes' === sanitize_text_field( (string) $params['is_new'] ) : $is_new;
 
         if ( $is_new && Fonts_Manager::is_builtin_font( $font_id ) ) {
-            return $this->error_response( __( 'Este identificador é reservado para as fontes padrão.', 'flexify-checkout-for-woocommerce' ) );
+            return $this->error_response( __( 'This identifier is reserved for standard fonts.', 'flexify-checkout-for-woocommerce' ) );
         }
 
         if ( $request_is_new && isset( $fonts[ $font_id ] ) ) {
-            return $this->error_response( __( 'Ops! Essa fonte já existe.', 'flexify-checkout-for-woocommerce' ) );
+            return $this->error_response( __( 'Oops! This font already exists.', 'flexify-checkout-for-woocommerce' ) );
         }
 
         $font_data = array(
@@ -81,7 +81,7 @@ class Fonts_Save extends Abstract_Route {
             $font_url = isset( $params['font_url'] ) ? esc_url_raw( (string) $params['font_url'] ) : '';
 
             if ( empty( $font_url ) ) {
-                return $this->error_response( __( 'Informe a URL de incorporação do Google Fonts.', 'flexify-checkout-for-woocommerce' ) );
+                return $this->error_response( __( 'Enter the Google Fonts embed URL.', 'flexify-checkout-for-woocommerce' ) );
             }
 
             $font_data['font_url'] = $font_url;
@@ -103,7 +103,7 @@ class Fonts_Save extends Abstract_Route {
                 $allowed = array( 'woff2', 'woff', 'ttf' );
 
                 if ( ! in_array( $ext, $allowed, true ) ) {
-                    return $this->error_response( __( 'Extensão inválida. Use WOFF, WOFF2 ou TTF.', 'flexify-checkout-for-woocommerce' ) );
+                    return $this->error_response( __( 'Invalid extension. Use WOFF, WOFF2, or TTF.', 'flexify-checkout-for-woocommerce' ) );
                 }
 
                 $upload = Fonts_Manager::handle_font_upload( $files['font_file'], $font_id, $font_weight, $font_style, $ext );
@@ -120,7 +120,7 @@ class Fonts_Save extends Abstract_Route {
             }
 
             if ( empty( $font_files['woff2'] ) && empty( $font_files['woff'] ) && empty( $font_files['ttf'] ) ) {
-                return $this->error_response( __( 'Envie ao menos um arquivo de fonte (WOFF, WOFF2 ou TTF).', 'flexify-checkout-for-woocommerce' ) );
+                return $this->error_response( __( 'Send at least one font file (WOFF, WOFF2, or TTF).', 'flexify-checkout-for-woocommerce' ) );
             }
 
             $font_data['font_weight'] = $font_weight;
@@ -137,11 +137,11 @@ class Fonts_Save extends Abstract_Route {
         }
 
         if ( ! Fonts_Manager::save_font( $font_id, $font_data ) ) {
-            return $this->error_response( __( 'Ops! Não foi possível salvar a fonte.', 'flexify-checkout-for-woocommerce' ) );
+            return $this->error_response( __( 'Oops! Could not save the font.', 'flexify-checkout-for-woocommerce' ) );
         }
 
         return $this->success_response( array(
-            'message' => __( 'As configurações da fonte foram salvas com sucesso!', 'flexify-checkout-for-woocommerce' ),
+            'message' => __( 'The font settings have been saved successfully!', 'flexify-checkout-for-woocommerce' ),
             'fonts' => Fonts_Manager::get_fonts(),
             'current_font' => Admin_Options::get_setting('set_font_family'),
         ) );
