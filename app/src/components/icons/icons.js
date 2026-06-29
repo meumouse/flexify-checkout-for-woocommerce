@@ -54,6 +54,7 @@ import packageIcon from 'boxicons/svg/regular/bx-package.svg?raw';
 import gift from 'boxicons/svg/regular/bx-gift.svg?raw';
 import image from 'boxicons/svg/regular/bx-image.svg?raw';
 import star from 'boxicons/svg/regular/bx-star.svg?raw';
+import copy from 'boxicons/svg/regular/bx-copy.svg?raw';
 
 // Webhook glyph: Boxicons (2.1.4, latest on npm) has no webhook icon, so this
 // is the canonical three-node webhook mark, authored as strokes. Each path
@@ -106,6 +107,7 @@ export default {
   'regular/gift': gift,
   'regular/image': image,
   'regular/star': star,
+  'regular/copy': copy,
   'regular/webhook': webhook,
   'solid/star': starSolid,
   'solid/check-circle': checkCircleSolid,

@@ -55,13 +55,19 @@ const showPopupTrigger = computed(() => {
 });
 
 const placeholders = computed(() => (Array.isArray(props.field?.placeholders) ? props.field.placeholders : []));
+
+// The placeholder-aware field renders its own interactive token list, so the
+// static legend in the label column would just be a duplicate.
+const fieldOwnsPlaceholders = computed(() =>
+  [props.field?.component, props.field?.type].some((name) => String(name || '').replace(/[\s_-]+/g, '').toLowerCase() === 'placeholdertextarea'),
+);
 </script>
 
 <template>
   <div
     v-if="store.isFieldVisible(field)"
     class="grid items-start gap-6 py-6 lg:grid-cols-[minmax(0,450px)_minmax(0,560px)]"
-    :class="String(field.type) === 'code-editor' ? '' : 'lg:items-center'"
+    :class="String(field.type) === 'code-editor' || fieldOwnsPlaceholders ? '' : 'lg:items-center'"
   >
     <div>
       <div class="flex items-start gap-2">
@@ -83,7 +89,7 @@ const placeholders = computed(() => (Array.isArray(props.field?.placeholders) ? 
         {{ field.description }}
       </p>
 
-      <div v-if="placeholders.length" class="mt-3 flex flex-col gap-1">
+      <div v-if="placeholders.length && !fieldOwnsPlaceholders" class="mt-3 flex flex-col gap-1">
         <div v-for="hint in placeholders" :key="hint.token" class="flex items-baseline gap-2">
           <code class="rounded bg-slate-100 px-1.5 py-0.5 text-[12px] text-slate-600">{{ hint.token }}</code>
           <span class="text-[12px] text-slate-500">{{ hint.description }}</span>

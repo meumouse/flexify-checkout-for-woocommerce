@@ -487,9 +487,13 @@ class Registry {
                     'id' => 'texts-reviews',
                     'fields' => array(
                         self::field_textarea( 'text_contact_customer_review', __( 'Text of the contact information summary', 'flexify-checkout-for-woocommerce' ), $review_hint, array(
+                            'component' => 'placeholder-textarea',
+                            'rows' => 4,
                             'placeholders' => $placeholders,
                         ) ),
                         self::field_textarea( 'text_shipping_customer_review', __( 'Text of the delivery information summary', 'flexify-checkout-for-woocommerce' ), $review_hint, array(
+                            'component' => 'placeholder-textarea',
+                            'rows' => 4,
                             'placeholders' => $placeholders,
                         ) ),
                     ),
