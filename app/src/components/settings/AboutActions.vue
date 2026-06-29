@@ -2,14 +2,23 @@
 import { ref } from 'vue';
 import { useSettingsStore } from '../../stores/useSettingsStore';
 import BaseButton from '../buttons/BaseButton.vue';
+import ModalDialog from '../modals/ModalDialog.vue';
 
 const store = useSettingsStore();
 const fileInput = ref(null);
+const resetModalOpen = ref(false);
 
-function confirmReset() {
-  if (window.confirm('Atenção! Você realmente deseja redefinir as configurações?\n\nAo redefinir as configurações do plugin, todas opções serão removidas, voltando ao estado original. Sua licença não será removida.')) {
-    store.reset();
-  }
+function openResetModal() {
+  resetModalOpen.value = true;
+}
+
+function closeResetModal() {
+  resetModalOpen.value = false;
+}
+
+async function confirmReset() {
+  await store.reset();
+  closeResetModal();
 }
 
 function triggerImport() {
@@ -49,7 +58,7 @@ async function onFileSelected(event) {
       Importar configurações
     </BaseButton>
 
-    <BaseButton variant="outline-warning" :loading="store.resetting" @click="confirmReset">
+    <BaseButton variant="outline-warning" :loading="store.resetting" @click="openResetModal">
       <BoxIcon name="reset" class="h-4 w-4" />
       Redefinir configurações
     </BaseButton>
@@ -70,5 +79,29 @@ async function onFileSelected(event) {
       class="hidden"
       @change="onFileSelected"
     />
+
+    <ModalDialog :open="resetModalOpen" title="Redefinir configurações" @close="closeResetModal">
+      <div class="flex flex-col items-center gap-4 text-center">
+        <span class="flex h-14 w-14 items-center justify-center rounded-full bg-warning/10 text-warning">
+          <BoxIcon name="reset" class="h-7 w-7" />
+        </span>
+
+        <p class="m-0 max-w-md text-[15px] leading-6 text-slate-600">
+          Você realmente deseja redefinir as configurações? Todas as opções serão removidas e voltarão ao
+          estado original. Sua licença <strong>não</strong> será removida.
+        </p>
+      </div>
+
+      <template #footer>
+        <div class="flex flex-col-reverse gap-3 sm:flex-row sm:justify-center">
+          <BaseButton variant="secondary" :disabled="store.resetting" @click="closeResetModal">
+            Cancelar
+          </BaseButton>
+          <BaseButton variant="danger" :loading="store.resetting" @click="confirmReset">
+            Redefinir configurações
+          </BaseButton>
+        </div>
+      </template>
+    </ModalDialog>
   </div>
 </template>
