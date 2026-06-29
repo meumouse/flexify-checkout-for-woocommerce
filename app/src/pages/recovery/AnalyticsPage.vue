@@ -11,6 +11,7 @@
 import { ref, computed, onMounted } from 'vue';
 import VueApexCharts from 'vue3-apexcharts';
 import BaseSelect from '../../components/fields/BaseSelect.vue';
+import ChartSkeleton from '../../components/skeletons/ChartSkeleton.vue';
 import { apiGet } from '../../services/api';
 
 const loading = ref(true);
@@ -210,7 +211,7 @@ onMounted(load);
       <section class="mt-6 rounded-[8px] bg-white px-6 py-5 ring-1 ring-slate-100">
         <h2 class="mb-4 text-[15px] font-semibold text-brand">Valor recuperado por dia</h2>
         <VueApexCharts v-if="!loading" type="area" height="320" :options="recoveredOptions" :series="recoveredSeries" />
-        <div v-else class="skeleton-content" style="width: 100%; height: 320px;"></div>
+        <ChartSkeleton v-else :height="320" />
       </section>
 
       <section class="mt-6 rounded-[8px] bg-white px-6 py-5 ring-1 ring-slate-100">
@@ -222,7 +223,7 @@ onMounted(load);
           :options="notificationsOptions"
           :series="notificationsSeries"
         />
-        <div v-else-if="loading" class="skeleton-content" style="width: 100%; height: 320px;"></div>
+        <ChartSkeleton v-else-if="loading" :height="320" />
         <p v-else class="text-[14px] text-slate-500">Nenhuma notificação enviada no período.</p>
       </section>
     </template>

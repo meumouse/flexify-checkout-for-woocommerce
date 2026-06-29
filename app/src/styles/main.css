@@ -76,8 +76,7 @@
   }
 }
 
-.flexify-skeleton,
-#flexify-checkout-settings-app .skeleton-content {
+.flexify-skeleton {
   position: relative;
   overflow: hidden;
   border-radius: 0.5rem;

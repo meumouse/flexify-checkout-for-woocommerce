@@ -13,6 +13,7 @@
 import { ref, reactive, computed, onMounted } from 'vue';
 import { apiGet, apiPost } from '../../services/api';
 import BoxIcon from '../icons/BoxIcon.vue';
+import FormSkeleton from '../skeletons/FormSkeleton.vue';
 
 const loading = ref(true);
 const saving = ref(false);
@@ -154,7 +155,7 @@ onMounted(load);
 
 <template>
   <div class="px-2 py-4">
-    <div v-if="loading" class="skeleton-content" style="width: 100%; height: 360px;"></div>
+    <FormSkeleton v-if="loading" :pills="4" :groups="3" show-intro />
 
     <template v-else>
       <div v-if="error" class="mb-4 rounded-[8px] bg-danger/10 px-5 py-3 text-[14px] text-danger" role="alert">{{ error }}</div>

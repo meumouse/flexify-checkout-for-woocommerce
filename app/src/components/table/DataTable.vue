@@ -17,6 +17,7 @@
  */
 import { ref, computed, watch, useSlots } from 'vue';
 import BoxIcon from '../icons/BoxIcon.vue';
+import TableSkeleton from '../skeletons/TableSkeleton.vue';
 
 const props = defineProps({
   /** Column definitions: { key, label, align?, headerClass?, cellClass? }. */
@@ -237,9 +238,12 @@ function deleteSelected() {
 
     <!-- Table -->
     <div class="border-t border-slate-100">
-      <div v-if="loading" class="p-6">
-        <div class="skeleton-content" style="width: 100%; height: 280px;"></div>
-      </div>
+      <TableSkeleton
+        v-if="loading"
+        :columns="columns"
+        :selectable="selectable"
+        :has-actions="hasActions"
+      />
 
       <div v-else class="overflow-x-auto">
         <table class="w-full border-collapse text-[13px]">
