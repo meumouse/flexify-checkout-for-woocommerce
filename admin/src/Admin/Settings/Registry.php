@@ -56,6 +56,7 @@ class Registry {
             'version' => defined('FLEXIFY_CHECKOUT_VERSION') ? FLEXIFY_CHECKOUT_VERSION : '',
             'docs_link' => defined('FLEXIFY_CHECKOUT_DOCS_LINK') ? FLEXIFY_CHECKOUT_DOCS_LINK : '',
             'is_pro' => License::is_valid(),
+            'is_debug' => function_exists('flexify_checkout_is_debug') ? flexify_checkout_is_debug() : false,
             'license' => array(
                 'key' => (string) get_option( 'flexify_checkout_license_key', '' ),
                 'masked_key' => self::mask_license_key( (string) get_option( 'flexify_checkout_license_key', '' ) ),
@@ -750,6 +751,10 @@ class Registry {
                         self::field_toggle( 'enable_update_notices', __( 'Show available update notice', 'flexify-checkout-for-woocommerce' ), __( 'Enable this option to display an available update notification.', 'flexify-checkout-for-woocommerce' ) ),
                         self::field_toggle( 'enable_debug_mode', __( 'Enable debug mode', 'flexify-checkout-for-woocommerce' ), __( 'Enable this option to turn on debug mode and access information in the browser console, disable script and style minification, and other details for troubleshooting.', 'flexify-checkout-for-woocommerce' ) ),
                     ),
+                ),
+                array(
+                    'id' => 'about-logs',
+                    'component' => 'logs-viewer',
                 ),
                 array(
                     'id' => 'about-actions',

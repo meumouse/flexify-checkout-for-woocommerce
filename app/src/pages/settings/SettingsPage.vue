@@ -14,6 +14,7 @@ import EmailProviders from '../../components/settings/EmailProviders.vue';
 import FontsManager from '../../components/settings/FontsManager.vue';
 import RecoverySettings from '../../components/settings/RecoverySettings.vue';
 import WebhooksManager from '../../components/settings/WebhooksManager.vue';
+import LogsViewer from '../../components/settings/LogsViewer.vue';
 
 const props = defineProps({
   bootstrap: { type: Object, default: () => ({}) },
@@ -100,6 +101,7 @@ const customComponents = {
   'email-providers': EmailProviders,
   'recovery-settings': RecoverySettings,
   'webhooks-manager': WebhooksManager,
+  'logs-viewer': LogsViewer,
 };
 
 function selectTab(tabId) {

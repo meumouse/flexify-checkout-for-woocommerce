@@ -2,6 +2,8 @@
 
 namespace MeuMouse\Flexify_Checkout\Core\Webhooks;
 
+use MeuMouse\Flexify_Checkout\Core\Logs\Logger;
+
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
 
@@ -124,6 +126,12 @@ class Dispatcher {
         if ( is_wp_error( $response ) ) {
             self::maybe_log( sprintf( '[Flexify_Checkout][Webhooks] Erro ao enviar webhook (%s): %s', $event_key, $response->get_error_message() ) );
 
+            Logger::error( 'webhook', sprintf( 'Webhook "%s" failed: %s', $event_key, $response->get_error_message() ), array(
+                'event' => $event_key,
+                'url' => $url,
+                'error' => $response->get_error_message(),
+            ) );
+
             return array( 'ok' => false, 'http_code' => 0, 'error' => $response->get_error_message() );
         }
 
@@ -132,8 +140,20 @@ class Dispatcher {
         if ( $status_code < 200 || $status_code >= 300 ) {
             self::maybe_log( sprintf( '[Flexify_Checkout][Webhooks] Resposta inesperada (%s): HTTP %d', $event_key, $status_code ) );
 
+            Logger::error( 'webhook', sprintf( 'Webhook "%s" returned HTTP %d', $event_key, $status_code ), array(
+                'event' => $event_key,
+                'url' => $url,
+                'http_code' => $status_code,
+            ) );
+
             return array( 'ok' => false, 'http_code' => $status_code, 'error' => 'unexpected_status' );
         }
+
+        Logger::info( 'webhook', sprintf( 'Webhook "%s" sent → HTTP %d', $event_key, $status_code ), array(
+            'event' => $event_key,
+            'url' => $url,
+            'http_code' => $status_code,
+        ) );
 
         return array( 'ok' => true, 'http_code' => $status_code, 'error' => '' );
     }

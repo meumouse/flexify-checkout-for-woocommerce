@@ -1,11 +1,19 @@
 <script setup>
-defineProps({
+import { computed } from 'vue';
+
+const props = defineProps({
   open: { type: Boolean, default: false },
   title: { type: String, default: '' },
   size: { type: String, default: 'md' },
 });
 
 const emit = defineEmits(['close']);
+
+const maxWidthClass = computed(() => {
+  const map = { md: 'max-w-xl', lg: 'max-w-3xl', xl: 'max-w-5xl' };
+
+  return map[props.size] || map.md;
+});
 </script>
 
 <template>
@@ -17,7 +25,7 @@ const emit = defineEmits(['close']);
     >
       <div
         class="flex max-h-[85vh] w-full flex-col overflow-hidden rounded-2xl bg-panel shadow-soft"
-        :class="size === 'lg' ? 'max-w-3xl' : 'max-w-xl'"
+        :class="maxWidthClass"
         role="dialog"
         aria-modal="true"
       >

@@ -617,6 +617,14 @@ class Init {
         $manual_classes = apply_filters( 'Flexify_Checkout/Init/Instance_Classes', array(
             '\MeuMouse\Flexify_Checkout\Compatibility\Backward_Compatibility',
             '\MeuMouse\Flexify_Checkout\Tracking\Router',
+            // Advanced logging: wires the file Logger into HTTP/payment/error
+            // events and exposes read/clear/download REST endpoints for the
+            // admin "View logs" modal. Core (not admin-only) because order and
+            // HTTP events fire during the frontend/REST checkout request.
+            '\MeuMouse\Flexify_Checkout\Core\Logs\Handler',
+            '\MeuMouse\Flexify_Checkout\Rest\Logs_Get',
+            '\MeuMouse\Flexify_Checkout\Rest\Logs_Clear',
+            '\MeuMouse\Flexify_Checkout\Rest\Logs_Download',
             // Global, checkout-wide webhooks: event registry + dispatcher bound to
             // order/checkout/tracking/account hooks. Core (not admin-only) because
             // order/payment hooks fire during the frontend/REST checkout request.
