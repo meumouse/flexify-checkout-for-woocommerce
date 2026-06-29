@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import config, { t } from '../config.js';
 import { useCheckout } from '../context/CheckoutContext.jsx';
+import { builderStepFields, fieldsForStep } from '../lib/fields.js';
+import { validateFields } from '../lib/validation.js';
 import { hasLayout, layoutSteps, setFieldOverrides } from '../lib/layout.js';
 import { isEditor, onParentMessage, emitReady, emitSelect } from '../lib/editorBridge.js';
 import { MESSAGE_PREFIX } from '../lib/editorBridge.js';
@@ -19,6 +21,40 @@ const STEP_LABELS = [
   t('shipping', 'Entrega'),
   t('payment', 'Pagamento'),
 ];
+
+/**
+ * Validate a step's fields before advancing. On failure, publishes the inline
+ * errors, scrolls/focuses the first invalid field, and returns false so the
+ * caller can abort navigation.
+ *
+ * @param {Array<object>} fields         Field definitions to validate.
+ * @param {object}        billing        Standard address values.
+ * @param {object}        extraFields    Flexify-managed extra field values.
+ * @param {Function}      setFieldErrors Context setter for the error map.
+ * @returns {boolean} True when the step is valid.
+ */
+function gateStep(fields, billing, extraFields, setFieldErrors) {
+  const errors = validateFields(fields, billing, extraFields);
+  setFieldErrors(errors);
+
+  const firstInvalid = Object.keys(errors)[0];
+
+  if (firstInvalid) {
+    const el = typeof document !== 'undefined' && document.getElementById(`fc-${firstInvalid}`);
+
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+      if (typeof el.focus === 'function') {
+        el.focus({ preventScroll: true });
+      }
+    }
+
+    return false;
+  }
+
+  return true;
+}
 
 /**
  * Root checkout. Uses the visual builder layout when one is published,
@@ -352,7 +388,7 @@ function LoadingOrEmpty({ loading, cart }) {
  * Builder-driven checkout: steps + items come from config.rules.layout.
  */
 function BuilderCheckout() {
-  const { loading, busy, error, cart, updateAddress, placeOrder } = useCheckout();
+  const { loading, busy, error, cart, billing, extraFields, setFieldErrors, updateAddress, placeOrder } = useCheckout();
   const [index, setIndex] = useState(0);
 
   const guard = <LoadingOrEmpty loading={loading} cart={cart} />;
@@ -373,6 +409,11 @@ function BuilderCheckout() {
   const isLast = activeIndex === steps.length - 1;
 
   const goNext = async () => {
+    // Block navigation while the current step has empty/invalid required fields.
+    if (!gateStep(builderStepFields(current), billing, extraFields, setFieldErrors)) {
+      return;
+    }
+
     const next = steps[Math.min(activeIndex + 1, steps.length - 1)];
 
     // Sync the typed address so totals/shipping reflect it before payment.
@@ -422,7 +463,7 @@ function BuilderCheckout() {
  * builder layout is published).
  */
 function DefaultCheckout() {
-  const { loading, busy, error, cart, updateAddress, placeOrder } = useCheckout();
+  const { loading, busy, error, cart, billing, extraFields, setFieldErrors, updateAddress, placeOrder } = useCheckout();
   const [step, setStep] = useState(1);
 
   const needsShipping = !cart || cart.needs_shipping;
@@ -431,6 +472,11 @@ function DefaultCheckout() {
   const isLast = step === 3;
 
   const goNext = async () => {
+    // Block navigation while the current step has empty/invalid required fields.
+    if (!gateStep(fieldsForStep(step), billing, extraFields, setFieldErrors)) {
+      return;
+    }
+
     if (step === 2) {
       try {
         await updateAddress({});

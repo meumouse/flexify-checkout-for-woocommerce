@@ -28,6 +28,9 @@ export function CheckoutProvider({ children }) {
   const [extraFields, setExtraFields] = useState({});
   const [selectedGateway, setSelectedGateway] = useState('');
   const [customerNote, setCustomerNote] = useState('');
+  // Inline per-field validation errors keyed by field id. Populated when a step
+  // navigation is blocked; cleared per field as the customer edits it.
+  const [fieldErrors, setFieldErrors] = useState({});
 
   const loadCart = useCallback(async () => {
     setLoading(true);
@@ -71,6 +74,20 @@ export function CheckoutProvider({ children }) {
     } finally {
       setBusy(false);
     }
+  }, []);
+
+  // Drop a single field's error (called as the customer edits that field).
+  const clearFieldError = useCallback((id) => {
+    setFieldErrors((prev) => {
+      if (!prev[id]) {
+        return prev;
+      }
+
+      const next = { ...prev };
+      delete next[id];
+
+      return next;
+    });
   }, []);
 
   const applyCoupon = useCallback((code) => withBusy(async () => setCart(await storeApi.applyCoupon(code))), [withBusy]);
@@ -154,6 +171,9 @@ export function CheckoutProvider({ children }) {
       setSelectedGateway,
       customerNote,
       setCustomerNote,
+      fieldErrors,
+      setFieldErrors,
+      clearFieldError,
       loadCart,
       applyCoupon,
       removeCoupon,
@@ -164,8 +184,9 @@ export function CheckoutProvider({ children }) {
       placeOrder,
     }),
     [
-      cart, loading, busy, placingOrder, error, billing, extraFields, selectedGateway, customerNote,
-      loadCart, applyCoupon, removeCoupon, updateItemQuantity, removeItem, updateAddress, selectShippingRate, placeOrder,
+      cart, loading, busy, placingOrder, error, billing, extraFields, selectedGateway, customerNote, fieldErrors,
+      clearFieldError, loadCart, applyCoupon, removeCoupon, updateItemQuantity, removeItem, updateAddress,
+      selectShippingRate, placeOrder,
     ],
   );
 

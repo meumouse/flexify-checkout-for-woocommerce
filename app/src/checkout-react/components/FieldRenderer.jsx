@@ -1,38 +1,11 @@
 import { useCheckout } from '../context/CheckoutContext.jsx';
 import { emitSelect } from '../lib/editorBridge.js';
 import { sameTarget } from './editor/Selectable.jsx';
+import { fieldBinding } from '../lib/fields.js';
 import fieldIcon from '../lib/fieldIcons.jsx';
 import Select from './ui/Select.jsx';
 import Checkbox from './ui/Checkbox.jsx';
 import DatePicker from './ui/DatePicker.jsx';
-
-/**
- * Standard WooCommerce Store API address keys. Anything else is treated as a
- * Flexify-managed extra field and collected separately (sent via the checkout
- * extension payload).
- */
-const STANDARD_ADDRESS_KEYS = new Set([
-  'first_name', 'last_name', 'company', 'address_1', 'address_2',
-  'city', 'state', 'postcode', 'country', 'email', 'phone',
-]);
-
-/**
- * Resolve where a field's value is stored.
- *
- * @param {string} fieldId Field id (e.g. billing_first_name).
- * @returns {{scope: 'billing'|'extra', key: string}}
- */
-export function fieldBinding(fieldId) {
-  if (fieldId.indexOf('billing_') === 0) {
-    const key = fieldId.slice(8);
-
-    if (STANDARD_ADDRESS_KEYS.has(key)) {
-      return { scope: 'billing', key };
-    }
-  }
-
-  return { scope: 'extra', key: fieldId };
-}
 
 const labelClass = 'block text-sm font-medium text-slate-700 mb-1.5';
 const inputClass =
@@ -45,11 +18,17 @@ const inputClass =
  * @param {{field:object, style?:object, editor?:boolean, selected?:object|null, selectTarget?:object}} props
  */
 export default function FieldRenderer({ field, style = null, editor = false, selected = null, selectTarget = null }) {
-  const { billing, setBilling, extraFields, setExtraFields } = useCheckout();
+  const { billing, setBilling, extraFields, setExtraFields, fieldErrors, clearFieldError } = useCheckout();
   const binding = fieldBinding(field.id);
   const value = binding.scope === 'billing' ? billing[binding.key] ?? '' : extraFields[field.id] ?? '';
+  // Inline validation error from a blocked step navigation (never in the editor).
+  const error = editor ? '' : (fieldErrors && fieldErrors[field.id]) || '';
 
   const onChange = (next) => {
+    if (error) {
+      clearFieldError(field.id);
+    }
+
     if (binding.scope === 'billing') {
       setBilling((prev) => ({ ...prev, [binding.key]: next }));
     } else {
@@ -86,6 +65,9 @@ export default function FieldRenderer({ field, style = null, editor = false, sel
 
   const icon = style?.icon ? fieldIcon(style.icon) : null;
   const placeholder = style?.placeholder || '';
+  // Override the resting + focus border/ring to the danger color when invalid.
+  const errorBorder = error ? '!border-danger focus:!border-danger focus:!ring-danger/30' : '';
+  const errorId = error ? `fc-${field.id}-error` : undefined;
 
   const isSelected = editor && sameTarget(selected, selectTarget);
   const disabledInEditor = editor && field.enabled === false;
@@ -131,6 +113,7 @@ export default function FieldRenderer({ field, style = null, editor = false, sel
           options={field.options}
           required={field.required}
           placeholder={placeholder || '—'}
+          className={errorBorder}
           style={inputStyle}
           onChange={onChange}
         />
@@ -140,6 +123,7 @@ export default function FieldRenderer({ field, style = null, editor = false, sel
           value={value}
           required={field.required}
           placeholder={placeholder || 'dd/mm/aaaa'}
+          className={errorBorder}
           style={inputStyle}
           onChange={onChange}
         />
@@ -152,16 +136,24 @@ export default function FieldRenderer({ field, style = null, editor = false, sel
           )}
           <input
             id={`fc-${field.id}`}
-            className={inputClass}
+            className={`${inputClass} ${errorBorder}`.trim()}
             style={{ ...inputStyle, ...(icon ? { paddingLeft: '2.25rem' } : null) }}
             type={field.type === 'email' ? 'email' : 'text'}
             inputMode={field.type === 'tel' ? 'tel' : undefined}
             placeholder={placeholder}
             value={value}
             required={field.required}
+            aria-invalid={error ? 'true' : undefined}
+            aria-describedby={errorId}
             onChange={(e) => onChange(e.target.value)}
           />
         </div>
+      )}
+
+      {error && (
+        <p id={errorId} className="mt-1.5 text-sm text-danger">
+          {error}
+        </p>
       )}
     </div>
   );
