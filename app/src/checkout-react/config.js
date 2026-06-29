@@ -22,7 +22,7 @@ const fallback = {
   config: { gateways: [], required_fields: [], split_payment: false },
   rules: { fields: [], steps: [] },
   settings: {},
-  flags: { whatsapp_login: false, address_search: false, split_payment: false },
+  flags: { whatsapp_login: false, address_search: false, split_payment: false, optimize_digital: false },
   i18n: {},
   editor: false,
   builder_nonce: '',

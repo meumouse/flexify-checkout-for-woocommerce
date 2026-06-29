@@ -57,6 +57,31 @@ function gateStep(fields, billing, extraFields, setFieldErrors) {
 }
 
 /**
+ * Whether the checkout should collect a delivery address for this cart.
+ *
+ * WooCommerce's cart-level `needs_shipping` flips to false whenever no shipping
+ * method is configured — even for physical products — which would wrongly drop
+ * the delivery step. Mirror the plugin's legacy semantics instead: only hide
+ * shipping when the operator opted into digital-product optimization (Pro), and
+ * in that case defer to WooCommerce's flag (false for virtual-only carts).
+ * Otherwise the delivery step always shows, regardless of shipping methods.
+ *
+ * @param {object|null} cart Store API cart (null while loading).
+ * @returns {boolean}
+ */
+function cartNeedsShipping(cart) {
+  if (!cart) {
+    return true;
+  }
+
+  if (config.flags && config.flags.optimize_digital) {
+    return !!cart.needs_shipping;
+  }
+
+  return true;
+}
+
+/**
  * Root checkout. Uses the visual builder layout when one is published,
  * otherwise renders the default hardcoded three-step flow.
  */
@@ -393,7 +418,7 @@ function BuilderCheckout() {
 
   const guard = <LoadingOrEmpty loading={loading} cart={cart} />;
 
-  const needsShipping = !cart || cart.needs_shipping;
+  const needsShipping = cartNeedsShipping(cart);
   let steps = layoutSteps();
 
   if (!needsShipping) {
@@ -466,7 +491,7 @@ function DefaultCheckout() {
   const { loading, busy, error, cart, billing, extraFields, setFieldErrors, updateAddress, placeOrder } = useCheckout();
   const [step, setStep] = useState(1);
 
-  const needsShipping = !cart || cart.needs_shipping;
+  const needsShipping = cartNeedsShipping(cart);
   const steps = needsShipping ? [1, 2, 3] : [1, 3];
   const activeIndex = steps.indexOf(step);
   const isLast = step === 3;

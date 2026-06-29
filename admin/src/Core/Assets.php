@@ -462,6 +462,10 @@ class Assets {
 				'whatsapp_login' => Headless_Data::is_whatsapp_login_available(),
 				'address_search' => Headless_Data::is_address_search_available(),
 				'split_payment' => Admin_Options::get_setting('enable_payment_split') === 'yes',
+				// When on (Pro), the delivery step is hidden for virtual-only carts.
+				// When off (default), the delivery step always shows — independent of
+				// whether any shipping method is configured.
+				'optimize_digital' => Admin_Options::get_setting('enable_optimize_for_digital_products') === 'yes' && License::is_valid(),
 			),
 			'i18n' => array(
 				'contact' => __( 'Contact', 'flexify-checkout-for-woocommerce' ),
