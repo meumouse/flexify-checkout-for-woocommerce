@@ -1,16 +1,20 @@
 import config from '../config.js';
 import { useCheckout } from '../context/CheckoutContext.jsx';
+import { resolveAvailableGateways } from '../lib/gateways.js';
 import SplitPaymentSlot from './SplitPaymentSlot.jsx';
 import { PixIcon, CreditCardIcon, BarcodeIcon } from './ui/Icons.jsx';
 
 /**
  * Payment method selector rendered as a card grid (Pix / Cartão / Boleto…) with
  * a detail panel for the selected method. Rendered inside the payment step.
+ *
+ * The methods shown come from the live Store API cart availability, not the
+ * static page-load catalog, so conditional gateways update as the cart changes.
  */
 export default function PaymentMethods() {
   const ctx = useCheckout();
-  const { selectedGateway, setSelectedGateway } = ctx;
-  const gateways = (config.config && config.config.gateways) || [];
+  const { cart, selectedGateway, setSelectedGateway } = ctx;
+  const gateways = resolveAvailableGateways(cart);
   const pixDiscount = Number(config.settings?.pix_discount_percent || 0);
 
   if (gateways.length === 0) {

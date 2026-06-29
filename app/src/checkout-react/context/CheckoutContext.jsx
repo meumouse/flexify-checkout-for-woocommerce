@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import storeApi from '../api/storeApi.js';
 import config from '../config.js';
+import { resolveAvailableGateways } from '../lib/gateways.js';
 
 const CheckoutContext = createContext(null);
 
@@ -53,14 +54,22 @@ export function CheckoutProvider({ children }) {
     loadCart();
   }, [loadCart]);
 
-  // Default the gateway selection once config + cart are ready.
+  // Default the gateway selection from the live Store API availability, and
+  // reset it whenever the current pick is no longer available (e.g. a cart
+  // change removed a conditional gateway).
   useEffect(() => {
-    const gateways = config.config?.gateways || [];
+    const gateways = resolveAvailableGateways(cart);
 
-    if (!selectedGateway && gateways.length) {
+    if (!gateways.length) {
+      return;
+    }
+
+    const isAvailable = gateways.some((gateway) => gateway.id === selectedGateway);
+
+    if (!selectedGateway || !isAvailable) {
       setSelectedGateway(gateways[0].id);
     }
-  }, [selectedGateway]);
+  }, [cart, selectedGateway]);
 
   const withBusy = useCallback(async (fn) => {
     setBusy(true);
