@@ -52,18 +52,21 @@ class Handler {
         /**
          * Filter the host fragments whose outbound HTTP requests are logged.
          *
+         * Defaults cover the license/updater API (api.meumouse.com) and the
+         * address autocomplete provider (Google Places). Webhook dispatch is not
+         * listed here on purpose — it is logged with richer context by the
+         * Dispatcher, so matching it here would duplicate the entry.
+         *
          * @since 6.0.0
          * @param array<int,string> $hosts Default host fragments.
          */
-        return apply_filters( 'Flexify_Checkout/Logs/Http_Hosts', array( 'meumouse.com' ) );
+        return apply_filters( 'Flexify_Checkout/Logs/Http_Hosts', array( 'meumouse.com', 'places.googleapis.com' ) );
     }
 
 
     /**
-     * Decide whether a given request is "ours" (plugin-originated).
-     *
-     * Matches either a known host fragment or the plugin User-Agent header that
-     * the License/Updater/Webhook transports set.
+     * Decide whether a given request is "ours" (plugin-originated), matched by a
+     * known host fragment.
      *
      * @since 6.0.0
      * @param string $url Request URL.
@@ -77,22 +80,7 @@ class Handler {
             }
         }
 
-        $user_agent = '';
-
-        if ( isset( $args['headers'] ) && is_array( $args['headers'] ) ) {
-            foreach ( $args['headers'] as $name => $value ) {
-                if ( strtolower( (string) $name ) === 'user-agent' ) {
-                    $user_agent = (string) $value;
-                    break;
-                }
-            }
-        }
-
-        if ( $user_agent === '' && isset( $args['user-agent'] ) ) {
-            $user_agent = (string) $args['user-agent'];
-        }
-
-        return stripos( $user_agent, 'Flexify Checkout' ) !== false;
+        return false;
     }
 
 
