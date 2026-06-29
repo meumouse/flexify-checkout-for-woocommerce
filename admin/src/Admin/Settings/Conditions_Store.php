@@ -203,6 +203,83 @@ class Conditions_Store {
 
 
     /**
+     * Remove conditions and rules that reference checkout fields which no
+     * longer exist.
+     *
+     * Conditions point at fields in two places: a condition with the "field"
+     * subject targets a field as its left-hand operand, and a rule action with
+     * the "field" component targets a field as the thing being shown/hidden.
+     * When the referenced field is gone, the condition is dropped and a rule
+     * whose action target is gone is removed entirely (it can no longer act on
+     * anything).
+     *
+     * @since 6.0.0
+     * @param string|null $field_id Specific field to scrub. When null, scrubs
+     *                              every field id that is not in the fields store.
+     * @return bool True when the stored rules changed.
+     */
+    public static function scrub_orphan_field_conditions( $field_id = null ) {
+        $rules = self::get_rules();
+
+        if ( empty( $rules ) ) {
+            return false;
+        }
+
+        $field_id = ( null === $field_id ) ? null : sanitize_text_field( (string) $field_id );
+
+        // Resolve which field references count as orphan.
+        $is_orphan = static function ( $referenced ) use ( $field_id ) {
+            $referenced = (string) $referenced;
+
+            if ( '' === $referenced ) {
+                return false;
+            }
+
+            if ( null !== $field_id ) {
+                return $referenced === $field_id;
+            }
+
+            $existing = Fields_Store::get_fields();
+
+            return ! isset( $existing[ $referenced ] );
+        };
+
+        $next = array();
+
+        foreach ( $rules as $rule ) {
+            $action = $rule['action'] ?? array();
+
+            // Drop the whole rule when its action targets a missing field.
+            if ( ( $action['component'] ?? '' ) === 'field' && $is_orphan( $action['field'] ?? '' ) ) {
+                continue;
+            }
+
+            foreach ( (array) ( $rule['groups'] ?? array() ) as $g => $group ) {
+                $conditions = array();
+
+                foreach ( (array) ( $group['conditions'] ?? array() ) as $condition ) {
+                    if ( ( $condition['subject'] ?? '' ) === 'field' && $is_orphan( $condition['field'] ?? '' ) ) {
+                        continue;
+                    }
+
+                    $conditions[] = $condition;
+                }
+
+                $rule['groups'][ $g ]['conditions'] = $conditions;
+            }
+
+            $next[] = $rule;
+        }
+
+        if ( $next === $rules ) {
+            return false;
+        }
+
+        return self::save_rules( $next );
+    }
+
+
+    /**
      * Sanitize an incoming rule payload.
      *
      * @since 6.0.0

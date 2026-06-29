@@ -7,14 +7,14 @@ namespace Composer\Autoload;
 class ComposerStaticInit178be007d0b6d0c39a4c2788c7b3977c
 {
     public static $prefixLengthsPsr4 = array (
-        'M' => 
+        'M' =>
         array (
             'MeuMouse\\Flexify_Checkout\\' => 26,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'MeuMouse\\Flexify_Checkout\\' => 
+        'MeuMouse\\Flexify_Checkout\\' =>
         array (
             0 => __DIR__ . '/../..' . '/src',
         ),
@@ -33,6 +33,7 @@ class ComposerStaticInit178be007d0b6d0c39a4c2788c7b3977c
         'MeuMouse\\Flexify_Checkout\\Admin\\Settings\\Conditions_Store' => __DIR__ . '/../..' . '/src/Admin/Settings/Conditions_Store.php',
         'MeuMouse\\Flexify_Checkout\\Admin\\Settings\\Fields_Store' => __DIR__ . '/../..' . '/src/Admin/Settings/Fields_Store.php',
         'MeuMouse\\Flexify_Checkout\\Admin\\Settings\\Integrations_Data' => __DIR__ . '/../..' . '/src/Admin/Settings/Integrations_Data.php',
+        'MeuMouse\\Flexify_Checkout\\Admin\\Settings\\Layout_Store' => __DIR__ . '/../..' . '/src/Admin/Settings/Layout_Store.php',
         'MeuMouse\\Flexify_Checkout\\Admin\\Settings\\Registry' => __DIR__ . '/../..' . '/src/Admin/Settings/Registry.php',
         'MeuMouse\\Flexify_Checkout\\Admin\\Settings\\Repository' => __DIR__ . '/../..' . '/src/Admin/Settings/Repository.php',
         'MeuMouse\\Flexify_Checkout\\Admin\\Settings\\Views\\Integrations' => __DIR__ . '/../..' . '/src/Admin/Settings/Views/Integrations.php',
@@ -45,6 +46,7 @@ class ComposerStaticInit178be007d0b6d0c39a4c2788c7b3977c
         'MeuMouse\\Flexify_Checkout\\Checkout\\Fragments' => __DIR__ . '/../..' . '/src/Checkout/Fragments.php',
         'MeuMouse\\Flexify_Checkout\\Checkout\\Gateway_Catalog' => __DIR__ . '/../..' . '/src/Checkout/Gateway_Catalog.php',
         'MeuMouse\\Flexify_Checkout\\Checkout\\Headless_Data' => __DIR__ . '/../..' . '/src/Checkout/Headless_Data.php',
+        'MeuMouse\\Flexify_Checkout\\Checkout\\Legacy_Layout_Bridge' => __DIR__ . '/../..' . '/src/Checkout/Legacy_Layout_Bridge.php',
         'MeuMouse\\Flexify_Checkout\\Checkout\\Login' => __DIR__ . '/../..' . '/src/Checkout/Login.php',
         'MeuMouse\\Flexify_Checkout\\Checkout\\React_Checkout' => __DIR__ . '/../..' . '/src/Checkout/React_Checkout.php',
         'MeuMouse\\Flexify_Checkout\\Checkout\\Sidebar' => __DIR__ . '/../..' . '/src/Checkout/Sidebar.php',
@@ -62,6 +64,17 @@ class ComposerStaticInit178be007d0b6d0c39a4c2788c7b3977c
         'MeuMouse\\Flexify_Checkout\\Core\\Logger' => __DIR__ . '/../..' . '/src/Core/Logger.php',
         'MeuMouse\\Flexify_Checkout\\Core\\Modules' => __DIR__ . '/../..' . '/src/Core/Modules.php',
         'MeuMouse\\Flexify_Checkout\\Core\\Scripts' => __DIR__ . '/../..' . '/src/Core/Scripts.php',
+        'MeuMouse\\Flexify_Checkout\\Core\\Webhooks\\Bootstrap_Webhooks' => __DIR__ . '/../..' . '/src/Core/Webhooks/Bootstrap_Webhooks.php',
+        'MeuMouse\\Flexify_Checkout\\Core\\Webhooks\\Dispatcher' => __DIR__ . '/../..' . '/src/Core/Webhooks/Dispatcher.php',
+        'MeuMouse\\Flexify_Checkout\\Core\\Webhooks\\Event_Registry' => __DIR__ . '/../..' . '/src/Core/Webhooks/Event_Registry.php',
+        'MeuMouse\\Flexify_Checkout\\Core\\Webhooks\\Payload\\Cart_Payload_Provider' => __DIR__ . '/../..' . '/src/Core/Webhooks/Payload/Cart_Payload_Provider.php',
+        'MeuMouse\\Flexify_Checkout\\Core\\Webhooks\\Payload\\Generic_Payload_Provider' => __DIR__ . '/../..' . '/src/Core/Webhooks/Payload/Generic_Payload_Provider.php',
+        'MeuMouse\\Flexify_Checkout\\Core\\Webhooks\\Payload\\Lead_Payload_Provider' => __DIR__ . '/../..' . '/src/Core/Webhooks/Payload/Lead_Payload_Provider.php',
+        'MeuMouse\\Flexify_Checkout\\Core\\Webhooks\\Payload\\Order_Payload_Provider' => __DIR__ . '/../..' . '/src/Core/Webhooks/Payload/Order_Payload_Provider.php',
+        'MeuMouse\\Flexify_Checkout\\Core\\Webhooks\\Payload\\Payload_Provider' => __DIR__ . '/../..' . '/src/Core/Webhooks/Payload/Payload_Provider.php',
+        'MeuMouse\\Flexify_Checkout\\Core\\Webhooks\\Webhook_Helpers' => __DIR__ . '/../..' . '/src/Core/Webhooks/Webhook_Helpers.php',
+        'MeuMouse\\Flexify_Checkout\\Core\\Webhooks\\Webhook_Migration' => __DIR__ . '/../..' . '/src/Core/Webhooks/Webhook_Migration.php',
+        'MeuMouse\\Flexify_Checkout\\Core\\Webhooks\\Webhook_Settings' => __DIR__ . '/../..' . '/src/Core/Webhooks/Webhook_Settings.php',
         'MeuMouse\\Flexify_Checkout\\Cron\\Routines' => __DIR__ . '/../..' . '/src/Cron/Routines.php',
         'MeuMouse\\Flexify_Checkout\\Integrations\\Advanced_Nocaptcha' => __DIR__ . '/../..' . '/src/Integrations/Advanced_Nocaptcha.php',
         'MeuMouse\\Flexify_Checkout\\Integrations\\Astra' => __DIR__ . '/../..' . '/src/Integrations/Astra.php',
@@ -109,6 +122,7 @@ class ComposerStaticInit178be007d0b6d0c39a4c2788c7b3977c
         'MeuMouse\\Flexify_Checkout\\Integrations\\Tutorstarter' => __DIR__ . '/../..' . '/src/Integrations/Tutorstarter.php',
         'MeuMouse\\Flexify_Checkout\\Integrations\\Virtuaria_Correios' => __DIR__ . '/../..' . '/src/Integrations/Virtuaria_Correios.php',
         'MeuMouse\\Flexify_Checkout\\Integrations\\Virtue' => __DIR__ . '/../..' . '/src/Integrations/Virtue.php',
+        'MeuMouse\\Flexify_Checkout\\Integrations\\WPforms' => __DIR__ . '/../..' . '/src/Integrations/WPforms.php',
         'MeuMouse\\Flexify_Checkout\\Integrations\\Woo_Subscriptions' => __DIR__ . '/../..' . '/src/Integrations/Woo_Subscriptions.php',
         'MeuMouse\\Flexify_Checkout\\Integrations\\Woodmart' => __DIR__ . '/../..' . '/src/Integrations/Woodmart.php',
         'MeuMouse\\Flexify_Checkout\\Integrations\\Xstore' => __DIR__ . '/../..' . '/src/Integrations/Xstore.php',
@@ -136,9 +150,11 @@ class ComposerStaticInit178be007d0b6d0c39a4c2788c7b3977c
         'MeuMouse\\Flexify_Checkout\\Recovery_Carts\\Integrations\\Integrations_Base' => __DIR__ . '/../..' . '/src/Recovery_Carts/Integrations/Integrations_Base.php',
         'MeuMouse\\Flexify_Checkout\\Recovery_Carts\\Integrations\\Joinotify' => __DIR__ . '/../..' . '/src/Recovery_Carts/Integrations/Joinotify.php',
         'MeuMouse\\Flexify_Checkout\\Recovery_Carts\\Rest\\Analytics' => __DIR__ . '/../..' . '/src/Recovery_Carts/Rest/Analytics.php',
+        'MeuMouse\\Flexify_Checkout\\Recovery_Carts\\Rest\\Cart_Bulk_Delete' => __DIR__ . '/../..' . '/src/Recovery_Carts/Rest/Cart_Bulk_Delete.php',
         'MeuMouse\\Flexify_Checkout\\Recovery_Carts\\Rest\\Cart_Delete' => __DIR__ . '/../..' . '/src/Recovery_Carts/Rest/Cart_Delete.php',
         'MeuMouse\\Flexify_Checkout\\Recovery_Carts\\Rest\\Carts' => __DIR__ . '/../..' . '/src/Recovery_Carts/Rest/Carts.php',
         'MeuMouse\\Flexify_Checkout\\Recovery_Carts\\Rest\\Queue' => __DIR__ . '/../..' . '/src/Recovery_Carts/Rest/Queue.php',
+        'MeuMouse\\Flexify_Checkout\\Recovery_Carts\\Rest\\Queue_Bulk_Delete' => __DIR__ . '/../..' . '/src/Recovery_Carts/Rest/Queue_Bulk_Delete.php',
         'MeuMouse\\Flexify_Checkout\\Recovery_Carts\\Rest\\Queue_Delete' => __DIR__ . '/../..' . '/src/Recovery_Carts/Rest/Queue_Delete.php',
         'MeuMouse\\Flexify_Checkout\\Recovery_Carts\\Rest\\Recovery_Settings' => __DIR__ . '/../..' . '/src/Recovery_Carts/Rest/Recovery_Settings.php',
         'MeuMouse\\Flexify_Checkout\\Rest\\Abstract_Route' => __DIR__ . '/../..' . '/src/Rest/Abstract_Route.php',
@@ -155,6 +171,8 @@ class ComposerStaticInit178be007d0b6d0c39a4c2788c7b3977c
         'MeuMouse\\Flexify_Checkout\\Rest\\Fields_Save' => __DIR__ . '/../..' . '/src/Rest/Fields_Save.php',
         'MeuMouse\\Flexify_Checkout\\Rest\\Fonts_Delete' => __DIR__ . '/../..' . '/src/Rest/Fonts_Delete.php',
         'MeuMouse\\Flexify_Checkout\\Rest\\Fonts_Save' => __DIR__ . '/../..' . '/src/Rest/Fonts_Save.php',
+        'MeuMouse\\Flexify_Checkout\\Rest\\Layout_Get' => __DIR__ . '/../..' . '/src/Rest/Layout_Get.php',
+        'MeuMouse\\Flexify_Checkout\\Rest\\Layout_Save' => __DIR__ . '/../..' . '/src/Rest/Layout_Save.php',
         'MeuMouse\\Flexify_Checkout\\Rest\\License_Activate' => __DIR__ . '/../..' . '/src/Rest/License_Activate.php',
         'MeuMouse\\Flexify_Checkout\\Rest\\License_Alternative_Activate' => __DIR__ . '/../..' . '/src/Rest/License_Alternative_Activate.php',
         'MeuMouse\\Flexify_Checkout\\Rest\\License_Deactivate' => __DIR__ . '/../..' . '/src/Rest/License_Deactivate.php',
@@ -167,6 +185,8 @@ class ComposerStaticInit178be007d0b6d0c39a4c2788c7b3977c
         'MeuMouse\\Flexify_Checkout\\Rest\\Settings_Import' => __DIR__ . '/../..' . '/src/Rest/Settings_Import.php',
         'MeuMouse\\Flexify_Checkout\\Rest\\Settings_Reset' => __DIR__ . '/../..' . '/src/Rest/Settings_Reset.php',
         'MeuMouse\\Flexify_Checkout\\Rest\\Settings_Save' => __DIR__ . '/../..' . '/src/Rest/Settings_Save.php',
+        'MeuMouse\\Flexify_Checkout\\Rest\\Webhooks_Settings' => __DIR__ . '/../..' . '/src/Rest/Webhooks_Settings.php',
+        'MeuMouse\\Flexify_Checkout\\Rest\\Webhooks_Test' => __DIR__ . '/../..' . '/src/Rest/Webhooks_Test.php',
         'MeuMouse\\Flexify_Checkout\\Rest\\WhatsApp_Login_Trait' => __DIR__ . '/../..' . '/src/Rest/WhatsApp_Login_Trait.php',
         'MeuMouse\\Flexify_Checkout\\Rest\\WhatsApp_Send' => __DIR__ . '/../..' . '/src/Rest/WhatsApp_Send.php',
         'MeuMouse\\Flexify_Checkout\\Rest\\WhatsApp_Verify' => __DIR__ . '/../..' . '/src/Rest/WhatsApp_Verify.php',

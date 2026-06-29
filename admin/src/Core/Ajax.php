@@ -519,5 +519,20 @@ class Ajax {
 			));
 		}
 	}
+
+
+	/**
+	 * Remove checkout conditions that reference fields which no longer exist.
+	 *
+	 * Thin wrapper kept for call sites in the fields manager and the schema
+	 * migration; the actual scrubbing lives in the conditions store.
+	 *
+	 * @since 6.0.0
+	 * @param string|null $field_id Specific field to scrub, or null for all orphans.
+	 * @return bool True when the stored rules changed.
+	 */
+	public static function scrub_orphan_checkout_conditions( $field_id = null ) {
+		return \MeuMouse\Flexify_Checkout\Admin\Settings\Conditions_Store::scrub_orphan_field_conditions( $field_id );
+	}
 }
 

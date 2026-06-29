@@ -740,7 +740,9 @@ class Init {
      * @return array<string,string>
      */
     private static function build_class_registry() {
-        $classmap_file = defined( 'FLEXIFY_CHECKOUT_PATH' ) ? FLEXIFY_CHECKOUT_PATH . 'vendor/composer/autoload_classmap.php' : '';
+        // Composer lives under admin/ (moved there in 6.0.0), so the optimized
+        // classmap is at admin/vendor, not the plugin root.
+        $classmap_file = defined( 'FLEXIFY_CHECKOUT_PATH' ) ? FLEXIFY_CHECKOUT_PATH . 'admin/vendor/composer/autoload_classmap.php' : '';
 
         if ( $classmap_file === '' || ! is_readable( $classmap_file ) ) {
             return array();
