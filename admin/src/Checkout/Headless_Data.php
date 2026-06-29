@@ -205,6 +205,66 @@ class Headless_Data {
 
 
     /**
+     * Build the geo data payload (allowed countries + their states).
+     *
+     * Feeds the modern country/state selectors in the React (Swift) checkout.
+     * States are emitted only for countries that register them; a country with
+     * no states is omitted, so the React state field falls back to a free-text
+     * input — matching WooCommerce's own behavior.
+     *
+     * @since 6.0.0
+     * @return array<string,mixed>
+     */
+    public static function get_geo_data() {
+        if ( ! function_exists('WC') || ! WC() || ! WC()->countries ) {
+            return array( 'countries' => array(), 'states' => array() );
+        }
+
+        $wc_countries = WC()->countries;
+        $allowed = $wc_countries->get_allowed_countries();
+        $countries = array();
+        $states = array();
+
+        foreach ( $allowed as $code => $name ) {
+            $countries[] = array(
+                'value' => (string) $code,
+                'text' => html_entity_decode( (string) $name, ENT_QUOTES ),
+            );
+
+            $country_states = $wc_countries->get_states( $code );
+
+            if ( ! is_array( $country_states ) || empty( $country_states ) ) {
+                continue;
+            }
+
+            $options = array();
+
+            foreach ( $country_states as $state_code => $state_name ) {
+                $options[] = array(
+                    'value' => (string) $state_code,
+                    'text' => html_entity_decode( (string) $state_name, ENT_QUOTES ),
+                );
+            }
+
+            $states[ (string) $code ] = $options;
+        }
+
+        $geo = array(
+            'countries' => $countries,
+            'states' => $states,
+        );
+
+        /**
+         * Filter the geo data payload (countries + states) for the headless checkout.
+         *
+         * @since 6.0.0
+         * @param array $geo Geo payload.
+         */
+        return apply_filters( 'Flexify_Checkout/Headless/Geo_Data', $geo );
+    }
+
+
+    /**
      * Whether WhatsApp login is available (toggle on + Joinotify present).
      *
      * @since 6.0.0

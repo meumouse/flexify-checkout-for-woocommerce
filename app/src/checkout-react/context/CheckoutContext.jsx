@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import storeApi from '../api/storeApi.js';
 import config, { t } from '../config.js';
 import { resolveAvailableGateways } from '../lib/gateways.js';
+import { stateOptions } from '../lib/geo.js';
 import { isEditor } from '../lib/editorBridge.js';
 import { clearFormData, loadFormData, saveFormData } from '../lib/persistence.js';
 import { useToast } from './ToastContext.jsx';
@@ -81,6 +82,25 @@ export function CheckoutProvider({ children }) {
       setSelectedGateway(gateways[0].id);
     }
   }, [cart, selectedGateway]);
+
+  // When the country changes, drop a now-invalid state so a code from the
+  // previous country is never submitted. Skipped when the new country defines
+  // no states (free-text) or the state is already empty/valid.
+  useEffect(() => {
+    setBilling((prev) => {
+      if (!prev.state) {
+        return prev;
+      }
+
+      const options = stateOptions(prev.country);
+
+      if (!options.length || options.some((opt) => String(opt.value) === String(prev.state))) {
+        return prev;
+      }
+
+      return { ...prev, state: '' };
+    });
+  }, [billing.country]);
 
   // Persist field data whenever it changes, so a returning shopper finds it
   // pre-filled. Skipped in the builder preview.

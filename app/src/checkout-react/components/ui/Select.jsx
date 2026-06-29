@@ -6,7 +6,9 @@ import { CheckIcon, ChevronDownIcon } from './Icons.jsx';
  *
  * Renders a button trigger + floating listbox instead of a native <select>, so
  * the option list, selected state and focus ring can be styled to match the
- * checkout. Falls back to the placeholder when nothing is chosen.
+ * checkout. Falls back to the placeholder when nothing is chosen. When
+ * `searchable` is set, an inline filter input narrows long lists (e.g. the
+ * country selector).
  *
  * @param {object}   props
  * @param {string}   [props.id]          Element id (associates an external <label>).
@@ -16,6 +18,8 @@ import { CheckIcon, ChevronDownIcon } from './Icons.jsx';
  * @param {string}   [props.placeholder] Empty-state text.
  * @param {boolean}  [props.required]
  * @param {boolean}  [props.disabled]
+ * @param {boolean}  [props.searchable]  Show an inline filter input.
+ * @param {string}   [props.searchPlaceholder] Filter input placeholder.
  * @param {string}   [props.className]   Extra classes for the trigger.
  * @param {object}   [props.style]       Inline style for the trigger.
  * @param {'md'|'sm'} [props.size]       Control height (md = h-12, sm = h-10).
@@ -28,14 +32,18 @@ export default function Select({
   placeholder = '—',
   required = false,
   disabled = false,
+  searchable = false,
+  searchPlaceholder = 'Search…',
   className = '',
   style = null,
   size = 'md',
 }) {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(-1);
+  const [query, setQuery] = useState('');
   const rootRef = useRef(null);
   const listRef = useRef(null);
+  const searchRef = useRef(null);
   const listId = useId();
 
   const normalized = options.map((opt) => ({
@@ -44,6 +52,12 @@ export default function Select({
   }));
   const selected = normalized.find((opt) => String(opt.value) === String(value));
   const height = size === 'sm' ? 'h-10' : 'h-12';
+
+  // Options actually shown — filtered by the search query when searchable.
+  const term = query.trim().toLowerCase();
+  const visible = searchable && term
+    ? normalized.filter((opt) => opt.label.toLowerCase().includes(term))
+    : normalized;
 
   // Close on outside click / Escape.
   useEffect(() => {
@@ -61,6 +75,19 @@ export default function Select({
 
     return () => document.removeEventListener('mousedown', onDocClick);
   }, [open]);
+
+  // Reset the filter and focus the search input when the list opens.
+  useEffect(() => {
+    if (!open) {
+      setQuery('');
+
+      return;
+    }
+
+    if (searchable && searchRef.current) {
+      searchRef.current.focus();
+    }
+  }, [open, searchable]);
 
   // Keep the active option in view while navigating with the keyboard.
   useEffect(() => {
@@ -108,17 +135,25 @@ export default function Select({
         break;
       case 'ArrowDown':
         event.preventDefault();
-        setActive((i) => Math.min(normalized.length - 1, i + 1));
+        setActive((i) => Math.min(visible.length - 1, i + 1));
         break;
       case 'ArrowUp':
         event.preventDefault();
         setActive((i) => Math.max(0, i - 1));
         break;
       case 'Enter':
-      case ' ':
         event.preventDefault();
-        if (active >= 0 && normalized[active]) {
-          choose(normalized[active].value);
+        if (active >= 0 && visible[active]) {
+          choose(visible[active].value);
+        }
+        break;
+      case ' ':
+        // Space selects only when not typing in the filter input.
+        if (!searchable) {
+          event.preventDefault();
+          if (active >= 0 && visible[active]) {
+            choose(visible[active].value);
+          }
         }
         break;
       default:
@@ -153,41 +188,60 @@ export default function Select({
       </button>
 
       {open && (
-        <ul
-          ref={listRef}
-          id={listId}
-          role="listbox"
-          className="absolute z-30 mt-1 max-h-60 w-full overflow-auto rounded-lg border border-slate-200 bg-white p-1 shadow-lg"
-        >
-          {normalized.length === 0 && (
-            <li className="px-3 py-2 text-sm text-slate-400">—</li>
+        <div className="absolute z-30 mt-1 w-full rounded-lg border border-slate-200 bg-white shadow-lg">
+          {searchable && (
+            <div className="border-b border-slate-100 p-2">
+              <input
+                ref={searchRef}
+                type="text"
+                value={query}
+                placeholder={searchPlaceholder}
+                className="h-9 w-full rounded-md border border-slate-200 px-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary-100"
+                onChange={(event) => {
+                  setQuery(event.target.value);
+                  setActive(0);
+                }}
+                onKeyDown={onKeyDown}
+              />
+            </div>
           )}
 
-          {normalized.map((opt, index) => {
-            const isSelected = String(opt.value) === String(value);
-            const isActive = index === active;
+          <ul
+            ref={listRef}
+            id={listId}
+            role="listbox"
+            className="max-h-60 overflow-auto p-1"
+          >
+            {visible.length === 0 && (
+              <li className="px-3 py-2 text-sm text-slate-400">—</li>
+            )}
 
-            return (
-              <li
-                key={`${opt.value}-${index}`}
-                role="option"
-                aria-selected={isSelected}
-                className={`flex cursor-pointer items-center justify-between gap-2 rounded-md px-3 py-2 text-sm transition ${
-                  isActive ? 'bg-primary-50' : ''
-                } ${isSelected ? 'fc-primary-text font-medium' : 'text-slate-700'}`}
-                onMouseEnter={() => setActive(index)}
-                onMouseDown={(event) => {
-                  // Prevent the trigger's blur from racing the selection.
-                  event.preventDefault();
-                  choose(opt.value);
-                }}
-              >
-                <span className="truncate">{opt.label}</span>
-                {isSelected && <CheckIcon className="h-4 w-4 shrink-0" />}
-              </li>
-            );
-          })}
-        </ul>
+            {visible.map((opt, index) => {
+              const isSelected = String(opt.value) === String(value);
+              const isActive = index === active;
+
+              return (
+                <li
+                  key={`${opt.value}-${index}`}
+                  role="option"
+                  aria-selected={isSelected}
+                  className={`flex cursor-pointer items-center justify-between gap-2 rounded-md px-3 py-2 text-sm transition ${
+                    isActive ? 'bg-primary-50' : ''
+                  } ${isSelected ? 'fc-primary-text font-medium' : 'text-slate-700'}`}
+                  onMouseEnter={() => setActive(index)}
+                  onMouseDown={(event) => {
+                    // Prevent the trigger's blur from racing the selection.
+                    event.preventDefault();
+                    choose(opt.value);
+                  }}
+                >
+                  <span className="truncate">{opt.label}</span>
+                  {isSelected && <CheckIcon className="h-4 w-4 shrink-0" />}
+                </li>
+              );
+            })}
+          </ul>
+        </div>
       )}
     </div>
   );

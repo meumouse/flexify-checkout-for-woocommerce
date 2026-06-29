@@ -2,6 +2,8 @@ import { useCheckout } from '../context/CheckoutContext.jsx';
 import { emitSelect } from '../lib/editorBridge.js';
 import { sameTarget } from './editor/Selectable.jsx';
 import { fieldBinding } from '../lib/fields.js';
+import { geoOptions } from '../lib/geo.js';
+import { t } from '../config.js';
 import fieldIcon from '../lib/fieldIcons.jsx';
 import Select from './ui/Select.jsx';
 import Checkbox from './ui/Checkbox.jsx';
@@ -36,7 +38,13 @@ export default function FieldRenderer({ field, style = null, editor = false, sel
     }
   };
 
-  const isSelect = field.type === 'select' && Array.isArray(field.options) && field.options.length > 0;
+  // Country/state pull their options from the localized geo data (resolved per
+  // selected country); every other select uses its own stored options.
+  const dynamicOptions = geoOptions(field.id, billing.country);
+  const isGeoField = dynamicOptions !== null;
+  const options = isGeoField ? dynamicOptions : field.options;
+
+  const isSelect = field.type === 'select' && Array.isArray(options) && options.length > 0;
   const isCheckbox = field.type === 'checkbox';
   const isDate = field.type === 'date';
 
@@ -110,11 +118,13 @@ export default function FieldRenderer({ field, style = null, editor = false, sel
         <Select
           id={`fc-${field.id}`}
           value={value}
-          options={field.options}
+          options={options}
           required={field.required}
           placeholder={placeholder || '—'}
           className={errorBorder}
           style={inputStyle}
+          searchable={isGeoField}
+          searchPlaceholder={t('search', 'Search…')}
           onChange={onChange}
         />
       ) : isDate ? (
