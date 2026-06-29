@@ -111,17 +111,6 @@ function selectTab(tabId) {
   url.hash = '';
   window.history.replaceState(window.history.state, '', url);
 }
-
-// Lets nested components (e.g. the Pro upsell modal) request a tab change.
-watch(
-  () => store.requestedTab,
-  (tabId) => {
-    if (tabId) {
-      selectTab(tabId);
-      store.requestedTab = null;
-    }
-  },
-);
 </script>
 
 <template>

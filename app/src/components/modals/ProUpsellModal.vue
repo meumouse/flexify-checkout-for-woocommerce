@@ -6,7 +6,7 @@ import BaseButton from '../buttons/BaseButton.vue';
 
 /**
  * Upsell shown when a Pro option is interacted with on a site without an active
- * license. Offers two paths: jump to the "Sobre" tab to activate an existing
+ * license. Offers two paths: open the License page to activate an existing
  * license, or open the plugin page to purchase one.
  *
  * @since 6.0.0
@@ -25,8 +25,12 @@ const buyUrl = computed(
 
 function goToLicense() {
   emit('close');
-  // Jump to the "Sobre" tab, where the license can be activated.
-  store.requestTab('about');
+  // The License page is its own wp-admin submenu page: keep the current
+  // admin.php path and just swap the ?page= slug.
+  const url = new URL(window.location.href);
+  url.searchParams.set('page', 'flexify-checkout-license');
+  url.searchParams.delete('tab');
+  window.location.href = url.toString();
 }
 
 function buyLicense() {
