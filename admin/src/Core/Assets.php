@@ -3,6 +3,7 @@
 namespace MeuMouse\Flexify_Checkout\Core;
 
 use MeuMouse\Flexify_Checkout\Admin\Admin_Options;
+use MeuMouse\Flexify_Checkout\Admin\Fonts_Manager;
 use MeuMouse\Flexify_Checkout\API\License;
 use MeuMouse\Flexify_Checkout\Checkout\Themes;
 use MeuMouse\Flexify_Checkout\Checkout\Steps;
@@ -372,6 +373,17 @@ class Assets {
 				if ( $value !== '' && $value !== null ) {
 					$accent_vars .= $css_var . ':' . esc_attr( (int) $value ) . 'px;';
 				}
+			}
+
+			// Selected font family: drive it through --fc-font-family so the React
+			// checkout body AND the section headings (.fc-heading) pick it up. The
+			// @font-face/@import itself is emitted by Styles::render_dynamic_styles().
+			$font_id = Admin_Options::get_setting('set_font_family');
+			$fonts = Fonts_Manager::get_fonts();
+
+			if ( ! empty( $font_id ) && isset( $fonts[ $font_id ]['font_name'] ) ) {
+				$font_name = $fonts[ $font_id ]['font_name'];
+				$accent_vars .= '--fc-font-family:\'' . esc_attr( $font_name ) . '\', Inter, Helvetica, Arial, sans-serif;';
 			}
 
 			if ( $accent_vars !== '' ) {

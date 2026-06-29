@@ -87,7 +87,10 @@ export function applyTheme(theme) {
   }
 
   if (font.family) {
-    root.style.fontFamily = `${font.family}, sans-serif`;
+    // Drive the family through a CSS var so both the body and the section
+    // headings (.fc-heading) pick it up — headings would otherwise keep their
+    // hardcoded serif fallback and ignore the selected font.
+    root.style.setProperty('--fc-font-family', `${font.family}, sans-serif`);
   }
 }
 

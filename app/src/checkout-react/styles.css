@@ -30,7 +30,9 @@
   color: var(--fc-text);
   background-color: var(--fc-bg);
   font-size: var(--fc-font-size);
-  font-family: inherit;
+  /* Selected font (driven by the builder / settings). Falls back to whatever
+     the page inherits when no custom font is configured. */
+  font-family: var(--fc-font-family, inherit);
   line-height: 1.5;
 }
 
@@ -70,9 +72,10 @@
   background-color: var(--fc-primary-tint);
 }
 
-/* Serif italic section headings ("Dados do titular da compra", etc.). */
+/* Serif italic section headings ("Dados do titular da compra", etc.). Uses the
+   merchant's selected font when one is set, falling back to the decorative serif. */
 .fc-heading {
-  font-family: Georgia, 'Times New Roman', serif;
+  font-family: var(--fc-font-family, Georgia, 'Times New Roman', serif);
   font-style: italic;
   font-weight: 500;
 }
