@@ -279,7 +279,7 @@ class License {
                     // Handle decryption failure
                     $decryption_error = new \stdClass();
                     $decryption_error->status = false;
-                    $decryption_error->msg = __( 'Ocorreu um erro na conexão com o servidor de verificação de licenças. Verifique o erro nos logs do WooCommerce.', 'flexify-checkout-for-woocommerce' );
+                    $decryption_error->msg = __( 'There was an error connecting to the license verification server. Check the error in the WooCommerce logs.', 'flexify-checkout-for-woocommerce' );
                     $decryption_error->data = NULL;
 
                     return $decryption_error;
@@ -300,7 +300,7 @@ class License {
                 // Handle JSON decoding error
                 $json_error = new \stdClass();
                 $json_error->status = false;
-                $json_error->msg = sprintf( __( 'Erro JSON: %s', 'flexify-checkout-for-woocommerce' ), json_last_error_msg() );
+                $json_error->msg = sprintf( __( 'JSON error: %s', 'flexify-checkout-for-woocommerce' ), json_last_error_msg() );
                 $json_error->data = $resbk;
 
                 return $json_error;
@@ -311,7 +311,7 @@ class License {
 
         // Treat unknown response
         $unknown_response = new \stdClass();
-        $unknown_response->msg = __( 'Resposta desconhecida', 'flexify-checkout-for-woocommerce' );
+        $unknown_response->msg = __( 'Unknown response', 'flexify-checkout-for-woocommerce' );
         $unknown_response->status = false;
         $unknown_response->data = NULL;
 
@@ -336,7 +336,7 @@ class License {
         if ( false === $cached_response ) {
             $response = new \stdClass();
             $response->status = false;
-            $response->msg = __( 'Resposta vazia.', 'flexify-checkout-for-woocommerce' );
+            $response->msg = __( 'Empty response.', 'flexify-checkout-for-woocommerce' );
             $response->is_request_error = false;
             $final_data = wp_json_encode( $data );
             $url = rtrim( $this->server_host, '/' ) . "/" . ltrim( $relative_url, '/' );
@@ -376,7 +376,7 @@ class License {
     
                         // Check if it is a cURL 35 error
                         if ( strpos( $curl_error_message, 'cURL error 35' ) !== false ) {
-                            $error = __( 'Erro cURL 35: Problema de comunicação SSL/TLS.', 'flexify-checkout-for-woocommerce' );
+                            $error = __( 'cURL error 35: SSL/TLS communication issue.', 'flexify-checkout-for-woocommerce' );
                         } else {
                             $response->msg = $curl_error_message;
                             $response->status = false;
@@ -396,7 +396,7 @@ class License {
                     }
                 }
             } elseif ( ! extension_loaded( 'curl' ) ) {
-                $response->msg = __( 'A extensão cURL está faltando.', 'flexify-checkout-for-woocommerce' );
+                $response->msg = __( 'The cURL extension is missing.', 'flexify-checkout-for-woocommerce' );
                 $response->status = false;
                 $response->data = NULL;
                 $response->is_request_error = true;
@@ -429,9 +429,9 @@ class License {
     
                     // Check if it is a cURL 35 error
                     if ( strpos( $error_message, 'cURL error 35' ) !== false ) {
-                        $error = __( 'Erro cURL 35: Problema de comunicação SSL/TLS.', 'flexify-checkout-for-woocommerce' );
+                        $error = __( 'cURL error 35: SSL/TLS communication issue.', 'flexify-checkout-for-woocommerce' );
                     } else {
-                        $response->msg = sprintf( __( 'Erro cURL: %s', 'flexify-checkout-for-woocommerce' ), $error_message );
+                        $response->msg = sprintf( __( 'cURL error: %s', 'flexify-checkout-for-woocommerce' ), $error_message );
                     }
                 }
     
@@ -739,7 +739,7 @@ class License {
                             }
                         }
                     } else {
-                        $error = __( 'Dados inválidos.', 'flexify-checkout-for-woocommerce' );
+                        $error = __( 'Invalid data.', 'flexify-checkout-for-woocommerce' );
                     }
                 } else {
                     $error = $response->msg;
@@ -832,7 +832,7 @@ class License {
         if ( is_object( $object_query ) && ! empty( $object_query ) && isset( $object_query->license_title ) ) {
           return $object_query->license_title;
         } else {
-          return esc_html__( 'Não disponível', 'flexify-checkout-for-woocommerce' );
+          return esc_html__( 'Not available', 'flexify-checkout-for-woocommerce' );
         }
     }
 
@@ -849,7 +849,7 @@ class License {
 
         if ( is_object( $object_query ) && ! empty( $object_query ) && isset( $object_query->expire_date ) ) {
             if ( $object_query->expire_date === 'No expiry' ) {
-                return esc_html__( 'Nunca expira', 'flexify-checkout-for-woocommerce' );
+                return esc_html__( 'Never expires', 'flexify-checkout-for-woocommerce' );
             } else {
                 if ( strtotime( $object_query->expire_date ) < time() ) {
                     $object_query->is_valid = false;
@@ -858,7 +858,7 @@ class License {
                     update_option( 'flexify_checkout_license_status', 'invalid' );
                     delete_option('flexify_checkout_license_response_object');
 
-                    return esc_html__( 'Licença expirada', 'flexify-checkout-for-woocommerce' );
+                    return esc_html__( 'License expired', 'flexify-checkout-for-woocommerce' );
                 }
 
                 // get wordpress date format setting
@@ -896,29 +896,6 @@ class License {
 
 
     /**
-     * Try to decrypt license with multiple keys
-     * 
-     * @since 1.3.0
-     * @version 3.8.0
-     * @param string $encrypted_data | Encrypted data
-     * @param array $possible_keys | Array list with decryp keys
-     * @return mixed Decrypted string or null
-     */
-    public static function decrypt_alternative_license( $encrypted_data, $possible_keys ) {
-        foreach ( $possible_keys as $key ) {
-            $decrypted_data = openssl_decrypt( $encrypted_data, 'AES-256-CBC', $key, 0, substr( $key, 0, 16 ) );
-
-            // Checks whether decryption was successful
-            if ( $decrypted_data !== false ) {
-                return $decrypted_data;
-            }
-        }
-        
-        return null;
-    }
-
-
-    /**
 	 * Display admin notice when license is expired
 	 * 
 	 * @since 5.2.0
@@ -927,7 +904,7 @@ class License {
     public function license_expired_notice() {
         if ( self::expired_license() ) {
 			$class = 'notice notice-error is-dismissible';
-			$message = __( 'Sua licença do <strong>Flexify Checkout</strong> expirou, realize a renovação para continuar aproveitando os recursos Pro.', 'flexify-checkout-for-woocommerce' );
+			$message = __( 'Your <strong>Flexify Checkout</strong> license has expired; renew it to keep enjoying Pro features.', 'flexify-checkout-for-woocommerce' );
 
 			printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), $message );
 		}
@@ -950,15 +927,15 @@ class License {
                                 <svg class="icon-pro icon-primary" viewBox="0 0 24.00 24.00" xmlns="http://www.w3.org/2000/svg"><g stroke-width="0"></g><g stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC" stroke-width="0.336"></g><g><path fill-rule="evenodd" clip-rule="evenodd" d="M12.0001 3C12.3334 3 12.6449 3.16613 12.8306 3.443L16.6106 9.07917L21.2523 3.85213C21.5515 3.51525 22.039 3.42002 22.4429 3.61953C22.8469 3.81904 23.0675 4.26404 22.9818 4.70634L20.2956 18.5706C20.0223 19.9812 18.7872 21 17.3504 21H6.64977C5.21293 21 3.97784 19.9812 3.70454 18.5706L1.01833 4.70634C0.932635 4.26404 1.15329 3.81904 1.55723 3.61953C1.96117 3.42002 2.44865 3.51525 2.74781 3.85213L7.38953 9.07917L11.1696 3.443C11.3553 3.16613 11.6667 3 12.0001 3ZM12.0001 5.79533L8.33059 11.2667C8.1582 11.5237 7.8765 11.6865 7.56772 11.7074C7.25893 11.7283 6.95785 11.6051 6.75234 11.3737L3.67615 7.90958L5.66802 18.1902C5.75913 18.6604 6.17082 19 6.64977 19H17.3504C17.8293 19 18.241 18.6604 18.3321 18.1902L20.324 7.90958L17.2478 11.3737C17.0423 11.6051 16.7412 11.7283 16.4324 11.7074C16.1236 11.6865 15.842 11.5237 15.6696 11.2667L12.0001 5.79533Z"></path> </g></svg>
                             </div>
 
-                            <h5 class="text-center mb-2 mt-3"><?php echo esc_html__('Este recurso está disponível na versão Pro', 'flexify-checkout-for-woocommerce'); ?></h5>
+                            <h5 class="text-center mb-2 mt-3"><?php echo esc_html__('This feature is available in the Pro version', 'flexify-checkout-for-woocommerce'); ?></h5>
                             <span class="title-hightlight mt-2 mb-3"></span>
-                            <span class="text-muted fs-lg p-3"><?php echo esc_html__( 'Uma licença permite que você desbloqueie todos os recursos Pro que o plugin tem a oferecer.', 'flexify-checkout-for-woocommerce' ) ?></span>
+                            <span class="text-muted fs-lg p-3"><?php echo esc_html__( 'A license allows you to unlock all the Pro features that the plugin has to offer.', 'flexify-checkout-for-woocommerce' ) ?></span>
                         </div>
                         
                         <div class="my-4 p-3">
-                            <button id="active_license_form" class="btn btn-lg btn-outline-secondary me-3"><?php echo esc_html__('Já tenho uma licença', 'flexify-checkout-for-woocommerce'); ?></button>
+                            <button id="active_license_form" class="btn btn-lg btn-outline-secondary me-3"><?php echo esc_html__('I already have a license', 'flexify-checkout-for-woocommerce'); ?></button>
                             <a class="btn btn-lg btn-primary d-inline-flex" href="https://meumouse.com/plugins/flexify-checkout-para-woocommerce/?utm_source=wordpress&utm_medium=plugins-list&utm_campaign=flexify_checkout" target="_blank">
-                                <span><?php echo esc_html__( 'Comprar uma licença', 'flexify-checkout-for-woocommerce' ) ?></span>
+                                <span><?php echo esc_html__( 'Buy a license', 'flexify-checkout-for-woocommerce' ) ?></span>
                             </a>
                         </div>
                     </div>

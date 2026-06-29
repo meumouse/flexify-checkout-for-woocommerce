@@ -174,7 +174,6 @@ class ComposerStaticInit178be007d0b6d0c39a4c2788c7b3977c
         'MeuMouse\\Flexify_Checkout\\Rest\\Layout_Get' => __DIR__ . '/../..' . '/src/Rest/Layout_Get.php',
         'MeuMouse\\Flexify_Checkout\\Rest\\Layout_Save' => __DIR__ . '/../..' . '/src/Rest/Layout_Save.php',
         'MeuMouse\\Flexify_Checkout\\Rest\\License_Activate' => __DIR__ . '/../..' . '/src/Rest/License_Activate.php',
-        'MeuMouse\\Flexify_Checkout\\Rest\\License_Alternative_Activate' => __DIR__ . '/../..' . '/src/Rest/License_Alternative_Activate.php',
         'MeuMouse\\Flexify_Checkout\\Rest\\License_Deactivate' => __DIR__ . '/../..' . '/src/Rest/License_Deactivate.php',
         'MeuMouse\\Flexify_Checkout\\Rest\\License_Sync' => __DIR__ . '/../..' . '/src/Rest/License_Sync.php',
         'MeuMouse\\Flexify_Checkout\\Rest\\Modules_Activate' => __DIR__ . '/../..' . '/src/Rest/Modules_Activate.php',

@@ -35,7 +35,7 @@ const store = useSettingsStore();
     </p>
 
     <main class="mt-6 overflow-hidden rounded-[8px] bg-white shadow-[0_1px_0_rgba(0,0,0,0.02)] ring-1 ring-slate-100">
-      <div class="px-10 py-4">
+      <div class="px-8 py-4">
         <LicenseManager />
       </div>
     </main>

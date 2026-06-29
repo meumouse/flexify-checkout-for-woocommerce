@@ -523,36 +523,5 @@ export const useSettingsStore = defineStore('flexify-checkout-settings', {
 
       return response;
     },
-
-    /**
-     * Activate the license through the offline .key file upload flow.
-     *
-     * @param {File} file - The uploaded encrypted .key license file.
-     * @return {Promise<Object|null>} Parsed REST response, or null on failure.
-     */
-    async alternativeActivate(file) {
-      if (!file) {
-        return null;
-      }
-
-      const formData = new FormData();
-      formData.append('file', file);
-
-      try {
-        const response = await apiPostForm('admin/license/alternative-activate', formData);
-
-        if (response?.runtime) {
-          this.runtime = response.runtime;
-        }
-
-        this.pushToast(response?.status === 'success' ? 'success' : 'error', response?.message || '');
-
-        return response;
-      } catch (error) {
-        this.pushToast('error', 'Não foi possível ativar a licença pelo arquivo.');
-
-        return null;
-      }
-    },
   },
 });

@@ -53,7 +53,7 @@ function buyLicense() {
     </div>
 
     <template #footer>
-      <div class="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+      <div class="flex flex-col-reverse gap-3 sm:flex-row sm:justify-center">
         <BaseButton variant="secondary" @click="goToLicense">Já tenho uma licença</BaseButton>
         <BaseButton variant="primary" @click="buyLicense">Comprar uma licença</BaseButton>
       </div>

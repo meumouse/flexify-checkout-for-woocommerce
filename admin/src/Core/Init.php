@@ -410,7 +410,7 @@ class Init {
 	 */
 	public function php_version_notice() {
 		$class = 'notice notice-error is-dismissible';
-		$message = __( '<strong>Flexify Checkout</strong> requer a versão do PHP 7.4 ou maior. Contate o suporte da sua hospedagem para realizar a atualização.', 'flexify-checkout-for-woocommerce' );
+		$message = __( '<strong>Flexify Checkout</strong> requires PHP version 7.4 or greater. Please contact your hosting support to upgrade.', 'flexify-checkout-for-woocommerce' );
 
 		printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), $message );
 	}
@@ -519,7 +519,7 @@ class Init {
 	 */
 	public function woocommerce_version_notice() {
 		$class = 'notice notice-error is-dismissible';
-		$message = __( '<strong>Flexify Checkout</strong> requer a versão do WooCommerce 6.0 ou maior. Faça a atualização do plugin WooCommerce.', 'flexify-checkout-for-woocommerce' );
+		$message = __( '<strong>Flexify Checkout</strong> requires WooCommerce version 6.0 or greater. Please update the WooCommerce plugin.', 'flexify-checkout-for-woocommerce' );
 
 		printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), $message );
 	}
@@ -535,7 +535,7 @@ class Init {
 	public function deactivate_flexify_checkout_notice() {
 		if ( current_user_can('install_plugins') ) {
 			$class = 'notice notice-error is-dismissible';
-			$message = __( '<strong>Flexify Checkout</strong> requer que <strong>WooCommerce</strong> esteja instalado e ativado.', 'flexify-checkout-for-woocommerce' );
+			$message = __( '<strong>Flexify Checkout</strong> requires <strong>WooCommerce</strong> to be installed and activated.', 'flexify-checkout-for-woocommerce' );
 
 			printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), $message );
 		}
@@ -552,7 +552,7 @@ class Init {
 	 */
 	public function add_action_plugin_links( $action_links ) {
 		$plugins_links = array(
-			'<a href="' . admin_url('admin.php?page=flexify-checkout-for-woocommerce') . '">'. __( 'Configurar', 'flexify-checkout-for-woocommerce' ) .'</a>',
+			'<a href="' . admin_url('admin.php?page=flexify-checkout-for-woocommerce') . '">'. __( 'Configure', 'flexify-checkout-for-woocommerce' ) .'</a>',
 		);
 
 		return array_merge( $plugins_links, $action_links );
@@ -573,7 +573,7 @@ class Init {
 	public function add_row_meta_links( $plugin_meta, $plugin_file, $plugin_data, $status ) {
 		if ( strpos( $plugin_file, $this->basename ) !== false ) {
 			$new_links = array(
-				'docs' => '<a href="'. FLEXIFY_CHECKOUT_DOCS_LINK .'" target="_blank">'. __( 'Documentação', 'flexify-checkout-for-woocommerce' ) .'</a>',
+				'docs' => '<a href="'. FLEXIFY_CHECKOUT_DOCS_LINK .'" target="_blank">'. __( 'Documentation', 'flexify-checkout-for-woocommerce' ) .'</a>',
 			);
 			
 			$plugin_meta = array_merge( $plugin_meta, $new_links );
@@ -593,7 +593,7 @@ class Init {
 	 */
 	public function be_pro_link( $action_links ) {
 		$plugins_links = array(
-			'<a id="get-pro-flexify-checkout" target="_blank" href="https://meumouse.com/plugins/flexify-checkout-para-woocommerce/?utm_source=wordpress&utm_medium=plugins-list&utm_campaign=flexify-checkout">' . __( 'Seja PRO', 'flexify-checkout-for-woocommerce' ) . '</a>'
+			'<a id="get-pro-flexify-checkout" target="_blank" href="https://meumouse.com/plugins/flexify-checkout-para-woocommerce/?utm_source=wordpress&utm_medium=plugins-list&utm_campaign=flexify-checkout">' . __( 'Go PRO', 'flexify-checkout-for-woocommerce' ) . '</a>'
 		);
 	
 		return array_merge( $plugins_links, $action_links );
@@ -630,9 +630,6 @@ class Init {
             // build_payload()/apply_payload() are called statically below.
             '\MeuMouse\Flexify_Checkout\Rest\Settings_Export',
             '\MeuMouse\Flexify_Checkout\Rest\Settings_Import',
-            // Offline/manual license activation via uploaded .key file, ported
-            // from the removed legacy admin-ajax handler to a REST endpoint.
-            '\MeuMouse\Flexify_Checkout\Rest\License_Alternative_Activate',
             // Optional React checkout: template swap + public/headless REST API.
             // Listed manually because the cached class registry only scans the
             // Composer classmap (which is hand-maintained, never dump-autoloaded).

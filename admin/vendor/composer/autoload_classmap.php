@@ -159,7 +159,6 @@ return array(
     'MeuMouse\\Flexify_Checkout\\Rest\\Layout_Get' => $baseDir . '/src/Rest/Layout_Get.php',
     'MeuMouse\\Flexify_Checkout\\Rest\\Layout_Save' => $baseDir . '/src/Rest/Layout_Save.php',
     'MeuMouse\\Flexify_Checkout\\Rest\\License_Activate' => $baseDir . '/src/Rest/License_Activate.php',
-    'MeuMouse\\Flexify_Checkout\\Rest\\License_Alternative_Activate' => $baseDir . '/src/Rest/License_Alternative_Activate.php',
     'MeuMouse\\Flexify_Checkout\\Rest\\License_Deactivate' => $baseDir . '/src/Rest/License_Deactivate.php',
     'MeuMouse\\Flexify_Checkout\\Rest\\License_Sync' => $baseDir . '/src/Rest/License_Sync.php',
     'MeuMouse\\Flexify_Checkout\\Rest\\Modules_Activate' => $baseDir . '/src/Rest/Modules_Activate.php',

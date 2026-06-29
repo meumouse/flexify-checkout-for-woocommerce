@@ -14,6 +14,7 @@ const classes = computed(() => {
     primary: 'border-transparent bg-primary text-white hover:bg-primary-700 focus-visible:ring-primary-200',
     outline: 'border-primary-200 bg-white text-primary hover:bg-primary-50 focus-visible:ring-primary-100',
     secondary: 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50 focus-visible:ring-slate-200',
+    success: 'border-transparent bg-success text-white hover:opacity-90 focus-visible:ring-green-200',
     'outline-warning': 'border-warning bg-white text-warning hover:bg-warning hover:text-white focus-visible:ring-yellow-200',
     'outline-danger': 'border-danger bg-white text-danger hover:bg-danger hover:text-white focus-visible:ring-red-200',
     danger: 'border-transparent bg-danger text-white hover:opacity-90 focus-visible:ring-red-200',
