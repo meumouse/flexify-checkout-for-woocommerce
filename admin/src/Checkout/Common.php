@@ -30,6 +30,84 @@ class Common {
 
         // force WooCommerce is_checkout() to return true on Flexify checkout context
         add_filter( 'woocommerce_is_checkout', array( $this, 'force_is_checkout_on_flexify_context' ) );
+
+        // register the [flexify_checkout] shortcode as a fallback alias for
+        // [woocommerce_checkout], so stores can use either on the checkout page
+        add_shortcode( 'flexify_checkout', array( $this, 'render_checkout_shortcode' ) );
+    }
+
+
+    /**
+     * Render the checkout for the [flexify_checkout] shortcode.
+     *
+     * By default this renders the React checkout frontend: it enqueues the
+     * React bundle (and its localized data) and prints the mount root the app
+     * boots from, mirroring templates/template-react.php. This lets stores drop
+     * the React checkout onto any page via shortcode, not only the configured
+     * WooCommerce checkout page (where Checkout\React_Checkout swaps the whole
+     * page template instead).
+     *
+     * When the React bundle is unavailable, it falls back to the native
+     * [woocommerce_checkout] shortcode so the page still renders a checkout.
+     *
+     * @since 6.0.0
+     * @param array|string $atts Shortcode attributes.
+     * @return string
+     */
+    public function render_checkout_shortcode( $atts ) {
+        if ( ! class_exists('\MeuMouse\Flexify_Checkout\Core\Assets') ) {
+            return $this->render_classic_checkout_fallback( $atts );
+        }
+
+        // The shortcode runs during the_content(), after wp_enqueue_scripts has
+        // already fired, so enqueue the React bundle inline here — late-enqueued
+        // scripts/styles are still printed in the footer.
+        ( new \MeuMouse\Flexify_Checkout\Core\Assets() )->react_checkout_assets();
+
+        ob_start();
+
+        /**
+         * Before the React checkout layout.
+         *
+         * @since 6.0.0
+         */
+        do_action('flexify_checkout_before_layout');
+        ?>
+        <div class="flexify-checkout flexify-checkout--react">
+            <div id="flexify-react-checkout">
+                <noscript><?php esc_html_e( 'JavaScript must be enabled to complete the purchase.', 'flexify-checkout-for-woocommerce' ); ?></noscript>
+            </div>
+        </div>
+        <?php
+        /**
+         * After the React checkout layout.
+         *
+         * @since 6.0.0
+         */
+        do_action('flexify_checkout_after_layout');
+
+        return ob_get_clean();
+    }
+
+
+    /**
+     * Render the native WooCommerce checkout as a fallback for the
+     * [flexify_checkout] shortcode when the React bundle is unavailable.
+     *
+     * @since 6.0.0
+     * @param array|string $atts Shortcode attributes.
+     * @return string
+     */
+    public function render_classic_checkout_fallback( $atts ) {
+        if ( class_exists('\WC_Shortcodes') && method_exists( '\WC_Shortcodes', 'checkout' ) ) {
+            return \WC_Shortcodes::checkout( $atts );
+        }
+
+        if ( shortcode_exists('woocommerce_checkout') ) {
+            return do_shortcode('[woocommerce_checkout]');
+        }
+
+        return '';
     }
 
 

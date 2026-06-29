@@ -628,9 +628,11 @@ class Helpers {
 
 
 	/**
-	 * Check if the WooCommerce checkout page contains the [woocommerce_checkout] shortcode
+	 * Check if the WooCommerce checkout page contains the [woocommerce_checkout]
+	 * shortcode or the [flexify_checkout] fallback alias
 	 *
 	 * @since 3.8.0
+	 * @version 6.0.0
 	 * @return bool
 	 */
 	public static function has_shortcode_checkout() {
@@ -640,8 +642,13 @@ class Helpers {
 		// Get the content of the checkout page
 		$checkout_page = get_post( $checkout_page_id );
 
-		// Check if the content of the checkout page contains the shortcode
-		if ( $checkout_page && has_shortcode( $checkout_page->post_content, 'woocommerce_checkout' ) ) {
+		if ( ! $checkout_page ) {
+			return false;
+		}
+
+		// Check if the content of the checkout page contains either the native
+		// shortcode or the [flexify_checkout] fallback alias
+		if ( has_shortcode( $checkout_page->post_content, 'woocommerce_checkout' ) || has_shortcode( $checkout_page->post_content, 'flexify_checkout' ) ) {
 			return true;
 		}
 
