@@ -13,6 +13,7 @@ const fallback = {
   ajax_url: '',
   is_user_logged_in: false,
   base_country: 'BR',
+  localstorage_fields: [],
   currency: 'BRL',
   currency_symbol: 'R$',
   logo: '',

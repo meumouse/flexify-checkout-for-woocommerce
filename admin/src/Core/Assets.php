@@ -422,6 +422,7 @@ class Assets {
 			'ajax_url' => admin_url('admin-ajax.php'),
 			'is_user_logged_in' => is_user_logged_in(),
 			'base_country' => Fields::get_base_country(),
+			'localstorage_fields' => Fields::get_localstorage_fields(),
 			'currency' => function_exists('get_woocommerce_currency') ? get_woocommerce_currency() : 'BRL',
 			'currency_symbol' => function_exists('get_woocommerce_currency_symbol') ? get_woocommerce_currency_symbol() : 'R$',
 			'logo' => $this->get_checkout_logo(),

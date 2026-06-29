@@ -2,6 +2,8 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import storeApi from '../api/storeApi.js';
 import config from '../config.js';
 import { resolveAvailableGateways } from '../lib/gateways.js';
+import { isEditor } from '../lib/editorBridge.js';
+import { clearFormData, loadFormData, saveFormData } from '../lib/persistence.js';
 
 const CheckoutContext = createContext(null);
 
@@ -20,15 +22,22 @@ const emptyAddress = {
 };
 
 export function CheckoutProvider({ children }) {
+  // Persist field data to localStorage on every theme — but never in the live
+  // builder preview, where it would leak the admin's typing into the store.
+  const persist = !isEditor();
+  // Seed the form from any previously saved data (shared with the classic
+  // checkout via the flexify_checkout_form_data key). Computed once.
+  const saved = useMemo(() => (persist ? loadFormData() : { billing: {}, extraFields: {}, customerNote: '' }), [persist]);
+
   const [cart, setCart] = useState(null);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [placingOrder, setPlacingOrder] = useState(false);
   const [error, setError] = useState('');
-  const [billing, setBilling] = useState(emptyAddress);
-  const [extraFields, setExtraFields] = useState({});
+  const [billing, setBilling] = useState(() => ({ ...emptyAddress, ...saved.billing }));
+  const [extraFields, setExtraFields] = useState(() => saved.extraFields);
   const [selectedGateway, setSelectedGateway] = useState('');
-  const [customerNote, setCustomerNote] = useState('');
+  const [customerNote, setCustomerNote] = useState(() => saved.customerNote);
   // Inline per-field validation errors keyed by field id. Populated when a step
   // navigation is blocked; cleared per field as the customer edits it.
   const [fieldErrors, setFieldErrors] = useState({});
@@ -70,6 +79,16 @@ export function CheckoutProvider({ children }) {
       setSelectedGateway(gateways[0].id);
     }
   }, [cart, selectedGateway]);
+
+  // Persist field data whenever it changes, so a returning shopper finds it
+  // pre-filled. Skipped in the builder preview.
+  useEffect(() => {
+    if (!persist) {
+      return;
+    }
+
+    saveFormData({ billing, extraFields, customerNote });
+  }, [persist, billing, extraFields, customerNote]);
 
   const withBusy = useCallback(async (fn) => {
     setBusy(true);
@@ -148,8 +167,10 @@ export function CheckoutProvider({ children }) {
         const redirect = result?.payment_result?.redirect_url;
 
         if (redirect) {
+          clearFormData();
           window.location.href = redirect;
         } else if (result?.order_id) {
+          clearFormData();
           window.location.href = (config.urls?.order_received || config.urls?.checkout || '/');
         } else {
           setPlacingOrder(false);
