@@ -177,6 +177,39 @@
   }
 }
 
+/*
+ * Loading skeleton. A shimmering placeholder bar; used by CheckoutSkeleton.jsx
+ * (cart-loading state) and by the static markup in template-react.php (the gap
+ * before React mounts). Scoped so it inherits the global radius var.
+ */
+.fc-skeleton {
+  position: relative;
+  overflow: hidden;
+  background-color: #e9eef3;
+  border-radius: var(--fc-radius);
+}
+
+.fc-skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.65), transparent);
+  animation: fc-skeleton-shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes fc-skeleton-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fc-skeleton::after {
+    animation: none;
+  }
+}
+
 /* Mobile cart bottom sheet. */
 .fc-sheet-backdrop {
   background: rgba(15, 32, 51, 0.45);

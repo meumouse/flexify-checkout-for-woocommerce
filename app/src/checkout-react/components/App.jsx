@@ -9,6 +9,7 @@ import { MESSAGE_PREFIX } from '../lib/editorBridge.js';
 import { applyTheme } from '../lib/theme.js';
 import { formatPrice } from '../lib/format.js';
 import OrderSummary from './OrderSummary.jsx';
+import CheckoutSkeleton from './CheckoutSkeleton.jsx';
 import PurchaseAnimation from './PurchaseAnimation.jsx';
 import StepRenderer from './StepRenderer.jsx';
 import ContactStep from './steps/ContactStep.jsx';
@@ -386,7 +387,7 @@ function CheckoutShell({ stepLabels, activeIndex, isLast, busy, onBack, onNext, 
 
 function LoadingOrEmpty({ loading, cart }) {
   if (loading) {
-    return <div className="p-10 text-center text-slate-500">{t('loading', 'Carregando…')}</div>;
+    return <CheckoutSkeleton />;
   }
 
   if (cart && (cart.items || []).length === 0) {
