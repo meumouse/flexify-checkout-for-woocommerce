@@ -1,9 +1,10 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import storeApi from '../api/storeApi.js';
-import config from '../config.js';
+import config, { t } from '../config.js';
 import { resolveAvailableGateways } from '../lib/gateways.js';
 import { isEditor } from '../lib/editorBridge.js';
 import { clearFormData, loadFormData, saveFormData } from '../lib/persistence.js';
+import { useToast } from './ToastContext.jsx';
 
 const CheckoutContext = createContext(null);
 
@@ -29,11 +30,12 @@ export function CheckoutProvider({ children }) {
   // checkout via the flexify_checkout_form_data key). Computed once.
   const saved = useMemo(() => (persist ? loadFormData() : { billing: {}, extraFields: {}, customerNote: '' }), [persist]);
 
+  const { pushToast } = useToast();
+
   const [cart, setCart] = useState(null);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [placingOrder, setPlacingOrder] = useState(false);
-  const [error, setError] = useState('');
   const [billing, setBilling] = useState(() => ({ ...emptyAddress, ...saved.billing }));
   const [extraFields, setExtraFields] = useState(() => saved.extraFields);
   const [selectedGateway, setSelectedGateway] = useState('');
@@ -53,11 +55,11 @@ export function CheckoutProvider({ children }) {
         setBilling((prev) => ({ ...prev, ...stripEmpty(data.billing_address) }));
       }
     } catch (e) {
-      setError(e.message || config.i18n?.generic_error || '');
+      pushToast({ type: 'error', message: e.message || config.i18n?.generic_error || '' });
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [pushToast]);
 
   useEffect(() => {
     loadCart();
@@ -92,17 +94,16 @@ export function CheckoutProvider({ children }) {
 
   const withBusy = useCallback(async (fn) => {
     setBusy(true);
-    setError('');
 
     try {
       return await fn();
     } catch (e) {
-      setError(e.message || config.i18n?.generic_error || '');
+      pushToast({ type: 'error', message: e.message || config.i18n?.generic_error || '' });
       throw e;
     } finally {
       setBusy(false);
     }
-  }, []);
+  }, [pushToast]);
 
   // Drop a single field's error (called as the customer edits that field).
   const clearFieldError = useCallback((id) => {
@@ -118,8 +119,27 @@ export function CheckoutProvider({ children }) {
     });
   }, []);
 
-  const applyCoupon = useCallback((code) => withBusy(async () => setCart(await storeApi.applyCoupon(code))), [withBusy]);
-  const removeCoupon = useCallback((code) => withBusy(async () => setCart(await storeApi.removeCoupon(code))), [withBusy]);
+  const applyCoupon = useCallback(
+    (code) => withBusy(async () => {
+      const data = await storeApi.applyCoupon(code);
+      setCart(data);
+      pushToast({ type: 'success', message: t('coupon_applied', 'Cupom aplicado com sucesso.') });
+
+      return data;
+    }),
+    [withBusy, pushToast],
+  );
+
+  const removeCoupon = useCallback(
+    (code) => withBusy(async () => {
+      const data = await storeApi.removeCoupon(code);
+      setCart(data);
+      pushToast({ type: 'success', message: t('coupon_removed', 'Cupom removido.') });
+
+      return data;
+    }),
+    [withBusy, pushToast],
+  );
 
   const updateItemQuantity = useCallback(
     (key, quantity) => withBusy(async () => setCart(await storeApi.updateItem(key, Math.max(1, Number(quantity) || 1)))),
@@ -191,8 +211,7 @@ export function CheckoutProvider({ children }) {
       loading,
       busy,
       placingOrder,
-      error,
-      setError,
+      pushToast,
       billing,
       setBilling,
       extraFields,
@@ -214,7 +233,7 @@ export function CheckoutProvider({ children }) {
       placeOrder,
     }),
     [
-      cart, loading, busy, placingOrder, error, billing, extraFields, selectedGateway, customerNote, fieldErrors,
+      cart, loading, busy, placingOrder, pushToast, billing, extraFields, selectedGateway, customerNote, fieldErrors,
       clearFieldError, loadCart, applyCoupon, removeCoupon, updateItemQuantity, removeItem, updateAddress,
       selectShippingRate, placeOrder,
     ],

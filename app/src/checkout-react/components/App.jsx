@@ -306,7 +306,6 @@ function EditorApp() {
         activeIndex={activeIndex}
         isLast={isLast}
         busy={false}
-        error=""
         onBack={() => goTo(activeIndex - 1)}
         onNext={() => goTo(activeIndex + 1)}
         onPlaceOrder={() => {}}
@@ -323,7 +322,7 @@ function EditorApp() {
  * Shared shell: reservation bar + logo + stepper + step body + nav buttons +
  * sticky order summary (desktop) / bottom sheet (mobile).
  */
-function CheckoutShell({ stepLabels, activeIndex, isLast, busy, error, onBack, onNext, onPlaceOrder, children }) {
+function CheckoutShell({ stepLabels, activeIndex, isLast, busy, onBack, onNext, onPlaceOrder, children }) {
   const { cart, placingOrder } = useCheckout();
   const totals = (cart && cart.totals) || {};
   const nextStepLabel = stepLabels[activeIndex + 1] || '';
@@ -344,8 +343,6 @@ function CheckoutShell({ stepLabels, activeIndex, isLast, busy, error, onBack, o
 
           <div>
             {children}
-
-            {error && <p className="mt-4 rounded-lg bg-red-50 px-4 py-2 text-sm text-danger">{error}</p>}
 
             <div className="mt-8 flex items-center justify-between border-t border-slate-100 pt-6">
               <button
@@ -413,7 +410,7 @@ function LoadingOrEmpty({ loading, cart }) {
  * Builder-driven checkout: steps + items come from config.rules.layout.
  */
 function BuilderCheckout() {
-  const { loading, busy, error, cart, billing, extraFields, setFieldErrors, updateAddress, placeOrder } = useCheckout();
+  const { loading, busy, cart, billing, extraFields, setFieldErrors, updateAddress, placeOrder } = useCheckout();
   const [index, setIndex] = useState(0);
 
   const guard = <LoadingOrEmpty loading={loading} cart={cart} />;
@@ -473,7 +470,6 @@ function BuilderCheckout() {
       activeIndex={activeIndex}
       isLast={isLast}
       busy={busy}
-      error={error}
       onBack={goBack}
       onNext={goNext}
       onPlaceOrder={() => placeOrder()}
@@ -488,7 +484,7 @@ function BuilderCheckout() {
  * builder layout is published).
  */
 function DefaultCheckout() {
-  const { loading, busy, error, cart, billing, extraFields, setFieldErrors, updateAddress, placeOrder } = useCheckout();
+  const { loading, busy, cart, billing, extraFields, setFieldErrors, updateAddress, placeOrder } = useCheckout();
   const [step, setStep] = useState(1);
 
   const needsShipping = cartNeedsShipping(cart);
@@ -531,7 +527,6 @@ function DefaultCheckout() {
       activeIndex={activeIndex}
       isLast={isLast}
       busy={busy}
-      error={error}
       onBack={goBack}
       onNext={goNext}
       onPlaceOrder={() => placeOrder()}

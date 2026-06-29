@@ -11,6 +11,7 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import './styles.css';
+import { ToastProvider } from './context/ToastContext.jsx';
 import { CheckoutProvider } from './context/CheckoutContext.jsx';
 import App from './components/App.jsx';
 
@@ -23,9 +24,11 @@ function mount() {
 
   createRoot(root).render(
     <StrictMode>
-      <CheckoutProvider>
-        <App />
-      </CheckoutProvider>
+      <ToastProvider>
+        <CheckoutProvider>
+          <App />
+        </CheckoutProvider>
+      </ToastProvider>
     </StrictMode>,
   );
 }
