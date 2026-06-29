@@ -52,8 +52,8 @@ onMounted(async () => {
         oneDark,
         readOnly.of(EditorState.readOnly.of(props.disabled)),
         EditorView.theme({
-          '&': { fontSize: '12px', borderRadius: '8px' },
-          '.cm-scroller': { fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace', minHeight: '180px', maxHeight: '360px' },
+          '&': { fontSize: '12px', borderRadius: '8px', height: '100%' },
+          '.cm-scroller': { fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace', overflow: 'auto' },
         }),
         EditorView.updateListener.of((update) => {
           if (update.docChanged) {
@@ -100,7 +100,8 @@ onBeforeUnmount(() => {
 <template>
   <div
     ref="host"
-    class="flexify-code-editor w-full overflow-hidden rounded-lg border border-slate-300"
+    class="flexify-code-editor w-full resize overflow-hidden rounded-lg border border-slate-300"
     :class="disabled ? 'pointer-events-none opacity-60' : ''"
+    style="height: 240px; min-height: 120px; min-width: 240px;"
   />
 </template>
