@@ -34,8 +34,8 @@ class Fields {
         // set priorities
 		add_filter( 'woocommerce_checkout_fields', array( __CLASS__, 'custom_override_checkout_fields' ), 200 );
 
-		// enable checkout fields manager
-		if ( Admin_Options::get_setting('enable_manage_fields') === 'yes' && License::is_valid() ) {
+		// enable checkout fields manager (legacy Fields Manager or the visual builder)
+		if ( Admin_Options::is_field_management_active() ) {
 			add_filter( 'woocommerce_checkout_fields', array( __CLASS__, 'flexify_checkout_fields_manager' ), 150 );
 			add_filter( 'woocommerce_admin_billing_fields', array( __CLASS__, 'custom_admin_billing_fields' ), 10, 1 );
 			add_action( 'woocommerce_customer_save_address', array( __CLASS__, 'save_custom_address_fields' ), 10, 1 );
@@ -63,7 +63,7 @@ class Fields {
 		add_filter( 'woocommerce_form_field', array( __CLASS__, 'render_inline_errors' ), 10, 5 );
 
 		// set default country on checkout
-		if ( Admin_Options::get_setting('enable_manage_fields') === 'yes' && License::is_valid() ) {
+		if ( Admin_Options::is_field_management_active() ) {
 			add_filter( 'default_checkout_billing_country', array( $this, 'set_default_billing_country' ) );
 		}
 
@@ -172,7 +172,7 @@ class Fields {
 		}
 
 		// check fields conditions
-		if ( Admin_Options::get_setting('enable_manage_fields') !== 'yes' ) {
+		if ( ! Admin_Options::is_field_management_active() ) {
 			if ( isset( $fields['billing']['billing_address_1'] ) ) {
 				$fields['billing']['billing_address_1']['class'][] = 'row-first';
 			}
@@ -240,7 +240,7 @@ class Fields {
 			unset( $fields['order']['order_comments'] );
 
 			// if manager fields is enabled
-			if ( Admin_Options::get_setting('enable_manage_fields') === 'yes' ) {
+			if ( Admin_Options::is_field_management_active() ) {
 				foreach ( $fields_manager as $index => $value ) {
 					// prevent removing country field as it may cause address error on gateways that require this field
 					if ( isset( $value['step'] ) && $value['step'] === '2' ) {
@@ -877,7 +877,7 @@ class Fields {
 	 * @return array
 	 */
 	public static function custom_override_billing_field_priorities( $fields ) {
-		if ( Admin_Options::get_setting('enable_manage_fields') === 'yes' && License::is_valid() ) {
+		if ( Admin_Options::is_field_management_active() ) {
 			$step_fields = maybe_unserialize( get_option('flexify_checkout_step_fields', array()) );
 	
 			foreach ( $step_fields as $index => $value ) {
@@ -1420,7 +1420,7 @@ class Fields {
 		);
 
 		// add compatibility with manage checkout fields feature
-		if ( Admin_Options::get_setting('enable_manage_fields') === 'yes' ) {
+		if ( Admin_Options::is_field_management_active() ) {
 			$get_step_fields = maybe_unserialize( get_option('flexify_checkout_step_fields', array()) );
 	
 			if ( is_array( $get_step_fields ) ) {

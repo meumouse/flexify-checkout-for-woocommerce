@@ -137,6 +137,29 @@ class Admin_Options {
 
 
     /**
+     * Whether a field management surface is active and licensed.
+     *
+     * Both the legacy Fields Manager (enable_manage_fields) and the visual
+     * checkout builder (enable_checkout_builder) write to
+     * flexify_checkout_step_fields and expect the plugin to register the managed
+     * fields into WooCommerce's checkout fields. Either one being enabled should
+     * drive that registration so the operator-controlled fields actually render
+     * (and match the builder preview).
+     *
+     * @since 6.0.0
+     * @return bool
+     */
+    public static function is_field_management_active() {
+        if ( ! License::is_valid() ) {
+            return false;
+        }
+
+        return self::get_setting('enable_manage_fields') === 'yes'
+            || self::get_setting('enable_checkout_builder') === 'yes';
+    }
+
+
+    /**
      * Check if billing country is disabled on checkout
      * 
      * @since 3.7.3

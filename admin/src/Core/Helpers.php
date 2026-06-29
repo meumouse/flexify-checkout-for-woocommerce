@@ -95,10 +95,10 @@ class Helpers {
 	public static function get_allowed_details_fields() {
 		$fields = array();
 		
-		if ( Admin_Options::get_setting('enable_manage_fields') === 'yes' && License::is_valid() ) {
+		if ( Admin_Options::is_field_management_active() ) {
 			$get_field_options = get_option('flexify_checkout_step_fields', array());
 			$get_field_options = maybe_unserialize( $get_field_options );
-	
+
 			foreach ( $get_field_options as $key => $value ) {
 				if ( isset( $value['step'] ) && $value['step'] === '1' ) {
 					$fields[] = $key;
