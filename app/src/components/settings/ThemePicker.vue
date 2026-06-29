@@ -1,12 +1,16 @@
 <script setup>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useSettingsStore } from '../../stores/useSettingsStore';
+import ProUpsellModal from '../modals/ProUpsellModal.vue';
 
 const store = useSettingsStore();
 
 const themes = computed(() => (Array.isArray(store.runtime?.themes) ? store.runtime.themes : []));
 
 const current = computed(() => store.settings?.flexify_checkout_theme);
+
+// Upsell shown when a locked Pro theme is clicked.
+const proModalOpen = ref(false);
 
 const BADGE_META = {
   new: { label: 'Novo', class: 'bg-success text-white' },
@@ -19,8 +23,19 @@ function themeBadges(theme) {
     .filter(Boolean);
 }
 
+// A Pro theme requires an active license; lock it until the store is Pro.
+function isLocked(theme) {
+  return Boolean(theme.pro) && !store.isPro;
+}
+
 function selectTheme(theme) {
   if (theme.status !== 'active') {
+    return;
+  }
+
+  if (isLocked(theme)) {
+    proModalOpen.value = true;
+
     return;
   }
 
@@ -64,6 +79,14 @@ function selectTheme(theme) {
         </div>
 
         <div
+          v-if="isLocked(theme)"
+          class="absolute left-2 top-2 z-20 inline-flex items-center gap-1 rounded-full bg-primary-100 px-2 py-0.5 text-[10px] font-semibold text-primary shadow-sm"
+        >
+          <BoxIcon name="crown" type="solid" class="h-2.5 w-2.5" />
+          Pro
+        </div>
+
+        <div
           v-if="theme.status !== 'active'"
           class="absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 bg-white/85 text-muted"
         >
@@ -71,14 +94,24 @@ function selectTheme(theme) {
           <span class="text-sm font-medium">Em breve...</span>
         </div>
 
-        <div v-if="theme.icon" class="theme-preview flex min-h-[150px] items-center justify-center bg-slate-50" v-html="theme.icon" />
+        <div
+          v-if="theme.icon"
+          class="theme-preview flex min-h-[150px] items-center justify-center bg-slate-50"
+          :class="{ 'opacity-60': isLocked(theme) }"
+          v-html="theme.icon"
+        />
         <div v-else class="min-h-[150px] bg-slate-50" />
 
         <div class="px-4 py-3 text-center">
           <span class="text-sm font-semibold text-brand">{{ theme.label }}</span>
+          <span v-if="isLocked(theme)" class="mt-0.5 block text-[11px] font-medium text-primary">
+            Requer licença ativa
+          </span>
         </div>
       </button>
     </div>
+
+    <ProUpsellModal :open="proModalOpen" @close="proModalOpen = false" />
   </div>
 </template>
 

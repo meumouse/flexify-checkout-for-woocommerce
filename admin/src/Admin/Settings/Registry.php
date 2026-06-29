@@ -96,6 +96,7 @@ class Registry {
                     'label' => $theme['label'],
                     'status' => isset( $theme['status'] ) ? $theme['status'] : 'active',
                     'icon' => isset( $theme['icon'] ) ? $theme['icon'] : '',
+                    'pro' => isset( $theme['pro'] ) ? (bool) $theme['pro'] : false,
                     'badges' => isset( $theme['badges'] ) ? array_values( (array) $theme['badges'] ) : array(),
                 );
             }, Settings_Panel::get_registered_themes() ) ),
