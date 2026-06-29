@@ -95,6 +95,7 @@ class Registry {
                     'label' => $theme['label'],
                     'status' => isset( $theme['status'] ) ? $theme['status'] : 'active',
                     'icon' => isset( $theme['icon'] ) ? $theme['icon'] : '',
+                    'badges' => isset( $theme['badges'] ) ? array_values( (array) $theme['badges'] ) : array(),
                 );
             }, Settings_Panel::get_registered_themes() ) ),
             'system' => array(
@@ -688,6 +689,7 @@ class Registry {
                         self::field_color( 'set_placeholder_color', __( 'Field title color', 'flexify-checkout-for-woocommerce' ), __( 'Enter the color of the field titles for checkout.', 'flexify-checkout-for-woocommerce' ), array( 'default' => '#33404D' ) ),
                         self::field_dimension( 'input_border_radius', 'unit_input_border_radius', __( 'Element border radius', 'flexify-checkout-for-woocommerce' ), __( 'Define the border radius of fields, buttons, and checkout elements.', 'flexify-checkout-for-woocommerce' ), $unit_options ),
                         self::field_select( 'set_font_family', __( 'Font family', 'flexify-checkout-for-woocommerce' ), __( 'Define which font will be applied at checkout. You can add new custom fonts or from Google Fonts.', 'flexify-checkout-for-woocommerce' ), self::build_font_options(), array(
+                            'wide' => true,
                             'popup' => array(
                                 'button' => __( 'Manage sources', 'flexify-checkout-for-woocommerce' ),
                                 'title' => __( 'Manage sources', 'flexify-checkout-for-woocommerce' ),

@@ -61,6 +61,16 @@ class Themes {
 		// set active checkout template
 		define( 'IS_FLEXIFY_CHECKOUT', true );
 
-		return FLEXIFY_CHECKOUT_PATH . 'templates/template-' . $theme . '.php';
+		$template_file = FLEXIFY_CHECKOUT_PATH . 'templates/template-' . $theme . '.php';
+
+		// The "Swift" theme has no classic template of its own — it is served by
+		// React_Checkout (priority 101) when the React checkout can render. When
+		// it can't (e.g. invalid license), fall back to the modern template so
+		// the store never loads a missing template.
+		if ( ! file_exists( $template_file ) ) {
+			$template_file = FLEXIFY_CHECKOUT_PATH . 'templates/template-modern.php';
+		}
+
+		return $template_file;
 	}
 }

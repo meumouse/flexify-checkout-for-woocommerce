@@ -8,6 +8,17 @@ const themes = computed(() => (Array.isArray(store.runtime?.themes) ? store.runt
 
 const current = computed(() => store.settings?.flexify_checkout_theme);
 
+const BADGE_META = {
+  new: { label: 'Novo', class: 'bg-success text-white' },
+  recommended: { label: 'Recomendado', class: 'bg-primary text-white' },
+};
+
+function themeBadges(theme) {
+  return (Array.isArray(theme.badges) ? theme.badges : [])
+    .map((key) => BADGE_META[key])
+    .filter(Boolean);
+}
+
 function selectTheme(theme) {
   if (theme.status !== 'active') {
     return;
@@ -38,6 +49,20 @@ function selectTheme(theme) {
         ]"
         @click="selectTheme(theme)"
       >
+        <div
+          v-if="themeBadges(theme).length"
+          class="absolute right-2 top-2 z-20 flex flex-wrap justify-end gap-1"
+        >
+          <span
+            v-for="badge in themeBadges(theme)"
+            :key="badge.label"
+            class="rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide shadow-sm"
+            :class="badge.class"
+          >
+            {{ badge.label }}
+          </span>
+        </div>
+
         <div
           v-if="theme.status !== 'active'"
           class="absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 bg-white/85 text-muted"

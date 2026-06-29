@@ -19,7 +19,7 @@ const options = computed(() => (Array.isArray(props.field?.options) ? props.fiel
     :model-value="String(modelValue ?? '')"
     :options="options"
     :disabled="disabled"
-    class="max-w-md"
+    :class="field?.wide ? 'w-full' : 'max-w-md'"
     @update:model-value="emit('update:modelValue', $event)"
   />
 </template>

@@ -21,16 +21,23 @@ class Helpers {
 	/**
 	 * Whether the optional React checkout frontend is active.
 	 *
-	 * Requires the master toggle enabled and a valid license. When it returns
-	 * false the classic server-rendered checkout is served unchanged, so a
-	 * lapsed license safely falls back to the legacy checkout instead of
+	 * Active when the "Swift" checkout theme is selected (or the legacy
+	 * enable_react_checkout toggle is on) and the license is valid. When it
+	 * returns false the classic server-rendered checkout is served unchanged,
+	 * so a lapsed license safely falls back to the legacy checkout instead of
 	 * leaving the store without a checkout.
 	 *
 	 * @since 6.0.0
 	 * @return bool
 	 */
 	public static function is_react_checkout_enabled() {
-		$enabled = Admin_Options::get_setting('enable_react_checkout') === 'yes' && License::is_valid();
+		// The "Swift" checkout theme is the React frontend; selecting it drives
+		// the React checkout. The legacy enable_react_checkout toggle is still
+		// honored for backward compatibility.
+		$theme_selected = Admin_Options::get_setting('flexify_checkout_theme') === 'swift';
+		$legacy_toggle = Admin_Options::get_setting('enable_react_checkout') === 'yes';
+
+		$enabled = ( $theme_selected || $legacy_toggle ) && License::is_valid();
 
 		/**
 		 * Filter whether the React checkout is enabled.

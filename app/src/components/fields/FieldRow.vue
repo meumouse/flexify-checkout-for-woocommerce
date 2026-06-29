@@ -29,6 +29,10 @@ const model = computed({
 
 const isToggle = computed(() => String(props.field?.type || '') === 'toggle');
 
+// Wide fields break out of the two-column label/field grid and stack the
+// control under the label so it can span the full content width.
+const isWide = computed(() => Boolean(props.field?.wide));
+
 // --- Popup support ---
 
 const popupComponents = {
@@ -66,8 +70,10 @@ const fieldOwnsPlaceholders = computed(() =>
 <template>
   <div
     v-if="store.isFieldVisible(field)"
-    class="grid items-start gap-6 py-6 lg:grid-cols-[minmax(0,450px)_minmax(0,560px)]"
-    :class="String(field.type) === 'code-editor' || fieldOwnsPlaceholders ? '' : 'lg:items-center'"
+    class="py-6"
+    :class="isWide
+      ? 'flex flex-col gap-3'
+      : ['grid items-start gap-6 lg:grid-cols-[minmax(0,450px)_minmax(0,560px)]', String(field.type) === 'code-editor' || fieldOwnsPlaceholders ? '' : 'lg:items-center']"
   >
     <div>
       <div class="flex items-start gap-2">
@@ -97,7 +103,7 @@ const fieldOwnsPlaceholders = computed(() =>
       </div>
     </div>
 
-    <div class="relative flex min-w-0 items-center gap-4 lg:justify-self-start" :class="String(field.type) === 'code-editor' ? 'w-full' : ''">
+    <div class="relative flex min-w-0 items-center gap-4" :class="[isWide ? 'w-full' : 'lg:justify-self-start', String(field.type) === 'code-editor' ? 'w-full' : '']">
       <component
         :is="fieldComponent"
         v-model="model"

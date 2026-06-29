@@ -165,6 +165,14 @@ class Settings_Panel {
      */
     public static function get_registered_themes() {
         return apply_filters( 'Flexify_Checkout/Register_Themes', array(
+            'swift' => array(
+                'id'        => 'swift',
+                'label'     => esc_html__( 'Swift', 'flexify-checkout-for-woocommerce' ),
+                'icon'      => '<svg id="flexify-checkout-theme-swift" class="card-img-top" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 350"><rect width="500" height="350" fill="#ffffff"/><rect x="32" y="28" width="120" height="14" rx="4" fill="#141d26"/><path d="M447 24 l-19 28 h12 l-9 26 24 -32 h-13 z" fill="#0d6efd"/><rect x="32" y="70" width="270" height="40" rx="6" fill="#eef1f4"/><rect x="32" y="122" width="270" height="40" rx="6" fill="#eef1f4"/><rect x="32" y="174" width="128" height="40" rx="6" fill="#eef1f4"/><rect x="174" y="174" width="128" height="40" rx="6" fill="#eef1f4"/><rect x="32" y="226" width="270" height="40" rx="6" fill="#eef1f4"/><rect x="32" y="286" width="270" height="44" rx="8" fill="#0d6efd"/><rect x="120" y="302" width="94" height="12" rx="4" fill="#ffffff" opacity="0.85"/><rect x="330" y="70" width="138" height="196" rx="10" fill="#f4f7fb" stroke="#e2e8f0"/><rect x="346" y="90" width="40" height="40" rx="6" fill="#dbe3ee"/><rect x="398" y="96" width="58" height="9" rx="3" fill="#cdd7e3"/><rect x="398" y="112" width="40" height="9" rx="3" fill="#dbe3ee"/><rect x="346" y="150" width="106" height="8" rx="3" fill="#dbe3ee"/><rect x="346" y="168" width="80" height="8" rx="3" fill="#dbe3ee"/><rect x="346" y="210" width="60" height="10" rx="3" fill="#141d26"/><rect x="404" y="210" width="48" height="10" rx="3" fill="#0d6efd"/><rect x="330" y="286" width="138" height="44" rx="8" fill="#eef1f4"/></svg>',
+                'status'    => 'active',
+                'badges'    => array( 'new', 'recommended' ),
+                'classes'   => '',
+            ),
             'modern' => array(
                 'id'        => 'modern',
                 'label'     => esc_html__( 'Modern light', 'flexify-checkout-for-woocommerce' ),

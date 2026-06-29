@@ -67,7 +67,7 @@ class Default_Options {
             'checkout_field_height' => '48',
             'checkout_bg_color' => '#FFFFFF',
             'checkout_text_color' => '#102033',
-            'flexify_checkout_theme' => 'modern',
+            'flexify_checkout_theme' => 'swift',
             'input_border_radius' => '0.375',
             'unit_input_border_radius' => 'rem',
             'h2_size' => '1.5',
