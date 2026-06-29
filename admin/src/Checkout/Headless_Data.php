@@ -37,15 +37,64 @@ class Headless_Data {
     /**
      * Whether a given field is enabled and required.
      *
+     * When a registered-field map is supplied, a field that is not registered in
+     * WooCommerce's checkout fields filter is never treated as required.
+     *
      * @since 6.0.0
      * @param array<string,array<string,mixed>> $fields Step fields map.
      * @param string $field_id Field id.
+     * @param array<string,bool>|null $registered Registered field keys map, or null to skip the check.
      * @return bool
      */
-    private static function is_field_required( $fields, $field_id ) {
+    private static function is_field_required( $fields, $field_id, $registered = null ) {
+        if ( is_array( $registered ) && ! isset( $registered[ (string) $field_id ] ) ) {
+            return false;
+        }
+
         return isset( $fields[ $field_id ] )
             && ( $fields[ $field_id ]['enabled'] ?? 'no' ) === 'yes'
             && ( $fields[ $field_id ]['required'] ?? 'no' ) === 'yes';
+    }
+
+
+    /**
+     * Get the field keys actually registered in WooCommerce checkout fields.
+     *
+     * Mirrors the classic checkout, which renders only fields present in the
+     * `woocommerce_checkout_fields` filter result. Used to reconcile the headless
+     * payloads so the React checkout never exposes fields (e.g. CPF/CNPJ seeded
+     * for a Brazilian store without the matching plugin) that are not actually
+     * registered in WooCommerce.
+     *
+     * @since 6.0.0
+     * @return array<string,bool>|null Map of field key => true, or null when the
+     *                                 registered fields are unavailable (callers
+     *                                 should then skip reconciliation).
+     */
+    private static function get_registered_field_keys() {
+        if ( ! function_exists('WC') || ! WC() || ! WC()->checkout ) {
+            return null;
+        }
+
+        $checkout_fields = WC()->checkout->get_checkout_fields();
+
+        if ( ! is_array( $checkout_fields ) || empty( $checkout_fields ) ) {
+            return null;
+        }
+
+        $keys = array();
+
+        foreach ( $checkout_fields as $group_fields ) {
+            if ( ! is_array( $group_fields ) ) {
+                continue;
+            }
+
+            foreach ( $group_fields as $field_key => $field ) {
+                $keys[ (string) $field_key ] = true;
+            }
+        }
+
+        return $keys;
     }
 
 
@@ -57,9 +106,15 @@ class Headless_Data {
      */
     public static function get_checkout_config() {
         $fields = self::get_step_fields();
+        $registered = self::get_registered_field_keys();
         $required = array();
 
         foreach ( $fields as $field_id => $field ) {
+            // Skip fields not registered in WooCommerce's checkout fields filter.
+            if ( is_array( $registered ) && ! isset( $registered[ (string) $field_id ] ) ) {
+                continue;
+            }
+
             if ( ( $field['enabled'] ?? 'no' ) === 'yes' && ( $field['required'] ?? 'no' ) === 'yes' ) {
                 $required[] = (string) $field_id;
             }
@@ -68,8 +123,8 @@ class Headless_Data {
         $config = array(
             'gateways' => Gateway_Catalog::get_gateways(),
             'required_fields' => array_values( $required ),
-            'cpf_required' => self::is_field_required( $fields, 'billing_cpf' ),
-            'birthdate_required' => self::is_field_required( $fields, 'billing_birthdate' ),
+            'cpf_required' => self::is_field_required( $fields, 'billing_cpf', $registered ),
+            'birthdate_required' => self::is_field_required( $fields, 'billing_birthdate', $registered ),
             'currency' => function_exists('get_woocommerce_currency') ? get_woocommerce_currency() : 'BRL',
             'split_payment' => Admin_Options::get_setting('enable_payment_split') === 'yes',
         );
@@ -92,10 +147,17 @@ class Headless_Data {
      */
     public static function get_checkout_rules() {
         $fields = self::get_step_fields();
+        $registered = self::get_registered_field_keys();
         $normalized = array();
 
         foreach ( $fields as $field_id => $field ) {
             if ( ! is_array( $field ) ) {
+                continue;
+            }
+
+            // Emit only fields registered in WooCommerce's checkout fields filter,
+            // matching the classic checkout and avoiding fields registered nowhere.
+            if ( is_array( $registered ) && ! isset( $registered[ (string) $field_id ] ) ) {
                 continue;
             }
 
@@ -174,12 +236,13 @@ class Headless_Data {
      */
     public static function get_public_settings() {
         $fields = self::get_step_fields();
+        $registered = self::get_registered_field_keys();
 
         $settings = array(
             'checkout' => array(
                 'split_payment' => Admin_Options::get_setting('enable_payment_split') === 'yes',
-                'cpf_required' => self::is_field_required( $fields, 'billing_cpf' ),
-                'birthdate_required' => self::is_field_required( $fields, 'billing_birthdate' ),
+                'cpf_required' => self::is_field_required( $fields, 'billing_cpf', $registered ),
+                'birthdate_required' => self::is_field_required( $fields, 'billing_birthdate', $registered ),
                 'pix_discount_percent' => 0,
                 'max_installments' => 1,
                 'interest_free_installments' => 0,
