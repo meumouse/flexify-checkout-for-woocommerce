@@ -235,9 +235,6 @@ class Default_Options {
             'custom_css_checkout' => '',
             'custom_js_checkout' => '',
             'direct_checkout_api' => 'yes',
-            // React checkout (optional new frontend). When disabled the classic
-            // server-rendered checkout is served unchanged.
-            'enable_react_checkout' => 'no',
             // Visual checkout builder (layout of steps/fields/components for the
             // React checkout). When disabled the React checkout uses its default
             // hardcoded steps.

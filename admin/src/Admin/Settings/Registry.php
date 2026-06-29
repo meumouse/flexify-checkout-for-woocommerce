@@ -259,7 +259,6 @@ class Registry {
      */
     private static function tab_general() {
         $shop_card_fields = array(
-            self::field_toggle( 'enable_react_checkout', __( 'Enable React checkout (beta)', 'flexify-checkout-for-woocommerce' ), __( 'Replaces the classic checkout with a React interface that consumes the WooCommerce Store API. Requires a valid license.', 'flexify-checkout-for-woocommerce' ), array( 'pro' => true ) ),
             self::field_toggle( 'enable_back_to_shop_button', __( 'Show Back to Shop button', 'flexify-checkout-for-woocommerce' ), __( 'Enable this option to display the "Back to shop" button at the first step of checkout.', 'flexify-checkout-for-woocommerce' ) ),
             self::field_toggle( 'enable_skip_cart_page', __( 'Skip cart page', 'flexify-checkout-for-woocommerce' ), __( 'Enable this option to automatically redirect the user from the cart page to checkout.', 'flexify-checkout-for-woocommerce' ) ),
             self::field_toggle( 'display_opened_order_review_mobile', __( 'Show order summary open by default', 'flexify-checkout-for-woocommerce' ), __( 'Enable this option to show the order summary open by default on mobile devices.', 'flexify-checkout-for-woocommerce' ) ),
