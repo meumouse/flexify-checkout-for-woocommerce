@@ -3,6 +3,7 @@ import { computed, ref } from 'vue';
 import { useSettingsStore } from '../../stores/useSettingsStore';
 import BaseButton from '../buttons/BaseButton.vue';
 import ModalDialog from '../modals/ModalDialog.vue';
+import ProUpsellModal from '../modals/ProUpsellModal.vue';
 import ToggleSwitch from '../toggles/ToggleSwitch.vue';
 
 const props = defineProps({
@@ -14,6 +15,9 @@ const props = defineProps({
 const store = useSettingsStore();
 
 const cards = computed(() => store.integrations);
+
+// Upsell shown when a locked Pro integration is interacted with.
+const proModalOpen = ref(false);
 
 // Sections drive the layout: a single unlabeled group by default, or two
 // labeled groups (Rastreamento / Aplicativos) when grouped is enabled.
@@ -218,12 +222,16 @@ const inputClass = 'flexify-field-input w-full rounded-lg border border-slate-30
           <div class="flex flex-1 flex-col items-center gap-3 px-5 py-6 text-center">
             <h4 class="m-0 text-lg font-semibold leading-snug text-slate-700">{{ card.title }}</h4>
 
-            <span
+            <button
               v-if="card.pro && !store.isPro"
-              class="inline-flex items-center gap-1 rounded-full bg-primary-100 px-2.5 py-0.5 text-[10px] font-semibold text-primary"
+              type="button"
+              class="inline-flex cursor-pointer items-center gap-1 rounded-full border-0 bg-primary-100 px-2.5 py-0.5 text-[10px] font-semibold text-primary transition hover:bg-primary-200"
+              aria-label="Recurso Pro — requer uma licença ativa"
+              @click="proModalOpen = true"
             >
+              <BoxIcon name="crown" type="solid" class="h-2.5 w-2.5" />
               Pro
-            </span>
+            </button>
 
             <p class="m-0 flex-1 text-[13px] leading-relaxed text-ink/80">{{ card.description }}</p>
 
@@ -420,6 +428,8 @@ const inputClass = 'flexify-field-input w-full rounded-lg border border-slate-30
         </div>
       </template>
     </ModalDialog>
+
+    <ProUpsellModal :open="proModalOpen" @close="proModalOpen = false" />
   </div>
 </template>
 

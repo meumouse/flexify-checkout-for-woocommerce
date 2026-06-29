@@ -60,6 +60,7 @@ export const useSettingsStore = defineStore('flexify-checkout-settings', {
     exporting: false,
     importing: false,
     toasts: [],
+    requestedTab: null,
   }),
 
   getters: {
@@ -99,6 +100,18 @@ export const useSettingsStore = defineStore('flexify-checkout-settings', {
 
     setSetting(key, value) {
       this.settings = { ...this.settings, [key]: value };
+    },
+
+    /**
+     * Ask the settings page to switch to a given tab.
+     *
+     * Lets deeply nested components (e.g. the Pro upsell modal) navigate to a
+     * tab without prop drilling; SettingsPage watches this and clears it.
+     *
+     * @param {string} tabId - Schema tab id to activate.
+     */
+    requestTab(tabId) {
+      this.requestedTab = tabId;
     },
 
     /**

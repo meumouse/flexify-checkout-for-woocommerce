@@ -66,6 +66,7 @@ import starSolid from 'boxicons/svg/solid/bxs-star.svg?raw';
 import checkCircleSolid from 'boxicons/svg/solid/bxs-check-circle.svg?raw';
 import errorCircleSolid from 'boxicons/svg/solid/bxs-error-circle.svg?raw';
 import infoCircleSolid from 'boxicons/svg/solid/bxs-info-circle.svg?raw';
+import crownSolid from 'boxicons/svg/solid/bxs-crown.svg?raw';
 
 export default {
   'regular/save': save,
@@ -110,4 +111,5 @@ export default {
   'solid/check-circle': checkCircleSolid,
   'solid/error-circle': errorCircleSolid,
   'solid/info-circle': infoCircleSolid,
+  'solid/crown': crownSolid,
 };

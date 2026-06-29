@@ -5,6 +5,7 @@ import { resolveFieldComponent } from './fieldRegistry';
 import TextField from './TextField.vue';
 import BaseButton from '../buttons/BaseButton.vue';
 import ModalDialog from '../modals/ModalDialog.vue';
+import ProUpsellModal from '../modals/ProUpsellModal.vue';
 import EmailProviders from '../settings/EmailProviders.vue';
 import FontsManager from '../settings/FontsManager.vue';
 
@@ -17,6 +18,9 @@ const store = useSettingsStore();
 const fieldComponent = computed(() => resolveFieldComponent(props.field) || TextField);
 
 const isProLocked = computed(() => Boolean(props.field?.pro) && !store.isPro);
+
+// Upsell shown when a locked Pro field is interacted with.
+const proModalOpen = ref(false);
 
 const model = computed({
   get: () => store.settings?.[props.field.key],
@@ -63,13 +67,16 @@ const placeholders = computed(() => (Array.isArray(props.field?.placeholders) ? 
       <div class="flex items-start gap-2">
         <h3 class="m-0 text-[16px] font-semibold leading-snug text-slate-800">{{ field.label }}</h3>
 
-        <span
+        <button
           v-if="field.pro && !store.isPro"
-          class="inline-flex shrink-0 items-center gap-1 rounded-full bg-primary-100 px-2 py-0.5 text-[11px] font-semibold text-primary"
+          type="button"
+          class="inline-flex shrink-0 cursor-pointer items-center gap-1 rounded-full border-0 bg-primary-100 px-2 py-0.5 text-[11px] font-semibold text-primary transition hover:bg-primary-200"
+          aria-label="Recurso Pro — requer uma licença ativa"
+          @click="proModalOpen = true"
         >
-          <BoxIcon name="star" type="solid" class="h-2.5 w-2.5" />
+          <BoxIcon name="crown" type="solid" class="h-2.5 w-2.5" />
           Pro
-        </span>
+        </button>
       </div>
 
       <p v-if="field.description" class="m-0 mt-1 max-w-xl text-[14px] leading-5 text-slate-500">
@@ -84,7 +91,7 @@ const placeholders = computed(() => (Array.isArray(props.field?.placeholders) ? 
       </div>
     </div>
 
-    <div class="flex min-w-0 items-center gap-4 lg:justify-self-start" :class="String(field.type) === 'code-editor' ? 'w-full' : ''">
+    <div class="relative flex min-w-0 items-center gap-4 lg:justify-self-start" :class="String(field.type) === 'code-editor' ? 'w-full' : ''">
       <component
         :is="fieldComponent"
         v-model="model"
@@ -100,6 +107,15 @@ const placeholders = computed(() => (Array.isArray(props.field?.placeholders) ? 
       <BaseButton v-if="showPopupTrigger" variant="outline" @click="popupOpen = true">
         {{ popup.button }}
       </BaseButton>
+
+      <!-- Locked Pro field: intercept any interaction and offer the upsell. -->
+      <button
+        v-if="isProLocked"
+        type="button"
+        class="absolute inset-0 z-10 cursor-pointer rounded-lg border-0 bg-transparent"
+        aria-label="Recurso Pro — requer uma licença ativa"
+        @click="proModalOpen = true"
+      />
     </div>
 
     <ModalDialog v-if="popup" :open="popupOpen" :title="popup.title || popup.button" size="lg" @close="popupOpen = false">
@@ -115,6 +131,8 @@ const placeholders = computed(() => (Array.isArray(props.field?.placeholders) ? 
         </div>
       </template>
     </ModalDialog>
+
+    <ProUpsellModal :open="proModalOpen" @close="proModalOpen = false" />
   </div>
 </template>
 

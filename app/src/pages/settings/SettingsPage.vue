@@ -111,6 +111,17 @@ function selectTab(tabId) {
   url.hash = '';
   window.history.replaceState(window.history.state, '', url);
 }
+
+// Lets nested components (e.g. the Pro upsell modal) request a tab change.
+watch(
+  () => store.requestedTab,
+  (tabId) => {
+    if (tabId) {
+      selectTab(tabId);
+      store.requestedTab = null;
+    }
+  },
+);
 </script>
 
 <template>
@@ -124,7 +135,7 @@ function selectTab(tabId) {
         v-if="store.isPro"
         class="inline-flex items-center gap-1 rounded-full bg-primary-100 px-2.5 py-1 text-[13px] font-semibold text-primary"
       >
-        <BoxIcon name="star" type="solid" class="h-3 w-3" />
+        <BoxIcon name="crown" type="solid" class="h-3 w-3" />
         Pro
       </span>
     </header>
