@@ -1159,6 +1159,19 @@ async function save() {
             </button>
           </div>
 
+          <!-- Texts entry -->
+          <div class="px-2 pt-1">
+            <button
+              type="button"
+              class="flex w-full cursor-pointer items-center gap-2 rounded-lg border px-2.5 py-2 text-left transition"
+              :class="textsPanel ? 'border-primary bg-primary-50/40' : 'border-slate-200 hover:bg-slate-50'"
+              @click="selectTexts"
+            >
+              <BoxIcon name="text" class="h-4 w-4 shrink-0 text-primary" />
+              <span class="text-sm font-medium text-ink">Textos do checkout</span>
+            </button>
+          </div>
+
           <ul class="m-0 flex list-none flex-col gap-1 p-2">
             <li v-for="(step, index) in draft.steps" :key="step.id">
               <!-- Step row -->
@@ -1304,8 +1317,25 @@ async function save() {
 
         <!-- Inspector -->
         <aside class="overflow-y-auto border-l border-slate-200 bg-white px-4 py-5">
+          <!-- Texts inspector -->
+          <div v-if="textsPanel" class="flex flex-col gap-4">
+            <div class="flex items-center gap-2 border-b border-slate-100 pb-3">
+              <BoxIcon name="text" class="h-4 w-4 text-primary" />
+              <p class="m-0 text-sm font-semibold text-ink">Textos do checkout</p>
+            </div>
+
+            <p class="m-0 text-xs text-muted">
+              Edite os textos exibidos no checkout. As alterações são refletidas na pré-visualização e também atualizam as configurações do plugin ao salvar. Os rótulos do indicador de etapas são editados em cada etapa, no campo “Rótulo da etapa”.
+            </p>
+
+            <div v-for="field in TEXT_FIELDS" :key="field.setting">
+              <label class="mb-1 block text-xs font-medium text-ink">{{ field.label }}</label>
+              <input v-model="textsDraft[field.setting]" type="text" :class="inputClass" />
+            </div>
+          </div>
+
           <!-- Theme inspector -->
-          <div v-if="themePanel" class="flex flex-col gap-5">
+          <div v-else-if="themePanel" class="flex flex-col gap-5">
             <div class="flex items-center gap-2 border-b border-slate-100 pb-3">
               <BoxIcon name="palette" class="h-4 w-4 text-primary" />
               <p class="m-0 text-sm font-semibold text-ink">Tema do checkout</p>
