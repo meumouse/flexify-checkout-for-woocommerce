@@ -363,7 +363,7 @@ function CheckoutShell({ stepLabels, activeIndex, isLast, busy, onBack, onNext, 
         <div>
           <Stepper stepLabels={stepLabels} activeIndex={activeIndex} />
 
-          <div className="lg:rounded-2xl lg:border lg:border-slate-200 lg:bg-white lg:p-8">
+          <div>
             {children}
 
             <div className="mt-8 flex items-center justify-between border-t border-slate-100 pt-6">
