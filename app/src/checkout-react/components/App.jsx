@@ -172,7 +172,7 @@ function Stepper({ stepLabels, activeIndex }) {
               <span
                 className={[
                   'flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-colors',
-                  done ? 'fc-primary-bg text-white' : '',
+                  done ? 'bg-success text-white' : '',
                   active ? 'fc-primary-border fc-soft-bg border-2' : '',
                   !done && !active ? 'border-2 border-slate-200 bg-white' : '',
                 ].join(' ')}
