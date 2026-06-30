@@ -25,6 +25,26 @@ defined('ABSPATH') || exit;
     <body <?php body_class(); ?>>
         <?php
         /**
+         * Strip the checkout `?step` parameter from the order-received URL before
+         * anything paints, so the thank-you page never displays it (it can linger
+         * from the checkout step or a gateway that preserves query args).
+         */
+        ?>
+        <script>
+        ( function() {
+            try {
+                var url = new URL( window.location.href );
+
+                if ( url.searchParams.has('step') ) {
+                    url.searchParams.delete('step');
+                    window.history.replaceState( window.history.state, '', url.toString() );
+                }
+            } catch ( e ) {}
+        } )();
+        </script>
+
+        <?php
+        /**
          * Before the React checkout layout.
          *
          * @since 6.0.0
