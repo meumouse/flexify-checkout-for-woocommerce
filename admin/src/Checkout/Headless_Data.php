@@ -296,6 +296,20 @@ class Headless_Data {
 
 
     /**
+     * Whether the customer address book (saved addresses) is available.
+     *
+     * Pro-gated: requires a valid license and the operator toggle left on.
+     *
+     * @since 6.0.0
+     * @return bool
+     */
+    public static function is_saved_addresses_available() {
+        return \MeuMouse\Flexify_Checkout\API\License::is_valid()
+            && Admin_Options::get_setting('enable_saved_addresses') !== 'no';
+    }
+
+
+    /**
      * Resolve the payment methods display mode for the React checkout.
      *
      * Falls back to the card grid when the stored value is missing or unknown,

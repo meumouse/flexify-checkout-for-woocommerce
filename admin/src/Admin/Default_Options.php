@@ -39,6 +39,7 @@ class Default_Options {
             'enable_terms_is_checked_default' => 'yes',
             'enable_aditional_notes' => 'no',
             'enable_optimize_for_digital_products' => 'no',
+            'enable_saved_addresses' => 'yes',
             'enable_link_image_products' => 'no',
             'enable_fill_address' => 'yes',
             'enable_change_product_quantity' => 'yes',

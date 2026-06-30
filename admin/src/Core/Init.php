@@ -649,6 +649,9 @@ class Init {
             '\MeuMouse\Flexify_Checkout\Rest\WhatsApp_Verify',
             '\MeuMouse\Flexify_Checkout\Rest\Address_Autocomplete',
             '\MeuMouse\Flexify_Checkout\Rest\Address_Details',
+            // Customer address book (Pro): saved addresses REST + My Account tab.
+            '\MeuMouse\Flexify_Checkout\Rest\Customer_Addresses',
+            '\MeuMouse\Flexify_Checkout\Account\Address_Book',
             // Visual checkout builder: layout REST + legacy step bridge.
             '\MeuMouse\Flexify_Checkout\Rest\Layout_Get',
             '\MeuMouse\Flexify_Checkout\Rest\Layout_Save',

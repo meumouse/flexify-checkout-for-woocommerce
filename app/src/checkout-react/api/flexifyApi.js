@@ -44,6 +44,10 @@ export const flexifyApi = {
     request('address/autocomplete', { params: { q, session_token: sessionToken || '' } }),
   addressDetails: (placeId, sessionToken) =>
     request('address/details', { params: { place_id: placeId, session_token: sessionToken || '' } }),
+  savedAddressesList: () => request('customer/addresses'),
+  savedAddressCreate: (payload) => request('customer/addresses', { method: 'POST', body: payload }),
+  savedAddressUpdate: (id, payload) => request(`customer/addresses/${encodeURIComponent(id)}`, { method: 'PUT', body: payload }),
+  savedAddressDelete: (id) => request(`customer/addresses/${encodeURIComponent(id)}`, { method: 'DELETE' }),
   setRestNonce: (value) => {
     if (value) config.wp_rest_nonce = value;
   },

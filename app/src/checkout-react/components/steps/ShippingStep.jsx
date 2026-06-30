@@ -1,7 +1,10 @@
 import config, { t } from '../../config.js';
 import { fieldsForStep } from '../../lib/fields.js';
+import { useCheckout } from '../../context/CheckoutContext.jsx';
 import FieldRenderer from '../FieldRenderer.jsx';
 import AddressSearch from '../AddressSearch.jsx';
+import SavedAddressList from '../SavedAddressList.jsx';
+import SaveAddressControl from '../SaveAddressControl.jsx';
 import StepSummary from '../StepSummary.jsx';
 import ShippingRates from '../ShippingRates.jsx';
 import { MapPinIcon } from '../ui/Icons.jsx';
@@ -9,6 +12,8 @@ import { MapPinIcon } from '../ui/Icons.jsx';
 export default function ShippingStep({ onEdit }) {
   const fields = fieldsForStep(2);
   const addressSearch = config.flags && config.flags.address_search;
+  const { savedAddresses, savedAddressesEnabled } = useCheckout();
+  const hasSavedAddresses = savedAddressesEnabled && savedAddresses.length > 0;
 
   return (
     <div className="space-y-6">
@@ -17,6 +22,8 @@ export default function ShippingStep({ onEdit }) {
       <h2 className="fc-heading text-xl text-slate-800">
         {t('shipping_address', 'Endereço de entrega')}
       </h2>
+
+      {hasSavedAddresses && <SavedAddressList />}
 
       <div className="space-y-5 rounded-xl border border-slate-200 p-4">
         <div className="flex items-center gap-2 text-sm font-medium text-slate-800">
@@ -31,6 +38,8 @@ export default function ShippingStep({ onEdit }) {
           ))}
         </div>
       </div>
+
+      {savedAddressesEnabled && <SaveAddressControl />}
 
       <ShippingRates />
     </div>

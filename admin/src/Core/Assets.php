@@ -11,6 +11,7 @@ use MeuMouse\Flexify_Checkout\Checkout\Fields;
 use MeuMouse\Flexify_Checkout\Checkout\Conditions;
 use MeuMouse\Flexify_Checkout\Checkout\Headless_Data;
 use MeuMouse\Flexify_Checkout\Checkout\React_Checkout;
+use MeuMouse\Flexify_Checkout\Checkout\Saved_Addresses;
 use MeuMouse\Flexify_Checkout\Views\Styles;
 use MeuMouse\Flexify_Checkout\Validations\ISO3166;
 
@@ -486,6 +487,7 @@ class Assets {
 			'flags' => array(
 				'whatsapp_login' => Headless_Data::is_whatsapp_login_available(),
 				'address_search' => Headless_Data::is_address_search_available(),
+				'saved_addresses' => Headless_Data::is_saved_addresses_available(),
 				'split_payment' => Admin_Options::get_setting('enable_payment_split') === 'yes',
 				// When on (Pro), the delivery step is hidden for virtual-only carts.
 				// When off (default), the delivery step always shows — independent of
@@ -510,6 +512,15 @@ class Assets {
 				'contact_title' => __( 'Purchaser details', 'flexify-checkout-for-woocommerce' ),
 				'shipping_address' => __( 'Shipping address', 'flexify-checkout-for-woocommerce' ),
 				'new_address' => __( 'New address', 'flexify-checkout-for-woocommerce' ),
+				'saved_addresses' => __( 'Saved addresses', 'flexify-checkout-for-woocommerce' ),
+				'use_new_address' => __( 'Use a new address', 'flexify-checkout-for-woocommerce' ),
+				'save_this_address' => __( 'Save this address for next time', 'flexify-checkout-for-woocommerce' ),
+				'address_nickname' => __( 'Address name (e.g. Home, Work)', 'flexify-checkout-for-woocommerce' ),
+				'save_address' => __( 'Save address', 'flexify-checkout-for-woocommerce' ),
+				'address_saved' => __( 'Address saved.', 'flexify-checkout-for-woocommerce' ),
+				'address_removed' => __( 'Address removed.', 'flexify-checkout-for-woocommerce' ),
+				'remove' => __( 'Remove', 'flexify-checkout-for-woocommerce' ),
+				'default_address' => __( 'Default', 'flexify-checkout-for-woocommerce' ),
 				'shipping_methods' => __( 'Shipping methods', 'flexify-checkout-for-woocommerce' ),
 				'payment_methods' => __( 'Payment methods', 'flexify-checkout-for-woocommerce' ),
 				'order_notes' => __( 'Order notes', 'flexify-checkout-for-woocommerce' ),
@@ -545,6 +556,11 @@ class Assets {
 			),
 			'mode' => $this->is_react_thankyou() ? 'thankyou' : 'checkout',
 			'thankyou' => $this->is_react_thankyou() ? Headless_Data::get_thankyou_data( React_Checkout::get_current_order() ) : null,
+			// Customer address book (Pro): the logged-in user's saved addresses,
+			// so the checkout can offer them without an extra round-trip.
+			'saved_addresses' => ( Headless_Data::is_saved_addresses_available() && is_user_logged_in() )
+				? Saved_Addresses::get_all( get_current_user_id() )
+				: array(),
 		));
 
 		// Apply the operator-configured texts to the Swift (React) checkout, so the

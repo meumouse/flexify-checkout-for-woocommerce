@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import storeApi from '../api/storeApi.js';
+import flexifyApi from '../api/flexifyApi.js';
 import config, { t } from '../config.js';
 import { resolveAvailableGateways } from '../lib/gateways.js';
 import {
@@ -51,6 +52,10 @@ export function CheckoutProvider({ children }) {
   // Inline per-field validation errors keyed by field id. Populated when a step
   // navigation is blocked; cleared per field as the customer edits it.
   const [fieldErrors, setFieldErrors] = useState({});
+  // Customer address book (Pro): seeded server-side for the logged-in user, kept
+  // in sync as addresses are saved/removed from the checkout.
+  const [savedAddresses, setSavedAddresses] = useState(() => (Array.isArray(config.saved_addresses) ? config.saved_addresses : []));
+  const savedAddressesEnabled = !!(config.flags && config.flags.saved_addresses && config.is_user_logged_in);
 
   const loadCart = useCallback(async () => {
     setLoading(true);
@@ -195,6 +200,57 @@ export function CheckoutProvider({ children }) {
     [withBusy],
   );
 
+  // Apply a saved address to the form: restore the standard fields plus any
+  // extra fields (street number, neighborhood, …) and sync with the Store API
+  // so shipping rates recalculate.
+  const applySavedAddress = useCallback(
+    (address) => withBusy(async () => {
+      const nextBilling = { ...emptyAddress, ...stripEmpty(address.billing || {}) };
+      setBilling(nextBilling);
+
+      if (address.extra && typeof address.extra === 'object') {
+        setExtraFields((prev) => ({ ...prev, ...address.extra }));
+      }
+
+      const data = await storeApi.updateCustomer({ billing_address: nextBilling, shipping_address: nextBilling });
+      setCart(data);
+
+      return data;
+    }),
+    [withBusy],
+  );
+
+  // Save the address currently in the form to the customer's address book.
+  const saveCurrentAddress = useCallback(
+    (nickname) => withBusy(async () => {
+      const res = await flexifyApi.savedAddressCreate({ nickname, billing, extra: extraFields, is_default: false });
+
+      if (res && Array.isArray(res.addresses)) {
+        setSavedAddresses(res.addresses);
+      }
+
+      pushToast({ type: 'success', message: t('address_saved', 'Endereço salvo.') });
+
+      return res;
+    }),
+    [withBusy, billing, extraFields, pushToast],
+  );
+
+  const removeSavedAddress = useCallback(
+    (id) => withBusy(async () => {
+      const res = await flexifyApi.savedAddressDelete(id);
+
+      if (res && Array.isArray(res.addresses)) {
+        setSavedAddresses(res.addresses);
+      }
+
+      pushToast({ type: 'success', message: t('address_removed', 'Endereço removido.') });
+
+      return res;
+    }),
+    [withBusy, pushToast],
+  );
+
   const placeOrder = useCallback(
     () => withBusy(async () => {
       // Show the purchase animation overlay for the whole submission. It stays up
@@ -297,11 +353,17 @@ export function CheckoutProvider({ children }) {
       updateAddress,
       selectShippingRate,
       placeOrder,
+      savedAddresses,
+      savedAddressesEnabled,
+      applySavedAddress,
+      saveCurrentAddress,
+      removeSavedAddress,
     }),
     [
       cart, loading, busy, placingOrder, pushToast, billing, extraFields, selectedGateway, customerNote, fieldErrors,
       clearFieldError, loadCart, applyCoupon, removeCoupon, updateItemQuantity, removeItem, updateAddress,
-      selectShippingRate, placeOrder,
+      selectShippingRate, placeOrder, savedAddresses, savedAddressesEnabled, applySavedAddress, saveCurrentAddress,
+      removeSavedAddress,
     ],
   );
 

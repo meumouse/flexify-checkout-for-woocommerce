@@ -583,6 +583,7 @@ class Registry {
                             ),
                         ) ),
                         self::field_toggle( 'enable_shipping_to_different_address', __( 'Allow shipping to a different address', 'flexify-checkout-for-woocommerce' ), __( 'Enable this option to allow the user to send their order to a different address from the billing address.', 'flexify-checkout-for-woocommerce' ), array( 'pro' => true ) ),
+                        self::field_toggle( 'enable_saved_addresses', __( 'Enable saved addresses', 'flexify-checkout-for-woocommerce' ), __( 'Lets logged-in customers save multiple addresses with a nickname and pick one on their next purchase. Adds a "Saved addresses" tab to the My Account area.', 'flexify-checkout-for-woocommerce' ), array( 'pro' => true ) ),
                         self::field_toggle( 'validate_address_by_postcode', __( 'Enable address validation by ZIP code', 'flexify-checkout-for-woocommerce' ), __( 'Enable this option to validate if the user\'s city and state match the provided billing ZIP code.', 'flexify-checkout-for-woocommerce' ) ),
                         self::field_toggle( 'enable_ddi_phone_field', __( 'Enable international phone', 'flexify-checkout-for-woocommerce' ), __( 'Enable this option to display the country selector in the phone number field. Useful if you sell to other countries.', 'flexify-checkout-for-woocommerce' ), array( 'pro' => true ) ),
                     ),
