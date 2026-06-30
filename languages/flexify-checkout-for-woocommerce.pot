@@ -21,6 +21,16 @@ msgid ""
 "target=\"_blank\" href=\"%2$s\">here</a>."
 msgstr ""
 
+#: admin/src/Recovery_Carts/Core/Funnel_Analytics.php:815
+msgid "%d min"
+msgstr ""
+
+#: admin/src/Recovery_Carts/Core/Funnel_Analytics.php:811
+msgid "%d seg"
+msgid_plural "%d seg"
+msgstr[0] ""
+msgstr[1] ""
+
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/Webhooks.php:39
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/Webhooks.php:52
 msgid "%d webhook configured"
@@ -28,6 +38,10 @@ msgstr ""
 
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/Webhooks.php:52
 msgid "%d webhooks configured"
+msgstr ""
+
+#: admin/src/Recovery_Carts/Core/Funnel_Analytics.php:821
+msgid "%dh %dmin"
 msgstr ""
 
 #: admin/src/Checkout/Fields.php:1111
@@ -85,7 +99,7 @@ msgstr ""
 msgid "<style>%s</style>"
 msgstr ""
 
-#: admin/src/Core/Assets.php:585
+#: admin/src/Core/Assets.php:688
 msgid "${count} results found"
 msgstr ""
 
@@ -94,7 +108,7 @@ msgstr ""
 msgid "08:00"
 msgstr ""
 
-#: admin/src/Core/Assets.php:584
+#: admin/src/Core/Assets.php:687
 msgid "1 result found"
 msgstr ""
 
@@ -123,7 +137,7 @@ msgstr ""
 msgid "90 days"
 msgstr ""
 
-#: admin/src/API/License.php:955
+#: admin/src/API/License.php:932
 msgid ""
 "A license allows you to unlock all the Pro features that the plugin has to "
 "offer."
@@ -165,7 +179,7 @@ msgstr ""
 msgid "Abandoned orders"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:737
+#: admin/src/Admin/Settings/Registry.php:744
 msgid "About"
 msgstr ""
 
@@ -181,15 +195,15 @@ msgstr ""
 msgid "Account"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:393
+#: admin/src/Admin/Settings/Registry.php:395
 msgid "Account & Access"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:275
+#: admin/src/Admin/Settings/Registry.php:277
 msgid "Action after expiry"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:436
+#: admin/src/Admin/Settings/Registry.php:438
 msgid "Activate Flexify Checkout thank you page"
 msgstr ""
 
@@ -218,11 +232,11 @@ msgid ""
 "documentation. (Optional)"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:694
+#: admin/src/Admin/Settings/Registry.php:701
 msgid "Add custom CSS that will be applied at checkout."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:695
+#: admin/src/Admin/Settings/Registry.php:702
 msgid "Add custom JavaScript that will be executed at checkout."
 msgstr ""
 
@@ -231,7 +245,7 @@ msgstr ""
 msgid "Add header"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:553
+#: admin/src/Admin/Settings/Registry.php:559
 msgid "Add masks to fields"
 msgstr ""
 
@@ -259,11 +273,11 @@ msgstr ""
 msgid "Add webhook"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:674
+#: admin/src/Admin/Settings/Registry.php:680
 msgid "Add your custom footer using the shortcode."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:671
+#: admin/src/Admin/Settings/Registry.php:677
 msgid "Add your custom header using the shortcode."
 msgstr ""
 
@@ -271,16 +285,20 @@ msgstr ""
 msgid "Additional checkout field (%s)."
 msgstr ""
 
-#: admin/src/Admin/Default_Options.php:360
-#: admin/src/Admin/Settings/Registry.php:561
+#: admin/src/Admin/Default_Options.php:357
+#: admin/src/Admin/Settings/Registry.php:567
 msgid "Address"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:572
+#: admin/src/Admin/Settings/Registry.php:578
 msgid "Address retrieval property"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:1097
+#: admin/src/Recovery_Carts/Core/Funnel_Analytics.php:519
+msgid "Administrativo"
+msgstr ""
+
+#: admin/src/Admin/Settings/Registry.php:1108
 msgid "Administrator"
 msgstr ""
 
@@ -300,7 +318,7 @@ msgstr ""
 msgid "All statuses"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:371
+#: admin/src/Admin/Settings/Registry.php:373
 msgid "Allow changing product quantities"
 msgstr ""
 
@@ -308,21 +326,21 @@ msgstr ""
 msgid "Allow free shipping:"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:372
+#: admin/src/Admin/Settings/Registry.php:374
 msgid "Allow removing products from cart"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:579
+#: admin/src/Admin/Settings/Registry.php:585
 msgid "Allow shipping to a different address"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:275
+#: admin/src/Admin/Settings/Registry.php:277
 msgid ""
 "Allows defining the type of action to be executed after the countdown "
 "expires."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:280
+#: admin/src/Admin/Settings/Registry.php:282
 msgid ""
 "Allows defining which address the user will be redirected to after the "
 "session ends."
@@ -332,17 +350,17 @@ msgstr ""
 msgid "Allows sending events to GA4 when the integration is filled out."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:265
+#: admin/src/Admin/Settings/Registry.php:267
 msgid ""
 "Allows setting a time limit for the customer to complete the purchase or "
 "create urgency."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:270
+#: admin/src/Admin/Settings/Registry.php:272
 msgid "Allows setting a title to be displayed next to the countdown."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:271
+#: admin/src/Admin/Settings/Registry.php:273
 msgid "Allows setting the countdown time limit."
 msgstr ""
 
@@ -365,13 +383,13 @@ msgid ""
 "data-login>Would you like to log in to your account?</a>"
 msgstr ""
 
-#: admin/src/Core/Assets.php:235
+#: admin/src/Core/Assets.php:241
 msgid ""
 "An account is already registered with this email address. Would you like to "
 "log into it?"
 msgstr ""
 
-#: admin/src/Core/Assets.php:240
+#: admin/src/Core/Assets.php:246
 msgid "An error occurred"
 msgstr ""
 
@@ -387,7 +405,7 @@ msgstr ""
 msgid "An error occurred while resetting the settings."
 msgstr ""
 
-#: admin/src/Core/Assets.php:486
+#: admin/src/Core/Assets.php:525
 msgid "An error occurred. Please try again."
 msgstr ""
 
@@ -404,27 +422,27 @@ msgstr ""
 msgid "Animals & Nature"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:310
+#: admin/src/Admin/Settings/Registry.php:312
 msgid "Animation file 1"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:312
+#: admin/src/Admin/Settings/Registry.php:314
 msgid "Animation file 2"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:314
+#: admin/src/Admin/Settings/Registry.php:316
 msgid "Animation file 3"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:309
+#: admin/src/Admin/Settings/Registry.php:311
 msgid "Animation text 1"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:311
+#: admin/src/Admin/Settings/Registry.php:313
 msgid "Animation text 2"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:313
+#: admin/src/Admin/Settings/Registry.php:315
 msgid "Animation text 3"
 msgstr ""
 
@@ -437,7 +455,7 @@ msgstr ""
 msgid "Apartment, suite, unit etc."
 msgstr ""
 
-#: admin/src/Admin/Default_Options.php:373
+#: admin/src/Admin/Default_Options.php:370
 msgid "Apartment, suite, unit, etc."
 msgstr ""
 
@@ -449,25 +467,25 @@ msgstr ""
 msgid "API Secret"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:571
+#: admin/src/Admin/Settings/Registry.php:577
 msgid "API service for address lookup"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:553
+#: admin/src/Admin/Settings/Registry.php:559
 msgid "Applies input masks (CPF, ZIP code, phone...)."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:544
+#: admin/src/Admin/Settings/Registry.php:550
 msgid "Applies the field customizations (created in the builder) to the checkout."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:543
+#: admin/src/Admin/Settings/Registry.php:549
 msgid ""
 "Applies the layout built in the builder to the React checkout. When "
 "disabled, the checkout uses the default steps."
 msgstr ""
 
-#: admin/src/Core/Assets.php:478
+#: admin/src/Core/Assets.php:514
 #: woocommerce/dark/checkout/form-coupon.php:32
 #: woocommerce/modern/checkout/form-coupon.php:32
 msgid "Apply"
@@ -482,7 +500,7 @@ msgstr ""
 msgid "Apply coupon"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:338
+#: admin/src/Admin/Settings/Registry.php:340
 msgid "Apply discount coupon automatically"
 msgstr ""
 
@@ -495,17 +513,17 @@ msgstr ""
 msgid "Are you sure you want to delete this event?"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:409
+#: admin/src/Admin/Settings/Registry.php:411
 msgid "Assign orders from guest users"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:310
 #: admin/src/Admin/Settings/Registry.php:312
 #: admin/src/Admin/Settings/Registry.php:314
+#: admin/src/Admin/Settings/Registry.php:316
 msgid "Attach the Lottie animation link or file in .json format"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:1098
+#: admin/src/Admin/Settings/Registry.php:1109
 msgid "Author"
 msgstr ""
 
@@ -516,15 +534,15 @@ msgid ""
 "recover sales more effectively. Keep everything flowing with no effort!"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:565
+#: admin/src/Admin/Settings/Registry.php:571
 msgid "Automatically fill in address"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:564
+#: admin/src/Admin/Settings/Registry.php:570
 msgid "Automatically fill in company information"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:400
+#: admin/src/Admin/Settings/Registry.php:402
 msgid "Automatically open login popup"
 msgstr ""
 
@@ -536,7 +554,7 @@ msgstr ""
 msgid "Awaiting payment"
 msgstr ""
 
-#: admin/src/Core/Assets.php:462
+#: admin/src/Core/Assets.php:498
 msgid "Back"
 msgstr ""
 
@@ -549,12 +567,16 @@ msgid "Back to login"
 msgstr ""
 
 #: admin/src/Checkout/Steps.php:848
-#: admin/src/Core/Assets.php:463
+#: admin/src/Core/Assets.php:499
 msgid "Back to shop"
 msgstr ""
 
-#: admin/src/Checkout/Coupons.php:170
+#: admin/src/Checkout/Coupons.php:173
 msgid "Before payment method"
+msgstr ""
+
+#: admin/src/Checkout/Coupons.php:178
+msgid "Before payment method and sidebar"
 msgstr ""
 
 #: admin/src/Checkout/Fields.php:818
@@ -577,12 +599,20 @@ msgstr ""
 msgid "Brazil"
 msgstr ""
 
-#: admin/src/API/License.php:961
+#: admin/src/Recovery_Carts/Core/Funnel_Analytics.php:516
+msgid "Busca orgânica"
+msgstr ""
+
+#: admin/src/API/License.php:938
 msgid "Buy a license"
 msgstr ""
 
 #: admin/src/Recovery_Carts/Rest/Carts.php:268
 msgid "Buying"
+msgstr ""
+
+#: admin/src/Recovery_Carts/Core/Funnel_Analytics.php:518
+msgid "Campanha"
 msgstr ""
 
 #: admin/src/Core/Webhooks/Event_Registry.php:86
@@ -593,8 +623,8 @@ msgstr ""
 msgid "Captured visitors"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:363
-#: admin/src/Core/Assets.php:458
+#: admin/src/Admin/Settings/Registry.php:365
+#: admin/src/Core/Assets.php:494
 msgid "Cart"
 msgstr ""
 
@@ -623,8 +653,12 @@ msgstr ""
 msgid "Cart recovery link"
 msgstr ""
 
-#: admin/src/Admin/Default_Options.php:490
+#: admin/src/Admin/Default_Options.php:487
 msgid "Cell phone"
+msgstr ""
+
+#: admin/src/Recovery_Carts/Core/Funnel_Analytics.php:490
+msgid "Celular"
 msgstr ""
 
 #: woocommerce/common/cart/cart-shipping.php:65
@@ -655,7 +689,7 @@ msgstr ""
 msgid "Checkout"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:539
+#: admin/src/Admin/Settings/Registry.php:545
 msgid "Checkout builder"
 msgstr ""
 
@@ -675,7 +709,7 @@ msgstr ""
 msgid "Choose how notifications will be scheduled and processed."
 msgstr ""
 
-#: admin/src/Admin/Default_Options.php:386
+#: admin/src/Admin/Default_Options.php:383
 msgid "City"
 msgstr ""
 
@@ -683,7 +717,7 @@ msgstr ""
 msgid "City name mapping"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:574
+#: admin/src/Admin/Settings/Registry.php:580
 msgid "City retrieval property"
 msgstr ""
 
@@ -702,7 +736,7 @@ msgstr ""
 msgid "Close"
 msgstr ""
 
-#: admin/src/Admin/Default_Options.php:462
+#: admin/src/Admin/Default_Options.php:459
 msgid "CNPJ"
 msgstr ""
 
@@ -714,7 +748,7 @@ msgstr ""
 msgid "Code sent via WhatsApp."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:1101
+#: admin/src/Admin/Settings/Registry.php:1112
 msgid "Collaborator"
 msgstr ""
 
@@ -731,11 +765,11 @@ msgstr ""
 msgid "Coming soon..."
 msgstr ""
 
-#: admin/src/Admin/Default_Options.php:320
+#: admin/src/Admin/Default_Options.php:317
 msgid "Company"
 msgstr ""
 
-#: admin/src/Core/Assets.php:477
+#: admin/src/Core/Assets.php:513
 msgid "Complete purchase"
 msgstr ""
 
@@ -744,15 +778,15 @@ msgstr ""
 msgid "Completed order"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:607
+#: admin/src/Admin/Settings/Registry.php:613
 msgid "Conditions"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:613
+#: admin/src/Admin/Settings/Registry.php:619
 msgid "Conditions manager"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:267
+#: admin/src/Admin/Settings/Registry.php:269
 #: admin/src/Admin/Settings/Views/Integrations.php:189
 #: admin/src/Admin/Settings/Views/Integrations.php:410
 #: admin/src/Admin/Settings/Views/Integrations.php:458
@@ -771,20 +805,20 @@ msgid ""
 "modal."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:569
+#: admin/src/Admin/Settings/Registry.php:575
 msgid "Configure address fill API"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:306
+#: admin/src/Admin/Settings/Registry.php:308
 msgid "Configure animation"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:568
+#: admin/src/Admin/Settings/Registry.php:574
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/General.php:153
 msgid "Configure API"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:268
+#: admin/src/Admin/Settings/Registry.php:270
 msgid "Configure countdown"
 msgstr ""
 
@@ -792,7 +826,7 @@ msgstr ""
 msgid "Configure delay time for payment methods"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:405
+#: admin/src/Admin/Settings/Registry.php:407
 msgid "Configure email suggestions"
 msgstr ""
 
@@ -808,11 +842,11 @@ msgstr ""
 msgid "Configure lead capture modal"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:307
+#: admin/src/Admin/Settings/Registry.php:309
 msgid "Configure processing animation"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:404
+#: admin/src/Admin/Settings/Registry.php:406
 msgid "Configure providers"
 msgstr ""
 
@@ -824,20 +858,29 @@ msgstr ""
 #: admin/src/Checkout/Steps.php:1014
 #: admin/src/Checkout/Thankyou.php:303
 #: admin/src/Checkout/Thankyou.php:552
-#: admin/src/Core/Assets.php:454
+#: admin/src/Core/Assets.php:490
 msgid "Contact"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:437
+#: admin/src/Admin/Settings/Registry.php:439
 msgid "Contact page"
+msgstr ""
+
+#: admin/src/Checkout/Thankyou.php:1181
+#: admin/src/Core/Assets.php:538
+msgid "Contact support"
 msgstr ""
 
 #: admin/src/Admin/Settings/Conditions_Store.php:694
 msgid "Contains"
 msgstr ""
 
+#: admin/src/Recovery_Carts/Core/Funnel_Analytics.php:397
+msgid "Contato"
+msgstr ""
+
 #: admin/src/Checkout/Steps.php:249
-#: admin/src/Core/Assets.php:459
+#: admin/src/Core/Assets.php:495
 msgid "Continue"
 msgstr ""
 
@@ -845,11 +888,11 @@ msgstr ""
 msgid "Continue to"
 msgstr ""
 
-#: admin/src/Core/Assets.php:461
+#: admin/src/Core/Assets.php:497
 msgid "Continue to payment"
 msgstr ""
 
-#: admin/src/Core/Assets.php:460
+#: admin/src/Core/Assets.php:496
 msgid "Continue to shipping"
 msgstr ""
 
@@ -881,10 +924,6 @@ msgstr ""
 msgid "Could not create the fonts directory."
 msgstr ""
 
-#: admin/src/Rest/License_Alternative_Activate.php:81
-msgid "Could not decrypt the license file."
-msgstr ""
-
 #: admin/src/Rest/Address_Details.php:107
 msgid "Could not get the address."
 msgstr ""
@@ -906,7 +945,7 @@ msgid "Could not save the settings."
 msgstr ""
 
 #: admin/src/Core/Ajax.php:282
-#: admin/src/Core/Assets.php:239
+#: admin/src/Core/Assets.php:245
 msgid "Could not send the reset email. Please try again."
 msgstr ""
 
@@ -914,7 +953,7 @@ msgstr ""
 msgid "Could not send the test message. Check the Joinotify configuration."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:284
+#: admin/src/Admin/Settings/Registry.php:286
 msgid "Countdown background color"
 msgstr ""
 
@@ -922,15 +961,15 @@ msgstr ""
 msgid "Countdown expired"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:292
+#: admin/src/Admin/Settings/Registry.php:294
 msgid "Countdown text color"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:270
+#: admin/src/Admin/Settings/Registry.php:272
 msgid "Countdown title"
 msgstr ""
 
-#: admin/src/Admin/Default_Options.php:333
+#: admin/src/Admin/Default_Options.php:330
 msgid "Country"
 msgstr ""
 
@@ -950,11 +989,11 @@ msgstr ""
 msgid "Coupon expiration time: *"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:586
+#: admin/src/Admin/Settings/Registry.php:592
 msgid "Coupon field"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:590
+#: admin/src/Admin/Settings/Registry.php:596
 msgid "Coupon field position"
 msgstr ""
 
@@ -970,7 +1009,7 @@ msgstr ""
 msgid "COUPON_"
 msgstr ""
 
-#: admin/src/Admin/Default_Options.php:448
+#: admin/src/Admin/Default_Options.php:445
 msgid "CPF"
 msgstr ""
 
@@ -996,7 +1035,7 @@ msgstr ""
 msgid "Create an account?"
 msgstr ""
 
-#: admin/src/Admin/Admin_Options.php:260
+#: admin/src/Admin/Admin_Options.php:283
 msgid "Create essential fields and conditions"
 msgstr ""
 
@@ -1019,15 +1058,15 @@ msgstr ""
 msgid "cURL error: %s"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:288
+#: admin/src/Admin/Settings/Registry.php:290
 msgid "Custom background color"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:440
+#: admin/src/Admin/Settings/Registry.php:442
 msgid "Custom contact link"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:694
+#: admin/src/Admin/Settings/Registry.php:701
 msgid "Custom CSS"
 msgstr ""
 
@@ -1041,27 +1080,27 @@ msgstr ""
 msgid "Custom CSS class for the title (Optional)"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:674
+#: admin/src/Admin/Settings/Registry.php:680
 msgid "Custom Footer"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:671
+#: admin/src/Admin/Settings/Registry.php:677
 msgid "Custom Header"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:695
+#: admin/src/Admin/Settings/Registry.php:702
 msgid "Custom JS"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:1130
+#: admin/src/Admin/Settings/Registry.php:1141
 msgid "Custom link"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:296
+#: admin/src/Admin/Settings/Registry.php:298
 msgid "Custom text color"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:1100
+#: admin/src/Admin/Settings/Registry.php:1111
 msgid "Customer"
 msgstr ""
 
@@ -1084,11 +1123,11 @@ msgstr ""
 msgid "Data tracking"
 msgstr ""
 
-#: admin/src/Admin/Default_Options.php:518
+#: admin/src/Admin/Default_Options.php:515
 msgid "Date of birth"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:273
+#: admin/src/Admin/Settings/Registry.php:275
 #: admin/src/Recovery_Carts/Admin/Components.php:152
 #: admin/src/Recovery_Carts/Admin/Components.php:292
 #: admin/src/Recovery_Carts/Admin/Components.php:331
@@ -1107,7 +1146,7 @@ msgstr ""
 msgid "Define in which step of the checkout the field will be displayed."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:685
+#: admin/src/Admin/Settings/Registry.php:691
 msgid "Define the border radius of fields, buttons, and checkout elements."
 msgstr ""
 
@@ -1128,7 +1167,7 @@ msgid ""
 "above need to be configured for the trigger to occur."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:686
+#: admin/src/Admin/Settings/Registry.php:692
 msgid ""
 "Define which font will be applied at checkout. You can add new custom fonts "
 "or from Google Fonts."
@@ -1139,13 +1178,22 @@ msgstr ""
 msgid "Delay: *"
 msgstr ""
 
+#: admin/src/Checkout/Thankyou.php:663
+msgid "Delivered"
+msgstr ""
+
 #: admin/src/Admin/Settings/Layout_Store.php:832
 #: admin/src/Checkout/Steps.php:750
 #: admin/src/Checkout/Steps.php:792
 #: admin/src/Checkout/Steps.php:1055
 #: admin/src/Checkout/Thankyou.php:318
-#: admin/src/Core/Assets.php:455
+#: admin/src/Core/Assets.php:491
 msgid "Delivery"
+msgstr ""
+
+#: admin/src/Checkout/Thankyou.php:1027
+#: admin/src/Core/Assets.php:530
+msgid "Delivery Details"
 msgstr ""
 
 #: admin/src/Admin/Settings/Views/Integrations.php:149
@@ -1153,7 +1201,7 @@ msgstr ""
 msgid "Delivery information"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:475
+#: admin/src/Admin/Settings/Registry.php:477
 msgid "Delivery methods title"
 msgstr ""
 
@@ -1162,18 +1210,27 @@ msgstr ""
 msgid "Delivery URL *"
 msgstr ""
 
+#: admin/src/Recovery_Carts/Core/Funnel_Analytics.php:489
+msgid "Desktop"
+msgstr ""
+
+#: admin/src/Recovery_Carts/Core/Funnel_Analytics.php:514
+#: admin/src/Recovery_Carts/Core/Funnel_Analytics.php:515
+msgid "Direto"
+msgstr ""
+
 #: admin/src/Checkout/Conditions.php:248
-#: admin/src/Core/Assets.php:475
+#: admin/src/Core/Assets.php:511
 msgid "Discount"
 msgstr ""
 
-#: admin/src/Core/Assets.php:479
+#: admin/src/Core/Assets.php:515
 #: woocommerce/dark/checkout/form-coupon.php:28
 #: woocommerce/modern/checkout/form-coupon.php:28
 msgid "Discount coupon"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:339
+#: admin/src/Admin/Settings/Registry.php:341
 msgid "Discount coupon code"
 msgstr ""
 
@@ -1185,7 +1242,7 @@ msgstr ""
 msgid "Discount type: *"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:552
+#: admin/src/Admin/Settings/Registry.php:558
 msgid "Displays the order notes field."
 msgstr ""
 
@@ -1209,7 +1266,7 @@ msgstr ""
 #: admin/src/Checkout/Steps.php:1022
 #: admin/src/Checkout/Steps.php:1063
 #: admin/src/Checkout/Steps.php:1080
-#: admin/src/Core/Assets.php:464
+#: admin/src/Core/Assets.php:500
 #: admin/src/Recovery_Carts/Admin/Components.php:90
 #: admin/src/Views/Components.php:55
 msgid "Edit"
@@ -1223,11 +1280,11 @@ msgstr ""
 msgid "Edit follow-up event"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:1102
+#: admin/src/Admin/Settings/Registry.php:1113
 msgid "Editor"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:685
+#: admin/src/Admin/Settings/Registry.php:691
 msgid "Element border radius"
 msgstr ""
 
@@ -1238,7 +1295,7 @@ msgstr ""
 msgid "Email"
 msgstr ""
 
-#: admin/src/Admin/Default_Options.php:267
+#: admin/src/Admin/Default_Options.php:264
 msgid "Email address"
 msgstr ""
 
@@ -1257,15 +1314,15 @@ msgid ""
 "hidden."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:580
+#: admin/src/Admin/Settings/Registry.php:586
 msgid "Enable address validation by ZIP code"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:343
+#: admin/src/Admin/Settings/Registry.php:345
 msgid "Enable API for direct checkout link creation"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:744
+#: admin/src/Admin/Settings/Registry.php:751
 msgid "Enable automatic updates"
 msgstr ""
 
@@ -1273,7 +1330,7 @@ msgstr ""
 msgid "Enable cart recovery"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:265
+#: admin/src/Admin/Settings/Registry.php:267
 msgid "Enable checkout countdown"
 msgstr ""
 
@@ -1281,11 +1338,11 @@ msgstr ""
 msgid "Enable coupon sending:"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:746
+#: admin/src/Admin/Settings/Registry.php:753
 msgid "Enable debug mode"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:402
+#: admin/src/Admin/Settings/Registry.php:404
 msgid "Enable email autofill suggestion"
 msgstr ""
 
@@ -1297,7 +1354,7 @@ msgstr ""
 msgid "Enable Google Ads"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:581
+#: admin/src/Admin/Settings/Registry.php:587
 msgid "Enable international phone"
 msgstr ""
 
@@ -1324,61 +1381,57 @@ msgstr ""
 msgid "Enable module"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:303
+#: admin/src/Admin/Settings/Registry.php:305
 msgid "Enable purchase processing animations"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:261
-msgid "Enable React checkout (beta)"
-msgstr ""
-
-#: admin/src/Admin/Settings/Registry.php:543
+#: admin/src/Admin/Settings/Registry.php:549
 msgid "Enable the checkout builder"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:337
+#: admin/src/Admin/Settings/Registry.php:339
 msgid ""
 "Enable this option for the terms and conditions option of the last step to "
 "be active by default, if a terms and conditions page is configured."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:409
+#: admin/src/Admin/Settings/Registry.php:411
 msgid ""
 "Enable this option so that guest user orders at checkout are assigned to "
 "existing users."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:744
+#: admin/src/Admin/Settings/Registry.php:751
 msgid ""
 "Enable this option so the Flexify Checkout plugin is updated automatically "
 "whenever possible."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:400
+#: admin/src/Admin/Settings/Registry.php:402
 msgid ""
 "Enable this option so the login popup opens automatically when an existing "
 "account is recognized for the provided email."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:370
+#: admin/src/Admin/Settings/Registry.php:372
 msgid ""
 "Enable this option to allow the user to access the product by clicking on "
 "the product image."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:579
+#: admin/src/Admin/Settings/Registry.php:585
 msgid ""
 "Enable this option to allow the user to send their order to a different "
 "address from the billing address."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:564
+#: admin/src/Admin/Settings/Registry.php:570
 msgid ""
 "Enable this option to automatically fill in the company information when "
 "entering the CNPJ (Available only in Brazil)."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:263
+#: admin/src/Admin/Settings/Registry.php:265
 msgid ""
 "Enable this option to automatically redirect the user from the cart page to "
 "checkout."
@@ -1388,15 +1441,15 @@ msgstr ""
 msgid "Enable this option to collect the user's location through their IP."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:303
+#: admin/src/Admin/Settings/Registry.php:305
 msgid "Enable this option to customize the purchase processing animation."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:745
+#: admin/src/Admin/Settings/Registry.php:752
 msgid "Enable this option to display an available update notification."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:262
+#: admin/src/Admin/Settings/Registry.php:264
 msgid ""
 "Enable this option to display the \"Back to shop\" button at the first step "
 "of checkout."
@@ -1415,13 +1468,13 @@ msgid ""
 "capture modal (Recommended)."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:581
+#: admin/src/Admin/Settings/Registry.php:587
 msgid ""
 "Enable this option to display the country selector in the phone number "
 "field. Useful if you sell to other countries."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:402
+#: admin/src/Admin/Settings/Registry.php:404
 msgid "Enable this option to display the email provider suggestion during checkout."
 msgstr ""
 
@@ -1431,76 +1484,76 @@ msgid ""
 "users."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:371
+#: admin/src/Admin/Settings/Registry.php:373
 msgid "Enable this option to display the product quantity selectors at checkout."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:372
+#: admin/src/Admin/Settings/Registry.php:374
 msgid ""
 "Enable this option to display the product removal button from the cart at "
 "checkout."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:343
+#: admin/src/Admin/Settings/Registry.php:345
 msgid ""
 "Enable this option to enable an endpoint for direct checkout link creation "
 "via API."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:401
+#: admin/src/Admin/Settings/Registry.php:403
 msgid ""
 "Enable this option to enforce password strength verification when creating "
 "a user account during checkout."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:565
+#: admin/src/Admin/Settings/Registry.php:571
 msgid ""
 "Enable this option to fill in the delivery fields when entering the ZIP "
 "code (Recommended), (Available only in Brazil)."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:436
+#: admin/src/Admin/Settings/Registry.php:438
 msgid "Enable this option to load the Flexify Checkout thank you page model."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:373
+#: admin/src/Admin/Settings/Registry.php:375
 msgid ""
 "Enable this option to remove quantity controls at checkout for products "
 "that are sold individually."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:264
+#: admin/src/Admin/Settings/Registry.php:266
 msgid ""
 "Enable this option to show the order summary open by default on mobile "
 "devices."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:321
+#: admin/src/Admin/Settings/Registry.php:323
 msgid ""
 "Enable this option to show your store's address as the Kangu order pickup "
 "point."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:338
+#: admin/src/Admin/Settings/Registry.php:340
 msgid ""
 "Enable this option to specify a discount coupon to be applied automatically "
 "at checkout."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:746
+#: admin/src/Admin/Settings/Registry.php:753
 msgid ""
 "Enable this option to turn on debug mode and access information in the "
 "browser console, disable script and style minification, and other details "
 "for troubleshooting."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:580
+#: admin/src/Admin/Settings/Registry.php:586
 msgid ""
 "Enable this option to validate if the user's city and state match the "
 "provided billing ZIP code."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:401
+#: admin/src/Admin/Settings/Registry.php:403
 msgid "Enable user password strength verification"
 msgstr ""
 
@@ -1526,7 +1579,7 @@ msgstr ""
 msgid "End"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:278
+#: admin/src/Admin/Settings/Registry.php:280
 msgid "End checkout session"
 msgstr ""
 
@@ -1535,7 +1588,7 @@ msgid "Ends with"
 msgstr ""
 
 #: admin/src/Checkout/Steps.php:631
-#: admin/src/Core/Assets.php:232
+#: admin/src/Core/Assets.php:238
 #: woocommerce/common/checkout/form-login.php:81
 #: woocommerce/dark/checkout/form-checkout.php:44
 #: woocommerce/modern/checkout/form-checkout.php:44
@@ -1603,11 +1656,11 @@ msgid ""
 "body.query"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:284
+#: admin/src/Admin/Settings/Registry.php:286
 msgid "Enter the background color of the countdown bar."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:684
+#: admin/src/Admin/Settings/Registry.php:690
 msgid "Enter the color of the field titles for checkout."
 msgstr ""
 
@@ -1627,19 +1680,19 @@ msgstr ""
 msgid "Enter the Google Fonts embed URL."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:292
+#: admin/src/Admin/Settings/Registry.php:294
 msgid "Enter the text color of the countdown bar."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:309
+#: admin/src/Admin/Settings/Registry.php:311
 msgid "Enter the text that will be displayed in processing animation 1."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:311
+#: admin/src/Admin/Settings/Registry.php:313
 msgid "Enter the text that will be displayed in processing animation 2."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:313
+#: admin/src/Admin/Settings/Registry.php:315
 msgid "Enter the text that will be displayed in processing animation 3."
 msgstr ""
 
@@ -1651,16 +1704,12 @@ msgstr ""
 msgid "Enter your email to receive the reset link."
 msgstr ""
 
-#: admin/src/Rest/License_Alternative_Activate.php:63
-msgid "Error loading the file."
+#: admin/src/Recovery_Carts/Core/Funnel_Analytics.php:398
+msgid "Entrega"
 msgstr ""
 
-#: admin/src/Core/Assets.php:303
+#: admin/src/Core/Assets.php:310
 msgid "Error processing checkout. Please try again."
-msgstr ""
-
-#: admin/src/Rest/License_Alternative_Activate.php:55
-msgid "Error uploading the file. The file was not sent."
 msgstr ""
 
 #: admin/src/Core/Ajax.php:207
@@ -1668,8 +1717,13 @@ msgstr ""
 msgid "Error:"
 msgstr ""
 
-#: admin/src/Admin/Admin_Options.php:288
+#: admin/src/Admin/Admin_Options.php:311
 msgid "Essential fields and conditions for Brazil have been created successfully."
+msgstr ""
+
+#: admin/src/Checkout/Thankyou.php:1075
+#: admin/src/Core/Assets.php:533
+msgid "Estimated delivery"
 msgstr ""
 
 #: admin/src/Recovery_Carts/Core/Ajax.php:462
@@ -1742,7 +1796,7 @@ msgstr ""
 msgid "Field name and ID *"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:549
+#: admin/src/Admin/Settings/Registry.php:555
 msgid "Field options"
 msgstr ""
 
@@ -1764,7 +1818,7 @@ msgstr ""
 msgid "Field title *"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:684
+#: admin/src/Admin/Settings/Registry.php:690
 msgid "Field title color"
 msgstr ""
 
@@ -1772,12 +1826,16 @@ msgstr ""
 msgid "Field type *"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:533
+#: admin/src/Admin/Settings/Registry.php:539
 msgid "Fields and stages"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:562
+#: admin/src/Admin/Settings/Registry.php:568
 msgid "Filling, validation and behavior of the address fields."
+msgstr ""
+
+#: admin/src/Core/Assets.php:522
+msgid "Finalizing your order"
 msgstr ""
 
 #: admin/src/Recovery_Carts/Core/Placeholders.php:38
@@ -1816,10 +1874,10 @@ msgstr ""
 msgid "Flexify Checkout - Inter add-on"
 msgstr ""
 
-#: admin/src/Admin/Admin_Options.php:513
+#: admin/src/Admin/Admin_Options.php:536
 msgid ""
-"Flexify Checkout depends on the [woocommerce_checkout] shortcode on the "
-"checkout page to work correctly."
+"Flexify Checkout depends on the [woocommerce_checkout] shortcode (or the "
+"[flexify_checkout] fallback) on the checkout page to work correctly."
 msgstr ""
 
 #: admin/src/Checkout/React_Checkout.php:89
@@ -1860,7 +1918,7 @@ msgstr ""
 msgid "Follow-up sent"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:686
+#: admin/src/Admin/Settings/Registry.php:692
 msgid "Font family"
 msgstr ""
 
@@ -1900,16 +1958,16 @@ msgstr ""
 msgid "GDPR"
 msgstr ""
 
-#: admin/src/Admin/Default_Options.php:532
+#: admin/src/Admin/Default_Options.php:529
 msgid "Gender"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:326
+#: admin/src/Admin/Settings/Registry.php:328
 #: admin/src/Recovery_Carts/Admin/Components.php:31
 msgid "General"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:550
+#: admin/src/Admin/Settings/Registry.php:556
 msgid "General behaviors of the form fields."
 msgstr ""
 
@@ -1944,19 +2002,19 @@ msgstr ""
 msgid "Greater than"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:693
+#: admin/src/Admin/Settings/Registry.php:700
 msgid "H2 size"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:652
+#: admin/src/Admin/Settings/Registry.php:658
 msgid "Header image"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:655
+#: admin/src/Admin/Settings/Registry.php:661
 msgid "Header image link"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:659
+#: admin/src/Admin/Settings/Registry.php:665
 msgid "Header image width"
 msgstr ""
 
@@ -1965,7 +2023,7 @@ msgstr ""
 msgid "Header key"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:662
+#: admin/src/Admin/Settings/Registry.php:668
 msgid "Header text"
 msgstr ""
 
@@ -1980,15 +2038,15 @@ msgid "Help Center"
 msgstr ""
 
 #: admin/src/Admin/Settings/Conditions_Store.php:596
-#: admin/src/Admin/Settings/Registry.php:276
+#: admin/src/Admin/Settings/Registry.php:278
 msgid "Hide"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:556
+#: admin/src/Admin/Settings/Registry.php:562
 msgid "Hide Brazilian fields for other countries"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:589
+#: admin/src/Admin/Settings/Registry.php:595
 msgid "Hide discount coupon field"
 msgstr ""
 
@@ -1997,15 +2055,15 @@ msgstr ""
 msgid "Hide order summary"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:555
+#: admin/src/Admin/Settings/Registry.php:561
 msgid "Hide step indicator"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:556
+#: admin/src/Admin/Settings/Registry.php:562
 msgid "Hides Brazilian Market fields when the country is not Brazil."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:554
+#: admin/src/Admin/Settings/Registry.php:560
 msgid "Hides shipping fields when the cart contains only virtual products."
 msgstr ""
 
@@ -2018,7 +2076,7 @@ msgstr ""
 msgid "Hours"
 msgstr ""
 
-#: admin/src/Admin/Default_Options.php:545
+#: admin/src/Admin/Default_Options.php:542
 msgid "House number"
 msgstr ""
 
@@ -2027,21 +2085,21 @@ msgstr ""
 msgid "https://example.com/webhook"
 msgstr ""
 
-#: admin/src/API/License.php:959
+#: admin/src/API/License.php:936
 msgid "I already have a license"
 msgstr ""
 
-#: admin/src/Core/Assets.php:237
+#: admin/src/Core/Assets.php:243
 msgid ""
 "If the provided email is registered, you will receive a link to reset your "
 "password."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:649
+#: admin/src/Admin/Settings/Registry.php:655
 msgid "Image (Default)"
 msgstr ""
 
-#: admin/src/Admin/Default_Options.php:437
+#: admin/src/Admin/Default_Options.php:434
 msgid "Individual (CPF)"
 msgstr ""
 
@@ -2050,31 +2108,31 @@ msgstr ""
 msgid "Information"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:478
+#: admin/src/Admin/Settings/Registry.php:480
 msgid "Informational text of the cart items"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:474
+#: admin/src/Admin/Settings/Registry.php:476
 msgid "Informational text of the contact stage fields"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:479
+#: admin/src/Admin/Settings/Registry.php:481
 msgid "Informational text of the contact stage verifier"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:476
+#: admin/src/Admin/Settings/Registry.php:478
 msgid "Informational text of the delivery stage fields"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:480
+#: admin/src/Admin/Settings/Registry.php:482
 msgid "Informational text of the delivery stage verifier"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:477
+#: admin/src/Admin/Settings/Registry.php:479
 msgid "Informational text of the payment stage fields"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:481
+#: admin/src/Admin/Settings/Registry.php:483
 msgid "Informational text of the payment stage verifier"
 msgstr ""
 
@@ -2135,12 +2193,12 @@ msgstr ""
 msgid "Invalid extension. Use WOFF, WOFF2, or TTF."
 msgstr ""
 
-#: admin/src/Rest/License_Alternative_Activate.php:68
-msgid "Invalid file. The file must have a .key extension."
-msgstr ""
-
 #: admin/src/Rest/Fonts_Delete.php:50
 msgid "Invalid font specified."
+msgstr ""
+
+#: admin/src/Recovery_Carts/Rest/Track_Funnel.php:94
+msgid "Invalid funnel step."
 msgstr ""
 
 #: admin/src/Rest/Layout_Save.php:58
@@ -2197,8 +2255,13 @@ msgstr ""
 msgid "It is not empty"
 msgstr ""
 
+#: admin/src/Checkout/Common.php:78
 #: templates/template-react.php:35
 msgid "JavaScript must be enabled to complete the purchase."
+msgstr ""
+
+#: templates/template-react-thankyou.php:56
+msgid "JavaScript must be enabled to view your order confirmation."
 msgstr ""
 
 #: admin/src/Recovery_Carts/Core/Ajax.php:561
@@ -2228,7 +2291,7 @@ msgstr ""
 msgid "Label of the conversion action created in Google Ads."
 msgstr ""
 
-#: admin/src/Admin/Default_Options.php:293
+#: admin/src/Admin/Default_Options.php:290
 #: admin/src/Recovery_Carts/Core/Placeholders.php:47
 msgid "Last name"
 msgstr ""
@@ -2253,7 +2316,7 @@ msgstr ""
 msgid "Lead captured"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:461
+#: admin/src/Admin/Settings/Registry.php:463
 msgid "Leave blank to not display."
 msgstr ""
 
@@ -2262,7 +2325,7 @@ msgstr ""
 msgid "Left"
 msgstr ""
 
-#: admin/src/Admin/Default_Options.php:441
+#: admin/src/Admin/Default_Options.php:438
 msgid "Legal Entity (CNPJ)"
 msgstr ""
 
@@ -2285,10 +2348,6 @@ msgstr ""
 msgid "License"
 msgstr ""
 
-#: admin/src/Rest/License_Alternative_Activate.php:125
-msgid "License activated successfully!"
-msgstr ""
-
 #: admin/src/Rest/License_Activate.php:79
 msgid "License activated successfully. All features are now active!"
 msgstr ""
@@ -2301,7 +2360,7 @@ msgstr ""
 msgid "License synced successfully."
 msgstr ""
 
-#: admin/src/Core/Assets.php:581
+#: admin/src/Core/Assets.php:684
 msgid "List of countries"
 msgstr ""
 
@@ -2309,7 +2368,7 @@ msgstr ""
 msgid "List of products in the cart or order, separated by comma"
 msgstr ""
 
-#: admin/src/Core/Assets.php:484
+#: admin/src/Core/Assets.php:521
 msgid "Loading…"
 msgstr ""
 
@@ -2321,7 +2380,7 @@ msgstr ""
 msgid "Log into your customer account:"
 msgstr ""
 
-#: admin/src/Core/Assets.php:231
+#: admin/src/Core/Assets.php:237
 msgid "Look for an address and try again."
 msgstr ""
 
@@ -2344,16 +2403,16 @@ msgid ""
 "address search or using geolocation features with Google Maps."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:370
+#: admin/src/Admin/Settings/Registry.php:372
 msgid "Make product images clickable"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:688
-#: admin/src/Admin/Settings/Registry.php:689
+#: admin/src/Admin/Settings/Registry.php:695
+#: admin/src/Admin/Settings/Registry.php:696
 msgid "Manage sources"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:544
+#: admin/src/Admin/Settings/Registry.php:550
 msgid "Manage the fields and stages of the checkout"
 msgstr ""
 
@@ -2361,7 +2420,7 @@ msgstr ""
 msgid "Manage the webhooks registered for this event."
 msgstr ""
 
-#: admin/src/Core/Assets.php:250
+#: admin/src/Core/Assets.php:256
 msgid "mandatory"
 msgstr ""
 
@@ -2401,7 +2460,7 @@ msgstr ""
 msgid "Meta Pixel identifier linked to your events manager."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:272
+#: admin/src/Admin/Settings/Registry.php:274
 #: admin/src/Recovery_Carts/Admin/Components.php:150
 #: admin/src/Recovery_Carts/Admin/Components.php:290
 #: admin/src/Recovery_Carts/Admin/Components.php:329
@@ -2423,11 +2482,11 @@ msgstr ""
 msgid "Modal trigger selectors"
 msgstr ""
 
-#: admin/src/Views/Settings/Settings_Panel.php:177
+#: admin/src/Views/Settings/Settings_Panel.php:186
 msgid "Modern dark"
 msgstr ""
 
-#: admin/src/Views/Settings/Settings_Panel.php:170
+#: admin/src/Views/Settings/Settings_Panel.php:179
 msgid "Modern light"
 msgstr ""
 
@@ -2435,7 +2494,7 @@ msgstr ""
 msgid "Montserrat"
 msgstr ""
 
-#: admin/src/Admin/Default_Options.php:280
+#: admin/src/Admin/Default_Options.php:277
 msgid "Name"
 msgstr ""
 
@@ -2447,17 +2506,22 @@ msgstr ""
 msgid "Native WooCommerce fields cannot be removed, only disabled."
 msgstr ""
 
+#: admin/src/Checkout/Thankyou.php:1157
+#: admin/src/Core/Assets.php:536
+msgid "Need help with your order?"
+msgstr ""
+
 #: admin/src/Checkout/Thankyou.php:552
 msgid "Need help?"
 msgstr ""
 
-#: admin/src/Admin/Default_Options.php:558
+#: admin/src/Admin/Default_Options.php:555
 #: admin/src/Integrations/Superfrete.php:189
 #: admin/src/Integrations/Superfrete.php:200
 msgid "Neighborhood"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:573
+#: admin/src/Admin/Settings/Registry.php:579
 msgid "Neighborhood retrieval property"
 msgstr ""
 
@@ -2465,7 +2529,7 @@ msgstr ""
 msgid "Never expires"
 msgstr ""
 
-#: admin/src/Core/Assets.php:470
+#: admin/src/Core/Assets.php:506
 msgid "New address"
 msgstr ""
 
@@ -2489,7 +2553,7 @@ msgstr ""
 msgid "No cart found."
 msgstr ""
 
-#: admin/src/Core/Assets.php:580
+#: admin/src/Core/Assets.php:683
 msgid "No country selected"
 msgstr ""
 
@@ -2506,7 +2570,7 @@ msgstr ""
 msgid "No follow-up event added yet."
 msgstr ""
 
-#: admin/src/Core/Assets.php:583
+#: admin/src/Core/Assets.php:686
 msgid "No results found"
 msgstr ""
 
@@ -2514,7 +2578,7 @@ msgstr ""
 msgid "No settings received."
 msgstr ""
 
-#: admin/src/Core/Helpers.php:598
+#: admin/src/Core/Helpers.php:600
 msgid "No shipping method selected"
 msgstr ""
 
@@ -2549,6 +2613,10 @@ msgstr ""
 
 #: admin/src/Recovery_Carts/Integrations/Integrations_Base.php:38
 msgid "Notify your users and customers with custom emails from your brand."
+msgstr ""
+
+#: admin/src/Recovery_Carts/Core/Funnel_Analytics.php:435
+msgid "Novos"
 msgstr ""
 
 #: admin/src/Integrations/Superfrete.php:189
@@ -2615,7 +2683,7 @@ msgstr ""
 msgid "Open the checkout builder"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:554
+#: admin/src/Admin/Settings/Registry.php:560
 msgid "Optimize for digital products"
 msgstr ""
 
@@ -2653,15 +2721,25 @@ msgstr ""
 msgid "Order #%s"
 msgstr ""
 
+#: admin/src/Checkout/Thankyou.php:648
+msgid "Order confirmed"
+msgstr ""
+
 #: admin/src/Core/Webhooks/Event_Registry.php:62
 msgid "Order created"
 msgstr ""
 
 #: admin/src/Admin/Settings/Layout_Store.php:757
-#: admin/src/Core/Assets.php:473
+#: admin/src/Core/Assets.php:509
 msgid "Order notes"
 msgstr ""
 
+#: admin/src/Checkout/Thankyou.php:930
+#: admin/src/Core/Assets.php:528
+msgid "Order number"
+msgstr ""
+
+#: admin/src/Checkout/Thankyou.php:653
 #: admin/src/Core/Webhooks/Event_Registry.php:74
 msgid "Order processing"
 msgstr ""
@@ -2670,9 +2748,17 @@ msgstr ""
 msgid "Order status changed"
 msgstr ""
 
-#: admin/src/Core/Assets.php:457
+#: admin/src/Core/Assets.php:493
 #: admin/src/Integrations/Germanized.php:48
 msgid "Order summary"
+msgstr ""
+
+#: admin/src/Checkout/Thankyou.php:947
+msgid "Order Summary"
+msgstr ""
+
+#: admin/src/Recovery_Carts/Core/Funnel_Analytics.php:399
+msgid "Pagamento"
 msgstr ""
 
 #: admin/src/Recovery_Carts/Admin/Admin.php:392
@@ -2684,11 +2770,11 @@ msgstr ""
 msgid "Password"
 msgstr ""
 
-#: admin/src/Core/Assets.php:233
+#: admin/src/Core/Assets.php:239
 msgid "Pay"
 msgstr ""
 
-#: admin/src/Core/Helpers.php:423
+#: admin/src/Core/Helpers.php:425
 #: woocommerce/common/checkout/form-pay.php:44
 #: woocommerce/common/checkout/form-pay.php:80
 msgid "Pay for the order"
@@ -2697,7 +2783,7 @@ msgstr ""
 #: admin/src/Admin/Settings/Layout_Store.php:833
 #: admin/src/Checkout/Steps.php:571
 #: admin/src/Checkout/Thankyou.php:338
-#: admin/src/Core/Assets.php:456
+#: admin/src/Core/Assets.php:492
 msgid "Payment"
 msgstr ""
 
@@ -2710,7 +2796,7 @@ msgstr ""
 msgid "Payment information"
 msgstr ""
 
-#: admin/src/Core/Assets.php:472
+#: admin/src/Core/Assets.php:508
 #: admin/src/Recovery_Carts/Admin/Components.php:43
 msgid "Payment methods"
 msgstr ""
@@ -2732,11 +2818,11 @@ msgstr ""
 msgid "Permission denied."
 msgstr ""
 
-#: admin/src/Admin/Default_Options.php:425
+#: admin/src/Admin/Default_Options.php:422
 msgid "Person Type"
 msgstr ""
 
-#: admin/src/Admin/Default_Options.php:306
+#: admin/src/Admin/Default_Options.php:303
 #: admin/src/Admin/Orders.php:255
 #: admin/src/Views/Components.php:350
 msgid "Phone"
@@ -2768,20 +2854,20 @@ msgstr ""
 msgid "Pixel ID"
 msgstr ""
 
-#: admin/src/Core/Assets.php:230
+#: admin/src/Core/Assets.php:236
 msgid "Please correct all errors and try again."
 msgstr ""
 
-#: admin/src/Core/Assets.php:248
+#: admin/src/Core/Assets.php:254
 msgid "Please enter a valid CNPJ."
 msgstr ""
 
-#: admin/src/Core/Assets.php:245
+#: admin/src/Core/Assets.php:251
 msgid "Please enter a valid CPF."
 msgstr ""
 
 #: admin/src/Core/Ajax.php:266
-#: admin/src/Core/Assets.php:238
+#: admin/src/Core/Assets.php:244
 msgid "Please enter a valid email."
 msgstr ""
 
@@ -2789,7 +2875,7 @@ msgstr ""
 msgid "Please enter a valid phone number"
 msgstr ""
 
-#: admin/src/Core/Assets.php:242
+#: admin/src/Core/Assets.php:248
 msgid "Please enter a valid phone number."
 msgstr ""
 
@@ -2797,14 +2883,14 @@ msgstr ""
 msgid "Please enter your address"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:571
+#: admin/src/Admin/Settings/Registry.php:577
 msgid ""
 "Please provide the API address to obtain the user's address through their "
 "ZIP code in JSON format. Use the variable {postcode} to specify the ZIP "
 "code."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:339
+#: admin/src/Admin/Settings/Registry.php:341
 msgid ""
 "Please provide the discount coupon code that will be automatically applied "
 "at checkout."
@@ -2814,7 +2900,7 @@ msgstr ""
 msgid "Please provide the field title."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:655
+#: admin/src/Admin/Settings/Registry.php:661
 msgid "Please provide the header image link."
 msgstr ""
 
@@ -2824,37 +2910,38 @@ msgid ""
 "underscores instead of spaces and after the \"billing_\" prefix."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:572
+#: admin/src/Admin/Settings/Registry.php:578
 msgid ""
 "Please provide the property to obtain the address that is returned by the "
 "API service."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:574
+#: admin/src/Admin/Settings/Registry.php:580
 msgid ""
 "Please provide the property to obtain the city that is returned by the API "
 "service."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:573
+#: admin/src/Admin/Settings/Registry.php:579
 msgid ""
 "Please provide the property to obtain the neighborhood that is returned by "
 "the API service."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:575
+#: admin/src/Admin/Settings/Registry.php:581
 msgid ""
 "Please provide the property to obtain the state that is returned by the API "
 "service."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:662
+#: admin/src/Admin/Settings/Registry.php:668
 msgid ""
 "Please provide the text that will be displayed in the header of the "
 "checkout page."
 msgstr ""
 
-#: admin/src/Core/Assets.php:432
+#: admin/src/Core/Assets.php:464
+#: admin/src/Core/Assets.php:523
 #: admin/src/Views/Components.php:300
 msgid "Please wait a few moments"
 msgstr ""
@@ -2877,7 +2964,7 @@ msgid ""
 "purchase with the same email or phone within a period of days."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:682
+#: admin/src/Admin/Settings/Registry.php:688
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/Styles.php:20
 msgid "Primary color"
 msgstr ""
@@ -2909,8 +2996,16 @@ msgstr ""
 msgid "Purchased"
 msgstr ""
 
-#: admin/src/Core/Assets.php:468
+#: admin/src/Core/Assets.php:504
 msgid "Purchaser details"
+msgstr ""
+
+#: admin/src/Core/Assets.php:529
+msgid "Qty"
+msgstr ""
+
+#: admin/src/Checkout/Thankyou.php:970
+msgid "Qty: %s"
 msgstr ""
 
 #: admin/src/Integrations/Force_Sells.php:59
@@ -2932,6 +3027,10 @@ msgstr ""
 
 #: admin/src/Recovery_Carts/Core/Assets.php:114
 msgid "Recent"
+msgstr ""
+
+#: admin/src/Recovery_Carts/Core/Funnel_Analytics.php:439
+msgid "Recorrentes"
 msgstr ""
 
 #: admin/src/Recovery_Carts/Views/Settings.php:16
@@ -2968,12 +3067,16 @@ msgstr ""
 msgid "Recovery"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:280
+#: admin/src/Admin/Settings/Registry.php:282
 msgid "Redirect URL"
 msgstr ""
 
 #: admin/src/API/Direct_Checkout.php:337
 msgid "Redirecting..."
+msgstr ""
+
+#: admin/src/Recovery_Carts/Core/Funnel_Analytics.php:517
+msgid "Referência"
 msgstr ""
 
 #: admin/src/Core/Webhooks/Event_Registry.php:92
@@ -2989,7 +3092,7 @@ msgstr ""
 msgid "Remove"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:373
+#: admin/src/Admin/Settings/Registry.php:375
 msgid "Remove quantity controls on individually sold products"
 msgstr ""
 
@@ -3003,14 +3106,8 @@ msgstr ""
 msgid "Remove webhook"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:555
+#: admin/src/Admin/Settings/Registry.php:561
 msgid "Removes the stepper from the checkout header."
-msgstr ""
-
-#: admin/src/Admin/Settings/Registry.php:261
-msgid ""
-"Replaces the classic checkout with a React interface that consumes the "
-"WooCommerce Store API. Requires a valid license."
 msgstr ""
 
 #: woocommerce/common/checkout/form-login.php:102
@@ -3021,11 +3118,11 @@ msgstr ""
 msgid "Reset to default color"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:1053
+#: admin/src/Admin/Settings/Registry.php:1064
 msgid "Rest of the world"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:277
+#: admin/src/Admin/Settings/Registry.php:279
 msgid "Restart countdown"
 msgstr ""
 
@@ -3037,7 +3134,7 @@ msgstr ""
 msgid "Return to store"
 msgstr ""
 
-#: admin/src/Admin/Default_Options.php:504
+#: admin/src/Admin/Default_Options.php:501
 msgid "RG"
 msgstr ""
 
@@ -3088,13 +3185,13 @@ msgstr ""
 msgid "Saved successfully"
 msgstr ""
 
-#: admin/src/Core/Assets.php:582
+#: admin/src/Core/Assets.php:685
 #: admin/src/Recovery_Carts/Core/Assets.php:110
 #: admin/src/Recovery_Carts/Core/Assets.php:203
 msgid "Search"
 msgstr ""
 
-#: admin/src/Core/Assets.php:483
+#: admin/src/Core/Assets.php:519
 msgid "Search address"
 msgstr ""
 
@@ -3110,7 +3207,11 @@ msgstr ""
 msgid "Search for an address"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:683
+#: admin/src/Core/Assets.php:520
+msgid "Search…"
+msgstr ""
+
+#: admin/src/Admin/Settings/Registry.php:689
 msgid "Secondary color"
 msgstr ""
 
@@ -3140,11 +3241,11 @@ msgstr ""
 msgid "Select a sender that will send the cart and order recovery notifications."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:437
+#: admin/src/Admin/Settings/Registry.php:439
 msgid "Select the contact page that will be displayed to customers at checkout."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:648
+#: admin/src/Admin/Settings/Registry.php:654
 msgid ""
 "Select the type of brand that will be displayed in the header of the "
 "checkout page."
@@ -3154,7 +3255,7 @@ msgstr ""
 msgid "Select the type of field to be included in checkout."
 msgstr ""
 
-#: admin/src/Core/Assets.php:579
+#: admin/src/Core/Assets.php:682
 msgid "Selected country"
 msgstr ""
 
@@ -3176,7 +3277,7 @@ msgstr ""
 msgid "Send at least one font file (WOFF, WOFF2, or TTF)."
 msgstr ""
 
-#: admin/src/Core/Assets.php:481
+#: admin/src/Core/Assets.php:517
 msgid "Send code"
 msgstr ""
 
@@ -3207,8 +3308,8 @@ msgstr ""
 msgid "Set conversion parameters to send events to Google Ads."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:286
-#: admin/src/Admin/Settings/Registry.php:294
+#: admin/src/Admin/Settings/Registry.php:288
+#: admin/src/Admin/Settings/Registry.php:296
 msgid "Set custom"
 msgstr ""
 
@@ -3216,7 +3317,7 @@ msgstr ""
 msgid "Set default country"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:693
+#: admin/src/Admin/Settings/Registry.php:700
 msgid "Set the font size for h2 subtitle tags (Heading 2)."
 msgstr ""
 
@@ -3242,11 +3343,15 @@ msgstr ""
 msgid "Settings have been updated!"
 msgstr ""
 
+#: admin/src/Checkout/Thankyou.php:658
+msgid "Shipped"
+msgstr ""
+
 #: admin/src/Checkout/Thankyou.php:329
 msgid "Shipping"
 msgstr ""
 
-#: admin/src/Core/Assets.php:469
+#: admin/src/Core/Assets.php:505
 msgid "Shipping address"
 msgstr ""
 
@@ -3254,12 +3359,22 @@ msgstr ""
 msgid "Shipping costs are calculated during checkout."
 msgstr ""
 
-#: admin/src/Core/Assets.php:471
+#: admin/src/Checkout/Thankyou.php:1060
+#: admin/src/Core/Assets.php:532
+msgid "Shipping method"
+msgstr ""
+
+#: admin/src/Core/Assets.php:507
 msgid "Shipping methods"
 msgstr ""
 
 #: woocommerce/common/cart/cart-shipping.php:67
 msgid "Shipping options will be updated during checkout."
+msgstr ""
+
+#: admin/src/Checkout/Thankyou.php:1040
+#: admin/src/Core/Assets.php:531
+msgid "Shipping to"
 msgstr ""
 
 #: woocommerce/common/cart/cart-shipping.php:64
@@ -3270,15 +3385,15 @@ msgstr ""
 msgid "Show"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:552
+#: admin/src/Admin/Settings/Registry.php:558
 msgid "Show additional observations field"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:745
+#: admin/src/Admin/Settings/Registry.php:752
 msgid "Show available update notice"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:262
+#: admin/src/Admin/Settings/Registry.php:264
 msgid "Show Back to Shop button"
 msgstr ""
 
@@ -3291,34 +3406,34 @@ msgstr ""
 msgid "Show order summary"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:264
+#: admin/src/Admin/Settings/Registry.php:266
 msgid "Show order summary open by default"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:321
+#: admin/src/Admin/Settings/Registry.php:323
 msgid "Show physical store address for Kangu order pickup"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:614
+#: admin/src/Admin/Settings/Registry.php:620
 msgid ""
 "Show, hide or apply discounts on fields, shipping and payment methods based "
 "on conditional rules (users, products, countries, shipping regions and "
 "more)."
 msgstr ""
 
-#: admin/src/Checkout/Coupons.php:157
+#: admin/src/Checkout/Coupons.php:168
 msgid "Sidebar (Default)"
 msgstr ""
 
-#: admin/src/Core/Assets.php:480
+#: admin/src/Core/Assets.php:516
 msgid "Sign in with WhatsApp"
 msgstr ""
 
-#: admin/src/Views/Settings/Settings_Panel.php:184
+#: admin/src/Views/Settings/Settings_Panel.php:193
 msgid "Single page"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:263
+#: admin/src/Admin/Settings/Registry.php:265
 msgid "Skip cart page"
 msgstr ""
 
@@ -3326,7 +3441,7 @@ msgstr ""
 msgid "Smileys & People"
 msgstr ""
 
-#: admin/src/Checkout/Common.php:204
+#: admin/src/Checkout/Common.php:282
 #: woocommerce/common/checkout/form-pay.php:56
 msgid ""
 "Sorry, it seems there are no payment methods available for your location. "
@@ -3365,15 +3480,15 @@ msgstr ""
 msgid "Starts with"
 msgstr ""
 
-#: admin/src/Admin/Default_Options.php:399
+#: admin/src/Admin/Default_Options.php:396
 msgid "State"
 msgstr ""
 
-#: admin/src/Admin/Default_Options.php:476
+#: admin/src/Admin/Default_Options.php:473
 msgid "State Registration"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:575
+#: admin/src/Admin/Settings/Registry.php:581
 msgid "State retrieval property"
 msgstr ""
 
@@ -3381,7 +3496,7 @@ msgstr ""
 msgid "State/region name mapping"
 msgstr ""
 
-#: admin/src/Core/Assets.php:465
+#: admin/src/Core/Assets.php:501
 msgid "Step"
 msgstr ""
 
@@ -3393,34 +3508,42 @@ msgstr ""
 msgid "Step 2 (Delivery)"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:1103
+#: admin/src/Admin/Settings/Registry.php:1114
 msgid "Store manager"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:637
+#: admin/src/Admin/Settings/Registry.php:643
 #: admin/src/Recovery_Carts/Admin/Components.php:61
 msgid "Styles"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:1099
+#: admin/src/Admin/Settings/Registry.php:1110
 msgid "Subscriber"
 msgstr ""
 
-#: admin/src/Core/Assets.php:474
+#: admin/src/Core/Assets.php:510
 #: woocommerce/common/checkout/review-order.php:26
 #: woocommerce/common/checkout/review-order.php:63
 msgid "Subtotal"
+msgstr ""
+
+#: admin/src/Views/Settings/Settings_Panel.php:170
+msgid "Swift"
 msgstr ""
 
 #: admin/src/Recovery_Carts/Core/Assets.php:121
 msgid "Symbols"
 msgstr ""
 
+#: admin/src/Recovery_Carts/Core/Funnel_Analytics.php:491
+msgid "Tablet"
+msgstr ""
+
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/General.php:32
 msgid "Task scheduler"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:337
+#: admin/src/Admin/Settings/Registry.php:339
 msgid "Terms and conditions active by default"
 msgstr ""
 
@@ -3436,7 +3559,7 @@ msgstr ""
 msgid "Test sent to %s."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:650
+#: admin/src/Admin/Settings/Registry.php:656
 #: admin/src/Views/Components.php:346
 msgid "Text"
 msgstr ""
@@ -3445,19 +3568,19 @@ msgstr ""
 msgid "Text area"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:482
+#: admin/src/Admin/Settings/Registry.php:484
 msgid "Text of the button to go back steps"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:483
+#: admin/src/Admin/Settings/Registry.php:485
 msgid "Text of the button to revisit the store on the thank-you page"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:489
+#: admin/src/Admin/Settings/Registry.php:491
 msgid "Text of the contact information summary"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:492
+#: admin/src/Admin/Settings/Registry.php:496
 msgid "Text of the delivery information summary"
 msgstr ""
 
@@ -3465,11 +3588,18 @@ msgstr ""
 msgid "Text variables:"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:467
+#: admin/src/Admin/Settings/Registry.php:469
 msgid "Texts"
 msgstr ""
 
+#: admin/src/Checkout/Thankyou.php:924
+#: admin/src/Core/Assets.php:526
+msgid "Thank you for your order!"
+msgstr ""
+
 #: admin/src/Checkout/Thankyou.php:198
+#: admin/src/Checkout/Thankyou.php:922
+#: admin/src/Core/Assets.php:527
 msgid "Thank you, %s!"
 msgstr ""
 
@@ -3477,7 +3607,7 @@ msgstr ""
 msgid "Thank-you page"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:429
+#: admin/src/Admin/Settings/Registry.php:431
 msgid "Thank-you Page"
 msgstr ""
 
@@ -3514,10 +3644,6 @@ msgstr ""
 msgid "The account password is required to continue."
 msgstr ""
 
-#: admin/src/Rest/License_Alternative_Activate.php:92
-msgid "The activation domain is not allowed."
-msgstr ""
-
 #: admin/src/Rest/Layout_Get.php:47
 #: admin/src/Rest/Layout_Save.php:51
 msgid "The checkout builder requires an active Pro license."
@@ -3528,7 +3654,7 @@ msgstr ""
 msgid "The conditions manager requires an active Pro license."
 msgstr ""
 
-#: admin/src/Admin/Admin_Options.php:165
+#: admin/src/Admin/Admin_Options.php:188
 msgid "The Country field at checkout is disabled, check if your payment gateway "
 msgstr ""
 
@@ -3536,7 +3662,7 @@ msgstr ""
 msgid "The coupon already exists."
 msgstr ""
 
-#: admin/src/Core/Assets.php:234
+#: admin/src/Core/Assets.php:240
 msgid "The coupon has been removed."
 msgstr ""
 
@@ -3582,7 +3708,7 @@ msgstr ""
 msgid "The font settings have been saved successfully!"
 msgstr ""
 
-#: admin/src/Admin/Admin_Options.php:529
+#: admin/src/Admin/Admin_Options.php:552
 msgid ""
 "The GD extension is disabled and is required to generate the Pix QR Code. "
 "Enable it in your hosting to activate this feature."
@@ -3596,23 +3722,19 @@ msgstr ""
 msgid "The Joinotify integration is not active."
 msgstr ""
 
-#: admin/src/Rest/License_Alternative_Activate.php:88
-msgid "The license file does not contain valid data."
-msgstr ""
-
 #: admin/src/Rest/License_Deactivate.php:66
 msgid "The license has been deactivated. All Pro version features are now disabled!"
 msgstr ""
 
-#: admin/src/Rest/License_Alternative_Activate.php:96
-msgid "The license is not allowed for this product."
+#: admin/src/Rest/Logs_Clear.php:50
+msgid "The logs have been cleared."
 msgstr ""
 
 #: admin/src/Rest/Modules_Install.php:89
 msgid "The plugin was installed, but could not be activated."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:682
+#: admin/src/Admin/Settings/Registry.php:688
 msgid ""
 "The primary color defines the color of elements that will have actions or "
 "information on the checkout page."
@@ -3622,7 +3744,7 @@ msgstr ""
 msgid "The provided ZIP code does not belong to the selected city/state."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:683
+#: admin/src/Admin/Settings/Registry.php:689
 msgid ""
 "The secondary color defines the color of elements that will have actions or "
 "information on the checkout page."
@@ -3656,7 +3778,7 @@ msgid ""
 "error in the WooCommerce logs."
 msgstr ""
 
-#: admin/src/API/License.php:953
+#: admin/src/API/License.php:930
 msgid "This feature is available in the Pro version"
 msgstr ""
 
@@ -3705,7 +3827,7 @@ msgstr ""
 msgid "Too many attempts. Request a new code."
 msgstr ""
 
-#: admin/src/Core/Assets.php:476
+#: admin/src/Core/Assets.php:512
 #: woocommerce/common/checkout/review-order.php:109
 msgid "Total"
 msgstr ""
@@ -3714,12 +3836,17 @@ msgstr ""
 msgid "Total cart value"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:271
+#: admin/src/Admin/Settings/Registry.php:273
 msgid "Total duration"
 msgstr ""
 
 #: admin/src/Recovery_Carts/Admin/Components.php:373
 msgid "Total recovered %s"
+msgstr ""
+
+#: admin/src/Checkout/Thankyou.php:1170
+#: admin/src/Core/Assets.php:537
+msgid "Track order"
 msgstr ""
 
 #: admin/src/Core/Webhooks/Event_Registry.php:37
@@ -3730,7 +3857,7 @@ msgstr ""
 msgid "Tracking data settings"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:1104
+#: admin/src/Admin/Settings/Registry.php:1115
 msgid "Translator"
 msgstr ""
 
@@ -3834,7 +3961,7 @@ msgstr ""
 msgid "Triggered whenever a follow-up message is sent."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:648
+#: admin/src/Admin/Settings/Registry.php:654
 msgid "Type of brand in the header"
 msgstr ""
 
@@ -3844,6 +3971,10 @@ msgstr ""
 
 #: admin/src/Admin/Settings/Conditions_Store.php:701
 msgid "Unchecked"
+msgstr ""
+
+#: admin/src/Recovery_Carts/Core/Funnel_Analytics.php:251
+msgid "Unknown"
 msgstr ""
 
 #: admin/src/API/License.php:314
@@ -3866,8 +3997,8 @@ msgstr ""
 msgid "Usage limit per customer:"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:285
-#: admin/src/Admin/Settings/Registry.php:293
+#: admin/src/Admin/Settings/Registry.php:287
+#: admin/src/Admin/Settings/Registry.php:295
 msgid "Use default color"
 msgstr ""
 
@@ -3881,7 +4012,7 @@ msgstr ""
 msgid "Use the TAB key to quickly insert an emoji"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:462
+#: admin/src/Admin/Settings/Registry.php:464
 msgid ""
 "Use the variables below to retrieve field information. Or leave blank to "
 "not display."
@@ -3903,7 +4034,7 @@ msgstr ""
 msgid "Username or email"
 msgstr ""
 
-#: admin/src/Core/Assets.php:482
+#: admin/src/Core/Assets.php:518
 msgid "Verify code"
 msgstr ""
 
@@ -3915,35 +4046,49 @@ msgstr ""
 msgid "View cart"
 msgstr ""
 
-#: admin/src/Core/Assets.php:467
+#: admin/src/Core/Assets.php:503
 msgid "View order summary"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:587
+#: admin/src/Admin/Settings/Registry.php:593
 msgid "Visibility and position of the discount coupon field."
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:540
+#: admin/src/Admin/Settings/Registry.php:546
 msgid ""
 "Visually build the steps, fields and components of the React checkout "
 "(order bump, content blocks, coupon, summary and notes) with live preview."
 msgstr ""
 
-#: admin/src/Admin/Admin_Options.php:259
+#: admin/src/Checkout/Thankyou.php:654
+msgid "We are preparing your items for shipment"
+msgstr ""
+
+#: admin/src/Admin/Admin_Options.php:282
 msgid ""
 "We have identified that your store sells in Brazil, do you want to create "
 "the essential fields and conditions for integration with national payment "
 "and delivery methods?"
 msgstr ""
 
-#: admin/src/Admin/Settings/Registry.php:715
+#: admin/src/Checkout/Thankyou.php:1077
+#: admin/src/Core/Assets.php:534
+msgid "We will send you tracking information as soon as your order ships"
+msgstr ""
+
+#: admin/src/Admin/Settings/Registry.php:722
 #: admin/src/Recovery_Carts/Admin/Components.php:55
 #: admin/src/Recovery_Carts/Views/Settings/Tabs/Webhooks.php:25
 msgid "Webhooks"
 msgstr ""
 
-#: admin/src/Core/Assets.php:236
+#: admin/src/Core/Assets.php:242
 msgid "Welcome back!"
+msgstr ""
+
+#: admin/src/Checkout/Thankyou.php:1103
+#: admin/src/Core/Assets.php:535
+msgid "What happens next"
 msgstr ""
 
 #: admin/src/Recovery_Carts/Core/Helpers.php:576
@@ -3987,7 +4132,11 @@ msgstr ""
 msgid "You need to be logged in to complete your purchase."
 msgstr ""
 
-#: admin/src/API/License.php:930
+#: admin/src/Checkout/Thankyou.php:659
+msgid "You will receive tracking information via email"
+msgstr ""
+
+#: admin/src/API/License.php:907
 msgid ""
 "Your <strong>Flexify Checkout</strong> license has expired; renew it to "
 "keep enjoying Pro features."
@@ -4005,11 +4154,11 @@ msgstr ""
 msgid "Your cart is empty, visit our store to buy some products."
 msgstr ""
 
-#: admin/src/Core/Assets.php:485
+#: admin/src/Core/Assets.php:524
 msgid "Your cart is empty."
 msgstr ""
 
-#: admin/src/Core/Assets.php:466
+#: admin/src/Core/Assets.php:502
 msgid "Your products have been reserved for:"
 msgstr ""
 
@@ -4025,7 +4174,7 @@ msgstr ""
 msgid "Your subscription will be activated when the payment is cleared."
 msgstr ""
 
-#: admin/src/Admin/Default_Options.php:346
+#: admin/src/Admin/Default_Options.php:343
 msgid "ZIP Code"
 msgstr ""
 

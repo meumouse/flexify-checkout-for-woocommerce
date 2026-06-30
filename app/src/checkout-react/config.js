@@ -37,12 +37,38 @@ const config = { ...fallback, ...(typeof window !== 'undefined' ? window.flexify
 export default config;
 
 /**
+ * Live text overrides pushed by the builder preview (postMessage). Only ever
+ * set by EditorApp so the operator sees text edits instantly; the real
+ * storefront reads config.i18n directly (seeded server-side from the settings).
+ *
+ * @type {Object<string,string>|null}
+ */
+let textOverrides = null;
+
+/**
+ * Set (or clear) the live text overrides.
+ *
+ * @param {Object<string,string>|null} map i18n key => text, or null to clear.
+ * @returns {void}
+ */
+export function setTextOverrides(map) {
+  textOverrides = map && typeof map === 'object' ? map : null;
+}
+
+/**
  * Translate a key from the localized i18n map, falling back to the given text.
+ *
+ * In builder preview, a non-empty override for the key wins so text edits show
+ * live without a reload.
  *
  * @param {string} key Lookup key.
  * @param {string} fallbackText Default text.
  * @returns {string}
  */
 export function t(key, fallbackText = '') {
+  if (textOverrides && typeof textOverrides[key] === 'string' && textOverrides[key] !== '') {
+    return textOverrides[key];
+  }
+
   return (config.i18n && config.i18n[key]) || fallbackText || key;
 }

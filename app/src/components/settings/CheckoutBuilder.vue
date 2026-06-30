@@ -159,6 +159,47 @@ function cloneTheme() {
   });
 }
 
+// --- Texts draft (checkout strings), persisted to settings on Save ---
+
+// Each entry binds a settings key to the React checkout i18n key it drives, so
+// editing here updates both the live preview and the stored setting. Stepper
+// labels (text_check_step_N) are edited as step labels, so they are not listed.
+const TEXT_FIELDS = [
+  { setting: 'text_header_step_1', i18n: 'contact_title', label: 'Título da etapa de contato' },
+  { setting: 'text_header_step_2', i18n: 'shipping_address', label: 'Título da etapa de entrega' },
+  { setting: 'text_header_step_3', i18n: 'payment_methods', label: 'Título da etapa de pagamento' },
+  { setting: 'text_header_sidebar_right', i18n: 'cart', label: 'Título do resumo do pedido' },
+  { setting: 'text_shipping_methods_label', i18n: 'shipping_methods', label: 'Rótulo de formas de entrega' },
+  { setting: 'text_previous_step_button', i18n: 'back', label: 'Botão de voltar' },
+];
+
+const textsDraft = reactive({});
+
+function cloneTexts() {
+  const settings = store.settings || {};
+
+  TEXT_FIELDS.forEach(({ setting }) => {
+    textsDraft[setting] = settings[setting] ?? '';
+  });
+}
+
+// Map the draft into the React i18n shape (i18n key => text) for the preview.
+function buildTextsMessage() {
+  const texts = {};
+
+  TEXT_FIELDS.forEach(({ setting, i18n }) => {
+    texts[i18n] = textsDraft[setting] ?? '';
+  });
+
+  return texts;
+}
+
+function pushTexts() {
+  if (frameReady.value) {
+    postToFrame({ type: 'fc-builder:texts', texts: buildTextsMessage() });
+  }
+}
+
 const availableFonts = computed(() => {
   const fonts = store.settings?.font_family || store.runtime?.fonts || {};
 
@@ -317,6 +358,7 @@ function markReady() {
   pushLayout();
   pushSelection();
   pushTheme();
+  pushTexts();
 }
 
 function onFrameLoad() {
@@ -347,6 +389,14 @@ onBeforeUnmount(() => {
   if (readyTimer) {
     clearTimeout(readyTimer);
   }
+
+  if (themeTimer) {
+    clearTimeout(themeTimer);
+  }
+
+  if (textsTimer) {
+    clearTimeout(textsTimer);
+  }
 });
 
 watch(
@@ -370,6 +420,19 @@ watch(
     }
 
     themeTimer = setTimeout(pushTheme, 250);
+  },
+  { deep: true },
+);
+
+let textsTimer = null;
+watch(
+  () => textsDraft,
+  () => {
+    if (textsTimer) {
+      clearTimeout(textsTimer);
+    }
+
+    textsTimer = setTimeout(pushTexts, 250);
   },
   { deep: true },
 );
@@ -402,6 +465,7 @@ function cloneLayout() {
   deletedFieldIds.clear();
 
   cloneTheme();
+  cloneTexts();
 
   // Expand every step by default in the layers tree.
   Object.keys(expanded).forEach((id) => delete expanded[id]);
@@ -502,21 +566,32 @@ watch(selectedItem, (item) => {
 });
 
 const themePanel = ref(false);
+const textsPanel = ref(false);
 
 function selectTheme() {
   themePanel.value = true;
+  textsPanel.value = false;
+  selected.stepId = '';
+  selected.itemId = '';
+}
+
+function selectTexts() {
+  textsPanel.value = true;
+  themePanel.value = false;
   selected.stepId = '';
   selected.itemId = '';
 }
 
 function selectStep(step) {
   themePanel.value = false;
+  textsPanel.value = false;
   selected.stepId = step.id;
   selected.itemId = '';
 }
 
 function selectItem(step, item) {
   themePanel.value = false;
+  textsPanel.value = false;
   selected.stepId = step.id;
   selected.itemId = item.id;
 }
@@ -919,17 +994,24 @@ async function save() {
   committing.value = true;
 
   try {
-    // 0. THEME: write the draft into settings and persist them.
-    let themeChanged = false;
+    // 0. THEME + TEXTS: write the drafts into settings and persist them.
+    let settingsChanged = false;
 
     Object.entries(THEME_KEYS).forEach(([key, settingKey]) => {
       if ((store.settings[settingKey] ?? '') !== (themeDraft[key] ?? '')) {
         store.settings[settingKey] = themeDraft[key];
-        themeChanged = true;
+        settingsChanged = true;
       }
     });
 
-    if (themeChanged) {
+    TEXT_FIELDS.forEach(({ setting }) => {
+      if ((store.settings[setting] ?? '') !== (textsDraft[setting] ?? '')) {
+        store.settings[setting] = textsDraft[setting];
+        settingsChanged = true;
+      }
+    });
+
+    if (settingsChanged) {
       const response = await store.save();
 
       if (response?.status === 'error') {

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import config, { t } from '../config.js';
+import config, { t, setTextOverrides } from '../config.js';
 import { useCheckout } from '../context/CheckoutContext.jsx';
 import { builderStepFields, fieldsForStep } from '../lib/fields.js';
 import { validateFields } from '../lib/validation.js';
@@ -280,6 +280,11 @@ function EditorApp() {
         setSelected(msg.target || null);
       } else if (kind === 'theme') {
         applyTheme(msg.theme || null);
+      } else if (kind === 'texts') {
+        // Live text edits: override the i18n strings and force a re-render so
+        // headings / labels / buttons reflect instantly in the preview.
+        setTextOverrides(msg.texts || null);
+        setFieldsRev((n) => n + 1);
       }
     });
 
@@ -353,7 +358,7 @@ function CheckoutShell({ stepLabels, activeIndex, isLast, busy, onBack, onNext, 
         <div>
           <Stepper stepLabels={stepLabels} activeIndex={activeIndex} />
 
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-8">
+          <div className="lg:rounded-2xl lg:border lg:border-slate-200 lg:bg-white lg:p-8">
             {children}
 
             <div className="mt-8 flex items-center justify-between border-t border-slate-100 pt-6">

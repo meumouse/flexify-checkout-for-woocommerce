@@ -54,7 +54,7 @@ export default function StepSummary({ sections = [], onEdit }) {
   }
 
   return (
-    <div className="hidden divide-y divide-slate-100 rounded-xl border border-slate-200 lg:block">
+    <div className="divide-y divide-slate-100 rounded-xl border border-slate-200">
       {rows.map((row) => (
         <div key={row.key} className="flex items-start gap-4 p-4">
           <span className="w-16 shrink-0 text-sm text-slate-500">{row.label}</span>
