@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { t } from '../config.js';
 import { useCheckout } from '../context/CheckoutContext.jsx';
+import Checkbox from './ui/Checkbox.jsx';
 
 /**
  * "Save this address" control shown to logged-in users (Pro) under the address
@@ -28,15 +29,12 @@ export default function SaveAddressControl() {
 
   return (
     <div className="rounded-xl border border-slate-200 p-4">
-      <label className="flex cursor-pointer items-center gap-2 text-sm font-medium text-slate-700">
-        <input
-          type="checkbox"
-          checked={open}
-          onChange={(e) => setOpen(e.target.checked)}
-          className="h-4 w-4 rounded border-slate-300"
-        />
-        {t('save_this_address', 'Salvar este endereço para a próxima vez')}
-      </label>
+      <Checkbox
+        id="fc-save-address"
+        checked={open}
+        onChange={setOpen}
+        label={t('save_this_address', 'Salvar este endereço para a próxima vez')}
+      />
 
       {open && (
         <div className="mt-3 flex flex-col gap-2 sm:flex-row">
