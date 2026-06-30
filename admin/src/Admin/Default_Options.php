@@ -67,6 +67,8 @@ class Default_Options {
             'checkout_field_height' => '48',
             'checkout_bg_color' => '#FFFFFF',
             'checkout_text_color' => '#102033',
+            // Payment methods display mode in the React checkout: 'cards' or 'accordion'.
+            'payment_methods_layout' => 'cards',
             'flexify_checkout_theme' => 'swift',
             'input_border_radius' => '0.375',
             'unit_input_border_radius' => 'rem',

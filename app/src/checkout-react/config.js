@@ -72,3 +72,40 @@ export function t(key, fallbackText = '') {
 
   return (config.i18n && config.i18n[key]) || fallbackText || key;
 }
+
+/**
+ * Live checkout-setting overrides pushed by the builder preview (postMessage),
+ * mirroring textOverrides. Only set by EditorApp so operator changes (e.g. the
+ * payment methods layout) reflect instantly; the storefront reads config.settings.
+ *
+ * @type {Object<string,*>|null}
+ */
+let settingsOverrides = null;
+
+/**
+ * Set (or clear) the live checkout-setting overrides.
+ *
+ * @param {Object<string,*>|null} map setting key => value, or null to clear.
+ * @returns {void}
+ */
+export function setSettingsOverrides(map) {
+  settingsOverrides = map && typeof map === 'object' ? map : null;
+}
+
+/**
+ * Read an operator-tunable checkout setting (settings.checkout.*), honoring a
+ * live builder override when present.
+ *
+ * @param {string} key Setting key under settings.checkout.
+ * @param {*} fallbackValue Default when unset.
+ * @returns {*}
+ */
+export function getCheckoutSetting(key, fallbackValue) {
+  if (settingsOverrides && settingsOverrides[key] !== undefined && settingsOverrides[key] !== '') {
+    return settingsOverrides[key];
+  }
+
+  const checkout = (config.settings && config.settings.checkout) || {};
+
+  return checkout[key] !== undefined ? checkout[key] : fallbackValue;
+}

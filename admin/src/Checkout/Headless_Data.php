@@ -296,6 +296,22 @@ class Headless_Data {
 
 
     /**
+     * Resolve the payment methods display mode for the React checkout.
+     *
+     * Falls back to the card grid when the stored value is missing or unknown,
+     * so the frontend never has to guard against an invalid layout.
+     *
+     * @since 6.0.0
+     * @return string One of: cards, accordion.
+     */
+    public static function resolve_payment_methods_layout() {
+        $layout = (string) Admin_Options::get_setting('payment_methods_layout');
+
+        return in_array( $layout, array( 'cards', 'accordion' ), true ) ? $layout : 'cards';
+    }
+
+
+    /**
      * Build the public settings payload (operator-tunable, non-sensitive).
      *
      * @since 6.0.0
@@ -310,6 +326,7 @@ class Headless_Data {
                 'split_payment' => Admin_Options::get_setting('enable_payment_split') === 'yes',
                 'cpf_required' => self::is_field_required( $fields, 'billing_cpf', $registered ),
                 'birthdate_required' => self::is_field_required( $fields, 'billing_birthdate', $registered ),
+                'payment_methods_layout' => self::resolve_payment_methods_layout(),
                 'pix_discount_percent' => 0,
                 'max_installments' => 1,
                 'interest_free_installments' => 0,

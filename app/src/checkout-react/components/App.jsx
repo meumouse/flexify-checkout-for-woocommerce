@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import config, { t, setTextOverrides } from '../config.js';
+import config, { t, setTextOverrides, setSettingsOverrides } from '../config.js';
 import { useCheckout } from '../context/CheckoutContext.jsx';
 import { builderStepFields, fieldsForStep } from '../lib/fields.js';
 import { validateFields } from '../lib/validation.js';
@@ -284,6 +284,11 @@ function EditorApp() {
         // Live text edits: override the i18n strings and force a re-render so
         // headings / labels / buttons reflect instantly in the preview.
         setTextOverrides(msg.texts || null);
+        setFieldsRev((n) => n + 1);
+      } else if (kind === 'settings') {
+        // Live checkout-setting edits (e.g. payment methods layout): override
+        // and force a re-render so the change reflects instantly in the preview.
+        setSettingsOverrides(msg.settings || null);
         setFieldsRev((n) => n + 1);
       }
     });

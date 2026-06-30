@@ -69,6 +69,11 @@ const REVIEW_LAYOUTS = [
   { value: 'carousel', label: 'Carrossel' },
 ];
 
+const PAYMENT_LAYOUT_OPTIONS = [
+  { value: 'cards', label: 'Cards' },
+  { value: 'accordion', label: 'Sanfona' },
+];
+
 const HTML_VARIANTS = [
   { value: 'raw', label: 'HTML puro' },
   { value: 'banner', label: 'Banner' },
@@ -197,6 +202,33 @@ function buildTextsMessage() {
 function pushTexts() {
   if (frameReady.value) {
     postToFrame({ type: 'fc-builder:texts', texts: buildTextsMessage() });
+  }
+}
+
+// --- Checkout settings draft (operator-tunable, persisted to settings on Save) ---
+
+// settings key (also the key read by the React checkout under settings.checkout).
+const CHECKOUT_SETTING_DEFAULTS = {
+  payment_methods_layout: 'cards',
+};
+
+const settingsDraft = reactive({});
+
+function cloneSettings() {
+  const settings = store.settings || {};
+
+  Object.entries(CHECKOUT_SETTING_DEFAULTS).forEach(([key, fallbackValue]) => {
+    settingsDraft[key] = settings[key] || fallbackValue;
+  });
+}
+
+function buildSettingsMessage() {
+  return { ...settingsDraft };
+}
+
+function pushSettings() {
+  if (frameReady.value) {
+    postToFrame({ type: 'fc-builder:settings', settings: buildSettingsMessage() });
   }
 }
 
@@ -359,6 +391,7 @@ function markReady() {
   pushSelection();
   pushTheme();
   pushTexts();
+  pushSettings();
 }
 
 function onFrameLoad() {
@@ -396,6 +429,10 @@ onBeforeUnmount(() => {
 
   if (textsTimer) {
     clearTimeout(textsTimer);
+  }
+
+  if (settingsTimer) {
+    clearTimeout(settingsTimer);
   }
 });
 
@@ -437,6 +474,19 @@ watch(
   { deep: true },
 );
 
+let settingsTimer = null;
+watch(
+  () => settingsDraft,
+  () => {
+    if (settingsTimer) {
+      clearTimeout(settingsTimer);
+    }
+
+    settingsTimer = setTimeout(pushSettings, 250);
+  },
+  { deep: true },
+);
+
 watch(
   () => [selected.stepId, selected.itemId],
   () => pushSelection(),
@@ -466,6 +516,7 @@ function cloneLayout() {
 
   cloneTheme();
   cloneTexts();
+  cloneSettings();
 
   // Expand every step by default in the layers tree.
   Object.keys(expanded).forEach((id) => delete expanded[id]);
@@ -1007,6 +1058,13 @@ async function save() {
     TEXT_FIELDS.forEach(({ setting }) => {
       if ((store.settings[setting] ?? '') !== (textsDraft[setting] ?? '')) {
         store.settings[setting] = textsDraft[setting];
+        settingsChanged = true;
+      }
+    });
+
+    Object.keys(CHECKOUT_SETTING_DEFAULTS).forEach((key) => {
+      if ((store.settings[key] ?? '') !== (settingsDraft[key] ?? '')) {
+        store.settings[key] = settingsDraft[key];
         settingsChanged = true;
       }
     });
@@ -1782,6 +1840,14 @@ async function save() {
             <div class="flex items-center justify-between gap-2">
               <span class="text-xs font-medium text-ink">Etapa ativa</span>
               <ToggleSwitch v-model="selectedStep.enabled" :true-value="true" :false-value="false" />
+            </div>
+
+            <div v-if="selectedStep.type === 'payment'" class="border-t border-slate-100 pt-4">
+              <label class="mb-1 block text-xs font-medium text-ink">Exibição das formas de pagamento</label>
+              <BaseSelect v-model="settingsDraft.payment_methods_layout" :options="PAYMENT_LAYOUT_OPTIONS" size="sm" />
+              <p class="m-0 mt-1.5 text-[11px] text-muted">
+                Escolha entre exibir as formas de pagamento em cards ou em modo sanfona. Cada forma usa o ícone fornecido pela sua integração.
+              </p>
             </div>
 
             <div v-if="selectedStep.type === 'custom'" class="border-t border-slate-100 pt-4">
