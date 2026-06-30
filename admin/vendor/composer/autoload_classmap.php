@@ -24,6 +24,7 @@ return array(
     'MeuMouse\\Flexify_Checkout\\Admin\\Settings\\Views\\Integrations' => $baseDir . '/src/Admin/Settings/Views/Integrations.php',
     'MeuMouse\\Flexify_Checkout\\Admin\\Settings_Import_Export' => $baseDir . '/src/Admin/Settings_Import_Export.php',
     'MeuMouse\\Flexify_Checkout\\Assets\\Settings_Assets' => $baseDir . '/src/Assets/Settings_Assets.php',
+    'MeuMouse\\Flexify_Checkout\\Checkout\\Blocks_Payment_Bridge' => $baseDir . '/src/Checkout/Blocks_Payment_Bridge.php',
     'MeuMouse\\Flexify_Checkout\\Checkout\\Common' => $baseDir . '/src/Checkout/Common.php',
     'MeuMouse\\Flexify_Checkout\\Checkout\\Conditions' => $baseDir . '/src/Checkout/Conditions.php',
     'MeuMouse\\Flexify_Checkout\\Checkout\\Coupons' => $baseDir . '/src/Checkout/Coupons.php',

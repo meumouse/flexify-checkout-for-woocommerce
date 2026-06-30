@@ -1,6 +1,14 @@
+import { useEffect, useRef } from 'react';
 import config, { getCheckoutSetting } from '../config.js';
 import { useCheckout } from '../context/CheckoutContext.jsx';
 import { resolveAvailableGateways } from '../lib/gateways.js';
+import { isEditor } from '../lib/editorBridge.js';
+import {
+  blocksRuntimeReady,
+  mountBlocksGateway,
+  refreshActiveBilling,
+  unmountBlocksGateway,
+} from '../lib/blocksPaymentBridge.js';
 import SplitPaymentSlot from './SplitPaymentSlot.jsx';
 import { PixIcon, CreditCardIcon, BarcodeIcon, ChevronDownIcon } from './ui/Icons.jsx';
 
@@ -165,6 +173,14 @@ function DetailIcon({ gateway, fallback }) {
 }
 
 function GatewayDetail({ gateway }) {
+  // Card gateways with a WooCommerce Blocks integration (e.g. Mercado Pago
+  // credit card) render their own payment component — card fields, SDK,
+  // installments — through the Blocks bridge instead of a plain description.
+  // Pix / boleto keep Swift's curated panels, which already drive their async flow.
+  if (gateway.blocks && gateway.blocks_name && gateway.kind === 'card') {
+    return <BlockPaymentSlot gateway={gateway} />;
+  }
+
   if (gateway.kind === 'pix') {
     return (
       <div className="rounded-xl border border-slate-200 px-6 py-6 text-center">
@@ -199,4 +215,61 @@ function GatewayDetail({ gateway }) {
   }
 
   return null;
+}
+
+/**
+ * Host for a gateway's WooCommerce Blocks payment component. The component is
+ * rendered with WordPress's React (`wp.element`) into a DOM node this React tree
+ * only provides — see lib/blocksPaymentBridge.js. We mount on select, refresh the
+ * billing prop on cart-total changes (so amount-dependent fields re-init), and
+ * unmount on cleanup. In the live builder preview we never load a real gateway.
+ */
+function BlockPaymentSlot({ gateway }) {
+  const { cart } = useCheckout();
+  const containerRef = useRef(null);
+  // Keep the latest cart available to the bridge without remounting the gateway.
+  const cartRef = useRef(cart);
+  cartRef.current = cart;
+
+  const total = cart?.totals?.total_price;
+
+  useEffect(() => {
+    if (isEditor()) {
+      return undefined;
+    }
+
+    const container = containerRef.current;
+
+    if (!container || !blocksRuntimeReady()) {
+      return undefined;
+    }
+
+    mountBlocksGateway(container, gateway.blocks_name, {
+      getCart: () => cartRef.current,
+    }).catch(() => {});
+
+    return () => {
+      unmountBlocksGateway();
+    };
+    // Remount when the selected gateway changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gateway.blocks_name]);
+
+  // Re-render the gateway with the new total so it can recompute installments /
+  // re-initialize its card form for the updated amount.
+  useEffect(() => {
+    if (!isEditor()) {
+      refreshActiveBilling();
+    }
+  }, [total]);
+
+  if (isEditor()) {
+    return (
+      <div className="rounded-xl border border-dashed border-slate-300 px-4 py-6 text-center text-sm text-slate-400">
+        {gateway.title}
+      </div>
+    );
+  }
+
+  return <div ref={containerRef} className="fc-blocks-payment" />;
 }

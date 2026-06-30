@@ -39,6 +39,7 @@ class ComposerStaticInit178be007d0b6d0c39a4c2788c7b3977c
         'MeuMouse\\Flexify_Checkout\\Admin\\Settings\\Views\\Integrations' => __DIR__ . '/../..' . '/src/Admin/Settings/Views/Integrations.php',
         'MeuMouse\\Flexify_Checkout\\Admin\\Settings_Import_Export' => __DIR__ . '/../..' . '/src/Admin/Settings_Import_Export.php',
         'MeuMouse\\Flexify_Checkout\\Assets\\Settings_Assets' => __DIR__ . '/../..' . '/src/Assets/Settings_Assets.php',
+        'MeuMouse\\Flexify_Checkout\\Checkout\\Blocks_Payment_Bridge' => __DIR__ . '/../..' . '/src/Checkout/Blocks_Payment_Bridge.php',
         'MeuMouse\\Flexify_Checkout\\Checkout\\Common' => __DIR__ . '/../..' . '/src/Checkout/Common.php',
         'MeuMouse\\Flexify_Checkout\\Checkout\\Conditions' => __DIR__ . '/../..' . '/src/Checkout/Conditions.php',
         'MeuMouse\\Flexify_Checkout\\Checkout\\Coupons' => __DIR__ . '/../..' . '/src/Checkout/Coupons.php',

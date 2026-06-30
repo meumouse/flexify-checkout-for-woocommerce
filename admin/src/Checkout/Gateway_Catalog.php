@@ -93,7 +93,16 @@ class Gateway_Catalog {
             }
         }
 
+        // Gateways that ship a WooCommerce Blocks payment integration. The React
+        // checkout mounts their own payment component (SDK card form, tokenization,
+        // 3DS) through the Blocks bridge instead of rendering a plain description.
+        $block_names = Blocks_Payment_Bridge::get_active_block_names();
+
         foreach ( $available as $gateway ) {
+            // The Blocks payment method name matches the gateway id for the
+            // integrations we bridge (e.g. woo-mercado-pago-custom).
+            $has_block = in_array( (string) $gateway->id, $block_names, true );
+
             $entry = array(
                 'id' => (string) $gateway->id,
                 'kind' => self::resolve_kind( $gateway ),
@@ -103,6 +112,11 @@ class Gateway_Catalog {
                 'supports_redirect' => method_exists( $gateway, 'get_return_url' ),
                 'supports_tokenization' => (bool) $gateway->supports('tokenization'),
                 'async_confirmation' => in_array( self::resolve_kind( $gateway ), array( 'pix', 'boleto' ), true ),
+                // When true, the React checkout renders the gateway's Blocks payment
+                // component (its own fields/SDK) and forwards the emitted data to the
+                // Store API as payment_data. blocks_name is the registered method name.
+                'blocks' => $has_block,
+                'blocks_name' => $has_block ? (string) $gateway->id : '',
                 'publishable_key' => '',
                 'installments' => null,
                 'discount_rule' => null,

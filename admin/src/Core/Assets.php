@@ -425,6 +425,12 @@ class Assets {
 			true
 		);
 
+		// Make WooCommerce Blocks payment integrations (Mercado Pago, Stripe, …)
+		// available to the React checkout: enqueue their scripts/SDK and publish
+		// their data, so the Swift app can mount each gateway's own payment
+		// component and forward the result to the Store API as payment_data.
+		\MeuMouse\Flexify_Checkout\Checkout\Blocks_Payment_Bridge::enqueue();
+
 		/**
 		 * Filter the data localized for the React checkout app.
 		 *

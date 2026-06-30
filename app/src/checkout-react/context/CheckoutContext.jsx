@@ -2,6 +2,13 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import storeApi from '../api/storeApi.js';
 import config, { t } from '../config.js';
 import { resolveAvailableGateways } from '../lib/gateways.js';
+import {
+  hasActiveBlocksGateway,
+  runActiveCheckoutFail,
+  runActiveCheckoutSuccess,
+  runActivePaymentSetup,
+  toProcessingResponse,
+} from '../lib/blocksPaymentBridge.js';
 import { stateOptions } from '../lib/geo.js';
 import { isEditor } from '../lib/editorBridge.js';
 import { clearFormData, loadFormData, saveFormData } from '../lib/persistence.js';
@@ -203,7 +210,46 @@ export function CheckoutProvider({ children }) {
           extensions: { 'flexify-checkout': { fields: extraFields } },
         };
 
-        const result = await storeApi.placeOrder(payload);
+        // For gateways rendered through the Blocks bridge (e.g. Mercado Pago
+        // credit card), run their payment-setup step to tokenize the card and
+        // collect the fields WooCommerce expects as `payment_data`.
+        // Match the render gate in PaymentMethods: only card gateways go through
+        // the Blocks bridge; pix / boleto keep Swift's own placement flow.
+        const selected = resolveAvailableGateways(cart).find((g) => g.id === selectedGateway);
+        const usesBlocks = !!selected?.blocks && selected.kind === 'card';
+
+        if (usesBlocks) {
+          // The gateway's payment component must be mounted to tokenize the card.
+          if (!hasActiveBlocksGateway()) {
+            throw new Error(t('payment_not_ready', 'O formulário de pagamento ainda está carregando. Aguarde um instante e tente novamente.'));
+          }
+
+          const paymentData = await runActivePaymentSetup();
+
+          if (Array.isArray(paymentData) && paymentData.length) {
+            payload.payment_data = paymentData;
+          }
+        }
+
+        let result;
+
+        try {
+          result = await storeApi.placeOrder(payload);
+        } catch (e) {
+          // Let the gateway reset its state / surface a message on failure.
+          if (usesBlocks) {
+            await runActiveCheckoutFail(toProcessingResponse(e?.response));
+          }
+
+          throw e;
+        }
+
+        // Let the gateway complete any post-placement flow (e.g. 3-D Secure)
+        // before we follow the redirect.
+        if (usesBlocks) {
+          await runActiveCheckoutSuccess(toProcessingResponse(result));
+        }
+
         const redirect = result?.payment_result?.redirect_url;
 
         if (redirect) {
@@ -222,7 +268,7 @@ export function CheckoutProvider({ children }) {
         throw e;
       }
     }),
-    [billing, selectedGateway, customerNote, extraFields, withBusy],
+    [billing, selectedGateway, customerNote, extraFields, cart, withBusy],
   );
 
   const value = useMemo(
