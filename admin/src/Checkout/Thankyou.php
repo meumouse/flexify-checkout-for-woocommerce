@@ -716,9 +716,15 @@ class Thankyou {
 			return;
 		}
 
+		$success = sanitize_hex_color( Admin_Options::get_setting('set_success_color') );
+
+		if ( empty( $success ) ) {
+			$success = '#22c55e';
+		}
+
 		do_action( 'flexify_checkout_thankyou_before_order_status', $order ); ?>
 
-		<div class="flexify-swift-ty">
+		<div class="flexify-swift-ty" style="--flexify-swift-success: <?php echo esc_attr( $success ); ?>;">
 			<?php
 			self::render_swift_confetti( $order );
 			self::render_swift_header( $order );
@@ -901,7 +907,7 @@ class Thankyou {
 	 */
 	public static function render_swift_header( $order ) {
 		$order_number = self::get_order_number( $order );
-		$email = $order->get_billing_email(); ?>
+		$first_name = $order->get_billing_first_name(); ?>
 
 		<div class="flexify-swift-ty__hero">
 			<span class="flexify-swift-ty__check" aria-hidden="true">
@@ -910,29 +916,19 @@ class Thankyou {
 				</svg>
 			</span>
 
-			<h1 class="flexify-swift-ty__title"><?php esc_html_e( 'Thank you for your order!', 'flexify-checkout-for-woocommerce' ); ?></h1>
-			<p class="flexify-swift-ty__subtitle"><?php esc_html_e( 'Your order has been received and is being processed', 'flexify-checkout-for-woocommerce' ); ?></p>
+			<h1 class="flexify-swift-ty__title">
+				<?php
+				if ( $first_name !== '' ) {
+					printf( esc_html__( 'Thank you, %s!', 'flexify-checkout-for-woocommerce' ), esc_html( $first_name ) );
+				} else {
+					esc_html_e( 'Thank you for your order!', 'flexify-checkout-for-woocommerce' );
+				}
+				?>
+			</h1>
 
-			<div class="flexify-swift-ty__order-number">
-				<span class="flexify-swift-ty__order-number-label"><?php esc_html_e( 'Order number', 'flexify-checkout-for-woocommerce' ); ?></span>
-				<span class="flexify-swift-ty__order-number-value" data-flexify-copy-value="<?php echo esc_attr( $order_number ); ?>"><?php echo esc_html( $order_number ); ?></span>
-				<button type="button" class="flexify-swift-ty__copy" data-flexify-copy aria-label="<?php esc_attr_e( 'Copy order number', 'flexify-checkout-for-woocommerce' ); ?>">
-					<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-						<rect x="9" y="9" width="11" height="11" rx="2" stroke="currentColor" stroke-width="1.6"/>
-						<path d="M5 15V5a2 2 0 0 1 2-2h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-					</svg>
-				</button>
-			</div>
-
-			<?php if ( ! empty( $email ) ) : ?>
-				<p class="flexify-swift-ty__email">
-					<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-						<rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.6"/>
-						<path d="m4 7 8 6 8-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-					</svg>
-					<?php printf( esc_html__( 'Order confirmation sent to %s', 'flexify-checkout-for-woocommerce' ), '<strong>' . esc_html( $email ) . '</strong>' ); ?>
-				</p>
-			<?php endif; ?>
+			<p class="flexify-swift-ty__order-line">
+				<?php esc_html_e( 'Order number', 'flexify-checkout-for-woocommerce' ); ?>: <strong><?php echo esc_html( $order_number ); ?></strong>
+			</p>
 		</div>
 		<?php
 	}
@@ -1188,41 +1184,6 @@ class Thankyou {
 				</div>
 			</div>
 		</div>
-
-		<script>
-		( function() {
-			var root = document.querySelector('.flexify-swift-ty');
-
-			if ( ! root || root.dataset.flexifyCopyBound ) {
-				return;
-			}
-
-			root.dataset.flexifyCopyBound = '1';
-
-			root.addEventListener('click', function( event ) {
-				var button = event.target.closest('[data-flexify-copy]');
-
-				if ( ! button ) {
-					return;
-				}
-
-				var value = root.querySelector('[data-flexify-copy-value]');
-				var text = value ? value.getAttribute('data-flexify-copy-value') : '';
-
-				if ( ! text || ! navigator.clipboard ) {
-					return;
-				}
-
-				navigator.clipboard.writeText( text ).then( function() {
-					button.classList.add('is-copied');
-
-					setTimeout( function() {
-						button.classList.remove('is-copied');
-					}, 1600 );
-				} );
-			} );
-		} )();
-		</script>
 		<?php
 	}
 

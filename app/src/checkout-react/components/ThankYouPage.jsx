@@ -50,64 +50,32 @@ function ThankYouHeader() {
 }
 
 /**
- * Success hero: check, title, order-received text, order number (copy), email.
+ * Success hero: success check, personalized greeting, plain order number.
  */
 function Hero({ ty }) {
-  const [copied, setCopied] = useState(false);
-
-  const copy = () => {
-    if (!navigator.clipboard || !ty.order_number) {
-      return;
-    }
-
-    navigator.clipboard.writeText(String(ty.order_number)).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1600);
-    });
-  };
+  const name = (ty.first_name || '').trim();
+  const greeting = name
+    ? t('thankyou_greeting', 'Thank you, %s!').replace('%s', name)
+    : t('thankyou_title', 'Thank you for your order!');
 
   return (
     <div className="text-center">
-      <span className="fc-soft-bg fc-primary-text mb-5 inline-flex h-16 w-16 items-center justify-center rounded-full">
+      <span
+        className="mb-5 inline-flex h-16 w-16 items-center justify-center rounded-full"
+        style={{
+          backgroundColor: 'color-mix(in srgb, var(--fc-success) 15%, #ffffff)',
+          color: 'var(--fc-success)',
+        }}
+      >
         <CheckIcon className="h-8 w-8" />
       </span>
 
-      <h1 className="mb-2 text-2xl font-bold text-slate-900 sm:text-3xl">
-        {t('thankyou_title', 'Obrigado pelo seu pedido!')}
-      </h1>
+      <h1 className="mb-2 text-2xl font-bold text-slate-900 sm:text-3xl">{greeting}</h1>
 
-      {ty.received_text && (
-        <p
-          className="mx-auto mb-6 max-w-md text-slate-500"
-          dangerouslySetInnerHTML={{ __html: ty.received_text }}
-        />
-      )}
-
-      <div className="inline-flex items-center gap-3.5 rounded-xl border border-slate-200 px-4 py-3">
-        <span className="text-[11px] uppercase tracking-wider text-slate-400">
-          {t('order_number', 'Número do pedido')}
-        </span>
-        <span className="font-semibold text-slate-900">{ty.order_number}</span>
-        <button
-          type="button"
-          onClick={copy}
-          aria-label={t('copy_order_number', 'Copiar número do pedido')}
-          className={[
-            'inline-flex h-8 w-8 items-center justify-center rounded-lg border bg-slate-50 transition-colors',
-            copied ? 'fc-primary-border fc-primary-text' : 'border-slate-200 text-slate-500 hover:text-slate-700',
-          ].join(' ')}
-        >
-          {copied ? <CheckIcon className="h-4 w-4" /> : <CopyGlyph />}
-        </button>
-      </div>
-
-      {ty.email && (
-        <p className="mt-4 flex items-center justify-center gap-2 text-sm text-slate-500">
-          <MailGlyph />
-          {t('order_confirmation_sent', 'Confirmação do pedido enviada para')}{' '}
-          <strong className="font-semibold text-slate-700">{ty.email}</strong>
-        </p>
-      )}
+      <p className="text-[13px] uppercase tracking-wider text-slate-400">
+        {t('order_number', 'Order number')}:{' '}
+        <span className="font-semibold text-slate-600">{ty.order_number}</span>
+      </p>
     </div>
   );
 }
@@ -440,24 +408,6 @@ export default function ThankYouPage() {
 }
 
 /* Inline glyphs for icons not in the shared set. */
-
-function CopyGlyph() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4" aria-hidden="true">
-      <rect x="9" y="9" width="11" height="11" rx="2" stroke="currentColor" strokeWidth="1.6" />
-      <path d="M5 15V5a2 2 0 0 1 2-2h10" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function MailGlyph() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" className="h-[18px] w-[18px] text-slate-400" aria-hidden="true">
-      <rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" strokeWidth="1.6" />
-      <path d="m4 7 8 6 8-6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
 
 function HelpGlyph() {
   return (

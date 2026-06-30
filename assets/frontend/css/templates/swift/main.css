@@ -140,9 +140,22 @@ body.woocommerce-order-received {
 	height: 64px;
 	border-radius: 50%;
 	background-color: #dcfce7;
-	background-color: color-mix(in srgb, var(--flexify-swift-primary) 16%, white);
-	color: var(--flexify-swift-primary);
+	background-color: color-mix(in srgb, var(--flexify-swift-success, #22c55e) 15%, white);
+	color: var(--flexify-swift-success, #22c55e);
 	margin-bottom: 18px;
+}
+
+.flexify-swift-ty__order-line {
+	margin: 4px 0 0;
+	font-size: 13px;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+	color: var(--flexify-swift-muted);
+}
+
+.flexify-swift-ty__order-line strong {
+	font-weight: 600;
+	color: var(--flexify-swift-text);
 }
 
 .flexify-swift-ty__check svg {

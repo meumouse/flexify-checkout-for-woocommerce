@@ -446,6 +446,7 @@ class Headless_Data {
             'order_id' => $order_id,
             'order_key' => $order->get_order_key(),
             'order_number' => Thankyou::get_order_number( $order ),
+            'first_name' => $order->get_billing_first_name(),
             'email' => $order->get_billing_email(),
             'status' => $order->get_status(),
             'needs_shipping' => (bool) $has_shipping,
