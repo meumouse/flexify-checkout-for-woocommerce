@@ -541,6 +541,30 @@ class Assets {
 			'thankyou' => $this->is_react_thankyou() ? Headless_Data::get_thankyou_data( React_Checkout::get_current_order() ) : null,
 		));
 
+		// Apply the operator-configured texts to the Swift (React) checkout, so the
+		// labels set in the plugin settings drive the checkout UI instead of the
+		// built-in i18n defaults. Each entry maps a React i18n key to its setting;
+		// an empty setting keeps the localized default.
+		$text_settings = array(
+			'contact'          => 'text_check_step_1',
+			'shipping'         => 'text_check_step_2',
+			'payment'          => 'text_check_step_3',
+			'contact_title'    => 'text_header_step_1',
+			'shipping_address' => 'text_header_step_2',
+			'payment_methods'  => 'text_header_step_3',
+			'cart'             => 'text_header_sidebar_right',
+			'shipping_methods' => 'text_shipping_methods_label',
+			'back'             => 'text_previous_step_button',
+		);
+
+		foreach ( $text_settings as $i18n_key => $option_key ) {
+			$value = Admin_Options::get_setting( $option_key );
+
+			if ( is_string( $value ) && '' !== trim( $value ) ) {
+				$data['i18n'][ $i18n_key ] = $value;
+			}
+		}
+
 		// Live builder preview: force editor mode and always feed the current
 		// layout (even when the public toggle is off), so the admin can design
 		// the checkout before enabling it for shoppers.
