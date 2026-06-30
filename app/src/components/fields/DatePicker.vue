@@ -300,9 +300,9 @@ onBeforeUnmount(() => document.removeEventListener('mousedown', onDocumentClick)
         v-if="open"
         role="dialog"
         aria-label="Selecionar data"
-        class="absolute left-0 top-[calc(100%+4px)] z-30 w-72 rounded-xl border border-slate-200 bg-white p-3 shadow-lg"
+        class="absolute left-0 top-[calc(100%+4px)] z-30 w-80 rounded-xl border border-slate-200 bg-white p-3 shadow-lg"
       >
-        <div class="mb-3 flex items-center gap-2">
+        <div class="mb-3 flex items-center gap-1.5">
           <button
             type="button"
             class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100"
@@ -312,7 +312,7 @@ onBeforeUnmount(() => document.removeEventListener('mousedown', onDocumentClick)
             <BoxIcon name="chevron-left" class="h-4 w-4" />
           </button>
 
-          <div class="flex min-w-0 flex-1 gap-2">
+          <div class="flex min-w-0 flex-1 gap-1.5">
             <BaseSelect
               size="sm"
               class="min-w-0 flex-1"
@@ -322,7 +322,7 @@ onBeforeUnmount(() => document.removeEventListener('mousedown', onDocumentClick)
             />
             <BaseSelect
               size="sm"
-              class="w-24 shrink-0"
+              class="w-[4.75rem] shrink-0"
               :model-value="String(view.year)"
               :options="yearOptions"
               @update:model-value="onYear"

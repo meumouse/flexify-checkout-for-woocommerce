@@ -264,9 +264,9 @@ export default function DatePicker({
         <div
           role="dialog"
           aria-label="Selecionar data"
-          className="absolute z-30 mt-1 w-72 rounded-xl border border-slate-200 bg-white p-3 shadow-lg"
+          className="absolute z-30 mt-1 w-80 rounded-xl border border-slate-200 bg-white p-3 shadow-lg"
         >
-          <div className="mb-3 flex items-center gap-2">
+          <div className="mb-3 flex items-center gap-1.5">
             <button
               type="button"
               className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100"
@@ -276,7 +276,7 @@ export default function DatePicker({
               <ChevronLeftIcon className="h-4 w-4" />
             </button>
 
-            <div className="flex min-w-0 flex-1 gap-2">
+            <div className="flex min-w-0 flex-1 gap-1.5">
               <div className="min-w-0 flex-1">
                 <Select
                   size="sm"
@@ -286,7 +286,7 @@ export default function DatePicker({
                   className="!px-2"
                 />
               </div>
-              <div className="w-24 shrink-0">
+              <div className="w-[4.75rem] shrink-0">
                 <Select
                   size="sm"
                   value={String(view.year)}
