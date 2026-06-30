@@ -177,30 +177,6 @@ body.flexify-react-thankyou {
   color: #ffffff;
 }
 
-/* Toast notifications. Slide/fade in from the top; container is z-1100 so it
-   floats above the order summary bottom sheet but below the purchase overlay. */
-.fc-toast {
-  animation: fc-toast-in 0.18s ease-out;
-}
-
-@keyframes fc-toast-in {
-  from {
-    opacity: 0;
-    transform: translateY(-8px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .fc-toast {
-    animation: none;
-  }
-}
-
 /*
  * Loading skeleton. A shimmering placeholder bar; used by CheckoutSkeleton.jsx
  * (cart-loading state) and by the static markup in template-react.php (the gap

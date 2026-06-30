@@ -1,77 +1,53 @@
 /**
  * Toast notifications for the checkout.
  *
- * Holds the active toast queue, auto-dismisses each after a type-based timeout,
- * and renders the ToastContainer. Mounted ABOVE CheckoutProvider so checkout
- * actions can surface errors/successes via useToast().
+ * Thin wrapper over Sonner: ToastProvider mounts the <Toaster /> and exposes the
+ * same { pushToast, dismissToast } API the checkout already calls, so Sonner
+ * drives the rendering while call sites stay unchanged. Mounted ABOVE
+ * CheckoutProvider so checkout actions can surface errors/successes via useToast().
  *
  * @since 6.0.0
  */
-import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import ToastContainer from '../components/ToastContainer.jsx';
+import { createContext, useContext, useMemo } from 'react';
+import { Toaster, toast } from 'sonner';
 
 const ToastContext = createContext(null);
 
 // Default lifetimes (ms) per type. Errors linger longer so they can be read.
 const DURATIONS = { error: 6000, success: 4000, info: 5000 };
 
+// Messages may carry HTML entities / markup from the (server-sanitized)
+// WooCommerce Store API, so they are rendered as HTML — mirroring HtmlBlock.
+function Message({ html }) {
+  return <span dangerouslySetInnerHTML={{ __html: html }} />;
+}
+
 export function ToastProvider({ children }) {
-  const [toasts, setToasts] = useState([]);
-  const counter = useRef(0);
-  const timers = useRef(new Map());
-
-  const dismissToast = useCallback((id) => {
-    setToasts((prev) => prev.filter((toast) => toast.id !== id));
-
-    const timer = timers.current.get(id);
-
-    if (timer) {
-      clearTimeout(timer);
-      timers.current.delete(id);
-    }
-  }, []);
-
-  const pushToast = useCallback(
-    (input) => {
-      const toast = typeof input === 'string' ? { message: input } : input || {};
-      const message = toast.message;
+  const value = useMemo(() => {
+    const pushToast = (input) => {
+      const data = typeof input === 'string' ? { message: input } : input || {};
+      const message = data.message;
 
       if (!message) {
         return null;
       }
 
-      const id = (counter.current += 1);
-      const type = toast.type || 'info';
+      const type = data.type || 'info';
+      const duration = data.duration ?? DURATIONS[type] ?? 5000;
+      const fn = toast[type] || toast;
 
-      setToasts((prev) => [...prev, { id, type, message }]);
-
-      const duration = toast.duration ?? DURATIONS[type] ?? 5000;
-
-      if (duration > 0) {
-        timers.current.set(id, setTimeout(() => dismissToast(id), duration));
-      }
-
-      return id;
-    },
-    [dismissToast],
-  );
-
-  // Clear any pending timers on unmount.
-  useEffect(() => {
-    const pending = timers.current;
-
-    return () => {
-      pending.forEach((timer) => clearTimeout(timer));
-      pending.clear();
+      return fn(<Message html={message} />, { duration });
     };
-  }, []);
 
-  const value = useMemo(() => ({ pushToast, dismissToast }), [pushToast, dismissToast]);
+    const dismissToast = (id) => toast.dismiss(id);
+
+    return { pushToast, dismissToast };
+  }, []);
 
   return (
     <ToastContext.Provider value={value}>
       {children}
-      <ToastContainer toasts={toasts} onDismiss={dismissToast} />
+      <Toaster position="top-center" richColors closeButton />
     </ToastContext.Provider>
   );
 }

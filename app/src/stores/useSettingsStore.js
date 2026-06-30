@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { toast } from 'vue-sonner';
 import { apiGet, apiPost, apiPostForm } from '../services/api';
 
 /**
@@ -59,7 +60,6 @@ export const useSettingsStore = defineStore('flexify-checkout-settings', {
     resetting: false,
     exporting: false,
     importing: false,
-    toasts: [],
   }),
 
   getters: {
@@ -122,36 +122,19 @@ export const useSettingsStore = defineStore('flexify-checkout-settings', {
     },
 
     pushToast(type, message, title = '') {
-      const id = `toast-${this.toasts.length}-${message.length}-${type}`;
       const defaultTitles = {
         success: 'Salvo com sucesso',
         error: 'Ops! Ocorreu um erro.',
         info: 'Flexify Checkout',
       };
+      const heading = title || defaultTitles[type] || defaultTitles.info;
+      const notify = toast[type] || toast.info;
 
-      this.toasts.push({
-        id,
-        type,
-        title: title || defaultTitles[type] || defaultTitles.info,
-        message,
-        closing: false,
-      });
-
-      setTimeout(() => {
-        this.toasts = this.toasts.map((toast) => (toast.id === id ? { ...toast, closing: true } : toast));
-      }, 3000);
-
-      setTimeout(() => {
-        this.toasts = this.toasts.filter((toast) => toast.id !== id);
-      }, 3500);
+      return notify(heading, { description: message });
     },
 
     dismissToast(id) {
-      this.toasts = this.toasts.map((toast) => (toast.id === id ? { ...toast, closing: true } : toast));
-
-      setTimeout(() => {
-        this.toasts = this.toasts.filter((toast) => toast.id !== id);
-      }, 180);
+      toast.dismiss(id);
     },
 
     async save() {
