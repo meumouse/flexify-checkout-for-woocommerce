@@ -98,14 +98,21 @@ class React_Checkout {
     /**
      * Swap the checkout template for the React page template.
      *
-     * Only applies on the checkout step itself — the thank-you and order-pay
-     * pages keep the legacy template.
+     * Applies on the checkout step and — when the thank-you template is enabled —
+     * on the order-received page, which renders the React thank-you instead of
+     * the classic template. The order-pay page keeps the legacy template.
      *
      * @since 6.0.0
      * @param string $template Resolved template path.
      * @return string
      */
     public function load_react_template( $template ) {
+        if ( $this->should_render_thankyou() ) {
+            $react_template = FLEXIFY_CHECKOUT_PATH . 'templates/template-react-thankyou.php';
+
+            return file_exists( $react_template ) ? $react_template : $template;
+        }
+
         if ( ! $this->should_render() ) {
             return $template;
         }
@@ -128,7 +135,50 @@ class React_Checkout {
             $classes[] = 'flexify-react-checkout-enabled';
         }
 
+        if ( $this->should_render_thankyou() ) {
+            $classes[] = 'flexify-react-checkout-enabled';
+            $classes[] = 'flexify-react-thankyou';
+        }
+
         return $classes;
+    }
+
+
+    /**
+     * Whether the React thank-you (order-received) page should render.
+     *
+     * Requires the React (Swift) checkout to be active and the custom thank-you
+     * template to be enabled — matching the gating of the classic Flexify
+     * thank-you page, so toggling the setting governs both render paths.
+     *
+     * @since 6.0.0
+     * @return bool
+     */
+    public function should_render_thankyou() {
+        return Helpers::is_react_checkout_enabled() && Helpers::is_thankyou_page();
+    }
+
+
+    /**
+     * Resolve the order for the current order-received request.
+     *
+     * @since 6.0.0
+     * @return \WC_Order|false
+     */
+    public static function get_current_order() {
+        $order_id = absint( get_query_var('order-received') );
+
+        if ( ! $order_id && isset( $_GET['order-received'] ) ) {
+            $order_id = absint( wp_unslash( $_GET['order-received'] ) );
+        }
+
+        if ( ! $order_id ) {
+            return false;
+        }
+
+        $order = wc_get_order( $order_id );
+
+        return $order instanceof \WC_Order ? $order : false;
     }
 
 

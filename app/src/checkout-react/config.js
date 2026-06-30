@@ -12,6 +12,7 @@ const fallback = {
   store_api_nonce: '',
   ajax_url: '',
   is_user_logged_in: false,
+  session_hash: '',
   base_country: 'BR',
   geo: { countries: [], states: {} },
   localstorage_fields: [],
@@ -27,6 +28,8 @@ const fallback = {
   i18n: {},
   editor: false,
   builder_nonce: '',
+  mode: 'checkout',
+  thankyou: null,
 };
 
 const config = { ...fallback, ...(typeof window !== 'undefined' ? window.flexify_react_checkout || {} : {}) };

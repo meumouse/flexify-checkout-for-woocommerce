@@ -10,6 +10,7 @@ use MeuMouse\Flexify_Checkout\Checkout\Steps;
 use MeuMouse\Flexify_Checkout\Checkout\Fields;
 use MeuMouse\Flexify_Checkout\Checkout\Conditions;
 use MeuMouse\Flexify_Checkout\Checkout\Headless_Data;
+use MeuMouse\Flexify_Checkout\Checkout\React_Checkout;
 use MeuMouse\Flexify_Checkout\Views\Styles;
 use MeuMouse\Flexify_Checkout\Validations\ISO3166;
 
@@ -142,8 +143,12 @@ class Assets {
 
 		// When the React checkout is active on the checkout step — or an admin is
 		// previewing it inside the live builder — enqueue the React bundle instead
-		// of the legacy stack and bail out early.
-		if ( is_flexify_checkout() && ( Helpers::is_react_checkout_enabled() || Helpers::is_builder_preview() ) ) {
+		// of the legacy stack and bail out early. Also covers the React thank-you
+		// (order-received) page, which renders the React bundle in thank-you mode.
+		if (
+			( is_flexify_checkout() && ( Helpers::is_react_checkout_enabled() || Helpers::is_builder_preview() ) )
+			|| $this->is_react_thankyou()
+		) {
 			$this->react_checkout_assets();
 
 			return;
@@ -312,6 +317,17 @@ class Assets {
 
 
 	/**
+	 * Whether the current request is the React thank-you (order-received) page.
+	 *
+	 * @since 6.0.0
+	 * @return bool
+	 */
+	private function is_react_thankyou() {
+		return Helpers::is_react_checkout_enabled() && Helpers::is_thankyou_page();
+	}
+
+
+	/**
 	 * Enqueue and localize the React checkout bundle.
 	 *
 	 * Built by app/vite.checkout-react.config.js into app/dist/checkout-react/.
@@ -421,6 +437,7 @@ class Assets {
 			'store_api_nonce' => wp_create_nonce('wc_store_api'),
 			'ajax_url' => admin_url('admin-ajax.php'),
 			'is_user_logged_in' => is_user_logged_in(),
+			'session_hash' => $this->get_session_hash(),
 			'base_country' => Fields::get_base_country(),
 			'geo' => Headless_Data::get_geo_data(),
 			'localstorage_fields' => Fields::get_localstorage_fields(),
@@ -503,7 +520,24 @@ class Assets {
 				'loading' => __( 'Loading…', 'flexify-checkout-for-woocommerce' ),
 				'empty_cart' => __( 'Your cart is empty.', 'flexify-checkout-for-woocommerce' ),
 				'generic_error' => __( 'An error occurred. Please try again.', 'flexify-checkout-for-woocommerce' ),
+				'thankyou_title' => __( 'Thank you for your order!', 'flexify-checkout-for-woocommerce' ),
+				'order_number' => __( 'Order number', 'flexify-checkout-for-woocommerce' ),
+				'copy_order_number' => __( 'Copy order number', 'flexify-checkout-for-woocommerce' ),
+				'copied' => __( 'Copied', 'flexify-checkout-for-woocommerce' ),
+				'order_confirmation_sent' => __( 'Order confirmation sent to', 'flexify-checkout-for-woocommerce' ),
+				'qty' => __( 'Qty', 'flexify-checkout-for-woocommerce' ),
+				'delivery_details' => __( 'Delivery Details', 'flexify-checkout-for-woocommerce' ),
+				'shipping_to' => __( 'Shipping to', 'flexify-checkout-for-woocommerce' ),
+				'shipping_method' => __( 'Shipping method', 'flexify-checkout-for-woocommerce' ),
+				'estimated_delivery' => __( 'Estimated delivery', 'flexify-checkout-for-woocommerce' ),
+				'estimated_delivery_note' => __( 'We will send you tracking information as soon as your order ships', 'flexify-checkout-for-woocommerce' ),
+				'what_happens_next' => __( 'What happens next', 'flexify-checkout-for-woocommerce' ),
+				'need_help' => __( 'Need help with your order?', 'flexify-checkout-for-woocommerce' ),
+				'track_order' => __( 'Track order', 'flexify-checkout-for-woocommerce' ),
+				'contact_support' => __( 'Contact support', 'flexify-checkout-for-woocommerce' ),
 			),
+			'mode' => $this->is_react_thankyou() ? 'thankyou' : 'checkout',
+			'thankyou' => $this->is_react_thankyou() ? Headless_Data::get_thankyou_data( React_Checkout::get_current_order() ) : null,
 		));
 
 		// Live builder preview: force editor mode and always feed the current
@@ -574,6 +608,31 @@ class Assets {
 		}
 
 		return $value;
+	}
+
+
+	/**
+	 * Short, non-reversible fingerprint of the current WooCommerce session.
+	 *
+	 * The React checkout uses it to scope persisted form data (localStorage),
+	 * so a regenerated session or a different shopper on the same browser starts
+	 * the checkout clean instead of inheriting stale values.
+	 *
+	 * @since 6.0.0
+	 * @return string Session hash, or '' when no session is available yet.
+	 */
+	private function get_session_hash() {
+		if ( ! function_exists('WC') || ! WC()->session ) {
+			return '';
+		}
+
+		$customer_id = WC()->session->get_customer_id();
+
+		if ( empty( $customer_id ) ) {
+			return '';
+		}
+
+		return substr( wp_hash( 'flexify_checkout_session_' . $customer_id ), 0, 16 );
 	}
 
 
