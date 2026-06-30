@@ -312,9 +312,10 @@ onBeforeUnmount(() => document.removeEventListener('mousedown', onDocumentClick)
             <BoxIcon name="chevron-left" class="h-4 w-4" />
           </button>
 
-          <div class="flex flex-1 gap-2">
+          <div class="flex min-w-0 flex-1 gap-2">
             <BaseSelect
               size="sm"
+              class="min-w-0 flex-1"
               :model-value="String(view.month)"
               :options="monthOptions"
               @update:model-value="onMonth"
