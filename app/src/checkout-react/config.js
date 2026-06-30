@@ -14,6 +14,13 @@ const fallback = {
   is_user_logged_in: false,
   session_hash: '',
   base_country: 'BR',
+  // International phone (Pro). license_is_valid + international_phone gate the
+  // intl-tel-input field; the rest feed the library when it's enabled.
+  license_is_valid: false,
+  international_phone: 'no',
+  allowed_countries: [],
+  path_to_utils: '',
+  iti_i18n: {},
   geo: { countries: [], states: {} },
   localstorage_fields: [],
   currency: 'BRL',

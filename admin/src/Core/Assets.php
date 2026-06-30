@@ -418,10 +418,28 @@ class Assets {
 			wp_enqueue_script( 'lordicon-player', 'https://cdn.lordicon.com/lordicon.js', array(), null, true );
 		}
 
+		// React bundle dependencies. The international phone (Pro) loads the
+		// intl-tel-input library globally (window.intlTelInput), mirroring the
+		// legacy checkout, so the React app can mount it without bundling it.
+		$react_deps = array();
+
+		if ( Admin_Options::get_setting('enable_ddi_phone_field') === 'yes' && License::is_valid() ) {
+			wp_enqueue_script( 'flexify-international-phone-js', $this->assets_url . 'vendor/intl-tel-input/js/intlTelInput.min.js', array(), '25.3.1', true );
+			wp_enqueue_style( 'flexify-international-phone-css', $this->assets_url . 'vendor/intl-tel-input/css/intlTelInput.min.css', array(), '25.3.1' );
+			wp_enqueue_style( 'flexify-international-phone-flag-offset-2x', $this->assets_url . 'vendor/intl-tel-input/css/flag-offset-2x.min.css', array(), $this->version );
+
+			// Scope the field layout to the React root. The large-flag sprite vars
+			// (:root --iti-*) come from Styles::render_dynamic_styles(), shared with
+			// the legacy checkout; here we only size the wrapper to match Swift inputs.
+			wp_add_inline_style( 'flexify-react-checkout', '#flexify-react-checkout .flexify-intl-phone .iti{display:block;width:100%}#flexify-react-checkout .flexify-intl-phone .iti__selected-country:hover{background-color:transparent}#flexify-react-checkout .flexify-intl-phone .iti__flag{border-radius:.225rem}' );
+
+			$react_deps[] = 'flexify-international-phone-js';
+		}
+
 		wp_enqueue_script(
 			'flexify-react-checkout',
 			FLEXIFY_CHECKOUT_URL . 'app/dist/checkout-react/main.js',
-			array(),
+			$react_deps,
 			Scripts::get_asset_version('checkout-react/main.js'),
 			true
 		);
@@ -447,6 +465,12 @@ class Assets {
 			'is_user_logged_in' => is_user_logged_in(),
 			'session_hash' => $this->get_session_hash(),
 			'base_country' => Fields::get_base_country(),
+			// International phone (Pro): gate + data for the intl-tel-input field.
+			'license_is_valid' => License::is_valid(),
+			'international_phone' => Admin_Options::get_setting('enable_ddi_phone_field'),
+			'allowed_countries' => array_map( 'strtolower', array_keys( WC()->countries->get_allowed_countries() ) ),
+			'path_to_utils' => $this->assets_url . 'vendor/intl-tel-input/js/utils.js',
+			'iti_i18n' => $this->build_iti_i18n(),
 			'geo' => Headless_Data::get_geo_data(),
 			'localstorage_fields' => Fields::get_localstorage_fields(),
 			'currency' => function_exists('get_woocommerce_currency') ? get_woocommerce_currency() : 'BRL',

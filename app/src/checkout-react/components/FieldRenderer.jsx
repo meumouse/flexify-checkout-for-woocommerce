@@ -3,11 +3,12 @@ import { emitSelect } from '../lib/editorBridge.js';
 import { sameTarget } from './editor/Selectable.jsx';
 import { fieldBinding } from '../lib/fields.js';
 import { geoOptions } from '../lib/geo.js';
-import { t } from '../config.js';
+import config, { t } from '../config.js';
 import fieldIcon from '../lib/fieldIcons.jsx';
 import Select from './ui/Select.jsx';
 import Checkbox from './ui/Checkbox.jsx';
 import DatePicker from './ui/DatePicker.jsx';
+import IntlPhoneInput from './IntlPhoneInput.jsx';
 
 const labelClass = 'block text-sm font-medium text-slate-700 mb-1.5';
 const inputClass =
@@ -47,6 +48,16 @@ export default function FieldRenderer({ field, style = null, editor = false, sel
   const isSelect = field.type === 'select' && Array.isArray(options) && options.length > 0;
   const isCheckbox = field.type === 'checkbox';
   const isDate = field.type === 'date';
+  // International phone (Pro): the billing phone renders the intl-tel-input field
+  // — large country flags, separate dial code, translated labels — when enabled
+  // and licensed. Otherwise it falls through to the plain input below.
+  const isIntlPhone =
+    !isSelect &&
+    !isCheckbox &&
+    !isDate &&
+    (field.id === 'billing_phone' || field.type === 'tel') &&
+    config.international_phone === 'yes' &&
+    config.license_is_valid;
 
   // Width: style override wins over the field's stored position.
   const width = style?.width || field.position;
@@ -135,6 +146,18 @@ export default function FieldRenderer({ field, style = null, editor = false, sel
           placeholder={placeholder || 'dd/mm/aaaa'}
           className={errorBorder}
           style={inputStyle}
+          onChange={onChange}
+        />
+      ) : isIntlPhone ? (
+        <IntlPhoneInput
+          id={`fc-${field.id}`}
+          value={value}
+          required={field.required}
+          placeholder={placeholder}
+          className={`${inputClass} ${errorBorder}`.trim()}
+          style={inputStyle}
+          ariaInvalid={!!error}
+          ariaDescribedby={errorId}
           onChange={onChange}
         />
       ) : (
