@@ -43,6 +43,29 @@
 }
 
 /*
+ * Responsive content width shared by the Swift checkout and the thank-you page.
+ *   - up to 1024px  → full width (fluid, mobile/tablet)
+ *   - 1025px–1600px → 1280px (typical laptops, incl. 1366px)
+ *   - above 1600px  → 1440px (large desktops)
+ */
+.fc-shell {
+  width: 100%;
+  max-width: 100%;
+}
+
+@media (min-width: 1025px) {
+  .fc-shell {
+    max-width: 1280px;
+  }
+}
+
+@media (min-width: 1601px) {
+  .fc-shell {
+    max-width: 1440px;
+  }
+}
+
+/*
  * Thank-you (order-received) page sits on a soft gray canvas so the white cards
  * float, matching the Swift confirmation design. The mount itself goes
  * transparent so the body color shows through behind the centered column.

@@ -41,7 +41,7 @@ function ThankYouHeader() {
   }
 
   return (
-    <div className="mx-auto max-w-[640px] px-4 pt-8 text-center">
+    <div className="fc-shell mx-auto px-4 pt-8 text-center">
       <a href={config.urls?.shop || config.urls?.cart || '/'} className="inline-block">
         <img src={config.logo} alt="" className="h-10 w-auto md:h-12" />
       </a>
@@ -370,7 +370,7 @@ export default function ThankYouPage() {
     <div className="pb-12">
       <ThankYouHeader />
 
-      <div className="mx-auto flex max-w-[640px] flex-col gap-4 px-4 pt-8">
+      <div className="fc-shell mx-auto flex flex-col gap-4 px-4 pt-8">
         <Hero ty={ty} />
 
         {!!hooks.before && <HtmlContent html={hooks.before} />}

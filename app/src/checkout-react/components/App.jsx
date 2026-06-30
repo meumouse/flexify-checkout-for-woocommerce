@@ -147,7 +147,7 @@ function CheckoutHeader() {
   }
 
   return (
-    <div className="mx-auto max-w-6xl px-4 pt-8 lg:px-8">
+    <div className="fc-shell mx-auto px-4 pt-8 lg:px-8">
       <a href={config.urls?.shop || config.urls?.cart || '/'} className="inline-block">
         <img src={config.logo} alt="" className="h-10 w-auto md:h-12" />
       </a>
@@ -359,7 +359,7 @@ function CheckoutShell({ stepLabels, activeIndex, isLast, busy, onBack, onNext, 
       <ReservationBar />
       <CheckoutHeader />
 
-      <div className="mx-auto grid max-w-6xl grid-cols-1 gap-8 px-4 pt-6 lg:grid-cols-[minmax(0,1fr)_380px] lg:px-8">
+      <div className="fc-shell mx-auto grid grid-cols-1 gap-8 px-4 pt-6 lg:grid-cols-[minmax(0,1fr)_380px] lg:px-8">
         <div>
           <Stepper stepLabels={stepLabels} activeIndex={activeIndex} />
 

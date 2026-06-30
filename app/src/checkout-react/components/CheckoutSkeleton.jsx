@@ -88,7 +88,7 @@ function SummarySkeleton() {
 export default function CheckoutSkeleton() {
   return (
     <div className="pb-10" aria-hidden="true">
-      <div className="mx-auto grid max-w-6xl grid-cols-1 gap-8 px-4 pt-6 lg:grid-cols-[minmax(0,1fr)_380px] lg:px-8">
+      <div className="fc-shell mx-auto grid grid-cols-1 gap-8 px-4 pt-6 lg:grid-cols-[minmax(0,1fr)_380px] lg:px-8">
         <div>
           <StepperSkeleton />
 
