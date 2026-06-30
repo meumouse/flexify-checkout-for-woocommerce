@@ -11,6 +11,7 @@ import { formatPrice } from '../lib/format.js';
 import OrderSummary from './OrderSummary.jsx';
 import CheckoutSkeleton from './CheckoutSkeleton.jsx';
 import PurchaseAnimation from './PurchaseAnimation.jsx';
+import OrderLoadingOverlay from './OrderLoadingOverlay.jsx';
 import StepRenderer from './StepRenderer.jsx';
 import ContactStep from './steps/ContactStep.jsx';
 import ShippingStep from './steps/ShippingStep.jsx';
@@ -380,7 +381,15 @@ function CheckoutShell({ stepLabels, activeIndex, isLast, busy, onBack, onNext, 
 
       <MobileCartSheet />
 
-      <PurchaseAnimation active={placingOrder} />
+      {/*
+       * Order-finalization loader. The modern overlay is the default; the legacy
+       * Lordicon animation only takes over when the operator explicitly enables it.
+       */}
+      {config.purchase_animation && config.purchase_animation.enabled ? (
+        <PurchaseAnimation active={placingOrder} />
+      ) : (
+        <OrderLoadingOverlay active={placingOrder} />
+      )}
     </div>
   );
 }

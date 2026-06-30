@@ -334,6 +334,70 @@ body.flexify-react-thankyou {
 }
 
 /*
+ * Modern order-finalization loader (default). Shown while the order is being
+ * placed when the legacy Lordicon animation is not enabled. Same blurred
+ * backdrop conventions as `.fc-purchase-animation`; hidden until `.is-active`.
+ */
+.fc-order-loading {
+  position: fixed;
+  inset: 0;
+  z-index: 1059;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(3px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out;
+}
+
+.fc-order-loading.is-active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.fc-order-loading__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 24rem;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.fc-order-loading__spinner {
+  transform: scale(0);
+  transition: transform 0.25s ease-out;
+}
+
+.fc-order-loading.is-active .fc-order-loading__spinner {
+  transform: scale(1);
+}
+
+.fc-order-loading__text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.fc-order-loading__title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #0f2033;
+}
+
+.fc-order-loading__hint {
+  font-size: 0.95rem;
+  color: #64748b;
+}
+
+/*
  * Live builder editor chrome. Only present when the checkout runs inside the
  * admin builder iframe (editor mode).
  */

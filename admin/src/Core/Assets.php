@@ -518,6 +518,8 @@ class Assets {
 				'search_address' => __( 'Search address', 'flexify-checkout-for-woocommerce' ),
 				'search' => __( 'Search…', 'flexify-checkout-for-woocommerce' ),
 				'loading' => __( 'Loading…', 'flexify-checkout-for-woocommerce' ),
+				'finishing_order' => __( 'Finalizing your order', 'flexify-checkout-for-woocommerce' ),
+				'please_wait' => __( 'Please wait a few moments', 'flexify-checkout-for-woocommerce' ),
 				'empty_cart' => __( 'Your cart is empty.', 'flexify-checkout-for-woocommerce' ),
 				'generic_error' => __( 'An error occurred. Please try again.', 'flexify-checkout-for-woocommerce' ),
 				'thankyou_title' => __( 'Thank you for your order!', 'flexify-checkout-for-woocommerce' ),
