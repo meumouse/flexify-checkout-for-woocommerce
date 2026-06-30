@@ -271,5 +271,17 @@ function BlockPaymentSlot({ gateway }) {
     );
   }
 
-  return <div ref={containerRef} className="fc-blocks-payment" />;
+  // Render the mount node as a form carrying the WooCommerce Blocks checkout-form
+  // classes. Gateway runtimes (e.g. Mercado Pago) locate the checkout form by that
+  // exact selector to attach their card form; without it they fail with
+  // "No checkout form found". onSubmit is neutralized — submission is driven by the
+  // Swift place-order button, not a native form submit.
+  return (
+    <form
+      ref={containerRef}
+      className="wc-block-components-form wc-block-checkout__form fc-blocks-payment"
+      onSubmit={(e) => e.preventDefault()}
+      noValidate
+    />
+  );
 }
