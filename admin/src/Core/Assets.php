@@ -288,6 +288,7 @@ class Assets {
 			'countdown_action' => Admin_Options::get_setting('checkout_countdown_action'),
 			'countdown_title' => Admin_Options::get_setting('checkout_countdown_title'),
 			'is_thankyou' => is_order_received_page() ? 'yes' : 'no',
+			'funnel_beacon_url' => esc_url_raw( rest_url('flexify-checkout/v1/recovery/track-step') ),
 			'plugin_version' => $this->version,
 			'debug_mode' => defined('FLEXIFY_CHECKOUT_DEBUG_MODE') && FLEXIFY_CHECKOUT_DEBUG_MODE === true ? 'yes' : 'no',
 		));

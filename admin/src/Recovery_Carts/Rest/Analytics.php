@@ -4,6 +4,7 @@ namespace MeuMouse\Flexify_Checkout\Recovery_Carts\Rest;
 
 use MeuMouse\Flexify_Checkout\Rest\Abstract_Route;
 use MeuMouse\Flexify_Checkout\Recovery_Carts\Admin\Components;
+use MeuMouse\Flexify_Checkout\Recovery_Carts\Core\Funnel_Analytics;
 use WP_REST_Request;
 
 // Exit if accessed directly.
@@ -86,10 +87,33 @@ class Analytics extends Abstract_Route {
             'periods' => $this->format_periods( $periods ),
             'counts' => $counts,
             'recovered_total' => $recovered_total,
-            'recovered_total_formatted' => function_exists('wc_price') ? wp_strip_all_tags( wc_price( $recovered_total ) ) : number_format_i18n( $recovered_total, 2 ),
+            'recovered_total_formatted' => self::format_price( $recovered_total ),
             'recovered_chart' => $recovered_chart,
             'notifications_chart' => $notifications_chart,
+            'funnel' => Funnel_Analytics::get_report( $period ),
         ) );
+    }
+
+
+    /**
+     * Format a monetary amount as a plain (entity-decoded) string.
+     *
+     * wc_price() returns HTML with numeric entities for the currency symbol
+     * (e.g. "&#82;&#36;&nbsp;0,00"). wp_strip_all_tags() removes the tags but
+     * leaves those entities untouched, and the Vue page renders the value as
+     * text — so the raw entities leak to the screen. Decoding them yields the
+     * intended "R$ 0,00".
+     *
+     * @since 6.0.0
+     * @param float $amount Amount to format.
+     * @return string
+     */
+    public static function format_price( $amount ) {
+        if ( function_exists('wc_price') ) {
+            return trim( html_entity_decode( wp_strip_all_tags( wc_price( $amount ) ), ENT_QUOTES, 'UTF-8' ) );
+        }
+
+        return number_format_i18n( (float) $amount, 2 );
     }
 
 

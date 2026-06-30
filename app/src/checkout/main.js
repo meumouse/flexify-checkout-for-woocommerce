@@ -4959,6 +4959,152 @@
 		},
 
 		/**
+		 * Always-on checkout funnel beacon.
+		 *
+		 * Reports step progress (contact/shipping/payment) to the analytics
+		 * endpoint that backs the admin "Funil de checkout" cards. This is
+		 * deliberately independent of the Tracking module above: it runs even
+		 * when the external tracking router is disabled, because the funnel
+		 * metrics must always be collected. The purchase step is recorded
+		 * server-side from the order, so it is never sent from here.
+		 *
+		 * @since 6.0.0
+		 */
+		Funnel: {
+			state: { sent: {} },
+
+			getBeaconUrl: function() {
+				return ( window.flexify_checkout_params && window.flexify_checkout_params.funnel_beacon_url ) || '';
+			},
+
+			isCheckoutPage: function() {
+				return params.is_thankyou !== 'yes' && $('form.checkout').length > 0;
+			},
+
+			getClientId: function() {
+				try {
+					let cid = sessionStorage.getItem('fcrc_funnel_cid');
+
+					if ( ! cid ) {
+						cid = 'c' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
+						sessionStorage.setItem( 'fcrc_funnel_cid', cid );
+					}
+
+					return cid;
+				} catch ( e ) {
+					return '';
+				}
+			},
+
+			getDevice: function() {
+				const ua = navigator.userAgent || '';
+
+				if ( /iPad|Tablet|PlayBook|Silk|Android(?!.*Mobile)/i.test( ua ) ) {
+					return 'tablet';
+				}
+
+				if ( /Mobi|Android|iPhone|iPod|IEMobile|BlackBerry|Opera Mini/i.test( ua ) ) {
+					return 'mobile';
+				}
+
+				return 'desktop';
+			},
+
+			getSource: function() {
+				try {
+					const utm = new URLSearchParams( window.location.search ).get('utm_source');
+
+					if ( utm ) {
+						return utm;
+					}
+
+					const ref = document.referrer || '';
+
+					if ( ! ref ) {
+						return 'direct';
+					}
+
+					const host = new URL( ref ).hostname.replace( /^www\./, '' );
+					const here = window.location.hostname.replace( /^www\./, '' );
+
+					if ( host === here ) {
+						return 'direct';
+					}
+
+					if ( /google|bing|yahoo|duckduckgo|ecosia|yandex/i.test( host ) ) {
+						return 'organic';
+					}
+
+					return 'referral';
+				} catch ( e ) {
+					return '';
+				}
+			},
+
+			record: function( step ) {
+				const url = this.getBeaconUrl();
+
+				if ( ! url || this.state.sent[ step ] ) {
+					return;
+				}
+
+				this.state.sent[ step ] = true;
+
+				const payload = { step: step, cid: this.getClientId() };
+
+				if ( step === 'contact' ) {
+					payload.device = this.getDevice();
+					payload.source = this.getSource();
+				}
+
+				try {
+					const blob = new Blob([ JSON.stringify( payload ) ], { type: 'application/json' });
+
+					if ( navigator.sendBeacon && navigator.sendBeacon( url, blob ) ) {
+						return;
+					}
+				} catch ( e ) {}
+
+				try {
+					fetch( url, {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify( payload ),
+						keepalive: true,
+						credentials: 'same-origin',
+					});
+				} catch ( e ) {}
+			},
+
+			bindEvents: function() {
+				const self = this;
+
+				$(document.body).on( 'change', 'input.shipping_method', function() {
+					self.record('shipping');
+				});
+
+				// A shopper interacting with the address fields has moved past the
+				// contact step into delivery details.
+				$(document.body).one( 'change', '.woocommerce-billing-fields input, .woocommerce-shipping-fields input, #customer_details input', function() {
+					self.record('shipping');
+				});
+
+				$('form.checkout').on( 'checkout_place_order', function() {
+					self.record('payment');
+				});
+			},
+
+			init: function() {
+				if ( ! this.isCheckoutPage() ) {
+					return;
+				}
+
+				this.record('contact');
+				this.bindEvents();
+			},
+		},
+
+		/**
 		 * Handle with session functions
 		 * 
 		 * @since 1.8.5
@@ -5800,6 +5946,7 @@
 				['Conditions', this.Conditions],
 				['Session', this.Session],
 				['Tracking', this.Tracking],
+				['Funnel', this.Funnel],
 				['Validations', this.Validations],
 				['Countdown', this.Countdown],
 				['processCheckout', this.processCheckout],

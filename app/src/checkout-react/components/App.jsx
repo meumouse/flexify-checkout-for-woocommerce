@@ -4,6 +4,8 @@ import { useCheckout } from '../context/CheckoutContext.jsx';
 import { builderStepFields, fieldsForStep } from '../lib/fields.js';
 import { validateFields } from '../lib/validation.js';
 import { hasLayout, layoutSteps, setFieldOverrides } from '../lib/layout.js';
+import { useStepRouter } from '../lib/stepUrl.js';
+import { useFunnelBeacon } from '../lib/funnelBeacon.js';
 import { isEditor, onParentMessage, emitReady, emitSelect } from '../lib/editorBridge.js';
 import { MESSAGE_PREFIX } from '../lib/editorBridge.js';
 import { applyTheme } from '../lib/theme.js';
@@ -23,6 +25,12 @@ const STEP_LABELS = [
   t('shipping', 'Entrega'),
   t('payment', 'Pagamento'),
 ];
+
+// URL `?step` slug for each default-checkout step number (contact/shipping/payment).
+const DEFAULT_STEP_SLUGS = { 1: 'contact', 2: 'shipping', 3: 'payment' };
+
+// URL `?step` slug for a builder step (its semantic type, with the id as fallback).
+const builderStepSlug = (step) => step.type || step.id;
 
 /**
  * Validate a step's fields before advancing. On failure, publishes the inline
@@ -421,7 +429,6 @@ function LoadingOrEmpty({ loading, cart }) {
  */
 function BuilderCheckout() {
   const { loading, busy, cart, billing, extraFields, setFieldErrors, updateAddress, placeOrder } = useCheckout();
-  const [index, setIndex] = useState(0);
 
   const guard = <LoadingOrEmpty loading={loading} cart={cart} />;
 
@@ -432,11 +439,17 @@ function BuilderCheckout() {
     steps = steps.filter((step) => step.type !== 'shipping');
   }
 
+  // Active step persists in the URL (?step=…) so a reload reopens it. Called
+  // unconditionally — before any early return — to satisfy the rules of hooks.
+  const [activeIndex, setIndex] = useStepRouter(steps.map(builderStepSlug));
+
+  // Report funnel progress (no-op until the active step is a funnel step).
+  useFunnelBeacon(steps[activeIndex] ? builderStepSlug(steps[activeIndex]) : '');
+
   if (!steps.length) {
     return <DefaultCheckout />;
   }
 
-  const activeIndex = Math.min(index, steps.length - 1);
   const current = steps[activeIndex];
   const isLast = activeIndex === steps.length - 1;
 
@@ -495,12 +508,17 @@ function BuilderCheckout() {
  */
 function DefaultCheckout() {
   const { loading, busy, cart, billing, extraFields, setFieldErrors, updateAddress, placeOrder } = useCheckout();
-  const [step, setStep] = useState(1);
 
   const needsShipping = cartNeedsShipping(cart);
   const steps = needsShipping ? [1, 2, 3] : [1, 3];
-  const activeIndex = steps.indexOf(step);
+
+  // Active step persists in the URL (?step=…) so a reload reopens it.
+  const [activeIndex, setIndex] = useStepRouter(steps.map((s) => DEFAULT_STEP_SLUGS[s]));
+  const step = steps[activeIndex];
   const isLast = step === 3;
+
+  // Report funnel progress as the shopper advances through the steps.
+  useFunnelBeacon(DEFAULT_STEP_SLUGS[step] || '');
 
   const goNext = async () => {
     // Block navigation while the current step has empty/invalid required fields.
@@ -516,16 +534,18 @@ function DefaultCheckout() {
       }
     }
 
-    const idx = steps.indexOf(step);
-    setStep(steps[Math.min(idx + 1, steps.length - 1)]);
+    setIndex(Math.min(activeIndex + 1, steps.length - 1));
   };
 
-  const goBack = () => {
-    const idx = steps.indexOf(step);
-    setStep(steps[Math.max(idx - 1, 0)]);
-  };
+  const goBack = () => setIndex(Math.max(activeIndex - 1, 0));
 
-  const onEdit = (target) => setStep(target === 'contact' ? 1 : 2);
+  const onEdit = (target) => {
+    const idx = steps.indexOf(target === 'contact' ? 1 : 2);
+
+    if (idx >= 0) {
+      setIndex(idx);
+    }
+  };
 
   if (loading || (cart && (cart.items || []).length === 0)) {
     return <LoadingOrEmpty loading={loading} cart={cart} />;

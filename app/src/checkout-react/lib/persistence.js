@@ -13,6 +13,9 @@ import config from '../config.js';
 import { fieldBinding } from './fields.js';
 
 const STORAGE_KEY = 'flexify_checkout_form_data';
+// Separate key (not mixed into the shared form-data payload) so the persisted
+// values stay byte-for-byte compatible with the classic theme's localStorage.
+const SESSION_KEY = 'flexify_checkout_session';
 const NOTE_FIELD = 'order_comments';
 
 /**
@@ -35,6 +38,58 @@ function storage() {
  */
 function whitelist() {
   return Array.isArray(config.localstorage_fields) ? config.localstorage_fields : [];
+}
+
+/**
+ * Server-provided fingerprint of the current checkout (WooCommerce) session.
+ *
+ * @returns {string}
+ */
+function sessionHash() {
+  return typeof config.session_hash === 'string' ? config.session_hash : '';
+}
+
+/**
+ * Discard persisted form data when the checkout session changed, so a new
+ * shopper or a regenerated session never inherits the previous one's values.
+ *
+ * No-op until the server provides a session hash (so privacy mode / older
+ * markup degrade gracefully). The hash lives under its own key to keep the
+ * shared form-data payload compatible with the classic theme.
+ *
+ * @returns {void}
+ */
+export function reconcileSession() {
+  const store = storage();
+  const hash = sessionHash();
+
+  if (!store || !hash) {
+    return;
+  }
+
+  let previous = null;
+
+  try {
+    previous = store.getItem(SESSION_KEY);
+  } catch {
+    return;
+  }
+
+  if (previous === hash) {
+    return;
+  }
+
+  // Session rotated (or first visit on this device): drop any stale values
+  // before they are read, then record the current session.
+  if (previous) {
+    clearFormData();
+  }
+
+  try {
+    store.setItem(SESSION_KEY, hash);
+  } catch {
+    // ignore quota / privacy-mode write errors
+  }
 }
 
 /**
@@ -62,6 +117,9 @@ export function loadFormData() {
   if (!store) {
     return result;
   }
+
+  // Drop stale data from a previous session before reading the current values.
+  reconcileSession();
 
   let data;
 

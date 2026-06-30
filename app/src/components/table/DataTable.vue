@@ -17,6 +17,7 @@
  */
 import { ref, computed, watch, useSlots } from 'vue';
 import BoxIcon from '../icons/BoxIcon.vue';
+import DatePicker from '../fields/DatePicker.vue';
 import TableSkeleton from '../skeletons/TableSkeleton.vue';
 
 const props = defineProps({

@@ -70,13 +70,14 @@ const notificationsOptions = computed(() => ({
 const hasNotifications = computed(() => notificationsSeries.value.length > 0);
 
 // --- Checkout funnel metrics (section 9.1) ---
-// TODO(integration): these KPIs are not backed by data yet. They render an
-// "awaiting data" state until wired to a dedicated endpoint computed from
-// WooCommerce orders plus the checkout events already captured by the Tracking
-// router (fc_begin_checkout / fc_add_shipping_info / fc_add_payment_info /
-// fc_purchase). Conversion/abandonment can combine those events with the
-// recovery cart statuses (abandoned, recovered, purchased).
-const funnelMetrics = [
+// Backed by the recovery/analytics endpoint's `funnel` block, which derives the
+// KPIs/segments from WooCommerce orders + recovery carts + Order Attribution and
+// reads the per-step completion from the always-on checkout beacon
+// (recovery/track-step). Cards fall back to "—"/"Sem dados" until data arrives.
+const funnel = computed(() => data.value?.funnel || null);
+const hasFunnelData = computed(() => !!funnel.value?.has_data);
+
+const FUNNEL_METRICS = [
   { key: 'abandonment_rate', label: 'Taxa de abandono', hint: 'Checkouts iniciados sem pedido concluído.' },
   { key: 'conversion_rate', label: 'Taxa de conversão', hint: 'Pedidos concluídos sobre checkouts iniciados.' },
   { key: 'average_ticket', label: 'Ticket médio', hint: 'Valor médio dos pedidos concluídos.' },
@@ -85,18 +86,37 @@ const funnelMetrics = [
   { key: 'coupon_usage', label: 'Uso de cupom', hint: 'Pedidos com cupom de desconto aplicado.' },
 ];
 
-const stepCompletion = [
-  { key: 'contact', label: 'Contato' },
-  { key: 'shipping', label: 'Entrega' },
-  { key: 'payment', label: 'Pagamento' },
-];
+const funnelMetrics = computed(() =>
+  FUNNEL_METRICS.map((m) => ({ ...m, data: funnel.value?.metrics?.[m.key] || null })),
+);
 
-const segments = [
+const stepCompletion = computed(() => funnel.value?.steps || [
+  { key: 'contact', label: 'Contato', count: 0, percent: null },
+  { key: 'shipping', label: 'Entrega', count: 0, percent: null },
+  { key: 'payment', label: 'Pagamento', count: 0, percent: null },
+]);
+
+const SEGMENTS = [
   { key: 'device', label: 'Dispositivo' },
   { key: 'payment_method', label: 'Método de pagamento' },
   { key: 'customer_type', label: 'Novo vs. recorrente' },
   { key: 'traffic_source', label: 'Origem do tráfego' },
 ];
+
+const segments = computed(() =>
+  SEGMENTS.map((s) => ({ ...s, items: funnel.value?.segments?.[s.key] || [] })),
+);
+
+// Color a delta green/red depending on whether the movement is favourable.
+function deltaClass(metric) {
+  if (!metric || metric.delta == null || metric.delta === 0) {
+    return 'text-slate-400';
+  }
+
+  const good = metric.delta > 0 ? metric.up_is_good : !metric.up_is_good;
+
+  return good ? 'text-success' : 'text-danger';
+}
 
 async function load() {
   loading.value = true;
@@ -139,11 +159,14 @@ onMounted(load);
     </div>
 
     <template v-else>
-      <!-- Checkout funnel metrics (section 9.1) — awaiting data integration -->
+      <!-- Checkout funnel metrics (section 9.1) -->
       <section class="mt-6">
         <div class="mb-3 flex items-center gap-3">
           <h2 class="m-0 text-[15px] font-semibold text-brand">Funil de checkout</h2>
-          <span class="inline-flex items-center rounded-full bg-primary-100 px-2.5 py-0.5 text-[11px] font-semibold text-primary">Aguardando dados</span>
+          <span
+            v-if="!loading && !hasFunnelData"
+            class="inline-flex items-center rounded-full bg-primary-100 px-2.5 py-0.5 text-[11px] font-semibold text-primary"
+          >Aguardando dados</span>
         </div>
 
         <div class="grid grid-cols-2 gap-4 md:grid-cols-3">
@@ -153,8 +176,15 @@ onMounted(load);
             class="rounded-[8px] bg-white px-5 py-4 ring-1 ring-slate-100"
           >
             <div class="text-[13px] text-slate-500">{{ metric.label }}</div>
-            <div class="mt-1 text-xl font-semibold text-slate-300">—</div>
-            <div class="mt-1 text-[11px] text-slate-400">{{ metric.hint }}</div>
+            <div class="mt-1 text-xl font-semibold" :class="(!loading && metric.data?.formatted) ? 'text-brand' : 'text-slate-300'">
+              {{ loading ? '—' : (metric.data?.formatted ?? '—') }}
+            </div>
+            <div class="mt-1 flex items-center gap-1.5 text-[11px]">
+              <span v-if="!loading && metric.data?.delta_formatted" class="font-semibold" :class="deltaClass(metric.data)">
+                {{ metric.data.delta_formatted }}
+              </span>
+              <span class="text-slate-400">{{ metric.hint }}</span>
+            </div>
           </div>
         </div>
 
@@ -165,9 +195,14 @@ onMounted(load);
               <div v-for="step in stepCompletion" :key="step.key" class="flex items-center gap-3">
                 <span class="w-24 shrink-0 text-[13px] text-slate-500">{{ step.label }}</span>
                 <div class="h-2 flex-1 overflow-hidden rounded-full bg-slate-100">
-                  <div class="h-full w-0 bg-slate-200"></div>
+                  <div
+                    class="h-full rounded-full bg-primary transition-all"
+                    :style="{ width: (loading ? 0 : (step.percent ?? 0)) + '%' }"
+                  ></div>
                 </div>
-                <span class="w-10 shrink-0 text-right text-[13px] text-slate-300">—</span>
+                <span class="w-10 shrink-0 text-right text-[13px]" :class="step.percent != null ? 'text-slate-600' : 'text-slate-300'">
+                  {{ loading || step.percent == null ? '—' : step.percent + '%' }}
+                </span>
               </div>
             </div>
           </div>
@@ -177,14 +212,22 @@ onMounted(load);
             <div class="grid grid-cols-2 gap-3">
               <div v-for="segment in segments" :key="segment.key" class="rounded-[6px] bg-slate-50 px-4 py-3">
                 <div class="text-[13px] text-slate-500">{{ segment.label }}</div>
-                <div class="mt-1 text-[13px] font-medium text-slate-300">Sem dados</div>
+
+                <div v-if="!loading && segment.items.length" class="mt-2 flex flex-col gap-1">
+                  <div v-for="item in segment.items" :key="item.label" class="flex items-center justify-between gap-2 text-[12px]">
+                    <span class="truncate text-slate-600">{{ item.label }}</span>
+                    <span class="shrink-0 font-medium text-slate-500">{{ item.percent }}%</span>
+                  </div>
+                </div>
+
+                <div v-else class="mt-1 text-[13px] font-medium text-slate-300">Sem dados</div>
               </div>
             </div>
           </div>
         </div>
 
         <p class="mt-3 text-[12px] italic text-slate-400">
-          Estas métricas serão preenchidas quando a coleta de eventos do checkout estiver integrada. A comparação com o período anterior usará o mesmo filtro de período acima.
+          Etapas e segmentos de dispositivo/origem são coletados na finalização da compra a partir do momento da ativação; pedidos e cupons já são considerados retroativamente. A comparação usa o mesmo período imediatamente anterior.
         </p>
       </section>
 

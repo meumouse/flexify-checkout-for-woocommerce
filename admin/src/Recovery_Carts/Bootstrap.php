@@ -147,6 +147,7 @@ class Bootstrap {
             '\MeuMouse\Flexify_Checkout\Recovery_Carts\Core\Assets',
             '\MeuMouse\Flexify_Checkout\Recovery_Carts\Core\Cart_Events',
             '\MeuMouse\Flexify_Checkout\Recovery_Carts\Core\Coupons',
+            '\MeuMouse\Flexify_Checkout\Recovery_Carts\Core\Funnel_Analytics',
             '\MeuMouse\Flexify_Checkout\Recovery_Carts\Core\Helpers',
             '\MeuMouse\Flexify_Checkout\Recovery_Carts\Core\Hooks',
             '\MeuMouse\Flexify_Checkout\Recovery_Carts\Core\Order_Events',
@@ -162,6 +163,7 @@ class Bootstrap {
             '\MeuMouse\Flexify_Checkout\Recovery_Carts\Integrations\Joinotify',
             // REST controllers (flexify-checkout/v1) backing the Vue admin pages.
             '\MeuMouse\Flexify_Checkout\Recovery_Carts\Rest\Analytics',
+            '\MeuMouse\Flexify_Checkout\Recovery_Carts\Rest\Track_Funnel',
             '\MeuMouse\Flexify_Checkout\Recovery_Carts\Rest\Carts',
             '\MeuMouse\Flexify_Checkout\Recovery_Carts\Rest\Cart_Delete',
             '\MeuMouse\Flexify_Checkout\Recovery_Carts\Rest\Cart_Bulk_Delete',

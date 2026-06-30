@@ -8,6 +8,10 @@ const MONTHS = [
 ];
 
 const WEEKDAYS = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
+const WEEKDAY_NAMES = [
+  'domingo', 'segunda-feira', 'terça-feira', 'quarta-feira',
+  'quinta-feira', 'sexta-feira', 'sábado',
+];
 
 /**
  * Parse an ISO `YYYY-MM-DD` string into numeric parts.
@@ -33,11 +37,35 @@ const pad = (n) => String(n).padStart(2, '0');
 const toIso = (year, month, day) => `${year}-${pad(month + 1)}-${pad(day)}`;
 const toDisplay = (parts) => (parts ? `${pad(parts.day)}/${pad(parts.month + 1)}/${parts.year}` : '');
 
+const daysInMonth = (year, month) => new Date(year, month + 1, 0).getDate();
+const clampDay = (year, month, day) => Math.min(day, daysInMonth(year, month));
+
+/** Shift a `{year,month,day}` focus by a number of days, rolling across months. */
+function addDays(focus, delta) {
+  const d = new Date(focus.year, focus.month, focus.day + delta);
+
+  return { year: d.getFullYear(), month: d.getMonth(), day: d.getDate() };
+}
+
+/** Shift focus by whole months, clamping the day into the target month length. */
+function addMonths(focus, delta) {
+  const total = focus.month + delta;
+  const year = focus.year + Math.floor(total / 12);
+  const month = ((total % 12) + 12) % 12;
+
+  return { year, month, day: clampDay(year, month, focus.day) };
+}
+
 /**
  * Modern date picker: a read-only field that opens a calendar popover with a
  * month + year dropdown header (reusing the modern Select) and prev/next arrows.
  *
  * Stores the value as ISO `YYYY-MM-DD`; displays it localized as `dd/mm/aaaa`.
+ * The grid is fully keyboard navigable (arrows, Home/End, PageUp/Down, Enter,
+ * Escape) with a roving tabindex, and focus returns to the trigger on close.
+ *
+ * Required-presence is enforced by the checkout's JS validation, so the trigger
+ * only advertises `aria-required` (no hidden native input).
  *
  * @param {object}   props
  * @param {string}   [props.id]
@@ -61,6 +89,8 @@ export default function DatePicker({
 }) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef(null);
+  const gridRef = useRef(null);
+  const triggerRef = useRef(null);
 
   const selected = parseIso(value);
   const today = useMemo(() => {
@@ -69,19 +99,32 @@ export default function DatePicker({
     return { year: now.getFullYear(), month: now.getMonth(), day: now.getDate() };
   }, []);
 
-  const [view, setView] = useState(() => ({
-    year: selected ? selected.year : today.year,
-    month: selected ? selected.month : today.month,
-  }));
+  // The date the keyboard cursor sits on; also drives which month is visible.
+  const [focus, setFocus] = useState(() => selected || today);
+  const view = { year: focus.year, month: focus.month };
 
-  // Re-sync the visible month when an external value lands on a different month.
+  // Each time the popover opens, start the cursor on the selected date (or today).
   useEffect(() => {
-    if (selected) {
-      setView({ year: selected.year, month: selected.month });
+    if (open) {
+      setFocus(parseIso(value) || today);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [value]);
+  }, [open]);
 
+  // Move DOM focus onto the focused day so keyboard navigation visibly tracks it.
+  useEffect(() => {
+    if (!open || !gridRef.current) {
+      return;
+    }
+
+    const cell = gridRef.current.querySelector(`[data-day="${focus.day}"]`);
+
+    if (cell) {
+      cell.focus();
+    }
+  }, [open, focus]);
+
+  // Close on outside click.
   useEffect(() => {
     if (!open) {
       return undefined;
@@ -111,42 +154,105 @@ export default function DatePicker({
   const monthOptions = MONTHS.map((label, index) => ({ value: String(index), label }));
 
   const firstWeekday = new Date(view.year, view.month, 1).getDay();
-  const daysInMonth = new Date(view.year, view.month + 1, 0).getDate();
-  const cells = [...Array(firstWeekday).fill(null), ...Array.from({ length: daysInMonth }, (_, i) => i + 1)];
+  const monthLength = daysInMonth(view.year, view.month);
+  const cells = [...Array(firstWeekday).fill(null), ...Array.from({ length: monthLength }, (_, i) => i + 1)];
 
-  const step = (delta) => {
-    setView((prev) => {
-      const next = prev.month + delta;
-      const year = prev.year + Math.floor(next / 12);
-      const month = ((next % 12) + 12) % 12;
+  const close = (returnFocus = true) => {
+    setOpen(false);
 
-      return { year, month };
-    });
+    if (returnFocus && triggerRef.current) {
+      triggerRef.current.focus();
+    }
   };
+
+  const step = (delta) => setFocus((prev) => addMonths(prev, delta));
 
   const choose = (day) => {
     onChange(toIso(view.year, view.month, day));
-    setOpen(false);
+    close();
+  };
+
+  const onGridKeyDown = (event) => {
+    const weekday = new Date(focus.year, focus.month, focus.day).getDay();
+    let next = null;
+
+    switch (event.key) {
+      case 'ArrowLeft':
+        next = addDays(focus, -1);
+        break;
+      case 'ArrowRight':
+        next = addDays(focus, 1);
+        break;
+      case 'ArrowUp':
+        next = addDays(focus, -7);
+        break;
+      case 'ArrowDown':
+        next = addDays(focus, 7);
+        break;
+      case 'Home':
+        next = addDays(focus, -weekday);
+        break;
+      case 'End':
+        next = addDays(focus, 6 - weekday);
+        break;
+      case 'PageUp':
+        next = addMonths(focus, event.shiftKey ? -12 : -1);
+        break;
+      case 'PageDown':
+        next = addMonths(focus, event.shiftKey ? 12 : 1);
+        break;
+      case 'Enter':
+      case ' ':
+        event.preventDefault();
+        choose(focus.day);
+        return;
+      case 'Escape':
+        event.preventDefault();
+        close();
+        return;
+      default:
+        return;
+    }
+
+    event.preventDefault();
+    setFocus(next);
   };
 
   const isSelected = (day) =>
     selected && selected.year === view.year && selected.month === view.month && selected.day === day;
   const isToday = (day) =>
     today.year === view.year && today.month === view.month && today.day === day;
+  const dayLabel = (day) =>
+    `${day} de ${MONTHS[view.month]} de ${view.year}, ${WEEKDAY_NAMES[new Date(view.year, view.month, day).getDay()]}`;
 
   return (
     <div className="relative" ref={rootRef}>
       <button
         type="button"
         id={id}
+        ref={triggerRef}
         disabled={disabled}
         aria-haspopup="dialog"
         aria-expanded={open}
+        aria-required={required}
         className={`flex h-12 w-full items-center justify-between gap-2 rounded-lg border border-slate-200 bg-white px-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary-100 disabled:cursor-not-allowed disabled:opacity-60 ${
           open ? 'border-primary ring-2 ring-primary-100' : ''
         } ${className}`.trim()}
         style={style}
         onClick={() => !disabled && setOpen((o) => !o)}
+        onKeyDown={(event) => {
+          if (disabled) {
+            return;
+          }
+
+          if (!open && event.key === 'ArrowDown') {
+            event.preventDefault();
+            setOpen(true);
+          } else if (open && event.key === 'Escape') {
+            event.preventDefault();
+            close();
+          }
+        }}
       >
         <span className={selected ? 'text-slate-800' : 'text-slate-400'}>
           {selected ? toDisplay(selected) : placeholder}
@@ -154,14 +260,10 @@ export default function DatePicker({
         <CalendarIcon className="h-4 w-4 shrink-0 text-slate-400" />
       </button>
 
-      {required && (
-        // Mirror the value into a hidden required input so native form validation works.
-        <input type="text" className="sr-only" tabIndex={-1} aria-hidden="true" required value={value || ''} readOnly />
-      )}
-
       {open && (
         <div
           role="dialog"
+          aria-label="Selecionar data"
           className="absolute z-30 mt-1 w-72 rounded-xl border border-slate-200 bg-white p-3 shadow-lg"
         >
           <div className="mb-3 flex items-center gap-2">
@@ -179,14 +281,14 @@ export default function DatePicker({
                 size="sm"
                 value={String(view.month)}
                 options={monthOptions}
-                onChange={(v) => setView((prev) => ({ ...prev, month: Number(v) }))}
+                onChange={(v) => setFocus((prev) => ({ ...prev, month: Number(v), day: clampDay(prev.year, Number(v), prev.day) }))}
                 className="!px-2"
               />
               <Select
                 size="sm"
                 value={String(view.year)}
                 options={yearOptions}
-                onChange={(v) => setView((prev) => ({ ...prev, year: Number(v) }))}
+                onChange={(v) => setFocus((prev) => ({ ...prev, year: Number(v), day: clampDay(Number(v), prev.month, prev.day) }))}
                 className="!w-24 !px-2"
               />
             </div>
@@ -209,10 +311,16 @@ export default function DatePicker({
             ))}
           </div>
 
-          <div className="grid grid-cols-7 gap-1">
+          <div
+            ref={gridRef}
+            role="grid"
+            aria-label={`${MONTHS[view.month]} de ${view.year}`}
+            className="grid grid-cols-7 gap-1"
+            onKeyDown={onGridKeyDown}
+          >
             {cells.map((day, index) => {
               if (day === null) {
-                return <div key={`e-${index}`} />;
+                return <div key={`e-${index}`} role="presentation" />;
               }
 
               const active = isSelected(day);
@@ -221,7 +329,13 @@ export default function DatePicker({
                 <button
                   key={day}
                   type="button"
-                  className={`flex h-9 items-center justify-center rounded-lg text-sm transition ${
+                  data-day={day}
+                  role="gridcell"
+                  aria-label={dayLabel(day)}
+                  aria-selected={active}
+                  aria-current={isToday(day) ? 'date' : undefined}
+                  tabIndex={day === focus.day ? 0 : -1}
+                  className={`flex h-9 items-center justify-center rounded-lg text-sm outline-none transition focus-visible:ring-2 focus-visible:ring-primary-100 ${
                     active
                       ? 'fc-primary-bg font-semibold text-white'
                       : `text-slate-700 hover:bg-primary-50 ${isToday(day) ? 'fc-primary-text font-semibold' : ''}`
