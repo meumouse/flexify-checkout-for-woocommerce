@@ -434,10 +434,16 @@ const inputClass = 'flexify-field-input w-full rounded-lg border border-slate-30
 </template>
 
 <style scoped>
+/*
+ * The plugin-owned icons are inline SVGs declared with only a viewBox (no
+ * width/height attributes). With both width and height set to auto they have no
+ * intrinsic pixel size and collapse to 0x0, so the logos never show. Pin the
+ * height to the icon cell (h-20 = 80px) and let the width follow the viewBox
+ * aspect ratio, capped so wide logos stay within the card.
+ */
 .integration-icon :deep(svg) {
-  max-height: 80px;
-  max-width: 160px;
+  height: 80px;
   width: auto;
-  height: auto;
+  max-width: 160px;
 }
 </style>
