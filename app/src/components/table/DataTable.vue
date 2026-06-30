@@ -169,25 +169,25 @@ function deleteSelected() {
       <div class="flex flex-wrap items-end gap-3">
         <slot name="toolbar" />
 
-        <label v-if="showDateFilter" class="flex flex-col gap-1">
+        <div v-if="showDateFilter" class="flex flex-col gap-1">
           <span class="text-[12px] font-medium text-slate-500">De</span>
-          <input
-            type="date"
-            class="flexify-field-input w-auto"
-            :value="dateFrom"
-            @change="onDate('from', $event.target.value)"
+          <DatePicker
+            size="sm"
+            trigger-class="w-[150px]"
+            :model-value="dateFrom"
+            @update:model-value="onDate('from', $event)"
           />
-        </label>
+        </div>
 
-        <label v-if="showDateFilter" class="flex flex-col gap-1">
+        <div v-if="showDateFilter" class="flex flex-col gap-1">
           <span class="text-[12px] font-medium text-slate-500">Para</span>
-          <input
-            type="date"
-            class="flexify-field-input w-auto"
-            :value="dateTo"
-            @change="onDate('to', $event.target.value)"
+          <DatePicker
+            size="sm"
+            trigger-class="w-[150px]"
+            :model-value="dateTo"
+            @update:model-value="onDate('to', $event)"
           />
-        </label>
+        </div>
 
         <form v-if="showSearch" class="flex min-w-[220px] flex-1 flex-col gap-1" @submit.prevent="submitSearch">
           <span class="text-[12px] font-medium text-slate-500">{{ searchPlaceholder }}</span>
