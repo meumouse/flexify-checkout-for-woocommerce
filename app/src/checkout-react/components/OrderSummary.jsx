@@ -1,6 +1,7 @@
 import { t } from '../config.js';
 import { useCheckout } from '../context/CheckoutContext.jsx';
 import { formatPrice } from '../lib/format.js';
+import { couponInSidebar } from '../lib/coupon.js';
 import CouponForm from './CouponForm.jsx';
 import { BasketIcon, MinusIcon, PlusIcon, CloseIcon } from './ui/Icons.jsx';
 
@@ -49,7 +50,7 @@ export default function OrderSummary({ hideCoupon = false, title } = {}) {
         </ul>
       )}
 
-      {!hideCoupon && <div className="mt-5"><CouponForm /></div>}
+      {!hideCoupon && couponInSidebar() && <div className="mt-5"><CouponForm /></div>}
 
       <div className="mt-5 space-y-3 border-t border-slate-100 pt-5 text-sm">
         <Row label={t('subtotal', 'Subtotal')} value={formatPrice(totals.total_items, totals)} />

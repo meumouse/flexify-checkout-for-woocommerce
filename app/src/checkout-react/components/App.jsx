@@ -218,10 +218,10 @@ function MobileCartSheet() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="fc-primary-bg fixed inset-x-0 bottom-0 z-40 flex items-center justify-between gap-3 rounded-t-2xl px-5 pb-[max(1rem,env(safe-area-inset-bottom))] pt-4 text-base font-medium text-white lg:hidden"
+        className="fc-mobile-cart-bar fixed inset-x-0 bottom-0 z-40 flex items-center justify-between gap-3 rounded-t-2xl px-5 pb-[max(1rem,env(safe-area-inset-bottom))] pt-4 text-base font-medium text-slate-900 lg:hidden"
       >
         <span className="flex items-center gap-2">
-          <BasketIcon className="h-5 w-5" />
+          <BasketIcon className="h-5 w-5 fc-primary-text" />
           {t('view_summary', 'Ver resumo do pedido')}
         </span>
         <span className="flex items-center gap-1.5 font-semibold">
@@ -339,7 +339,9 @@ function CheckoutShell({ stepLabels, activeIndex, isLast, busy, onBack, onNext, 
   const nextLabel = nextStepLabel
     ? `${t('continue', 'Continuar')} para ${nextStepLabel.toLowerCase()}`
     : t('continue', 'Continuar');
-  const backLabel = activeIndex === 0 ? t('back_to_shop', 'Voltar à loja') : t('back', 'Voltar');
+  const atFirstStep = activeIndex === 0;
+  const backLabel = atFirstStep ? t('back_to_shop', 'Voltar à loja') : t('back', 'Voltar');
+  const shopUrl = config.urls?.shop || config.urls?.cart || '/';
   const payLabel = `${t('pay', 'Pagar')} ${formatPrice(totals.total_price, totals)}`;
 
   return (
@@ -351,18 +353,28 @@ function CheckoutShell({ stepLabels, activeIndex, isLast, busy, onBack, onNext, 
         <div>
           <Stepper stepLabels={stepLabels} activeIndex={activeIndex} />
 
-          <div>
+          <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-8">
             {children}
 
             <div className="mt-8 flex items-center justify-between border-t border-slate-100 pt-6">
-              <button
-                type="button"
-                className="inline-flex items-center gap-2 text-sm font-medium text-slate-500 transition-colors hover:text-slate-800"
-                onClick={onBack}
-              >
-                <ArrowLeftIcon className="h-4 w-4" />
-                {backLabel}
-              </button>
+              {atFirstStep ? (
+                <a
+                  href={shopUrl}
+                  className="inline-flex items-center gap-2 text-sm font-medium text-slate-500 transition-colors hover:text-slate-800"
+                >
+                  <ArrowLeftIcon className="h-4 w-4" />
+                  {backLabel}
+                </a>
+              ) : (
+                <button
+                  type="button"
+                  className="inline-flex items-center gap-2 text-sm font-medium text-slate-500 transition-colors hover:text-slate-800"
+                  onClick={onBack}
+                >
+                  <ArrowLeftIcon className="h-4 w-4" />
+                  {backLabel}
+                </button>
+              )}
 
               <button
                 type="button"

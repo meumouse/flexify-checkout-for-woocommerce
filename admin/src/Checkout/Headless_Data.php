@@ -4,6 +4,7 @@ namespace MeuMouse\Flexify_Checkout\Checkout;
 
 use MeuMouse\Flexify_Checkout\Admin\Admin_Options;
 use MeuMouse\Flexify_Checkout\Admin\Orders;
+use MeuMouse\Flexify_Checkout\Core\Helpers;
 
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
@@ -128,6 +129,11 @@ class Headless_Data {
             'birthdate_required' => self::is_field_required( $fields, 'billing_birthdate', $registered ),
             'currency' => function_exists('get_woocommerce_currency') ? get_woocommerce_currency() : 'BRL',
             'split_payment' => Admin_Options::get_setting('enable_payment_split') === 'yes',
+            // Coupon field visibility + placement, so the React checkout mirrors the
+            // classic checkout's "Coupon field position" setting (sidebar, before the
+            // payment methods, or both).
+            'coupon_enabled' => class_exists( Helpers::class ) ? Helpers::is_coupon_enabled() : true,
+            'coupon_position' => (string) Admin_Options::get_setting('render_coupon_field_hook'),
         );
 
         /**

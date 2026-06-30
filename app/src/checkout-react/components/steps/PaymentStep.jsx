@@ -1,5 +1,7 @@
 import { t } from '../../config.js';
 import { useCheckout } from '../../context/CheckoutContext.jsx';
+import { couponBeforePayment } from '../../lib/coupon.js';
+import CouponForm from '../CouponForm.jsx';
 import PaymentMethods from '../PaymentMethods.jsx';
 import StepSummary from '../StepSummary.jsx';
 
@@ -9,6 +11,8 @@ export default function PaymentStep({ onEdit }) {
   return (
     <div className="space-y-6">
       <StepSummary sections={['contact', 'shipping', 'frete']} onEdit={onEdit} />
+
+      {couponBeforePayment() && <CouponForm />}
 
       <h2 className="fc-heading text-xl text-slate-800">
         {t('payment_methods', 'Formas de pagamento')}

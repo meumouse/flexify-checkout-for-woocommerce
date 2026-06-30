@@ -1,11 +1,13 @@
 import config, { t } from '../config.js';
 import { fieldById, itemsForStep } from '../lib/layout.js';
 import blockRegistry from '../lib/blockRegistry.js';
+import { couponBeforePayment } from '../lib/coupon.js';
 import FieldRenderer from './FieldRenderer.jsx';
 import AddressSearch from './AddressSearch.jsx';
 import ShippingRates from './ShippingRates.jsx';
 import PaymentMethods from './PaymentMethods.jsx';
 import ContactLogin from './ContactLogin.jsx';
+import CouponForm from './CouponForm.jsx';
 import StepSummary from './StepSummary.jsx';
 import Selectable from './editor/Selectable.jsx';
 import { MapPinIcon } from './ui/Icons.jsx';
@@ -90,6 +92,7 @@ export default function StepRenderer({ step, editor = false, selected = null, on
       {step.type === 'payment' && (
         <>
           <StepSummary sections={['contact', 'shipping', 'frete']} onEdit={onEdit} />
+          {couponBeforePayment() && <CouponForm />}
           <h2 className="fc-heading text-xl text-slate-800">{t('payment_methods', 'Formas de pagamento')}</h2>
           <PaymentMethods />
         </>
