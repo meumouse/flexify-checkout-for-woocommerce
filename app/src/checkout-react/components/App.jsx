@@ -149,7 +149,14 @@ function CheckoutHeader() {
   return (
     <div className="fc-shell mx-auto px-4 pt-8 lg:px-8">
       <a href={config.urls?.shop || config.urls?.cart || '/'} className="inline-block">
-        <img src={config.logo} alt="" className="h-10 w-auto md:h-12" />
+        {/* Honour the configured logo width (value + unit) when set; keep the
+            aspect ratio with an auto height. Falls back to the default sizing. */}
+        <img
+          src={config.logo}
+          alt=""
+          className={config.logo_width ? 'h-auto max-w-full' : 'h-10 w-auto md:h-12'}
+          style={config.logo_width ? { width: config.logo_width } : undefined}
+        />
       </a>
     </div>
   );

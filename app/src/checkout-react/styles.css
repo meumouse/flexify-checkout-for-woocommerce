@@ -194,6 +194,24 @@ body.flexify-react-thankyou {
   background-color: #ffffff;
 }
 
+/*
+ * Focus treatment: a solid 2px primary-color border with no ring/shadow.
+ * Overrides the components' default `focus:ring-2 focus:ring-primary-100` (a soft
+ * box-shadow) on every field, select, textarea and the custom Select trigger
+ * (role="combobox", incl. its open state, which mirrors the focus classes).
+ * `box-sizing: border-box` keeps the outer size stable, so the thicker border
+ * does not shift neighbouring layout.
+ */
+#flexify-react-checkout input:not([type='checkbox']):not([type='radio']):not([type='color']):focus,
+#flexify-react-checkout select:focus,
+#flexify-react-checkout textarea:focus,
+#flexify-react-checkout [role='combobox']:focus,
+#flexify-react-checkout [role='combobox'][aria-expanded='true'] {
+  border-width: 2px !important;
+  border-color: var(--fc-primary) !important;
+  box-shadow: none !important;
+}
+
 /* Reservation / session countdown bar. */
 .fc-reservation-bar {
   background-color: var(--fc-primary);

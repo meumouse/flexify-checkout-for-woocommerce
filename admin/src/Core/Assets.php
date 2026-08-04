@@ -476,6 +476,9 @@ class Assets {
 			'currency' => function_exists('get_woocommerce_currency') ? get_woocommerce_currency() : 'BRL',
 			'currency_symbol' => function_exists('get_woocommerce_currency_symbol') ? get_woocommerce_currency_symbol() : 'R$',
 			'logo' => $this->get_checkout_logo(),
+			// Logo width from the checkout header settings (value + unit, e.g. "200px"),
+			// applied to the Swift header <img> so it honours the configured size.
+			'logo_width' => Helpers::get_logo_width() . Admin_Options::get_setting('unit_header_width_image_checkout'),
 			'reservation' => array(
 				'enabled' => Admin_Options::get_setting('enable_checkout_countdown') === 'yes',
 				'minutes' => $this->get_reservation_minutes(),

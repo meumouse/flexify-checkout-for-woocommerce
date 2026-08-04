@@ -26,6 +26,7 @@ const fallback = {
   currency: 'BRL',
   currency_symbol: 'R$',
   logo: '',
+  logo_width: '',
   reservation: { enabled: false, minutes: 15, title: '' },
   urls: {},
   config: { gateways: [], required_fields: [], split_payment: false },
