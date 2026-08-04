@@ -22,6 +22,53 @@ function Message({ html }) {
   return <span dangerouslySetInnerHTML={{ __html: html }} />;
 }
 
+// Shared lucide-style SVG props so the per-type icons sit on the neutral
+// shadcn card with a single accent colour (set by each icon below).
+const iconProps = {
+  width: 18,
+  height: 18,
+  viewBox: '0 0 24 24',
+  fill: 'none',
+  stroke: 'currentColor',
+  strokeWidth: 2,
+  strokeLinecap: 'round',
+  strokeLinejoin: 'round',
+  'aria-hidden': true,
+};
+
+// Semantic per-type icons (lucide: circle-check, circle-x, info,
+// triangle-alert). Colours are the only tint — the card itself stays neutral,
+// matching the shadcn Sonner look.
+const TOAST_ICONS = {
+  success: (
+    <svg {...iconProps} style={{ color: '#16a34a' }}>
+      <circle cx="12" cy="12" r="10" />
+      <path d="m9 12 2 2 4-4" />
+    </svg>
+  ),
+  error: (
+    <svg {...iconProps} style={{ color: '#dc2626' }}>
+      <circle cx="12" cy="12" r="10" />
+      <path d="m15 9-6 6" />
+      <path d="m9 9 6 6" />
+    </svg>
+  ),
+  info: (
+    <svg {...iconProps} style={{ color: '#2563eb' }}>
+      <circle cx="12" cy="12" r="10" />
+      <path d="M12 16v-4" />
+      <path d="M12 8h.01" />
+    </svg>
+  ),
+  warning: (
+    <svg {...iconProps} style={{ color: '#d97706' }}>
+      <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+      <path d="M12 9v4" />
+      <path d="M12 17h.01" />
+    </svg>
+  ),
+};
+
 export function ToastProvider({ children }) {
   const value = useMemo(() => {
     const pushToast = (input) => {
@@ -47,7 +94,7 @@ export function ToastProvider({ children }) {
   return (
     <ToastContext.Provider value={value}>
       {children}
-      <Toaster position="top-center" richColors closeButton />
+      <Toaster position="top-center" closeButton icons={TOAST_ICONS} />
     </ToastContext.Provider>
   );
 }

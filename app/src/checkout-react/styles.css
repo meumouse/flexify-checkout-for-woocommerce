@@ -510,3 +510,22 @@ body.flexify-react-thankyou {
 .fc-editor-mode button[disabled] {
   cursor: not-allowed;
 }
+
+/*
+ * Sonner: place the close button at the trailing end of the toast, vertically
+ * centered (instead of floating in the top corner). The extra specificity of
+ * the leading [data-sonner-toaster] wins over Sonner's own rule without
+ * !important; the right padding reserves room so the message never slides
+ * under the button.
+ */
+[data-sonner-toaster] [data-sonner-toast][data-styled='true'] {
+  padding-right: 40px;
+}
+
+[data-sonner-toaster] [data-sonner-toast][data-styled='true'] [data-close-button] {
+  left: auto;
+  right: 12px;
+  top: 50%;
+  bottom: auto;
+  transform: translateY(-50%);
+}
