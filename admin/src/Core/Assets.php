@@ -585,6 +585,10 @@ class Assets {
 			'saved_addresses' => ( Headless_Data::is_saved_addresses_available() && is_user_logged_in() )
 				? Saved_Addresses::get_all( get_current_user_id() )
 				: array(),
+			// Managed extra field values (CPF, number, neighborhood, …) for the
+			// logged-in customer, so the Swift checkout pre-fills them without an
+			// extra round-trip. Empty for guests.
+			'customer_extra_fields' => \MeuMouse\Flexify_Checkout\Checkout\Store_API_Fields::get_customer_fields(),
 		));
 
 		// Apply the operator-configured texts to the Swift (React) checkout, so the

@@ -686,6 +686,12 @@ class Init {
             // Listed manually because the cached class registry only scans the
             // Composer classmap (which is hand-maintained, never dump-autoloaded).
             '\MeuMouse\Flexify_Checkout\Checkout\React_Checkout',
+            // Persist + validate the Swift (React) checkout extra fields (CPF,
+            // CNPJ, number, neighborhood, …) over the WooCommerce Store API.
+            '\MeuMouse\Flexify_Checkout\Checkout\Store_API_Fields',
+            // Native Brazilian fields (WCBCF parity): keep the step-fields
+            // registry + person-type conditions in sync with the settings.
+            '\MeuMouse\Flexify_Checkout\Admin\Brazilian_Fields_Setup',
             '\MeuMouse\Flexify_Checkout\Rest\Checkout_Config',
             '\MeuMouse\Flexify_Checkout\Rest\Checkout_Rules',
             '\MeuMouse\Flexify_Checkout\Rest\Public_Settings',

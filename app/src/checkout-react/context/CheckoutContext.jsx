@@ -46,7 +46,12 @@ export function CheckoutProvider({ children }) {
   const [busy, setBusy] = useState(false);
   const [placingOrder, setPlacingOrder] = useState(false);
   const [billing, setBilling] = useState(() => ({ ...emptyAddress, ...saved.billing }));
-  const [extraFields, setExtraFields] = useState(() => saved.extraFields);
+  // Seed from the server-provided customer values (logged-in returning shopper),
+  // then let any locally-saved edits win so in-progress typing is never lost.
+  const [extraFields, setExtraFields] = useState(() => ({
+    ...(config.customer_extra_fields && typeof config.customer_extra_fields === 'object' ? config.customer_extra_fields : {}),
+    ...saved.extraFields,
+  }));
   const [selectedGateway, setSelectedGateway] = useState('');
   const [customerNote, setCustomerNote] = useState(() => saved.customerNote);
   // Inline per-field validation errors keyed by field id. Populated when a step

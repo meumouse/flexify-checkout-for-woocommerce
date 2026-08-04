@@ -3,6 +3,7 @@ import { emitSelect } from '../lib/editorBridge.js';
 import { sameTarget } from './editor/Selectable.jsx';
 import { fieldBinding } from '../lib/fields.js';
 import { sanitizePhone } from '../lib/format.js';
+import { applyMask } from '../lib/mask.js';
 import { geoOptions } from '../lib/geo.js';
 import config, { t } from '../config.js';
 import fieldIcon from '../lib/fieldIcons.jsx';
@@ -38,7 +39,15 @@ export default function FieldRenderer({ field, style = null, editor = false, sel
       clearFieldError(field.id);
     }
 
-    const clean = isPhoneField ? sanitizePhone(next) : next;
+    let clean = next;
+
+    if (isPhoneField) {
+      clean = sanitizePhone(next);
+    } else if (useMask) {
+      // Format against the field's stored pattern (CPF, CNPJ, CEP, …); the
+      // masked value is what we store, matching the classic checkout.
+      clean = applyMask(field.input_mask, next);
+    }
 
     if (binding.scope === 'billing') {
       setBilling((prev) => ({ ...prev, [binding.key]: clean }));
@@ -68,6 +77,18 @@ export default function FieldRenderer({ field, style = null, editor = false, sel
     isPhoneField &&
     config.international_phone === 'yes' &&
     config.license_is_valid;
+
+  // Apply a digit mask (CPF/CNPJ/CEP/…) on the plain text/tel inputs when the
+  // operator enabled field masks and the field carries a pattern. Phone fields
+  // keep their own digits-only handling; selects/checkboxes/dates never mask.
+  const useMask =
+    !!field.input_mask &&
+    !!(config.rules && config.rules.field_masks) &&
+    !isSelect &&
+    !isCheckbox &&
+    !isDate &&
+    !isIntlPhone &&
+    !isPhoneField;
 
   // Width: style override wins over the field's stored position.
   const width = style?.width || field.position;

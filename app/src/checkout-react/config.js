@@ -33,6 +33,7 @@ const fallback = {
   settings: {},
   flags: { whatsapp_login: false, address_search: false, saved_addresses: false, split_payment: false, optimize_digital: false },
   saved_addresses: [],
+  customer_extra_fields: {},
   i18n: {},
   editor: false,
   builder_nonce: '',

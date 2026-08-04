@@ -1,5 +1,6 @@
 import { t } from '../config.js';
 import { fieldValue } from './fields.js';
+import { isFieldVisible } from './conditions.js';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -55,6 +56,12 @@ export function validateFields(fields, billing, extraFields) {
 
   (fields || []).forEach((field) => {
     if (!field || field.enabled === false) {
+      return;
+    }
+
+    // Skip fields hidden by a condition (e.g. CNPJ while "Individual" is
+    // selected) so their required flag never blocks the step.
+    if (!isFieldVisible(field.id, billing, extraFields)) {
       return;
     }
 

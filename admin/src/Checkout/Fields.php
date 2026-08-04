@@ -3,6 +3,7 @@
 namespace MeuMouse\Flexify_Checkout\Checkout;
 
 use MeuMouse\Flexify_Checkout\Admin\Admin_Options;
+use MeuMouse\Flexify_Checkout\Admin\Brazilian_Fields_Setup;
 use MeuMouse\Flexify_Checkout\API\License;
 use MeuMouse\Flexify_Checkout\Core\Helpers;
 use MeuMouse\Flexify_Checkout\Validations\Utils;
@@ -43,6 +44,15 @@ class Fields {
 			add_filter( 'woocommerce_customer_meta_fields', array( __CLASS__, 'custom_fields_on_user_profile' ) );
 			add_filter( 'woocommerce_user_column_billing_address', array( __CLASS__, 'user_column_billing_address' ), 1, 2 );
 			add_filter( 'woocommerce_checkout_fields', array( __CLASS__, 'add_custom_fields_to_shipping' ), 10, 1 );
+		}
+
+		// Register the native Brazilian fields (CPF/CNPJ/…) for free when enabled,
+		// unless the Pro field manager already handles registration or the
+		// Brazilian Market plugin (WCBCF) is active and owns the fields.
+		if ( ! Admin_Options::is_field_management_active()
+			&& Admin_Options::get_setting('enable_native_brazilian_fields') === 'yes'
+			&& ! Brazilian_Fields_Setup::is_wcbcf_active() ) {
+			add_filter( 'woocommerce_checkout_fields', array( __CLASS__, 'register_native_brazilian_fields' ), 160 );
 		}
 
 		add_filter( 'woocommerce_billing_fields', array( __CLASS__, 'custom_override_billing_field_priorities' ), 100 );
@@ -496,6 +506,91 @@ class Fields {
 				unset( $fields['billing'][$index] );
 				unset( $fields['shipping'][$index] );
 			}
+		}
+
+		return $fields;
+	}
+
+
+	/**
+	 * Register the native Brazilian fields into WooCommerce checkout fields.
+	 *
+	 * Free counterpart of the Pro field manager, scoped to the Brazilian field
+	 * set (CPF, CNPJ, person type, RG, IE, birthdate, gender, number,
+	 * neighborhood, cell phone). Reads enabled/required/label/priority/mask from
+	 * the step-fields registry, which Admin\Brazilian_Fields_Setup keeps in sync
+	 * with the settings. Enabled fields are injected; disabled ones removed.
+	 *
+	 * @since 6.0.0
+	 * @param array $fields | Checkout fields
+	 * @return array
+	 */
+	public static function register_native_brazilian_fields( $fields ) {
+		$registry = maybe_unserialize( get_option('flexify_checkout_step_fields', array()) );
+
+		if ( ! is_array( $registry ) ) {
+			return $fields;
+		}
+
+		$position_class = array(
+			'left' => 'row-first',
+			'right' => 'row-last',
+			'full' => 'form-row-wide',
+		);
+
+		foreach ( Brazilian_Fields_Setup::MANAGED_FIELDS as $field_id ) {
+			$def = isset( $registry[ $field_id ] ) ? $registry[ $field_id ] : null;
+
+			// Remove disabled fields; skip fields not in the registry.
+			if ( ! is_array( $def ) || ( $def['enabled'] ?? 'no' ) !== 'yes' ) {
+				unset( $fields['billing'][ $field_id ] );
+
+				continue;
+			}
+
+			$type = (string) ( $def['type'] ?? 'text' );
+			$type = 'phone' === $type ? 'tel' : $type;
+
+			$field = array(
+				'type' => $type,
+				'label' => (string) ( $def['label'] ?? '' ),
+				'required' => ( $def['required'] ?? 'no' ) === 'yes',
+				'priority' => (string) ( $def['priority'] ?? '0' ),
+				'clear' => true,
+				'class' => array(),
+			);
+
+			// Column placement.
+			$position = (string) ( $def['position'] ?? 'full' );
+
+			if ( isset( $position_class[ $position ] ) ) {
+				$field['class'][] = $position_class[ $position ];
+			}
+
+			// Input mask (applied client-side via the has-mask hook).
+			if ( ! empty( $def['input_mask'] ) ) {
+				$field['class'][] = 'has-mask';
+			}
+
+			// Select options (person type / gender).
+			if ( 'select' === $type && isset( $def['options'] ) && is_array( $def['options'] ) ) {
+				$options = array();
+
+				foreach ( $def['options'] as $option ) {
+					if ( is_array( $option ) && isset( $option['value'] ) ) {
+						$options[ $option['value'] ] = $option['text'] ?? '';
+					}
+				}
+
+				$field['options'] = $options;
+			}
+
+			// Cell phone validates as phone.
+			if ( 'billing_cellphone' === $field_id ) {
+				$field['validate'] = array('phone');
+			}
+
+			$fields['billing'][ $field_id ] = $field;
 		}
 
 		return $fields;

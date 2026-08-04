@@ -69,7 +69,7 @@ class Default_Options {
             'checkout_bg_color' => '#FFFFFF',
             'checkout_text_color' => '#102033',
             // Payment methods display mode in the React checkout: 'cards' or 'accordion'.
-            'payment_methods_layout' => 'cards',
+            'payment_methods_layout' => 'accordion',
             'flexify_checkout_theme' => 'swift',
             'input_border_radius' => '0.375',
             'unit_input_border_radius' => 'rem',
@@ -77,6 +77,19 @@ class Default_Options {
             'h2_size_unit' => 'rem',
             'enable_thankyou_page_template' => 'yes',
             'enable_unset_wcbcf_fields_not_brazil' => 'no',
+            // Native Brazilian fields (WCBCF parity). Master toggle + granular
+            // controls that drive the step-fields registry and person-type
+            // conditions through Admin\Brazilian_Fields_Setup.
+            'enable_native_brazilian_fields' => 'no',
+            'brazilian_person_type_mode' => 'both',
+            'brazilian_show_rg' => 'no',
+            'brazilian_show_ie' => 'no',
+            'brazilian_show_birthdate' => 'no',
+            'brazilian_show_gender' => 'no',
+            'brazilian_cellphone_mode' => 'optional',
+            'brazilian_neighborhood_required' => 'no',
+            'brazilian_validate_cpf' => 'yes',
+            'brazilian_validate_cnpj' => 'yes',
             'enable_manage_fields' => 'no',
             'get_address_api_service' => 'https://viacep.com.br/ws/{postcode}/json/',
             'api_auto_fill_address_param' => 'logradouro',

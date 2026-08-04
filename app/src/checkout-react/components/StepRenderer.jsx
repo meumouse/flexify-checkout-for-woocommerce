@@ -1,4 +1,6 @@
 import config, { t } from '../config.js';
+import { useCheckout } from '../context/CheckoutContext.jsx';
+import { isFieldVisible } from '../lib/conditions.js';
 import { fieldById, itemsForStep } from '../lib/layout.js';
 import blockRegistry from '../lib/blockRegistry.js';
 import { couponBeforePayment } from '../lib/coupon.js';
@@ -33,6 +35,7 @@ const COMPONENT_LABELS = {
  * @param {{step:object, editor?:boolean, selected?:object|null, onEdit?:(type:string)=>void}} props
  */
 export default function StepRenderer({ step, editor = false, selected = null, onEdit = null }) {
+  const { billing, extraFields } = useCheckout();
   const items = itemsForStep(step);
   const addressSearch = config.flags && config.flags.address_search;
 
@@ -51,7 +54,10 @@ export default function StepRenderer({ step, editor = false, selected = null, on
     if (item.kind === 'field') {
       const field = fieldById(item.field_id, { editor });
 
-      if (field) {
+      // Honor conditional visibility on the storefront (e.g. CPF/RG for
+      // individuals vs CNPJ/IE for companies). In the editor every field stays
+      // visible so the operator can design the layout.
+      if (field && (editor || isFieldVisible(field.id, billing, extraFields))) {
         fieldBatch.push({ field, item });
       }
 

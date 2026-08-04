@@ -563,6 +563,32 @@ class Registry {
                     ),
                 ),
                 array(
+                    'id' => 'fields-brazilian',
+                    'title' => __( 'Brazilian fields (native)', 'flexify-checkout-for-woocommerce' ),
+                    'description' => __( 'Add CPF/CNPJ, person type, RG, State Registration, birthdate, gender, cell phone, number and neighborhood natively — no separate Brazilian Market plugin required.', 'flexify-checkout-for-woocommerce' ),
+                    'fields' => array(
+                        self::field_toggle( 'enable_native_brazilian_fields', __( 'Enable native Brazilian fields', 'flexify-checkout-for-woocommerce' ), __( 'Seeds and keeps the Brazilian checkout fields and their person-type conditions in sync with the options below.', 'flexify-checkout-for-woocommerce' ) ),
+                        self::field_select( 'brazilian_person_type_mode', __( 'Person type', 'flexify-checkout-for-woocommerce' ), __( 'Which document set the checkout collects.', 'flexify-checkout-for-woocommerce' ), array(
+                            array( 'value' => 'both', 'label' => __( 'Individual and Legal entity (selectable)', 'flexify-checkout-for-woocommerce' ) ),
+                            array( 'value' => 'individual', 'label' => __( 'Individual only (CPF)', 'flexify-checkout-for-woocommerce' ) ),
+                            array( 'value' => 'legal', 'label' => __( 'Legal entity only (CNPJ)', 'flexify-checkout-for-woocommerce' ) ),
+                            array( 'value' => 'none', 'label' => __( 'Do not use person type', 'flexify-checkout-for-woocommerce' ) ),
+                        ) ),
+                        self::field_toggle( 'brazilian_show_rg', __( 'Show RG field', 'flexify-checkout-for-woocommerce' ), __( 'Displays the RG (ID) field for individuals.', 'flexify-checkout-for-woocommerce' ) ),
+                        self::field_toggle( 'brazilian_show_ie', __( 'Show State Registration field', 'flexify-checkout-for-woocommerce' ), __( 'Displays the Inscrição Estadual (IE) field for legal entities.', 'flexify-checkout-for-woocommerce' ) ),
+                        self::field_toggle( 'brazilian_show_birthdate', __( 'Show birthdate field', 'flexify-checkout-for-woocommerce' ), '' ),
+                        self::field_toggle( 'brazilian_show_gender', __( 'Show gender field', 'flexify-checkout-for-woocommerce' ), '' ),
+                        self::field_select( 'brazilian_cellphone_mode', __( 'Cell phone field', 'flexify-checkout-for-woocommerce' ), '', array(
+                            array( 'value' => 'optional', 'label' => __( 'Optional', 'flexify-checkout-for-woocommerce' ) ),
+                            array( 'value' => 'required', 'label' => __( 'Required', 'flexify-checkout-for-woocommerce' ) ),
+                            array( 'value' => 'disable', 'label' => __( 'Do not show', 'flexify-checkout-for-woocommerce' ) ),
+                        ) ),
+                        self::field_toggle( 'brazilian_neighborhood_required', __( 'Make neighborhood required', 'flexify-checkout-for-woocommerce' ), '' ),
+                        self::field_toggle( 'brazilian_validate_cpf', __( 'Validate CPF', 'flexify-checkout-for-woocommerce' ), __( 'Rejects an invalid CPF on order placement.', 'flexify-checkout-for-woocommerce' ) ),
+                        self::field_toggle( 'brazilian_validate_cnpj', __( 'Validate CNPJ', 'flexify-checkout-for-woocommerce' ), __( 'Rejects an invalid CNPJ on order placement.', 'flexify-checkout-for-woocommerce' ) ),
+                    ),
+                ),
+                array(
                     'id' => 'fields-address',
                     'title' => __( 'Address', 'flexify-checkout-for-woocommerce' ),
                     'description' => __( 'Filling, validation and behavior of the address fields.', 'flexify-checkout-for-woocommerce' ),

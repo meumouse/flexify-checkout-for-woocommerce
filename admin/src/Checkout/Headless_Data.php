@@ -193,6 +193,9 @@ class Headless_Data {
             'shipping_to_different_address' => Admin_Options::get_setting('enable_shipping_to_different_address') === 'yes',
             'additional_notes' => Admin_Options::get_setting('enable_aditional_notes') === 'yes',
             'field_masks' => Admin_Options::get_setting('enable_field_masks') === 'yes',
+            // Field show/hide rules (person type → CPF/RG vs CNPJ/IE, …) evaluated
+            // live in the React checkout (see app/src/checkout-react/lib/conditions.js).
+            'conditions' => Conditions::export_field_rules_for_js(),
         );
 
         // Emit the visual builder layout only when the operator opted in and an
