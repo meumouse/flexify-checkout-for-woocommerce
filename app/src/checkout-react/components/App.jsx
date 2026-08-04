@@ -360,7 +360,21 @@ function CheckoutShell({ stepLabels, activeIndex, isLast, busy, onBack, onNext, 
       <CheckoutHeader />
 
       <div className="fc-shell mx-auto grid grid-cols-1 gap-8 px-4 pt-6 lg:grid-cols-[minmax(0,1fr)_380px] lg:px-8">
-        <div>
+        {/*
+         * Real checkout form. Gateway runtimes (e.g. Mercado Pago's custom-checkout
+         * script) locate the checkout by form[name=checkout] at page load and error
+         * ("No checkout form found") without it. Exposing a persistent form here —
+         * mirroring the classic WooCommerce checkout — keeps them compatible
+         * regardless of step or selected gateway. Native submission is neutralized;
+         * order placement is driven by the place-order button below.
+         */}
+        <form
+          name="checkout"
+          id="checkout"
+          className="fc-checkout-form min-w-0"
+          onSubmit={(e) => e.preventDefault()}
+          noValidate
+        >
           <Stepper stepLabels={stepLabels} activeIndex={activeIndex} />
 
           <div>
@@ -400,7 +414,7 @@ function CheckoutShell({ stepLabels, activeIndex, isLast, busy, onBack, onNext, 
               </button>
             </div>
           </div>
-        </div>
+        </form>
 
         <aside className="hidden lg:sticky lg:top-8 lg:block lg:self-start">
           <div className="rounded-2xl border border-slate-200 bg-white p-6">

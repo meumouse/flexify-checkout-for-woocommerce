@@ -187,12 +187,12 @@ export async function mountBlocksGateway(container, name, { getCart, onSubmit } 
   return true;
 }
 
-// Re-run a gateway's checkout-form configuration once our compatible form is in
-// the DOM. Mercado Pago's handler configures itself a single time on page load,
-// polling ~5s for the checkout form; in a multi-step React checkout that form is
-// rendered later, so the initial run fails with "No checkout form found". Calling
-// the handler's own setup again now that the form exists fixes it. Guarded so it
-// is a harmless no-op for gateways without this handler.
+// Re-sync a gateway's checkout-form configuration after its payment component
+// mounts. The Swift checkout exposes a persistent form[name=checkout] (see
+// CheckoutShell in App.jsx), so Mercado Pago's handler already finds the checkout
+// form at page load; re-running its setup once our card fields exist keeps the
+// gateway bound to the current form. Guarded so it is a harmless no-op for
+// gateways without this handler.
 async function nudgeGatewayFormConfig() {
   const handler = await waitFor(() => window?.mpCustomCheckoutHandler, 8000);
 
