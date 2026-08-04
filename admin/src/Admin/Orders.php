@@ -66,7 +66,7 @@ class Orders {
 			return;
 		}
 
-		if ( 0 === $order->get_user_id() ) {
+		if ( 0 !== $order->get_user_id() ) {
 			return;
 		}
 
