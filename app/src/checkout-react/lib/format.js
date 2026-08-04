@@ -23,3 +23,23 @@ export function formatPrice(amount, totals = {}) {
     return `${symbol} ${value.toFixed(minorUnit)}`;
   }
 }
+
+/**
+ * Strip mask characters from a phone number, keeping only digits and an
+ * optional leading `+` (so an international E.164 prefix survives). Formatting
+ * such as parentheses, spaces, dots and dashes is removed before the value is
+ * stored/submitted.
+ *
+ * @param {string} value Raw typed value.
+ * @returns {string}
+ */
+export function sanitizePhone(value) {
+  if (value === null || value === undefined) {
+    return '';
+  }
+
+  const str = String(value).trim();
+  const digits = str.replace(/\D+/g, '');
+
+  return str.charAt(0) === '+' ? `+${digits}` : digits;
+}

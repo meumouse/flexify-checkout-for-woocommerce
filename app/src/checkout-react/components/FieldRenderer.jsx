@@ -2,6 +2,7 @@ import { useCheckout } from '../context/CheckoutContext.jsx';
 import { emitSelect } from '../lib/editorBridge.js';
 import { sameTarget } from './editor/Selectable.jsx';
 import { fieldBinding } from '../lib/fields.js';
+import { sanitizePhone } from '../lib/format.js';
 import { geoOptions } from '../lib/geo.js';
 import config, { t } from '../config.js';
 import fieldIcon from '../lib/fieldIcons.jsx';
@@ -27,15 +28,22 @@ export default function FieldRenderer({ field, style = null, editor = false, sel
   // Inline validation error from a blocked step navigation (never in the editor).
   const error = editor ? '' : (fieldErrors && fieldErrors[field.id]) || '';
 
+  // A phone field is identified by its id (billing_phone, shipping_phone, …) —
+  // never by `type: 'tel'`, which other numeric fields such as the postcode/CEP
+  // also use. Phone values are stored digits-only (masks stripped).
+  const isPhoneField = field.id === 'phone' || field.id.endsWith('_phone');
+
   const onChange = (next) => {
     if (error) {
       clearFieldError(field.id);
     }
 
+    const clean = isPhoneField ? sanitizePhone(next) : next;
+
     if (binding.scope === 'billing') {
-      setBilling((prev) => ({ ...prev, [binding.key]: next }));
+      setBilling((prev) => ({ ...prev, [binding.key]: clean }));
     } else {
-      setExtraFields((prev) => ({ ...prev, [field.id]: next }));
+      setExtraFields((prev) => ({ ...prev, [field.id]: clean }));
     }
   };
 
@@ -50,12 +58,14 @@ export default function FieldRenderer({ field, style = null, editor = false, sel
   const isDate = field.type === 'date';
   // International phone (Pro): the billing phone renders the intl-tel-input field
   // — large country flags, separate dial code, translated labels — when enabled
-  // and licensed. Otherwise it falls through to the plain input below.
+  // and licensed. Otherwise it falls through to the plain input below. Gated on
+  // the field being an actual phone field, not merely `type: 'tel'` (which the
+  // postcode/CEP also uses — treating it as a phone corrupts its value).
   const isIntlPhone =
     !isSelect &&
     !isCheckbox &&
     !isDate &&
-    (field.id === 'billing_phone' || field.type === 'tel') &&
+    isPhoneField &&
     config.international_phone === 'yes' &&
     config.license_is_valid;
 
