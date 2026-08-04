@@ -42,6 +42,14 @@ class Updater {
      * @return void
      */
     public function __construct() {
+        // When the MDS SDK integration is active, its signed PluginUpdater owns
+        // the update flow (plugins_api / update transient). Skip the legacy
+        // unsigned updater entirely to avoid two updaters fighting over the
+        // same plugin file.
+        if ( class_exists('\MeuMouse\Flexify_Checkout\API\MDS') && \MeuMouse\Flexify_Checkout\API\MDS::is_enabled() ) {
+            return;
+        }
+
         if ( defined('FLEXIFY_CHECKOUT_DEBUG_MODE') && FLEXIFY_CHECKOUT_DEBUG_MODE === true ) {
             add_filter( 'https_ssl_verify', '__return_false' );
             add_filter( 'https_local_ssl_verify', '__return_false' );

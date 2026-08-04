@@ -572,6 +572,14 @@ class License {
      * @return object
      */
     public static function deactive_license( $plugin_base_file, &$message = "" ) {
+        // New MDS SDK path: deactivate this domain's activation and clear state.
+        if ( MDS::is_enabled() && ( $manager = MDS::license() ) ) {
+            $manager->deactivate();
+            $message = __( 'The license has been deactivated.', 'flexify-checkout-for-woocommerce' );
+
+            return true;
+        }
+
         $obj = self::get_instance( $plugin_base_file );
 
         return $obj->deactive_license_process( $message );
@@ -590,9 +598,62 @@ class License {
      * @return object
      */
     public static function check_license( $purchase_key, &$error = '', &$response = null, $plugin_base_file = '' ) {
+        // New MDS SDK path: activate against the domain and mirror the legacy
+        // response object shape so callers (REST/admin UI) keep working.
+        if ( MDS::is_enabled() ) {
+            return self::check_license_via_sdk( $purchase_key, $error, $response );
+        }
+
         $obj = self::get_instance( $plugin_base_file );
 
         return $obj->check_license_object( $purchase_key, $error, $response );
+    }
+
+
+    /**
+     * Activate/validate a license through the MDS SDK.
+     *
+     * Populates $response with an object compatible with the legacy
+     * response shape (is_valid / expire_date / license_title / license_key).
+     *
+     * @since 6.0.0
+     * @param string $purchase_key License key entered by the admin.
+     * @param string $error Filled with a human-readable error on failure.
+     * @param object $response Filled with the resulting status object.
+     * @return bool True when the server returned a definitive answer.
+     */
+    private static function check_license_via_sdk( $purchase_key, &$error = '', &$response = null ) {
+        $integration = MDS::integration_for_key( $purchase_key );
+
+        if ( ! $integration ) {
+            $error = __( 'Licensing service is not available.', 'flexify-checkout-for-woocommerce' );
+
+            return false;
+        }
+
+        try {
+            $status = $integration->license()->activate( $purchase_key );
+        } catch ( \Throwable $e ) {
+            // Transport failure — let the caller show a "try again" message.
+            $error = $e->getMessage();
+
+            return false;
+        }
+
+        $response = new \stdClass();
+        $response->is_valid = $status->is_valid();
+        $response->license_key = $purchase_key;
+        $response->expire_date = $status->expires_at() ? $status->expires_at() : 'No expiry';
+        $response->license_title = (string) $status->get( 'license_title', $status->get( 'plan', '' ) );
+        $response->support_end = (string) $status->get( 'support_end', '' );
+        $response->renew_link = (string) $status->get( 'renew_link', '' );
+        $response->msg = $status->message();
+
+        if ( ! $status->is_valid() ) {
+            $error = $status->message();
+        }
+
+        return true;
     }
 
 
@@ -797,6 +858,12 @@ class License {
      * @return bool
      */
     public static function is_valid() {
+        // New MDS SDK path: gate Pro features on the SDK's effective validity
+        // (cached status + grace period), no network call.
+        if ( MDS::is_enabled() && ( $manager = MDS::license() ) ) {
+            return $manager->is_active();
+        }
+
         $cached_result = get_transient('flexify_checkout_license_status_cached');
 
         // If the result is cached, return it
@@ -827,8 +894,15 @@ class License {
      * @return string
      */
     public static function license_title() {
+        if ( MDS::is_enabled() && ( $manager = MDS::license() ) ) {
+            $status = $manager->status();
+            $title = $status->get('license_title', $status->get('plan', ''));
+
+            return '' !== (string) $title ? (string) $title : esc_html__( 'Not available', 'flexify-checkout-for-woocommerce' );
+        }
+
         $object_query = get_option('flexify_checkout_license_response_object');
-    
+
         if ( is_object( $object_query ) && ! empty( $object_query ) && isset( $object_query->license_title ) ) {
           return $object_query->license_title;
         } else {
@@ -845,6 +919,22 @@ class License {
      * @return string
      */
     public static function license_expire() {
+        if ( MDS::is_enabled() && ( $manager = MDS::license() ) ) {
+            $expires = $manager->status()->expires_at();
+
+            if ( empty( $expires ) ) {
+                return esc_html__( 'Never expires', 'flexify-checkout-for-woocommerce' );
+            }
+
+            $timestamp = strtotime( (string) $expires );
+
+            if ( $timestamp && $timestamp < time() ) {
+                return esc_html__( 'License expired', 'flexify-checkout-for-woocommerce' );
+            }
+
+            return $timestamp ? date( get_option('date_format'), $timestamp ) : (string) $expires;
+        }
+
         $object_query = get_option('flexify_checkout_license_response_object');
 
         if ( is_object( $object_query ) && ! empty( $object_query ) && isset( $object_query->expire_date ) ) {
@@ -877,6 +967,10 @@ class License {
      * @return bool
      */
     public static function expired_license() {
+        if ( MDS::is_enabled() && ( $manager = MDS::license() ) ) {
+            return $manager->status()->is_expired();
+        }
+
         $object_query = get_option('flexify_checkout_license_response_object');
 
         if ( is_object( $object_query ) && ! empty( $object_query ) && isset( $object_query->expire_date ) ) {
@@ -997,6 +1091,12 @@ class License {
      * @return void
      */
     public function check_license_expires_time() {
+        // Under the MDS SDK the daily heartbeat owns expiry detection; skip the
+        // legacy old-API expiry lookup entirely.
+        if ( MDS::is_enabled() ) {
+            return;
+        }
+
         $license_key = get_option('flexify_checkout_license_key');
         $api_expiry_time = $this->get_expires_time( $license_key );
 

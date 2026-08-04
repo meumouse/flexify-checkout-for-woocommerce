@@ -10,8 +10,21 @@
             "homepage": "https://meumouse.com"
         }
     ],
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../../../../../../../../Desktop/Modular Distribution Service/mds-php-sdk",
+            "options": {
+                "symlink": false
+            }
+        }
+    ],
     "require": {
-        "php": ">= 7.4"
+        "php": ">= 7.4",
+        "meumouse/mds-php-sdk": "@dev"
+    },
+    "config": {
+        "optimize-autoloader": true
     },
     "autoload": {
         "psr-4": {
