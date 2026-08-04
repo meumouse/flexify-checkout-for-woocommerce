@@ -27,7 +27,7 @@ export default function PaymentMethods() {
   const { cart, selectedGateway, setSelectedGateway } = ctx;
   const gateways = resolveAvailableGateways(cart);
   const pixDiscount = Number(config.settings?.pix_discount_percent || 0);
-  const layout = getCheckoutSetting('payment_methods_layout', 'cards');
+  const layout = getCheckoutSetting('payment_methods_layout', 'accordion');
 
   if (gateways.length === 0) {
     return <p className="text-sm text-slate-500">Nenhuma forma de pagamento disponível.</p>;
@@ -135,7 +135,7 @@ function AccordionLayout({ gateways, active, pixDiscount, onSelect }) {
             </button>
 
             {isActive && (
-              <div className="px-4 pb-4">
+              <div className="p-4">
                 <GatewayDetail gateway={gateway} />
               </div>
             )}

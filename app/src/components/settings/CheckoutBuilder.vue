@@ -209,7 +209,7 @@ function pushTexts() {
 
 // settings key (also the key read by the React checkout under settings.checkout).
 const CHECKOUT_SETTING_DEFAULTS = {
-  payment_methods_layout: 'cards',
+  payment_methods_layout: 'accordion',
 };
 
 const settingsDraft = reactive({});
