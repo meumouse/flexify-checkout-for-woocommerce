@@ -7,3 +7,6 @@ release/
 package-lock.json
 composer.lock
 app/dist
+
+# Composer dependencies (installed at build time)
+admin/vendor/
