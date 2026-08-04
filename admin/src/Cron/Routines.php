@@ -4,6 +4,7 @@ namespace MeuMouse\Flexify_Checkout\Cron;
 
 use MeuMouse\Flexify_Checkout\Admin\Admin_Options;
 use MeuMouse\Flexify_Checkout\API\Updater;
+use MeuMouse\Flexify_Checkout\API\MDS;
 
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
@@ -24,6 +25,15 @@ class Routines {
 	 * @return void
 	 */
 	public function __construct() {
+        // When the MDS SDK is active it owns updates (signed checks + WP-Cron
+        // heartbeat), so the legacy packages.meumouse.com routines are skipped.
+        if ( MDS::is_enabled() ) {
+            wp_clear_scheduled_hook('Flexify_Checkout/Updates/Auto_Updates');
+            wp_clear_scheduled_hook('Flexify_Checkout/Updates/Check_Daily_Updates');
+
+            return;
+        }
+
         $timestamp = time();
 
         // enable auto updates
@@ -37,6 +47,10 @@ class Routines {
 
             // auto update plugin action
             add_action( 'Flexify_Checkout/Updates/Auto_Updates', array( $updater, 'auto_update_plugin' ) );
+        } elseif ( wp_next_scheduled('Flexify_Checkout/Updates/Auto_Updates') ) {
+            // Auto-updates were turned off: drop the previously scheduled event so
+            // it doesn't keep firing without a handler attached.
+            wp_clear_scheduled_hook('Flexify_Checkout/Updates/Auto_Updates');
         }
 
         // schedule daily updates

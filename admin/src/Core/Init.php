@@ -95,6 +95,12 @@ class Init {
 
         self::define_constants( $plugin_file, $plugin_version );
 
+        // Require the MDS SDK loader early so it registers its embedded copy
+        // before the `plugins_loaded` (-100) election. Product registration is
+        // gated behind the feature flag inside the facade; this call is inert
+        // when the SDK is disabled or unconfigured.
+        \MeuMouse\Flexify_Checkout\API\MDS::boot();
+
         do_action( 'Flexify_Checkout/Before_Init' );
 
         add_action( 'before_woocommerce_init', function() use ( $plugin_file ) {
@@ -156,9 +162,12 @@ class Init {
         self::maybe_bootstrap_defaults( true );
         self::invalidate_class_registry();
 
-        // WooCommerce template cache helper may not be loaded yet during activation;
-        // defer the call so it runs after WC bootstraps.
-        add_action( 'init', array( __CLASS__, 'clear_wc_template_cache' ), 99 );
+        // Activation runs after plugins_loaded (all active plugins are loaded),
+        // so WooCommerce's helper is already available. Deferring to init@99 was
+        // a no-op here because init has already fired by activation time.
+        if ( function_exists('wc_clear_template_cache') ) {
+            self::clear_wc_template_cache();
+        }
     }
 
 
@@ -172,10 +181,34 @@ class Init {
     public static function deactivate( $plugin_file, $plugin_version ) {
         self::define_constants( $plugin_file, $plugin_version );
         self::invalidate_class_registry();
+        self::clear_scheduled_events();
         delete_transient( self::ILLEGAL_COPY_TRANSIENT );
 
         if ( function_exists('wc_clear_template_cache') ) {
             self::clear_wc_template_cache();
+        }
+    }
+
+
+    /**
+     * Unschedule every recurring/single WP-Cron event the plugin registers.
+     *
+     * These are scheduled lazily at runtime (Cron\Routines, API\License), so
+     * without this cleanup they keep firing after the plugin is deactivated,
+     * trying to resolve classes that are no longer booted.
+     *
+     * @since 6.0.0
+     * @return void
+     */
+    public static function clear_scheduled_events() {
+        $hooks = array(
+            'Flexify_Checkout/Updates/Auto_Updates',
+            'Flexify_Checkout/Updates/Check_Daily_Updates',
+            'Flexify_Checkout/License/Check_Expires_Time',
+        );
+
+        foreach ( $hooks as $hook ) {
+            wp_clear_scheduled_hook( $hook );
         }
     }
 
@@ -311,10 +344,18 @@ class Init {
             if ( is_admin() ) {
                 $this->register_admin_listing_hooks();
             }
-        } else {
+        } elseif ( is_admin() ) {
+            // WooCommerce missing/outdated. The self-deactivation and notices are
+            // only meaningful in wp-admin, so they no longer run on every frontend
+            // request. The `Requires Plugins: woocommerce` header already blocks
+            // activation without WooCommerce on WP 6.5+; this covers older cores
+            // and the case where WooCommerce is deactivated after the fact.
             add_action( 'admin_notices', array( $this, 'woocommerce_version_notice' ) );
-            deactivate_plugins( 'flexify-checkout-for-woocommerce/flexify-checkout-for-woocommerce.php' );
-            add_action( 'admin_notices', array( $this, 'deactivate_flexify_checkout_notice' ) );
+
+            if ( function_exists('deactivate_plugins') && defined('FLEXIFY_CHECKOUT_BASENAME') ) {
+                deactivate_plugins( FLEXIFY_CHECKOUT_BASENAME );
+                add_action( 'admin_notices', array( $this, 'deactivate_flexify_checkout_notice' ) );
+            }
         }
 
         // hook after plugin init
@@ -631,6 +672,9 @@ class Init {
             '\MeuMouse\Flexify_Checkout\Core\Webhooks\Bootstrap_Webhooks',
             '\MeuMouse\Flexify_Checkout\Rest\Webhooks_Settings',
             '\MeuMouse\Flexify_Checkout\Rest\Webhooks_Test',
+            // Inbound MDS license webhook (signed server-to-server). Core, not
+            // admin-only: the licensing server calls it unauthenticated.
+            '\MeuMouse\Flexify_Checkout\Rest\License_Webhook',
             '\MeuMouse\Flexify_Checkout\API\REST_Checkout_Fields',
             '\MeuMouse\Flexify_Checkout\Admin\Settings\Views\Integrations',
             // Settings snapshot import/export over REST (Vue admin). The
