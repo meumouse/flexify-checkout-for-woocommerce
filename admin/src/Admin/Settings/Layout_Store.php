@@ -296,6 +296,7 @@ class Layout_Store {
             'kind' => 'component',
             'component' => $component,
             'config' => self::sanitize_component_config( $component, $incoming['config'] ?? array() ),
+            'enabled' => ! isset( $incoming['enabled'] ) || (bool) $incoming['enabled'],
             'order' => 0,
         );
     }

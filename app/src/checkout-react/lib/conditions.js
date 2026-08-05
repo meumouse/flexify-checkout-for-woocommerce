@@ -143,6 +143,40 @@ function evaluateRule(rule, billing, extraFields) {
   return !any;
 }
 
+// Live rules pushed by the admin builder (editor mode). When set, they take the
+// place of the server-exported rules so field show/hide reflects unsaved edits.
+// Only field-subject conditions evaluate live; other subjects (cart, country, …)
+// are treated as passing here and become accurate again after the Save reload.
+let overrideRules = null;
+
+/**
+ * Override the field-visibility rules with a live builder payload, or clear it.
+ *
+ * @param {Array|null} rules Editor rule payloads, or null to restore server rules.
+ */
+export function setConditionsOverride(rules) {
+  if (!Array.isArray(rules)) {
+    overrideRules = null;
+
+    return;
+  }
+
+  overrideRules = rules
+    .filter((rule) => rule && rule.enabled !== false && rule.action && rule.action.type !== 'discount')
+    .map((rule) => ({
+      action: rule.action || {},
+      match: rule.match === 'any' ? 'any' : 'all',
+      groups: (rule.groups || []).map((group) => ({
+        match: group.match === 'any' ? 'any' : 'all',
+        conditions: (group.conditions || []).map((condition) =>
+          condition.subject === 'field'
+            ? { subject: 'field', field: condition.field, operator: condition.operator, value: condition.value }
+            : { subject: condition.subject, operator: condition.operator, server_pass: true },
+        ),
+      })),
+    }));
+}
+
 /**
  * Whether a field is currently visible given the live form values.
  *
@@ -155,7 +189,7 @@ function evaluateRule(rule, billing, extraFields) {
  * @returns {boolean}
  */
 export function isFieldVisible(fieldId, billing, extraFields) {
-  const rules = (config.rules && config.rules.conditions) || [];
+  const rules = overrideRules || (config.rules && config.rules.conditions) || [];
 
   if (!rules.length) {
     return true;

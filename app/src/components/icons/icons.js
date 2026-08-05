@@ -56,6 +56,16 @@ import image from 'boxicons/svg/regular/bx-image.svg?raw';
 import star from 'boxicons/svg/regular/bx-star.svg?raw';
 import copy from 'boxicons/svg/regular/bx-copy.svg?raw';
 import calendar from 'boxicons/svg/regular/bx-calendar.svg?raw';
+// Checkout builder — layers tree affordances and field icon options.
+import lock from 'boxicons/svg/regular/bx-lock-alt.svg?raw';
+import show from 'boxicons/svg/regular/bx-show.svg?raw';
+import hide from 'boxicons/svg/regular/bx-hide.svg?raw';
+import grip from 'boxicons/svg/regular/bx-grid-vertical.svg?raw';
+import search from 'boxicons/svg/regular/bx-search.svg?raw';
+import envelope from 'boxicons/svg/regular/bx-envelope.svg?raw';
+import map from 'boxicons/svg/regular/bx-map.svg?raw';
+import home from 'boxicons/svg/regular/bx-home.svg?raw';
+import idCard from 'boxicons/svg/regular/bx-id-card.svg?raw';
 
 // Webhook glyph: Boxicons (2.1.4, latest on npm) has no webhook icon, so this
 // is the canonical three-node webhook mark, authored as strokes. Each path
@@ -110,6 +120,15 @@ export default {
   'regular/star': star,
   'regular/copy': copy,
   'regular/calendar': calendar,
+  'regular/lock': lock,
+  'regular/show': show,
+  'regular/hide': hide,
+  'regular/grip': grip,
+  'regular/search': search,
+  'regular/envelope': envelope,
+  'regular/map': map,
+  'regular/home': home,
+  'regular/id-card': idCard,
   'regular/webhook': webhook,
   'solid/star': starSolid,
   'solid/check-circle': checkCircleSolid,

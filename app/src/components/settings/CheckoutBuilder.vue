@@ -7,6 +7,15 @@ import ToggleSwitch from '../toggles/ToggleSwitch.vue';
 import SearchMultiSelect from '../fields/SearchMultiSelect.vue';
 import MediaPickerField from '../fields/MediaPickerField.vue';
 import FontsManager from './FontsManager.vue';
+import BuilderLayersTree from './builder/BuilderLayersTree.vue';
+import BuilderRulesPanel from './builder/BuilderRulesPanel.vue';
+import BuilderField from './builder/BuilderField.vue';
+import BuilderTextInput from './builder/BuilderTextInput.vue';
+import BuilderTextArea from './builder/BuilderTextArea.vue';
+import BuilderColor from './builder/BuilderColor.vue';
+import BuilderRange from './builder/BuilderRange.vue';
+import BuilderSegmented from './builder/BuilderSegmented.vue';
+import { loadRule, buildRulePayload, newRule, ruleValid } from './builder/conditionsSchema.js';
 
 const props = defineProps({
   open: { type: Boolean, default: false },
@@ -48,17 +57,6 @@ const FIELD_TYPES = [
   { value: 'date', label: 'Data' },
 ];
 
-const POSITIONS = [
-  { value: 'left', label: 'Esquerda' },
-  { value: 'right', label: 'Direita' },
-  { value: 'full', label: 'Largura completa' },
-];
-
-const ENABLED_OPTIONS = [
-  { value: 'yes', label: 'Ativo' },
-  { value: 'no', label: 'Inativo' },
-];
-
 const REVIEW_SOURCES = [
   { value: 'product', label: 'Avaliações do produto' },
   { value: 'manual', label: 'Depoimentos manuais' },
@@ -70,27 +68,27 @@ const REVIEW_LAYOUTS = [
 ];
 
 const PAYMENT_LAYOUT_OPTIONS = [
-  { value: 'cards', label: 'Cards' },
   { value: 'accordion', label: 'Sanfona' },
+  { value: 'cards', label: 'Cards' },
 ];
 
 const HTML_VARIANTS = [
   { value: 'raw', label: 'HTML puro' },
   { value: 'banner', label: 'Banner' },
-  { value: 'badges', label: 'Selos de segurança' },
+  { value: 'badges', label: 'Selos' },
   { value: 'divider', label: 'Divisor' },
 ];
 
 const ALIGN_OPTIONS = [
-  { value: 'left', label: 'Esquerda' },
-  { value: 'center', label: 'Centralizado' },
-  { value: 'right', label: 'Direita' },
+  { value: 'left', label: 'Esq.' },
+  { value: 'center', label: 'Centro' },
+  { value: 'right', label: 'Dir.' },
 ];
 
 const WIDTH_OPTIONS = [
-  { value: 'left', label: 'Metade (esquerda)' },
-  { value: 'right', label: 'Metade (direita)' },
-  { value: 'full', label: 'Largura total' },
+  { value: 'left', label: 'Esquerda' },
+  { value: 'right', label: 'Direita' },
+  { value: 'full', label: 'Inteira' },
 ];
 
 const FIELD_ICON_OPTIONS = [
@@ -106,6 +104,11 @@ const FIELD_ICON_OPTIONS = [
   { value: 'search', label: 'Busca' },
 ];
 
+const DEVICE_OPTIONS = [
+  { value: 'desktop', label: 'Desktop' },
+  { value: 'mobile', label: 'Mobile' },
+];
+
 const PALETTE_FIELDS = [
   { key: 'primary', label: 'Primária' },
   { key: 'primary_hover', label: 'Primária (hover)' },
@@ -116,13 +119,14 @@ const PALETTE_FIELDS = [
   { key: 'info', label: 'Informação' },
 ];
 
-const inputClass = 'w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-ink focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary-100';
-
 // --- Draft state ---
 
 const draft = reactive({ version: 1, steps: [] });
 const selected = reactive({ stepId: '', itemId: '' });
 const addMenuStepId = ref('');
+const activeTab = ref('inspector');
+const device = ref('desktop');
+const savedAt = ref(null);
 
 // Field-records draft (id => full record), edited live; committed on Save via
 // the field REST endpoints. New/removed ids are tracked for the save sequence.
@@ -131,13 +135,60 @@ const newFieldIds = reactive(new Set());
 const deletedFieldIds = reactive(new Set());
 const expanded = reactive({});
 
+// Conditions draft (editable rule form shape) + removed ids + baseline map.
+const conditionsDraft = ref([]);
+const deletedConditionIds = reactive(new Set());
+let conditionsBaseline = {};
+
 const runtime = computed(() => store.runtime || {});
 const fieldCatalog = computed(() => store.fieldCatalog || []);
 const fieldOptions = computed(() => fieldCatalog.value.map((field) => ({ value: field.value, label: field.label })));
 
+const placedFieldIds = computed(() => {
+  const set = new Set();
+
+  draft.steps.forEach((step) => (step.items || []).forEach((item) => {
+    if (item.kind === 'field') {
+      set.add(item.field_id);
+    }
+  }));
+
+  return set;
+});
+
+const availableFields = computed(() => fieldOptions.value.filter((option) => !placedFieldIds.value.has(option.value)));
+
+// Field ids currently targeted by an enabled show/hide rule (tree markers).
+const ruleTargets = computed(() => {
+  const out = {};
+
+  conditionsDraft.value.forEach((rule) => {
+    if (rule.enabled !== false && rule.action && rule.action.type !== 'discount' && rule.action.component === 'field' && rule.action.field) {
+      out[rule.action.field] = true;
+    }
+  });
+
+  return out;
+});
+
+const activeDiscountRules = computed(
+  () => conditionsDraft.value.filter((rule) => rule.enabled !== false && rule.action?.type === 'discount' && ruleValid(rule)).length,
+);
+
+// Condition editor option lists.
+const conditionFieldOptions = computed(() =>
+  Object.entries(fieldsDraft)
+    .filter(([id]) => id.startsWith('billing_'))
+    .map(([id, record]) => ({ value: id, label: record?.label || id })),
+);
+const shippingMethods = computed(() => runtime.value.shipping_methods || []);
+const paymentGateways = computed(() => runtime.value.payment_gateways || []);
+const userRoles = computed(() => runtime.value.user_roles || []);
+const shippingZones = computed(() => runtime.value.shipping_zones || []);
+const currencySymbol = computed(() => runtime.value.currency_symbol || 'R$');
+
 // --- Theme draft (palette + globals + font), persisted to settings on Save ---
 
-// themeDraft key -> settings key.
 const THEME_KEYS = {
   primary: 'set_primary_color',
   primary_hover: 'set_primary_color_on_hover',
@@ -166,9 +217,6 @@ function cloneTheme() {
 
 // --- Texts draft (checkout strings), persisted to settings on Save ---
 
-// Each entry binds a settings key to the React checkout i18n key it drives, so
-// editing here updates both the live preview and the stored setting. Stepper
-// labels (text_check_step_N) are edited as step labels, so they are not listed.
 const TEXT_FIELDS = [
   { setting: 'text_header_step_1', i18n: 'contact_title', label: 'Título da etapa de contato' },
   { setting: 'text_header_step_2', i18n: 'shipping_address', label: 'Título da etapa de entrega' },
@@ -188,7 +236,6 @@ function cloneTexts() {
   });
 }
 
-// Map the draft into the React i18n shape (i18n key => text) for the preview.
 function buildTextsMessage() {
   const texts = {};
 
@@ -207,7 +254,6 @@ function pushTexts() {
 
 // --- Checkout settings draft (operator-tunable, persisted to settings on Save) ---
 
-// settings key (also the key read by the React checkout under settings.checkout).
 const CHECKOUT_SETTING_DEFAULTS = {
   payment_methods_layout: 'accordion',
 };
@@ -238,7 +284,6 @@ const availableFonts = computed(() => {
   return Object.entries(fonts).map(([id, cfg]) => ({ value: id, label: cfg?.font_name || id }));
 });
 
-// Build the @import/@font-face CSS + family name for the active font.
 function fontPayload(fontId) {
   const fonts = store.settings?.font_family || store.runtime?.fonts || {};
   const cfg = fonts[fontId];
@@ -293,6 +338,18 @@ function pushTheme() {
   }
 }
 
+// --- Live conditions push ---
+
+function buildConditionsMessage() {
+  return conditionsDraft.value.filter((rule) => ruleValid(rule)).map((rule) => buildRulePayload(rule));
+}
+
+function pushConditions() {
+  if (frameReady.value) {
+    postToFrame({ type: 'fc-builder:conditions', conditions: buildConditionsMessage() });
+  }
+}
+
 // --- Live preview iframe bridge ---
 
 const previewFrame = ref(null);
@@ -300,9 +357,6 @@ const frameReady = ref(false);
 let pushTimer = null;
 let readyTimer = null;
 
-// The preview iframe is same-site but may differ in scheme/host from the admin
-// page (e.g. wc_get_checkout_url() forcing https). Derive the iframe origin so
-// postMessage targets and origin checks stay correct.
 const previewOrigin = computed(() => {
   const url = runtime.value.builder_preview_url || '';
 
@@ -317,11 +371,6 @@ function postToFrame(msg) {
   const win = previewFrame.value?.contentWindow;
 
   if (win) {
-    // postMessage uses the structured clone algorithm, which throws
-    // DataCloneError on Vue reactive Proxy objects. The layout/theme payloads
-    // nest reactive values (item.config, item.style, field options, …), so send
-    // a plain de-proxied copy. A JSON round-trip is sufficient — every payload
-    // is JSON-safe data.
     win.postMessage(JSON.parse(JSON.stringify(msg)), previewOrigin.value);
   }
 }
@@ -355,7 +404,6 @@ function pushSelection() {
 }
 
 function onFrameMessage(event) {
-  // Same-site but possibly different origin (scheme/host) than the admin page.
   if (event.origin !== previewOrigin.value && event.origin !== window.location.origin) {
     return;
   }
@@ -377,10 +425,10 @@ function onFrameMessage(event) {
     const stepId = target.stepId || '';
     const itemId = target.scope === 'item' ? target.itemId || '' : '';
 
-    // Dedupe to avoid bouncing the selection back to the iframe.
     if (selected.stepId !== stepId || selected.itemId !== itemId) {
       selected.stepId = stepId;
       selected.itemId = itemId;
+      activeTab.value = 'inspector';
     }
   }
 }
@@ -397,14 +445,10 @@ function markReady() {
   pushTheme();
   pushTexts();
   pushSettings();
+  pushConditions();
 }
 
 function onFrameLoad() {
-  // Do NOT reset frameReady here: the iframe loads the full WP page (theme +
-  // admin bar), so this `load` event fires AFTER React already emitted `ready`,
-  // and resetting would leave the loading overlay stuck. The Save flow clears
-  // frameReady explicitly before reloading. As a safety net, if the ready
-  // handshake never arrives (e.g. blocked postMessage), clear the overlay.
   if (readyTimer) {
     clearTimeout(readyTimer);
   }
@@ -420,33 +464,13 @@ onMounted(() => window.addEventListener('message', onFrameMessage));
 onBeforeUnmount(() => {
   window.removeEventListener('message', onFrameMessage);
 
-  if (pushTimer) {
-    clearTimeout(pushTimer);
-  }
-
-  if (readyTimer) {
-    clearTimeout(readyTimer);
-  }
-
-  if (themeTimer) {
-    clearTimeout(themeTimer);
-  }
-
-  if (textsTimer) {
-    clearTimeout(textsTimer);
-  }
-
-  if (settingsTimer) {
-    clearTimeout(settingsTimer);
-  }
+  [pushTimer, readyTimer, themeTimer, textsTimer, settingsTimer, conditionsTimer].forEach((timer) => {
+    if (timer) {
+      clearTimeout(timer);
+    }
+  });
 });
 
-// Watch the reactive drafts DIRECTLY (not via `() => draft` getters): a getter
-// that returns a reactive object without reading its nested props does not
-// establish deep dependencies in Vue 3.5, so nested edits (add/remove/reorder
-// items, rename a step, edit a field) never fired and the live preview never
-// received a layout push. Passing the reactive objects themselves deep-watches
-// them reliably.
 watch(
   [draft, fieldsDraft],
   () => {
@@ -498,6 +522,19 @@ watch(
   { deep: true },
 );
 
+let conditionsTimer = null;
+watch(
+  conditionsDraft,
+  () => {
+    if (conditionsTimer) {
+      clearTimeout(conditionsTimer);
+    }
+
+    conditionsTimer = setTimeout(pushConditions, 250);
+  },
+  { deep: true },
+);
+
 watch(
   () => [selected.stepId, selected.itemId],
   () => pushSelection(),
@@ -509,12 +546,58 @@ function genId(prefix) {
   return `${prefix}_${rand}`;
 }
 
+// --- Dirty tracking ---
+
+const baseSnapshot = ref('');
+
+function snapshot() {
+  return JSON.stringify({
+    layout: buildPayload(),
+    fields: fieldsDraft,
+    newFields: [...newFieldIds],
+    deletedFields: [...deletedFieldIds],
+    theme: themeDraft,
+    texts: textsDraft,
+    settings: settingsDraft,
+    conditions: conditionsDraft.value.map((rule) => ({ id: rule.id, payload: buildRulePayload(rule) })),
+    deletedConditions: [...deletedConditionIds],
+  });
+}
+
+const dirty = computed(() => snapshot() !== baseSnapshot.value);
+
+const saveLabel = computed(() => {
+  if (saving.value) {
+    return 'Salvando…';
+  }
+
+  if (dirty.value) {
+    return 'Alterações não salvas';
+  }
+
+  if (savedAt.value) {
+    const time = savedAt.value.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+    return `Salvo às ${time}`;
+  }
+
+  return 'Tudo salvo';
+});
+
 function cloneLayout() {
   const source = store.layout && Array.isArray(store.layout.steps) ? store.layout : { version: 1, steps: [] };
   const copy = JSON.parse(JSON.stringify(source));
 
   draft.version = copy.version || 1;
   draft.steps = Array.isArray(copy.steps) ? copy.steps : [];
+
+  // Default component items to enabled so the "Bloco visível" toggle reflects
+  // reality for layouts saved before the flag existed.
+  draft.steps.forEach((step) => (step.items || []).forEach((item) => {
+    if (item.kind === 'component' && item.enabled === undefined) {
+      item.enabled = true;
+    }
+  }));
 
   // Clone the full field records so the inspector can edit them live.
   Object.keys(fieldsDraft).forEach((id) => delete fieldsDraft[id]);
@@ -528,6 +611,7 @@ function cloneLayout() {
   cloneTheme();
   cloneTexts();
   cloneSettings();
+  cloneConditions();
 
   // Expand every step by default in the layers tree.
   Object.keys(expanded).forEach((id) => delete expanded[id]);
@@ -539,13 +623,23 @@ function cloneLayout() {
   selected.stepId = first ? first.id : '';
   selected.itemId = '';
   addMenuStepId.value = '';
+  activeTab.value = 'inspector';
+
+  baseSnapshot.value = snapshot();
 }
 
-/**
- * Normalize the field-records draft to the React checkout field shape, so the
- * iframe can render label/type/required/options edits live. Disabled fields are
- * included (the editor keeps them visible/selectable).
- */
+function cloneConditions() {
+  conditionsDraft.value = (store.conditions || []).map(loadRule);
+  deletedConditionIds.clear();
+  conditionsBaseline = {};
+
+  conditionsDraft.value.forEach((rule) => {
+    if (rule.id) {
+      conditionsBaseline[rule.id] = JSON.stringify(buildRulePayload(rule));
+    }
+  });
+}
+
 function buildFieldOverrides() {
   return Object.entries(fieldsDraft).map(([id, f]) => ({
     id,
@@ -583,7 +677,6 @@ const selectedItem = computed(() => {
   return (selectedStep.value.items || []).find((item) => item.id === selected.itemId) || null;
 });
 
-// The full field record (from the draft) behind the selected field item.
 const selectedFieldRecord = computed(() => {
   const item = selectedItem.value;
 
@@ -627,39 +720,69 @@ watch(selectedItem, (item) => {
   }
 });
 
-const themePanel = ref(false);
-const textsPanel = ref(false);
+// --- Inspector header helpers ---
 
-function selectTheme() {
-  themePanel.value = true;
-  textsPanel.value = false;
-  selected.stepId = '';
-  selected.itemId = '';
+function itemMeta(item) {
+  if (!item) {
+    return { icon: 'slider-alt', label: '' };
+  }
+
+  if (item.kind === 'field') {
+    return { icon: 'text', label: fieldLabel(item.field_id) };
+  }
+
+  return COMPONENT_META[item.component] || { icon: 'layout', label: item.component };
 }
 
-function selectTexts() {
-  textsPanel.value = true;
-  themePanel.value = false;
-  selected.stepId = '';
-  selected.itemId = '';
+const inspectorHeader = computed(() => {
+  if (selectedItem.value) {
+    const meta = itemMeta(selectedItem.value);
+
+    return { icon: meta.icon, title: meta.label, sub: selectedItem.value.kind === 'field' ? selectedItem.value.field_id : selectedItem.value.component };
+  }
+
+  if (selectedStep.value) {
+    return {
+      icon: STEP_META[selectedStep.value.type].icon,
+      title: selectedStep.value.label || STEP_META[selectedStep.value.type].label,
+      sub: selectedStep.value.type,
+    };
+  }
+
+  return null;
+});
+
+// --- Tree event handlers ---
+
+function onTreeSelect({ stepId, itemId }) {
+  selected.stepId = stepId;
+  selected.itemId = itemId || '';
+  activeTab.value = 'inspector';
 }
 
-function selectStep(step) {
-  themePanel.value = false;
-  textsPanel.value = false;
-  selected.stepId = step.id;
-  selected.itemId = '';
+function toggleExpand(id) {
+  expanded[id] = !expanded[id];
 }
 
-function selectItem(step, item) {
-  themePanel.value = false;
-  textsPanel.value = false;
-  selected.stepId = step.id;
-  selected.itemId = item.id;
+function onToggleStep(step) {
+  step.enabled = step.enabled === false;
+}
+
+function onToggleItem({ item }) {
+  if (item.kind === 'field') {
+    const record = fieldsDraft[item.field_id];
+
+    if (record) {
+      record.enabled = record.enabled === 'no' ? 'yes' : 'no';
+    }
+
+    return;
+  }
+
+  item.enabled = !(item.enabled !== false);
 }
 
 function fieldLabel(fieldId) {
-  // Prefer the live draft record so renamed labels show immediately in the tree.
   if (fieldsDraft[fieldId]?.label) {
     return fieldsDraft[fieldId].label;
   }
@@ -669,11 +792,10 @@ function fieldLabel(fieldId) {
   return found ? found.label : fieldId;
 }
 
-function toggleExpand(id) {
-  expanded[id] = !expanded[id];
+function toggleAddMenu(step) {
+  addMenuStepId.value = addMenuStepId.value === step.id ? '' : step.id;
 }
 
-// Bucket a step type to the legacy field step ('1' contact, '2' delivery/payment).
 function stepFieldBucket(step) {
   if (step.type === 'shipping' || step.type === 'payment') {
     return '2';
@@ -682,10 +804,6 @@ function stepFieldBucket(step) {
   return '1';
 }
 
-/**
- * Create a brand-new custom field (billing_<slug>) in a step. The record lives
- * in the draft until Save; shows live via the override push.
- */
 function createNewField(step) {
   addMenuStepId.value = '';
 
@@ -735,13 +853,9 @@ function createNewField(step) {
 
   const item = { id: genId('it'), kind: 'field', field_id: id, order: step.items.length };
   step.items.push(item);
-  selectItem(step, item);
+  onTreeSelect({ stepId: step.id, itemId: item.id });
 }
 
-/**
- * Delete a field entirely (record + every placement across steps). Native Woo
- * fields can only be disabled, not removed.
- */
 function deleteField(fieldId) {
   const record = fieldsDraft[fieldId];
 
@@ -753,7 +867,6 @@ function deleteField(fieldId) {
     return;
   }
 
-  // Remove every layout item that references this field.
   draft.steps.forEach((step) => {
     step.items = (step.items || []).filter((item) => !(item.kind === 'field' && item.field_id === fieldId));
   });
@@ -789,7 +902,8 @@ function addStep() {
   const insertAt = payAt === -1 ? draft.steps.length : payAt;
 
   draft.steps.splice(insertAt, 0, step);
-  selectStep(step);
+  expanded[step.id] = true;
+  onTreeSelect({ stepId: step.id });
 }
 
 function removeStep(step) {
@@ -814,35 +928,57 @@ function removeStep(step) {
   }
 }
 
-function canMoveStep(index, dir) {
-  const target = index + dir;
+// Payment always stays last; nothing may sit below it.
+function enforcePaymentLast() {
+  const nonPayment = draft.steps.filter((step) => step.type !== 'payment');
+  const payment = draft.steps.filter((step) => step.type === 'payment');
 
-  if (target < 0 || target >= draft.steps.length) {
-    return false;
-  }
-
-  // Payment stays last; nothing can move below it.
-  const payAt = paymentIndex();
-
-  if (draft.steps[index].type === 'payment') {
-    return false;
-  }
-
-  if (payAt !== -1 && target >= payAt && dir > 0) {
-    return false;
-  }
-
-  return true;
+  draft.steps = nonPayment.concat(payment);
 }
 
-function moveStep(index, dir) {
-  if (!canMoveStep(index, dir)) {
+function reorderStep({ fromId, toId }) {
+  const fromIndex = draft.steps.findIndex((step) => step.id === fromId);
+
+  if (fromIndex === -1) {
     return;
   }
 
-  const target = index + dir;
-  const [moved] = draft.steps.splice(index, 1);
-  draft.steps.splice(target, 0, moved);
+  const [moved] = draft.steps.splice(fromIndex, 1);
+  const toIndex = draft.steps.findIndex((step) => step.id === toId);
+  const insertAt = toIndex === -1 ? draft.steps.length : toIndex;
+
+  draft.steps.splice(insertAt, 0, moved);
+  enforcePaymentLast();
+}
+
+function reorderItem({ fromStepId, itemId, toStepId, toIndex }) {
+  const from = draft.steps.find((step) => step.id === fromStepId);
+  const to = draft.steps.find((step) => step.id === toStepId);
+
+  if (!from || !to) {
+    return;
+  }
+
+  const idx = from.items.findIndex((item) => item.id === itemId);
+
+  if (idx === -1) {
+    return;
+  }
+
+  const [moved] = from.items.splice(idx, 1);
+  let at = Number(toIndex);
+
+  if (Number.isNaN(at)) {
+    at = to.items.length;
+  }
+
+  if (from === to && idx < at) {
+    at -= 1;
+  }
+
+  at = Math.max(0, Math.min(at, to.items.length));
+  to.items.splice(at, 0, moved);
+  onTreeSelect({ stepId: toStepId, itemId: moved.id });
 }
 
 // --- Items ---
@@ -868,8 +1004,6 @@ function defaultComponentConfig(component) {
   }
 }
 
-// --- Reviews manual list helpers ---
-
 function addReviewItem(item) {
   if (!Array.isArray(item.config.items)) {
     item.config.items = [];
@@ -882,40 +1016,30 @@ function removeReviewItem(item, index) {
   item.config.items.splice(index, 1);
 }
 
-function toggleAddMenu(step) {
-  addMenuStepId.value = addMenuStepId.value === step.id ? '' : step.id;
-}
-
-function addFieldItem(step) {
-  const firstField = fieldOptions.value[0];
-
-  const item = {
-    id: genId('it'),
-    kind: 'field',
-    field_id: firstField ? firstField.value : '',
-    order: step.items.length,
-  };
+function addExistingField({ step, fieldId }) {
+  const item = { id: genId('it'), kind: 'field', field_id: fieldId, order: step.items.length };
 
   step.items.push(item);
   addMenuStepId.value = '';
-  selectItem(step, item);
+  onTreeSelect({ stepId: step.id, itemId: item.id });
 }
 
-function addComponentItem(step, component) {
+function addComponentItem({ step, component }) {
   const item = {
     id: genId('it'),
     kind: 'component',
     component,
+    enabled: true,
     config: defaultComponentConfig(component),
     order: step.items.length,
   };
 
   step.items.push(item);
   addMenuStepId.value = '';
-  selectItem(step, item);
+  onTreeSelect({ stepId: step.id, itemId: item.id });
 }
 
-function removeItem(step, item) {
+function removeItem({ step, item }) {
   const index = step.items.findIndex((current) => current.id === item.id);
 
   if (index !== -1) {
@@ -927,28 +1051,8 @@ function removeItem(step, item) {
   }
 }
 
-function moveItem(step, index, dir) {
-  const target = index + dir;
+// --- Order bump / reviews product picker ---
 
-  if (target < 0 || target >= step.items.length) {
-    return;
-  }
-
-  const [moved] = step.items.splice(index, 1);
-  step.items.splice(target, 0, moved);
-}
-
-function itemMeta(item) {
-  if (item.kind === 'field') {
-    return { icon: 'text', label: fieldLabel(item.field_id) };
-  }
-
-  return COMPONENT_META[item.component] || { icon: 'layout', label: item.component };
-}
-
-// --- Order bump product picker ---
-
-// Single-product picker shared by the order bump and the product reviews block.
 const bumpSelection = computed({
   get() {
     const item = selectedItem.value;
@@ -974,6 +1078,21 @@ const bumpSelection = computed({
     item.product = last ? { id: Number(last.id), name: last.label } : null;
   },
 });
+
+// --- Conditions panel events ---
+
+function addRule() {
+  conditionsDraft.value.push(newRule());
+  activeTab.value = 'rules';
+}
+
+function deleteRule(rule) {
+  if (rule.id) {
+    deletedConditionIds.add(rule.id);
+  }
+
+  conditionsDraft.value = conditionsDraft.value.filter((current) => current._localId !== rule._localId);
+}
 
 // --- Save ---
 
@@ -1002,6 +1121,7 @@ function buildPayload() {
           kind: 'component',
           component: item.component,
           config: item.config,
+          enabled: item.enabled !== false,
           order: itemIndex,
         };
       }),
@@ -1012,8 +1132,6 @@ function buildPayload() {
 const committing = ref(false);
 const saving = computed(() => store.savingLayout || committing.value);
 
-// Field props persisted via the field endpoints (NOT step/priority, which the
-// layout save owns through sync_fields_from_layout).
 const FIELD_SAVE_PROPS = ['enabled', 'required', 'label', 'classes', 'label_classes', 'position', 'input_mask', 'type', 'country'];
 
 function fieldRecordDiffers(id) {
@@ -1048,6 +1166,44 @@ function fieldSavePayload(id) {
   return payload;
 }
 
+async function saveConditions() {
+  for (const rule of conditionsDraft.value) {
+    if (!ruleValid(rule)) {
+      continue;
+    }
+
+    const payload = buildRulePayload(rule);
+
+    if (rule.id) {
+      if (conditionsBaseline[rule.id] === JSON.stringify(payload)) {
+        continue;
+      }
+
+      const response = await store.saveCondition(payload, rule.id);
+
+      if (response?.status !== 'success') {
+        return false;
+      }
+    } else {
+      const response = await store.saveCondition(payload);
+
+      if (response?.status !== 'success') {
+        return false;
+      }
+    }
+  }
+
+  for (const id of deletedConditionIds) {
+    const response = await store.removeCondition(id);
+
+    if (response?.status !== 'success') {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 async function save() {
   if (saving.value) {
     return;
@@ -1056,7 +1212,7 @@ async function save() {
   committing.value = true;
 
   try {
-    // 0. THEME + TEXTS: write the drafts into settings and persist them.
+    // 0. THEME + TEXTS + SETTINGS: write the drafts into settings and persist.
     let settingsChanged = false;
 
     Object.entries(THEME_KEYS).forEach(([key, settingKey]) => {
@@ -1155,10 +1311,18 @@ async function save() {
       }
     }
 
-    // 4. SAVE layout (sync_fields_from_layout rewrites step/priority last).
+    // 4. CONDITIONS: upsert changed/new rules, delete removed ones.
+    if (!(await saveConditions())) {
+      committing.value = false;
+
+      return;
+    }
+
+    // 5. SAVE layout (sync_fields_from_layout rewrites step/priority last).
     const response = await store.saveLayout(buildPayload());
 
     if (response?.status === 'success') {
+      savedAt.value = new Date();
       cloneLayout();
 
       // Reload the preview to pull server-resolved data (order bump product,
@@ -1170,214 +1334,116 @@ async function save() {
     committing.value = false;
   }
 }
+
+function discard() {
+  if (!dirty.value) {
+    return;
+  }
+
+  cloneLayout();
+}
 </script>
 
 <template>
   <Teleport to="body">
-    <div v-if="open" class="fixed inset-0 z-[99999] flex flex-col bg-slate-50">
+    <div v-if="open" class="fixed inset-0 z-[99999] flex flex-col bg-slate-50 text-[13px] text-ink">
       <!-- Header -->
-      <header class="flex shrink-0 items-center justify-between gap-4 border-b border-slate-200 bg-white px-6 py-4">
-        <div class="flex items-center gap-3">
-          <button
-            type="button"
-            class="inline-flex cursor-pointer items-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50"
-            @click="emit('close')"
-          >
-            <BoxIcon name="chevron-left" class="h-4 w-4" />
-            Voltar
-          </button>
-
-          <div>
-            <h2 class="m-0 text-[15px] font-semibold text-ink">Construtor de checkout</h2>
-            <p class="m-0 text-[13px] text-slate-500">Monte as etapas, campos e componentes do checkout React.</p>
-          </div>
+      <header class="flex h-[52px] shrink-0 items-center gap-3.5 border-b border-slate-200 bg-white px-4">
+        <div class="flex items-center gap-2.5">
+          <span class="flex h-6 w-6 items-center justify-center rounded-[7px] bg-primary text-white">
+            <BoxIcon name="layout" class="h-[15px] w-[15px]" />
+          </span>
+          <span class="text-[13.5px] font-semibold tracking-tight text-ink">Construtor de Checkout</span>
+          <span
+            v-if="store.isPro"
+            class="rounded-md border border-primary-200 bg-primary-50 px-1.5 py-0.5 text-[9.5px] font-semibold uppercase tracking-wider text-primary"
+          >Pro</span>
         </div>
 
-        <div class="flex items-center gap-3">
-          <BaseButton variant="secondary" size="sm" @click="emit('close')">Cancelar</BaseButton>
-          <BaseButton size="sm" :loading="saving" @click="save">Salvar</BaseButton>
-        </div>
+        <div class="flex-1"></div>
+
+        <span class="text-[11.5px]" :class="dirty ? 'text-primary' : 'text-slate-400'">{{ saveLabel }}</span>
+
+        <BaseButton variant="secondary" size="sm" @click="emit('close')">Voltar</BaseButton>
+        <BaseButton variant="secondary" size="sm" :disabled="!dirty || saving" @click="discard">Descartar</BaseButton>
+        <BaseButton size="sm" :loading="saving" :disabled="!dirty" @click="save">Salvar alterações</BaseButton>
       </header>
 
       <!-- Body: 3 regions -->
-      <div class="grid flex-1 grid-cols-1 overflow-hidden lg:grid-cols-[300px_minmax(0,1fr)_340px]">
-        <!-- Layers tree (steps -> elements) -->
-        <aside class="flex flex-col overflow-y-auto border-r border-slate-200 bg-white">
-          <div class="flex items-center justify-between gap-2 border-b border-slate-100 px-4 py-3">
-            <p class="m-0 text-xs font-semibold uppercase tracking-wide text-muted">Estrutura</p>
-            <button
-              type="button"
-              class="inline-flex cursor-pointer items-center gap-1 rounded-lg border border-primary-200 bg-white px-2 py-1 text-xs font-medium text-primary transition hover:bg-primary-50"
-              @click="addStep"
+      <div class="flex min-h-0 flex-1">
+        <!-- Layers tree -->
+        <BuilderLayersTree
+          :steps="draft.steps"
+          :selected="selected"
+          :expanded="expanded"
+          :add-menu-step-id="addMenuStepId"
+          :step-meta="STEP_META"
+          :component-meta="COMPONENT_META"
+          :add-components="ADD_COMPONENTS"
+          :available-fields="availableFields"
+          :field-label="fieldLabel"
+          :field-records="fieldsDraft"
+          :rule-targets="ruleTargets"
+          @select="onTreeSelect"
+          @toggle-expand="toggleExpand"
+          @toggle-step="onToggleStep"
+          @toggle-item="onToggleItem"
+          @delete-step="removeStep"
+          @delete-item="removeItem"
+          @add-step="addStep"
+          @open-add="toggleAddMenu"
+          @add-component="addComponentItem"
+          @add-field="addExistingField"
+          @new-field="createNewField"
+          @reorder-step="reorderStep"
+          @reorder-item="reorderItem"
+        />
+
+        <!-- Live preview -->
+        <main class="flex min-w-0 flex-1 flex-col overflow-hidden bg-slate-100">
+          <div class="flex h-10 shrink-0 items-center gap-2.5 border-b border-slate-200 bg-white px-4">
+            <span class="text-[10.5px] font-semibold uppercase tracking-[0.08em] text-slate-400">Preview</span>
+
+            <BuilderSegmented v-model="device" :options="DEVICE_OPTIONS" class="w-40" />
+
+            <div class="flex-1"></div>
+
+            <span
+              v-if="activeDiscountRules"
+              class="flex items-center gap-1.5 rounded-md border border-violet-200 bg-violet-50 px-2 py-0.5 text-[11px] text-violet-600"
             >
-              <BoxIcon name="plus" class="h-3.5 w-3.5" />
-              Etapa
-            </button>
+              <BoxIcon name="filter-alt" class="h-2.5 w-2.5" />
+              {{ activeDiscountRules }} regra(s) de desconto
+            </span>
+
+            <span class="font-mono text-[11px] text-slate-400">{{ device === 'mobile' ? '390 px' : 'auto' }}</span>
           </div>
 
-          <!-- Theme entry -->
-          <div class="px-2 pt-2">
-            <button
-              type="button"
-              class="flex w-full cursor-pointer items-center gap-2 rounded-lg border px-2.5 py-2 text-left transition"
-              :class="themePanel ? 'border-primary bg-primary-50/40' : 'border-slate-200 hover:bg-slate-50'"
-              @click="selectTheme"
-            >
-              <BoxIcon name="palette" class="h-4 w-4 shrink-0 text-primary" />
-              <span class="text-sm font-medium text-ink">Tema do checkout</span>
-            </button>
-          </div>
-
-          <!-- Texts entry -->
-          <div class="px-2 pt-1">
-            <button
-              type="button"
-              class="flex w-full cursor-pointer items-center gap-2 rounded-lg border px-2.5 py-2 text-left transition"
-              :class="textsPanel ? 'border-primary bg-primary-50/40' : 'border-slate-200 hover:bg-slate-50'"
-              @click="selectTexts"
-            >
-              <BoxIcon name="text" class="h-4 w-4 shrink-0 text-primary" />
-              <span class="text-sm font-medium text-ink">Textos do checkout</span>
-            </button>
-          </div>
-
-          <ul class="m-0 flex list-none flex-col gap-1 p-2">
-            <li v-for="(step, index) in draft.steps" :key="step.id">
-              <!-- Step row -->
-              <div
-                class="group flex items-center gap-1 rounded-lg border px-1.5 py-1.5 transition"
-                :class="[
-                  selected.stepId === step.id && !selected.itemId ? 'border-primary bg-primary-50/40' : 'border-transparent hover:bg-slate-50',
-                  step.enabled === false ? 'opacity-60' : '',
-                ]"
-              >
-                <button
-                  type="button"
-                  class="cursor-pointer border-0 bg-transparent p-0.5 text-muted hover:text-ink"
-                  :class="(step.items || []).length ? '' : 'invisible'"
-                  :aria-label="expanded[step.id] ? 'Recolher' : 'Expandir'"
-                  @click.stop="toggleExpand(step.id)"
-                >
-                  <BoxIcon :name="expanded[step.id] ? 'chevron-down' : 'chevron-right'" class="h-4 w-4" />
-                </button>
-
-                <button type="button" class="flex min-w-0 flex-1 cursor-pointer items-center gap-2 border-0 bg-transparent text-left" @click="selectStep(step)">
-                  <BoxIcon :name="STEP_META[step.type].icon" class="h-4 w-4 shrink-0 text-slate-400" />
-                  <span class="truncate text-sm font-medium text-ink">{{ step.label || STEP_META[step.type].label }}</span>
-                </button>
-
-                <div class="flex shrink-0 items-center gap-0.5 opacity-0 transition group-hover:opacity-100" :class="selected.stepId === step.id ? 'opacity-100' : ''">
-                  <ToggleSwitch v-model="step.enabled" :true-value="true" :false-value="false" size="sm" aria-label="Etapa ativa" />
-
-                  <button type="button" class="cursor-pointer border-0 bg-transparent p-0.5 text-muted hover:text-ink disabled:opacity-30" :disabled="!canMoveStep(index, -1)" aria-label="Mover para cima" @click.stop="moveStep(index, -1)">
-                    <BoxIcon name="chevron-up" class="h-4 w-4" />
-                  </button>
-                  <button type="button" class="cursor-pointer border-0 bg-transparent p-0.5 text-muted hover:text-ink disabled:opacity-30" :disabled="!canMoveStep(index, 1)" aria-label="Mover para baixo" @click.stop="moveStep(index, 1)">
-                    <BoxIcon name="chevron-down" class="h-4 w-4" />
-                  </button>
-
-                  <!-- Add element menu -->
-                  <div class="relative">
-                    <button type="button" class="cursor-pointer border-0 bg-transparent p-0.5 text-primary hover:text-primary-700" aria-label="Adicionar elemento" @click.stop="toggleAddMenu(step)">
-                      <BoxIcon name="plus" class="h-4 w-4" />
-                    </button>
-                    <div v-if="addMenuStepId === step.id" class="absolute right-0 z-20 mt-1 w-52 overflow-hidden rounded-xl border border-slate-200 bg-white py-1 shadow-lg">
-                      <button type="button" class="flex w-full cursor-pointer items-center gap-2 border-0 bg-transparent px-3 py-2 text-left text-sm text-ink hover:bg-slate-50" @click.stop="createNewField(step)">
-                        <BoxIcon name="plus" class="h-4 w-4 text-slate-400" />
-                        Novo campo
-                      </button>
-                      <button type="button" class="flex w-full cursor-pointer items-center gap-2 border-0 bg-transparent px-3 py-2 text-left text-sm text-ink hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50" :disabled="!fieldOptions.length" @click.stop="addFieldItem(step)">
-                        <BoxIcon name="text" class="h-4 w-4 text-slate-400" />
-                        Campo existente
-                      </button>
-                      <div class="my-1 border-t border-slate-100" />
-                      <button v-for="component in ADD_COMPONENTS" :key="component" type="button" class="flex w-full cursor-pointer items-center gap-2 border-0 bg-transparent px-3 py-2 text-left text-sm text-ink hover:bg-slate-50" @click.stop="addComponentItem(step, component)">
-                        <BoxIcon :name="COMPONENT_META[component].icon" class="h-4 w-4 text-slate-400" />
-                        {{ COMPONENT_META[component].label }}
-                      </button>
-                    </div>
-                  </div>
-
-                  <button v-if="step.type === 'custom'" type="button" class="cursor-pointer border-0 bg-transparent p-0.5 text-danger/70 hover:text-danger" aria-label="Excluir etapa" @click.stop="removeStep(step)">
-                    <BoxIcon name="trash" class="h-4 w-4" />
-                  </button>
-                </div>
-              </div>
-
-              <!-- Item children -->
-              <ul v-if="expanded[step.id] && (step.items || []).length" class="m-0 ml-4 flex list-none flex-col gap-0.5 border-l border-slate-100 py-0.5 pl-2">
-                <li
-                  v-for="(item, itemIndex) in step.items"
-                  :key="item.id"
-                  class="group flex items-center gap-1 rounded-lg px-1.5 py-1 transition"
-                  :class="selected.itemId === item.id ? 'bg-primary-50/60 text-primary' : 'hover:bg-slate-50'"
-                >
-                  <button type="button" class="flex min-w-0 flex-1 cursor-pointer items-center gap-2 border-0 bg-transparent text-left" @click="selectItem(step, item)">
-                    <BoxIcon :name="itemMeta(item).icon" class="h-3.5 w-3.5 shrink-0" :class="selected.itemId === item.id ? 'text-primary' : 'text-slate-400'" />
-                    <span class="truncate text-[13px] text-ink">{{ itemMeta(item).label }}</span>
-                  </button>
-
-                  <div class="flex shrink-0 items-center gap-0.5 opacity-0 transition group-hover:opacity-100" :class="selected.itemId === item.id ? 'opacity-100' : ''">
-                    <button type="button" class="cursor-pointer border-0 bg-transparent p-0.5 text-muted hover:text-ink disabled:opacity-30" :disabled="itemIndex === 0" aria-label="Mover para cima" @click.stop="moveItem(step, itemIndex, -1)">
-                      <BoxIcon name="chevron-up" class="h-3.5 w-3.5" />
-                    </button>
-                    <button type="button" class="cursor-pointer border-0 bg-transparent p-0.5 text-muted hover:text-ink disabled:opacity-30" :disabled="itemIndex === step.items.length - 1" aria-label="Mover para baixo" @click.stop="moveItem(step, itemIndex, 1)">
-                      <BoxIcon name="chevron-down" class="h-3.5 w-3.5" />
-                    </button>
-                    <button type="button" class="cursor-pointer border-0 bg-transparent p-0.5 text-danger/70 hover:text-danger" aria-label="Remover" @click.stop="removeItem(step, item)">
-                      <BoxIcon name="trash" class="h-3.5 w-3.5" />
-                    </button>
-                  </div>
-                </li>
-              </ul>
-            </li>
-          </ul>
-        </aside>
-
-        <!-- Live preview (real React checkout in an iframe) -->
-        <main class="relative flex flex-col overflow-hidden bg-slate-100">
-          <div class="flex items-center justify-between gap-2 border-b border-slate-200 bg-white px-4 py-2.5">
-            <div class="flex min-w-0 items-center gap-2">
-              <span v-if="selectedStep" class="flex h-7 w-7 items-center justify-center rounded-full bg-primary text-xs font-semibold text-white">
-                {{ draft.steps.indexOf(selectedStep) + 1 }}
-              </span>
-              <h3 class="m-0 truncate text-sm font-semibold text-ink">
-                {{ selectedStep ? (selectedStep.label || STEP_META[selectedStep.type].label) : 'Pré-visualização ao vivo' }}
-              </h3>
-            </div>
-
-            <!-- Quick add a new field to the selected step -->
-            <button
-              v-if="selectedStep"
-              type="button"
-              class="inline-flex cursor-pointer items-center gap-1 rounded-lg bg-primary px-3 py-2 text-xs font-semibold text-white transition hover:bg-primary-700"
-              @click="createNewField(selectedStep)"
-            >
-              <BoxIcon name="plus" class="h-3.5 w-3.5" />
-              Novo campo
-            </button>
-          </div>
-
-          <div class="relative flex-1">
-            <iframe
-              v-if="runtime.builder_preview_url"
-              ref="previewFrame"
-              :src="runtime.builder_preview_url"
-              class="absolute inset-0 h-full w-full border-0 bg-white"
-              title="Pré-visualização do checkout"
-              @load="onFrameLoad"
-            />
-
+          <div class="relative flex-1 overflow-auto p-4">
             <div
-              v-else
-              class="absolute inset-0 flex items-center justify-center px-6 text-center text-sm text-muted"
+              class="mx-auto h-full transition-all"
+              :class="device === 'mobile' ? 'w-[390px]' : 'w-full'"
             >
-              A pré-visualização ao vivo requer o WooCommerce ativo com uma página de checkout.
+              <iframe
+                v-if="runtime.builder_preview_url"
+                ref="previewFrame"
+                :src="runtime.builder_preview_url"
+                class="h-full w-full rounded-xl border border-slate-200 bg-white shadow-sm"
+                title="Pré-visualização do checkout"
+                @load="onFrameLoad"
+              />
+
+              <div
+                v-else
+                class="flex h-full items-center justify-center rounded-xl border border-dashed border-slate-300 bg-white px-6 text-center text-sm text-muted"
+              >
+                A pré-visualização ao vivo requer o WooCommerce ativo com uma página de checkout.
+              </div>
             </div>
 
             <div
               v-if="runtime.builder_preview_url && !frameReady"
-              class="pointer-events-none absolute inset-0 flex items-center justify-center bg-slate-100/60 text-sm text-muted"
+              class="pointer-events-none absolute inset-0 flex items-center justify-center text-sm text-muted"
             >
               Carregando pré-visualização…
             </div>
@@ -1385,495 +1451,471 @@ async function save() {
         </main>
 
         <!-- Inspector -->
-        <aside class="overflow-y-auto border-l border-slate-200 bg-white px-4 py-5">
-          <!-- Texts inspector -->
-          <div v-if="textsPanel" class="flex flex-col gap-4">
-            <div class="flex items-center gap-2 border-b border-slate-100 pb-3">
-              <BoxIcon name="text" class="h-4 w-4 text-primary" />
-              <p class="m-0 text-sm font-semibold text-ink">Textos do checkout</p>
-            </div>
-
-            <p class="m-0 text-xs text-muted">
-              Edite os textos exibidos no checkout. As alterações são refletidas na pré-visualização e também atualizam as configurações do plugin ao salvar. Os rótulos do indicador de etapas são editados em cada etapa, no campo “Rótulo da etapa”.
-            </p>
-
-            <div v-for="field in TEXT_FIELDS" :key="field.setting">
-              <label class="mb-1 block text-xs font-medium text-ink">{{ field.label }}</label>
-              <input v-model="textsDraft[field.setting]" type="text" :class="inputClass" />
-            </div>
+        <aside class="flex w-[334px] shrink-0 flex-col overflow-hidden border-l border-slate-200 bg-white">
+          <!-- Tabs -->
+          <div class="flex gap-0.5 border-b border-slate-200 px-2 pt-2">
+            <button
+              v-for="tab in [
+                { id: 'inspector', icon: 'slider-alt', label: 'Inspetor' },
+                { id: 'theme', icon: 'palette', label: 'Tema' },
+                { id: 'rules', icon: 'filter-alt', label: 'Condições' },
+              ]"
+              :key="tab.id"
+              type="button"
+              class="-mb-px flex flex-1 cursor-pointer items-center justify-center gap-1.5 border-0 border-b-2 bg-transparent px-1 py-2 text-[12px] transition"
+              :class="activeTab === tab.id ? 'border-primary font-semibold text-ink' : 'border-transparent font-medium text-slate-400 hover:text-ink'"
+              @click="activeTab = tab.id"
+            >
+              <BoxIcon :name="tab.icon" class="h-3.5 w-3.5" />
+              {{ tab.label }}
+            </button>
           </div>
 
-          <!-- Theme inspector -->
-          <div v-else-if="themePanel" class="flex flex-col gap-5">
-            <div class="flex items-center gap-2 border-b border-slate-100 pb-3">
-              <BoxIcon name="palette" class="h-4 w-4 text-primary" />
-              <p class="m-0 text-sm font-semibold text-ink">Tema do checkout</p>
+          <div class="flex-1 overflow-y-auto">
+            <!-- Conditions tab -->
+            <BuilderRulesPanel
+              v-if="activeTab === 'rules'"
+              :rules="conditionsDraft"
+              :field-options="conditionFieldOptions"
+              :shipping-methods="shippingMethods"
+              :payment-gateways="paymentGateways"
+              :countries="countryOptions"
+              :user-roles="userRoles"
+              :shipping-zones="shippingZones"
+              :currency-symbol="currencySymbol"
+              @add-rule="addRule"
+              @delete-rule="deleteRule"
+            />
+
+            <!-- Theme tab -->
+            <div v-else-if="activeTab === 'theme'" class="flex flex-col">
+              <div class="flex items-center gap-2.5 border-b border-slate-100 px-3.5 py-3">
+                <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-primary-50 text-primary">
+                  <BoxIcon name="palette" class="h-3.5 w-3.5" />
+                </span>
+                <span class="text-[13.5px] font-semibold text-ink">Tema e textos</span>
+              </div>
+
+              <!-- Palette -->
+              <section class="flex flex-col gap-3 border-b border-slate-100 px-3.5 py-3.5">
+                <span class="text-[10px] font-semibold uppercase tracking-[0.08em] text-slate-400">Paleta</span>
+                <BuilderField v-for="color in PALETTE_FIELDS" :key="color.key" :label="color.label">
+                  <BuilderColor v-model="themeDraft[color.key]" />
+                </BuilderField>
+              </section>
+
+              <!-- Appearance -->
+              <section class="flex flex-col gap-3 border-b border-slate-100 px-3.5 py-3.5">
+                <span class="text-[10px] font-semibold uppercase tracking-[0.08em] text-slate-400">Aparência</span>
+                <BuilderField label="Fundo do checkout">
+                  <BuilderColor v-model="themeDraft.bg" />
+                </BuilderField>
+                <BuilderField label="Cor do texto">
+                  <BuilderColor v-model="themeDraft.text" />
+                </BuilderField>
+                <BuilderField label="Fonte">
+                  <BaseSelect v-model="themeDraft.font" :options="availableFonts" size="sm" placeholder="Selecionar fonte" />
+                </BuilderField>
+                <BuilderField label="Raio das bordas" :suffix="`${themeDraft.radius || 0}px`">
+                  <BuilderRange v-model="themeDraft.radius" :min="0" :max="40" />
+                </BuilderField>
+                <BuilderField label="Tamanho base" :suffix="`${themeDraft.font_size || 0}px`">
+                  <BuilderRange v-model="themeDraft.font_size" :min="12" :max="22" />
+                </BuilderField>
+                <BuilderField label="Altura dos campos" :suffix="`${themeDraft.field_height || 0}px`">
+                  <BuilderRange v-model="themeDraft.field_height" :min="34" :max="72" />
+                </BuilderField>
+
+                <details class="rounded-lg border border-slate-200">
+                  <summary class="cursor-pointer px-3 py-2 text-[11.5px] font-medium text-ink">Gerenciar fontes (adicionar / enviar)</summary>
+                  <div class="border-t border-slate-100 p-3">
+                    <FontsManager />
+                  </div>
+                </details>
+              </section>
+
+              <!-- Texts -->
+              <section class="flex flex-col gap-3 border-b border-slate-100 px-3.5 py-3.5">
+                <span class="text-[10px] font-semibold uppercase tracking-[0.08em] text-slate-400">Textos</span>
+                <BuilderField v-for="field in TEXT_FIELDS" :key="field.setting" :label="field.label">
+                  <BuilderTextInput v-model="textsDraft[field.setting]" />
+                </BuilderField>
+              </section>
+
+              <!-- Settings -->
+              <section class="flex flex-col gap-3 px-3.5 py-3.5">
+                <span class="text-[10px] font-semibold uppercase tracking-[0.08em] text-slate-400">Configurações</span>
+                <BuilderField label="Formas de pagamento" hint="Exiba as formas de pagamento em sanfona ou em cards.">
+                  <BuilderSegmented v-model="settingsDraft.payment_methods_layout" :options="PAYMENT_LAYOUT_OPTIONS" />
+                </BuilderField>
+              </section>
             </div>
 
-            <!-- Palette -->
-            <div>
-              <p class="m-0 mb-2 text-[11px] font-semibold uppercase tracking-wide text-muted">Paleta de cores</p>
-              <div class="flex flex-col gap-2">
-                <div v-for="color in PALETTE_FIELDS" :key="color.key" class="flex items-center justify-between gap-2">
-                  <span class="text-xs font-medium text-ink">{{ color.label }}</span>
-                  <input v-model="themeDraft[color.key]" type="color" class="h-8 w-14 cursor-pointer rounded border border-slate-300" />
-                </div>
-              </div>
-            </div>
-
-            <!-- Typography -->
-            <div>
-              <p class="m-0 mb-2 text-[11px] font-semibold uppercase tracking-wide text-muted">Tipografia</p>
-              <label class="mb-1 block text-xs font-medium text-ink">Fonte ativa</label>
-              <BaseSelect v-model="themeDraft.font" :options="availableFonts" size="sm" placeholder="Selecionar fonte" />
-              <label class="mb-1 mt-3 block text-xs font-medium text-ink">Tamanho da fonte base (px)</label>
-              <input v-model="themeDraft.font_size" type="number" min="12" max="22" :class="inputClass" />
-
-              <details class="mt-3 rounded-lg border border-slate-200">
-                <summary class="cursor-pointer px-3 py-2 text-xs font-medium text-ink">Gerenciar fontes (adicionar / enviar)</summary>
-                <div class="border-t border-slate-100 p-3">
-                  <FontsManager />
-                </div>
-              </details>
-            </div>
-
-            <!-- Global -->
-            <div>
-              <p class="m-0 mb-2 text-[11px] font-semibold uppercase tracking-wide text-muted">Global</p>
-              <div class="grid grid-cols-2 gap-3">
-                <div>
-                  <label class="mb-1 block text-xs font-medium text-ink">Raio (px)</label>
-                  <input v-model="themeDraft.radius" type="number" min="0" max="40" :class="inputClass" />
-                </div>
-                <div>
-                  <label class="mb-1 block text-xs font-medium text-ink">Altura dos campos (px)</label>
-                  <input v-model="themeDraft.field_height" type="number" min="36" max="72" :class="inputClass" />
-                </div>
-              </div>
-              <div class="mt-3 flex items-center justify-between gap-2">
-                <span class="text-xs font-medium text-ink">Cor de fundo</span>
-                <input v-model="themeDraft.bg" type="color" class="h-8 w-14 cursor-pointer rounded border border-slate-300" />
-              </div>
-              <div class="mt-2 flex items-center justify-between gap-2">
-                <span class="text-xs font-medium text-ink">Cor do texto</span>
-                <input v-model="themeDraft.text" type="color" class="h-8 w-14 cursor-pointer rounded border border-slate-300" />
-              </div>
-            </div>
-          </div>
-
-          <!-- Item inspector -->
-          <div v-else-if="selectedItem && selectedStep" class="flex flex-col gap-4">
-            <div class="flex items-center justify-between gap-2 border-b border-slate-100 pb-3">
-              <div class="flex min-w-0 items-center gap-2">
-                <BoxIcon :name="itemMeta(selectedItem).icon" class="h-4 w-4 shrink-0 text-primary" />
-                <p class="m-0 truncate text-sm font-semibold text-ink">{{ itemMeta(selectedItem).label }}</p>
+            <!-- Inspector tab -->
+            <div v-else>
+              <!-- Contextual header -->
+              <div v-if="inspectorHeader" class="flex items-center gap-2.5 border-b border-slate-100 px-3.5 py-3">
+                <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-primary-50 text-primary">
+                  <BoxIcon :name="inspectorHeader.icon" class="h-3.5 w-3.5" />
+                </span>
+                <span class="flex min-w-0 flex-col">
+                  <span class="truncate text-[13.5px] font-semibold text-ink">{{ inspectorHeader.title }}</span>
+                  <span class="truncate font-mono text-[10.5px] text-slate-400">{{ inspectorHeader.sub }}</span>
+                </span>
               </div>
 
-              <div class="flex shrink-0 items-center gap-0.5">
-                <button
-                  type="button"
-                  class="cursor-pointer rounded border-0 bg-transparent p-1 text-muted hover:text-ink disabled:opacity-30"
-                  :disabled="selectedStep.items.indexOf(selectedItem) === 0"
-                  aria-label="Mover para cima"
-                  @click="moveItem(selectedStep, selectedStep.items.indexOf(selectedItem), -1)"
-                >
-                  <BoxIcon name="chevron-up" class="h-4 w-4" />
-                </button>
-                <button
-                  type="button"
-                  class="cursor-pointer rounded border-0 bg-transparent p-1 text-muted hover:text-ink disabled:opacity-30"
-                  :disabled="selectedStep.items.indexOf(selectedItem) === selectedStep.items.length - 1"
-                  aria-label="Mover para baixo"
-                  @click="moveItem(selectedStep, selectedStep.items.indexOf(selectedItem), 1)"
-                >
-                  <BoxIcon name="chevron-down" class="h-4 w-4" />
-                </button>
-                <button
-                  type="button"
-                  class="cursor-pointer rounded border-0 bg-transparent p-1 text-danger/70 hover:text-danger"
-                  aria-label="Remover item"
-                  @click="removeItem(selectedStep, selectedItem)"
-                >
-                  <BoxIcon name="trash" class="h-4 w-4" />
-                </button>
-              </div>
-            </div>
-
-            <!-- Field item -->
-            <template v-if="selectedItem.kind === 'field' && selectedFieldRecord && selectedItem.style">
-              <!-- Field record (CRUD) -->
-              <div>
-                <label class="mb-1 block text-xs font-medium text-ink">Rótulo</label>
-                <input v-model="selectedFieldRecord.label" type="text" :class="inputClass" />
-              </div>
-
-              <div class="grid grid-cols-2 gap-3">
-                <div>
-                  <label class="mb-1 block text-xs font-medium text-ink">Tipo</label>
-                  <BaseSelect v-model="selectedFieldRecord.type" :options="FIELD_TYPES" size="sm" :disabled="selectedFieldIsNative" />
-                </div>
-                <div>
-                  <label class="mb-1 block text-xs font-medium text-ink">Estado</label>
-                  <BaseSelect v-model="selectedFieldRecord.enabled" :options="ENABLED_OPTIONS" size="sm" />
-                </div>
-              </div>
-
-              <div class="flex items-center justify-between gap-2">
-                <span class="text-xs font-medium text-ink">Obrigatório</span>
-                <ToggleSwitch v-model="selectedFieldRecord.required" true-value="yes" false-value="no" />
-              </div>
-
-              <div v-if="selectedFieldIsCountry">
-                <label class="mb-1 block text-xs font-medium text-ink">País padrão</label>
-                <BaseSelect v-model="selectedFieldRecord.country" :options="countryOptions" size="sm" placeholder="Selecionar país" />
-              </div>
-
-              <div>
-                <label class="mb-1 block text-xs font-medium text-ink">Máscara (opcional)</label>
-                <input v-model="selectedFieldRecord.input_mask" type="text" :class="inputClass" placeholder="(00) 00000-0000" />
-              </div>
-
-              <div class="grid grid-cols-2 gap-3">
-                <div>
-                  <label class="mb-1 block text-xs font-medium text-ink">Classe CSS</label>
-                  <input v-model="selectedFieldRecord.classes" type="text" :class="inputClass" />
-                </div>
-                <div>
-                  <label class="mb-1 block text-xs font-medium text-ink">Classe do rótulo</label>
-                  <input v-model="selectedFieldRecord.label_classes" type="text" :class="inputClass" />
-                </div>
-              </div>
-
-              <!-- Options editor (select / checkbox) -->
-              <div v-if="(selectedFieldRecord.type === 'select' || selectedFieldRecord.type === 'checkbox') && selectedItem.field_id !== 'billing_country'">
-                <label class="mb-1 block text-xs font-medium text-ink">Opções</label>
-                <ul class="m-0 mb-2 flex list-none flex-col gap-1.5 p-0">
-                  <li v-for="(option, index) in selectedFieldRecord.options" :key="index" class="flex items-center gap-2">
-                    <code class="rounded bg-slate-100 px-2 py-1 text-xs">{{ option.value }}</code>
-                    <span class="flex-1 truncate text-sm text-ink">{{ option.text }}</span>
-                    <button type="button" class="cursor-pointer rounded border border-danger/30 bg-transparent px-1.5 py-1 text-danger hover:bg-danger/10" aria-label="Remover opção" @click="removeFieldOption(index)">
-                      <BoxIcon name="x" class="h-3.5 w-3.5" />
-                    </button>
-                  </li>
-                </ul>
-                <div class="flex items-center gap-2">
-                  <input v-model="newFieldOption.value" type="text" placeholder="Valor" :class="inputClass" class="!w-24" />
-                  <input v-model="newFieldOption.text" type="text" placeholder="Título" :class="inputClass" />
-                  <button type="button" class="shrink-0 cursor-pointer rounded-lg border border-primary-200 bg-white px-2.5 py-2 text-xs font-medium text-primary hover:bg-primary-50" @click="addFieldOption">
-                    Add
-                  </button>
-                </div>
-              </div>
-
-              <button
-                v-if="!selectedFieldIsNative"
-                type="button"
-                class="inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg border border-danger/30 bg-transparent px-3 py-2 text-xs font-medium text-danger transition hover:bg-danger/10"
-                @click="deleteField(selectedItem.field_id)"
+              <!-- Field item -->
+              <div
+                v-if="selectedItem && selectedItem.kind === 'field' && selectedFieldRecord && selectedItem.style"
+                class="flex flex-col"
               >
-                <BoxIcon name="trash" class="h-4 w-4" />
-                Excluir campo
-              </button>
+                <section class="flex flex-col gap-3 border-b border-slate-100 px-3.5 py-3.5">
+                  <span class="text-[10px] font-semibold uppercase tracking-[0.08em] text-slate-400">Campo</span>
 
-              <div class="border-t border-slate-100 pt-3">
-                <p class="m-0 mb-2 text-[11px] font-semibold uppercase tracking-wide text-muted">Estilo</p>
-              </div>
+                  <label class="flex items-center gap-2.5 text-[12.5px] text-ink">
+                    <ToggleSwitch v-model="selectedFieldRecord.enabled" true-value="yes" false-value="no" size="sm" />
+                    Campo ativo
+                  </label>
+                  <label class="flex items-center gap-2.5 text-[12.5px] text-ink">
+                    <ToggleSwitch v-model="selectedFieldRecord.required" true-value="yes" false-value="no" size="sm" />
+                    Obrigatório
+                  </label>
 
-              <div class="grid grid-cols-2 gap-3">
-                <div>
-                  <label class="mb-1 block text-xs font-medium text-ink">Largura</label>
-                  <BaseSelect v-model="selectedItem.style.width" :options="WIDTH_OPTIONS" size="sm" placeholder="Padrão" />
-                </div>
-                <div>
-                  <label class="mb-1 block text-xs font-medium text-ink">Ícone</label>
-                  <BaseSelect v-model="selectedItem.style.icon" :options="FIELD_ICON_OPTIONS" size="sm" />
-                </div>
-              </div>
+                  <BuilderField label="Rótulo">
+                    <BuilderTextInput v-model="selectedFieldRecord.label" />
+                  </BuilderField>
+                  <BuilderField label="Tipo">
+                    <BaseSelect v-model="selectedFieldRecord.type" :options="FIELD_TYPES" size="sm" :disabled="selectedFieldIsNative" />
+                  </BuilderField>
+                  <BuilderField v-if="selectedFieldIsCountry" label="País padrão">
+                    <BaseSelect v-model="selectedFieldRecord.country" :options="countryOptions" size="sm" placeholder="Selecionar país" />
+                  </BuilderField>
+                  <BuilderField label="Máscara" hint="Ex.: (00) 00000-0000">
+                    <BuilderTextInput v-model="selectedFieldRecord.input_mask" placeholder="000.000.000-00" />
+                  </BuilderField>
+                  <BuilderField label="Classe CSS">
+                    <BuilderTextInput v-model="selectedFieldRecord.classes" placeholder="ex.: col-destaque" />
+                  </BuilderField>
+                  <BuilderField label="Classe do rótulo">
+                    <BuilderTextInput v-model="selectedFieldRecord.label_classes" />
+                  </BuilderField>
+                </section>
 
-              <div>
-                <label class="mb-1 block text-xs font-medium text-ink">Placeholder</label>
-                <input v-model="selectedItem.style.placeholder" type="text" :class="inputClass" placeholder="Texto de exemplo" />
-              </div>
-
-              <p class="m-0 text-[11px] font-semibold uppercase tracking-wide text-muted">Rótulo</p>
-              <div class="grid grid-cols-3 gap-3">
-                <div>
-                  <label class="mb-1 block text-[11px] text-muted">Cor</label>
-                  <input v-model="selectedItem.style.label_color" type="color" class="h-9 w-full cursor-pointer rounded-lg border border-slate-300" />
-                </div>
-                <div>
-                  <label class="mb-1 block text-[11px] text-muted">Tamanho</label>
-                  <input v-model.number="selectedItem.style.label_size" type="number" min="8" max="40" :class="inputClass" />
-                </div>
-                <div>
-                  <label class="mb-1 block text-[11px] text-muted">Peso</label>
-                  <input v-model.number="selectedItem.style.label_weight" type="number" min="100" max="900" step="100" :class="inputClass" />
-                </div>
-              </div>
-
-              <p class="m-0 text-[11px] font-semibold uppercase tracking-wide text-muted">Campo de entrada</p>
-              <div class="grid grid-cols-3 gap-3">
-                <div>
-                  <label class="mb-1 block text-[11px] text-muted">Fundo</label>
-                  <input v-model="selectedItem.style.input_bg" type="color" class="h-9 w-full cursor-pointer rounded-lg border border-slate-300" />
-                </div>
-                <div>
-                  <label class="mb-1 block text-[11px] text-muted">Borda</label>
-                  <input v-model="selectedItem.style.input_border" type="color" class="h-9 w-full cursor-pointer rounded-lg border border-slate-300" />
-                </div>
-                <div>
-                  <label class="mb-1 block text-[11px] text-muted">Texto</label>
-                  <input v-model="selectedItem.style.input_color" type="color" class="h-9 w-full cursor-pointer rounded-lg border border-slate-300" />
-                </div>
-              </div>
-              <div class="grid grid-cols-2 gap-3">
-                <div>
-                  <label class="mb-1 block text-[11px] text-muted">Raio (px)</label>
-                  <input v-model.number="selectedItem.style.input_radius" type="number" min="0" max="40" :class="inputClass" />
-                </div>
-                <div>
-                  <label class="mb-1 block text-[11px] text-muted">Espaço abaixo (px)</label>
-                  <input v-model.number="selectedItem.style.margin_bottom" type="number" min="0" max="80" :class="inputClass" />
-                </div>
-              </div>
-
-            </template>
-
-            <!-- Order bump -->
-            <template v-else-if="selectedItem.component === 'order_bump'">
-              <div>
-                <label class="mb-1 block text-xs font-medium text-ink">Produto da oferta</label>
-                <SearchMultiSelect v-model="bumpSelection" type="products" placeholder="Buscar produto..." />
-              </div>
-              <div>
-                <label class="mb-1 block text-xs font-medium text-ink">Título da oferta</label>
-                <input v-model="selectedItem.config.headline" type="text" :class="inputClass" placeholder="Adicione e economize" />
-              </div>
-              <div>
-                <label class="mb-1 block text-xs font-medium text-ink">Descrição</label>
-                <textarea v-model="selectedItem.config.description" rows="3" :class="inputClass" />
-              </div>
-              <div class="grid grid-cols-2 gap-3">
-                <div>
-                  <label class="mb-1 block text-xs font-medium text-ink">Selo de desconto</label>
-                  <input v-model="selectedItem.config.discount_label" type="text" :class="inputClass" placeholder="-20%" />
-                </div>
-                <div>
-                  <label class="mb-1 block text-xs font-medium text-ink">Cor de destaque</label>
-                  <input v-model="selectedItem.config.highlight_color" type="color" class="h-9 w-full cursor-pointer rounded-lg border border-slate-300" />
-                </div>
-              </div>
-              <div class="flex items-center justify-between gap-2">
-                <span class="text-xs font-medium text-ink">Marcado por padrão</span>
-                <ToggleSwitch v-model="selectedItem.config.default_checked" :true-value="true" :false-value="false" />
-              </div>
-            </template>
-
-            <!-- HTML block -->
-            <template v-else-if="selectedItem.component === 'html'">
-              <div class="grid grid-cols-2 gap-3">
-                <div>
-                  <label class="mb-1 block text-xs font-medium text-ink">Variação</label>
-                  <BaseSelect v-model="selectedItem.config.variant" :options="HTML_VARIANTS" size="sm" />
-                </div>
-                <div>
-                  <label class="mb-1 block text-xs font-medium text-ink">Alinhamento</label>
-                  <BaseSelect v-model="selectedItem.config.align" :options="ALIGN_OPTIONS" size="sm" />
-                </div>
-              </div>
-              <div>
-                <label class="mb-1 block text-xs font-medium text-ink">Conteúdo HTML</label>
-                <textarea v-model="selectedItem.config.html" rows="6" :class="inputClass" class="font-mono text-xs" />
-              </div>
-            </template>
-
-            <!-- Coupon -->
-            <template v-else-if="selectedItem.component === 'coupon'">
-              <div>
-                <label class="mb-1 block text-xs font-medium text-ink">Título (opcional)</label>
-                <input v-model="selectedItem.config.title" type="text" :class="inputClass" placeholder="Tem um cupom?" />
-              </div>
-            </template>
-
-            <!-- Summary -->
-            <template v-else-if="selectedItem.component === 'summary'">
-              <div>
-                <label class="mb-1 block text-xs font-medium text-ink">Título (opcional)</label>
-                <input v-model="selectedItem.config.title" type="text" :class="inputClass" placeholder="Resumo do pedido" />
-              </div>
-              <div class="flex items-center justify-between gap-2">
-                <span class="text-xs font-medium text-ink">Recolhível</span>
-                <ToggleSwitch v-model="selectedItem.config.collapsible" :true-value="true" :false-value="false" />
-              </div>
-              <div class="flex items-center justify-between gap-2">
-                <span class="text-xs font-medium text-ink">Ocultar cupom no resumo</span>
-                <ToggleSwitch v-model="selectedItem.config.hide_coupon" :true-value="true" :false-value="false" />
-              </div>
-            </template>
-
-            <!-- Notes -->
-            <template v-else-if="selectedItem.component === 'notes'">
-              <div>
-                <label class="mb-1 block text-xs font-medium text-ink">Rótulo</label>
-                <input v-model="selectedItem.config.label" type="text" :class="inputClass" />
-              </div>
-              <div>
-                <label class="mb-1 block text-xs font-medium text-ink">Placeholder</label>
-                <input v-model="selectedItem.config.placeholder" type="text" :class="inputClass" />
-              </div>
-              <div class="flex items-center justify-between gap-2">
-                <span class="text-xs font-medium text-ink">Obrigatório</span>
-                <ToggleSwitch v-model="selectedItem.config.required" :true-value="true" :false-value="false" />
-              </div>
-            </template>
-
-            <!-- Banner -->
-            <template v-else-if="selectedItem.component === 'banner'">
-              <div>
-                <label class="mb-1 block text-xs font-medium text-ink">Imagem de fundo</label>
-                <MediaPickerField v-model="selectedItem.config.image" :field="{ label: 'Imagem do banner' }" />
-              </div>
-              <div class="grid grid-cols-2 gap-3">
-                <div>
-                  <label class="mb-1 block text-xs font-medium text-ink">Cor de fundo</label>
-                  <input v-model="selectedItem.config.bg_color" type="color" class="h-9 w-full cursor-pointer rounded-lg border border-slate-300" />
-                </div>
-                <div>
-                  <label class="mb-1 block text-xs font-medium text-ink">Cor do texto</label>
-                  <input v-model="selectedItem.config.title_color" type="color" class="h-9 w-full cursor-pointer rounded-lg border border-slate-300" />
-                </div>
-              </div>
-              <div>
-                <label class="mb-1 block text-xs font-medium text-ink">Título</label>
-                <input v-model="selectedItem.config.title" type="text" :class="inputClass" />
-              </div>
-              <div>
-                <label class="mb-1 block text-xs font-medium text-ink">Subtítulo</label>
-                <input v-model="selectedItem.config.subtitle" type="text" :class="inputClass" />
-              </div>
-              <div class="grid grid-cols-2 gap-3">
-                <div>
-                  <label class="mb-1 block text-xs font-medium text-ink">Texto do botão</label>
-                  <input v-model="selectedItem.config.button_text" type="text" :class="inputClass" />
-                </div>
-                <div>
-                  <label class="mb-1 block text-xs font-medium text-ink">Alinhamento</label>
-                  <BaseSelect v-model="selectedItem.config.align" :options="ALIGN_OPTIONS" size="sm" />
-                </div>
-              </div>
-              <div>
-                <label class="mb-1 block text-xs font-medium text-ink">Link (opcional)</label>
-                <input v-model="selectedItem.config.link" type="url" :class="inputClass" placeholder="https://" />
-              </div>
-              <div>
-                <label class="mb-1 block text-xs font-medium text-ink">Contador regressivo até</label>
-                <input v-model="selectedItem.config.countdown" type="datetime-local" :class="inputClass" />
-              </div>
-            </template>
-
-            <!-- Reviews -->
-            <template v-else-if="selectedItem.component === 'reviews'">
-              <div>
-                <label class="mb-1 block text-xs font-medium text-ink">Origem das avaliações</label>
-                <BaseSelect v-model="selectedItem.config.source" :options="REVIEW_SOURCES" size="sm" />
-              </div>
-
-              <div v-if="selectedItem.config.source === 'product'">
-                <label class="mb-1 block text-xs font-medium text-ink">Produto</label>
-                <SearchMultiSelect v-model="bumpSelection" type="products" placeholder="Buscar produto..." />
-              </div>
-
-              <div v-else class="flex flex-col gap-3">
-                <div
-                  v-for="(review, index) in selectedItem.config.items"
-                  :key="index"
-                  class="rounded-lg border border-slate-200 p-3"
+                <!-- Options editor -->
+                <section
+                  v-if="(selectedFieldRecord.type === 'select' || selectedFieldRecord.type === 'checkbox') && selectedItem.field_id !== 'billing_country'"
+                  class="flex flex-col gap-2 border-b border-slate-100 px-3.5 py-3.5"
                 >
-                  <div class="mb-2 flex items-center justify-between">
-                    <span class="text-xs font-semibold text-muted">Depoimento {{ index + 1 }}</span>
+                  <span class="text-[10px] font-semibold uppercase tracking-[0.08em] text-slate-400">Opções</span>
+                  <div
+                    v-for="(option, index) in selectedFieldRecord.options"
+                    :key="index"
+                    class="flex items-center gap-2"
+                  >
+                    <code class="rounded bg-slate-100 px-1.5 py-1 font-mono text-[11px]">{{ option.value }}</code>
+                    <span class="flex-1 truncate text-[12.5px] text-ink">{{ option.text }}</span>
                     <button
                       type="button"
-                      class="cursor-pointer rounded border-0 bg-transparent p-0.5 text-danger/70 hover:text-danger"
-                      aria-label="Remover depoimento"
-                      @click="removeReviewItem(selectedItem, index)"
+                      class="flex cursor-pointer rounded border-0 bg-transparent p-1 text-slate-400 transition hover:bg-danger/10 hover:text-danger"
+                      @click="removeFieldOption(index)"
                     >
-                      <BoxIcon name="trash" class="h-4 w-4" />
+                      <BoxIcon name="x" class="h-3 w-3" />
                     </button>
                   </div>
-                  <input v-model="review.author" type="text" :class="inputClass" class="mb-2" placeholder="Autor" />
-                  <textarea v-model="review.text" rows="2" :class="inputClass" class="mb-2" placeholder="Depoimento" />
-                  <div class="grid grid-cols-2 gap-2">
-                    <input v-model.number="review.rating" type="number" min="0" max="5" :class="inputClass" placeholder="Nota" />
-                    <MediaPickerField v-model="review.avatar" :field="{ label: 'Avatar' }" />
+                  <div class="flex items-center gap-1.5">
+                    <div class="w-20"><BuilderTextInput v-model="newFieldOption.value" placeholder="valor" /></div>
+                    <BuilderTextInput v-model="newFieldOption.text" placeholder="título" />
+                    <button
+                      type="button"
+                      class="shrink-0 cursor-pointer rounded-lg border border-primary-200 bg-white px-2 py-2 text-[11.5px] font-medium text-primary transition hover:bg-primary-50"
+                      @click="addFieldOption"
+                    >
+                      Add
+                    </button>
                   </div>
-                </div>
+                </section>
 
-                <button
-                  type="button"
-                  class="inline-flex cursor-pointer items-center justify-center gap-1 rounded-lg border border-primary-200 bg-white px-3 py-2 text-xs font-medium text-primary transition hover:bg-primary-50"
-                  @click="addReviewItem(selectedItem)"
-                >
-                  <BoxIcon name="plus" class="h-3.5 w-3.5" />
-                  Adicionar depoimento
-                </button>
+                <!-- Style -->
+                <section class="flex flex-col gap-3 border-b border-slate-100 px-3.5 py-3.5">
+                  <span class="text-[10px] font-semibold uppercase tracking-[0.08em] text-slate-400">Estilo por posicionamento</span>
+                  <BuilderField label="Largura">
+                    <BuilderSegmented v-model="selectedItem.style.width" :options="WIDTH_OPTIONS" />
+                  </BuilderField>
+                  <BuilderField label="Ícone">
+                    <BaseSelect v-model="selectedItem.style.icon" :options="FIELD_ICON_OPTIONS" size="sm" />
+                  </BuilderField>
+                  <BuilderField label="Placeholder">
+                    <BuilderTextInput v-model="selectedItem.style.placeholder" placeholder="Texto de exemplo" />
+                  </BuilderField>
+
+                  <div class="grid grid-cols-2 gap-2">
+                    <BuilderField label="Cor do rótulo">
+                      <BuilderColor v-model="selectedItem.style.label_color" fallback="#57534e" />
+                    </BuilderField>
+                    <BuilderField label="Tam. rótulo" :suffix="`${selectedItem.style.label_size || 13}px`">
+                      <BuilderRange v-model="selectedItem.style.label_size" :min="8" :max="40" />
+                    </BuilderField>
+                  </div>
+                  <BuilderField label="Peso do rótulo" :suffix="String(selectedItem.style.label_weight || 500)">
+                    <BuilderRange v-model="selectedItem.style.label_weight" :min="100" :max="900" :step="100" />
+                  </BuilderField>
+
+                  <div class="grid grid-cols-2 gap-2">
+                    <BuilderField label="Fundo do campo">
+                      <BuilderColor v-model="selectedItem.style.input_bg" fallback="#ffffff" />
+                    </BuilderField>
+                    <BuilderField label="Borda">
+                      <BuilderColor v-model="selectedItem.style.input_border" fallback="#e2e0dd" />
+                    </BuilderField>
+                  </div>
+                  <BuilderField label="Cor do texto">
+                    <BuilderColor v-model="selectedItem.style.input_color" fallback="#1c1917" />
+                  </BuilderField>
+                  <div class="grid grid-cols-2 gap-2">
+                    <BuilderField label="Raio do campo" :suffix="`${selectedItem.style.input_radius || 0}px`">
+                      <BuilderRange v-model="selectedItem.style.input_radius" :min="0" :max="40" />
+                    </BuilderField>
+                    <BuilderField label="Margem abaixo" :suffix="`${selectedItem.style.margin_bottom || 0}px`">
+                      <BuilderRange v-model="selectedItem.style.margin_bottom" :min="0" :max="80" />
+                    </BuilderField>
+                  </div>
+                </section>
+
+                <section v-if="!selectedFieldIsNative" class="px-3.5 py-3.5">
+                  <button
+                    type="button"
+                    class="flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg border border-danger/30 bg-transparent px-3 py-2 text-[12px] font-medium text-danger transition hover:bg-danger/10"
+                    @click="deleteField(selectedItem.field_id)"
+                  >
+                    <BoxIcon name="trash" class="h-3.5 w-3.5" />
+                    Excluir campo
+                  </button>
+                </section>
               </div>
 
-              <div class="grid grid-cols-2 gap-3">
-                <div>
-                  <label class="mb-1 block text-xs font-medium text-ink">Quantidade</label>
-                  <input v-model.number="selectedItem.config.limit" type="number" min="1" max="20" :class="inputClass" />
-                </div>
-                <div>
-                  <label class="mb-1 block text-xs font-medium text-ink">Layout</label>
-                  <BaseSelect v-model="selectedItem.config.layout" :options="REVIEW_LAYOUTS" size="sm" />
-                </div>
+              <!-- Component item -->
+              <div v-else-if="selectedItem && selectedItem.kind === 'component'" class="flex flex-col">
+                <section class="flex flex-col gap-3 border-b border-slate-100 px-3.5 py-3.5">
+                  <label class="flex items-center gap-2.5 text-[12.5px] text-ink">
+                    <ToggleSwitch v-model="selectedItem.enabled" :true-value="true" :false-value="false" size="sm" />
+                    Bloco visível
+                  </label>
+
+                  <!-- Order bump -->
+                  <template v-if="selectedItem.component === 'order_bump'">
+                    <BuilderField label="Produto da oferta">
+                      <SearchMultiSelect v-model="bumpSelection" type="products" placeholder="Buscar produto..." />
+                    </BuilderField>
+                    <BuilderField label="Título da oferta">
+                      <BuilderTextInput v-model="selectedItem.config.headline" placeholder="Adicione e economize" />
+                    </BuilderField>
+                    <BuilderField label="Descrição">
+                      <BuilderTextArea v-model="selectedItem.config.description" :rows="3" />
+                    </BuilderField>
+                    <BuilderField label="Selo de desconto">
+                      <BuilderTextInput v-model="selectedItem.config.discount_label" placeholder="-20%" />
+                    </BuilderField>
+                    <BuilderField label="Cor de destaque">
+                      <BuilderColor v-model="selectedItem.config.highlight_color" />
+                    </BuilderField>
+                    <label class="flex items-center gap-2.5 text-[12.5px] text-ink">
+                      <ToggleSwitch v-model="selectedItem.config.default_checked" :true-value="true" :false-value="false" size="sm" />
+                      Marcado por padrão
+                    </label>
+                  </template>
+
+                  <!-- HTML block -->
+                  <template v-else-if="selectedItem.component === 'html'">
+                    <BuilderField label="Variante">
+                      <BaseSelect v-model="selectedItem.config.variant" :options="HTML_VARIANTS" size="sm" />
+                    </BuilderField>
+                    <BuilderField label="Alinhamento">
+                      <BuilderSegmented v-model="selectedItem.config.align" :options="ALIGN_OPTIONS" />
+                    </BuilderField>
+                    <BuilderField label="Conteúdo HTML (sanitizado)">
+                      <BuilderTextArea v-model="selectedItem.config.html" :rows="6" mono />
+                    </BuilderField>
+                  </template>
+
+                  <!-- Coupon -->
+                  <template v-else-if="selectedItem.component === 'coupon'">
+                    <BuilderField label="Título (opcional)">
+                      <BuilderTextInput v-model="selectedItem.config.title" placeholder="Tem um cupom?" />
+                    </BuilderField>
+                  </template>
+
+                  <!-- Summary -->
+                  <template v-else-if="selectedItem.component === 'summary'">
+                    <BuilderField label="Título (opcional)">
+                      <BuilderTextInput v-model="selectedItem.config.title" placeholder="Resumo do pedido" />
+                    </BuilderField>
+                    <label class="flex items-center gap-2.5 text-[12.5px] text-ink">
+                      <ToggleSwitch v-model="selectedItem.config.collapsible" :true-value="true" :false-value="false" size="sm" />
+                      Recolhível
+                    </label>
+                    <label class="flex items-center gap-2.5 text-[12.5px] text-ink">
+                      <ToggleSwitch v-model="selectedItem.config.hide_coupon" :true-value="true" :false-value="false" size="sm" />
+                      Ocultar cupom no resumo
+                    </label>
+                  </template>
+
+                  <!-- Notes -->
+                  <template v-else-if="selectedItem.component === 'notes'">
+                    <BuilderField label="Rótulo">
+                      <BuilderTextInput v-model="selectedItem.config.label" />
+                    </BuilderField>
+                    <BuilderField label="Placeholder">
+                      <BuilderTextInput v-model="selectedItem.config.placeholder" />
+                    </BuilderField>
+                    <label class="flex items-center gap-2.5 text-[12.5px] text-ink">
+                      <ToggleSwitch v-model="selectedItem.config.required" :true-value="true" :false-value="false" size="sm" />
+                      Obrigatório
+                    </label>
+                  </template>
+
+                  <!-- Banner -->
+                  <template v-else-if="selectedItem.component === 'banner'">
+                    <BuilderField label="Imagem de fundo">
+                      <MediaPickerField v-model="selectedItem.config.image" :field="{ label: 'Imagem do banner' }" />
+                    </BuilderField>
+                    <div class="grid grid-cols-2 gap-2">
+                      <BuilderField label="Cor de fundo">
+                        <BuilderColor v-model="selectedItem.config.bg_color" />
+                      </BuilderField>
+                      <BuilderField label="Cor do título">
+                        <BuilderColor v-model="selectedItem.config.title_color" />
+                      </BuilderField>
+                    </div>
+                    <BuilderField label="Título">
+                      <BuilderTextInput v-model="selectedItem.config.title" />
+                    </BuilderField>
+                    <BuilderField label="Subtítulo">
+                      <BuilderTextInput v-model="selectedItem.config.subtitle" />
+                    </BuilderField>
+                    <BuilderField label="Texto do botão">
+                      <BuilderTextInput v-model="selectedItem.config.button_text" />
+                    </BuilderField>
+                    <BuilderField label="Alinhamento">
+                      <BuilderSegmented v-model="selectedItem.config.align" :options="ALIGN_OPTIONS" />
+                    </BuilderField>
+                    <BuilderField label="Link (opcional)">
+                      <BuilderTextInput v-model="selectedItem.config.link" type="url" placeholder="https://" />
+                    </BuilderField>
+                    <BuilderField label="Contador regressivo até">
+                      <BuilderTextInput v-model="selectedItem.config.countdown" type="datetime-local" />
+                    </BuilderField>
+                  </template>
+
+                  <!-- Reviews -->
+                  <template v-else-if="selectedItem.component === 'reviews'">
+                    <BuilderField label="Origem das avaliações">
+                      <BaseSelect v-model="selectedItem.config.source" :options="REVIEW_SOURCES" size="sm" />
+                    </BuilderField>
+
+                    <BuilderField v-if="selectedItem.config.source === 'product'" label="Produto">
+                      <SearchMultiSelect v-model="bumpSelection" type="products" placeholder="Buscar produto..." />
+                    </BuilderField>
+
+                    <div v-else class="flex flex-col gap-2">
+                      <div
+                        v-for="(review, index) in selectedItem.config.items"
+                        :key="index"
+                        class="rounded-lg border border-slate-200 p-2.5"
+                      >
+                        <div class="mb-2 flex items-center justify-between">
+                          <span class="text-[11px] font-semibold text-slate-400">Depoimento {{ index + 1 }}</span>
+                          <button
+                            type="button"
+                            class="flex cursor-pointer rounded border-0 bg-transparent p-0.5 text-slate-400 transition hover:bg-danger/10 hover:text-danger"
+                            @click="removeReviewItem(selectedItem, index)"
+                          >
+                            <BoxIcon name="trash" class="h-3.5 w-3.5" />
+                          </button>
+                        </div>
+                        <div class="mb-2"><BuilderTextInput v-model="review.author" placeholder="Autor" /></div>
+                        <div class="mb-2"><BuilderTextArea v-model="review.text" :rows="2" placeholder="Depoimento" /></div>
+                        <div class="grid grid-cols-2 gap-2">
+                          <BuilderTextInput v-model.number="review.rating" type="number" placeholder="Nota" />
+                          <MediaPickerField v-model="review.avatar" :field="{ label: 'Avatar' }" />
+                        </div>
+                      </div>
+
+                      <button
+                        type="button"
+                        class="inline-flex cursor-pointer items-center justify-center gap-1 rounded-lg border border-primary-200 bg-white px-3 py-2 text-[11.5px] font-medium text-primary transition hover:bg-primary-50"
+                        @click="addReviewItem(selectedItem)"
+                      >
+                        <BoxIcon name="plus" class="h-3.5 w-3.5" />
+                        Adicionar depoimento
+                      </button>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2">
+                      <BuilderField label="Quantidade" :suffix="String(selectedItem.config.limit || 4)">
+                        <BuilderRange v-model="selectedItem.config.limit" :min="1" :max="20" />
+                      </BuilderField>
+                      <BuilderField label="Layout">
+                        <BaseSelect v-model="selectedItem.config.layout" :options="REVIEW_LAYOUTS" size="sm" />
+                      </BuilderField>
+                    </div>
+                  </template>
+                </section>
               </div>
-            </template>
+
+              <!-- Step -->
+              <div v-else-if="selectedStep" class="flex flex-col">
+                <section class="flex flex-col gap-3 border-b border-slate-100 px-3.5 py-3.5">
+                  <span class="text-[10px] font-semibold uppercase tracking-[0.08em] text-slate-400">Etapa</span>
+
+                  <BuilderField
+                    label="Rótulo"
+                    :hint="selectedStep.type !== 'custom' ? 'Espelha a configuração text_check_step.' : ''"
+                  >
+                    <BuilderTextInput v-model="selectedStep.label" />
+                  </BuilderField>
+
+                  <label class="flex items-center gap-2.5 text-[12.5px] text-ink">
+                    <ToggleSwitch v-model="selectedStep.enabled" :true-value="true" :false-value="false" size="sm" />
+                    Etapa ativa
+                  </label>
+
+                  <BuilderField
+                    label="Tipo"
+                    :hint="selectedStep.type !== 'custom'
+                      ? ('Etapa semântica — não pode ser excluída.' + (selectedStep.type === 'payment' ? ' Sempre a última.' : ''))
+                      : 'Etapa personalizada — removível e reordenável.'"
+                  >
+                    <p class="m-0 rounded-lg bg-slate-50 px-2.5 py-2 text-[12.5px] text-ink">{{ STEP_META[selectedStep.type].label }}</p>
+                  </BuilderField>
+                </section>
+
+                <section v-if="selectedStep.type === 'payment'" class="border-b border-slate-100 px-3.5 py-3.5">
+                  <BuilderField label="Formas de pagamento" hint="Sanfona ou cards. Cada forma usa o ícone da integração.">
+                    <BuilderSegmented v-model="settingsDraft.payment_methods_layout" :options="PAYMENT_LAYOUT_OPTIONS" />
+                  </BuilderField>
+                </section>
+
+                <section v-if="selectedStep.type === 'custom'" class="px-3.5 py-3.5">
+                  <button
+                    type="button"
+                    class="flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg border border-danger/30 bg-transparent px-3 py-2 text-[12px] font-medium text-danger transition hover:bg-danger/10"
+                    @click="removeStep(selectedStep)"
+                  >
+                    <BoxIcon name="trash" class="h-3.5 w-3.5" />
+                    Remover etapa
+                  </button>
+                </section>
+              </div>
+
+              <!-- Empty state -->
+              <div v-else class="flex flex-col items-center gap-2 px-6 py-16 text-center">
+                <BoxIcon name="slider-alt" class="h-6 w-6 text-slate-300" />
+                <span class="text-[12.5px] leading-relaxed text-slate-400">
+                  Selecione uma etapa, campo ou bloco — na árvore de camadas ou direto no preview.
+                </span>
+              </div>
+            </div>
           </div>
-
-          <!-- Step inspector -->
-          <div v-else-if="selectedStep" class="flex flex-col gap-4">
-            <div class="flex items-center gap-2 border-b border-slate-100 pb-3">
-              <BoxIcon :name="STEP_META[selectedStep.type].icon" class="h-4 w-4 text-primary" />
-              <p class="m-0 text-sm font-semibold text-ink">Configurar etapa</p>
-            </div>
-
-            <div>
-              <label class="mb-1 block text-xs font-medium text-ink">Rótulo da etapa</label>
-              <input v-model="selectedStep.label" type="text" :class="inputClass" />
-            </div>
-
-            <div>
-              <label class="mb-1 block text-xs font-medium text-ink">Tipo</label>
-              <p class="m-0 rounded-lg bg-slate-50 px-3 py-2 text-sm text-ink">{{ STEP_META[selectedStep.type].label }}</p>
-            </div>
-
-            <div class="flex items-center justify-between gap-2">
-              <span class="text-xs font-medium text-ink">Etapa ativa</span>
-              <ToggleSwitch v-model="selectedStep.enabled" :true-value="true" :false-value="false" />
-            </div>
-
-            <div v-if="selectedStep.type === 'payment'" class="border-t border-slate-100 pt-4">
-              <label class="mb-1 block text-xs font-medium text-ink">Exibição das formas de pagamento</label>
-              <BaseSelect v-model="settingsDraft.payment_methods_layout" :options="PAYMENT_LAYOUT_OPTIONS" size="sm" />
-              <p class="m-0 mt-1.5 text-[11px] text-muted">
-                Escolha entre exibir as formas de pagamento em cards ou em modo sanfona. Cada forma usa o ícone fornecido pela sua integração.
-              </p>
-            </div>
-
-            <div v-if="selectedStep.type === 'custom'" class="border-t border-slate-100 pt-4">
-              <button
-                type="button"
-                class="inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg border border-danger/30 bg-transparent px-3 py-2 text-sm font-medium text-danger transition hover:bg-danger/10"
-                @click="removeStep(selectedStep)"
-              >
-                <BoxIcon name="trash" class="h-4 w-4" />
-                Remover etapa
-              </button>
-            </div>
-          </div>
-
-          <p v-else class="text-center text-sm text-muted">Selecione uma etapa ou item.</p>
         </aside>
       </div>
     </div>

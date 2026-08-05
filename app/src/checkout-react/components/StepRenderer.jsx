@@ -54,13 +54,21 @@ export default function StepRenderer({ step, editor = false, selected = null, on
     if (item.kind === 'field') {
       const field = fieldById(item.field_id, { editor });
 
-      // Honor conditional visibility on the storefront (e.g. CPF/RG for
-      // individuals vs CNPJ/IE for companies). In the editor every field stays
-      // visible so the operator can design the layout.
-      if (field && (editor || isFieldVisible(field.id, billing, extraFields))) {
+      // Honor conditional visibility (e.g. CPF/RG for individuals vs CNPJ/IE for
+      // companies) in both the storefront and the editor preview, so live rule
+      // edits show/hide fields as a shopper would see them. Selection of hidden
+      // fields still happens from the builder layers tree.
+      if (field && isFieldVisible(field.id, billing, extraFields)) {
         fieldBatch.push({ field, item });
       }
 
+      return;
+    }
+
+    // Components can be toggled off in the builder. Hide disabled components on
+    // the storefront; keep them visible in the editor so the operator can select
+    // and re-enable them.
+    if (!editor && item.enabled === false) {
       return;
     }
 

@@ -9,6 +9,7 @@ import { useFunnelBeacon } from '../lib/funnelBeacon.js';
 import { isEditor, onParentMessage, emitReady, emitSelect } from '../lib/editorBridge.js';
 import { MESSAGE_PREFIX } from '../lib/editorBridge.js';
 import { applyTheme } from '../lib/theme.js';
+import { setConditionsOverride } from '../lib/conditions.js';
 import { formatPrice } from '../lib/format.js';
 import OrderSummary from './OrderSummary.jsx';
 import CheckoutSkeleton from './CheckoutSkeleton.jsx';
@@ -296,6 +297,11 @@ function EditorApp() {
         // Live checkout-setting edits (e.g. payment methods layout): override
         // and force a re-render so the change reflects instantly in the preview.
         setSettingsOverrides(msg.settings || null);
+        setFieldsRev((n) => n + 1);
+      } else if (kind === 'conditions') {
+        // Live rule edits: override the field-visibility rules so show/hide (e.g.
+        // person-type → CPF/CNPJ) reflects instantly in the preview.
+        setConditionsOverride(msg.conditions || null);
         setFieldsRev((n) => n + 1);
       }
     });
