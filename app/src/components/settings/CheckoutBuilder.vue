@@ -317,7 +317,12 @@ function postToFrame(msg) {
   const win = previewFrame.value?.contentWindow;
 
   if (win) {
-    win.postMessage(msg, previewOrigin.value);
+    // postMessage uses the structured clone algorithm, which throws
+    // DataCloneError on Vue reactive Proxy objects. The layout/theme payloads
+    // nest reactive values (item.config, item.style, field options, …), so send
+    // a plain de-proxied copy. A JSON round-trip is sufficient — every payload
+    // is JSON-safe data.
+    win.postMessage(JSON.parse(JSON.stringify(msg)), previewOrigin.value);
   }
 }
 
@@ -436,8 +441,14 @@ onBeforeUnmount(() => {
   }
 });
 
+// Watch the reactive drafts DIRECTLY (not via `() => draft` getters): a getter
+// that returns a reactive object without reading its nested props does not
+// establish deep dependencies in Vue 3.5, so nested edits (add/remove/reorder
+// items, rename a step, edit a field) never fired and the live preview never
+// received a layout push. Passing the reactive objects themselves deep-watches
+// them reliably.
 watch(
-  [() => draft, () => fieldsDraft],
+  [draft, fieldsDraft],
   () => {
     if (pushTimer) {
       clearTimeout(pushTimer);
@@ -450,7 +461,7 @@ watch(
 
 let themeTimer = null;
 watch(
-  () => themeDraft,
+  themeDraft,
   () => {
     if (themeTimer) {
       clearTimeout(themeTimer);
@@ -463,7 +474,7 @@ watch(
 
 let textsTimer = null;
 watch(
-  () => textsDraft,
+  textsDraft,
   () => {
     if (textsTimer) {
       clearTimeout(textsTimer);
@@ -476,7 +487,7 @@ watch(
 
 let settingsTimer = null;
 watch(
-  () => settingsDraft,
+  settingsDraft,
   () => {
     if (settingsTimer) {
       clearTimeout(settingsTimer);

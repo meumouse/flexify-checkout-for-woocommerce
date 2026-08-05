@@ -31,7 +31,13 @@ function parentOrigin() {
  * @returns {boolean}
  */
 export function isEditor() {
-  return config.editor === true && typeof window !== 'undefined' && window.parent !== window;
+  // `editor` is localized server-side via wp_localize_script, which stringifies
+  // top-level scalars — so a PHP `true` arrives as the string "1", not a boolean.
+  // Accept both so the editor mounts regardless of the transport's coercion.
+  const flag = config.editor;
+  const enabled = flag === true || flag === 1 || flag === '1';
+
+  return enabled && typeof window !== 'undefined' && window.parent !== window;
 }
 
 /**

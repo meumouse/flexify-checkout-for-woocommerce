@@ -1320,8 +1320,9 @@ class Steps {
 
 	/**
 	 * Handle step redirect based on query parameter
-	 * 
+	 *
 	 * @since 5.4.1
+	 * @version 6.0.0
 	 * @return void
 	 */
 	public static function handle_step_redirect() {
@@ -1333,6 +1334,16 @@ class Steps {
 		// otherwise the thank-you page gets ?step=customer-info appended
 		// and loops back to itself.
 		if ( is_wc_endpoint_url('order-received') || is_wc_endpoint_url('order-pay') ) {
+			return;
+		}
+
+		// The live builder preview embeds the checkout in an iframe using a
+		// `flexify_builder` nonce and no `step` param. Redirecting here would
+		// rebuild the URL from wc_get_checkout_url() and strip that nonce, so
+		// is_builder_preview() would then fail and React would never enter
+		// editor mode (no live layout/field updates). React owns step routing
+		// in the builder, so leave the preview URL untouched.
+		if ( Helpers::is_builder_preview() ) {
 			return;
 		}
 
