@@ -12,7 +12,6 @@
 import { ref, computed, onMounted } from 'vue';
 import { apiGet, apiDelete, apiPost } from '../../services/api';
 import DataTable from '../../components/table/DataTable.vue';
-import SystemStatus from '../../components/settings/SystemStatus.vue';
 import PageHeader from '../../components/layout/PageHeader.vue';
 
 const loading = ref(true);
@@ -197,16 +196,5 @@ onMounted(load);
         >Cancelar</button>
       </template>
     </DataTable>
-
-    <section class="mt-8 overflow-hidden rounded-[12px] bg-white shadow-soft ring-1 ring-slate-100">
-      <div class="border-b border-slate-100 px-6 py-4">
-        <h2 class="m-0 text-[15px] font-semibold text-brand">Sistema / Status</h2>
-        <p class="m-0 mt-1 text-[13px] text-slate-500">Detalhes do ambiente do servidor, úteis para diagnóstico técnico.</p>
-      </div>
-
-      <div class="px-6">
-        <SystemStatus />
-      </div>
-    </section>
   </div>
 </template>

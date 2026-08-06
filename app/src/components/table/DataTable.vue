@@ -143,7 +143,7 @@ function deleteSelected() {
 </script>
 
 <template>
-  <div class="overflow-hidden rounded-[12px] bg-white shadow-soft ring-1 ring-slate-100">
+  <div class="overflow-hidden rounded-[12px] bg-white ring-1 ring-slate-100">
     <div class="p-5">
       <!-- Status / event filter tabs -->
       <div v-if="tabs.length" class="mb-4 flex flex-wrap gap-2">

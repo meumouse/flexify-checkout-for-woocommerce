@@ -35,7 +35,7 @@ const store = useSettingsStore();
       </template>
     </PageHeader>
 
-    <main class="mt-8 overflow-hidden rounded-[8px] bg-white shadow-[0_1px_0_rgba(0,0,0,0.02)] ring-1 ring-slate-100">
+    <main class="mt-8 overflow-hidden rounded-[8px] bg-white ring-1 ring-slate-100">
       <div class="px-6 py-2">
         <IntegrationsList grouped />
       </div>

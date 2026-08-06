@@ -220,7 +220,7 @@ function selectTab(tabId) {
       </transition>
     </div>
 
-    <main v-if="currentTab" class="mt-8 rounded-[8px] bg-white shadow-[0_1px_0_rgba(0,0,0,0.02)] ring-1 ring-slate-100">
+    <main v-if="currentTab" class="mt-8 rounded-[8px] bg-white ring-1 ring-slate-100">
       <div class="px-10 py-12">
         <div
           v-for="(card, index) in currentTab.cards"
