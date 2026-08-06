@@ -3,9 +3,10 @@
 All engineering guidelines for this project live in **[AGENTS.md](AGENTS.md)**.
 
 Read [AGENTS.md](AGENTS.md) before making any change. It covers the repository
-layout, PHP/backend conventions, the three Vite frontend bundles, i18n, build and
-release packaging, the Composer autoloader/class-registry workflow, versioning,
-the changelog rules, and the pre-change checklist.
+layout, PHP/backend conventions, the three Vite frontend bundles, the admin
+design system, i18n, build and release packaging, the Composer
+autoloader/class-registry workflow, versioning, the changelog rules, and the
+pre-change checklist.
 
 Key rules to remember:
 
@@ -13,6 +14,9 @@ Key rules to remember:
   English (`en_US`).** Only the user-facing docs (`README.md`) and
   `changelogs.md` are in PT-BR. See §0 of [AGENTS.md](AGENTS.md).
 - Backend logic goes in `admin/src/` (PHP, PSR-4); `app/src/` is UI only.
+- The admin UI follows the shared MeuMouse design system (reference: the
+  Joinotify plugin), with the primary color `#008aff`. See §4.1 of
+  [AGENTS.md](AGENTS.md) before styling any admin screen.
 - The Composer `admin/vendor/` autoloader is versioned; `app/dist/` bundles are
   not. Run `composer dump-autoload -o` after adding/moving classes.
 - Only commit or push when explicitly asked.

@@ -6,6 +6,16 @@
 @tailwind utilities;
 
 @layer base {
+  /*
+   * Tinted canvas behind the plugin screens, matching the design system. Guarded
+   * by :has() so the rule is dropped entirely on other wp-admin pages (and on
+   * browsers without :has support, which just keeps the default gray).
+   */
+  body:has(.flexify-checkout-settings-page) #wpcontent,
+  body:has(.flexify-checkout-settings-page) #wpbody-content {
+    background-color: #f4f7fb; /* shell-50 */
+  }
+
   #flexify-checkout-settings-app {
     font-family:
       Inter,
@@ -23,9 +33,9 @@
     border: 1px solid #e2e8f0 !important;
     border-radius: 8px !important;
     background-color: #ffffff !important;
-    padding: 0.7rem 1.05rem !important;
-    font-size: 15px !important;
-    line-height: 1.55rem !important;
+    padding: 0.75rem 1rem !important;
+    font-size: 14px !important;
+    line-height: 1.5rem !important;
     color: #334155 !important;
     box-shadow: none !important;
     outline: none !important;
@@ -40,8 +50,8 @@
   }
 
   #flexify-checkout-settings-app .flexify-field-input:focus {
-    border-color: #0d6efd !important;
-    box-shadow: 0 0 0 4px rgb(219 234 254 / 1) !important;
+    border-color: #008aff !important; /* primary */
+    box-shadow: 0 0 0 4px rgb(204 228 255 / 1) !important; /* primary-100 */
   }
 
   /* Controls inside input groups keep the group's outer border. */
@@ -51,7 +61,7 @@
     background-color: transparent !important;
     box-shadow: none !important;
     outline: none !important;
-    font-size: 15px;
+    font-size: 14px;
     color: #334155;
   }
 }

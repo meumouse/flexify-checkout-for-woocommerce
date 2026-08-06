@@ -13,6 +13,7 @@ import { ref, computed, onMounted } from 'vue';
 import { useSettingsStore } from '../../stores/useSettingsStore';
 import BaseButton from '../../components/buttons/BaseButton.vue';
 import OfferEditor from './OfferEditor.vue';
+import PageHeader from '../../components/layout/PageHeader.vue';
 
 const store = useSettingsStore();
 
@@ -94,23 +95,20 @@ onMounted(() => {
 
 <template>
   <div class="flexify-settings-app-shell pb-8 pr-4">
-    <header class="mb-6 mt-2 flex flex-wrap items-center justify-between gap-3">
-      <div class="flex items-center gap-3">
-        <svg class="h-9 w-9" viewBox="0 0 1080 1080" xmlns="http://www.w3.org/2000/svg"><g><path fill="#141D26" d="M513.96,116.38c-234.22,0-424.07,189.86-424.07,424.07c0,234.21,189.86,424.08,424.07,424.08 c234.21,0,424.07-189.86,424.07-424.08C938.03,306.25,748.17,116.38,513.96,116.38z M685.34,542.48 c-141.76,0.37-257.11,117.68-257.41,259.44h-88.21c0-191.79,153.83-347.41,345.62-347.41V542.48z M685.34,365.84 c-141.76,0.2-266.84,69.9-346.06,176.13V410.6c91.73-82.48,212.64-133.1,346.06-133.1V365.84z"/></g></svg>
-        <div>
-          <h1 class="m-0 text-xl font-semibold text-brand">Ofertas</h1>
-          <p class="m-0 mt-1 text-[13px] text-slate-500">Crie order bumps, upsells, cross-sells e downsells para o checkout.</p>
-        </div>
-      </div>
-
-      <BaseButton v-if="isPro" size="sm" @click="openCreate">
-        <BoxIcon name="plus" class="mr-1 h-4 w-4" />
-        Nova oferta
-      </BaseButton>
-    </header>
+    <PageHeader
+      title="Ofertas"
+      description="Crie order bumps, upsells, cross-sells e downsells para o checkout."
+    >
+      <template #actions>
+        <BaseButton v-if="isPro" @click="openCreate">
+          <BoxIcon name="plus" class="mr-1 h-4 w-4" />
+          Nova oferta
+        </BaseButton>
+      </template>
+    </PageHeader>
 
     <!-- Pro gate -->
-    <div v-if="!isPro" class="mb-6 flex flex-wrap items-center justify-between gap-4 rounded-[12px] border border-primary/20 bg-primary-100/40 p-5">
+    <div v-if="!isPro" class="my-8 flex flex-wrap items-center justify-between gap-4 rounded-[12px] border border-primary/20 bg-primary-100/40 p-5">
       <div class="flex items-center gap-3">
         <span class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-primary text-white">
           <BoxIcon name="crown" type="solid" class="h-4 w-4" />
@@ -127,7 +125,7 @@ onMounted(() => {
     </div>
 
     <!-- Empty state -->
-    <div v-if="!offers.length" class="rounded-[12px] border border-dashed border-slate-300 bg-white p-10 text-center">
+    <div v-if="!offers.length" class="mt-8 rounded-[12px] border border-dashed border-slate-300 bg-white p-10 text-center">
       <span class="mx-auto mb-3 inline-flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-400">
         <BoxIcon name="purchase-tag" class="h-6 w-6" />
       </span>
@@ -139,7 +137,7 @@ onMounted(() => {
     </div>
 
     <!-- List -->
-    <div v-else class="flex flex-col gap-3">
+    <div v-else class="mt-8 flex flex-col gap-3">
       <div
         v-for="offer in offers"
         :key="offer.id"

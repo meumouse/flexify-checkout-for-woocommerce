@@ -13,6 +13,7 @@ import VueApexCharts from 'vue3-apexcharts';
 import BaseSelect from '../../components/fields/BaseSelect.vue';
 import ChartSkeleton from '../../components/skeletons/ChartSkeleton.vue';
 import { apiGet } from '../../services/api';
+import PageHeader from '../../components/layout/PageHeader.vue';
 
 const loading = ref(true);
 const error = ref('');
@@ -68,6 +69,26 @@ const notificationsOptions = computed(() => ({
 }));
 
 const hasNotifications = computed(() => notificationsSeries.value.length > 0);
+
+// --- A/B testing results ---
+// Per follow-up event, the sent/recovered tally for each message variant, from
+// the recovery/analytics `ab_tests` block. Only events that actually ran more
+// than one variant appear here.
+const abTests = computed(() => data.value?.ab_tests || []);
+const hasAbTests = computed(() => abTests.value.length > 0);
+
+// Best-performing variant id per event, to highlight the winner in the table.
+function bestVariantId(test) {
+  let best = null;
+
+  test.variants.forEach((v) => {
+    if (v.sent > 0 && (!best || v.rate > best.rate)) {
+      best = v;
+    }
+  });
+
+  return best ? best.id : null;
+}
 
 // --- Checkout funnel metrics (section 9.1) ---
 // Backed by the recovery/analytics endpoint's `funnel` block, which derives the
@@ -141,26 +162,27 @@ onMounted(load);
 
 <template>
   <div class="flexify-settings-app-shell pb-8 pr-4">
-    <header class="mb-2 mt-2 flex flex-wrap items-center gap-3">
-      <svg class="h-9 w-9" viewBox="0 0 1080 1080" xmlns="http://www.w3.org/2000/svg"><g><path fill="#141D26" d="M513.96,116.38c-234.22,0-424.07,189.86-424.07,424.07c0,234.21,189.86,424.08,424.07,424.08 c234.21,0,424.07-189.86,424.07-424.08C938.03,306.25,748.17,116.38,513.96,116.38z M685.34,542.48 c-141.76,0.37-257.11,117.68-257.41,259.44h-88.21c0-191.79,153.83-347.41,345.62-347.41V542.48z M685.34,365.84 c-141.76,0.2-266.84,69.9-346.06,176.13V410.6c91.73-82.48,212.64-133.1,346.06-133.1V365.84z"/></g></svg>
+    <PageHeader
+      title="Análise"
+      description="Acompanhe o funil de checkout, o desempenho da recuperação de carrinhos e a receita recuperada."
+    >
+      <template #actions>
+        <BaseSelect
+          class="w-48"
+          :model-value="period"
+          :options="periods"
+          @update:model-value="onPeriodChange"
+        />
+      </template>
+    </PageHeader>
 
-      <h1 class="m-0 text-xl font-semibold text-brand">Análise</h1>
-
-      <BaseSelect
-        class="ml-auto w-48"
-        :model-value="period"
-        :options="periods"
-        @update:model-value="onPeriodChange"
-      />
-    </header>
-
-    <div v-if="error" class="mt-6 rounded-[8px] bg-danger/10 px-5 py-4 text-[14px] text-danger" role="alert">
+    <div v-if="error" class="mt-8 rounded-[8px] bg-danger/10 px-5 py-4 text-[14px] text-danger" role="alert">
       {{ error }}
     </div>
 
     <template v-else>
       <!-- Checkout funnel metrics (section 9.1) -->
-      <section class="mt-6">
+      <section class="mt-8">
         <div class="mb-3 flex items-center gap-3">
           <h2 class="m-0 text-[15px] font-semibold text-brand">Funil de checkout</h2>
           <span
@@ -268,6 +290,41 @@ onMounted(load);
         />
         <ChartSkeleton v-else-if="loading" :height="320" />
         <p v-else class="text-[14px] text-slate-500">Nenhuma notificação enviada no período.</p>
+      </section>
+
+      <!-- A/B testing results -->
+      <section v-if="!loading && hasAbTests" class="mt-6 rounded-[8px] bg-white px-6 py-5 ring-1 ring-slate-100">
+        <h2 class="mb-1 text-[15px] font-semibold text-brand">Testes A/B</h2>
+        <p class="m-0 mb-4 text-[13px] text-slate-500">Desempenho de cada variante de mensagem por follow-up no período.</p>
+
+        <div v-for="test in abTests" :key="test.event_key" class="mb-5 last:mb-0">
+          <h3 class="m-0 mb-2 text-[14px] font-semibold text-brand">{{ test.title }}</h3>
+          <div class="overflow-hidden rounded-[8px] ring-1 ring-slate-100">
+            <table class="w-full border-collapse text-[13px]">
+              <thead>
+                <tr class="border-b border-slate-100 text-left text-slate-500">
+                  <th class="px-4 py-2.5 font-semibold">Variante</th>
+                  <th class="px-4 py-2.5 font-semibold">Enviados</th>
+                  <th class="px-4 py-2.5 font-semibold">Recuperados</th>
+                  <th class="px-4 py-2.5 font-semibold">Taxa de recuperação</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="variant in test.variants" :key="variant.id" class="border-b border-slate-50 last:border-0">
+                  <td class="px-4 py-2.5">
+                    <span class="inline-flex items-center gap-1.5 font-medium text-slate-700">
+                      Variante {{ variant.label }}
+                      <span v-if="bestVariantId(test) === variant.id" class="inline-flex items-center rounded-full bg-success/10 px-2 py-0.5 text-[11px] font-semibold text-success">Melhor</span>
+                    </span>
+                  </td>
+                  <td class="px-4 py-2.5 text-slate-600">{{ variant.sent }}</td>
+                  <td class="px-4 py-2.5 text-slate-600">{{ variant.recovered }}</td>
+                  <td class="px-4 py-2.5 font-semibold text-slate-700">{{ variant.rate }}%</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </section>
     </template>
   </div>

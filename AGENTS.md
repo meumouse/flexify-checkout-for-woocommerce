@@ -217,6 +217,77 @@ PostCSS/autoprefixer. Vue components are SFCs (`.vue`) organized by function in
 `app/src/components/` (buttons, fields, modals, settings, table, toasts, toggles,
 icons). Toasts use `sonner` (React checkout) and `vue-sonner` (Vue admin).
 
+### 4.1. Admin design system
+
+The wp-admin SPA follows the **shared MeuMouse design system**, whose reference
+implementation is the sibling plugin **Joinotify**. Flexify replicates its
+tokens, type scale and spacing, but **keeps its own primary color `#008aff`**
+(Joinotify's is `#0088ff`).
+
+**Rule for agents:** when building or restyling admin UI, open the equivalent
+Joinotify component first and copy the real values instead of inventing them. Do
+not introduce a new type size, radius or spacing that has no counterpart there.
+
+Reference files in the Joinotify repository (local checkout, sibling folder of
+this plugin — `wp-content/plugins/joinotify/`):
+
+| Concern | Joinotify reference |
+|---------|---------------------|
+| Page header | `app/src/components/layout/PageHeader.vue` |
+| Settings tabs | `app/src/pages/settings/components/SectionTabs.vue` |
+| Label/control row | `app/src/components/fields/FieldRow.vue` |
+| Card + sticky action bar | `app/src/pages/settings/SettingsPage.vue`, `components/SettingsActionBar.vue` |
+| Buttons / toggles / inputs | `app/src/components/buttons/BaseButton.vue`, `components/toggles/ToggleSwitch.vue`, `components/fields/TextField.vue` |
+| Tokens and base layer | `app/tailwind.config.js`, `app/src/styles/main.css` |
+
+#### Tokens
+
+- **Palette**: `primary` (`#008aff`, scale 50–950), `shell` (50–900, the
+  blue-gray used for canvas/secondary text), `ink` `#102033`, `success`,
+  `danger`, `warning`, `info`, `dark`, `panel`, `muted`. All in
+  [`app/tailwind.config.js`](app/tailwind.config.js).
+- **Canvas**: plugin screens tint `#wpcontent` with `shell-50` (`#f4f7fb`) — see
+  the `:has(.flexify-checkout-settings-page)` rule in
+  [`app/src/styles/main.css`](app/src/styles/main.css).
+- **Font**: Inter, applied on the app root.
+- **Card**: `rounded-[8px] bg-white shadow-[0_1px_0_rgba(0,0,0,0.02)] ring-1
+  ring-slate-100`, content padding `px-10 py-12`, sticky action bar
+  `px-10 py-6` with `border-t border-black/10 bg-white/80 backdrop-blur-[5px]`.
+
+#### Type and component scale
+
+| Element | Spec |
+|---------|------|
+| Header eyebrow | `text-xs` / 600 / `uppercase` / `tracking-[0.22em]` / `text-shell-500` |
+| Page title | `text-3xl` / `font-semibold` / `tracking-tight` / `text-ink` |
+| Page description | `text-sm` / `leading-6` / `text-shell-500` / `max-w-3xl` |
+| Settings tab | `min-w-[165px] px-6 py-5 text-[15px]` semibold uppercase; strip is `w-fit` with `bg-[#e7edf5] p-0.5`; active tab `bg-primary text-white` |
+| Field label | `text-[15px]` / `font-semibold` / `text-slate-800` |
+| Field description | `text-[13px]` / `leading-5` / `text-slate-500` |
+| Field row | two columns **420px / 460px**, `py-6`, label and control vertically centered |
+| Input | `px-4 py-3`, `text-[14px]`, radius 8px, border `#e2e8f0`, focus = `primary` border + 4px `primary-100` ring |
+| Button | `sm px-3 py-2 text-[13px]` · `md px-5 py-3 text-[14px]` · `lg px-6 py-3.5 text-[15px]`, radius 8px |
+| Toggle | `md` = track `h-6 w-11` / thumb `h-5 w-5`; `sm` = track `h-5 w-9` / thumb `h-4 w-4` |
+| Vertical rhythm | header → tabs `mt-10`; header/tabs → card `mt-8` |
+
+#### Flexify-specific implementation
+
+- [`app/src/components/layout/PageHeader.vue`](app/src/components/layout/PageHeader.vue)
+  is the **only** page header — every wp-admin subpage (Settings, License, Apps,
+  Offers, Carts, Queue, Analytics) uses it. It renders the eyebrow, brand mark,
+  title and description, and exposes the slots `icon`, `badge` (Pro pill),
+  `description` and `actions`. It carries **no bottom margin**: the page adds
+  `mt-8` to the block that follows.
+- Settings fields are laid out as a real `<table>` (`<colgroup>` with a 444px
+  first column + `table-fixed`), not a per-row grid, so the columns line up
+  across every row of a tab. `<FieldRow>` renders a `<tr>` — it can only be used
+  inside a `<tbody>`. Wide fields, viewports ≤1024px and modal tables collapse
+  the cells to blocks (`.flexify-field-row--wide`,
+  `.flexify-fields-table--stacked`).
+- Cell padding lives in `<style scoped>`, not in Tailwind utilities: the config
+  runs with `important: true`, so a `py-6` utility would beat the stacked-layout
+  overrides.
+
 ---
 
 ## 5. Internationalization (i18n)
@@ -338,6 +409,8 @@ Keep the newest entries at the top.
 - [ ] New auto-instantiable class: constructor with no required args **and**
       `composer dump-autoload -o` run (or manual registration in `Init`).
 - [ ] Changed the frontend? Ran the matching Vite build (`app/ npm run build`).
+- [ ] New admin UI reuses `<PageHeader>` and the design-system scale from §4.1 —
+      no new type sizes, radii or spacings invented.
 - [ ] New hooks follow the `Flexify_Checkout/Area/Name` pattern and are documented.
 - [ ] `changelogs.md` updated in PT-BR.
 - [ ] Version synced across the relevant files (if this is a release).
@@ -351,6 +424,9 @@ Keep the newest entries at the top.
   the neighboring file.
 - **Backend ≠ frontend**: business logic belongs in `admin/src/` (PHP).
   `app/src/` is UI only. Do not duplicate business rules in JS.
+- **Admin UI is not free-form**: it follows the shared design system (§4.1). Read
+  the Joinotify reference component before styling a new screen, and keep the
+  primary color `#008aff`.
 - The **Composer vendor is versioned** and the **Vite dist is not** — mind what
   you commit.
 - Before claiming something exists (constant, hook, helper, class), **verify it

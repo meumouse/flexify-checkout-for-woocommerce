@@ -13,6 +13,7 @@ import { ref, computed, onMounted } from 'vue';
 import { apiGet, apiDelete, apiPost } from '../../services/api';
 import DataTable from '../../components/table/DataTable.vue';
 import SystemStatus from '../../components/settings/SystemStatus.vue';
+import PageHeader from '../../components/layout/PageHeader.vue';
 
 const loading = ref(true);
 const busy = ref(false);
@@ -141,15 +142,13 @@ onMounted(load);
 
 <template>
   <div class="flexify-settings-app-shell pb-8 pr-4">
-    <header class="mb-6 mt-2 flex flex-wrap items-center gap-3">
-      <svg class="h-9 w-9" viewBox="0 0 1080 1080" xmlns="http://www.w3.org/2000/svg"><g><path fill="#141D26" d="M513.96,116.38c-234.22,0-424.07,189.86-424.07,424.07c0,234.21,189.86,424.08,424.07,424.08 c234.21,0,424.07-189.86,424.07-424.08C938.03,306.25,748.17,116.38,513.96,116.38z M685.34,542.48 c-141.76,0.37-257.11,117.68-257.41,259.44h-88.21c0-191.79,153.83-347.41,345.62-347.41V542.48z M685.34,365.84 c-141.76,0.2-266.84,69.9-346.06,176.13V410.6c91.73-82.48,212.64-133.1,346.06-133.1V365.84z"/></g></svg>
-      <div>
-        <h1 class="m-0 text-xl font-semibold text-brand">Fila de processamentos</h1>
-        <p class="m-0 mt-1 text-[13px] text-slate-500">Acompanhe os eventos agendados de recuperação, filtre por tipo e gerencie a fila.</p>
-      </div>
-    </header>
+    <PageHeader
+      title="Fila de processamentos"
+      description="Acompanhe os eventos agendados de recuperação, filtre por tipo e gerencie a fila."
+    />
 
     <DataTable
+      class="mt-8"
       :columns="columns"
       :rows="items"
       :loading="loading"

@@ -46,7 +46,7 @@ function handleChange(event) {
       aria-hidden="true"
       :class="[
         'inline-flex shrink-0 rounded-full border border-slate-200 bg-slate-300 transition-colors duration-200 ease-in-out',
-        size === 'sm' ? 'h-[21px] w-[38px]' : 'h-[26px] w-[47px]',
+        size === 'sm' ? 'h-5 w-9' : 'h-6 w-11',
         'peer-focus-visible:outline-none peer-focus-visible:ring-4 peer-focus-visible:ring-primary-100',
         'peer-checked:border-primary peer-checked:bg-primary',
       ]"
@@ -56,7 +56,7 @@ function handleChange(event) {
       aria-hidden="true"
       :class="[
         'pointer-events-none absolute left-0.5 top-0.5 rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out',
-        size === 'sm' ? 'h-[17px] w-[17px] peer-checked:translate-x-[17px]' : 'h-[22px] w-[22px] peer-checked:translate-x-[21px]',
+        size === 'sm' ? 'h-4 w-4 peer-checked:translate-x-4' : 'h-5 w-5 peer-checked:translate-x-5',
       ]"
     />
   </label>

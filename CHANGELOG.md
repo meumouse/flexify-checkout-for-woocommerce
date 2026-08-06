@@ -17,11 +17,17 @@ Versão 6.0.0 (10/08/2026)
   - Conformidade com a LGPD: link de descadastro ({{ optout_link }}) nas mensagens e lista de supressão que impede o envio a contatos que optaram por sair
   - Canal de e-mail para os follow-ups (envio real em HTML), com orquestração multicanal: quando WhatsApp e e-mail estão ativos, o e-mail é usado como fallback caso o WhatsApp não seja entregue
   - Ação "Enviar agora" na lista de carrinhos, para disparar manualmente uma mensagem de recuperação a um carrinho abandonado
+  - Painel de detalhes por carrinho: uma gaveta lateral com o histórico completo (criação, captura de contato, abandono, cada follow-up enviado com canal e variante, e o pedido de recuperação vinculado)
+  - Exportação em CSV da lista de carrinhos, respeitando os filtros atuais (status, busca e período)
+  - Teste A/B das sequências de follow-up: cada mensagem pode ter variantes alternativas; cada carrinho recebe uma variante de forma consistente e o desempenho (envios × recuperações) aparece na página de Análises
+  - Recuperação no site: barra de intenção de saída exibida nas páginas de carrinho e checkout quando o visitante tenta sair com itens no carrinho, ativável nas configurações
   - Migração automática do plugin separado "Flexify Checkout - Recovery Carts": os dados são preservados (mesmos identificadores) e o plugin antigo é desativado e removido automaticamente, com aviso no painel (removível via filtro Flexify_Checkout/Recovery_Carts/Auto_Delete_Standalone)
   - Configurações da recuperação unificadas na opção principal do plugin (flexify_checkout_settings), com migração única e automática a partir da opção legada e leitura compatível durante a transição
   - Tela de configurações antiga (renderizada em PHP) removida; as configurações de recuperação passam a viver apenas no card "Recuperação de carrinho" em Configurações > Carrinho
 * Otimizações
   - Formas de pagamento do checkout Swift passam a ser exibidas em formato sanfona por padrão (alternável entre Cards e Sanfona no construtor de checkout)
+  - Interface do painel alinhada ao design system dos plugins MeuMouse: cabeçalho padronizado (marca, título e descrição) aplicado a todas as subpáginas, fundo claro do painel, tipografia, espaçamentos, abas, botões, campos e interruptores com as mesmas medidas, mantendo a cor primária do Flexify Checkout
+  - Opções de configuração organizadas em tabela de duas colunas, com alinhamento consistente entre rótulos e controles em todas as abas
 
 Versão 5.5.5 (11/06/2026)
 * Segurança
