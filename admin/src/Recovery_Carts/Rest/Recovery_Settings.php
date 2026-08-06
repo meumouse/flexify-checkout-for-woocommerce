@@ -71,6 +71,7 @@ class Recovery_Settings extends Abstract_Route {
         'follow_up_events',
         'payment_methods',
         'collect_lead_modal',
+        'on_site_recovery',
     );
 
     /**
@@ -87,6 +88,7 @@ class Recovery_Settings extends Abstract_Route {
         'enable_international_phone_modal',
         'display_modal_for_logged_users',
         'enable_get_location_from_ip',
+        'enable_on_site_recovery',
     );
 
 

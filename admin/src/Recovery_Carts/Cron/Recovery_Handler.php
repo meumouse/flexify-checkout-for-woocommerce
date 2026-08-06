@@ -7,6 +7,7 @@ use MeuMouse\Flexify_Checkout\Recovery_Carts\Core\Helpers;
 use MeuMouse\Flexify_Checkout\Recovery_Carts\Core\Placeholders;
 use MeuMouse\Flexify_Checkout\Recovery_Carts\Core\Hooks;
 use MeuMouse\Flexify_Checkout\Recovery_Carts\Core\Opt_Out;
+use MeuMouse\Flexify_Checkout\Recovery_Carts\Core\AB_Testing;
 use MeuMouse\Flexify_Checkout\Recovery_Carts\Cron\Scheduler_Manager;
 use MeuMouse\Flexify_Checkout\Recovery_Carts\Cron\Queue_Processor;
 
@@ -510,8 +511,13 @@ class Recovery_Handler {
         $cart_data = get_post_meta( $cart_id );
         $phone = $cart_data['_fcrc_cart_phone'][0] ?? '';
 
+        // Resolve the A/B variant to send for this cart. When no test is running
+        // this returns the event's base message; the chosen variant id is
+        // recorded in the notification history for the analytics report.
+        $variant = AB_Testing::pick_variant( $event, $cart_id );
+
         // get message with placeholders replaced
-        $message = Placeholders::replace_placeholders( $event['message'], $cart_id, $event );
+        $message = Placeholders::replace_placeholders( $variant['message'], $cart_id, $event );
 
         // get receiver phone number
         $receiver = function_exists('joinotify_prepare_receiver') ? joinotify_prepare_receiver( $phone ) : $phone;
@@ -538,7 +544,10 @@ class Recovery_Handler {
         if ( $email_enabled && ( ! $whatsapp_enabled || empty( $sent_channels ) ) ) {
             $email = $cart_data['_fcrc_cart_email'][0] ?? '';
 
-            if ( self::send_email_message( $cart_id, $email, $event, $message ) ) {
+            // Use the chosen variant's subject line (falls back to the event's).
+            $email_event = array_merge( $event, array( 'email_subject' => $variant['email_subject'] ) );
+
+            if ( self::send_email_message( $cart_id, $email, $email_event, $message ) ) {
                 $sent_channels[] = 'email';
             }
         }
@@ -559,6 +568,7 @@ class Recovery_Handler {
             $notifications[] = array(
                 'event_key' => sanitize_key( $event_key ),
                 'channel' => sanitize_key( $channel ),
+                'variant' => sanitize_key( $variant['id'] ),
                 'sent_at' => current_time('timestamp', true),
             );
         }

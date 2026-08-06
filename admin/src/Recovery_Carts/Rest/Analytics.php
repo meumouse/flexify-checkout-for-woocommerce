@@ -5,6 +5,7 @@ namespace MeuMouse\Flexify_Checkout\Recovery_Carts\Rest;
 use MeuMouse\Flexify_Checkout\Rest\Abstract_Route;
 use MeuMouse\Flexify_Checkout\Recovery_Carts\Admin\Components;
 use MeuMouse\Flexify_Checkout\Recovery_Carts\Core\Funnel_Analytics;
+use MeuMouse\Flexify_Checkout\Recovery_Carts\Core\AB_Testing;
 use WP_REST_Request;
 
 // Exit if accessed directly.
@@ -91,6 +92,7 @@ class Analytics extends Abstract_Route {
             'recovered_chart' => $recovered_chart,
             'notifications_chart' => $notifications_chart,
             'funnel' => Funnel_Analytics::get_report( $period ),
+            'ab_tests' => AB_Testing::get_report( $period ),
         ) );
     }
 

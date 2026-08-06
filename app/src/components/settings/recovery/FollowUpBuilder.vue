@@ -59,8 +59,13 @@ function blankEvent() {
     email_subject: '',
     send_window: { start_time: '', end_time: '' },
     channels: { email: 'no', whatsapp: 'yes' },
+    ab_test: { enabled: 'no', variants: [] },
     coupon: couponDefault(),
   };
+}
+
+function blankVariant() {
+  return { message: '', email_subject: '' };
 }
 
 const form = reactive(blankEvent());
@@ -83,6 +88,12 @@ function hydrate(source) {
   form.channels = {
     whatsapp: incoming.channels?.whatsapp === 'no' ? 'no' : 'yes',
     email: incoming.channels?.email === 'yes' ? 'yes' : 'no',
+  };
+  form.ab_test = {
+    enabled: incoming.ab_test?.enabled === 'yes' ? 'yes' : 'no',
+    variants: Array.isArray(incoming.ab_test?.variants)
+      ? incoming.ab_test.variants.map((v) => ({ message: v?.message ?? '', email_subject: v?.email_subject ?? '' }))
+      : [],
   };
   form.coupon = incoming.coupon && typeof incoming.coupon === 'object'
     ? { ...couponDefault(), ...incoming.coupon }
@@ -124,6 +135,28 @@ function toggle(key) {
 
 function toggleChannel(channel) {
   form.channels[channel] = form.channels[channel] === 'yes' ? 'no' : 'yes';
+}
+
+function toggleAbTest() {
+  form.ab_test.enabled = form.ab_test.enabled === 'yes' ? 'no' : 'yes';
+
+  // Seed a first alternate so the section is immediately actionable.
+  if (form.ab_test.enabled === 'yes' && form.ab_test.variants.length === 0) {
+    form.ab_test.variants.push(blankVariant());
+  }
+}
+
+function addVariant() {
+  form.ab_test.variants.push(blankVariant());
+}
+
+function removeVariant(index) {
+  form.ab_test.variants.splice(index, 1);
+}
+
+// Variant letters after the base message: variant 0 is "B", 1 is "C", ...
+function variantLetter(index) {
+  return String.fromCharCode(66 + index);
 }
 
 function submit() {
@@ -212,6 +245,53 @@ function submit() {
                 <textarea v-model="form.message" :class="inputClass" class="min-h-[140px]"></textarea>
                 <span class="mt-1 block text-[12px] text-slate-500">{{ varsHint }}</span>
               </div>
+            </div>
+          </section>
+
+          <!-- A/B testing -->
+          <section v-if="!isWorkflowMode" class="rounded-[12px] border border-slate-200 bg-white p-5">
+            <div class="mb-4 flex items-center justify-between gap-3">
+              <div class="flex items-center gap-2">
+                <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-primary-100 text-primary">
+                  <BoxIcon name="git-branch" class="h-4 w-4" />
+                </span>
+                <h3 class="m-0 text-sm font-semibold text-ink">Teste A/B</h3>
+              </div>
+
+              <label class="inline-flex cursor-pointer items-center" title="Ativar teste A/B">
+                <input type="checkbox" class="peer sr-only" :checked="form.ab_test.enabled === 'yes'" @change="toggleAbTest" />
+                <span class="relative h-5 w-9 rounded-full bg-slate-300 transition-colors peer-checked:bg-primary after:absolute after:left-0.5 after:top-0.5 after:h-4 after:w-4 after:rounded-full after:bg-white after:transition-transform peer-checked:after:translate-x-4" />
+              </label>
+            </div>
+
+            <p class="m-0 text-[12px] text-slate-500">
+              A mensagem principal acima é a <strong>variante A</strong>. Adicione variações para testar qual
+              converte melhor — cada carrinho recebe uma variante de forma consistente, e o resultado aparece na página de Análises.
+            </p>
+
+            <div v-if="form.ab_test.enabled === 'yes'" class="mt-4 grid gap-4">
+              <div v-for="(variant, index) in form.ab_test.variants" :key="index" class="rounded-[10px] border border-slate-200 bg-slate-50/60 p-4">
+                <div class="mb-2 flex items-center justify-between">
+                  <span class="text-[13px] font-semibold text-ink">Variante {{ variantLetter(index) }}</span>
+                  <button type="button" class="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium text-danger transition hover:bg-danger/10" @click="removeVariant(index)">
+                    <BoxIcon name="trash" class="h-3.5 w-3.5" />
+                    Remover
+                  </button>
+                </div>
+
+                <label class="mb-1 block text-xs font-medium text-slate-500">Conteúdo da mensagem</label>
+                <textarea v-model="variant.message" :class="inputClass" class="min-h-[110px]"></textarea>
+
+                <div v-if="form.channels.email === 'yes'" class="mt-3">
+                  <label class="mb-1 block text-xs font-medium text-slate-500">Assunto do e-mail (opcional)</label>
+                  <input v-model="variant.email_subject" type="text" :class="inputClass" placeholder="Deixe em branco para usar o assunto principal" />
+                </div>
+              </div>
+
+              <button type="button" class="inline-flex w-fit items-center gap-1.5 rounded-[8px] border border-dashed border-slate-300 px-4 py-2 text-[13px] font-medium text-slate-600 transition hover:border-primary hover:text-primary" @click="addVariant">
+                <BoxIcon name="plus" class="h-4 w-4" />
+                Adicionar variante
+              </button>
             </div>
           </section>
 

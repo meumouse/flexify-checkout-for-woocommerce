@@ -47,6 +47,7 @@ class Default_Options {
                 'enable_email_integration' => 'no',
                 'display_modal_for_logged_users' => 'no',
                 'enable_get_location_from_ip' => 'yes',
+                'enable_on_site_recovery' => 'no',
             ),
             'follow_up_events' => array(
                 'mensagem_em_1_hora' => array(
@@ -224,6 +225,11 @@ class Default_Options {
                     'limit_usages' => 1,
                     'limit_usages_per_user' => 1,
                 ),
+            ),
+            'on_site_recovery' => array(
+                'title' => 'Espere! Seu carrinho ainda está aqui',
+                'message' => 'Finalize sua compra antes que seus itens acabem.',
+                'button_title' => 'Concluir meu pedido',
             ),
             'ip_api_settings' => array(
                 'ip_api_url' => 'https://free.freeipapi.com/api/json/{ip_address}',

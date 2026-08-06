@@ -96,6 +96,45 @@ export async function apiPostForm(endpoint, formData) {
 }
 
 /**
+ * Fetch an endpoint as a binary blob and trigger a browser download.
+ *
+ * Used for file exports (e.g. CSV) that the REST endpoint streams directly
+ * instead of wrapping in JSON. The REST nonce still travels in the headers, so
+ * the download stays authenticated.
+ *
+ * @since 6.0.0
+ * @param {string} endpoint - Endpoint path relative to the REST root.
+ * @param {string} filename - Fallback filename for the saved file.
+ * @return {Promise<void>}
+ */
+export async function apiDownload(endpoint, filename = 'export.csv') {
+  const config = readBootstrapConfig() || {};
+
+  const response = await fetch(buildUrl(endpoint), {
+    method: 'GET',
+    headers: {
+      ...(config.nonce ? { 'X-WP-Nonce': config.nonce } : {}),
+    },
+    credentials: 'same-origin',
+  });
+
+  if (!response.ok) {
+    throw new Error(`GET ${endpoint} failed (${response.status}).`);
+  }
+
+  const blob = await response.blob();
+  const url = window.URL.createObjectURL(blob);
+  const link = document.createElement('a');
+
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  window.URL.revokeObjectURL(url);
+}
+
+/**
  * Perform a POST request against the plugin REST namespace.
  *
  * @since 6.0.0

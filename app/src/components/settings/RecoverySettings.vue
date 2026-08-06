@@ -27,6 +27,7 @@ const sections = [
   { id: 'followups', label: 'Follow-ups' },
   { id: 'payments', label: 'Formas de pagamento' },
   { id: 'modal', label: 'Modal de captura' },
+  { id: 'onsite', label: 'Recuperação no site' },
 ];
 
 const support = reactive({
@@ -62,12 +63,16 @@ const settings = reactive({
     enable_international_phone_modal: 'yes',
     display_modal_for_logged_users: 'no',
     enable_get_location_from_ip: 'yes',
+    enable_on_site_recovery: 'no',
   },
   follow_up_events: {},
   payment_methods: {},
   collect_lead_modal: {
     title: '', button_title: '', message: '', triggers_list: '',
     coupon: couponDefault(),
+  },
+  on_site_recovery: {
+    title: '', message: '', button_title: '',
   },
 });
 
@@ -124,7 +129,17 @@ function followUpSummary(event) {
   if (event.channels?.whatsapp === 'yes') channels.push('WhatsApp');
   if (event.channels?.email === 'yes') channels.push('E-mail');
 
-  return channels.length ? `${when} • ${channels.join(', ')}` : when;
+  const summary = channels.length ? `${when} • ${channels.join(', ')}` : when;
+
+  // Flag an active A/B test (base message + at least one non-empty variant).
+  const variants = Array.isArray(event.ab_test?.variants) ? event.ab_test.variants : [];
+  const activeVariants = variants.filter((v) => (v?.message || '').trim() !== '').length;
+
+  if (event.ab_test?.enabled === 'yes' && activeVariants > 0) {
+    return `${summary} • Teste A/B (${activeVariants + 1} variantes)`;
+  }
+
+  return summary;
 }
 
 function openCreateFollowUp() {
@@ -177,6 +192,13 @@ function applyServerSettings(s) {
       message: s.collect_lead_modal.message || '',
       triggers_list: s.collect_lead_modal.triggers_list || '',
       coupon: s.collect_lead_modal.coupon && typeof s.collect_lead_modal.coupon === 'object' ? s.collect_lead_modal.coupon : couponDefault(),
+    };
+  }
+  if (s.on_site_recovery && typeof s.on_site_recovery === 'object' && Object.keys(s.on_site_recovery).length) {
+    settings.on_site_recovery = {
+      title: s.on_site_recovery.title || '',
+      message: s.on_site_recovery.message || '',
+      button_title: s.on_site_recovery.button_title || '',
     };
   }
 }
@@ -432,6 +454,37 @@ onMounted(load);
             </label>
           </div>
           <CouponFields v-if="settings.collect_lead_modal.coupon" :coupon="settings.collect_lead_modal.coupon" :coupons="support.coupons" />
+        </div>
+      </section>
+
+      <!-- On-site recovery -->
+      <section v-show="activeSection === 'onsite'">
+        <div class="flex items-start justify-between gap-6 border-b border-slate-100 py-4">
+          <div>
+            <h3 class="m-0 text-[15px] font-semibold text-brand">Barra de recuperação no site</h3>
+            <p class="m-0 mt-1 text-[13px] text-slate-500">Exibe uma barra de intenção de saída nas páginas de carrinho e checkout quando o visitante tenta sair com itens no carrinho.</p>
+          </div>
+          <button type="button" role="switch" :aria-checked="settings.toggles.enable_on_site_recovery === 'yes'"
+            class="relative h-6 w-11 shrink-0 rounded-full transition"
+            :class="settings.toggles.enable_on_site_recovery === 'yes' ? 'bg-primary' : 'bg-slate-300'"
+            @click="toggle('enable_on_site_recovery')">
+            <span class="absolute top-0.5 h-5 w-5 rounded-full bg-white transition-all" :class="settings.toggles.enable_on_site_recovery === 'yes' ? 'left-[22px]' : 'left-0.5'"></span>
+          </button>
+        </div>
+
+        <div class="grid gap-3 py-4">
+          <label class="block">
+            <span class="mb-1 block text-[13px] font-semibold text-brand">Título da barra</span>
+            <input class="flexify-field-input" type="text" v-model="settings.on_site_recovery.title" />
+          </label>
+          <label class="block">
+            <span class="mb-1 block text-[13px] font-semibold text-brand">Mensagem</span>
+            <input class="flexify-field-input" type="text" v-model="settings.on_site_recovery.message" />
+          </label>
+          <label class="block md:w-1/2">
+            <span class="mb-1 block text-[13px] font-semibold text-brand">Texto do botão</span>
+            <input class="flexify-field-input" type="text" v-model="settings.on_site_recovery.button_title" />
+          </label>
         </div>
       </section>
 
