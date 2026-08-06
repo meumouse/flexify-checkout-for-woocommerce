@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { toast } from 'vue-sonner';
-import { apiGet, apiPost, apiPostForm } from '../services/api';
+import { apiGet, apiPost, apiPostForm, apiDelete } from '../services/api';
 
 /**
  * Deep clone a plain settings object so the saved baseline can't be mutated
@@ -54,9 +54,11 @@ export const useSettingsStore = defineStore('flexify-checkout-settings', {
     layout: { version: 1, steps: [] },
     fieldCatalog: [],
     integrations: [],
+    offers: [],
     saving: false,
     savingCondition: false,
     savingLayout: false,
+    savingOffer: false,
     resetting: false,
     exporting: false,
     importing: false,
@@ -94,6 +96,7 @@ export const useSettingsStore = defineStore('flexify-checkout-settings', {
         : { version: 1, steps: [] };
       this.fieldCatalog = Array.isArray(this.runtime?.layout?.field_catalog) ? this.runtime.layout.field_catalog : [];
       this.integrations = Array.isArray(this.runtime?.integrations) ? this.runtime.integrations : [];
+      this.offers = Array.isArray(this.runtime?.offers) ? this.runtime.offers : [];
       this.baseline = cloneSettings(this.settings);
     },
 
@@ -344,6 +347,69 @@ export const useSettingsStore = defineStore('flexify-checkout-settings', {
     },
 
     /**
+     * Reload the checkout offers from the server.
+     */
+    async loadOffers() {
+      try {
+        const response = await apiGet('admin/offers');
+
+        if (response?.status === 'success' && Array.isArray(response.offers)) {
+          this.offers = response.offers;
+        }
+
+        return response;
+      } catch (error) {
+        return null;
+      }
+    },
+
+    /**
+     * Create or update a single offer (upsert). Swaps the full offers list from
+     * the server response so product enrichment and labels stay fresh.
+     *
+     * @param {Object} offer - Offer payload (include `id` to update).
+     */
+    async saveOffer(offer) {
+      this.savingOffer = true;
+
+      try {
+        const response = await apiPost('admin/offers', { offer });
+
+        if (response?.status === 'success' && Array.isArray(response.offers)) {
+          this.offers = response.offers;
+        }
+
+        this.pushToast(response?.status === 'success' ? 'success' : 'error', response?.message || '');
+
+        return response;
+      } catch (error) {
+        this.pushToast('error', 'Ocorreu um erro ao salvar a oferta.');
+
+        return null;
+      } finally {
+        this.savingOffer = false;
+      }
+    },
+
+    async deleteOffer(id) {
+      try {
+        const response = await apiDelete(`admin/offers/${id}`);
+
+        if (response?.status === 'success' && Array.isArray(response.offers)) {
+          this.offers = response.offers;
+        }
+
+        this.pushToast(response?.status === 'success' ? 'success' : 'error', response?.message || '');
+
+        return response;
+      } catch (error) {
+        this.pushToast('error', 'Ocorreu um erro ao remover a oferta.');
+
+        return null;
+      }
+    },
+
+    /**
      * Reload the checkout builder layout + field catalog from the server.
      */
     async loadLayout() {
@@ -505,6 +571,62 @@ export const useSettingsStore = defineStore('flexify-checkout-settings', {
       this.pushToast(response?.status === 'success' ? 'success' : 'error', response?.message || '');
 
       return response;
+    },
+
+    /**
+     * Fetch the first-run setup wizard context (countries, current WooCommerce
+     * config, license and Brazilian settings state).
+     *
+     * @return {Promise<Object|null>} Context payload or null on failure.
+     */
+    async loadWizardContext() {
+      try {
+        const response = await apiGet('admin/setup-wizard');
+
+        return response?.status === 'success' ? response.context : null;
+      } catch (error) {
+        this.pushToast('error', 'Não foi possível carregar o assistente de configuração.');
+
+        return null;
+      }
+    },
+
+    /**
+     * Apply the setup wizard answers and refresh the runtime-derived slices.
+     *
+     * @param {Object} payload - Wizard answers (or { skip: true }).
+     * @return {Promise<Object|null>} Response payload or null on failure.
+     */
+    async applyWizard(payload) {
+      try {
+        const response = await apiPost('admin/setup-wizard', payload);
+
+        if (response?.runtime) {
+          this.runtime = response.runtime;
+          this.fields = response.runtime.fields && typeof response.runtime.fields === 'object' ? response.runtime.fields : this.fields;
+          this.conditions = Array.isArray(response.runtime.conditions) ? response.runtime.conditions : this.conditions;
+        }
+
+        if (payload?.skip) {
+          return response;
+        }
+
+        if (response?.status === 'success') {
+          this.pushToast('success', response.message || 'Configuração concluída!', 'Assistente de configuração');
+
+          (Array.isArray(response.notices) ? response.notices : []).forEach((notice) => {
+            this.pushToast('info', notice);
+          });
+        } else {
+          this.pushToast('error', response?.message || 'Não foi possível aplicar as configurações.');
+        }
+
+        return response;
+      } catch (error) {
+        this.pushToast('error', 'Ocorreu um erro ao aplicar o assistente de configuração.');
+
+        return null;
+      }
     },
   },
 });

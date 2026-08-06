@@ -52,7 +52,7 @@ class Layout_Store {
      * @since 6.0.0
      * @var string[]
      */
-    const COMPONENTS = array( 'order_bump', 'html', 'coupon', 'summary', 'notes', 'banner', 'reviews' );
+    const COMPONENTS = array( 'order_bump', 'offer', 'html', 'coupon', 'summary', 'notes', 'banner', 'reviews' );
 
     /**
      * Map a step type to the legacy field "step" bucket ('1' contact, '2' delivery).
@@ -384,6 +384,11 @@ class Layout_Store {
                     'discount_label' => sanitize_text_field( (string) ( $config['discount_label'] ?? '' ) ),
                     'default_checked' => ! empty( $config['default_checked'] ),
                     'highlight_color' => sanitize_hex_color( (string) ( $config['highlight_color'] ?? '' ) ) ?: '',
+                );
+
+            case 'offer':
+                return array(
+                    'offer_id' => sanitize_text_field( (string) ( $config['offer_id'] ?? '' ) ),
                 );
 
             case 'html':

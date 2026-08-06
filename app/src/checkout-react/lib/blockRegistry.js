@@ -1,4 +1,5 @@
 import OrderBump from '../components/blocks/OrderBump.jsx';
+import OfferBlock from '../components/blocks/OfferBlock.jsx';
 import HtmlBlock from '../components/blocks/HtmlBlock.jsx';
 import CouponBlock from '../components/blocks/CouponBlock.jsx';
 import SummaryBlock from '../components/blocks/SummaryBlock.jsx';
@@ -12,6 +13,7 @@ import ReviewsBlock from '../components/blocks/ReviewsBlock.jsx';
  */
 const blockRegistry = {
   order_bump: OrderBump,
+  offer: OfferBlock,
   html: HtmlBlock,
   coupon: CouponBlock,
   summary: SummaryBlock,

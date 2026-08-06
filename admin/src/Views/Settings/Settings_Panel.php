@@ -80,6 +80,18 @@ class Settings_Panel {
             4 // position
         );
 
+        // Offers page (Vue SPA, offers route): manage order bump / upsell /
+        // cross-sell / downsell offers.
+        add_submenu_page(
+            'flexify-checkout-for-woocommerce', // parent slug
+            esc_html__( 'Offers', 'flexify-checkout-for-woocommerce' ), // page title
+            esc_html__( 'Offers', 'flexify-checkout-for-woocommerce' ), // submenu title
+            'manage_woocommerce', // capability
+            'flexify-checkout-offers', // slug
+            array( $this, 'render_offers_page' ), // callback
+            5 // position
+        );
+
         // License page (Vue SPA, license route).
         add_submenu_page(
             'flexify-checkout-for-woocommerce', // parent slug
@@ -129,6 +141,19 @@ class Settings_Panel {
      * @return void
      */
     public function render_apps_page() {
+        $this->render_app_mount();
+    }
+
+
+    /**
+     * Render the Offers page.
+     *
+     * Mounts the same Vue SPA; the localized `view` opens it on the offers route.
+     *
+     * @since 6.0.0
+     * @return void
+     */
+    public function render_offers_page() {
         $this->render_app_mount();
     }
 

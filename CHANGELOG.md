@@ -4,6 +4,19 @@ Versão 6.0.0 (10/08/2026)
   - Persistência e validação dos campos brasileiros no checkout Swift (React) via Store API do WooCommerce
   - Máscaras de campos e condições de exibição (Pessoa Física × Pessoa Jurídica) aplicadas no checkout Swift (React)
   - Coexistência com o plugin Brazilian Market on WooCommerce, sem duplicar campos quando ambos estiverem ativos
+* Recurso adicionado: Gestão de ofertas de checkout (order bump, upsell, cross-sell e downsell) em uma nova página dedicada (Pro)
+  - Ofertas com gatilhos por regras de carrinho (produto, categoria, valor total, quantidade, país, entre outros), reaproveitando o motor de condições do checkout
+  - Desconto opcional por oferta aplicado como taxa negativa no resumo do pedido
+  - Novo bloco "Oferta" no construtor de checkout para posicionar as ofertas, referenciando-as por ID com pré-visualização ao vivo
+  - Downsell exibido automaticamente quando a oferta vinculada (order bump ou upsell) é recusada no checkout
+  - Migração automática dos order bumps existentes do construtor para o novo registro de ofertas
+* Recurso adicionado: Recuperação de carrinhos abandonados nativa para clientes Pro (antes um plugin separado), com captura de carrinhos, detecção de abandono, sequências de follow-up, cupons, fila de processamento, análises e funil de checkout
+  - Integração híbrida com o Joinotify: cada follow-up pode ser entregue pelo motor do Flexify (envio direto) ou delegado a um workflow visual do Joinotify, escolhido por mensagem, com proteção contra envio duplicado
+  - Gatilhos nativos de carrinho abandonado, carrinho recuperado, carrinho perdido, pedido abandonado e captura de lead disponíveis no construtor de workflows do Joinotify, reconhecendo o recurso nativo sem depender do plugin separado
+  - Modelo freemium: captura, gestão e análises dos carrinhos são gratuitas; o envio automático das mensagens de recuperação exige licença Pro (aviso de upgrade exibido nas configurações)
+  - Conformidade com a LGPD: link de descadastro ({{ optout_link }}) nas mensagens e lista de supressão que impede o envio a contatos que optaram por sair
+  - Canal de e-mail para os follow-ups (envio real em HTML), com orquestração multicanal: quando WhatsApp e e-mail estão ativos, o e-mail é usado como fallback caso o WhatsApp não seja entregue
+  - Ação "Enviar agora" na lista de carrinhos, para disparar manualmente uma mensagem de recuperação a um carrinho abandonado
 * Otimizações
   - Formas de pagamento do checkout Swift passam a ser exibidas em formato sanfona por padrão (alternável entre Cards e Sanfona no construtor de checkout)
 

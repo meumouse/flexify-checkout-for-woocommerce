@@ -55,6 +55,7 @@ import gift from 'boxicons/svg/regular/bx-gift.svg?raw';
 import image from 'boxicons/svg/regular/bx-image.svg?raw';
 import star from 'boxicons/svg/regular/bx-star.svg?raw';
 import copy from 'boxicons/svg/regular/bx-copy.svg?raw';
+import edit from 'boxicons/svg/regular/bx-edit.svg?raw';
 import calendar from 'boxicons/svg/regular/bx-calendar.svg?raw';
 // Checkout builder — layers tree affordances and field icon options.
 import lock from 'boxicons/svg/regular/bx-lock-alt.svg?raw';
@@ -119,6 +120,7 @@ export default {
   'regular/image': image,
   'regular/star': star,
   'regular/copy': copy,
+  'regular/edit': edit,
   'regular/calendar': calendar,
   'regular/lock': lock,
   'regular/show': show,

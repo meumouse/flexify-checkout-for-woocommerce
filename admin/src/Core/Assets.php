@@ -428,10 +428,42 @@ class Assets {
 			wp_enqueue_style( 'flexify-international-phone-css', $this->assets_url . 'vendor/intl-tel-input/css/intlTelInput.min.css', array(), '25.3.1' );
 			wp_enqueue_style( 'flexify-international-phone-flag-offset-2x', $this->assets_url . 'vendor/intl-tel-input/css/flag-offset-2x.min.css', array(), $this->version );
 
-			// Scope the field layout to the React root. The large-flag sprite vars
-			// (:root --iti-*) come from Styles::render_dynamic_styles(), shared with
-			// the legacy checkout; here we only size the wrapper to match Swift inputs.
-			wp_add_inline_style( 'flexify-react-checkout', '#flexify-react-checkout .flexify-intl-phone .iti{display:block;width:100%}#flexify-react-checkout .flexify-intl-phone .iti__selected-country:hover{background-color:transparent}#flexify-react-checkout .flexify-intl-phone .iti__flag{border-radius:.225rem}' );
+			// The flag-offset-2x sheet redefines every country's --iti-flag-offset
+			// in 32px steps, so the flags must render from the 2x sprite at 32x24.
+			// intlTelInput.min.css resets :root back to 1x (16x12, 3904px sprite);
+			// because it is enqueued AFTER the React bundle's inline styles, that
+			// :root wins and we get a 16px window with 32px offsets -> a sliver of
+			// the wrong flag (selected flag AND every flag in the country list).
+			// Emit the 2x geometry here, attached to the last intl-tel-input sheet
+			// so it loads after both vendor sheets, and scope it to
+			// #flexify-react-checkout (id specificity > :root) so it always wins.
+			$flag_url_1x = esc_url( $this->assets_url . 'vendor/intl-tel-input/img/flags.webp' );
+			$flag_url_2x = esc_url( $this->assets_url . 'vendor/intl-tel-input/img/flags@2x.webp' );
+
+			wp_add_inline_style(
+				'flexify-international-phone-flag-offset-2x',
+				'#flexify-react-checkout .flexify-intl-phone{'
+					. '--iti-flag-width:32px;'
+					. '--iti-flag-height:24px;'
+					. '--iti-flag-sprite-width:7808px;'
+					. '--iti-flag-sprite-height:24px;'
+					. '--iti-path-flags-1x:url("' . $flag_url_1x . '");'
+					. '--iti-path-flags-2x:url("' . $flag_url_2x . '");'
+				. '}'
+				. '#flexify-react-checkout .flexify-intl-phone .iti{display:block;width:100%}'
+				. '#flexify-react-checkout .flexify-intl-phone .iti__selected-country:hover{background-color:transparent}'
+				// Always paint flags from the 2x sprite (flags@2x.webp is 7808px native,
+				// matching --iti-flag-sprite-width) so they stay crisp on 1x displays too;
+				// the vendor only switches to 2x under a (min-resolution:2x) media query.
+				. '#flexify-react-checkout .flexify-intl-phone .iti__flag{border-radius:.225rem;background-image:var(--iti-path-flags-2x)}'
+				// The library sets input padding-left to the selected-country button width
+				// + 6px (intlTelInput.js _updateInputPadding). With the 32px flag that button
+				// is wide, leaving a large gap after the dial code. Trim the button's
+				// horizontal spacing so the auto-computed padding shrinks (stays correct for
+				// any dial-code length).
+				. '#flexify-react-checkout .flexify-intl-phone .iti__selected-country-primary{padding-left:8px;padding-right:4px}'
+				. '#flexify-react-checkout .flexify-intl-phone .iti__selected-dial-code{margin-left:2px}'
+			);
 
 			$react_deps[] = 'flexify-international-phone-js';
 		}
@@ -625,6 +657,9 @@ class Assets {
 			$data['editor'] = true;
 			$data['builder_nonce'] = wp_create_nonce('flexify_builder_save');
 			$data['rules']['layout'] = \MeuMouse\Flexify_Checkout\Admin\Settings\Layout_Store::get_layout_for_react();
+			// Feed all enabled offers (unfiltered by cart trigger) so the builder
+			// can render an "offer" block's referenced offer in the live preview.
+			$data['rules']['offers'] = \MeuMouse\Flexify_Checkout\Admin\Settings\Offers_Store::get_offers_for_react();
 		}
 
 		wp_localize_script( 'flexify-react-checkout', 'flexify_react_checkout', $data );

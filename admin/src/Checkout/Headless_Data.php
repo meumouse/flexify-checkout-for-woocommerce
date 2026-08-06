@@ -204,6 +204,12 @@ class Headless_Data {
             $rules['layout'] = \MeuMouse\Flexify_Checkout\Admin\Settings\Layout_Store::get_layout_for_react();
         }
 
+        // Checkout offers (Pro): enabled offers whose cart trigger qualifies for
+        // the current cart, enriched with product data for the React blocks.
+        if ( \MeuMouse\Flexify_Checkout\API\License::is_valid() ) {
+            $rules['offers'] = \MeuMouse\Flexify_Checkout\Checkout\Offers::get_runtime_offers();
+        }
+
         /**
          * Filter the checkout rules payload.
          *

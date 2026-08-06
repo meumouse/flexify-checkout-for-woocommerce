@@ -682,6 +682,9 @@ class Init {
             // build_payload()/apply_payload() are called statically below.
             '\MeuMouse\Flexify_Checkout\Rest\Settings_Export',
             '\MeuMouse\Flexify_Checkout\Rest\Settings_Import',
+            // First-run setup wizard: context (GET) + apply (POST). Listed
+            // manually so the new route boots without a class-registry rebuild.
+            '\MeuMouse\Flexify_Checkout\Rest\Setup_Wizard',
             // Optional React checkout: template swap + public/headless REST API.
             // Listed manually because the cached class registry only scans the
             // Composer classmap (which is hand-maintained, never dump-autoloaded).
@@ -706,6 +709,11 @@ class Init {
             '\MeuMouse\Flexify_Checkout\Rest\Layout_Get',
             '\MeuMouse\Flexify_Checkout\Rest\Layout_Save',
             '\MeuMouse\Flexify_Checkout\Checkout\Legacy_Layout_Bridge',
+            // Checkout offers (Pro): CRUD REST for order bump / upsell /
+            // cross-sell / downsell, plus the runtime trigger + discount engine.
+            // Listed manually so both boot without a class-registry rebuild.
+            '\MeuMouse\Flexify_Checkout\Rest\Offers',
+            '\MeuMouse\Flexify_Checkout\Checkout\Offers',
         ));
 
         $manual_classes_map = array();

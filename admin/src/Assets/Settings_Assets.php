@@ -25,6 +25,7 @@ class Settings_Assets {
     private $entries = array(
         'flexify-checkout-for-woocommerce' => 'src/entries/settings.js',
         'flexify-checkout-apps' => 'src/entries/settings.js',
+        'flexify-checkout-offers' => 'src/entries/settings.js',
         'flexify-checkout-license' => 'src/entries/settings.js',
         'fc-recovery-carts' => 'src/entries/settings.js',
         'fc-recovery-carts-list' => 'src/entries/settings.js',
@@ -41,6 +42,7 @@ class Settings_Assets {
     private $views = array(
         'flexify-checkout-for-woocommerce' => 'settings',
         'flexify-checkout-apps' => 'apps',
+        'flexify-checkout-offers' => 'offers',
         'flexify-checkout-license' => 'license',
         'fc-recovery-carts' => 'analytics',
         'fc-recovery-carts-list' => 'carts',

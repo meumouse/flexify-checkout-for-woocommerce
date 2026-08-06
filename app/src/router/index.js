@@ -13,6 +13,7 @@
 import { createRouter, createMemoryHistory } from 'vue-router';
 import SettingsPage from '../pages/settings/SettingsPage.vue';
 import AppsPage from '../pages/apps/AppsPage.vue';
+import OffersPage from '../pages/offers/OffersPage.vue';
 import LicensePage from '../pages/license/LicensePage.vue';
 import AnalyticsPage from '../pages/recovery/AnalyticsPage.vue';
 import CartsPage from '../pages/recovery/CartsPage.vue';
@@ -21,6 +22,7 @@ import QueuePage from '../pages/recovery/QueuePage.vue';
 const routes = [
   { path: '/settings', name: 'settings', component: SettingsPage },
   { path: '/apps', name: 'apps', component: AppsPage },
+  { path: '/offers', name: 'offers', component: OffersPage },
   { path: '/license', name: 'license', component: LicensePage },
   { path: '/analytics', name: 'analytics', component: AnalyticsPage },
   { path: '/carts', name: 'carts', component: CartsPage },

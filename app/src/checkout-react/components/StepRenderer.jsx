@@ -16,6 +16,7 @@ import { MapPinIcon } from './ui/Icons.jsx';
 
 const COMPONENT_LABELS = {
   order_bump: 'Order bump',
+  offer: 'Oferta',
   html: 'Bloco de conteúdo',
   coupon: 'Cupom',
   summary: 'Resumo',

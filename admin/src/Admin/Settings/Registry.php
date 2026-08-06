@@ -56,6 +56,8 @@ class Registry {
             'version' => defined('FLEXIFY_CHECKOUT_VERSION') ? FLEXIFY_CHECKOUT_VERSION : '',
             'docs_link' => defined('FLEXIFY_CHECKOUT_DOCS_LINK') ? FLEXIFY_CHECKOUT_DOCS_LINK : '',
             'is_pro' => License::is_valid(),
+            // First-run setup wizard: true until the operator completes or skips it.
+            'needs_setup_wizard' => 'yes' !== get_option( 'flexify_checkout_wizard_completed', 'no' ),
             'is_debug' => function_exists('flexify_checkout_is_debug') ? flexify_checkout_is_debug() : false,
             'license' => array(
                 'key' => (string) get_option( 'flexify_checkout_license_key', '' ),
@@ -76,6 +78,7 @@ class Registry {
             'fields' => Fields_Store::get_fields(),
             'conditions' => Conditions_Store::get_rules_for_client(),
             'layout' => Layout_Store::get_layout_for_client(),
+            'offers' => Offers_Store::get_offers_for_client(),
             'builder_preview_url' => function_exists('wc_get_checkout_url') ? add_query_arg( 'flexify_builder', wp_create_nonce('flexify_builder_preview'), wc_get_checkout_url() ) : '',
             'integrations' => Integrations_Data::get_cards_for_client(),
             'fonts' => Fonts_Manager::get_fonts(),
@@ -83,7 +86,10 @@ class Registry {
             'shipping_zones' => self::build_shipping_zone_options(),
             'payment_gateways' => self::build_payment_gateway_options(),
             'user_roles' => self::build_user_role_options(),
-            'currency_symbol' => function_exists('get_woocommerce_currency_symbol') ? get_woocommerce_currency_symbol() : 'R$',
+            // Decode HTML entities: WooCommerce returns currency symbols encoded
+            // (e.g. BRL as "R&#36;"), which would render literally in the Vue
+            // admin where the symbol is shown as plain text.
+            'currency_symbol' => function_exists('get_woocommerce_currency_symbol') ? html_entity_decode( get_woocommerce_currency_symbol(), ENT_QUOTES, 'UTF-8' ) : 'R$',
             'countries' => array_map( static function ( $code, $label ) {
                 return array(
                     'value' => (string) $code,

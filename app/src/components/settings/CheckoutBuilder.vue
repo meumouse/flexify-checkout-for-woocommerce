@@ -34,6 +34,7 @@ const STEP_META = {
 
 const COMPONENT_META = {
   order_bump: { icon: 'purchase-tag', label: 'Order bump' },
+  offer: { icon: 'purchase-tag', label: 'Oferta' },
   html: { icon: 'code', label: 'Bloco de conteúdo' },
   coupon: { icon: 'gift', label: 'Cupom de desconto' },
   summary: { icon: 'receipt', label: 'Resumo do pedido' },
@@ -42,7 +43,7 @@ const COMPONENT_META = {
   reviews: { icon: 'star', label: 'Avaliações' },
 };
 
-const ADD_COMPONENTS = ['order_bump', 'banner', 'reviews', 'html', 'coupon', 'summary', 'notes'];
+const ADD_COMPONENTS = ['offer', 'order_bump', 'banner', 'reviews', 'html', 'coupon', 'summary', 'notes'];
 
 const FIELD_TYPES = [
   { value: 'text', label: 'Texto' },
@@ -987,6 +988,8 @@ function defaultComponentConfig(component) {
   switch (component) {
     case 'order_bump':
       return { product_id: 0, quantity: 1, headline: '', description: '', image_id: 0, discount_label: '', default_checked: false, highlight_color: '' };
+    case 'offer':
+      return { offer_id: '' };
     case 'html':
       return { html: '', variant: 'raw', align: 'left' };
     case 'coupon':
@@ -1050,6 +1053,16 @@ function removeItem({ step, item }) {
     selected.itemId = '';
   }
 }
+
+// --- Offer block ---
+
+// Options for the offer-block dropdown: every offer defined in the Offers page.
+const offerOptions = computed(() =>
+  (store.offers || []).map((offer) => ({
+    value: offer.id,
+    label: offer.name || offer.headline || offer.product?.name || offer.id,
+  })),
+);
 
 // --- Order bump / reviews product picker ---
 
@@ -1701,8 +1714,26 @@ function discard() {
                     Bloco visível
                   </label>
 
+                  <!-- Offer (references a registry offer by id) -->
+                  <template v-if="selectedItem.component === 'offer'">
+                    <BuilderField label="Oferta">
+                      <BaseSelect
+                        v-model="selectedItem.config.offer_id"
+                        :options="offerOptions"
+                        placeholder="Selecione uma oferta"
+                        size="sm"
+                      />
+                    </BuilderField>
+                    <p v-if="!offerOptions.length" class="text-[12px] text-slate-400">
+                      Nenhuma oferta criada ainda. Crie ofertas na página “Ofertas”.
+                    </p>
+                    <p v-else class="text-[12px] text-slate-400">
+                      Gerencie o produto, o desconto e os gatilhos na página “Ofertas”.
+                    </p>
+                  </template>
+
                   <!-- Order bump -->
-                  <template v-if="selectedItem.component === 'order_bump'">
+                  <template v-else-if="selectedItem.component === 'order_bump'">
                     <BuilderField label="Produto da oferta">
                       <SearchMultiSelect v-model="bumpSelection" type="products" placeholder="Buscar produto..." />
                     </BuilderField>
