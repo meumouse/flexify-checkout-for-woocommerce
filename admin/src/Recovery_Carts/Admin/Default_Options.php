@@ -7,9 +7,9 @@ defined('ABSPATH') || exit;
 
 /**
  * Default options class
- * 
+ *
  * @since 1.3.0
- * @version 1.4.0
+ * @version 6.0.0
  * @package MeuMouse\Flexify_Checkout\Recovery_Carts\Admin
  * @author MeuMouse.com
  */
@@ -17,9 +17,9 @@ class Default_Options {
 
     /**
      * Set default options
-     * 
+     *
      * @since 1.0.0
-     * @version 1.4.0
+     * @version 6.0.0
      * @return array
      */
     public function set_default_options() {

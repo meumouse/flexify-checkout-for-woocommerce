@@ -1,5 +1,6 @@
 .env
 .claude
+.history
 
 # Build tooling output
 node_modules/
@@ -9,4 +10,4 @@ composer.lock
 app/dist
 
 # Composer dependencies (installed at build time)
-admin/vendor/
+admin/vendor

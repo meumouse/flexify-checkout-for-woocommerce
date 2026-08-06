@@ -157,7 +157,7 @@ class Styles {
 			}
 
 			.flexify-checkout .flexify-intl-phone--init input:not(.iti__search-input) {
-				padding-left: 9rem !important;
+				padding-left: 7rem !important;
 			}
 
 			.flexify-checkout .flexify-intl-phone ul.iti__country-list .iti__dial-code {
