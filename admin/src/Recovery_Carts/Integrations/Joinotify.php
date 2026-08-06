@@ -6,6 +6,7 @@ use MeuMouse\Flexify_Checkout\Recovery_Carts\Admin\Admin;
 use MeuMouse\Flexify_Checkout\Recovery_Carts\Core\Placeholders;
 use MeuMouse\Flexify_Checkout\Recovery_Carts\Core\Helpers;
 use MeuMouse\Flexify_Checkout\Recovery_Carts\Core\Coupons;
+use MeuMouse\Flexify_Checkout\Recovery_Carts\Core\Opt_Out;
 
 use MeuMouse\Joinotify\Core\Helpers as Joinotify_Helpers;
 
@@ -119,6 +120,20 @@ class Joinotify extends Integrations_Base {
      * @return void
      */
     public function send_coupon_message( $cart_id, $lead_data ) {
+        // Freemium gate: sending the lead-capture coupon over WhatsApp is a Pro
+        // capability, like every other recovery message dispatch.
+        if ( ! Helpers::can_send_recovery_messages() ) {
+            return;
+        }
+
+        // Respect opt-out for the captured contact.
+        $lead_phone = isset( $lead_data['phone'] ) ? $lead_data['phone'] : '';
+        $lead_email = isset( $lead_data['email'] ) ? $lead_data['email'] : '';
+
+        if ( Opt_Out::is_suppressed( $lead_phone, $lead_email ) ) {
+            return;
+        }
+
         $modal_data = Admin::get_setting('collect_lead_modal');
 
         // check if message must be sent

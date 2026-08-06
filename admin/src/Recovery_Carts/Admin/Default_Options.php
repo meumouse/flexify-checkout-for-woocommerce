@@ -59,6 +59,8 @@ class Default_Options {
                         'start_time' => '',
                         'end_time' => '',
                     ),
+                    'delivery_mode' => 'engine',
+                    'email_subject' => '',
                     'channels' => array(
                         'email' => 'no',
                         'whatsapp' => 'yes',
@@ -87,6 +89,8 @@ class Default_Options {
                         'start_time' => '',
                         'end_time' => '',
                     ),
+                    'delivery_mode' => 'engine',
+                    'email_subject' => '',
                     'channels' => array(
                         'email' => 'no',
                         'whatsapp' => 'yes',
@@ -115,6 +119,8 @@ class Default_Options {
                         'start_time' => '',
                         'end_time' => '',
                     ),
+                    'delivery_mode' => 'engine',
+                    'email_subject' => '',
                     'channels' => array(
                         'email' => 'no',
                         'whatsapp' => 'yes',
@@ -143,6 +149,8 @@ class Default_Options {
                         'start_time' => '',
                         'end_time' => '',
                     ),
+                    'delivery_mode' => 'engine',
+                    'email_subject' => '',
                     'channels' => array(
                         'email' => 'no',
                         'whatsapp' => 'yes',
@@ -171,6 +179,8 @@ class Default_Options {
                         'start_time' => '',
                         'end_time' => '',
                     ),
+                    'delivery_mode' => 'engine',
+                    'email_subject' => '',
                     'channels' => array(
                         'email' => 'no',
                         'whatsapp' => 'yes',

@@ -82,6 +82,10 @@ function couponDefault() {
 const builderOpen = ref(false);
 const editingKey = ref(null);
 
+// Freemium: false hides nothing but shows an upgrade notice — sending is gated
+// server-side. Defaults to true so the banner never flashes before load.
+const isPro = ref(true);
+
 const followUpList = computed(() =>
   Object.keys(settings.follow_up_events).map((key) => ({ key, event: settings.follow_up_events[key] }))
 );
@@ -107,6 +111,12 @@ function toggleFollowUp(key) {
 }
 
 function followUpSummary(event) {
+  // Workflow-delegated events are driven by Joinotify, so the engine-side delay
+  // and channels do not apply.
+  if (event.delivery_mode === 'joinotify_workflow') {
+    return 'Entregue por workflow do Joinotify';
+  }
+
   const unit = DELAY_UNIT_SHORT[event.delay_type] || '';
   const when = `Enviar após ${event.delay_time || 0} ${unit}`.trim();
   const channels = [];
@@ -177,6 +187,7 @@ async function load() {
   try {
     const data = await apiGet('recovery/settings');
     if (data.support) Object.assign(support, data.support);
+    isPro.value = data.is_pro !== false;
     applyServerSettings(data.settings);
     ensurePaymentDefaults();
   } catch (e) {
@@ -212,6 +223,20 @@ onMounted(load);
 
     <template v-else>
       <div v-if="error" class="mb-4 rounded-[8px] bg-danger/10 px-5 py-3 text-[14px] text-danger" role="alert">{{ error }}</div>
+
+      <div v-if="!isPro" class="mb-5 flex items-start gap-3 rounded-[10px] border border-amber-200 bg-amber-50 px-5 py-4" role="note">
+        <span class="mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-amber-100 text-amber-600">
+          <BoxIcon name="crown" class="h-4 w-4" />
+        </span>
+        <div>
+          <p class="m-0 text-[14px] font-semibold text-amber-900">Recurso Pro: envio automático de recuperação</p>
+          <p class="m-0 mt-1 text-[13px] text-amber-800">
+            Você pode capturar e acompanhar os carrinhos abandonados gratuitamente. Para enviar as mensagens
+            de follow-up automaticamente (WhatsApp e e-mail), ative uma licença Pro. As configurações abaixo
+            ficam salvas e passam a valer assim que a licença for ativada.
+          </p>
+        </div>
+      </div>
 
       <nav class="mb-5 flex w-fit max-w-full flex-wrap overflow-hidden rounded-[8px] bg-[#e7edf5] p-0.5">
         <button v-for="s in sections" :key="s.id" type="button"

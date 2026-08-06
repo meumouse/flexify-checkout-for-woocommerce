@@ -103,6 +103,33 @@ function statusClass(key) {
   return STATUS_CLASSES[key] || 'bg-slate-100 text-slate-600';
 }
 
+const SENDABLE_STATUSES = ['abandoned', 'order_abandoned', 'lost'];
+
+function canSend(row) {
+  return SENDABLE_STATUSES.includes(row.status) && !!(row.contact?.phone || row.contact?.email);
+}
+
+async function sendNow(cart) {
+  if (!window.confirm(`Enviar uma mensagem de recuperação agora para o carrinho #${cart.id}?`)) {
+    return;
+  }
+
+  busy.value = true;
+  error.value = '';
+
+  try {
+    const res = await apiPost(`recovery/carts/${cart.id}/send`, {});
+    if (res && res.sent === false) {
+      error.value = res.message || 'Nada foi enviado. Verifique o contato e a configuração do canal.';
+    }
+    await load();
+  } catch (e) {
+    error.value = e?.message || 'Não foi possível enviar a mensagem de recuperação.';
+  } finally {
+    busy.value = false;
+  }
+}
+
 async function removeCart(cart) {
   if (!window.confirm(`Excluir o carrinho #${cart.id}? Esta ação não pode ser desfeita.`)) {
     return;
@@ -229,6 +256,13 @@ onMounted(load);
       </template>
 
       <template #actions="{ row }">
+        <button
+          v-if="canSend(row)"
+          type="button"
+          class="rounded-[6px] px-2.5 py-1 text-xs font-semibold text-primary hover:bg-primary/10 disabled:opacity-50"
+          :disabled="busy"
+          @click="sendNow(row)"
+        >Enviar agora</button>
         <button
           type="button"
           class="rounded-[6px] px-2.5 py-1 text-xs font-semibold text-danger hover:bg-danger/10 disabled:opacity-50"

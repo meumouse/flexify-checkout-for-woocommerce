@@ -6,6 +6,7 @@ use MeuMouse\Flexify_Checkout\Recovery_Carts\Admin\Admin;
 use MeuMouse\Flexify_Checkout\Recovery_Carts\Core\Helpers;
 use MeuMouse\Flexify_Checkout\Recovery_Carts\Core\Placeholders;
 use MeuMouse\Flexify_Checkout\Recovery_Carts\Core\Hooks;
+use MeuMouse\Flexify_Checkout\Recovery_Carts\Core\Opt_Out;
 use MeuMouse\Flexify_Checkout\Recovery_Carts\Cron\Scheduler_Manager;
 use MeuMouse\Flexify_Checkout\Recovery_Carts\Cron\Queue_Processor;
 
@@ -197,10 +198,25 @@ class Recovery_Handler {
      * @return void
      */
     public function init_follow_up_events( $cart_id ) {
+        // Freemium gate: capturing and tracking carts is free, but the automatic
+        // follow-up sending requires Pro. Bail before scheduling anything.
+        if ( ! Helpers::can_send_recovery_messages() ) {
+            return;
+        }
+
         $follow_up_events = Admin::get_setting('follow_up_events');
 
         // check if has follow up events
         if ( ! $follow_up_events || ! is_array( $follow_up_events ) ) {
+            return;
+        }
+
+        // Respect opt-out: never schedule follow-ups for a suppressed contact.
+        if ( Opt_Out::is_cart_suppressed( $cart_id ) ) {
+            if ( self::$debug_mode ) {
+                error_log( '[Recovery_Handler] Cart ID ' . $cart_id . ' contact opted out. No follow-up scheduled.' );
+            }
+
             return;
         }
 
@@ -238,6 +254,18 @@ class Recovery_Handler {
         foreach ( $follow_up_events as $event_key => $event_data ) {
             // check if follow up event is enabled
             if ( ! isset( $event_data['enabled'] ) || $event_data['enabled'] !== 'yes' ) {
+                continue;
+            }
+
+            // events delegated to a Joinotify workflow are not scheduled by the
+            // engine — the already-fired "Cart_Abandoned" action drives the
+            // workflow, which owns its own timing and delivery. This prevents
+            // duplicate messages in hybrid mode.
+            if ( $this->event_is_delegated_to_workflow( $event_data ) ) {
+                if ( self::$debug_mode ) {
+                    error_log( '[Recovery_Handler] Skipping follow-up event "' . $event_key . '" for cart ID ' . $cart_id . ' — delegated to a Joinotify workflow.' );
+                }
+
                 continue;
             }
 
@@ -331,6 +359,36 @@ class Recovery_Handler {
 
 
     /**
+     * Whether a follow-up event is delegated to a Joinotify workflow instead of
+     * being sent by the built-in engine.
+     *
+     * In hybrid mode each event routes either to the Flexify engine ('engine',
+     * the default) or to a Joinotify visual workflow ('joinotify_workflow'). For
+     * the latter the engine must not schedule or send anything: the
+     * "Flexify_Checkout/Recovery_Carts/*" action hooks already fired drive the
+     * workflow, which owns delivery. This guardrail prevents duplicate messages.
+     *
+     * If the event is set to workflow delivery but Joinotify is not available,
+     * we fall back to the engine so the follow-up is not silently dropped (there
+     * is no workflow that could double-send in that case).
+     *
+     * @since 6.0.0
+     * @param array $event_data | The follow-up event settings.
+     * @return bool
+     */
+    private function event_is_delegated_to_workflow( $event_data ) {
+        $mode = isset( $event_data['delivery_mode'] ) ? $event_data['delivery_mode'] : 'engine';
+
+        if ( $mode !== 'joinotify_workflow' ) {
+            return false;
+        }
+
+        // Only delegate when Joinotify can actually run the workflow.
+        return function_exists('joinotify_send_whatsapp_message_text');
+    }
+
+
+    /**
      * Sends a follow-up message based on the event
      *
      * @since 1.0.0
@@ -360,6 +418,16 @@ class Recovery_Handler {
             return;
         }
 
+        // Freemium gate: never dispatch without Pro, even for queued events left
+        // over from an expired license. A manual send does not bypass licensing.
+        if ( ! Helpers::can_send_recovery_messages() ) {
+            if ( $cron_post_id ) {
+                wp_delete_post( intval( $cron_post_id ), true );
+            }
+
+            return;
+        }
+
         $settings = Admin::get_setting('follow_up_events');
 
         if ( ! isset( $settings[ $event_key ] ) ) {
@@ -367,6 +435,30 @@ class Recovery_Handler {
         }
 
         $event = $settings[ $event_key ];
+
+        // Respect opt-out: a contact may have unsubscribed after this message was
+        // queued. Cancel the whole schedule and drop this event.
+        if ( Opt_Out::is_cart_suppressed( $cart_id ) ) {
+            Helpers::cancel_scheduled_follow_up_events( $cart_id );
+
+            if ( $cron_post_id ) {
+                wp_delete_post( intval( $cron_post_id ), true );
+            }
+
+            return;
+        }
+
+        // Guardrail: if the event was switched to Joinotify-workflow delivery
+        // after this message had already been queued, drop it here so the engine
+        // does not send a message the workflow is also responsible for. A forced
+        // manual send still goes through.
+        if ( ! $force && $this->event_is_delegated_to_workflow( $event ) ) {
+            if ( $cron_post_id ) {
+                wp_delete_post( intval( $cron_post_id ), true );
+            }
+
+            return;
+        }
 
         if ( ! $force && $this->should_block_follow_up_for_recent_purchase( $cart_id ) ) {
             Helpers::cancel_scheduled_follow_up_events( $cart_id );
@@ -427,13 +519,27 @@ class Recovery_Handler {
         // save notification data
         $sent_channels = array();
 
-        // send via WhatsApp if enabled
-        if ( isset( $event['channels']['whatsapp'] ) && $event['channels']['whatsapp'] === 'yes' ) {
+        $whatsapp_enabled = isset( $event['channels']['whatsapp'] ) && $event['channels']['whatsapp'] === 'yes';
+        $email_enabled    = isset( $event['channels']['email'] ) && $event['channels']['email'] === 'yes';
+
+        // send via WhatsApp if enabled and a phone is available
+        if ( $whatsapp_enabled && ! empty( $phone ) ) {
             // send message
             $response_code = self::send_whatsapp_message( $receiver, $message );
 
             if ( 201 === $response_code ) {
                 $sent_channels[] = 'whatsapp';
+            }
+        }
+
+        // send via e-mail. When both channels are enabled, e-mail acts as a
+        // fallback: it only goes out if WhatsApp was not delivered (no phone or a
+        // failed send), avoiding messaging the same customer twice for one event.
+        if ( $email_enabled && ( ! $whatsapp_enabled || empty( $sent_channels ) ) ) {
+            $email = $cart_data['_fcrc_cart_email'][0] ?? '';
+
+            if ( self::send_email_message( $cart_id, $email, $event, $message ) ) {
+                $sent_channels[] = 'email';
             }
         }
 
@@ -727,6 +833,25 @@ class Recovery_Handler {
         }
 
         return null;
+    }
+
+
+    /**
+     * Sends a follow-up message as an e-mail.
+     *
+     * @since 6.0.0
+     * @param int    $cart_id | The recovery cart post ID.
+     * @param string $email   | The recipient e-mail address.
+     * @param array  $event   | The follow-up event settings.
+     * @param string $message | The message body (placeholders already replaced).
+     * @return bool True when the e-mail was accepted for delivery.
+     */
+    public static function send_email_message( $cart_id, $email, $event, $message ) {
+        if ( empty( $email ) || ! is_email( $email ) ) {
+            return false;
+        }
+
+        return \MeuMouse\Flexify_Checkout\Recovery_Carts\Integrations\Email::send( $email, $event, $message, $cart_id );
     }
 
 

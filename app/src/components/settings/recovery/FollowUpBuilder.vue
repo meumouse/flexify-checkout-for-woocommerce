@@ -28,9 +28,18 @@ const DELAY_TYPE_OPTIONS = [
   { value: 'days', label: 'Dias' },
 ];
 
+const DELIVERY_MODE_OPTIONS = [
+  { value: 'engine', label: 'Motor do Flexify (envio automático)' },
+  { value: 'joinotify_workflow', label: 'Workflow do Joinotify (fluxo visual)' },
+];
+
 // Kept as a script constant so the literal {{ … }} placeholders are not parsed
 // as Vue interpolation in the template.
-const varsHint = 'Variáveis: {{ first_name }}, {{ recovery_link }}, {{ coupon_code }}';
+const workflowVarsHint = 'No Joinotify use: {{ fcrc_first_name }}, {{ fcrc_recovery_link }}, {{ fcrc_cart_total }}';
+
+// Kept as a script constant so the literal {{ … }} placeholders are not parsed
+// as Vue interpolation in the template.
+const varsHint = 'Variáveis: {{ first_name }}, {{ recovery_link }}, {{ coupon_code }}, {{ optout_link }}';
 
 const inputClass = 'w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-ink focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary-100';
 
@@ -46,6 +55,8 @@ function blankEvent() {
   return {
     enabled: 'yes', title: 'Nova mensagem', message: '',
     delay_time: 1, delay_type: 'hours',
+    delivery_mode: 'engine',
+    email_subject: '',
     send_window: { start_time: '', end_time: '' },
     channels: { email: 'no', whatsapp: 'yes' },
     coupon: couponDefault(),
@@ -63,6 +74,8 @@ function hydrate(source) {
   form.message = incoming.message ?? '';
   form.delay_time = incoming.delay_time ?? base.delay_time;
   form.delay_type = incoming.delay_type ?? base.delay_type;
+  form.delivery_mode = incoming.delivery_mode === 'joinotify_workflow' ? 'joinotify_workflow' : 'engine';
+  form.email_subject = incoming.email_subject ?? '';
   form.send_window = {
     start_time: incoming.send_window?.start_time ?? '',
     end_time: incoming.send_window?.end_time ?? '',
@@ -78,7 +91,22 @@ function hydrate(source) {
 
 const isEditing = computed(() => !!props.event);
 
-const isValid = computed(() => String(form.title).trim() !== '' && Number(form.delay_time) > 0);
+// Delivery routed to a Joinotify workflow: the built-in engine sends nothing,
+// so the Flexify-side scheduling/channels/coupon/message are irrelevant.
+const isWorkflowMode = computed(() => form.delivery_mode === 'joinotify_workflow');
+
+// The workflow option is only meaningful when the Joinotify integration is on;
+// keep it visible for an already-saved workflow event so it can be changed back.
+const showDeliveryMode = computed(() => props.whatsappEnabled || isWorkflowMode.value);
+
+const isValid = computed(() => {
+  if (String(form.title).trim() === '') {
+    return false;
+  }
+
+  // In workflow mode the delay is defined inside the Joinotify workflow.
+  return isWorkflowMode.value || Number(form.delay_time) > 0;
+});
 
 watch(
   () => props.open,
@@ -140,6 +168,23 @@ function submit() {
       <!-- Body -->
       <div class="flex-1 overflow-y-auto">
         <div class="mx-auto flex w-full max-w-3xl flex-col gap-6 px-6 py-8">
+          <!-- Delivery mode -->
+          <section v-if="showDeliveryMode" class="rounded-[12px] border border-slate-200 bg-white p-5">
+            <div class="mb-4 flex items-center gap-2">
+              <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-primary-100 text-primary">
+                <BoxIcon name="git-branch" class="h-4 w-4" />
+              </span>
+              <h3 class="m-0 text-sm font-semibold text-ink">Entrega</h3>
+            </div>
+
+            <label class="mb-1 block text-sm font-medium text-ink">Quem envia esta mensagem?</label>
+            <BaseSelect v-model="form.delivery_mode" :options="DELIVERY_MODE_OPTIONS" size="sm" class="w-full sm:w-96" />
+            <p class="m-0 mt-2 text-[12px] text-slate-500">
+              No modo <strong>Workflow do Joinotify</strong>, o Flexify apenas dispara o gatilho de
+              carrinho abandonado — o tempo, o conteúdo e os canais são definidos no fluxo visual do Joinotify.
+            </p>
+          </section>
+
           <!-- Message -->
           <section class="rounded-[12px] border border-slate-200 bg-white p-5">
             <div class="mb-4 flex items-center gap-2">
@@ -162,7 +207,7 @@ function submit() {
                 </label>
               </div>
 
-              <div>
+              <div v-if="!isWorkflowMode">
                 <label class="mb-1 block text-sm font-medium text-ink">Conteúdo da mensagem</label>
                 <textarea v-model="form.message" :class="inputClass" class="min-h-[140px]"></textarea>
                 <span class="mt-1 block text-[12px] text-slate-500">{{ varsHint }}</span>
@@ -170,8 +215,26 @@ function submit() {
             </div>
           </section>
 
+          <!-- Workflow delegation notice -->
+          <section v-if="isWorkflowMode" class="rounded-[12px] border border-primary-200 bg-primary-50 p-5">
+            <div class="flex items-start gap-3">
+              <span class="mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary-100 text-primary">
+                <BoxIcon name="info-circle" class="h-4 w-4" />
+              </span>
+              <div>
+                <h3 class="m-0 text-sm font-semibold text-ink">Entrega pelo Joinotify</h3>
+                <p class="m-0 mt-1 text-[13px] text-slate-600">
+                  Esta mensagem é entregue por um workflow do Joinotify no gatilho
+                  <strong>“Carrinho abandonado”</strong>. Monte o fluxo (mensagem, atrasos, canais e
+                  condições) no builder do Joinotify. O Flexify não agenda nem envia nada para este follow-up.
+                </p>
+                <p class="m-0 mt-2 text-[12px] text-slate-500">{{ workflowVarsHint }}</p>
+              </div>
+            </div>
+          </section>
+
           <!-- Scheduling -->
-          <section class="rounded-[12px] border border-slate-200 bg-white p-5">
+          <section v-if="!isWorkflowMode" class="rounded-[12px] border border-slate-200 bg-white p-5">
             <div class="mb-4 flex items-center gap-2">
               <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-primary-100 text-primary">
                 <BoxIcon name="hourglass" class="h-4 w-4" />
@@ -200,7 +263,7 @@ function submit() {
           </section>
 
           <!-- Channels -->
-          <section class="rounded-[12px] border border-slate-200 bg-white p-5">
+          <section v-if="!isWorkflowMode" class="rounded-[12px] border border-slate-200 bg-white p-5">
             <div class="mb-4 flex items-center gap-2">
               <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-primary-100 text-primary">
                 <BoxIcon name="rocket" class="h-4 w-4" />
@@ -221,10 +284,16 @@ function submit() {
             <p v-if="!whatsappEnabled" class="m-0 mt-2 text-[12px] text-slate-400">
               Ative a integração com o WhatsApp (Joinotify) na seção Geral para usar este canal.
             </p>
+
+            <div v-if="form.channels.email === 'yes'" class="mt-4">
+              <label class="mb-1 block text-sm font-medium text-ink">Assunto do e-mail</label>
+              <input v-model="form.email_subject" type="text" :class="inputClass" placeholder="Ex.: Você esqueceu itens no seu carrinho" />
+              <span class="mt-1 block text-[12px] text-slate-500">Deixe em branco para usar o assunto padrão. Quando WhatsApp e e-mail estão ativos, o e-mail é enviado apenas se o WhatsApp falhar.</span>
+            </div>
           </section>
 
           <!-- Coupon -->
-          <section class="rounded-[12px] border border-slate-200 bg-white p-5">
+          <section v-if="!isWorkflowMode" class="rounded-[12px] border border-slate-200 bg-white p-5">
             <div class="mb-4 flex items-center gap-2">
               <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-primary-100 text-primary">
                 <BoxIcon name="purchase-tag" class="h-4 w-4" />

@@ -17,6 +17,7 @@ Versão 6.0.0 (10/08/2026)
   - Conformidade com a LGPD: link de descadastro ({{ optout_link }}) nas mensagens e lista de supressão que impede o envio a contatos que optaram por sair
   - Canal de e-mail para os follow-ups (envio real em HTML), com orquestração multicanal: quando WhatsApp e e-mail estão ativos, o e-mail é usado como fallback caso o WhatsApp não seja entregue
   - Ação "Enviar agora" na lista de carrinhos, para disparar manualmente uma mensagem de recuperação a um carrinho abandonado
+  - Migração automática do plugin separado "Flexify Checkout - Recovery Carts": os dados são preservados (mesmos identificadores) e o plugin antigo é desativado e removido automaticamente, com aviso no painel (removível via filtro Flexify_Checkout/Recovery_Carts/Auto_Delete_Standalone)
 * Otimizações
   - Formas de pagamento do checkout Swift passam a ser exibidas em formato sanfona por padrão (alternável entre Cards e Sanfona no construtor de checkout)
 

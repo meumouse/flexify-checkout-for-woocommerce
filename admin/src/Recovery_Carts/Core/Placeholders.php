@@ -57,6 +57,12 @@ class Placeholders {
                     return Helpers::generate_recovery_cart_link( $cart_id );
                 },
             ),
+            '{{ optout_link }}' => array(
+                'title' => esc_html__( 'Unsubscribe (opt-out) link', 'flexify-checkout-for-woocommerce' ),
+                'callback' => function( $cart_id, $event ) {
+                    return Opt_Out::generate_optout_link( $cart_id );
+                },
+            ),
             '{{ coupon_code }}' => array(
                 'title' => esc_html__( 'Coupon code', 'flexify-checkout-for-woocommerce' ),
                 'callback' => function( $cart_id, $event ) {

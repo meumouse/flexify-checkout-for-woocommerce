@@ -484,6 +484,28 @@ class Helpers {
         return false;
     }
 
+
+    /**
+     * Whether automatic recovery messages may be sent.
+     *
+     * Cart recovery is freemium: capturing carts, managing them and viewing the
+     * analytics/funnel are available to everyone, but the automatic follow-up
+     * sending (and any channel dispatch) requires a valid Pro license. This gate
+     * is enforced on the sending path, not on capture or the admin UI.
+     *
+     * @since 6.0.0
+     * @return bool
+     */
+    public static function can_send_recovery_messages() {
+        /**
+         * Filter whether the recovery engine may send messages.
+         *
+         * @since 6.0.0
+         * @param bool $can_send | Defaults to the Pro license status.
+         */
+        return apply_filters( 'Flexify_Checkout/Recovery_Carts/Can_Send_Messages', self::is_pro() );
+    }
+
     
     /**
      * Retrieve the client's IP address (Cookie or REMOTE_ADDR)

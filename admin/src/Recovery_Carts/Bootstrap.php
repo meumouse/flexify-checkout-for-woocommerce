@@ -63,6 +63,26 @@ class Bootstrap {
 
 
     /**
+     * Whether the native cart recovery module is present.
+     *
+     * Public, timing-independent signal for third-party integrations (e.g. the
+     * Joinotify plugin) to detect the natively-integrated recovery feature
+     * without depending on the legacy standalone addon's global class
+     * "Flexify_Checkout_Recovery_Carts", which no longer exists once the feature
+     * ships in-core. Returns true as soon as register() has run, regardless of
+     * whether the class stack was deferred because the standalone addon is still
+     * active (in that case the standalone owns the feature and fires the same
+     * hooks, so the module is still "available").
+     *
+     * @since 6.0.0
+     * @return bool
+     */
+    public static function is_active() {
+        return self::$registered;
+    }
+
+
+    /**
      * Define the legacy FC_RECOVERY_CARTS_* constants on top of the host
      * plugin's paths so the ported code keeps working unchanged.
      *
@@ -150,6 +170,7 @@ class Bootstrap {
             '\MeuMouse\Flexify_Checkout\Recovery_Carts\Core\Funnel_Analytics',
             '\MeuMouse\Flexify_Checkout\Recovery_Carts\Core\Helpers',
             '\MeuMouse\Flexify_Checkout\Recovery_Carts\Core\Hooks',
+            '\MeuMouse\Flexify_Checkout\Recovery_Carts\Core\Opt_Out',
             '\MeuMouse\Flexify_Checkout\Recovery_Carts\Core\Order_Events',
             '\MeuMouse\Flexify_Checkout\Recovery_Carts\Core\Placeholders',
             '\MeuMouse\Flexify_Checkout\Recovery_Carts\Core\Session_Handler',
@@ -165,6 +186,7 @@ class Bootstrap {
             '\MeuMouse\Flexify_Checkout\Recovery_Carts\Rest\Analytics',
             '\MeuMouse\Flexify_Checkout\Recovery_Carts\Rest\Track_Funnel',
             '\MeuMouse\Flexify_Checkout\Recovery_Carts\Rest\Carts',
+            '\MeuMouse\Flexify_Checkout\Recovery_Carts\Rest\Cart_Send_Now',
             '\MeuMouse\Flexify_Checkout\Recovery_Carts\Rest\Cart_Delete',
             '\MeuMouse\Flexify_Checkout\Recovery_Carts\Rest\Cart_Bulk_Delete',
             '\MeuMouse\Flexify_Checkout\Recovery_Carts\Rest\Queue',

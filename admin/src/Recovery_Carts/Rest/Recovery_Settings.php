@@ -111,6 +111,9 @@ class Recovery_Settings extends Abstract_Route {
         return $this->success_response( array(
             'settings' => $this->read_settings(),
             'support' => $this->support_data(),
+            // Freemium: capture/management/analytics are free; automatic sending
+            // requires Pro. The editor uses this to show an upgrade notice.
+            'is_pro' => Helpers::is_pro(),
         ) );
     }
 
