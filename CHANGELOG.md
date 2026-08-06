@@ -18,6 +18,8 @@ Versão 6.0.0 (10/08/2026)
   - Canal de e-mail para os follow-ups (envio real em HTML), com orquestração multicanal: quando WhatsApp e e-mail estão ativos, o e-mail é usado como fallback caso o WhatsApp não seja entregue
   - Ação "Enviar agora" na lista de carrinhos, para disparar manualmente uma mensagem de recuperação a um carrinho abandonado
   - Migração automática do plugin separado "Flexify Checkout - Recovery Carts": os dados são preservados (mesmos identificadores) e o plugin antigo é desativado e removido automaticamente, com aviso no painel (removível via filtro Flexify_Checkout/Recovery_Carts/Auto_Delete_Standalone)
+  - Configurações da recuperação unificadas na opção principal do plugin (flexify_checkout_settings), com migração única e automática a partir da opção legada e leitura compatível durante a transição
+  - Tela de configurações antiga (renderizada em PHP) removida; as configurações de recuperação passam a viver apenas no card "Recuperação de carrinho" em Configurações > Carrinho
 * Otimizações
   - Formas de pagamento do checkout Swift passam a ser exibidas em formato sanfona por padrão (alternável entre Cards e Sanfona no construtor de checkout)
 

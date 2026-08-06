@@ -3,6 +3,7 @@
 namespace MeuMouse\Flexify_Checkout\Recovery_Carts\Rest;
 
 use MeuMouse\Flexify_Checkout\Rest\Abstract_Route;
+use MeuMouse\Flexify_Checkout\Recovery_Carts\Admin\Admin;
 use MeuMouse\Flexify_Checkout\Recovery_Carts\Core\Helpers;
 use WP_REST_Request;
 
@@ -18,22 +19,15 @@ defined('ABSPATH') || exit;
  * payment-method delays, lead modal and webhooks). Replaces the legacy
  * server-rendered settings screen and its admin-ajax save.
  *
- * Saves are merge-safe: the full flexify_checkout_recovery_carts_settings
- * option is read, only the managed keys are overwritten, then it is stored.
+ * Saves are merge-safe: the full recovery settings array is read from the
+ * unified namespace (Admin::get_all_settings), only the managed keys are
+ * overwritten, then it is stored back via Admin::update_all_settings.
  *
  * @since 6.0.0
  * @package MeuMouse\Flexify_Checkout\Recovery_Carts\Rest
  * @author MeuMouse.com
  */
 class Recovery_Settings extends Abstract_Route {
-
-    /**
-     * Option name.
-     *
-     * @since 6.0.0
-     * @var string
-     */
-    const OPTION = 'flexify_checkout_recovery_carts_settings';
 
     /**
      * Route path.
@@ -125,7 +119,7 @@ class Recovery_Settings extends Abstract_Route {
      * @return array
      */
     private function read_settings() {
-        $options = get_option( self::OPTION, array() );
+        $options = Admin::get_all_settings();
         $options = is_array( $options ) ? $options : array();
         $toggles = isset( $options['toggle_switchs'] ) && is_array( $options['toggle_switchs'] ) ? $options['toggle_switchs'] : array();
 
@@ -232,7 +226,7 @@ class Recovery_Settings extends Abstract_Route {
         $input = $request->get_param('settings');
         $input = is_array( $input ) ? $input : array();
 
-        $options = get_option( self::OPTION, array() );
+        $options = Admin::get_all_settings();
         $options = is_array( $options ) ? $options : array();
 
         foreach ( self::SCALAR_KEYS as $key ) {
@@ -262,7 +256,7 @@ class Recovery_Settings extends Abstract_Route {
             }
         }
 
-        update_option( self::OPTION, $options );
+        Admin::update_all_settings( $options );
 
         return $this->success_response( array( 'settings' => $this->read_settings() ) );
     }

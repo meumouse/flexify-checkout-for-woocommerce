@@ -88,7 +88,10 @@ class Ajax {
      */
     private function get_settings() {
         if ( self::$cached_settings === null ) {
-            self::$cached_settings = get_option( 'flexify_checkout_recovery_carts_settings', array() );
+            // Recovery settings now live under the unified namespace
+            // (flexify_checkout_settings['recovery']); read through the single
+            // source of truth so this cache never diverges from REST writes.
+            self::$cached_settings = Admin::get_all_settings();
         }
 
         return self::$cached_settings;
@@ -97,15 +100,16 @@ class Ajax {
 
     /**
      * Update settings with cache clearing
-     * 
+     *
      * @since 1.3.5
+     * @version 6.0.0
      * @param array $settings
      * @return bool
      */
     private function update_settings( $settings ) {
         self::$cached_settings = $settings;
-        
-        return update_option( 'flexify_checkout_recovery_carts_settings', $settings );
+
+        return Admin::update_all_settings( $settings );
     }
 
 

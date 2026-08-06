@@ -19,6 +19,23 @@ defined('ABSPATH') || exit;
 class Admin {
 
     /**
+     * Option flag that records the settings-namespace migration has run.
+     *
+     * @since 6.0.0
+     * @var string
+     */
+    const SETTINGS_MIGRATION_FLAG = 'fcrc_settings_namespace_migrated';
+
+    /**
+     * Version stamp stored in SETTINGS_MIGRATION_FLAG once migration completes.
+     *
+     * @since 6.0.0
+     * @var string
+     */
+    const SETTINGS_MIGRATION_VERSION = '6.0.0';
+
+
+    /**
      * Construct function
      * 
      * @since 1.0.0
@@ -32,9 +49,6 @@ class Admin {
 
         // update default options on admin_init
         add_action( 'admin_init', array( $this, 'update_default_options' ) );
-
-        // render settings tabs
-        add_action( 'Flexify_Checkout/Recovery_Carts/Settings/Nav_Tabs', array( $this, 'render_settings_tabs' ) );
 
         // Register the recovery custom post types / statuses. This class is
         // booted from Init at init:99, so a plain add_action('init', …, 10)
@@ -67,12 +81,17 @@ class Admin {
      * the existing "Carrinho" tab instead of a dedicated tab; the data pages
      * (Análise, Carrinhos, Fila) remain as their own top-level submenus.
      *
+     * Cart recovery is freemium: the settings card is available to everyone so
+     * merchants can configure tracking and preview the follow-ups; the actual
+     * automatic sending is gated on the send path (Helpers::can_send_recovery_messages).
+     * The Vue card shows an upgrade notice when the license is not Pro.
+     *
      * @since 6.0.0
      * @param array $schema Settings schema (list of tabs).
      * @return array
      */
     public function register_recovery_settings_tab( $schema ) {
-        if ( ! is_array( $schema ) || ! Helpers::is_pro() ) {
+        if ( ! is_array( $schema ) ) {
             return $schema;
         }
 
@@ -103,10 +122,10 @@ class Admin {
      * Add the cart recovery pages as submenus of the dedicated Flexify Checkout
      * top-level menu (registered by core Settings_Panel at priority 10).
      *
-     * Analytics, Carts and Queue are shown only when the recovery feature is
-     * enabled (master toggle) and the license is Pro. The recovery settings
-     * screen is a transitional legacy page that will fold into the Vue settings
-     * as a "Recuperação" tab in a later phase.
+     * Cart recovery is freemium: the data pages (Analytics, Carts, Queue) are
+     * shown to everyone whenever the feature is enabled (master toggle), so free
+     * merchants can see their abandoned carts and the value they are missing.
+     * Only the automatic sending is Pro-gated, on the send path.
      *
      * @since 1.0.0
      * @version 6.0.0
@@ -114,11 +133,6 @@ class Admin {
      */
     public function add_admin_menu() {
         $parent = 'flexify-checkout-for-woocommerce';
-
-        // Recovery requires Pro; the core "Licença" page handles licensing UX.
-        if ( ! Helpers::is_pro() ) {
-            return;
-        }
 
         // Master toggle: only surface the data pages when the feature is on.
         if ( self::get_switch('enable_cart_recovery') !== 'no' ) {
@@ -166,21 +180,11 @@ class Admin {
             // link in the WordPress menu.
         }
 
-        // Advanced recovery settings (follow-up events, coupons, payment delays,
-        // webhooks). Registered so it stays reachable by URL and from the
-        // "Editor avançado" link inside the Vue "Recuperação" tab, but hidden
-        // from the menu so only the five requested items show. The common
-        // settings now live in Configurações > Recuperação.
-        add_submenu_page(
-            $parent,
-            esc_html__( 'Cart recovery', 'flexify-checkout-for-woocommerce' ),
-            esc_html__( 'Cart recovery', 'flexify-checkout-for-woocommerce' ),
-            'manage_woocommerce',
-            'fc-recovery-carts-settings',
-            array( $this, 'render_settings_page' )
-        );
-
-        remove_submenu_page( $parent, 'fc-recovery-carts-settings' );
+        // The common recovery settings now live entirely in the Vue settings
+        // ("Configurações > Carrinho" > cart-recovery card, backed by the
+        // /recovery/settings REST route). The legacy server-rendered settings
+        // screen and its hidden "fc-recovery-carts-settings" submenu were
+        // removed in 6.0.0.
     }
 
 
@@ -225,19 +229,8 @@ class Admin {
 
 
     /**
-     * Render menu page settings
-     * 
-     * @since 1.0.0
-     * @return void
-     */
-    public function render_settings_page() {
-        include_once( FC_RECOVERY_CARTS_INC . 'Views/Settings.php' );
-    }
-
-
-    /**
      * Render settings page for not Pro users
-     * 
+     *
      * @since 1.0.0
      * @return void
      */
@@ -269,20 +262,24 @@ class Admin {
     /**
      * Gets the items from the array and inserts them into the option if it is empty,
      * or adds new items with default value to the option
-     * 
+     *
      * @since 1.0.0
-     * @version 1.3.4
+     * @version 6.0.0
      * @return void
      */
     public function update_default_options() {
+        // Move any legacy option into the unified "recovery" namespace before
+        // seeding defaults, so the patch below runs against the migrated data.
+        $this->maybe_migrate_settings();
+
         $default_options = ( new Default_Options() )->set_default_options();
-        $existing_options = get_option( 'flexify_checkout_recovery_carts_settings', array() );
-        
+        $existing_options = self::get_all_settings();
+
         if ( empty( $existing_options ) ) {
-            update_option( 'flexify_checkout_recovery_carts_settings', $default_options );
+            self::update_all_settings( $default_options );
             return;
         }
-        
+
         $needs_update = false;
 
         foreach ( $default_options as $key => $default_value ) {
@@ -291,33 +288,107 @@ class Admin {
                 $needs_update = true;
             }
         }
-        
+
         if ( $needs_update ) {
-            update_option( 'flexify_checkout_recovery_carts_settings', $existing_options );
+            self::update_all_settings( $existing_options );
         }
     }
 
 
     /**
+     * One-time, idempotent migration of the recovery settings into the unified
+     * main option under the "recovery" namespace.
+     *
+     * Historically the recovery settings lived in their own option
+     * (`flexify_checkout_recovery_carts_settings`). They now live under
+     * `flexify_checkout_settings['recovery']` together with the rest of the
+     * plugin settings. This copies the legacy option into the namespace once,
+     * guarded by a version flag so it never re-runs. The legacy option is left
+     * untouched so a downgrade can still read it during the fallback window
+     * (see get_all_settings()); it is not deleted here.
+     *
+     * The copy only happens when the namespace is still empty, so settings
+     * already written to the unified option are never clobbered.
+     *
+     * @since 6.0.0
+     * @return void
+     */
+    public function maybe_migrate_settings() {
+        if ( get_option( self::SETTINGS_MIGRATION_FLAG ) === self::SETTINGS_MIGRATION_VERSION ) {
+            return;
+        }
+
+        $unified = get_option( 'flexify_checkout_settings', array() );
+        $unified = is_array( $unified ) ? $unified : array();
+
+        if ( ! isset( $unified['recovery'] ) || ! is_array( $unified['recovery'] ) ) {
+            $legacy = get_option( 'flexify_checkout_recovery_carts_settings', array() );
+
+            if ( is_array( $legacy ) && ! empty( $legacy ) ) {
+                $unified['recovery'] = $legacy;
+                update_option( 'flexify_checkout_settings', $unified );
+            }
+        }
+
+        update_option( self::SETTINGS_MIGRATION_FLAG, self::SETTINGS_MIGRATION_VERSION );
+    }
+
+
+    /**
+     * Read the full recovery settings array.
+     *
+     * Single source of truth for every recovery reader. Prefers the unified
+     * `flexify_checkout_settings['recovery']` namespace and falls back to the
+     * legacy `flexify_checkout_recovery_carts_settings` option while the
+     * migration window is open (1-2 versions).
+     *
+     * @since 6.0.0
+     * @return array
+     */
+    public static function get_all_settings() {
+        $unified = get_option( 'flexify_checkout_settings', array() );
+
+        if ( is_array( $unified ) && isset( $unified['recovery'] ) && is_array( $unified['recovery'] ) ) {
+            return $unified['recovery'];
+        }
+
+        $legacy = get_option( 'flexify_checkout_recovery_carts_settings', array() );
+
+        return is_array( $legacy ) ? $legacy : array();
+    }
+
+
+    /**
+     * Persist the full recovery settings array to the unified namespace.
+     *
+     * Writes to `flexify_checkout_settings['recovery']`, preserving every other
+     * key of the unified option. This is the only place recovery settings are
+     * written; the legacy option is intentionally no longer updated.
+     *
+     * @since 6.0.0
+     * @param array $settings Full recovery settings array.
+     * @return bool True if the option value was updated.
+     */
+    public static function update_all_settings( $settings ) {
+        $unified = get_option( 'flexify_checkout_settings', array() );
+        $unified = is_array( $unified ) ? $unified : array();
+
+        $unified['recovery'] = is_array( $settings ) ? $settings : array();
+
+        return update_option( 'flexify_checkout_settings', $unified );
+    }
+
+
+    /**
      * Checks if the option exists and returns the indicated array item
-     * 
+     *
      * @since 1.0.0
+     * @version 6.0.0
      * @param string $key | Option key
      * @return mixed | string or false
      */
     public static function get_setting( $key ) {
-        // Forward-compat read-through: recovery settings are migrating into the
-        // unified main option under a "recovery" namespace. Prefer the unified
-        // value when present, then fall back to the legacy recovery option.
-        // Writes still target the legacy option until a later migration phase,
-        // so today this simply falls through to the legacy read unchanged.
-        $unified = get_option('flexify_checkout_settings', array());
-
-        if ( is_array( $unified ) && isset( $unified['recovery'][$key] ) ) {
-            return $unified['recovery'][$key];
-        }
-
-        $options = get_option('flexify_checkout_recovery_carts_settings', array());
+        $options = self::get_all_settings();
 
         // check if array key exists and return key
         if ( isset( $options[$key] ) ) {
@@ -330,21 +401,14 @@ class Admin {
 
     /**
      * Get switch option value
-     * 
+     *
      * @since 1.0.0
+     * @version 6.0.0
      * @param string $key | Option key
      * @return string
      */
     public static function get_switch( $key ) {
-        // Forward-compat read-through (see get_setting): prefer the unified
-        // option's recovery namespace, then fall back to the legacy option.
-        $unified = get_option('flexify_checkout_settings', array());
-
-        if ( is_array( $unified ) && isset( $unified['recovery']['toggle_switchs'][$key] ) ) {
-            return $unified['recovery']['toggle_switchs'][$key];
-        }
-
-        $options = get_option('flexify_checkout_recovery_carts_settings', array());
+        $options = self::get_all_settings();
 
         // check if array key exists and return key
         if ( isset( $options['toggle_switchs'][$key] ) ) {
@@ -352,20 +416,6 @@ class Admin {
         }
 
         return false;
-    }
-
-
-    /**
-     * Render settings nav tabs
-     *
-     * @since 1.0.0
-     */
-    public function render_settings_tabs() {
-        $tabs = Components::get_settings_tabs();
-
-        foreach ( $tabs as $tab ) {
-            printf( '<a href="#%1$s" class="nav-tab">%2$s %3$s</a>', esc_attr( $tab['id'] ), $tab['icon'], $tab['label'] );
-        }
     }
 
 
