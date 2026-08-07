@@ -23,12 +23,18 @@ const model = computed({
 </script>
 
 <template>
+  <!--
+    Native range appearance kept on purpose: `appearance-none` removes the
+    default thumb/track, which — without custom pseudo-element styling — leaves
+    an undraggable control. `accent-color` (accent-primary) themes the native
+    slider while keeping it fully interactive.
+  -->
   <input
     v-model="model"
     type="range"
     :min="min"
     :max="max"
     :step="step"
-    class="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-slate-200 accent-primary"
+    class="w-full cursor-pointer accent-primary"
   />
 </template>
