@@ -84,7 +84,7 @@ class MDS {
      * @since 6.0.0
      * @var string
      */
-    const API_KEY = '';
+    const API_KEY = 'mds_2fad193090b2ad4e1562920d01ee11592990198e2b5d9a99789d158b3de27520';
 
     /**
      * Base64 ed25519 public key used to verify every signed MDS response.
