@@ -2,29 +2,52 @@
 
 namespace MeuMouse\Flexify_Checkout\API;
 
+use MeuMouse\Flexify_Checkout\Admin\Admin_Options;
+use MeuMouse\Flexify_Checkout\Core\Logs\Logger;
+
+use MeuMouse\MDS\SDK\SDK;
+use MeuMouse\MDS\SDK\Integration;
+use MeuMouse\MDS\SDK\License\Manager as License_Manager;
+use MeuMouse\MDS\SDK\License\LicenseStatus;
+use MeuMouse\MDS\SDK\Support\Environment;
+
+use InvalidArgumentException;
+use Throwable;
+
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
 
 /**
  * Facade for the Modular Distribution Service (MDS) PHP SDK.
  *
- * Wires Flexify Checkout into the new MDS API (https://api.meumouse.com) for
- * licensing, signed update checks and rollback, replacing the legacy
- * {@see License} (custom AES transport) and {@see Updater} (unsigned static
- * JSON) paths.
+ * Wires Flexify Checkout into the MDS API for licensing, signed update checks
+ * and rollback, replacing the legacy {@see License} (custom AES transport) and
+ * {@see Updater} (unsigned static JSON) paths.
  *
- * The whole integration is gated behind {@see self::is_enabled()} and defaults
- * to OFF: until a real per-product `api_key` and ed25519 `public_key` are
- * provisioned on the server and the feature flag is flipped, the plugin keeps
- * using the legacy path unchanged. This is the client half of the migration;
- * the server side (key generation, product registration, signed responses)
- * lives in the mds-api project.
+ * Credentials are compiled in as class constants so the shipped plugin works
+ * out of the box, and every one of them can be overridden by a constant in
+ * wp-config.php (handy for staging against a different MDS instance):
  *
- * Clube M bundle: a single plugin install can be licensed either against the
- * Flexify Checkout product or against the Clube M bundle (license keys prefixed
- * "CM-"). Because the SDK binds license + updates together per product slug, we
- * register exactly one integration per request — the one matching the stored
- * license key — mirroring the legacy single-product swap.
+ *     define( 'FLEXIFY_CHECKOUT_MDS_API_BASE', 'https://staging.meumouse.com' );
+ *     define( 'FLEXIFY_CHECKOUT_MDS_API_KEY', 'mds_test_xxx' );
+ *     define( 'FLEXIFY_CHECKOUT_MDS_PUBLIC_KEY', 'BASE64_ED25519_PUBLIC_KEY' );
+ *
+ * The integration is active whenever it is usable — ext-sodium available, SDK
+ * autoloaded and both credentials configured. There is no opt-in flag:
+ * {@see self::API_KEY} being empty is what keeps it inert. A site can still fall
+ * back to the legacy path with a kill switch, either
+ * `define( 'FLEXIFY_CHECKOUT_MDS_SDK', false )` or the option
+ * `flexify_checkout_mds_sdk_enabled = 'no'`.
+ *
+ * Clube M bundle: since SDK 1.1.0 a bundle key is handled by the server, so this
+ * plugin registers a single product and always sends its own `product_slug`. A
+ * "CM-" key simply validates for it, and the resulting status carries a `bundle`
+ * field ({@see self::bundle()}) describing which bundle granted the license.
+ *
+ * Unlike the reference SDK integration, no `settings_parent` is passed: the
+ * plugin ships its own license screen (the Vue SPA at
+ * `admin.php?page=flexify-checkout-license`, driven by {@see License}), so the
+ * SDK must not auto-register a competing submenu.
  *
  * @since 6.0.0
  * @package MeuMouse\Flexify_Checkout\API
@@ -33,12 +56,55 @@ defined('ABSPATH') || exit;
 class MDS {
 
     /**
+     * Product slug, must match the product slug registered on MDS.
+     *
+     * @since 6.0.0
+     * @var string
+     */
+    const PRODUCT_SLUG = 'flexify-checkout-for-woocommerce';
+
+    /**
      * Default MDS API base URL.
      *
      * @since 6.0.0
      * @var string
      */
-    const API_BASE_URL = 'https://api.meumouse.com';
+    const API_BASE_URL = 'https://cloud.meumouse.com';
+
+    /**
+     * Public, low-privilege product API key issued by MDS.
+     *
+     * Scopes: updates:check, licenses:activate, licenses:deactivate. It is meant
+     * to be readable inside the distributed plugin; it grants nothing beyond
+     * those three operations.
+     *
+     * Empty until the product is provisioned on the server — while it is empty
+     * the whole integration stays inert and the legacy path remains live.
+     *
+     * @since 6.0.0
+     * @var string
+     */
+    const API_KEY = '';
+
+    /**
+     * Base64 ed25519 public key used to verify every signed MDS response.
+     *
+     * Must match the MDS_SIGNING_PUBLIC_KEY configured on the API. Responses
+     * that are unsigned or fail verification are discarded by the SDK. It is a
+     * property of the signing server, so every product shares it.
+     *
+     * @since 6.0.0
+     * @var string
+     */
+    const PUBLIC_KEY = 'fLpjcbSx1ccEDAYjf0BheQDhn9W+iBYaJAxT+eQ0Mac=';
+
+    /**
+     * Option that records that the legacy license state has been migrated.
+     *
+     * @since 6.0.0
+     * @var string
+     */
+    const MIGRATION_FLAG = 'flexify_checkout_mds_state_migrated';
 
     /**
      * Whether the SDK loader has already been required this request.
@@ -47,6 +113,16 @@ class MDS {
      * @var bool
      */
     private static $booted = false;
+
+    /**
+     * Whether registration already failed this request, so it is not retried
+     * (and re-logged) by every accessor.
+     *
+     * @since 6.0.0
+     * @var bool
+     */
+    private static $register_failed = false;
+
 
     /**
      * Require the SDK loader and hook product registration.
@@ -78,7 +154,7 @@ class MDS {
 
 
     /**
-     * Path to the vendored SDK loader.
+     * Path to the SDK loader installed by Composer.
      *
      * @since 6.0.0
      * @return string
@@ -91,7 +167,7 @@ class MDS {
 
 
     /**
-     * Register the active product with the SDK once it has booted.
+     * Register the product with the SDK once it has booted.
      *
      * @since 6.0.0
      * @return void
@@ -101,179 +177,210 @@ class MDS {
             return;
         }
 
-        // Register only the integration matching the stored license key so a
-        // single plugin install never wires two competing plugin updaters.
-        self::register_product( self::active_slug() );
+        if ( ! self::register_product() ) {
+            return;
+        }
 
         // Seed the SDK's license state from the legacy options on first run so
         // already-activated customers are not forced to re-activate at cutover.
         self::maybe_migrate_legacy_state();
+
+        // The legacy Updater is skipped while the SDK owns updates, so the
+        // auto-update preference has to be honoured from here.
+        add_filter( 'auto_update_plugin', array( __CLASS__, 'enable_auto_update' ), 10, 2 );
     }
 
 
     /**
-     * Whether the new MDS integration should be used at all.
+     * Tear down the license heartbeat on plugin deactivation.
      *
-     * Requires: the feature flag on, the SDK facade class present, ext-sodium
-     * available for signature verification, and both credentials configured
-     * for the active product. Any missing piece keeps the legacy path live.
+     * Only this plugin's own integration is shut down: other MeuMouse plugins
+     * may share the elected SDK copy, and their schedulers must keep running.
+     *
+     * @since 6.0.0
+     * @return void
+     */
+    public static function deactivate() {
+        if ( ! class_exists( SDK::class ) ) {
+            return;
+        }
+
+        $integration = SDK::get( self::product_slug() );
+
+        if ( $integration ) {
+            $integration->shutdown();
+        }
+    }
+
+
+    /**
+     * Whether the MDS integration should be used at all.
+     *
+     * Requires: no kill switch, the SDK facade class present, ext-sodium
+     * available for signature verification, and both credentials configured.
+     * Any missing piece keeps the legacy path live.
      *
      * @since 6.0.0
      * @return bool
      */
     public static function is_enabled() {
-        // Feature flag: constant override wins, otherwise a stored option.
-        $flag = defined('FLEXIFY_CHECKOUT_MDS_SDK')
-            ? (bool) FLEXIFY_CHECKOUT_MDS_SDK
-            : ( get_option('flexify_checkout_mds_sdk_enabled') === 'yes' );
+        if ( self::is_disabled_by_switch() ) {
+            return false;
+        }
+
+        if ( ! self::is_supported() || ! self::is_configured() ) {
+            return false;
+        }
 
         /**
          * Filters whether the MDS SDK integration is active.
          *
+         * Can only turn the integration off: the result is re-checked against
+         * the credentials, so a filter never forces an unusable configuration.
+         *
          * @since 6.0.0
-         * @param bool $flag Current flag value.
+         * @param bool $enabled Current value.
          */
-        $flag = (bool) apply_filters( 'Flexify_Checkout/MDS/Enabled', $flag );
+        return (bool) apply_filters( 'Flexify_Checkout/MDS/Enabled', true );
+    }
 
-        if ( ! $flag ) {
-            return false;
+
+    /**
+     * Whether a site-level kill switch sends this install back to the legacy path.
+     *
+     * @since 6.0.0
+     * @return bool
+     */
+    private static function is_disabled_by_switch() {
+        if ( defined('FLEXIFY_CHECKOUT_MDS_SDK') ) {
+            return ! FLEXIFY_CHECKOUT_MDS_SDK;
         }
 
-        if ( ! class_exists('\MeuMouse\MDS\SDK\SDK') ) {
-            return false;
-        }
+        return get_option('flexify_checkout_mds_sdk_enabled') === 'no';
+    }
 
-        if ( ! function_exists('sodium_crypto_sign_verify_detached') ) {
-            return false;
-        }
 
-        $config = self::config_for_slug( self::active_slug() );
+    /**
+     * Whether the runtime can talk to MDS at all (SDK autoloaded + ed25519).
+     *
+     * @since 6.0.0
+     * @return bool
+     */
+    public static function is_supported() {
+        return class_exists( SDK::class ) && function_exists('sodium_crypto_sign_verify_detached');
+    }
+
+
+    /**
+     * Whether both credentials are present.
+     *
+     * @since 6.0.0
+     * @return bool
+     */
+    public static function is_configured() {
+        $config = self::config();
 
         return ! empty( $config['api_key'] ) && ! empty( $config['public_key'] );
     }
 
 
     /**
-     * Product slug that matches the currently stored license key.
+     * Whether the site holds a valid, active license through the SDK.
      *
      * @since 6.0.0
-     * @return string
+     * @return bool
      */
-    public static function active_slug() {
-        return self::slug_for_key( (string) get_option('flexify_checkout_license_key', '') );
+    public static function is_active() {
+        $integration = self::integration();
+
+        return $integration ? $integration->is_licensed() : false;
     }
 
 
     /**
-     * Resolve the product slug for a given license key.
-     *
-     * Keys prefixed "CM-" belong to the Clube M bundle; everything else is the
-     * standalone Flexify Checkout product.
-     *
-     * @since 6.0.0
-     * @param string $key License key.
-     * @return string
-     */
-    public static function slug_for_key( $key ) {
-        if ( strpos( (string) $key, 'CM-' ) === 0 ) {
-            return self::bundle_slug();
-        }
-
-        return defined('FLEXIFY_CHECKOUT_SLUG') ? FLEXIFY_CHECKOUT_SLUG : 'flexify-checkout-for-woocommerce';
-    }
-
-
-    /**
-     * Clube M bundle product slug.
+     * Product slug as MDS knows it.
      *
      * @since 6.0.0
      * @return string
      */
-    public static function bundle_slug() {
-        return defined('FLEXIFY_CHECKOUT_MDS_BUNDLE_SLUG') ? FLEXIFY_CHECKOUT_MDS_BUNDLE_SLUG : 'clube-m';
+    public static function product_slug() {
+        return defined('FLEXIFY_CHECKOUT_SLUG') ? FLEXIFY_CHECKOUT_SLUG : self::PRODUCT_SLUG;
     }
 
 
     /**
-     * Build the SDK configuration array for a product slug.
+     * Build the SDK configuration array.
      *
-     * Credentials come from constants (preferred, so they can be baked into a
-     * build) or filters, and default to empty — which keeps the integration
-     * inert until real values are provisioned.
+     * Credentials come from the class constants above, and each one can be
+     * overridden by a wp-config constant.
      *
      * @since 6.0.0
-     * @param string $slug Product slug.
      * @return array<string,mixed>
      */
-    public static function config_for_slug( $slug ) {
-        $fcw_slug = defined('FLEXIFY_CHECKOUT_SLUG') ? FLEXIFY_CHECKOUT_SLUG : 'flexify-checkout-for-woocommerce';
-        $is_bundle = ( $slug === self::bundle_slug() );
-
-        $api_key = $is_bundle
-            ? ( defined('FLEXIFY_CHECKOUT_MDS_BUNDLE_API_KEY') ? FLEXIFY_CHECKOUT_MDS_BUNDLE_API_KEY : '' )
-            : ( defined('FLEXIFY_CHECKOUT_MDS_API_KEY') ? FLEXIFY_CHECKOUT_MDS_API_KEY : '' );
-
-        // The ed25519 public key is a property of the signing server, so both
-        // products share it unless a bundle-specific override is defined.
-        $public_key = defined('FLEXIFY_CHECKOUT_MDS_PUBLIC_KEY') ? FLEXIFY_CHECKOUT_MDS_PUBLIC_KEY : '';
-
-        if ( $is_bundle && defined('FLEXIFY_CHECKOUT_MDS_BUNDLE_PUBLIC_KEY') ) {
-            $public_key = FLEXIFY_CHECKOUT_MDS_BUNDLE_PUBLIC_KEY;
-        }
-
+    public static function config() {
         $config = array(
-            'product_slug'    => $slug,
+            'product_slug'    => self::product_slug(),
             'type'            => 'plugin',
-            'file'            => defined('FLEXIFY_CHECKOUT_BASENAME') ? FLEXIFY_CHECKOUT_BASENAME : $fcw_slug . '/' . $fcw_slug . '.php',
+            'file'            => self::get_plugin_file(),
             'current_version' => defined('FLEXIFY_CHECKOUT_VERSION') ? FLEXIFY_CHECKOUT_VERSION : '',
             'api_base_url'    => defined('FLEXIFY_CHECKOUT_MDS_API_BASE') ? FLEXIFY_CHECKOUT_MDS_API_BASE : self::API_BASE_URL,
-            'api_key'         => (string) $api_key,
-            'public_key'      => (string) $public_key,
-            'item_name'       => $is_bundle ? 'Clube M' : 'Flexify Checkout for WooCommerce',
+            'api_key'         => defined('FLEXIFY_CHECKOUT_MDS_API_KEY') ? (string) FLEXIFY_CHECKOUT_MDS_API_KEY : self::API_KEY,
+            'public_key'      => defined('FLEXIFY_CHECKOUT_MDS_PUBLIC_KEY') ? (string) FLEXIFY_CHECKOUT_MDS_PUBLIC_KEY : self::PUBLIC_KEY,
+            'item_name'       => 'Flexify Checkout for WooCommerce',
             'text_domain'     => 'flexify-checkout-for-woocommerce',
+            // No settings_parent on purpose: the plugin renders its own license
+            // screen, so the SDK must not add a duplicate submenu.
         );
 
         /**
          * Filters the SDK product configuration before registration.
          *
          * @since 6.0.0
-         * @param array  $config Product config passed to SDK::register().
-         * @param string $slug   Product slug.
+         * @param array $config Product config passed to SDK::register().
          */
-        return apply_filters( 'Flexify_Checkout/MDS/Product_Config', $config, $slug );
+        return apply_filters( 'Flexify_Checkout/MDS/Product_Config', $config );
     }
 
 
     /**
-     * Register a product with the SDK (idempotent per slug).
+     * Register the product with the SDK (idempotent).
      *
      * @since 6.0.0
-     * @param string $slug Product slug.
-     * @return \MeuMouse\MDS\SDK\Integration|null
+     * @return Integration|null
      */
-    public static function register_product( $slug ) {
-        if ( ! class_exists('\MeuMouse\MDS\SDK\SDK') ) {
+    public static function register_product() {
+        if ( ! class_exists( SDK::class ) || self::$register_failed ) {
             return null;
         }
 
-        $existing = \MeuMouse\MDS\SDK\SDK::get( $slug );
+        $existing = SDK::get( self::product_slug() );
 
         if ( $existing ) {
             return $existing;
         }
 
-        $config = self::config_for_slug( $slug );
+        $config = self::config();
 
         if ( empty( $config['api_key'] ) || empty( $config['public_key'] ) ) {
+            self::$register_failed = true;
+
+            self::log('MDS credentials are missing: updates and licensing are disabled.');
+
             return null;
         }
 
         try {
-            return \MeuMouse\MDS\SDK\SDK::register( $config );
-        } catch ( \Throwable $e ) {
-            if ( class_exists('\MeuMouse\Flexify_Checkout\Core\Logs\Logger') ) {
-                \MeuMouse\Flexify_Checkout\Core\Logs\Logger::register_log( 'MDS SDK register failed: ' . $e->getMessage(), 'ERROR' );
-            }
+            return SDK::register( $config );
+        } catch ( InvalidArgumentException $e ) {
+            self::$register_failed = true;
+
+            self::log( 'MDS registration failed: ' . $e->getMessage() );
+
+            return null;
+        } catch ( Throwable $e ) {
+            self::$register_failed = true;
+
+            self::log( 'MDS SDK register failed: ' . $e->getMessage() );
 
             return null;
         }
@@ -281,48 +388,68 @@ class MDS {
 
 
     /**
-     * Ensure the integration matching a license key is registered, then return it.
-     *
-     * Used during activation, when the key being validated may differ from the
-     * one that was stored when the SDK booted this request.
+     * The registered SDK integration, registering it on demand.
      *
      * @since 6.0.0
-     * @param string $key License key.
-     * @return \MeuMouse\MDS\SDK\Integration|null
+     * @return Integration|null
      */
-    public static function integration_for_key( $key ) {
-        return self::register_product( self::slug_for_key( $key ) );
-    }
-
-
-    /**
-     * The integration for the currently stored license key, if registered.
-     *
-     * @since 6.0.0
-     * @return \MeuMouse\MDS\SDK\Integration|null
-     */
-    public static function active_integration() {
-        if ( ! class_exists('\MeuMouse\MDS\SDK\SDK') ) {
+    public static function integration() {
+        if ( ! class_exists( SDK::class ) ) {
             return null;
         }
 
-        $slug = self::active_slug();
-        $integration = \MeuMouse\MDS\SDK\SDK::get( $slug );
+        $integration = SDK::get( self::product_slug() );
 
-        return $integration ? $integration : self::register_product( $slug );
+        return $integration ? $integration : self::register_product();
     }
 
 
     /**
-     * License manager for the active product, if available.
+     * License manager, if available.
      *
      * @since 6.0.0
-     * @return \MeuMouse\MDS\SDK\License\Manager|null
+     * @return License_Manager|null
      */
     public static function license() {
-        $integration = self::active_integration();
+        $integration = self::integration();
 
         return $integration ? $integration->license() : null;
+    }
+
+
+    /**
+     * Last persisted license status (no network call).
+     *
+     * @since 6.0.0
+     * @return LicenseStatus|null
+     */
+    public static function status() {
+        $manager = self::license();
+
+        return $manager ? $manager->status() : null;
+    }
+
+
+    /**
+     * Bundle that granted the current license, when the key is a bundle key.
+     *
+     * Returned by the server on every validation as an additive field:
+     * `array( 'id', 'name', 'slug', 'products' )` — used to show "licensed via
+     * Clube M" and what the bundle includes.
+     *
+     * @since 6.0.0
+     * @return array<string,mixed>|null
+     */
+    public static function bundle() {
+        $status = self::status();
+
+        if ( ! $status ) {
+            return null;
+        }
+
+        $bundle = $status->get('bundle');
+
+        return is_array( $bundle ) && ! empty( $bundle ) ? $bundle : null;
     }
 
 
@@ -333,9 +460,58 @@ class MDS {
      * @return string Base64-encoded public key, or empty string.
      */
     public static function public_key() {
-        $config = self::config_for_slug( self::active_slug() );
+        $config = self::config();
 
         return isset( $config['public_key'] ) ? (string) $config['public_key'] : '';
+    }
+
+
+    /**
+     * URL of the plugin license screen.
+     *
+     * @since 6.0.0
+     * @return string
+     */
+    public static function get_license_url() {
+        return admin_url('admin.php?page=flexify-checkout-license');
+    }
+
+
+    /**
+     * Enable WordPress background updates for the plugin when the setting is on.
+     *
+     * @since 6.0.0
+     * @param bool $update Whether to enable auto-update.
+     * @param object $item Plugin update object.
+     * @return bool
+     */
+    public static function enable_auto_update( $update, $item ) {
+        if ( ! isset( $item->plugin ) || $item->plugin !== self::get_plugin_file() ) {
+            return $update;
+        }
+
+        if ( ! class_exists( Admin_Options::class ) ) {
+            return $update;
+        }
+
+        return Admin_Options::get_setting('enable_auto_updates') === 'yes' && self::is_active();
+    }
+
+
+    /**
+     * Plugin basename ("flexify-checkout-for-woocommerce/flexify-checkout-for-woocommerce.php").
+     *
+     * @since 6.0.0
+     * @return string
+     */
+    private static function get_plugin_file() {
+        if ( defined('FLEXIFY_CHECKOUT_BASENAME') ) {
+            return FLEXIFY_CHECKOUT_BASENAME;
+        }
+
+        $slug = self::product_slug();
+
+        return $slug . '/' . $slug . '.php';
     }
 
 
@@ -344,23 +520,15 @@ class MDS {
     /* ---------------------------------------------------------------------- */
 
     /**
-     * Option that records which product slug has already been migrated.
-     *
-     * @since 6.0.0
-     * @var string
-     */
-    const MIGRATION_FLAG = 'flexify_checkout_mds_state_migrated';
-
-    /**
      * Bridge the legacy license options into the SDK's `license_state` so a site
-     * that is already licensed stays licensed the moment the flag is flipped —
-     * no forced re-activation.
+     * that is already licensed stays licensed at cutover — no forced
+     * re-activation.
      *
-     * Idempotent: runs once per active product slug (re-runs only if the license
-     * key later switches between the standalone and Clube M bundle products).
-     * Never clobbers an existing SDK activation unless forced. The seeded state
-     * is marked `signed => false` on purpose: the next daily heartbeat replaces
-     * it with a genuine signed verdict from the server.
+     * Idempotent (guarded by {@see self::MIGRATION_FLAG}) and never clobbers an
+     * existing SDK activation unless forced. The seeded state is marked
+     * `signed => false` on purpose: the next daily heartbeat replaces it with a
+     * genuine signed verdict from the server — which is also what fills in the
+     * `bundle` field for a Clube M key.
      *
      * @since 6.0.0
      * @param bool $force Re-run even when already migrated / SDK state exists.
@@ -378,7 +546,7 @@ class MDS {
             return false;
         }
 
-        $slug = self::slug_for_key( $key );
+        $slug = self::product_slug();
 
         if ( ! $force && (string) get_option( self::MIGRATION_FLAG, '' ) === $slug ) {
             return false;
@@ -402,10 +570,10 @@ class MDS {
         $valid = ( 'valid' === $status_option ) || ( is_object( $legacy ) && ! empty( $legacy->is_valid ) );
         $expires_at = self::normalize_legacy_expiry( is_object( $legacy ) && isset( $legacy->expire_date ) ? $legacy->expire_date : null );
 
-        $status = $valid ? 'active' : 'invalid';
+        $status = $valid ? LicenseStatus::STATUS_ACTIVE : LicenseStatus::STATUS_INVALID;
 
         if ( $expires_at && strtotime( $expires_at ) < time() ) {
-            $status = 'expired';
+            $status = LicenseStatus::STATUS_EXPIRED;
             $valid  = false;
         }
 
@@ -430,7 +598,7 @@ class MDS {
         $state = array(
             'status'          => $status,
             'valid'           => (bool) $valid,
-            'domain'          => class_exists('\MeuMouse\MDS\SDK\Support\Environment') ? \MeuMouse\MDS\SDK\Support\Environment::domain() : '',
+            'domain'          => class_exists( Environment::class ) ? Environment::domain() : '',
             'expires_at'      => $expires_at,
             'checked_at'      => $now,
             // Start the grace window fresh so a valid seat survives until the
@@ -445,12 +613,10 @@ class MDS {
         self::store_option( $state_name, $state );
         update_option( self::MIGRATION_FLAG, $slug, false );
 
-        if ( class_exists('\MeuMouse\Flexify_Checkout\Core\Logs\Logger') ) {
-            \MeuMouse\Flexify_Checkout\Core\Logs\Logger::register_log(
-                sprintf( 'MDS: migrated legacy license state for "%s" (valid=%s, expires=%s)', $slug, $valid ? 'yes' : 'no', $expires_at ? $expires_at : 'never' ),
-                'INFO'
-            );
-        }
+        self::log(
+            sprintf( 'MDS: migrated legacy license state (valid=%s, expires=%s)', $valid ? 'yes' : 'no', $expires_at ? $expires_at : 'never' ),
+            'info'
+        );
 
         return true;
     }
@@ -524,5 +690,28 @@ class MDS {
         } else {
             update_option( $name, $value, false );
         }
+    }
+
+
+    /**
+     * Log an integration event through the plugin logger, when available.
+     *
+     * @since 6.0.0
+     * @param string $message Message to log.
+     * @param string $level Log level ("error" or "info").
+     * @return void
+     */
+    private static function log( $message, $level = 'error' ) {
+        if ( ! class_exists( Logger::class ) ) {
+            return;
+        }
+
+        if ( 'info' === $level ) {
+            Logger::info( 'license', $message );
+
+            return;
+        }
+
+        Logger::error( 'license', $message );
     }
 }

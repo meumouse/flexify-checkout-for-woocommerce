@@ -2,6 +2,8 @@
 
 namespace MeuMouse\Flexify_Checkout\API;
 
+use MeuMouse\Flexify_Checkout\Core\Logs\Logger;
+
 // Exit if accessed directly.
 defined('ABSPATH') || exit;
     
@@ -614,7 +616,8 @@ class License {
      * Activate/validate a license through the MDS SDK.
      *
      * Populates $response with an object compatible with the legacy
-     * response shape (is_valid / expire_date / license_title / license_key).
+     * response shape (is_valid / expire_date / license_title / license_key),
+     * plus `bundle` when the key is a bundle license (e.g. Clube M).
      *
      * @since 6.0.0
      * @param string $purchase_key License key entered by the admin.
@@ -623,7 +626,7 @@ class License {
      * @return bool True when the server returned a definitive answer.
      */
     private static function check_license_via_sdk( $purchase_key, &$error = '', &$response = null ) {
-        $integration = MDS::integration_for_key( $purchase_key );
+        $integration = MDS::integration();
 
         if ( ! $integration ) {
             $error = __( 'Licensing service is not available.', 'flexify-checkout-for-woocommerce' );
@@ -640,13 +643,20 @@ class License {
             return false;
         }
 
+        // A bundle key (e.g. Clube M) validates for this product and reports
+        // which bundle granted it; use its name when the server sends no plan.
+        $bundle = $status->get('bundle');
+        $bundle = is_array( $bundle ) && ! empty( $bundle ) ? $bundle : null;
+        $bundle_name = $bundle && ! empty( $bundle['name'] ) ? (string) $bundle['name'] : '';
+
         $response = new \stdClass();
         $response->is_valid = $status->is_valid();
         $response->license_key = $purchase_key;
         $response->expire_date = $status->expires_at() ? $status->expires_at() : 'No expiry';
-        $response->license_title = (string) $status->get( 'license_title', $status->get( 'plan', '' ) );
+        $response->license_title = (string) $status->get( 'license_title', $status->get( 'plan', $bundle_name ) );
         $response->support_end = (string) $status->get( 'support_end', '' );
         $response->renew_link = (string) $status->get( 'renew_link', '' );
+        $response->bundle = $bundle;
         $response->msg = $status->message();
 
         if ( ! $status->is_valid() ) {
@@ -896,7 +906,9 @@ class License {
     public static function license_title() {
         if ( MDS::is_enabled() && ( $manager = MDS::license() ) ) {
             $status = $manager->status();
-            $title = $status->get('license_title', $status->get('plan', ''));
+            $bundle = MDS::bundle();
+            $bundle_name = $bundle && ! empty( $bundle['name'] ) ? (string) $bundle['name'] : '';
+            $title = $status->get( 'license_title', $status->get( 'plan', $bundle_name ) );
 
             return '' !== (string) $title ? (string) $title : esc_html__( 'Not available', 'flexify-checkout-for-woocommerce' );
         }
@@ -1138,7 +1150,7 @@ class License {
         ));
 
         if ( is_wp_error( $response ) ) {
-            Logger::register_log( 'Error getting license expiration time: ' . $response->get_error_message(), 'ERROR' );
+            Logger::error( 'license', 'Error getting license expiration time: ' . $response->get_error_message() );
 
             return false;
         }
@@ -1148,7 +1160,8 @@ class License {
 
         // check if response is valid
         if ( ! is_array( $decoded_response ) || empty( $decoded_response['data']['expiry_time'] ) ) {
-            Logger::register_log( 'Invalid response from license API: ' . print_r( $decoded_response, true ), 'ERROR' );
+            Logger::error( 'license', 'Invalid response from license API: ' . print_r( $decoded_response, true ) );
+
             return false;
         }
 

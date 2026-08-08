@@ -182,6 +182,11 @@ class Init {
         self::define_constants( $plugin_file, $plugin_version );
         self::invalidate_class_registry();
         self::clear_scheduled_events();
+
+        // Drop the MDS license heartbeat scheduled by the SDK, which owns its
+        // own cron event and is not covered by clear_scheduled_events().
+        \MeuMouse\Flexify_Checkout\API\MDS::deactivate();
+
         delete_transient( self::ILLEGAL_COPY_TRANSIENT );
 
         if ( function_exists('wc_clear_template_cache') ) {
